@@ -7,9 +7,9 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for date handling.
@@ -148,7 +148,7 @@ public final class DateUtil {
    * @return the number of days in the given interval, including the from and to dates
    */
   public static long numberOfDaysInRange(final LocalDate from, final LocalDate to) {
-    if (Objects.requireNonNull(from, "from").isAfter(Objects.requireNonNull(to, "to"))) {
+    if (requireNonNull(from, "from").isAfter(requireNonNull(to, "to"))) {
       throw new IllegalArgumentException("'To' date should be after 'from' date");
     }
 

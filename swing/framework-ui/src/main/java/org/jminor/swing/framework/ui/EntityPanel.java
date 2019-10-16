@@ -49,9 +49,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
@@ -310,7 +311,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public EntityPanel(final SwingEntityModel entityModel) {
     this(entityModel, entityModel.getEditModel().getDomain().getCaption(
-            Objects.requireNonNull(entityModel, "entityModel").getEntityId()));
+            requireNonNull(entityModel, "entityModel").getEntityId()));
   }
 
   /**
@@ -379,7 +380,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public EntityPanel(final SwingEntityModel entityModel, final String caption, final EntityEditPanel editPanel,
                      final EntityTablePanel tablePanel) {
-    Objects.requireNonNull(entityModel, "entityModel");
+    requireNonNull(entityModel, "entityModel");
     this.entityModel = entityModel;
     this.caption = caption == null ? entityModel.getEditModel().getDomain().getCaption(entityModel.getEntityId()) : caption;
     this.editPanel = editPanel;
@@ -477,7 +478,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @return this entity panel
    */
   public final EntityPanel addDetailPanels(final EntityPanel... detailPanels) {
-    Objects.requireNonNull(detailPanels, "detailPanels");
+    requireNonNull(detailPanels, "detailPanels");
     for (final EntityPanel detailPanel : detailPanels) {
       addDetailPanel(detailPanel);
     }
@@ -1134,7 +1135,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @throws IllegalStateException in case a master panel has already been set
    */
   protected final void setMasterPanel(final EntityPanel masterPanel) {
-    Objects.requireNonNull(masterPanel, "masterPanel");
+    requireNonNull(masterPanel, "masterPanel");
     if (this.masterPanel != null) {
       throw new IllegalStateException("Master panel has already been set for " + this);
     }

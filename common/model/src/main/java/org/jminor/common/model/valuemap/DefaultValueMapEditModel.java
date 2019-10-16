@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default ValueMapEditModel implementation, handling value change events and validation
@@ -76,7 +77,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   /** {@inheritDoc} */
   @Override
   public final void put(final K key, final V value) {
-    Objects.requireNonNull(key, KEY);
+    requireNonNull(key, KEY);
     final boolean initialization = !valueMap.containsKey(key);
     final V previousValue = valueMap.put(key, value);
     if (!Objects.equals(value, previousValue)) {
@@ -87,7 +88,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   /** {@inheritDoc} */
   @Override
   public final V remove(final K key) {
-    Objects.requireNonNull(key, KEY);
+    requireNonNull(key, KEY);
     V value = null;
     if (valueMap.containsKey(key)) {
       value = valueMap.remove(key);
@@ -157,7 +158,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   @Override
   public final boolean isValid(final K key) {
     try {
-      validator.validate(valueMap, Objects.requireNonNull(key, KEY));
+      validator.validate(valueMap, requireNonNull(key, KEY));
       return true;
     }
     catch (final ValidationException e) {
@@ -180,7 +181,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   /** {@inheritDoc} */
   @Override
   public final EventObserver<ValueChange<K, V>> getValueObserver(final K key) {
-    return getValueChangeEvent(Objects.requireNonNull(key, KEY)).getObserver();
+    return getValueChangeEvent(requireNonNull(key, KEY)).getObserver();
   }
 
   /** {@inheritDoc} */

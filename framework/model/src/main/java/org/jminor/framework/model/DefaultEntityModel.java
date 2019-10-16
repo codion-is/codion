@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default EntityModel implementation.
@@ -112,7 +112,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param tableModel the table model
    */
   public DefaultEntityModel(final E editModel, final T tableModel) {
-    Objects.requireNonNull(editModel, "editModel");
+    requireNonNull(editModel, "editModel");
     this.entityId = editModel.getEntityId();
     this.connectionProvider = editModel.getConnectionProvider();
     this.editModel = editModel;
@@ -180,7 +180,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final void addDetailModels(final M... detailModels) {
-    Objects.requireNonNull(detailModels, "detailModels");
+    requireNonNull(detailModels, "detailModels");
     for (final M detailModel : detailModels) {
       addDetailModel(detailModel);
     }
@@ -231,7 +231,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final void addLinkedDetailModel(final M detailModel) {
-    if (!detailModels.contains(Objects.requireNonNull(detailModel))) {
+    if (!detailModels.contains(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
     if (linkedDetailModels.add(detailModel)) {
@@ -242,7 +242,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final void removeLinkedDetailModel(final M detailModel) {
-    if (!detailModels.contains(Objects.requireNonNull(detailModel))) {
+    if (!detailModels.contains(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
     if (linkedDetailModels.remove(detailModel)) {
@@ -259,7 +259,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final M getDetailModel(final Class<? extends M> modelClass) {
-    Objects.requireNonNull(modelClass, "modelClass");
+    requireNonNull(modelClass, "modelClass");
     for (final M detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
         return detailModel;
@@ -284,7 +284,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final void setDetailModelForeignKey(final M detailModel, final String foreignKeyPropertyId) {
-    Objects.requireNonNull(detailModel, "detailModel");
+    requireNonNull(detailModel, "detailModel");
     if (!containsDetailModel(detailModel)) {
       throw new IllegalArgumentException(this + " does not contain detail model: " + detailModel);
     }

@@ -4,22 +4,22 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.TextUtil;
-import org.jminor.common.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static org.jminor.common.Util.nullOrEmpty;
+import static org.jminor.common.Util.rejectNullOrEmpty;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
@@ -166,8 +166,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
                           final List<Property.ColumnProperty> columnProperties,
                           final List<Property.ForeignKeyProperty> foreignKeyProperties,
                           final List<Property.TransientProperty> transientProperties) {
-    Util.rejectNullOrEmpty(entityId, "entityId");
-    Util.rejectNullOrEmpty(tableName, "tableName");
+    rejectNullOrEmpty(entityId, "entityId");
+    rejectNullOrEmpty(tableName, "tableName");
     this.domainId = domainId;
     this.entityId = entityId;
     this.caption = entityId;
@@ -176,11 +176,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.columnProperties = columnProperties;
     this.foreignKeyProperties = foreignKeyProperties;
     this.transientProperties = transientProperties;
-    this.properties = Collections.unmodifiableList(new ArrayList(this.propertyMap.values()));
-    this.primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(this.propertyMap.values()));
+    this.properties = unmodifiableList(new ArrayList(this.propertyMap.values()));
+    this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties(this.propertyMap.values()));
     this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
-    this.visibleProperties = Collections.unmodifiableList(getVisibleProperties(this.propertyMap.values()));
-    this.denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(this.propertyMap.values()));
+    this.visibleProperties = unmodifiableList(getVisibleProperties(this.propertyMap.values()));
+    this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties(this.propertyMap.values()));
     this.derivedProperties = initializeDerivedProperties(this.propertyMap.values());
     this.groupByClause = initializeGroupByClause(columnProperties);
     this.hasDenormalizedProperties = !this.denormalizedProperties.isEmpty();
@@ -195,7 +195,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setTableName(final String tableName) {
-    Util.rejectNullOrEmpty(tableName, "tableName");
+    rejectNullOrEmpty(tableName, "tableName");
     this.tableName = tableName;
     return this;
   }
@@ -221,7 +221,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setCaption(final String caption) {
-    Objects.requireNonNull(caption, "caption");
+    requireNonNull(caption, "caption");
     this.caption = caption;
     return this;
   }
@@ -288,7 +288,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setOrderBy(final Entity.OrderBy orderBy) {
-    Objects.requireNonNull(orderBy, "orderBy");
+    requireNonNull(orderBy, "orderBy");
     if (this.orderBy != null) {
       throw new IllegalStateException("Order by has already been set: " + this.orderBy);
     }
@@ -311,7 +311,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setGroupByClause(final String groupByClause) {
-    Objects.requireNonNull(groupByClause, "groupByClause");
+    requireNonNull(groupByClause, "groupByClause");
     if (this.groupByClause != null) {
       throw new IllegalStateException("Group by clause has already been set: " + this.groupByClause);
     }
@@ -328,7 +328,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setHavingClause(final String havingClause) {
-    Objects.requireNonNull(havingClause, "havingClause");
+    requireNonNull(havingClause, "havingClause");
     if (this.havingClause != null) {
       throw new IllegalStateException("Having clause has already been set: " + this.havingClause);
     }
@@ -345,7 +345,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setSelectTableName(final String selectTableName) {
-    Objects.requireNonNull(selectTableName, "selectTableName");
+    requireNonNull(selectTableName, "selectTableName");
     this.selectTableName = selectTableName;
     return this;
   }
@@ -365,7 +365,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
-    Objects.requireNonNull(selectQuery, "selectQuery");
+    requireNonNull(selectQuery, "selectQuery");
     this.selectQuery = selectQuery;
     this.selectQueryContainsWhereClause = containsWhereClause;
     return this;
@@ -380,7 +380,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setStringProvider(final Entity.ToString stringProvider) {
-    Objects.requireNonNull(stringProvider, "stringProvider");
+    requireNonNull(stringProvider, "stringProvider");
     this.stringProvider = stringProvider;
     return this;
   }
@@ -394,7 +394,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setComparator(final Comparator<Entity> comparator) {
-    Objects.requireNonNull(comparator, "comparator");
+    requireNonNull(comparator, "comparator");
     this.comparator = comparator;
     return this;
   }
@@ -405,13 +405,13 @@ final class DefaultEntityDefinition implements Entity.Definition {
     if (searchPropertyIds == null) {
       return emptyList();
     }
-    return Collections.unmodifiableCollection(searchPropertyIds);
+    return unmodifiableCollection(searchPropertyIds);
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setSearchPropertyIds(final String... searchPropertyIds) {
-    Objects.requireNonNull(searchPropertyIds, "searchPropertyIds");
+    requireNonNull(searchPropertyIds, "searchPropertyIds");
     for (final String propertyId : searchPropertyIds) {
       final Property property = propertyMap.get(propertyId);
       if (property == null) {
@@ -542,8 +542,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public int compareTo(final Entity entity, final Entity entityToCompare) {
-    Objects.requireNonNull(entity, "entity");
-    Objects.requireNonNull(entityToCompare, "entityToCompare");
+    requireNonNull(entity, "entity");
+    requireNonNull(entityToCompare, "entityToCompare");
     return comparator.compare(entity, entityToCompare);
   }
 
@@ -567,7 +567,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     final Map<String, Property.ColumnProperty> map = new HashMap<>(this.primaryKeyProperties.size());
     this.primaryKeyProperties.forEach(property -> map.put(property.getPropertyId(), property));
 
-    return Collections.unmodifiableMap(map);
+    return unmodifiableMap(map);
   }
 
   private static Map<String, List<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
@@ -589,7 +589,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     for (final Property property : properties) {
       if (property instanceof Property.DerivedProperty) {
         final Collection<String> derived = ((Property.DerivedProperty) property).getSourcePropertyIds();
-        if (!Util.nullOrEmpty(derived)) {
+        if (!nullOrEmpty(derived)) {
           for (final String parentLinkPropertyId : derived) {
             linkProperties(derivedProperties, parentLinkPropertyId, (Property.DerivedProperty) property);
           }
@@ -616,11 +616,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
               final Integer index2 = pk2.getPrimaryKeyIndex();
 
               return index1.compareTo(index2);
-            }).collect(Collectors.toList());
+            }).collect(toList());
   }
 
   private static List<Property> getVisibleProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> !property.isHidden()).collect(Collectors.toList());
+    return properties.stream().filter(property -> !property.isHidden()).collect(toList());
   }
 
   /**
@@ -630,7 +630,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
    */
   private static String initializeGroupByClause(final Collection<Property.ColumnProperty> columnProperties) {
     final List<Property> groupingProperties = columnProperties.stream()
-            .filter(Property.ColumnProperty::isGroupingColumn).collect(Collectors.toList());
+            .filter(Property.ColumnProperty::isGroupingColumn).collect(toList());
     if (groupingProperties.isEmpty()) {
       return null;
     }

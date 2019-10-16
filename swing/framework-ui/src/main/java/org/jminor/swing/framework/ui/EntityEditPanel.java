@@ -66,10 +66,10 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A UI component based on a {@link EntityEditModel}.
@@ -204,7 +204,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * null or an empty String array will result in no controls being initialized
    */
   public EntityEditPanel(final SwingEntityEditModel editModel, final ControlCode... controlCodes) {
-    this.editModel = Objects.requireNonNull(editModel, "editModel");
+    this.editModel = requireNonNull(editModel, "editModel");
     if (!ALL_PANELS_ACTIVE.get()) {
       ACTIVE_STATE_GROUP.addState(activeState);
     }

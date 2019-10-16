@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 
@@ -15,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A default DialogExceptionHandler implementation
@@ -41,7 +41,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
     }
 
     String message = rootCause.getMessage();
-    if (Util.nullOrEmpty(message)) {
+    if (nullOrEmpty(message)) {
       message = rootCause.getCause() != null ? trimMessage(rootCause.getCause()) : trimMessage(rootCause);
     }
     UiUtil.showExceptionDialog(dialogParent, getMessageTitle(rootCause), message, rootCause);

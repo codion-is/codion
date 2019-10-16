@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.Random;
 
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -66,7 +67,7 @@ public class EntityTestUnit {
    * @throws NullPointerException in case domainClass is null
    */
   public EntityTestUnit(final String domainClass) {
-    this.domainClass = Objects.requireNonNull(domainClass, "domainClass");
+    this.domainClass = requireNonNull(domainClass, "domainClass");
   }
 
   /**
@@ -122,7 +123,7 @@ public class EntityTestUnit {
       final Map<String, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());
       Entity testEntity = null;
       if (!getDomain().isReadOnly(entityId)) {
-        testEntity = testInsert(Objects.requireNonNull(initializeTestEntity(entityId, foreignKeyEntities), "test entity"));
+        testEntity = testInsert(requireNonNull(initializeTestEntity(entityId, foreignKeyEntities), "test entity"));
         assertNotNull(testEntity.toString());
         testUpdate(testEntity, initializeReferencedEntities(entityId, foreignKeyEntities));
       }
@@ -168,7 +169,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
   public static void randomize(final Domain domain, final Entity entity, final Map<String, Entity> foreignKeyEntities) {
-    Objects.requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(entity, ENTITY_PARAM);
     populateEntity(domain, entity, domain.getWritableColumnProperties(entity.getEntityId(), false, true),
             property -> getRandomValue(property, foreignKeyEntities));
   }
@@ -367,7 +368,7 @@ public class EntityTestUnit {
    * @return a random value
    */
   private static Object getRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
-    Objects.requireNonNull(property, "property");
+    requireNonNull(property, "property");
     if (property instanceof Property.ForeignKeyProperty) {
       return getReferenceEntity((Property.ForeignKeyProperty) property, referenceEntities);
     }

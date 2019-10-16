@@ -19,8 +19,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Random;
+
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A utility class for working with text, such as sorting a reading from files
@@ -81,7 +83,7 @@ public final class TextUtil {
    * @return a Double based on the given text
    */
   public static Double getDouble(final String text) {
-    if (Util.nullOrEmpty(text)) {
+    if (nullOrEmpty(text)) {
       return null;
     }
 
@@ -180,9 +182,9 @@ public final class TextUtil {
    * @return the collation result
    */
   public static int collateSansSpaces(final Collator collator, final String stringOne, final String stringTwo) {
-    Objects.requireNonNull(collator, "collator");
-    Objects.requireNonNull(stringOne, "stringOne");
-    Objects.requireNonNull(stringTwo, "stringTwo");
+    requireNonNull(collator, "collator");
+    requireNonNull(stringOne, "stringOne");
+    requireNonNull(stringTwo, "stringTwo");
 
     return collator.compare(stringOne.replaceAll(SPACE, UNDERSCORE), stringTwo.replaceAll(SPACE, UNDERSCORE));
   }
@@ -196,7 +198,7 @@ public final class TextUtil {
    * @return the padded string
    */
   public static String padString(final String string, final int length, final char padChar, final Alignment alignment) {
-    Objects.requireNonNull(string, "string");
+    requireNonNull(string, "string");
     if (string.length() >= length) {
       return string;
     }
@@ -221,9 +223,9 @@ public final class TextUtil {
    * @return a String comprised of the given headers and data with the given delimiter
    */
   public static String getDelimitedString(final String[][] headers, final String[][] data, final String delimiter) {
-    Objects.requireNonNull(headers, "headers");
-    Objects.requireNonNull(data, "data");
-    Objects.requireNonNull(delimiter, "delimiter");
+    requireNonNull(headers, "headers");
+    requireNonNull(data, "data");
+    requireNonNull(delimiter, "delimiter");
     final StringBuilder contents = new StringBuilder();
     for (final String[] header : headers) {
       contents.append(String.join(delimiter, header)).append(Util.LINE_SEPARATOR);
@@ -257,8 +259,8 @@ public final class TextUtil {
    * @throws IOException in case an IOException occurs
    */
   public static String getTextFileContents(final Class resourceClass, final String resourceName, final Charset charset) throws IOException {
-    Objects.requireNonNull(resourceClass, "resourceClass");
-    Objects.requireNonNull(resourceName, "resourceName");
+    requireNonNull(resourceClass, "resourceClass");
+    requireNonNull(resourceName, "resourceName");
     final InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
     if (inputStream == null) {
       throw new FileNotFoundException("Resource not found: '" + resourceName + "'");
@@ -275,7 +277,7 @@ public final class TextUtil {
    * @throws IOException in case of an exception
    */
   public static String getTextFileContents(final String filename, final Charset charset) throws IOException {
-    Objects.requireNonNull(filename, "filename");
+    requireNonNull(filename, "filename");
 
     return getTextFileContents(new File(filename), charset);
   }
@@ -288,7 +290,7 @@ public final class TextUtil {
    * @throws IOException in case of an exception
    */
   public static String getTextFileContents(final File file, final Charset charset) throws IOException {
-    Objects.requireNonNull(file, "file");
+    requireNonNull(file, "file");
     try (final FileInputStream inputStream = new FileInputStream(file)) {
       return getTextFileContents(inputStream, charset);
     }
@@ -303,7 +305,7 @@ public final class TextUtil {
    * @throws IOException in case of an exception
    */
   public static String getTextFileContents(final InputStream inputStream, final Charset charset) throws IOException {
-    Objects.requireNonNull(inputStream, "inputStream");
+    requireNonNull(inputStream, "inputStream");
     final StringBuilder contents = new StringBuilder();
     try (final BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, charset))) {
       String line = input.readLine();
@@ -365,7 +367,7 @@ public final class TextUtil {
    */
   public static List<String> parseCommaSeparatedValues(final String commaSeparatedValues) {
     final List<String> values = new ArrayList<>();
-    if (!Util.nullOrEmpty(commaSeparatedValues)) {
+    if (!nullOrEmpty(commaSeparatedValues)) {
       final String[] strings = commaSeparatedValues.split(",");
       for (final String value : strings) {
         values.add(value.trim());

@@ -11,10 +11,10 @@ import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
- * A class responsible for managing a httpConnection entity connection.
+ * A class responsible for managing a HttpEntityConnection.
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOST_NAME
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_SECURE
@@ -60,9 +60,9 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * @param https true if https should be used
    */
   public HttpEntityConnectionProvider(final String serverHostName, final Integer serverPort, final Boolean https) {
-    this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
-    this.serverPort = Objects.requireNonNull(serverPort, "serverPort");
-    this.https = Objects.requireNonNull(https, "https");
+    this.serverHostName = requireNonNull(serverHostName, "serverHostName");
+    this.serverPort = requireNonNull(serverPort, "serverPort");
+    this.https = requireNonNull(https, "https");
   }
 
   /** {@inheritDoc} */

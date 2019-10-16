@@ -8,7 +8,6 @@ import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Item;
-import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.ValueObserver;
 import org.jminor.common.Values;
@@ -34,6 +33,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.util.Collection;
+
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A factory class for {@link Value} instances based on JavaFX models and properties
@@ -204,7 +205,7 @@ public final class PropertyValues {
 
     @Override
     public Integer fromString(final String value) {
-      if (Util.nullOrEmpty(value)) {
+      if (nullOrEmpty(value)) {
         return null;
       }
       try {
@@ -237,7 +238,7 @@ public final class PropertyValues {
 
     @Override
     public Long fromString(final String value) {
-      if (Util.nullOrEmpty(value)) {
+      if (nullOrEmpty(value)) {
         return null;
       }
       try {
@@ -268,7 +269,7 @@ public final class PropertyValues {
 
     @Override
     public Double fromString(final String value) {
-      if (Util.nullOrEmpty(value)) {
+      if (nullOrEmpty(value)) {
         return null;
       }
       try {
@@ -305,7 +306,7 @@ public final class PropertyValues {
 
     @Override
     public BigDecimal fromString(final String value) {
-      if (Util.nullOrEmpty(value)) {
+      if (nullOrEmpty(value)) {
         return null;
       }
       try {
@@ -338,7 +339,7 @@ public final class PropertyValues {
     }
     @Override
     public T fromString(final String string) {
-      if (Util.nullOrEmpty(string)) {
+      if (nullOrEmpty(string)) {
         return null;
       }
       try {

@@ -5,7 +5,6 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.FormatUtil;
 import org.jminor.common.Item;
-import org.jminor.common.Util;
 import org.jminor.common.db.Column;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
@@ -24,12 +23,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A default Property implementation
@@ -160,7 +162,7 @@ class DefaultProperty implements Property {
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
   DefaultProperty(final String propertyId, final int type, final String caption) {
-    Objects.requireNonNull(propertyId, "propertyId");
+    requireNonNull(propertyId, "propertyId");
     this.propertyId = propertyId;
     this.hashCode = propertyId.hashCode();
     this.type = type;
@@ -488,7 +490,7 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final Property setFormat(final Format format) {
-    Objects.requireNonNull(format, "format");
+    requireNonNull(format, "format");
     if (isNumerical() && !(format instanceof NumberFormat)) {
       throw new IllegalArgumentException("NumberFormat required for numerical property: " + propertyId);
     }
@@ -505,7 +507,7 @@ class DefaultProperty implements Property {
     if (!isDateOrTime()) {
       throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to date/time based property: " + propertyId);
     }
-    this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormatPattern);
+    this.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
     this.dateTimeFormatPattern = dateTimeFormatPattern;
     return this;
   }
@@ -520,7 +522,7 @@ class DefaultProperty implements Property {
   @Override
   public DateTimeFormatter getDateTimeFormatter() {
     if (dateTimeFormatter == null && dateTimeFormatPattern != null) {
-      dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormatPattern);
+      dateTimeFormatter = ofPattern(dateTimeFormatPattern);
     }
 
     return dateTimeFormatter;
@@ -678,7 +680,7 @@ class DefaultProperty implements Property {
 
     @Override
     public ColumnProperty setColumnName(final String columnName) {
-      this.columnName = Objects.requireNonNull(columnName, "columnName");
+      this.columnName = requireNonNull(columnName, "columnName");
       return this;
     }
 
@@ -828,7 +830,7 @@ class DefaultProperty implements Property {
 
     @Override
     public final ColumnProperty setValueConverter(final ValueConverter<?, ?> valueConverter) {
-      Objects.requireNonNull(valueConverter, "valueConverter");
+      requireNonNull(valueConverter, "valueConverter");
       this.valueConverter = (ValueConverter<Object, Object>) valueConverter;
       return this;
     }
@@ -953,7 +955,7 @@ class DefaultProperty implements Property {
 
     private static Character getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {
       final String val = getString(resultSet, columnIndex);
-      if (!Util.nullOrEmpty(val)) {
+      if (!nullOrEmpty(val)) {
         return val.charAt(0);
       }
       else {
@@ -992,11 +994,11 @@ class DefaultProperty implements Property {
     DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
                               final List<ColumnProperty> columnProperties) {
       super(propertyId, Types.OTHER, caption);
-      Objects.requireNonNull(foreignEntityId, "foreignEntityId");
+      requireNonNull(foreignEntityId, "foreignEntityId");
       validateParameters(propertyId, foreignEntityId, columnProperties);
       columnProperties.forEach(columnProperty -> columnProperty.setForeignKeyProperty(this));
       this.foreignEntityId = foreignEntityId;
-      this.columnProperties = Collections.unmodifiableList(columnProperties);
+      this.columnProperties = unmodifiableList(columnProperties);
       this.compositeReference = this.columnProperties.size() > 1;
     }
 
@@ -1053,11 +1055,11 @@ class DefaultProperty implements Property {
 
     private static void validateParameters(final String propertyId, final String foreignEntityId,
                                            final List<ColumnProperty> columnProperties) {
-      if (Util.nullOrEmpty(columnProperties)) {
+      if (nullOrEmpty(columnProperties)) {
         throw new IllegalArgumentException("No column properties specified");
       }
       for (final Property.ColumnProperty columnProperty : columnProperties) {
-        Objects.requireNonNull(columnProperty, "columnProperty");
+        requireNonNull(columnProperty, "columnProperty");
         if (columnProperty.getPropertyId().equals(propertyId)) {
           throw new IllegalArgumentException(foreignEntityId + ", column propertyId is the same as foreign key propertyId: " + propertyId);
         }
@@ -1123,7 +1125,7 @@ class DefaultProperty implements Property {
      */
     DefaultValueListProperty(final String propertyId, final int type, final String caption, final List<Item> items) {
       super(propertyId, type, caption);
-      this.items = Collections.unmodifiableList(items);
+      this.items = unmodifiableList(items);
     }
 
     @Override
@@ -1190,7 +1192,7 @@ class DefaultProperty implements Property {
                            final Provider valueProvider, final String... sourcePropertyIds) {
       super(propertyId, type, caption);
       this.valueProvider = valueProvider;
-      if (Util.nullOrEmpty(sourcePropertyIds)) {
+      if (nullOrEmpty(sourcePropertyIds)) {
         throw new IllegalArgumentException("No source propertyIds, a derived property must be derived from one or more existing properties");
       }
       this.sourcePropertyIds = asList(sourcePropertyIds);
@@ -1280,8 +1282,8 @@ class DefaultProperty implements Property {
     private final T falseValue;
 
     BooleanValueConverter(final T trueValue, final T falseValue) {
-      this.trueValue = Objects.requireNonNull(trueValue);
-      this.falseValue = Objects.requireNonNull(falseValue);
+      this.trueValue = requireNonNull(trueValue);
+      this.falseValue = requireNonNull(falseValue);
     }
 
     @Override

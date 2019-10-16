@@ -4,7 +4,6 @@
 package org.jminor.dbms.h2database;
 
 import org.jminor.common.TextUtil;
-import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 import org.jminor.common.db.Database;
 
@@ -16,10 +15,11 @@ import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A Database implementation based on the H2 database.
@@ -80,8 +80,8 @@ public final class H2Database extends AbstractDatabase {
    * @param databaseName the database name
    */
   public H2Database(final String host, final Integer port, final String databaseName) {
-    super(Type.H2, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"), Objects.requireNonNull(port, "port"),
-            Objects.requireNonNull(databaseName, "databaseName"), false);
+    super(Type.H2, DRIVER_CLASS_NAME, requireNonNull(host, "host"), requireNonNull(port, "port"),
+            requireNonNull(databaseName, "databaseName"), false);
     this.embeddedInMemory = false;
   }
 
@@ -103,7 +103,7 @@ public final class H2Database extends AbstractDatabase {
    * @throws RuntimeException in case of an error during initialization
    */
   public H2Database(final String databaseName, final String initScript, final boolean embeddedInMemory) {
-    super(Type.H2, DRIVER_CLASS_NAME, Objects.requireNonNull(databaseName, "databaseName"),
+    super(Type.H2, DRIVER_CLASS_NAME, requireNonNull(databaseName, "databaseName"),
             null, null, true);
     this.embeddedInMemory = embeddedInMemory;
     initializeDatabase(initScript == null ? null : singletonList(initScript));
@@ -118,7 +118,7 @@ public final class H2Database extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getSequenceQuery(final String sequenceName) {
-    return SEQUENCE_VALUE_QUERY + Objects.requireNonNull(sequenceName, "sequenceName");
+    return SEQUENCE_VALUE_QUERY + requireNonNull(sequenceName, "sequenceName");
   }
 
   /** {@inheritDoc} */
@@ -126,7 +126,7 @@ public final class H2Database extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      if (connectionProperties != null && (Util.nullOrEmpty((String) connectionProperties.get(USER_PROPERTY)))) {
+      if (connectionProperties != null && (nullOrEmpty((String) connectionProperties.get(USER_PROPERTY)))) {
         connectionProperties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       }
       final String urlPrefix = embeddedInMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE;
@@ -207,7 +207,7 @@ public final class H2Database extends AbstractDatabase {
   }
 
   private void initializeDatabase(final List<String> scriptPaths) {
-    if (!Util.nullOrEmpty(scriptPaths) && (embeddedInMemory || !Files.exists(Paths.get(getHost() + ".h2.db")))) {
+    if (!nullOrEmpty(scriptPaths) && (embeddedInMemory || !Files.exists(Paths.get(getHost() + ".h2.db")))) {
       final Properties properties = new Properties();
       properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       for (final String scriptPath : scriptPaths) {

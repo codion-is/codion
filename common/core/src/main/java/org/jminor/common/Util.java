@@ -27,10 +27,12 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Misc. utilities.
  */
-public class Util {
+public final class Util {
 
   private static final Logger LOG = LoggerFactory.getLogger(Util.class);
 
@@ -107,8 +109,8 @@ public class Util {
    * @return a LinkedHashMap with the values mapped to their respective key values, respecting the iteration order of the given collection
    */
   public static <K, V> LinkedHashMap<K, List<V>> map(final Collection<V> values, final MapKeyProvider<K, V> keyProvider) {
-    Objects.requireNonNull(values, "values");
-    Objects.requireNonNull(keyProvider, "keyProvider");
+    requireNonNull(values, "values");
+    requireNonNull(keyProvider, "keyProvider");
     final LinkedHashMap<K, List<V>> map = new LinkedHashMap<>(values.size());
     for (final V value : values) {
       map.computeIfAbsent(keyProvider.getKey(value), k -> new ArrayList<>()).add(value);
@@ -123,7 +125,7 @@ public class Util {
    */
   public static boolean onClasspath(final String className) {
     try {
-      Class.forName(Objects.requireNonNull(className, "className"));
+      Class.forName(requireNonNull(className, "className"));
       return true;
     }
     catch (final ClassNotFoundException e) {
@@ -341,7 +343,7 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getSetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    return getSetMethod(valueType, property, Objects.requireNonNull(valueOwner, "valueOwner").getClass());
+    return getSetMethod(valueType, property, requireNonNull(valueOwner, "valueOwner").getClass());
   }
 
   /**
@@ -352,12 +354,12 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getSetMethod(final Class valueType, final String property, final Class ownerClass) throws NoSuchMethodException {
-    if (Objects.requireNonNull(property, "property").length() == 0) {
+    if (requireNonNull(property, "property").length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
 
-    return Objects.requireNonNull(ownerClass, "ownerClass").getMethod("set" +
-            Character.toUpperCase(property.charAt(0)) + property.substring(1), Objects.requireNonNull(valueType, "valueType"));
+    return requireNonNull(ownerClass, "ownerClass").getMethod("set" +
+            Character.toUpperCase(property.charAt(0)) + property.substring(1), requireNonNull(valueType, "valueType"));
   }
 
   /**
@@ -368,7 +370,7 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getGetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    return getGetMethod(valueType, property, Objects.requireNonNull(valueOwner, "valueOwner").getClass());
+    return getGetMethod(valueType, property, requireNonNull(valueOwner, "valueOwner").getClass());
   }
 
   /**
@@ -379,9 +381,9 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getGetMethod(final Class valueType, final String property, final Class ownerClass) throws NoSuchMethodException {
-    Objects.requireNonNull(valueType, "valueType");
-    Objects.requireNonNull(property, "property");
-    Objects.requireNonNull(ownerClass, "ownerClass");
+    requireNonNull(valueType, "valueType");
+    requireNonNull(property, "property");
+    requireNonNull(ownerClass, "ownerClass");
     if (property.length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }

@@ -12,7 +12,8 @@ import org.jminor.swing.framework.model.SwingEntityTableModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class providing EntityPanel instances.
@@ -61,9 +62,9 @@ public class EntityPanelProvider {
    */
   public EntityPanelProvider(final String entityId, final String caption, final Class<? extends SwingEntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
-    Objects.requireNonNull(entityId, "entityId");
-    Objects.requireNonNull(entityModelClass, "entityModelClass");
-    Objects.requireNonNull(entityPanelClass, "entityPanelClass");
+    requireNonNull(entityId, "entityId");
+    requireNonNull(entityModelClass, "entityModelClass");
+    requireNonNull(entityPanelClass, "entityPanelClass");
     this.caption = caption;
     this.panelClass = entityPanelClass;
     this.modelProvider = new SwingEntityModelProvider(entityId, entityModelClass);
@@ -83,7 +84,7 @@ public class EntityPanelProvider {
    * @param caption the panel caption to use
    */
   public EntityPanelProvider(final SwingEntityModelProvider modelProvider, final String caption) {
-    Objects.requireNonNull(modelProvider, "modelProvider");
+    requireNonNull(modelProvider, "modelProvider");
     this.modelProvider = modelProvider;
     this.caption = caption;
   }
@@ -278,7 +279,7 @@ public class EntityPanelProvider {
    * @return an EntityPanel based on this provider configuration
    */
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
-    Objects.requireNonNull(connectionProvider, "connectionProvider");
+    requireNonNull(connectionProvider, "connectionProvider");
     try {
       final SwingEntityModel entityModel = modelProvider.createModel(connectionProvider, detailPanel);
 

@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
-import org.jminor.common.Util;
 import org.jminor.swing.common.model.DocumentAdapter;
 
 import javax.swing.JTextField;
@@ -11,7 +10,9 @@ import javax.swing.event.DocumentEvent;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * Implements a hint text for text fields, that is, text that is shown
@@ -31,11 +32,11 @@ public final class TextFieldHint {
    * @param hintForegroundColor the font color for the hint text
    */
   private TextFieldHint(final JTextField textField, final String hintText, final Color hintForegroundColor) {
-    Objects.requireNonNull(textField, "textField");
-    if (Util.nullOrEmpty(hintText)) {
+    requireNonNull(textField, "textField");
+    if (nullOrEmpty(hintText)) {
       throw new IllegalArgumentException("Hint text is null or empty");
     }
-    Objects.requireNonNull(hintForegroundColor, "hintForegroundColor");
+    requireNonNull(hintForegroundColor, "hintForegroundColor");
     this.textField = textField;
     this.hintText = hintText;
     this.defaultForegroundColor = textField.getForeground();

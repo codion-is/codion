@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.petstore.beans.ui;
 
-import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
@@ -47,10 +46,10 @@ public class ItemEditPanel extends EntityEditPanel {
     add(createPropertyPanel(ITEM_DESCRIPTION, descriptionPanel));
     addPropertyPanel(ITEM_PRICE);
     add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, UiUtil.createEastButtonPanel(contactInfoBox,
-            createEditPanelAction(contactInfoBox, new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO)
+            createEditPanelAction(contactInfoBox, new EntityPanelProvider(T_SELLER_CONTACT_INFO)
                     .setEditPanelClass(ContactInfoEditPanel.class)), false)));
     add(createPropertyPanel(ITEM_ADDRESS_FK, UiUtil.createEastButtonPanel(addressBox,
-            createEditPanelAction(addressBox, new EntityPanelProvider(Petstore.T_ADDRESS)
+            createEditPanelAction(addressBox, new EntityPanelProvider(T_ADDRESS)
                     .setEditPanelClass(AddressEditPanel.class)), false)));
     addPropertyPanel(ITEM_IMAGE_URL);
     addPropertyPanel(ITEM_IMAGE_THUMB_URL);

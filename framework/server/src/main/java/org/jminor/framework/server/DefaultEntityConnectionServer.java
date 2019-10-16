@@ -53,12 +53,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
@@ -203,7 +206,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       SerializationWhitelist.configureSerializationWhitelist(SERIALIZATION_FILTER_WHITELIST.get(), SERIALIZATION_FILTER_DRYRUN.get());
       this.shutdownHook = new Thread(getShutdownHook());
       Runtime.getRuntime().addShutdownHook(this.shutdownHook);
-      this.database = Objects.requireNonNull(database, "database");
+      this.database = requireNonNull(database, "database");
       this.registryPort = registryPort;
       this.registry = LocateRegistry.createRegistry(registryPort);
       this.sslEnabled = sslEnabled;
@@ -359,7 +362,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @return info on all connected users
    */
   Collection<User> getUsers() {
-    return getConnections().keySet().stream().map(ConnectionRequest::getUser).collect(Collectors.toSet());
+    return getConnections().keySet().stream().map(ConnectionRequest::getUser).collect(toSet());
   }
 
   /**
@@ -375,7 +378,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    */
   Collection<RemoteClient> getClients(final User user) {
     return getConnections().keySet().stream().filter(remoteClient ->
-            user == null || remoteClient.getUser().equals(user)).collect(Collectors.toList());
+            user == null || remoteClient.getUser().equals(user)).collect(toList());
   }
 
   /**
@@ -386,7 +389,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     //using the remoteClient from the connection since it contains the correct database user
     return getConnections().values().stream()
             .filter(connection -> connection.getRemoteClient().getClientTypeId().equals(clientTypeId))
-            .map(AbstractRemoteEntityConnection::getRemoteClient).collect(Collectors.toList());
+            .map(AbstractRemoteEntityConnection::getRemoteClient).collect(toList());
   }
 
   /**
@@ -555,7 +558,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
           final AuxiliaryServer server = serverClass.getDeclaredConstructor(Server.class).newInstance(this);
           auxiliaryServers.add(server);
           LOG.info("Server starting auxiliary server: " + serverClass);
-          Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
+          newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
                   startAuxiliaryServer(server)).get();
         }
       }
@@ -617,7 +620,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   protected static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
-    return poolUsers.stream().map(User::parseUser).collect(Collectors.toList());
+    return poolUsers.stream().map(User::parseUser).collect(toList());
   }
 
   protected static Map<String, Integer> getClientTimeoutValues() {
@@ -745,9 +748,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @throws RemoteException in case of an exception
    */
   public static synchronized DefaultEntityConnectionServer startServer() throws RemoteException {
-    final Integer serverPort = Objects.requireNonNull(Server.SERVER_PORT.get(), Server.SERVER_PORT.toString());
-    final Integer registryPort = Objects.requireNonNull(Server.REGISTRY_PORT.get(), Server.REGISTRY_PORT.toString());
-    final Integer serverAdminPort = Objects.requireNonNull(Server.SERVER_ADMIN_PORT.get(), Server.SERVER_ADMIN_PORT.toString());
+    final Integer serverPort = requireNonNull(Server.SERVER_PORT.get(), Server.SERVER_PORT.toString());
+    final Integer registryPort = requireNonNull(Server.REGISTRY_PORT.get(), Server.REGISTRY_PORT.toString());
+    final Integer serverAdminPort = requireNonNull(Server.SERVER_ADMIN_PORT.get(), Server.SERVER_ADMIN_PORT.toString());
     final boolean sslEnabled = Server.SERVER_CONNECTION_SSL_ENABLED.get();
     final Integer connectionLimit = SERVER_CONNECTION_LIMIT.get();
     final Database database = Databases.getInstance();
@@ -762,7 +765,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     final Integer connectionTimeout = Server.SERVER_CONNECTION_TIMEOUT.get();
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
     final String adminUserString = Server.SERVER_ADMIN_USER.get();
-    final User adminUser = Util.nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
+    final User adminUser = nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
     if (adminUser == null) {
       LOG.info("No admin user specified");
     }
@@ -796,7 +799,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     final String host = Database.DATABASE_HOST.get();
     final String serverName = initializeServerName(host, sid);
     final String adminUserString = Server.SERVER_ADMIN_USER.get();
-    if (Util.nullOrEmpty(adminUserString)) {
+    if (nullOrEmpty(adminUserString)) {
       throw ServerException.authenticationException("No admin user specified");
     }
     final User adminUser = User.parseUser(adminUserString);

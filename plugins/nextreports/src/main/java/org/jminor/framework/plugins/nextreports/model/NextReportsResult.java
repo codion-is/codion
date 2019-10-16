@@ -10,7 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link ReportResult} implementation based on NextReports
@@ -26,8 +27,8 @@ public final class NextReportsResult implements ReportResult<byte[]>, Serializab
    * @param format the report format
    */
   public NextReportsResult(final byte[] bytes, final String format) {
-    this.bytes = Objects.requireNonNull(bytes, "bytes");
-    this.format = Objects.requireNonNull(format, "format");
+    this.bytes = requireNonNull(bytes, "bytes");
+    this.format = requireNonNull(format, "format");
   }
 
   /** {@inheritDoc} */
@@ -44,8 +45,8 @@ public final class NextReportsResult implements ReportResult<byte[]>, Serializab
    * @throws IOException in case of an exception
    */
   public File writeResultToFile(final String parentDirectory, final String filename) throws IOException {
-    Objects.requireNonNull(parentDirectory, "parentDirectory");
-    Objects.requireNonNull(filename, "filename");
+    requireNonNull(parentDirectory, "parentDirectory");
+    requireNonNull(filename, "filename");
     final File file = new File(parentDirectory + Util.FILE_SEPARATOR + filename + "." + format.toLowerCase());
     if (file.exists()) {
       throw new IllegalArgumentException("File '" + file + "' already exists");

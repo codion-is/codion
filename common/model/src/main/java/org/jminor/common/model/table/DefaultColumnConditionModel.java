@@ -20,8 +20,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.regex.Pattern;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default ColumnConditionModel model implementation.
@@ -100,7 +101,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard,
                                      final Format format, final String dateTimeFormatPattern,
                                      final AutomaticWildcard automaticWildcard, final boolean caseSensitive) {
-    this.columnIdentifier = Objects.requireNonNull(columnIdentifier, "columnIdentifier");
+    this.columnIdentifier = requireNonNull(columnIdentifier, "columnIdentifier");
     this.typeClass = typeClass;
     this.wildcard = wildcard;
     this.format = format;
@@ -207,7 +208,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   @Override
   public final void setConditionType(final Condition.Type conditionType) {
     checkLock();
-    conditionTypeValue.set(Objects.requireNonNull(conditionType, "conditionType"));
+    conditionTypeValue.set(requireNonNull(conditionType, "conditionType"));
   }
 
   /** {@inheritDoc} */
@@ -260,7 +261,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void setAutomaticWildcard(final AutomaticWildcard automaticWildcard) {
-    this.automaticWildcard = Objects.requireNonNull(automaticWildcard);
+    this.automaticWildcard = requireNonNull(automaticWildcard);
   }
 
   /** {@inheritDoc} */

@@ -21,10 +21,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.fill;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A TableColumnModel handling hidden columns
@@ -141,7 +141,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
   /** {@inheritDoc} */
   @Override
   public final TableColumn getTableColumn(final C identifier) {
-    Objects.requireNonNull(identifier, "identifier");
+    requireNonNull(identifier, "identifier");
     for (final TableColumn column : columns) {
       if (identifier.equals(column.getIdentifier())) {
         return column;
@@ -154,7 +154,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
   /** {@inheritDoc} */
   @Override
   public boolean containsColumn(final C identifier) {
-    Objects.requireNonNull(identifier, "identifier");
+    requireNonNull(identifier, "identifier");
 
     return columns.stream().anyMatch(column -> identifier.equals(column.getIdentifier()));
   }

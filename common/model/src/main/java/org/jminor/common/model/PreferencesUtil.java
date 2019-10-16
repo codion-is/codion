@@ -3,9 +3,10 @@
  */
 package org.jminor.common.model;
 
-import java.util.Objects;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for working with user preferences
@@ -24,7 +25,7 @@ public final class PreferencesUtil {
    * @return the user preference associated with the given key
    */
   public static String getUserPreference(final String key, final String defaultValue) {
-    return getUserPreferences().get(Objects.requireNonNull(key, KEY), defaultValue);
+    return getUserPreferences().get(requireNonNull(key, KEY), defaultValue);
   }
 
   /**
@@ -32,7 +33,7 @@ public final class PreferencesUtil {
    * @param value the preference value to associate with the given key
    */
   public static void putUserPreference(final String key, final String value) {
-    getUserPreferences().put(Objects.requireNonNull(key, KEY), value);
+    getUserPreferences().put(requireNonNull(key, KEY), value);
   }
 
   /**
@@ -40,7 +41,7 @@ public final class PreferencesUtil {
    * @param key the key to use to identify the preference to remove
    */
   public static void removeUserPreference(final String key) {
-    getUserPreferences().remove(Objects.requireNonNull(key, KEY));
+    getUserPreferences().remove(requireNonNull(key, KEY));
   }
 
   /**

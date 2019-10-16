@@ -6,7 +6,8 @@ package org.jminor.swing.common.ui.images;
 import javax.swing.ImageIcon;
 import java.awt.Toolkit;
 import java.net.URL;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class serving as resource owner for images.
@@ -45,7 +46,7 @@ public final class Images {
    */
   public static ImageIcon getImageIcon(final Class resourceOwnerClass, final String resourceName) {
     final URL url = resourceOwnerClass.getResource(resourceName);
-    Objects.requireNonNull(url, "Resource: " + resourceName + " for " + resourceOwnerClass);
+    requireNonNull(url, "Resource: " + resourceName + " for " + resourceOwnerClass);
 
     return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
   }

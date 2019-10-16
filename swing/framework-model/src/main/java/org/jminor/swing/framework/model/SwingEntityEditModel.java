@@ -18,7 +18,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Swing implementation of {@link EntityEditModel}.
@@ -100,7 +101,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @see #createForeignKeyComboBoxModel(Property.ForeignKeyProperty)
    */
   public final EntityComboBoxModel getForeignKeyComboBoxModel(final String foreignKeyPropertyId) {
-    Objects.requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
+    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
     return getForeignKeyComboBoxModel(getDomain().getForeignKeyProperty(getEntityId(), foreignKeyPropertyId));
   }
 
@@ -111,7 +112,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @see #createForeignKeyComboBoxModel(Property.ForeignKeyProperty)
    */
   public final EntityComboBoxModel getForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Objects.requireNonNull(foreignKeyProperty, "foreignKyProperty");
+    requireNonNull(foreignKeyProperty, "foreignKyProperty");
     EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBoxModels.get(foreignKeyProperty.getPropertyId());
     if (comboBoxModel == null) {
       comboBoxModel = createForeignKeyComboBoxModel(foreignKeyProperty);
@@ -127,7 +128,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @return a {@link PropertyComboBoxModel} for the given property
    */
   public final PropertyComboBoxModel getComboBoxModel(final String propertyId) {
-    Objects.requireNonNull(propertyId, "propertyId");
+    requireNonNull(propertyId, "propertyId");
     PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) comboBoxModels.get(propertyId);
     if (comboBoxModel == null) {
       comboBoxModel = createComboBoxModel(getDomain().getColumnProperty(getEntityId(), propertyId));
@@ -160,7 +161,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @see Property#isNullable()
    */
   public EntityComboBoxModel createForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     final EntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(),
             getConnectionProvider());
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
@@ -179,7 +180,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @return a combo box model based on the given property
    */
   public PropertyComboBoxModel createComboBoxModel(final Property.ColumnProperty property) {
-    Objects.requireNonNull(property, "property");
+    requireNonNull(property, "property");
     final PropertyComboBoxModel model = new SwingPropertyComboBoxModel<>(getEntityId(),
             getConnectionProvider(), property, null);
     ((FilteredComboBoxModel) model).setNullValue(getValidator().isNullable(getEntity(), property) ?

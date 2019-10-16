@@ -17,7 +17,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for working with files
@@ -93,8 +94,8 @@ public final class FileUtil {
    * @throws IOException in case of an exception
    */
   public static void writeFile(final String contents, final File file, final boolean append) throws IOException {
-    Objects.requireNonNull(contents, "contents");
-    Objects.requireNonNull(file, "file");
+    requireNonNull(contents, "contents");
+    requireNonNull(file, "file");
     try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, append))) {
       writer.write(contents);
     }

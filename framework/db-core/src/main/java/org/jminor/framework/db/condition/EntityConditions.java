@@ -3,10 +3,7 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.common.Conjunction;
-import org.jminor.common.Util;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -19,11 +16,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Conjunction.AND;
+import static org.jminor.common.Conjunction.OR;
+import static org.jminor.common.Util.nullOrEmpty;
+import static org.jminor.common.db.condition.Condition.Type.LIKE;
+import static org.jminor.common.db.condition.Conditions.conditionSet;
 import static org.jminor.framework.domain.Entities.getValues;
 
 /**
@@ -44,7 +46,7 @@ public final class EntityConditions {
    * @param domain the domain model
    */
   public EntityConditions(final Domain domain) {
-    this.domain = Objects.requireNonNull(domain, "domain");
+    this.domain = requireNonNull(domain, "domain");
   }
 
   /**
@@ -53,7 +55,7 @@ public final class EntityConditions {
    * @return a select condition based on the given key
    */
   public EntitySelectCondition selectCondition(final Entity.Key key) {
-    return selectCondition(singletonList(Objects.requireNonNull(key, "key")));
+    return selectCondition(singletonList(requireNonNull(key, "key")));
   }
 
   /**
@@ -187,9 +189,9 @@ public final class EntityConditions {
   public Condition<Property.ColumnProperty> propertyCondition(final String entityId, final String propertyId,
                                                               final Condition.Type conditionType, final boolean caseSensitive,
                                                               final Object value) {
-    Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
-    Objects.requireNonNull(propertyId, "propertyId");
-    Objects.requireNonNull(conditionType, CONDITION_TYPE_PARAM);
+    requireNonNull(entityId, ENTITY_ID_PARAM);
+    requireNonNull(propertyId, "propertyId");
+    requireNonNull(conditionType, CONDITION_TYPE_PARAM);
     final Property property = domain.getProperty(entityId, propertyId);
     if (property instanceof Property.ForeignKeyProperty) {
       if (value instanceof Collection) {
@@ -313,8 +315,8 @@ public final class EntityConditions {
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final Condition.Type conditionType, final Collection values) {
-    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    Objects.requireNonNull(conditionType, CONDITION_TYPE_PARAM);
+    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    requireNonNull(conditionType, CONDITION_TYPE_PARAM);
     final List<Entity.Key> keys = getKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
       return createCompositeKeyCondition(foreignKeyProperty.getProperties(),
@@ -357,10 +359,10 @@ public final class EntityConditions {
   private Condition<Property.ColumnProperty> createKeyCondition(final List<Entity.Key> keys) {
     final Entity.Key firstKey = keys.get(0);
     if (firstKey.isCompositeKey()) {
-      return createCompositeKeyCondition(firstKey.getProperties(), firstKey.getProperties(), Condition.Type.LIKE, keys);
+      return createCompositeKeyCondition(firstKey.getProperties(), firstKey.getProperties(), LIKE, keys);
     }
 
-    return propertyCondition(firstKey.getFirstProperty(), Condition.Type.LIKE, getValues(keys));
+    return propertyCondition(firstKey.getFirstProperty(), LIKE, getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
@@ -380,7 +382,7 @@ public final class EntityConditions {
                                                                                      final List<Property.ColumnProperty> foreignProperties,
                                                                                      final Condition.Type conditionType,
                                                                                      final List<Entity.Key> keys) {
-    final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(Conjunction.OR);
+    final Condition.Set<Property.ColumnProperty> conditionSet = conditionSet(OR);
     for (int i = 0; i < keys.size(); i++) {
       conditionSet.add(createSingleCompositeCondition(properties, foreignProperties, conditionType, keys.get(i)));
     }
@@ -392,7 +394,7 @@ public final class EntityConditions {
                                                                                    final List<Property.ColumnProperty> foreignProperties,
                                                                                    final Condition.Type conditionType,
                                                                                    final Entity.Key entityKey) {
-    final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(Conjunction.AND);
+    final Condition.Set<Property.ColumnProperty> conditionSet = conditionSet(AND);
     for (int i = 0; i < properties.size(); i++) {
       conditionSet.add(new PropertyCondition(properties.get(i), conditionType,
               entityKey == null ? null : entityKey.get(foreignProperties.get(i))));
@@ -432,7 +434,7 @@ public final class EntityConditions {
   }
 
   private static void checkKeysParameter(final Collection<Entity.Key> keys) {
-    if (Util.nullOrEmpty(keys)) {
+    if (nullOrEmpty(keys)) {
       throw new IllegalArgumentException("Entity key condition requires at least one key");
     }
   }
@@ -463,7 +465,7 @@ public final class EntityConditions {
      * @see EntityKeyCondition
      */
     private DefaultEntityCondition(final String entityId, final Condition<Property.ColumnProperty> condition) {
-      this.entityId = Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
+      this.entityId = requireNonNull(entityId, ENTITY_ID_PARAM);
       this.condition = condition;
     }
 
@@ -541,7 +543,7 @@ public final class EntityConditions {
      * @see EntityKeyCondition
      */
     private DefaultEntitySelectCondition(final Domain domain, final String entityId, final Condition<Property.ColumnProperty> condition) {
-      this.domain = Objects.requireNonNull(domain);
+      this.domain = requireNonNull(domain);
       this.condition = new DefaultEntityCondition(entityId, condition);
       this.fetchCount = fetchCount;
     }
@@ -700,9 +702,9 @@ public final class EntityConditions {
     private List<Property.ColumnProperty> properties;
 
     private StringCondition(final String conditionString, final List values, final List<Property.ColumnProperty> properties) {
-      this.conditionString = Objects.requireNonNull(conditionString, "conditionString");
-      this.values = Objects.requireNonNull(values, "values");
-      this.properties = Objects.requireNonNull(properties, "properties");
+      this.conditionString = requireNonNull(conditionString, "conditionString");
+      this.values = requireNonNull(values, "values");
+      this.properties = requireNonNull(properties, "properties");
     }
 
     @Override
@@ -792,8 +794,8 @@ public final class EntityConditions {
      * @param value the value, can be a Collection
      */
     private PropertyCondition(final Property.ColumnProperty property, final Type conditionType, final Object value) {
-      Objects.requireNonNull(property, "property");
-      Objects.requireNonNull(conditionType, CONDITION_TYPE_PARAM);
+      requireNonNull(property, "property");
+      requireNonNull(conditionType, CONDITION_TYPE_PARAM);
       this.property = property;
       this.conditionType = conditionType;
       this.isNullCondition = value == null;
@@ -847,7 +849,7 @@ public final class EntityConditions {
     private String getConditionString() {
       final String columnIdentifier = initializeColumnIdentifier(property.isString());
       if (isNullCondition) {
-        return columnIdentifier + (conditionType == Type.LIKE ? " is null" : " is not null");
+        return columnIdentifier + (conditionType == LIKE ? " is null" : " is not null");
       }
 
       final String valuePlaceholder = getValuePlaceholder();

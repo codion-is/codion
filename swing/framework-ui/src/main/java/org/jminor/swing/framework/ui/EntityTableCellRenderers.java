@@ -17,6 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Provides TableCellRenderer implementations for EntityTablePanels
  */
@@ -66,7 +68,7 @@ public final class EntityTableCellRenderers {
   }
 
   private static Color shade(final Color color, final int amount) {
-    Objects.requireNonNull(color, "color");
+    requireNonNull(color, "color");
     int r = color.getRed();
     int g = color.getGreen();
     int b = color.getBlue();
@@ -123,8 +125,8 @@ public final class EntityTableCellRenderers {
      */
     public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property, final Format format,
                                           final DateTimeFormatter dateTimeFormatter, final int horizontalAlignment) {
-      this.tableModel = Objects.requireNonNull(tableModel, "tableModel");
-      this.property = Objects.requireNonNull(property, "property");
+      this.tableModel = requireNonNull(tableModel, "tableModel");
+      this.property = requireNonNull(property, "property");
       this.format = format == null ? property.getFormat() : format;
       this.dateTimeFormatter = dateTimeFormatter;
       setHorizontalAlignment(horizontalAlignment);

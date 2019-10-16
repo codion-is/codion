@@ -3,7 +3,6 @@
  */
 package org.jminor.common;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -55,7 +54,7 @@ public final class TextUtilTest {
 
   @Test
   public void createRandomStringMinLengthExceedsMaxLength() {
-    Assertions.assertThrows(IllegalArgumentException.class, () -> TextUtil.createRandomString(3, 2));
+    assertThrows(IllegalArgumentException.class, () -> TextUtil.createRandomString(3, 2));
   }
 
   @Test

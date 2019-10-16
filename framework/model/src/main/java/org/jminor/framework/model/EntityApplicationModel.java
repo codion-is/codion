@@ -7,12 +7,13 @@ import org.jminor.common.Configuration;
 import org.jminor.common.PropertyValue;
 import org.jminor.common.StateObserver;
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 
 import java.util.List;
+
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A central application model class.
@@ -61,7 +62,7 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    */
   static String getReportPath() {
     final String path = REPORT_PATH.get();
-    if (Util.nullOrEmpty(path)) {
+    if (nullOrEmpty(path)) {
       throw new IllegalArgumentException(REPORT_PATH + " property is not specified");
     }
 

@@ -8,8 +8,9 @@ import org.jminor.common.Version;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility methods for remote clients
@@ -70,9 +71,9 @@ public final class Clients {
     private DefaultConnectionRequest(final User user, final UUID clientId, final String clientTypeId,
                                      final Version clientVersion, final Version frameworkVersion,
                                      final Map<String, Object> parameters) {
-      this.user = Objects.requireNonNull(user, "user");
-      this.clientId = Objects.requireNonNull(clientId, "clientId");
-      this.clientTypeId = Objects.requireNonNull(clientTypeId, "clientTypeId");
+      this.user = requireNonNull(user, "user");
+      this.clientId = requireNonNull(clientId, "clientId");
+      this.clientTypeId = requireNonNull(clientTypeId, "clientTypeId");
       this.clientVersion = clientVersion;
       this.frameworkVersion = frameworkVersion;
       this.parameters = parameters;

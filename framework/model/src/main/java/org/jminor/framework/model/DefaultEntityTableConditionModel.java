@@ -13,7 +13,6 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
@@ -27,8 +26,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.db.condition.Conditions.conditionSet;
 
 /**
  * A default EntityTableConditionModel implementation
@@ -62,8 +63,8 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   public DefaultEntityTableConditionModel(final String entityId, final EntityConnectionProvider connectionProvider,
                                           final PropertyFilterModelProvider filterModelProvider,
                                           final PropertyConditionModelProvider conditionModelProvider) {
-    Objects.requireNonNull(entityId, "entityId");
-    Objects.requireNonNull(connectionProvider, "connectionProvider");
+    requireNonNull(entityId, "entityId");
+    requireNonNull(connectionProvider, "connectionProvider");
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
     this.entityConditions = connectionProvider.getConditions();
@@ -219,7 +220,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   /** {@inheritDoc} */
   @Override
   public final Condition<Property.ColumnProperty> getCondition() {
-    final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(conjunction);
+    final Condition.Set<Property.ColumnProperty> conditionSet = conditionSet(conjunction);
     for (final PropertyConditionModel<? extends Property> conditionModel : propertyConditionModels.values()) {
       if (conditionModel.isEnabled()) {
         conditionSet.add(conditionModel.getCondition());

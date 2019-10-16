@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.valuemap;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
@@ -12,6 +11,8 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
+
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A factory class for adding validators to components.
@@ -178,7 +179,7 @@ public final class ValueLinkValidators {
       getComponent().setBackground(validationMessage == null ?
               (enabled ? VALID_ENABLED_BACKGROUND_COLOR : VALID_DISABLED_BACKGROUND_COLOR) : invalidBackgroundColor);
       getComponent().setToolTipText(validationMessage == null ? getDefaultToolTip() :
-              (!Util.nullOrEmpty(getDefaultToolTip()) ? getDefaultToolTip() + ": " : "") + validationMessage);
+              (!nullOrEmpty(getDefaultToolTip()) ? getDefaultToolTip() + ": " : "") + validationMessage);
     }
   }
 
@@ -215,7 +216,7 @@ public final class ValueLinkValidators {
         tooltip = defaultToolTip;
       }
       else {
-        if (Util.nullOrEmpty(defaultToolTip)) {
+        if (nullOrEmpty(defaultToolTip)) {
           tooltip = validationMessage;
         }
         else {

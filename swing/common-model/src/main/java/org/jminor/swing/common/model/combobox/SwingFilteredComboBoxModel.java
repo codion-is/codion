@@ -24,6 +24,8 @@ import java.util.ListIterator;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A default {@link FilteredComboBoxModel} implementation.
  * @param <T> the type of values in this combo box model
@@ -339,14 +341,14 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   /** {@inheritDoc} */
   @Override
   public final void addListDataListener(final ListDataListener listener) {
-    Objects.requireNonNull(listener, "listener");
+    requireNonNull(listener, "listener");
     listDataListeners.add(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeListDataListener(final ListDataListener listener) {
-    Objects.requireNonNull(listener, "listener");
+    requireNonNull(listener, "listener");
     listDataListeners.remove(listener);
   }
 

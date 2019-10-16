@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default Swing based {@link EntityModelProvider} implementation.
@@ -56,7 +57,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelProvider setModelClass(final Class<? extends SwingEntityModel> modelClass) {
-    Objects.requireNonNull(modelClass, "modelClass");
+    requireNonNull(modelClass, "modelClass");
     this.modelClass = modelClass;
     return this;
   }
@@ -64,7 +65,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelProvider setEditModelClass(final Class<? extends SwingEntityEditModel> editModelClass) {
-    Objects.requireNonNull(editModelClass, "editModelClass");
+    requireNonNull(editModelClass, "editModelClass");
     this.editModelClass = editModelClass;
     return this;
   }
@@ -72,7 +73,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelProvider setTableModelClass(final Class<? extends SwingEntityTableModel> tableModelClass) {
-    Objects.requireNonNull(tableModelClass, "tableModelClass");
+    requireNonNull(tableModelClass, "tableModelClass");
     this.tableModelClass = tableModelClass;
     return this;
   }

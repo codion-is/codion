@@ -29,11 +29,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A TableModel implementation that supports filtering, searching and sorting.
@@ -107,7 +107,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   public AbstractFilteredTableModel(final TableSortModel<R, C, TableColumn> sortModel,
                                     final Collection<? extends ColumnConditionModel<C>> columnFilterModels) {
-    this.sortModel = Objects.requireNonNull(sortModel, "sortModel");
+    this.sortModel = requireNonNull(sortModel, "sortModel");
     this.columnModel = new SwingFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
     this.selectionModel = new SwingTableSelectionModel<>(this);
     this.filterCondition = new DefaultFilterCondition<>(this.columnModel.getColumnFilterModels());

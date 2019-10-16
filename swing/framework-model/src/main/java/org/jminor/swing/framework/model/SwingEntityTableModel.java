@@ -45,12 +45,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -156,7 +156,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   public SwingEntityTableModel(final String entityId, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Property, TableColumn> sortModel,
                                final EntityTableConditionModel conditionModel) {
-    super(sortModel, Objects.requireNonNull(conditionModel, "conditionModel").getPropertyFilterModels());
+    super(sortModel, requireNonNull(conditionModel, "conditionModel").getPropertyFilterModels());
     if (!conditionModel.getEntityId().equals(entityId)) {
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityId()
               + ", tableModel: " + entityId);
@@ -184,7 +184,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void setEditModel(final SwingEntityEditModel editModel) {
-    Objects.requireNonNull(editModel, "editModel");
+    requireNonNull(editModel, "editModel");
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set for table model: " + this);
     }
@@ -230,7 +230,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final SwingEntityTableModel setInsertAction(final InsertAction insertAction) {
-    Objects.requireNonNull(insertAction, "insertAction");
+    requireNonNull(insertAction, "insertAction");
     this.insertAction = insertAction;
     return this;
   }
@@ -429,7 +429,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
-    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
@@ -494,7 +494,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
-    Objects.requireNonNull(entities, "entities");
+    requireNonNull(entities, "entities");
     if (!isUpdateAllowed()) {
       throw new IllegalStateException("Updating is not allowed via this table model");
     }
@@ -622,8 +622,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @throws NullPointerException in case entity or property is null
    */
   protected Object getValue(final Entity entity, final Property property) {
-    Objects.requireNonNull(entity, "entity");
-    Objects.requireNonNull(property, "property");
+    requireNonNull(entity, "entity");
+    requireNonNull(property, "property");
     if (property instanceof Property.ValueListProperty || property instanceof Property.ForeignKeyProperty) {
       return entity.getAsString(property);
     }

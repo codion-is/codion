@@ -37,6 +37,7 @@ import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -138,7 +139,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider, final Entity.Validator validator) {
     super(connectionProvider.getDomain().entity(entityId), validator);
     this.entityId = entityId;
-    this.connectionProvider = Objects.requireNonNull(connectionProvider, "connectionProvider");
+    this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     setReadOnly(connectionProvider.getDomain().isReadOnly(entityId));
     bindEventsInternal();
   }
@@ -438,7 +439,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
-    Objects.requireNonNull(entities, ENTITIES);
+    requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return emptyList();
     }
@@ -458,7 +459,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException {
-    Objects.requireNonNull(entities, ENTITIES);
+    requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return emptyList();
     }
@@ -496,7 +497,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final List<Entity> delete(final List<Entity> entities) throws DatabaseException {
-    Objects.requireNonNull(entities, ENTITIES);
+    requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return emptyList();
     }
@@ -569,14 +570,14 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyId) {
-    Objects.requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
+    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
     return getForeignKeyLookupModel(getDomain().getForeignKeyProperty(entityId, foreignKeyPropertyId));
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     return entityLookupModels.computeIfAbsent(foreignKeyProperty, fk -> createForeignKeyLookupModel(foreignKeyProperty));
   }
 

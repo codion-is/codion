@@ -24,11 +24,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
@@ -99,8 +99,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * @param connectionProvider a EntityConnectionProvider instance
    */
   public SwingEntityComboBoxModel(final String entityId, final EntityConnectionProvider connectionProvider) {
-    Objects.requireNonNull(entityId, "entityId");
-    Objects.requireNonNull(connectionProvider, "connectionProvider");
+    requireNonNull(entityId, "entityId");
+    requireNonNull(connectionProvider, "connectionProvider");
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
     this.domain = connectionProvider.getDomain();
@@ -161,7 +161,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /** {@inheritDoc} */
   @Override
   public final void setSelectedEntityByKey(final Entity.Key key) {
-    Objects.requireNonNull(key, "key");
+    requireNonNull(key, "key");
     final int indexOfKey = getIndexOfKey(key);
     if (indexOfKey >= 0) {
       setSelectedItem(getElementAt(indexOfKey));

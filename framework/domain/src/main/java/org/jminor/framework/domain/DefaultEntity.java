@@ -17,11 +17,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.util.Collections.singletonMap;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
@@ -73,7 +75,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param key the primary key
    */
   DefaultEntity(final Domain domain, final Key key) {
-    this(domain, Objects.requireNonNull(key, "key").getEntityId(), createValueMap(key));
+    this(domain, requireNonNull(key, "key").getEntityId(), createValueMap(key));
     this.key = key;
   }
 
@@ -96,7 +98,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   DefaultEntity(final Domain domain, final String entityId, final Map<Property, Object> values,
                 final Map<Property, Object> originalValues) {
     super(values, originalValues);
-    this.domain = Objects.requireNonNull(domain, "domain");
+    this.domain = requireNonNull(domain, "domain");
     this.definition = domain.getDefinition(entityId);
   }
 
@@ -131,7 +133,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public Property getProperty(final String propertyId) {
-    Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
+    requireNonNull(propertyId, PROPERTY_ID_PARAM);
     final Property property = definition.getPropertyMap().get(propertyId);
     if (property == null) {
       throw new IllegalArgumentException("Property " + propertyId + " not found in entity: " + definition.getEntityId());
@@ -183,7 +185,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public Object put(final Property property, final Object value, final boolean validateType) {
-    Objects.requireNonNull(property, PROPERTY_PARAM);
+    requireNonNull(property, PROPERTY_PARAM);
     validateValue(property, value);
     if (validateType) {
       validateType(property, value);
@@ -220,7 +222,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public Object get(final Property property) {
-    Objects.requireNonNull(property, PROPERTY_PARAM);
+    requireNonNull(property, PROPERTY_PARAM);
     if (property instanceof Property.DerivedProperty) {
       return getDerivedValue((Property.DerivedProperty) property);
     }
@@ -248,7 +250,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public boolean isNull(final Property property) {
-    Objects.requireNonNull(property, PROPERTY_PARAM);
+    requireNonNull(property, PROPERTY_PARAM);
     if (property instanceof Property.ForeignKeyProperty) {
       return isForeignKeyNull((Property.ForeignKeyProperty) property);
     }
@@ -448,7 +450,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public boolean valuesEqual(final Entity entity) {
-    Objects.requireNonNull(entity, "entity");
+    requireNonNull(entity, "entity");
 
     return definition.getColumnProperties().stream().allMatch(property -> Objects.equals(get(property), entity.get(property)));
   }
@@ -511,7 +513,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public Key getReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     if (!Objects.equals(getEntityId(), foreignKeyProperty.getEntityId())) {
       throw new IllegalArgumentException("Foreign key property " + foreignKeyProperty
               + " is not part of entity: " + getEntityId());
@@ -543,7 +545,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public boolean isForeignKeyNull(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
     if (properties.size() == 1) {
       return isNull(properties.get(0));
@@ -739,7 +741,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (sourcePropertyIds.size() == 1) {
       final String sourcePropertyId = sourcePropertyIds.get(0);
 
-      return Collections.singletonMap(sourcePropertyId, get(sourcePropertyId));
+      return singletonMap(sourcePropertyId, get(sourcePropertyId));
     }
     else {
       final Map<String, Object> values = new HashMap<>(sourcePropertyIds.size());

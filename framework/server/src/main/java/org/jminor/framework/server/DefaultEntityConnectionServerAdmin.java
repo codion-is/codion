@@ -39,9 +39,12 @@ import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import static org.jminor.common.db.pool.ConnectionPools.getConnectionPool;
 
 /**
  * Implements the EntityConnectionServerAdmin interface, providing admin access to a EntityConnectionServer instance.
@@ -70,8 +73,8 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
    * @throws NullPointerException in case {@code serverAdminPort} or {@code server} are not specified
    */
   public DefaultEntityConnectionServerAdmin(final DefaultEntityConnectionServer server, final Integer serverAdminPort) throws RemoteException {
-    super(Objects.requireNonNull(serverAdminPort),
-            Objects.requireNonNull(server).isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+    super(requireNonNull(serverAdminPort),
+            requireNonNull(server).isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
     initializeGarbageCollectionListener();
@@ -165,7 +168,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public Collection<String> getClientTypes() {
-    return getClients().stream().map(ConnectionRequest::getClientTypeId).collect(Collectors.toSet());
+    return getClients().stream().map(ConnectionRequest::getClientTypeId).collect(toSet());
   }
 
   /** {@inheritDoc} */
@@ -211,20 +214,20 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   @Override
   public void resetConnectionPoolStatistics(final User user) {
     LOG.info("resetConnectionPoolStatistics({})", user);
-    ConnectionPools.getConnectionPool(user).resetStatistics();
+    getConnectionPool(user).resetStatistics();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isCollectFineGrainedPoolStatistics(final User user) {
-    return ConnectionPools.getConnectionPool(user).isCollectFineGrainedStatistics();
+    return getConnectionPool(user).isCollectFineGrainedStatistics();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setCollectFineGrainedPoolStatistics(final User user, final boolean value) {
     LOG.info("setCollectFineGrainedPoolStatistics({}, {})", user, value);
-    ConnectionPools.getConnectionPool(user).setCollectFineGrainedStatistics(value);
+    getConnectionPool(user).setCollectFineGrainedStatistics(value);
   }
 
   /** {@inheritDoc} */
@@ -236,7 +239,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
-    return ConnectionPools.getConnectionPool(user).getStatistics(since);
+    return getConnectionPool(user).getStatistics(since);
   }
 
   /** {@inheritDoc} */
@@ -248,98 +251,98 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public List<User> getConnectionPools() {
-    return ConnectionPools.getConnectionPools().stream().map(ConnectionPool::getUser).collect(Collectors.toList());
+    return ConnectionPools.getConnectionPools().stream().map(ConnectionPool::getUser).collect(toList());
   }
 
   /** {@inheritDoc} */
   @Override
   public int getConnectionPoolCleanupInterval(final User user) {
-    return ConnectionPools.getConnectionPool(user).getCleanupInterval();
+    return getConnectionPool(user).getCleanupInterval();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) {
     LOG.info("setConnectionPoolCleanupInterval({}, {})", user, poolCleanupInterval);
-    ConnectionPools.getConnectionPool(user).setCleanupInterval(poolCleanupInterval);
+    getConnectionPool(user).setCleanupInterval(poolCleanupInterval);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getMaximumConnectionPoolSize(final User user) {
-    return ConnectionPools.getConnectionPool(user).getMaximumPoolSize();
+    return getConnectionPool(user).getMaximumPoolSize();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMaximumConnectionPoolSize(final User user, final int value) {
     LOG.info("setMaximumConnectionPoolSize({}, {})", user, value);
-    ConnectionPools.getConnectionPool(user).setMaximumPoolSize(value);
+    getConnectionPool(user).setMaximumPoolSize(value);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getMinimumConnectionPoolSize(final User user) {
-    return ConnectionPools.getConnectionPool(user).getMinimumPoolSize();
+    return getConnectionPool(user).getMinimumPoolSize();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMinimumConnectionPoolSize(final User user, final int value) {
     LOG.info("setMinimumConnectionPoolSize({}, {})", user, value);
-    ConnectionPools.getConnectionPool(user).setMinimumPoolSize(value);
+    getConnectionPool(user).setMinimumPoolSize(value);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getPoolConnectionThreshold(final User user) {
-    return ConnectionPools.getConnectionPool(user).getNewConnectionThreshold();
+    return getConnectionPool(user).getNewConnectionThreshold();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPoolConnectionThreshold(final User user, final int value) {
     LOG.info("setPoolConnectionThreshold({}, {})", user, value);
-    ConnectionPools.getConnectionPool(user).setNewConnectionThreshold(value);
+    getConnectionPool(user).setNewConnectionThreshold(value);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getPooledConnectionTimeout(final User user) {
-    return ConnectionPools.getConnectionPool(user).getConnectionTimeout();
+    return getConnectionPool(user).getConnectionTimeout();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPooledConnectionTimeout(final User user, final int timeout) {
     LOG.info("setPooledConnectionTimeout({}, {})", user, timeout);
-    ConnectionPools.getConnectionPool(user).setConnectionTimeout(timeout);
+    getConnectionPool(user).setConnectionTimeout(timeout);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getMaximumPoolRetryWaitPeriod(final User user) {
-    return ConnectionPools.getConnectionPool(user).getMaximumRetryWaitPeriod();
+    return getConnectionPool(user).getMaximumRetryWaitPeriod();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMaximumPoolRetryWaitPeriod(final User user, final int value) {
     LOG.info("setMaximumPoolRetryWaitPeriod({}, {})", user, value);
-    ConnectionPools.getConnectionPool(user).setMaximumRetryWaitPeriod(value);
+    getConnectionPool(user).setMaximumRetryWaitPeriod(value);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getMaximumPoolCheckOutTime(final User user) {
-    return ConnectionPools.getConnectionPool(user).getMaximumCheckOutTime();
+    return getConnectionPool(user).getMaximumCheckOutTime();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMaximumPoolCheckOutTime(final User user, final int value) {
     LOG.info("setMaximumPoolCheckOutTime({}, {})", user, value);
-    ConnectionPools.getConnectionPool(user).setMaximumCheckOutTime(value);
+    getConnectionPool(user).setMaximumCheckOutTime(value);
   }
 
   /** {@inheritDoc} */

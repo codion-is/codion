@@ -8,7 +8,6 @@ import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.States;
-import org.jminor.common.Util;
 import org.jminor.common.Values;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.table.SortingDirective;
@@ -56,10 +55,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A UI component based on the EntityLookupModel.
@@ -113,7 +113,7 @@ public final class EntityLookupField extends JTextField {
    * @param lookupOnKeyRelease if true then lookup is performed on key release, otherwise it is performed on keyPressed.
    */
   public EntityLookupField(final EntityLookupModel lookupModel, final boolean lookupOnKeyRelease) {
-    Objects.requireNonNull(lookupModel, "lookupModel");
+    requireNonNull(lookupModel, "lookupModel");
     this.model = lookupModel;
     this.settingsPanel = new SettingsPanel(lookupModel);
     this.selectionProvider = new ListSelectionProvider(model);
@@ -146,7 +146,7 @@ public final class EntityLookupField extends JTextField {
    * @throws NullPointerException in case {@code selectionProvier} is null
    */
   public void setSelectionProvider(final SelectionProvider selectionProvider) {
-    this.selectionProvider = Objects.requireNonNull(selectionProvider);
+    this.selectionProvider = requireNonNull(selectionProvider);
   }
 
   /**
@@ -231,7 +231,7 @@ public final class EntityLookupField extends JTextField {
   private void performLookup(final boolean promptUser) {
     try {
       performingLookup = true;
-      if (Util.nullOrEmpty(model.getSearchString())) {
+      if (nullOrEmpty(model.getSearchString())) {
         model.setSelectedEntities(null);
       }
       else {

@@ -79,6 +79,7 @@ import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory class for UI related things.
@@ -197,7 +198,7 @@ public final class FXUiUtil {
    * @return true if confirmed
    */
   public static boolean confirm(final String title, final String headerText, final String message) {
-    Objects.requireNonNull(message);
+    requireNonNull(message);
     final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.OK, ButtonType.CANCEL);
     if (title != null) {
       alert.setTitle(title);
@@ -650,8 +651,8 @@ public final class FXUiUtil {
    * @param stateObserver the state observer
    */
   public static void link(final BooleanProperty property, final StateObserver stateObserver) {
-    Objects.requireNonNull(property);
-    Objects.requireNonNull(stateObserver);
+    requireNonNull(property);
+    requireNonNull(stateObserver);
     property.setValue(stateObserver.get());
     stateObserver.addDataListener(property::setValue);
   }
@@ -888,8 +889,8 @@ public final class FXUiUtil {
    * @return the parent, or null if none is found
    */
   public static <T> T getParentOfType(final Node node, final Class<T> clazz) {
-    Objects.requireNonNull(node);
-    Objects.requireNonNull(clazz);
+    requireNonNull(node);
+    requireNonNull(clazz);
     Parent parent = node.getParent();
     while (parent != null && !parent.getClass().equals(clazz)) {
       parent = parent.getParent();

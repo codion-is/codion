@@ -10,9 +10,11 @@ import org.jminor.common.db.valuemap.ValueMap;
 import java.sql.Types;
 import java.text.Collator;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
+import static org.jminor.framework.domain.Property.AuditProperty.AuditAction.INSERT;
+import static org.jminor.framework.domain.Property.AuditProperty.AuditAction.UPDATE;
 
 /**
  * A Property factory class.
@@ -260,7 +262,7 @@ public final class Properties {
    * @return a new audit insert time property
    */
   public static Property.AuditTimeProperty auditInsertTimeProperty(final String propertyId, final String caption) {
-    return new DefaultProperty.DefaultAuditTimeProperty(propertyId, Property.AuditProperty.AuditAction.INSERT, caption);
+    return new DefaultProperty.DefaultAuditTimeProperty(propertyId, INSERT, caption);
   }
 
   /**
@@ -277,7 +279,7 @@ public final class Properties {
    * @return a new audit update time property
    */
   public static Property.AuditTimeProperty auditUpdateTimeProperty(final String propertyId, final String caption) {
-    return new DefaultProperty.DefaultAuditTimeProperty(propertyId, Property.AuditProperty.AuditAction.UPDATE, caption);
+    return new DefaultProperty.DefaultAuditTimeProperty(propertyId, UPDATE, caption);
   }
 
   /**
@@ -294,7 +296,7 @@ public final class Properties {
    * @return a new audit insert user property
    */
   public static Property.AuditUserProperty auditInsertUserProperty(final String propertyId, final String caption) {
-    return new DefaultProperty.DefaultAuditUserProperty(propertyId, Property.AuditProperty.AuditAction.INSERT, caption);
+    return new DefaultProperty.DefaultAuditUserProperty(propertyId, INSERT, caption);
   }
 
   /**
@@ -311,7 +313,7 @@ public final class Properties {
    * @return a new audit update user property
    */
   public static Property.AuditUserProperty auditUpdateUserProperty(final String propertyId, final String caption) {
-    return new DefaultProperty.DefaultAuditUserProperty(propertyId, Property.AuditProperty.AuditAction.UPDATE, caption);
+    return new DefaultProperty.DefaultAuditUserProperty(propertyId, UPDATE, caption);
   }
 
   /**
@@ -339,7 +341,7 @@ public final class Properties {
    * @return the sorted list
    */
   public static List<Property> sort(final List<Property> properties) {
-    Objects.requireNonNull(properties, "properties");
+    requireNonNull(properties, "properties");
     final Collator collator = Collator.getInstance();
     properties.sort((o1, o2) -> collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase()));
 

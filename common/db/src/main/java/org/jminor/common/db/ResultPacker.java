@@ -7,7 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A ResultPacker packs the contents of a ResultSet into a List.
@@ -27,7 +28,7 @@ public interface ResultPacker<T> {
    * @throws NullPointerException in case resultSet is null
    */
   default List<T> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-    Objects.requireNonNull(resultSet, "resultSet");
+    requireNonNull(resultSet, "resultSet");
     final List<T> result = fetchCount < 0 ? new ArrayList<>() : new ArrayList<>(fetchCount);
     int counter = 0;
     while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {

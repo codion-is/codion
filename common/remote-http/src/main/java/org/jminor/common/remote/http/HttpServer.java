@@ -5,7 +5,6 @@ package org.jminor.common.remote.http;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.PropertyValue;
-import org.jminor.common.Util;
 import org.jminor.common.remote.Server;
 
 import org.eclipse.jetty.server.Connector;
@@ -21,7 +20,8 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A simple Jetty based http file server
@@ -87,16 +87,16 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
    */
   public HttpServer(final Server connectionServer, final String documentRoot, final Integer port,
                     final Boolean useHttps) {
-    super(Objects.requireNonNull(port, "port"));
+    super(requireNonNull(port, "port"));
     this.port = port;
-    if (Objects.requireNonNull(useHttps, "useHttps")) {
+    if (requireNonNull(useHttps, "useHttps")) {
       setupSecureConnector();
     }
     LOG.info(getClass().getSimpleName() + " created on port: " + port);
     this.connectionServer = connectionServer;
     this.handlers = new HandlerList();
     setHandler(handlers);
-    if (!Util.nullOrEmpty(documentRoot)) {
+    if (!nullOrEmpty(documentRoot)) {
       LOG.info("HttpServer serving files from: " + documentRoot);
       final ResourceHandler fileHandler = new ResourceHandler();
       fileHandler.setResourceBase(documentRoot);
@@ -144,10 +144,10 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
     httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
     final String keystore = HTTP_SERVER_KEYSTORE_PATH.get();
-    Objects.requireNonNull(keystore, HTTP_SERVER_KEYSTORE_PATH.toString());
+    requireNonNull(keystore, HTTP_SERVER_KEYSTORE_PATH.toString());
 
     final String keystorePassword = HTTP_SERVER_KEYSTORE_PASSWORD.get();
-    Objects.requireNonNull(keystorePassword, HTTP_SERVER_KEYSTORE_PASSWORD.toString());
+    requireNonNull(keystorePassword, HTTP_SERVER_KEYSTORE_PASSWORD.toString());
 
     final SslContextFactory sslContextFactory = new SslContextFactory(keystore);
     sslContextFactory.setKeyStorePassword(keystorePassword);

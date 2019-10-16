@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.tools.ui;
 
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.Values;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.ui.LoginPanel;
@@ -25,6 +24,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A UI class based on the EntityGeneratorModel.
@@ -83,7 +84,7 @@ public class EntityGeneratorPanel extends JPanel {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         final String schemaName = JOptionPane.showInputDialog("Schema name");
-        if (Util.nullOrEmpty(schemaName)) {
+        if (nullOrEmpty(schemaName)) {
           return;
         }
 

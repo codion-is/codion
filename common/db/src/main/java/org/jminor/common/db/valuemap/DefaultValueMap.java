@@ -26,6 +26,8 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A default ValueMap implementation.
  * Note that this class is not thread safe.
@@ -87,7 +89,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public V put(final K key, final V value) {
-    Objects.requireNonNull(key, "key");
+    requireNonNull(key, "key");
     final boolean initialization = !values.containsKey(key);
     final V previousValue = values.put(key, value);
     if (!initialization && Objects.equals(previousValue, value)) {
@@ -449,7 +451,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
     /** {@inheritDoc} */
     @Override
     public void validate(final V valueMap) throws ValidationException {
-      Objects.requireNonNull(valueMap, "valueMap");
+      requireNonNull(valueMap, "valueMap");
       for (final K key : valueMap.keySet()) {
         validate(valueMap, key);
       }
@@ -458,7 +460,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
     /** {@inheritDoc} */
     @Override
     public void validate(final V valueMap, final K key) throws ValidationException {
-      Objects.requireNonNull(valueMap, "valueMap");
+      requireNonNull(valueMap, "valueMap");
       if (valueMap.isNull(key) && !isNullable(valueMap, key)) {
         throw new NullValidationException(key, MESSAGES.getString("value_missing") + ": " + key);
       }

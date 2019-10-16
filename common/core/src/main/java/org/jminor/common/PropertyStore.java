@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Provides configuration values which sync with a central configuration store as well as system properties,
@@ -76,7 +77,7 @@ public final class PropertyStore {
    * @throws IOException in case the given properties file exists but reading it failed
    */
   public PropertyStore(final String propertiesFile) throws IOException {
-    this(readFromFile(Objects.requireNonNull(propertiesFile)));
+    this(readFromFile(requireNonNull(propertiesFile)));
   }
 
   /**
@@ -84,7 +85,7 @@ public final class PropertyStore {
    * @param properties the initial properties
    */
   public PropertyStore(final Properties properties) {
-    this.properties.putAll(Objects.requireNonNull(properties, "properties"));
+    this.properties.putAll(requireNonNull(properties, "properties"));
   }
 
   /**
@@ -148,7 +149,7 @@ public final class PropertyStore {
    */
   public <V> PropertyValue<V> propertyValue(final String property, final V defaultValue,
                                             final Function<String, V> decoder, final Function<V, String> encoder) {
-    if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
+    if (propertyValues.containsKey(requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
     final DefaultPropertyValue<V> value = new DefaultPropertyValue<>(property, defaultValue, decoder, encoder);
@@ -170,7 +171,7 @@ public final class PropertyStore {
    */
   public <V> PropertyValue<List<V>> propertyListValue(final String property, final List<V> defaultValue,
                                                       final Function<String, V> decoder, final Function<V, String> encoder) {
-    if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
+    if (propertyValues.containsKey(requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
 
@@ -263,7 +264,7 @@ public final class PropertyStore {
    * @throws IOException in case writing the file was not successful
    */
   public void writeToFile(final String propertiesFile) throws IOException {
-    final File configurationFile = new File(Objects.requireNonNull(propertiesFile, "propertiesFile"));
+    final File configurationFile = new File(requireNonNull(propertiesFile, "propertiesFile"));
     if (!configurationFile.exists() && !configurationFile.createNewFile()) {
       throw new IOException("Unable to create configuration file");
     }
@@ -281,7 +282,7 @@ public final class PropertyStore {
    */
   public static Properties readFromFile(final String propertiesFile) throws IOException {
     final Properties propertiesFromFile = new Properties();
-    final File file = new File(Objects.requireNonNull(propertiesFile, "propertiesFile"));
+    final File file = new File(requireNonNull(propertiesFile, "propertiesFile"));
     if (file.exists()) {
       LOG.debug("Reading configuration from file: {}", propertiesFile);
       try (final InputStream input = new FileInputStream(file)) {
@@ -303,8 +304,8 @@ public final class PropertyStore {
     private DefaultPropertyValue(final String property, final T defaultValue,
                                  final Function<String, T> decoder, final Function<T, String> encoder) {
       this.property = property;
-      Objects.requireNonNull(decoder, "decoder");
-      this.encoder = Objects.requireNonNull(encoder, "encoder");
+      requireNonNull(decoder, "decoder");
+      this.encoder = requireNonNull(encoder, "encoder");
       final String initialValue = getInitialValue(property);
       set(initialValue == null ? defaultValue : decoder.apply(initialValue));
     }

@@ -3,7 +3,6 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
@@ -41,6 +40,8 @@ import javafx.util.Callback;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A {@link TableView} extension based on entities
@@ -310,7 +311,7 @@ public class EntityTableView extends TableView<Entity> {
   private void bindEvents() {
     listModel.getSortedList().comparatorProperty().bind(comparatorProperty());
     filterText.textProperty().addListener((observable, oldValue, newValue) -> {
-      if (Util.nullOrEmpty(newValue)) {
+      if (nullOrEmpty(newValue)) {
         listModel.setFilterCondition(null);
       }
       else {

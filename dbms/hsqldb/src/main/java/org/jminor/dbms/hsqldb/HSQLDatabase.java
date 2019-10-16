@@ -5,8 +5,9 @@ package org.jminor.dbms.hsqldb;
 
 import org.jminor.common.db.AbstractDatabase;
 
-import java.util.Objects;
 import java.util.Properties;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Database implementation based on the HSQL database.
@@ -31,7 +32,7 @@ public final class HSQLDatabase extends AbstractDatabase {
    * @param databaseName the path to the database files
    */
   public HSQLDatabase(final String databaseName) {
-    super(Type.HSQL, DRIVER_CLASS_NAME, Objects.requireNonNull(databaseName, "databaseName"), null, null, true);
+    super(Type.HSQL, DRIVER_CLASS_NAME, requireNonNull(databaseName, "databaseName"), null, null, true);
   }
 
   /**
@@ -41,8 +42,8 @@ public final class HSQLDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public HSQLDatabase(final String host, final Integer port, final String sid) {
-    super(Type.HSQL, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"), Objects.requireNonNull(port, "port"),
-            Objects.requireNonNull(sid, "sid"), false);
+    super(Type.HSQL, DRIVER_CLASS_NAME, requireNonNull(host, "host"), requireNonNull(port, "port"),
+            requireNonNull(sid, "sid"), false);
   }
 
   /** {@inheritDoc} */
@@ -54,7 +55,7 @@ public final class HSQLDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getSequenceQuery(final String sequenceName) {
-    return SEQUENCE_VALUE_QUERY + Objects.requireNonNull(sequenceName, "sequenceName");
+    return SEQUENCE_VALUE_QUERY + requireNonNull(sequenceName, "sequenceName");
   }
 
   /** {@inheritDoc} */

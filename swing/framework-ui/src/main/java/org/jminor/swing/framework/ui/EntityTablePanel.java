@@ -104,10 +104,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.
@@ -774,7 +774,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return a Control for viewing an image based on the selected entity in a EntityTablePanel
    */
   public final Control getViewImageControl(final String imagePathPropertyId) {
-    Objects.requireNonNull(imagePathPropertyId, "imagePathPropertyId");
+    requireNonNull(imagePathPropertyId, "imagePathPropertyId");
     return Controls.control(() -> viewImageForSelected(imagePathPropertyId), "View image",
             getTableModel().getSelectionModel().getSingleSelectionObserver());
   }
@@ -933,7 +933,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final Container dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle,
                                                   final Dimension preferredSize) {
-    Objects.requireNonNull(lookupModel, "lookupModel");
+    requireNonNull(lookupModel, "lookupModel");
     final Collection<Entity> selected = new ArrayList<>();
     final JDialog dialog = new JDialog(dialogOwner instanceof Window ? (Window) dialogOwner : UiUtil.getParentWindow(dialogOwner), dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
