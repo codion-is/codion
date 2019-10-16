@@ -36,7 +36,6 @@ public class DefaultEntityDefinitionTest {
     assertTrue(definition.getOrderBy().getOrderByProperties().get(0).isDescending());
     assertTrue(definition.isReadOnly());
     assertEquals("selectTableName", definition.getSelectTableName());
-    assertEquals("id, name", definition.getSelectColumnsString());
     assertEquals("name", definition.getGroupByClause());
     assertEquals(stringProvider, definition.getStringProvider());
     assertEquals(comparator, definition.getComparator());

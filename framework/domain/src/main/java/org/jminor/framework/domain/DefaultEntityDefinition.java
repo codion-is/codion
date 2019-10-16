@@ -155,7 +155,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final List<Property> visibleProperties;
   private final List<Property.ColumnProperty> columnProperties;
   private final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties;
-  private final transient String selectColumnsString;
   private final boolean hasDenormalizedProperties;
 
   /**
@@ -183,7 +182,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.visibleProperties = Collections.unmodifiableList(getVisibleProperties(this.propertyMap.values()));
     this.denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(this.propertyMap.values()));
     this.derivedProperties = initializeDerivedProperties(this.propertyMap.values());
-    this.selectColumnsString = initializeSelectColumnsString(columnProperties);
     this.groupByClause = initializeGroupByClause(columnProperties);
     this.hasDenormalizedProperties = !this.denormalizedProperties.isEmpty();
   }
@@ -475,12 +473,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public String getSelectColumnsString() {
-    return selectColumnsString;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public List<Property> getVisibleProperties() {
     return visibleProperties;
   }
@@ -629,26 +621,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   private static List<Property> getVisibleProperties(final Collection<Property> properties) {
     return properties.stream().filter(property -> !property.isHidden()).collect(Collectors.toList());
-  }
-
-  private static String initializeSelectColumnsString(final List<Property.ColumnProperty> columnProperties) {
-    final StringBuilder stringBuilder = new StringBuilder();
-    int i = 0;
-    for (final Property.ColumnProperty property : columnProperties) {
-      if (property instanceof Property.SubqueryProperty) {
-        stringBuilder.append("(").append(((Property.SubqueryProperty) property).getSubQuery()).append(
-                ") as ").append(property.getColumnName());
-      }
-      else {
-        stringBuilder.append(property.getColumnName());
-      }
-
-      if (i++ < columnProperties.size() - 1) {
-        stringBuilder.append(", ");
-      }
-    }
-
-    return stringBuilder.toString();
   }
 
   /**

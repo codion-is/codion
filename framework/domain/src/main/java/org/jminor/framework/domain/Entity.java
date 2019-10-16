@@ -892,12 +892,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     Map<String, Property.ColumnProperty> getPrimaryKeyPropertyMap();
 
     /**
-     * Retrieves the column list to use when constructing a select query for this entity type
-     * @return the query column list, i.e. "col1, col2, col3,..."
-     */
-    String getSelectColumnsString();
-
-    /**
      * @return a list containing the visible properties for this entity type
      */
     List<Property> getVisibleProperties();
