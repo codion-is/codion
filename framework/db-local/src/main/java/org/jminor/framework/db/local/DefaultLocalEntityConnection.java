@@ -860,7 +860,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             final EntitySelectCondition referencedEntitiesCondition = entityConditions.selectCondition(referencedKeys);
             referencedEntitiesCondition.setForeignKeyFetchDepthLimit(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCondition,
-                    currentForeignKeyFetchDepth + 1, domain.getColumnProperties(foreignKeyProperty.getForeignEntityId()));
+                    currentForeignKeyFetchDepth + 1,
+                    domain.getColumnProperties(foreignKeyProperty.getForeignEntityId()));
             final Map<Entity.Key, Entity> mappedReferencedEntities = Entities.mapToKey(referencedEntities);
             for (int j = 0; j < entities.size(); j++) {
               final Entity entity = entities.get(j);
@@ -901,8 +902,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       statement = prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, condition);
 
-      return new EntityResultIterator(statement, resultSet, new EntityResultPacker(domain,
-              condition.getEntityId(), columnProperties));
+      return new EntityResultIterator(statement, resultSet, new EntityResultPacker(
+              condition.getEntityId(), columnProperties,
+              domain.getTransientProperties(condition.getEntityId())));
     }
     catch (final SQLException e) {
       Databases.closeSilently(resultSet);
@@ -1119,10 +1121,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private String getSelectSQL(final EntityCondition condition, final Database database,
                               final List<Property.ColumnProperty> columnProperties) {
     final String entityId = condition.getEntityId();
+    final boolean isForUpdate = condition instanceof EntitySelectCondition &&
+            ((EntitySelectCondition) condition).isForUpdate();
     boolean containsWhereClause = false;
     String selectSQL = domain.getSelectQuery(entityId);
     if (selectSQL == null) {
-      selectSQL = createSelectSQL(domain.getSelectTableName(entityId),
+      selectSQL = createSelectSQL(isForUpdate ?
+                      domain.getTableName(entityId) : domain.getSelectTableName(entityId),
               initializeSelectColumnsString(columnProperties), null, null);
     }
     else {
@@ -1134,7 +1139,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (whereClause.length() > 0) {
       queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX).append(whereClause);
     }
-    if (condition instanceof EntitySelectCondition && ((EntitySelectCondition) condition).isForUpdate()) {
+    if (isForUpdate) {
       addForUpdate(database, queryBuilder);
     }
     else {
@@ -1146,8 +1151,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static String initializeSelectColumnsString(final List<Property.ColumnProperty> columnProperties) {
     final StringBuilder stringBuilder = new StringBuilder();
-    int i = 0;
-    for (final Property.ColumnProperty property : columnProperties) {
+    for (int i = 0; i < columnProperties.size(); i++) {
+      final Property.ColumnProperty property = columnProperties.get(i);
       if (property instanceof Property.SubqueryProperty) {
         stringBuilder.append("(").append(((Property.SubqueryProperty) property).getSubQuery()).append(
                 ") as ").append(property.getColumnName());
@@ -1156,7 +1161,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         stringBuilder.append(property.getColumnName());
       }
 
-      if (i++ < columnProperties.size() - 1) {
+      if (i < columnProperties.size() - 1) {
         stringBuilder.append(", ");
       }
     }
@@ -1467,37 +1472,31 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * Handles packing Entity query results.
    * Loads all database property values except for foreign key properties (Property.ForeignKeyProperty).
    */
-  private static final class EntityResultPacker implements ResultPacker<Entity> {
+  private final class EntityResultPacker implements ResultPacker<Entity> {
 
-    private final Domain domain;
     private final String entityId;
     private final List<Property.ColumnProperty> columnProperties;
     private final List<Property.TransientProperty> transientProperties;
-    private final boolean hasTransientProperties;
-    private final int propertyCount;
 
     /**
      * Instantiates a new EntityResultPacker.
      */
-    private EntityResultPacker(final Domain domain, final String entityId,
-                               final List<Property.ColumnProperty> columnProperties) {
-      this.domain = domain;
+    private EntityResultPacker(final String entityId,
+                               final List<Property.ColumnProperty> columnProperties,
+                               final List<Property.TransientProperty> transientProperties) {
       this.entityId = entityId;
       this.columnProperties = columnProperties;
-      this.transientProperties = domain.getTransientProperties(entityId);
-      this.hasTransientProperties = !this.transientProperties.isEmpty();
-      this.propertyCount = domain.getProperties(entityId).size();
+      this.transientProperties = transientProperties;
     }
 
     @Override
     public Entity fetch(final ResultSet resultSet) throws SQLException {
-      final Map<Property, Object> values = new HashMap<>(propertyCount);
-      if (hasTransientProperties) {
-        for (int i = 0; i < transientProperties.size(); i++) {
-          final Property.TransientProperty transientProperty = transientProperties.get(i);
-          if (!(transientProperty instanceof Property.DerivedProperty)) {
-            values.put(transientProperty, null);
-          }
+      final Map<Property, Object> values = new HashMap<>(
+              columnProperties.size() + transientProperties.size());
+      for (int i = 0; i < transientProperties.size(); i++) {
+        final Property.TransientProperty transientProperty = transientProperties.get(i);
+        if (!(transientProperty instanceof Property.DerivedProperty)) {
+          values.put(transientProperty, null);
         }
       }
       for (int i = 0; i < columnProperties.size(); i++) {

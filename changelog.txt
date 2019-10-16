@@ -5180,3 +5180,6 @@
   ValueMap, Entity, Entity.Key, ValueMapEditModel and EntityEditModel, isValueNull() renamed to isNull(), isNotNull() added
 0.12.4
   Query columns now dynamic, ColumnProperty.selectIndex and Entity.Definition.selectColumnsString removed
+  DefaultLocalEntityConnection.lockAndCheckForUpdate() uses only writable properties
+  Dynamic query column improvements
+  Select for update now uses the tableName instead of the selectTableName, since that could possibly be a view not supporting select for update (looking at you postgresql)
