@@ -10,4 +10,6 @@ module org.jminor.framework.demos.chinook {
           to org.jminor.swing.framework.ui;
   exports org.jminor.framework.demos.chinook.domain.impl
           to org.jminor.framework.db.local;
+  exports org.jminor.framework.demos.chinook.tutorial
+          to org.jminor.framework.db.local;
 }
