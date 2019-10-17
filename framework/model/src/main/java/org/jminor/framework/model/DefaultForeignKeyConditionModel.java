@@ -5,7 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -81,10 +81,10 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   public final Condition getCondition() {
     final Object upperBound = getUpperBound();
     if (upperBound instanceof Collection) {
-      return EntityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), (Collection) upperBound);
+      return Conditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), (Collection) upperBound);
     }
 
-    return EntityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), singletonList(upperBound));
+    return Conditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), singletonList(upperBound));
   }
 
   /** {@inheritDoc} */

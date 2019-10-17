@@ -6,6 +6,7 @@ package org.jminor.framework.db.condition;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.io.IOException;
@@ -20,7 +21,10 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Conjunction.AND;
+import static org.jminor.common.Conjunction.OR;
 import static org.jminor.common.db.ConditionType.LIKE;
+import static org.jminor.framework.domain.Entities.getValues;
 
 /**
  * A factory class for {@link Condition} instances
@@ -147,6 +151,162 @@ public final class Conditions {
   public static Condition stringCondition(final String conditionString, final List values,
                                           final List<Property.ColumnProperty> properties) {
     return new StringCondition(conditionString, values, properties);
+  }
+
+  /**
+   * Creates a {@link Condition} for the given property, with the operator specified by the {@code conditionType}
+   * and {@code value}. Note that {@code value} may be a single value, a Collection of values or null.
+   * @param property the property
+   * @param conditionType the search type
+   * @param value the condition value, can be a Collection of values
+   * @return a property condition based on the given value
+   */
+  public static Condition propertyCondition(final Property.ColumnProperty property,
+                                            final ConditionType conditionType, final Object value) {
+    return propertyCondition(property, conditionType, true, value);
+  }
+
+  /**
+   * Creates a {@link Condition} for the given property, with the operator specified by the {@code conditionType}
+   * and {@code value}. Note that {@code value} may be a single value, a Collection of values or null.
+   * @param property the property
+   * @param conditionType the search type
+   * @param caseSensitive true if the condition should be case sensitive, only applicable to string properties
+   * @param value the condition value, can be a Collection of values
+   * @return a property condition based on the given value
+   */
+  public static Condition propertyCondition(final Property.ColumnProperty property,
+                                            final ConditionType conditionType, final boolean caseSensitive,
+                                            final Object value) {
+    return new DefaultCondition(property, conditionType, value).setCaseSensitive(caseSensitive);
+  }
+
+  /**
+   * Creates a {@link Condition} for the given foreign key property, with the operator specified by the {@code conditionType}
+   * and {@code value}.
+   * @param foreignKeyProperty the foreign key property
+   * @param conditionType the search type
+   * @param value the condition value, may be null
+   * @return a foreign key condition based on the given value
+   */
+  public static Condition foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
+                                              final ConditionType conditionType, final Entity value) {
+    return foreignKeyCondition(foreignKeyProperty, conditionType, singletonList(value));
+  }
+
+  /**
+   * Creates a {@link Condition} for the given foreign key property, with the operator specified by the {@code conditionType}
+   * and {@code value}.
+   * @param foreignKeyProperty the foreign key property
+   * @param conditionType the search type
+   * @param value the condition value
+   * @return a foreign key condition based on the given value
+   */
+  public static Condition foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
+                                              final ConditionType conditionType, final Entity.Key value) {
+    return foreignKeyCondition(foreignKeyProperty, conditionType, singletonList(value));
+  }
+
+  /**
+   * Creates a {@link Condition} for the given foreign key property, with the operator specified by
+   * the {@code conditionType} and {@code values}.
+   * {@code values} may contain either instances of {@link Entity} or {@link Entity.Key}
+   * @param foreignKeyProperty the foreign key property
+   * @param conditionType the search type
+   * @param values the condition values
+   * @return a foreign key condition based on the given values
+   */
+  public static Condition foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
+                                              final ConditionType conditionType, final Collection values) {
+    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    requireNonNull(conditionType, CONDITION_TYPE_PARAM);
+    final List<Entity.Key> keys = getKeys(values);
+    if (foreignKeyProperty.isCompositeKey()) {
+      return createCompositeKeyCondition(foreignKeyProperty.getProperties(), conditionType, keys);
+    }
+
+    if (keys.size() == 1) {
+      final Entity.Key entityKey = keys.get(0);
+      return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType,
+              entityKey == null ? null : entityKey.getFirstValue());
+    }
+
+    return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType, getValues(keys));
+  }
+
+  /** Assumes {@code keys} is not empty. */
+  static Condition createCompositeKeyCondition(final List<Property.ColumnProperty> properties,
+                                               final ConditionType conditionType,
+                                               final List<Entity.Key> keys) {
+    if (keys.size() == 1) {
+      return createSingleCompositeCondition(properties, conditionType, keys.get(0));
+    }
+
+    return createMultipleCompositeCondition(properties, conditionType, keys);
+  }
+
+  /** Assumes {@code keys} is not empty. */
+  private static Condition createMultipleCompositeCondition(final List<Property.ColumnProperty> properties,
+                                                            final ConditionType conditionType,
+                                                            final List<Entity.Key> keys) {
+    final Condition.Set conditionSet = conditionSet(OR);
+    for (int i = 0; i < keys.size(); i++) {
+      conditionSet.add(createSingleCompositeCondition(properties, conditionType, keys.get(i)));
+    }
+
+    return conditionSet;
+  }
+
+  private static Condition createSingleCompositeCondition(final List<Property.ColumnProperty> properties,
+                                                          final ConditionType conditionType,
+                                                          final Entity.Key entityKey) {
+    final Condition.Set conditionSet = conditionSet(AND);
+    for (int i = 0; i < properties.size(); i++) {
+      conditionSet.add(new DefaultCondition(properties.get(i), conditionType,
+              entityKey == null ? null : entityKey.get(entityKey.getProperties().get(i))));
+    }
+
+    return conditionSet;
+  }
+
+  private static List<Entity.Key> getKeys(final Object value) {
+    final List<Entity.Key> keys = new ArrayList<>();
+    if (value instanceof Collection) {
+      if (((Collection) value).isEmpty()) {
+        keys.add(null);
+      }
+      else {
+        for (final Object object : (Collection) value) {
+          keys.add(getKey(object));
+        }
+      }
+    }
+    else {
+      keys.add(getKey(value));
+    }
+
+    return keys;
+  }
+
+  private static Entity.Key getKey(final Object value) {
+    if (value == null || value instanceof Entity.Key) {
+      return (Entity.Key) value;
+    }
+    else if (value instanceof Entity) {
+      return ((Entity) value).getKey();
+    }
+
+    throw new IllegalArgumentException("Foreign key condition uses only Entity or Entity.Key instances for values");
+  }
+
+  /** Assumes {@code keys} is not empty. */
+  static Condition createKeyCondition(final List<Entity.Key> keys) {
+    final Entity.Key firstKey = keys.get(0);
+    if (firstKey.isCompositeKey()) {
+      return createCompositeKeyCondition(firstKey.getProperties(), LIKE, keys);
+    }
+
+    return propertyCondition(firstKey.getFirstProperty(), LIKE, getValues(keys));
   }
 
   private static final class DefaultSet implements Condition.Set {

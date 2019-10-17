@@ -17,6 +17,7 @@ import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Domain;
@@ -307,7 +308,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
         final boolean caseSensitive = propertyLookupSettings.get(lookupProperty).getCaseSensitiveValue().get();
         final String lookupText = rawLookupText.trim();
         final String modifiedLookupText = searchStringValue.get().equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
-        baseCondition.add(EntityConditions.propertyCondition(lookupProperty, ConditionType.LIKE, caseSensitive, modifiedLookupText));
+        baseCondition.add(Conditions.propertyCondition(lookupProperty, ConditionType.LIKE, caseSensitive, modifiedLookupText));
       }
     }
 

@@ -11,7 +11,6 @@ import org.jminor.framework.domain.Property;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -20,12 +19,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.Conjunction.AND;
-import static org.jminor.common.Conjunction.OR;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.common.db.ConditionType.LIKE;
-import static org.jminor.framework.db.condition.Conditions.conditionSet;
-import static org.jminor.framework.domain.Entities.getValues;
 
 /**
  * A class for creating query conditions.
@@ -45,35 +39,6 @@ public final class EntityConditions {
   }
 
   /**
-   * Returns a EntityConditions instance based on the given domain model
-   * @param domain the domain model
-   * @return a EntityConditions instance
-   */
-  public static EntityConditions using(final Domain domain) {
-    return new EntityConditions(domain);
-  }
-
-  /**
-   * Creates a {@link EntitySelectCondition} instance for selecting the entity with the given key
-   * @param key the key
-   * @return a select condition based on the given key
-   */
-  public static EntitySelectCondition selectCondition(final Entity.Key key) {
-    return selectCondition(singletonList(requireNonNull(key, "key")));
-  }
-
-  /**
-   * Creates a {@link EntitySelectCondition} instance for selecting the entities with the given keys,
-   * it is assumed they are all of the same type
-   * @param keys the keys
-   * @return a select condition based on the given keys
-   */
-  public static EntitySelectCondition selectCondition(final List<Entity.Key> keys) {
-    checkKeysParameter(keys);
-    return new DefaultEntitySelectCondition(keys.get(0).getEntityId(), createKeyCondition(keys));
-  }
-
-  /**
    * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId}
    * with a where condition based on the property identified by {@code propertyId}, the operators based on
    * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
@@ -87,65 +52,6 @@ public final class EntityConditions {
   public EntitySelectCondition selectCondition(final String entityId, final String propertyId,
                                                final ConditionType conditionType, final Object value) {
     return selectCondition(entityId, propertyCondition(entityId, propertyId, conditionType, value));
-  }
-
-  /**
-   * Creates a {@link EntitySelectCondition} instance for selecting all entities of the type identified by {@code entityId}
-   * @param entityId the entity ID
-   * @return a select condition encompassing all entities of the given type
-   */
-  public static EntitySelectCondition selectCondition(final String entityId) {
-    return new DefaultEntitySelectCondition(entityId);
-  }
-
-  /**
-   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId},
-   * using the given {@link Condition}
-   * @param entityId the entity ID
-   * @param condition the column condition
-   * @return a select condition based on the given column condition
-   */
-  public static EntitySelectCondition selectCondition(final String entityId, final Condition condition) {
-    return new DefaultEntitySelectCondition(entityId, condition);
-  }
-
-  /**
-   * Creates a {@link EntityCondition} instance specifying the entity of the type identified by {@code key}
-   * @param key the primary key
-   * @return a condition specifying the entity with the given primary key
-   */
-  public static EntityCondition condition(final Entity.Key key) {
-    return condition(singletonList(key));
-  }
-
-  /**
-   * Creates a {@link EntityCondition} instance specifying the entities of the type identified by {@code key},
-   * using the given {@link Condition}
-   * @param entityId the entity ID
-   * @param condition the column condition
-   * @return a condition based on the given column condition
-   */
-  public static EntityCondition condition(final String entityId, final Condition condition) {
-    return new DefaultEntityCondition(entityId, condition);
-  }
-
-  /**
-   * Creates a condition based on the given primary keys, it is assumed they are all of the same type
-   * @param keys the primary keys
-   * @return a condition specifying the entities having the given primary keys
-   */
-  public static EntityCondition condition(final List<Entity.Key> keys) {
-    checkKeysParameter(keys);
-    return new DefaultEntityCondition(keys.get(0).getEntityId(), createKeyCondition(keys));
-  }
-
-  /**
-   * Creates a {@link EntitySelectCondition} instance specifying all entities of the type identified by {@code entityId}
-   * @param entityId the entity ID
-   * @return a condition specifying all entities of the given type
-   */
-  public static EntityCondition condition(final String entityId) {
-    return new DefaultEntityCondition(entityId);
   }
 
   /**
@@ -199,44 +105,16 @@ public final class EntityConditions {
     final Property property = domain.getProperty(entityId, propertyId);
     if (property instanceof Property.ForeignKeyProperty) {
       if (value instanceof Collection) {
-        return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, (Collection) value);
+        return Conditions.foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, (Collection) value);
       }
 
-      return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, singletonList(value));
+      return Conditions.foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, singletonList(value));
     }
     if (!(property instanceof Property.ColumnProperty)) {
       throw new IllegalArgumentException(property + " is not a " + Property.ColumnProperty.class.getSimpleName());
     }
 
-    return propertyCondition((Property.ColumnProperty) property, conditionType, caseSensitive, value);
-  }
-
-  /**
-   * Creates a {@link Condition} for the given property, with the operator specified by the {@code conditionType}
-   * and {@code value}. Note that {@code value} may be a single value, a Collection of values or null.
-   * @param property the property
-   * @param conditionType the search type
-   * @param value the condition value, can be a Collection of values
-   * @return a property condition based on the given value
-   */
-  public static Condition propertyCondition(final Property.ColumnProperty property,
-                                            final ConditionType conditionType, final Object value) {
-    return propertyCondition(property, conditionType, true, value);
-  }
-
-  /**
-   * Creates a {@link Condition} for the given property, with the operator specified by the {@code conditionType}
-   * and {@code value}. Note that {@code value} may be a single value, a Collection of values or null.
-   * @param property the property
-   * @param conditionType the search type
-   * @param caseSensitive true if the condition should be case sensitive, only applicable to string properties
-   * @param value the condition value, can be a Collection of values
-   * @return a property condition based on the given value
-   */
-  public static Condition propertyCondition(final Property.ColumnProperty property,
-                                            final ConditionType conditionType, final boolean caseSensitive,
-                                            final Object value) {
-    return new Conditions.DefaultCondition(property, conditionType, value).setCaseSensitive(caseSensitive);
+    return Conditions.propertyCondition((Property.ColumnProperty) property, conditionType, caseSensitive, value);
   }
 
   /**
@@ -279,135 +157,95 @@ public final class EntityConditions {
 +   */
   public Condition foreignKeyCondition(final String entityId, final String foreignKeyPropertyId,
                                        final ConditionType conditionType, final Collection values) {
-    return foreignKeyCondition(domain.getForeignKeyProperty(entityId, foreignKeyPropertyId), conditionType, values);
+    return Conditions.foreignKeyCondition(domain.getForeignKeyProperty(entityId, foreignKeyPropertyId), conditionType, values);
   }
 
   /**
-   * Creates a {@link Condition} for the given foreign key property, with the operator specified by the {@code conditionType}
-   * and {@code value}.
-   * @param foreignKeyProperty the foreign key property
-   * @param conditionType the search type
-   * @param value the condition value, may be null
-   * @return a foreign key condition based on the given value
+   * Returns a EntityConditions instance based on the given domain model
+   * @param domain the domain model
+   * @return a EntityConditions instance
    */
-  public static Condition foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
-                                              final ConditionType conditionType, final Entity value) {
-    return foreignKeyCondition(foreignKeyProperty, conditionType, singletonList(value));
+  public static EntityConditions using(final Domain domain) {
+    return new EntityConditions(domain);
   }
 
   /**
-   * Creates a {@link Condition} for the given foreign key property, with the operator specified by the {@code conditionType}
-   * and {@code value}.
-   * @param foreignKeyProperty the foreign key property
-   * @param conditionType the search type
-   * @param value the condition value
-   * @return a foreign key condition based on the given value
+   * Creates a {@link EntitySelectCondition} instance for selecting the entity with the given key
+   * @param key the key
+   * @return a select condition based on the given key
    */
-  public static Condition foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
-                                              final ConditionType conditionType, final Entity.Key value) {
-    return foreignKeyCondition(foreignKeyProperty, conditionType, singletonList(value));
+  public static EntitySelectCondition selectCondition(final Entity.Key key) {
+    return selectCondition(singletonList(requireNonNull(key, "key")));
   }
 
   /**
-   * Creates a {@link Condition} for the given foreign key property, with the operator specified by
-   * the {@code conditionType} and {@code values}.
-   * {@code values} may contain either instances of {@link Entity} or {@link Entity.Key}
-   * @param foreignKeyProperty the foreign key property
-   * @param conditionType the search type
-   * @param values the condition values
-   * @return a foreign key condition based on the given values
+   * Creates a {@link EntitySelectCondition} instance for selecting the entities with the given keys,
+   * it is assumed they are all of the same type
+   * @param keys the keys
+   * @return a select condition based on the given keys
    */
-  public static Condition foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
-                                              final ConditionType conditionType, final Collection values) {
-    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    requireNonNull(conditionType, Conditions.CONDITION_TYPE_PARAM);
-    final List<Entity.Key> keys = getKeys(values);
-    if (foreignKeyProperty.isCompositeKey()) {
-      return createCompositeKeyCondition(foreignKeyProperty.getProperties(), conditionType, keys);
-    }
-
-    if (keys.size() == 1) {
-      final Entity.Key entityKey = keys.get(0);
-      return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType,
-              entityKey == null ? null : entityKey.getFirstValue());
-    }
-
-    return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType, getValues(keys));
+  public static EntitySelectCondition selectCondition(final List<Entity.Key> keys) {
+    checkKeysParameter(keys);
+    return new DefaultEntitySelectCondition(keys.get(0).getEntityId(), Conditions.createKeyCondition(keys));
   }
 
-  /** Assumes {@code keys} is not empty. */
-  private static Condition createKeyCondition(final List<Entity.Key> keys) {
-    final Entity.Key firstKey = keys.get(0);
-    if (firstKey.isCompositeKey()) {
-      return createCompositeKeyCondition(firstKey.getProperties(), LIKE, keys);
-    }
-
-    return propertyCondition(firstKey.getFirstProperty(), LIKE, getValues(keys));
+  /**
+   * Creates a {@link EntitySelectCondition} instance for selecting all entities of the type identified by {@code entityId}
+   * @param entityId the entity ID
+   * @return a select condition encompassing all entities of the given type
+   */
+  public static EntitySelectCondition selectCondition(final String entityId) {
+    return new DefaultEntitySelectCondition(entityId);
   }
 
-  /** Assumes {@code keys} is not empty. */
-  private static Condition createCompositeKeyCondition(final List<Property.ColumnProperty> properties,
-                                                       final ConditionType conditionType,
-                                                       final List<Entity.Key> keys) {
-    if (keys.size() == 1) {
-      return createSingleCompositeCondition(properties, conditionType, keys.get(0));
-    }
-
-    return createMultipleCompositeCondition(properties, conditionType, keys);
+  /**
+   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId},
+   * using the given {@link Condition}
+   * @param entityId the entity ID
+   * @param condition the column condition
+   * @return a select condition based on the given column condition
+   */
+  public static EntitySelectCondition selectCondition(final String entityId, final Condition condition) {
+    return new DefaultEntitySelectCondition(entityId, condition);
   }
 
-  /** Assumes {@code keys} is not empty. */
-  private static Condition createMultipleCompositeCondition(final List<Property.ColumnProperty> properties,
-                                                            final ConditionType conditionType,
-                                                            final List<Entity.Key> keys) {
-    final Condition.Set conditionSet = conditionSet(OR);
-    for (int i = 0; i < keys.size(); i++) {
-      conditionSet.add(createSingleCompositeCondition(properties, conditionType, keys.get(i)));
-    }
-
-    return conditionSet;
+  /**
+   * Creates a {@link EntityCondition} instance specifying the entity of the type identified by {@code key}
+   * @param key the primary key
+   * @return a condition specifying the entity with the given primary key
+   */
+  public static EntityCondition condition(final Entity.Key key) {
+    return condition(singletonList(key));
   }
 
-  private static Condition createSingleCompositeCondition(final List<Property.ColumnProperty> properties,
-                                                          final ConditionType conditionType,
-                                                          final Entity.Key entityKey) {
-    final Condition.Set conditionSet = conditionSet(AND);
-    for (int i = 0; i < properties.size(); i++) {
-      conditionSet.add(new Conditions.DefaultCondition(properties.get(i), conditionType,
-              entityKey == null ? null : entityKey.get(entityKey.getProperties().get(i))));
-    }
-
-    return conditionSet;
+  /**
+   * Creates a {@link EntityCondition} instance specifying the entities of the type identified by {@code key},
+   * using the given {@link Condition}
+   * @param entityId the entity ID
+   * @param condition the column condition
+   * @return a condition based on the given column condition
+   */
+  public static EntityCondition condition(final String entityId, final Condition condition) {
+    return new DefaultEntityCondition(entityId, condition);
   }
 
-  private static List<Entity.Key> getKeys(final Object value) {
-    final List<Entity.Key> keys = new ArrayList<>();
-    if (value instanceof Collection) {
-      if (((Collection) value).isEmpty()) {
-        keys.add(null);
-      }
-      else {
-        for (final Object object : (Collection) value) {
-          keys.add(getKey(object));
-        }
-      }
-    }
-    else {
-      keys.add(getKey(value));
-    }
-
-    return keys;
+  /**
+   * Creates a condition based on the given primary keys, it is assumed they are all of the same type
+   * @param keys the primary keys
+   * @return a condition specifying the entities having the given primary keys
+   */
+  public static EntityCondition condition(final List<Entity.Key> keys) {
+    checkKeysParameter(keys);
+    return new DefaultEntityCondition(keys.get(0).getEntityId(), Conditions.createKeyCondition(keys));
   }
 
-  private static Entity.Key getKey(final Object value) {
-    if (value == null || value instanceof Entity.Key) {
-      return (Entity.Key) value;
-    }
-    else if (value instanceof Entity) {
-      return ((Entity) value).getKey();
-    }
-
-    throw new IllegalArgumentException("Foreign key condition uses only Entity or Entity.Key instances for values");
+  /**
+   * Creates a {@link EntitySelectCondition} instance specifying all entities of the type identified by {@code entityId}
+   * @param entityId the entity ID
+   * @return a condition specifying all entities of the given type
+   */
+  public static EntityCondition condition(final String entityId) {
+    return new DefaultEntityCondition(entityId);
   }
 
   private static void checkKeysParameter(final Collection<Entity.Key> keys) {

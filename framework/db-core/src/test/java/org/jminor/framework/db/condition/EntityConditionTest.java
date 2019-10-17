@@ -19,16 +19,16 @@ public class EntityConditionTest {
   public void test() {
     final Condition.Set set1 = Conditions.conditionSet(
             Conjunction.AND,
-            EntityConditions.propertyCondition(Properties.columnProperty("stringProperty", Types.VARCHAR), ConditionType.LIKE, "value"),
-            EntityConditions.propertyCondition(Properties.columnProperty("intProperty", Types.INTEGER), ConditionType.LIKE, 666)
+            Conditions.propertyCondition(Properties.columnProperty("stringProperty", Types.VARCHAR), ConditionType.LIKE, "value"),
+            Conditions.propertyCondition(Properties.columnProperty("intProperty", Types.INTEGER), ConditionType.LIKE, 666)
     );
     final EntityCondition condition = EntityConditions.condition("entityId", set1);
     assertEquals("(stringProperty = ? and intProperty = ?)", condition.getWhereClause());
     assertEquals(set1, condition.getCondition());
     final Condition.Set set2 = Conditions.conditionSet(
             Conjunction.AND,
-            EntityConditions.propertyCondition(Properties.columnProperty("doubleProperty", Types.DOUBLE), ConditionType.LIKE, 666.666),
-            EntityConditions.propertyCondition(Properties.columnProperty("stringProperty2", Types.VARCHAR), ConditionType.LIKE, false, "valu%e2")
+            Conditions.propertyCondition(Properties.columnProperty("doubleProperty", Types.DOUBLE), ConditionType.LIKE, 666.666),
+            Conditions.propertyCondition(Properties.columnProperty("stringProperty2", Types.VARCHAR), ConditionType.LIKE, false, "valu%e2")
     );
     final Condition.Set set3 = Conditions.conditionSet(Conjunction.OR, set1, set2);
     assertEquals("((stringProperty = ? and intProperty = ?) or (doubleProperty = ? and upper(stringProperty2) like upper(?)))",
