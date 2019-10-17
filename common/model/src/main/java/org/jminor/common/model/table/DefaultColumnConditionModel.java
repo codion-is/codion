@@ -13,7 +13,7 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 
 import java.text.Format;
 import java.time.LocalDateTime;
@@ -32,7 +32,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   private final Value upperBoundValue = Values.value();
   private final Value lowerBoundValue = Values.value();
-  private final Value<Condition.Type> conditionTypeValue = Values.value(Condition.Type.LIKE);
+  private final Value<ConditionType> conditionTypeValue = Values.value(ConditionType.LIKE);
   private final Event conditionStateChangedEvent = Events.event();
   private final Event conditionModelClearedEvent = Events.event();
 
@@ -162,7 +162,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void setLikeValue(final Object value) {
-    setConditionType(Condition.Type.LIKE);
+    setConditionType(ConditionType.LIKE);
     setUpperBound(value);
     final boolean enableSearch = value != null;
     if (enabledState.get() != enableSearch) {
@@ -200,13 +200,13 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final Condition.Type getConditionType() {
+  public final ConditionType getConditionType() {
     return conditionTypeValue.get();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setConditionType(final Condition.Type conditionType) {
+  public final void setConditionType(final ConditionType conditionType) {
     checkLock();
     conditionTypeValue.set(requireNonNull(conditionType, "conditionType"));
   }
@@ -276,7 +276,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
     setEnabled(false);
     setUpperBound(null);
     setLowerBound(null);
-    setConditionType(Condition.Type.LIKE);
+    setConditionType(ConditionType.LIKE);
     conditionModelClearedEvent.fire();
   }
 
@@ -378,7 +378,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final void addConditionTypeListener(final EventDataListener<Condition.Type> listener) {
+  public final void addConditionTypeListener(final EventDataListener<ConditionType> listener) {
     conditionTypeValue.getChangeObserver().addDataListener(listener);
   }
 
@@ -390,7 +390,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<Condition.Type> getConditionTypeObserver() {
+  public final EventObserver<ConditionType> getConditionTypeObserver() {
     return conditionTypeValue.getChangeObserver();
   }
 
@@ -571,7 +571,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   private String addWildcard(final String value) {
     //only use wildcard for LIKE and NOT_LIKE
-    if (conditionTypeValue.get().equals(Condition.Type.LIKE) || conditionTypeValue.get().equals(Condition.Type.NOT_LIKE)) {
+    if (conditionTypeValue.get().equals(ConditionType.LIKE) || conditionTypeValue.get().equals(ConditionType.NOT_LIKE)) {
       switch (automaticWildcard) {
         case PREFIX_AND_POSTFIX:
           return wildcard + value + wildcard;
@@ -592,7 +592,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
       if (autoEnable) {
         final boolean upperBoundNull = upperBoundValue.get() == null;
         final boolean lowerBoundNull = lowerBoundValue.get() == null;
-        if (conditionTypeValue.get().getValues().equals(Condition.Type.Values.TWO)) {
+        if (conditionTypeValue.get().getValues().equals(ConditionType.Values.TWO)) {
           setEnabled(!lowerBoundNull && !upperBoundNull);
         }
         else {
@@ -607,7 +607,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
     conditionTypeValue.getChangeObserver().addListener(conditionStateChangedEvent);
     enabledState.addListener(conditionStateChangedEvent);
     conditionTypeValue.getChangeObserver().addListener(() ->
-            lowerBoundRequiredState.set(getConditionType().getValues().equals(Condition.Type.Values.TWO)));
+            lowerBoundRequiredState.set(getConditionType().getValues().equals(ConditionType.Values.TWO)));
   }
 
   private void checkLock() {

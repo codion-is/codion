@@ -8,7 +8,7 @@ import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
@@ -62,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityServletServerTest {
 
   private static final Domain DOMAIN = new TestDomain();
-  private static final EntityConditions CONDITIONS = new EntityConditions(DOMAIN);
+  private static final EntityConditions CONDITIONS = EntityConditions.using(DOMAIN);
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -202,7 +202,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     HttpPost httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT))));
+    httpPost.setEntity(new ByteArrayEntity(Util.serialize(EntityConditions.selectCondition(TestDomain.T_DEPARTMENT))));
     context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -232,7 +232,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(department.getKey()))));
+    httpPost.setEntity(new ByteArrayEntity(Util.serialize(EntityConditions.selectCondition(department.getKey()))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
@@ -269,7 +269,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name"))));
+            TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "New name"))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -280,7 +280,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(department.getKey()))));
+    httpPost.setEntity(new ByteArrayEntity(Util.serialize(EntityConditions.selectCondition(department.getKey()))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -292,7 +292,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42))));
+            TestDomain.DEPARTMENT_ID, ConditionType.LIKE, -42))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();

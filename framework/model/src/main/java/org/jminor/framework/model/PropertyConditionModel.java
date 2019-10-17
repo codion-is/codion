@@ -3,21 +3,21 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Property;
 
 /**
  * A base interface for a column condition based on a property.
  * @param <T> the type of {@link Property} this condition model is based on
  */
-public interface PropertyConditionModel<T extends Property> extends ColumnConditionModel<T>, Condition.Provider<Property.ColumnProperty> {
+public interface PropertyConditionModel<T extends Property> extends ColumnConditionModel<T>, Condition.Provider {
 
   /**
    * @return a condition object based on this condition model
    */
   @Override
-  Condition<Property.ColumnProperty> getCondition();
+  Condition getCondition();
 
   /**
    * Returns a String representing the state of this condition model. The result of this method changes if any condition

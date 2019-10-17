@@ -8,7 +8,6 @@ import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.Version;
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Domain;
 
 import org.slf4j.Logger;
@@ -41,7 +40,6 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
 
   private T entityConnection;
   private Domain domain;
-  private EntityConditions entityConditions;
 
   /** {@inheritDoc} */
   @Override
@@ -52,18 +50,6 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
       }
 
       return domain;
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EntityConditions getConditions() {
-    synchronized (lock) {
-      if (entityConditions == null) {
-        entityConditions = new EntityConditions(getDomain());
-      }
-
-      return entityConditions;
     }
   }
 

@@ -57,8 +57,6 @@ public final class HttpEntityConnectionTest {
           UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID(),
           createConnectionManager());
 
-  private final EntityConditions conditions = new EntityConditions(connection.getDomain());
-
   @BeforeAll
   public static void setUp() throws Exception {
     configure();
@@ -176,12 +174,12 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectRowCount() throws IOException, DatabaseException {
-    assertEquals(4, connection.selectRowCount(conditions.condition(TestDomain.T_DEPARTMENT)));
+    assertEquals(4, connection.selectRowCount(EntityConditions.condition(TestDomain.T_DEPARTMENT)));
   }
 
   @Test
   public void selectValues() throws IOException, DatabaseException {
-    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, conditions.condition(TestDomain.T_DEPARTMENT));
+    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, EntityConditions.condition(TestDomain.T_DEPARTMENT));
     assertEquals(4, values.size());
   }
 
@@ -218,7 +216,7 @@ public final class HttpEntityConnectionTest {
   public void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
-    assertThrows(DatabaseException.class, () -> connection.delete(conditions.condition(department.getKey())));
+    assertThrows(DatabaseException.class, () -> connection.delete(EntityConditions.condition(department.getKey())));
   }
 
   @Test

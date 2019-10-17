@@ -5,7 +5,7 @@ package org.jminor.framework.db.http;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.MultipleRecordsFoundException;
 import org.jminor.common.db.exception.RecordNotFoundException;
@@ -118,7 +118,7 @@ final class HttpEntityConnection implements EntityConnection {
     this.targetHost = new HttpHost(serverHostName, serverPort, httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);
     this.domain = initializeDomain();
-    this.conditions = new EntityConditions(this.domain);
+    this.conditions = EntityConditions.using(this.domain);
   }
 
   /** {@inheritDoc} */
@@ -328,13 +328,13 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, value));
+    return selectSingle(conditions.selectCondition(entityId, propertyId, ConditionType.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return selectSingle(conditions.selectCondition(key));
+    return selectSingle(EntityConditions.selectCondition(key));
   }
 
   /** {@inheritDoc} */
@@ -387,7 +387,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return selectMany(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, asList(values)));
+    return selectMany(conditions.selectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
   }
 
   /** {@inheritDoc} */

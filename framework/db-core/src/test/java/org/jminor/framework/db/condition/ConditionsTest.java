@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.condition;
+package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.db.Column;
+import org.jminor.framework.db.TestDomain;
+import org.jminor.framework.domain.Property;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.Serializable;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -16,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class ConditionsTest {
 
-  private static final Condition.Set<TestColumn> AND_SET = Conditions.conditionSet(Conjunction.AND, new TestCondition(), new TestCondition());
-  private static final Condition.Set<TestColumn> OR_SET = Conditions.conditionSet(Conjunction.OR, new TestCondition(), new TestCondition());
-  private static final Condition.Set<TestColumn> AND_OR_AND_SET = Conditions.conditionSet(Conjunction.AND, AND_SET, OR_SET);
-  private static final Condition.Set<TestColumn> AND_OR_OR_SET = Conditions.conditionSet(Conjunction.OR, AND_SET, OR_SET);
+  private static final Condition.Set AND_SET = Conditions.conditionSet(Conjunction.AND, new TestCondition(), new TestCondition());
+  private static final Condition.Set OR_SET = Conditions.conditionSet(Conjunction.OR, new TestCondition(), new TestCondition());
+  private static final Condition.Set AND_OR_AND_SET = Conditions.conditionSet(Conjunction.AND, AND_SET, OR_SET);
+  private static final Condition.Set AND_OR_OR_SET = Conditions.conditionSet(Conjunction.OR, AND_SET, OR_SET);
 
   @Test
   public void andSet() {
@@ -31,7 +31,7 @@ public final class ConditionsTest {
   public void orSet() {
     assertEquals("(condition or condition)", OR_SET.getWhereClause(), "OR condition set should be working");
     assertEquals(2, OR_SET.getValues().size());
-    assertEquals(2, OR_SET.getColumns().size());
+    assertEquals(2, OR_SET.getProperties().size());
   }
 
   @Test
@@ -46,7 +46,7 @@ public final class ConditionsTest {
 
   @Test
   public void getConditionCount() {
-    Condition.Set<TestColumn> set = Conditions.conditionSet(Conjunction.OR);
+    Condition.Set set = Conditions.conditionSet(Conjunction.OR);
     assertEquals(0, set.getConditionCount());
     assertEquals("", set.getWhereClause());
 
@@ -57,8 +57,8 @@ public final class ConditionsTest {
     assertEquals(3, set.getConditionCount());
   }
 
-  private static class TestCondition implements Condition<TestColumn> {
-    private final TestColumn testColumn = new TestColumn();
+  private static class TestCondition implements Condition {
+    private final TestDomain domain = new TestDomain();
     @Override
     public String getWhereClause() {
       return "condition";
@@ -70,25 +70,8 @@ public final class ConditionsTest {
     }
 
     @Override
-    public List<TestColumn> getColumns() {
-      return singletonList(testColumn);
+    public List<Property.ColumnProperty> getProperties() {
+      return singletonList(domain.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID));
     }
   }
-
-  private static final class TestColumn implements Column, Serializable {
-    @Override
-    public String getColumnName() {return null;}
-    @Override
-    public int getType() {return 0;}
-    @Override
-    public boolean isUpdatable() {return false;}
-    @Override
-    public String getCaption() {return null;}
-    @Override
-    public String getDescription() {return null;}
-    @Override
-    public Class getTypeClass() {return null;}
-    @Override
-    public void validateType(final Object value) {}
-  };
 }

@@ -8,7 +8,6 @@ import org.jminor.common.EventListener;
 import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
 import org.jminor.common.Version;
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Domain;
 
 import java.util.UUID;
@@ -82,11 +81,6 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
    * @return the underlying domain model
    */
   Domain getDomain();
-
-  /**
-   * @return a EntityConditions instance based on the underlying domain model
-   */
-  EntityConditions getConditions();
 
   /**
    * Provides a EntityConnection object, is responsible for returning a healthy EntityConnection object,

@@ -6,11 +6,12 @@ package org.jminor.framework.model;
 import org.jminor.common.Conjunction;
 import org.jminor.common.EventListener;
 import org.jminor.common.User;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -83,7 +84,7 @@ public class DefaultEntityTableConditionModelTest {
     final ColumnConditionModel<Property> propertyConditionModel = conditionModel.getPropertyFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
-    assertEquals(Condition.Type.LIKE, propertyConditionModel.getConditionType());
+    assertEquals(ConditionType.LIKE, propertyConditionModel.getConditionType());
     assertEquals(1400d, propertyConditionModel.getUpperBound());
   }
 
@@ -123,7 +124,7 @@ public class DefaultEntityTableConditionModelTest {
     nameConditionModel.setLikeValue("SCOTT");
     assertEquals("(ename = ? and (deptno in (?, ?)))", conditionModel.getCondition().getWhereClause());
 
-    conditionModel.setAdditionalConditionProvider(() -> CONNECTION_PROVIDER.getConditions().stringCondition("1 = 1"));
+    conditionModel.setAdditionalConditionProvider(() -> Conditions.stringCondition("1 = 1"));
     assertNotNull(conditionModel.getAdditionalConditionProvider());
     assertEquals("(ename = ? and (deptno in (?, ?)) and 1 = 1)", conditionModel.getCondition().getWhereClause());
   }
@@ -140,7 +141,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setUpperBound(1200d);
     //automatically set enabled when upper bound is set
     assertEquals(4, counter.get());
-    conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setConditionType(Condition.Type.GREATER_THAN);
+    conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setConditionType(ConditionType.GREATER_THAN);
     assertEquals(5, counter.get());
     conditionModel.removeConditionStateListener(listener);
   }

@@ -38,7 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DefaultRemoteEntityConnectionTest {
 
   private static final Domain DOMAIN = new TestDomain();
-  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(DOMAIN);
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -60,7 +59,7 @@ public class DefaultRemoteEntityConnectionTest {
   public void rollbackOnDisconnect() throws Exception {
     final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238, true);
-    final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP);
+    final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.selectMany(condition).isEmpty());
@@ -94,7 +93,7 @@ public class DefaultRemoteEntityConnectionTest {
     };
     final ConnectionPool connectionPool = ConnectionPools.createDefaultConnectionPool(connectionProvider);
     final DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, connectionPool, client, 1238, true);
-    final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP);
+    final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.selectMany(condition);
     connection.delete(condition);
@@ -130,7 +129,7 @@ public class DefaultRemoteEntityConnectionTest {
         }
       });
 
-      proxy.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP));
+      proxy.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP));
     }
     finally {
       if (registry != null) {

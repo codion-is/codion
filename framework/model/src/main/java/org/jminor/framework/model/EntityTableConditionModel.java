@@ -7,10 +7,11 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -47,19 +48,19 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
   /**
    * @return the current condition based on the state of the underlying condition models
    */
-  Condition<Property.ColumnProperty> getCondition();
+  Condition getCondition();
 
   /**
    * @return any additional search condition, not based on any individual property condition
    */
-  Condition.Provider<Property.ColumnProperty> getAdditionalConditionProvider();
+  Condition.Provider getAdditionalConditionProvider();
 
   /**
    * Sets the additional condition provider, one not based on any individual property condition
    * @param conditionProvider the condition provider
    * @return this EntityTableConditionModel instance
    */
-  EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider<Property.ColumnProperty> conditionProvider);
+  EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider conditionProvider);
 
   /**
    * @return any additional filter condition, not based on any individual property condition
@@ -142,7 +143,7 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
 
   /**
    * Clears the search state of all PropertyConditionModels, disables them and
-   * resets the search type to {@link Condition.Type#LIKE}
+   * resets the search type to {@link ConditionType#LIKE}
    */
   void clearPropertyConditionModels();
 

@@ -3,8 +3,9 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Property;
 
@@ -18,17 +19,13 @@ import static java.util.Arrays.asList;
 public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<Property.ColumnProperty>
         implements PropertyConditionModel<Property.ColumnProperty> {
 
-  private final EntityConditions entityConditions;
-
   /**
    * Constructs a DefaultPropertyConditionModel instance
-   * @param entityConditions the {@link EntityConditions} instance to use
    * @param property the property
    * @throws IllegalArgumentException if an illegal constant is used
    */
-  public DefaultPropertyConditionModel(final EntityConditions entityConditions, final Property.ColumnProperty property) {
+  public DefaultPropertyConditionModel(final Property.ColumnProperty property) {
     super(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimeFormatPattern());
-    this.entityConditions = entityConditions;
   }
 
   /** {@inheritDoc} */
@@ -46,10 +43,10 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<P
 
   /** {@inheritDoc} */
   @Override
-  public final Condition<Property.ColumnProperty> getCondition() {
-    return getConditionType().getValues().equals(Condition.Type.Values.TWO) ?
-            entityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), asList(getLowerBound(), getUpperBound())) :
-            entityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), getUpperBound());
+  public final Condition getCondition() {
+    return getConditionType().getValues().equals(ConditionType.Values.TWO) ?
+            EntityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), asList(getLowerBound(), getUpperBound())) :
+            EntityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), getUpperBound());
   }
 
   private static String toString(final Object object) {

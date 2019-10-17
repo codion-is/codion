@@ -3,8 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.db.condition.Condition;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.common.db.ConditionType;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultPropertyConditionModel;
@@ -23,10 +22,9 @@ public class PropertySearchPanelTest {
   @Test
   public void createWithInitializedModel() {
     final PropertyConditionModel<Property.ColumnProperty> conditionModel =
-            new DefaultPropertyConditionModel(new EntityConditions(DOMAIN),
-                    DOMAIN.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
+            new DefaultPropertyConditionModel(DOMAIN.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
     conditionModel.setUpperBound("DALLAS");
-    conditionModel.setConditionType(Condition.Type.LIKE);
+    conditionModel.setConditionType(ConditionType.LIKE);
     conditionModel.setEnabled(true);
     final PropertyConditionPanel searchPanel = new PropertyConditionPanel(conditionModel);
     assertEquals("DALLAS", ((JTextField) searchPanel.getUpperBoundField()).getText());

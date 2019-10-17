@@ -4,9 +4,10 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.User;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
@@ -34,7 +35,6 @@ public final class DefaultEntityLookupModelTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
-  private static final EntityConditions ENTITY_CONDITIONS = CONNECTION_PROVIDER.getConditions();
 
   private EntityLookupModel lookupModel;
   private Collection<Property.ColumnProperty> lookupProperties;
@@ -191,8 +191,8 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(true);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(true);
     lookupModel.setAdditionalConditionProvider(() ->
-            ENTITY_CONDITIONS.propertyCondition(DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB),
-                    Condition.Type.NOT_LIKE, "MANAGER"));
+            EntityConditions.propertyCondition(DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB),
+                    ConditionType.NOT_LIKE, "MANAGER"));
     result = lookupModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
@@ -206,7 +206,7 @@ public final class DefaultEntityLookupModelTest {
     List<Entity> result = lookupModel.performQuery();
     assertEquals(1, result.size());
     lookupModel.setSelectedEntities(result);
-    lookupModel.setAdditionalConditionProvider(() -> ENTITY_CONDITIONS.stringCondition("1 = 2"));
+    lookupModel.setAdditionalConditionProvider(() -> Conditions.stringCondition("1 = 2"));
     assertEquals(1, lookupModel.getSelectedEntities().size());
     result = lookupModel.performQuery();
     assertTrue(result.isEmpty());
@@ -227,7 +227,7 @@ public final class DefaultEntityLookupModelTest {
     CONNECTION_PROVIDER.getConnection().rollbackTransaction();
   }
 
-  private boolean contains(final List<Entity> result, final String employeeName) {
+  private static boolean contains(final List<Entity> result, final String employeeName) {
     for (final Entity entity : result) {
       if (entity.getString(TestDomain.EMP_NAME).equals(employeeName)) {
         return true;
@@ -237,7 +237,7 @@ public final class DefaultEntityLookupModelTest {
     return false;
   }
 
-  private void setupData() throws Exception {
+  private static void setupData() throws Exception {
     final Entity dept = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     dept.put(TestDomain.DEPARTMENT_ID, 88);
     dept.put(TestDomain.DEPARTMENT_LOCATION, "TestLoc");

@@ -6,8 +6,8 @@ package org.jminor.framework.model;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.User;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnection;
@@ -193,8 +193,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = connection.selectMany(new EntityConditions(DOMAIN).selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, department));
+    final List<Entity> salesEmployees = connection.selectMany(EntityConditions.using(DOMAIN).selectCondition(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department));
     assertFalse(salesEmployees.isEmpty());
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =

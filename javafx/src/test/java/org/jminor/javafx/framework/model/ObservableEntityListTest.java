@@ -5,8 +5,8 @@ package org.jminor.javafx.framework.model;
 
 import org.jminor.common.EventListener;
 import org.jminor.common.User;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
@@ -47,8 +47,8 @@ public final class ObservableEntityListTest {
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
-    list.setSelectCondition(new EntityConditions(DOMAIN).propertyCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME,
-            Condition.Type.NOT_LIKE, asList("SALES", "OPERATIONS")));
+    list.setSelectCondition(EntityConditions.using(DOMAIN).propertyCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME,
+            ConditionType.NOT_LIKE, asList("SALES", "OPERATIONS")));
     list.refresh();
     assertEquals(2, list.size());
   }

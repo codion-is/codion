@@ -12,12 +12,12 @@ import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.db.condition.Conditions.conditionSet;
+import static org.jminor.framework.db.condition.Conditions.conditionSet;
 
 /**
  * A default EntityTableConditionModel implementation
@@ -43,10 +43,9 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   private final String entityId;
   private final EntityConnectionProvider connectionProvider;
-  private final EntityConditions entityConditions;
   private final Map<String, ColumnConditionModel<Property>> propertyFilterModels = new LinkedHashMap<>();
   private final Map<String, PropertyConditionModel<? extends Property>> propertyConditionModels = new HashMap<>();
-  private Condition.Provider<Property.ColumnProperty> additionalConditionProvider;
+  private Condition.Provider additionalConditionProvider;
   private FilterCondition<Entity> additionalFilterCondition;
   private Conjunction conjunction = Conjunction.AND;
   private String rememberedConditionState = "";
@@ -67,7 +66,6 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
     requireNonNull(connectionProvider, "connectionProvider");
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
-    this.entityConditions = connectionProvider.getConditions();
     initializeFilterModels(entityId, filterModelProvider);
     initializeColumnPropertyConditionModels(entityId, conditionModelProvider);
     initializeForeignKeyPropertyConditionModels(entityId, connectionProvider, conditionModelProvider);
@@ -219,8 +217,8 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Condition<Property.ColumnProperty> getCondition() {
-    final Condition.Set<Property.ColumnProperty> conditionSet = conditionSet(conjunction);
+  public final Condition getCondition() {
+    final Condition.Set conditionSet = conditionSet(conjunction);
     for (final PropertyConditionModel<? extends Property> conditionModel : propertyConditionModels.values()) {
       if (conditionModel.isEnabled()) {
         conditionSet.add(conditionModel.getCondition());
@@ -235,13 +233,13 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Condition.Provider<Property.ColumnProperty> getAdditionalConditionProvider() {
+  public final Condition.Provider getAdditionalConditionProvider() {
     return additionalConditionProvider;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider<Property.ColumnProperty> conditionProvider) {
+  public final EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider conditionProvider) {
     this.additionalConditionProvider = conditionProvider;
     return this;
   }
@@ -362,7 +360,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
       conditionModel.setCaseSensitive(false);
       conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
       conditionModel.setUpperBound(searchString);
-      conditionModel.setConditionType(Condition.Type.LIKE);
+      conditionModel.setConditionType(ConditionType.LIKE);
       conditionModel.setEnabled(true);
     }
   }
@@ -389,7 +387,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
     for (final Property.ColumnProperty columnProperty : connectionProvider.getDomain().getColumnProperties(entityId)) {
       if (!columnProperty.isForeignKeyProperty() && !columnProperty.isAggregateColumn()) {
         final PropertyConditionModel<Property.ColumnProperty> conditionModel =
-                conditionModelProvider.initializePropertyConditionModel(entityConditions, columnProperty);
+                conditionModelProvider.initializePropertyConditionModel(columnProperty);
         if (conditionModel != null) {
           this.propertyConditionModels.put(conditionModel.getColumnIdentifier().getPropertyId(), conditionModel);
         }

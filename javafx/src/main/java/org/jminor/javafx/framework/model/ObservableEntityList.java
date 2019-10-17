@@ -7,16 +7,15 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -45,7 +44,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   private final EntityConnectionProvider connectionProvider;
   private final SortedList<Entity> sortedList;
   private final FilteredList<Entity> filteredList;
-  private final EntityConditions entityConditions;
 
   private final Event refreshEvent = Events.event();
   private final Event selectionChangedEvent = Events.event();
@@ -53,7 +51,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   private FXEntityListSelectionModel selectionModel;
 
-  private Condition<Property.ColumnProperty> selectCondition;
+  private Condition selectCondition;
   private FilterCondition<Entity> filterCondition;
 
   /**
@@ -67,7 +65,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     this.connectionProvider = connectionProvider;
     this.filteredList = new FilteredList<>(this);
     this.sortedList = new SortedList<>(filteredList, connectionProvider.getDomain().getComparator(entityId));
-    this.entityConditions = connectionProvider.getConditions();
   }
 
   /**
@@ -273,7 +270,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    * @param selectCondition the select condition to use
    * @see #performQuery()
    */
-  public final void setSelectCondition(final Condition<Property.ColumnProperty> selectCondition) {
+  public final void setSelectCondition(final Condition selectCondition) {
     this.selectCondition = selectCondition;
   }
 
@@ -289,7 +286,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(entityConditions.selectCondition(entityId, selectCondition)
+      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityId, selectCondition)
               .setOrderBy(connectionProvider.getDomain().getOrderBy(entityId)));
     }
     catch (final DatabaseException e) {

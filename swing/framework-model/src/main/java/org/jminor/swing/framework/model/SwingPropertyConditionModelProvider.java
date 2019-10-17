@@ -24,7 +24,7 @@ public class SwingPropertyConditionModelProvider extends DefaultPropertyConditio
       final EntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(), connectionProvider);
       comboBoxModel.setNullValue(connectionProvider.getDomain().createToStringEntity(foreignKeyProperty.getForeignEntityId(), ""));
 
-      return new SwingForeignKeyConditionModel(connectionProvider.getConditions(), foreignKeyProperty, comboBoxModel);
+      return new SwingForeignKeyConditionModel(foreignKeyProperty, comboBoxModel);
     }
 
     return super.initializeForeignKeyConditionModel(foreignKeyProperty, connectionProvider);

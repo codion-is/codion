@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -37,7 +37,7 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Propert
   public ForeignKeyConditionPanel(final ForeignKeyConditionModel model, final boolean includeToggleEnabledButton,
                                   final boolean includeToggleAdvancedConditionButton) {
     super(model, includeToggleEnabledButton, includeToggleAdvancedConditionButton,
-            new ForeignKeyInputFieldProvider(model), Condition.Type.LIKE, Condition.Type.NOT_LIKE);
+            new ForeignKeyInputFieldProvider(model), ConditionType.LIKE, ConditionType.NOT_LIKE);
   }
 
   private static final class ForeignKeyInputFieldProvider implements InputFieldProvider {

@@ -12,7 +12,7 @@ import org.jminor.common.Item;
 import org.jminor.common.State;
 import org.jminor.common.States;
 import org.jminor.common.Value;
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -75,7 +75,7 @@ public class ColumnConditionPanel<K> extends JPanel {
   /**
    * The search types allowed in this model
    */
-  private final Collection<Condition.Type> conditionTypes;
+  private final Collection<ConditionType> conditionTypes;
 
   /**
    * A JToggleButton for enabling/disabling the filter
@@ -106,7 +106,7 @@ public class ColumnConditionPanel<K> extends JPanel {
    */
   public ColumnConditionPanel(final ColumnConditionModel<K> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton) {
-    this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton, Condition.Type.values());
+    this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton, ConditionType.values());
   }
 
   /**
@@ -117,7 +117,7 @@ public class ColumnConditionPanel<K> extends JPanel {
    * @param conditionTypes the search types available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<K> conditionModel, final boolean includeToggleEnabledButton,
-                              final boolean includeToggleAdvancedConditionButton, final Condition.Type... conditionTypes) {
+                              final boolean includeToggleAdvancedConditionButton, final ConditionType... conditionTypes) {
     this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton, new DefaultInputFieldProvider(conditionModel), conditionTypes);
   }
 
@@ -131,7 +131,7 @@ public class ColumnConditionPanel<K> extends JPanel {
    */
   public ColumnConditionPanel(final ColumnConditionModel<K> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton, final InputFieldProvider inputFieldProvider,
-                              final Condition.Type... conditionTypes) {
+                              final ConditionType... conditionTypes) {
     this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton, inputFieldProvider.initializeInputField(true),
             inputFieldProvider.initializeInputField(false), conditionTypes);
   }
@@ -147,10 +147,10 @@ public class ColumnConditionPanel<K> extends JPanel {
    */
   public ColumnConditionPanel(final ColumnConditionModel<K> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton, final JComponent upperBoundField,
-                              final JComponent lowerBoundField, final Condition.Type... conditionTypes) {
+                              final JComponent lowerBoundField, final ConditionType... conditionTypes) {
     requireNonNull(conditionModel, "conditionModel");
     this.conditionModel = conditionModel;
-    this.conditionTypes = conditionTypes == null ? asList(Condition.Type.values()) : asList(conditionTypes);
+    this.conditionTypes = conditionTypes == null ? asList(ConditionType.values()) : asList(conditionTypes);
     this.conditionTypeCombo = initializeConditionTypeComboBox();
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
@@ -482,20 +482,20 @@ public class ColumnConditionPanel<K> extends JPanel {
   }
 
   private JComboBox initializeConditionTypeComboBox() {
-    final ItemComboBoxModel<Condition.Type> comboBoxModel = new ItemComboBoxModel<>();
-    for (final Condition.Type type : Condition.Type.values()) {
+    final ItemComboBoxModel<ConditionType> comboBoxModel = new ItemComboBoxModel<>();
+    for (final ConditionType type : ConditionType.values()) {
       if (conditionTypes.contains(type)) {
         comboBoxModel.addItem(new Item<>(type, type.getCaption()));
       }
     }
-    final JComboBox<Condition.Type> comboBox = new SteppedComboBox(comboBoxModel);
-    ValueLinks.selectedItemValueLink(comboBox, conditionModel, "conditionType", Condition.Type.class, (EventObserver) conditionModel.getConditionTypeObserver());
+    final JComboBox<ConditionType> comboBox = new SteppedComboBox(comboBoxModel);
+    ValueLinks.selectedItemValueLink(comboBox, conditionModel, "conditionType", ConditionType.class, (EventObserver) conditionModel.getConditionTypeObserver());
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,
                                                     final boolean isSelected, final boolean cellHasFocus) {
         final JComponent component = (JComponent) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        component.setToolTipText(((Item<Condition.Type>) value).getValue().getDescription());
+        component.setToolTipText(((Item<ConditionType>) value).getValue().getDescription());
 
         return component;
       }
