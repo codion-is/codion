@@ -5186,3 +5186,4 @@
   EntitySelectCondition.setSelectProperties() and getSelectProperties() added
   DefaultLocalEntityConnection.selectMany(EntitySelectCondition) now restricts the selected properties to the ones specified in the above
   Static imports FTW
+  MultipleRecordsFoundException added

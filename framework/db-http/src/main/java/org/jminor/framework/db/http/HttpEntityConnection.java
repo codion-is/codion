@@ -8,6 +8,7 @@ import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.exception.MultipleRecordsFoundException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
@@ -325,7 +326,7 @@ final class HttpEntityConnection implements EntityConnection {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
     if (selected.size() > 1) {
-      throw new DatabaseException(MESSAGES.getString("many_records_found"));
+      throw new MultipleRecordsFoundException(MESSAGES.getString("many_records_found"));
     }
 
     return selected.get(0);

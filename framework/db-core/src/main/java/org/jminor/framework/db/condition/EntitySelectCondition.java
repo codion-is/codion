@@ -98,8 +98,10 @@ public interface EntitySelectCondition extends EntityCondition {
    * Sets the properties to include in the resulting Entities,
    * including the column properties involved in a foreign key
    * causes the foreign key values to be populated.
+   * If you want the primary key to be populated you must include
+   * the primary key properties.
    * Note that these must be ColumnProperty ids
-   * @param propertyIds the property ids
+   * @param propertyIds the ids of the column properties to include
    * @return this EntitySelectCondition instance
    */
   EntitySelectCondition setSelectPropertyIds(final String... propertyIds);
