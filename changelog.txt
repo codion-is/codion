@@ -5174,3 +5174,5 @@
   DefaultLocalEntityConnection.selectMany(EntitySelectCondition) now restricts the selected properties to the ones specified in the above
   Static imports FTW
   MultipleRecordsFoundException added
+  DefaultEntitySelectCondition.domain removed and foreignKeyFetchDepthLimit added
+  DefaultLocalEntityConnection.setForeignKeys() now handles using the default foreign key fetch depth

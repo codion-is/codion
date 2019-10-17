@@ -66,7 +66,7 @@ public final class EntityConditions {
    */
   public EntitySelectCondition selectCondition(final List<Entity.Key> keys) {
     checkKeysParameter(keys);
-    return new DefaultEntitySelectCondition(domain, keys.get(0).getEntityId(), createKeyCondition(keys));
+    return new DefaultEntitySelectCondition(keys.get(0).getEntityId(), createKeyCondition(keys));
   }
 
   /**
@@ -91,7 +91,7 @@ public final class EntityConditions {
    * @return a select condition encompassing all entities of the given type
    */
   public EntitySelectCondition selectCondition(final String entityId) {
-    return new DefaultEntitySelectCondition(domain, entityId);
+    return new DefaultEntitySelectCondition(entityId);
   }
 
   /**
@@ -102,7 +102,7 @@ public final class EntityConditions {
    * @return a select condition based on the given column condition
    */
   public EntitySelectCondition selectCondition(final String entityId, final Condition<Property.ColumnProperty> propertyCondition) {
-    return new DefaultEntitySelectCondition(domain, entityId, propertyCondition);
+    return new DefaultEntitySelectCondition(entityId, propertyCondition);
   }
 
   /**
@@ -513,13 +513,12 @@ public final class EntityConditions {
 
     private static final long serialVersionUID = 1;
 
-    private Domain domain;
-
     private EntityCondition condition;
     private HashMap<String, Integer> foreignKeyFetchDepthLimits;
     private List<String> selectPropertyIds;
 
     private Entity.OrderBy orderBy;
+    private Integer foreignKeyFetchDepthLimit;
     private int fetchCount = -1;
     private boolean forUpdate;
     private int limit;
@@ -530,8 +529,8 @@ public final class EntityConditions {
      * @param domain the domain model
      * @param entityId the ID of the entity to select
      */
-    private DefaultEntitySelectCondition(final Domain domain, final String entityId) {
-      this(domain, entityId, null);
+    private DefaultEntitySelectCondition(final String entityId) {
+      this(entityId, null);
     }
 
     /**
@@ -542,8 +541,7 @@ public final class EntityConditions {
      * @see PropertyCondition
      * @see EntityKeyCondition
      */
-    private DefaultEntitySelectCondition(final Domain domain, final String entityId, final Condition<Property.ColumnProperty> condition) {
-      this.domain = requireNonNull(domain);
+    private DefaultEntitySelectCondition(final String entityId, final Condition<Property.ColumnProperty> condition) {
       this.condition = new DefaultEntityCondition(entityId, condition);
       this.fetchCount = fetchCount;
     }
@@ -627,21 +625,17 @@ public final class EntityConditions {
     }
 
     @Override
-    public int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyId) {
+    public Integer getForeignKeyFetchDepthLimit(final String foreignKeyPropertyId) {
       if (foreignKeyFetchDepthLimits != null && foreignKeyFetchDepthLimits.containsKey(foreignKeyPropertyId)) {
         return foreignKeyFetchDepthLimits.get(foreignKeyPropertyId);
       }
 
-      return domain.getForeignKeyProperty(getEntityId(), foreignKeyPropertyId).getFetchDepth();
+      return foreignKeyFetchDepthLimit;
     }
 
     @Override
     public EntitySelectCondition setForeignKeyFetchDepthLimit(final int fetchDepthLimit) {
-      final List<Property.ForeignKeyProperty> properties = domain.getForeignKeyProperties(getEntityId());
-      for (int i = 0; i < properties.size(); i++) {
-        setForeignKeyFetchDepthLimit(properties.get(i).getPropertyId(), fetchDepthLimit);
-      }
-
+      this.foreignKeyFetchDepthLimit = fetchDepthLimit;
       return this;
     }
 
@@ -668,10 +662,10 @@ public final class EntityConditions {
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
-      stream.writeObject(domain.getDomainId());
       stream.writeObject(orderBy);
       stream.writeInt(fetchCount);
       stream.writeBoolean(forUpdate);
+      stream.writeObject(foreignKeyFetchDepthLimit);
       stream.writeObject(foreignKeyFetchDepthLimits);
       stream.writeObject(selectPropertyIds);
       stream.writeObject(condition);
@@ -680,16 +674,15 @@ public final class EntityConditions {
     }
 
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-      final String domainId = (String) stream.readObject();
       orderBy = (Entity.OrderBy) stream.readObject();
       fetchCount = stream.readInt();
       forUpdate = stream.readBoolean();
+      foreignKeyFetchDepthLimit = (Integer) stream.readObject();
       foreignKeyFetchDepthLimits = (HashMap<String, Integer>) stream.readObject();
       selectPropertyIds = (List<String>) stream.readObject();
       condition = (EntityCondition) stream.readObject();
       limit = stream.readInt();
       offset = stream.readInt();
-      domain = Domain.getDomain(domainId);
     }
   }
 

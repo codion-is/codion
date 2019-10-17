@@ -73,14 +73,14 @@ public interface EntitySelectCondition extends EntityCondition {
 
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
-   * should be fetched.
+   * should be fetched, -1 no limit and null unspecified (use default).
    * @param foreignKeyPropertyId the foreign key property ID
    * @return the number of levels of foreign key values to fetch
    */
-  int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyId);
+  Integer getForeignKeyFetchDepthLimit(final String foreignKeyPropertyId);
 
   /**
-   * Limit the levels of foreign keys to fetch via the given foreign key property, default 1
+   * Limit the levels of foreign keys to fetch via the given foreign key property
    * @param foreignKeyPropertyId the property id
    * @param fetchDepthLimit the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
@@ -88,7 +88,7 @@ public interface EntitySelectCondition extends EntityCondition {
   EntitySelectCondition setForeignKeyFetchDepthLimit(final String foreignKeyPropertyId, final int fetchDepthLimit);
 
   /**
-   * Limit the levels of foreign keys to fetch, default 1
+   * Limit the levels of foreign keys to fetch
    * @param fetchDepthLimit the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */

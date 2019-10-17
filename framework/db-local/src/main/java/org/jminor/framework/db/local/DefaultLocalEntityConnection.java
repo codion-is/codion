@@ -852,7 +852,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final List<Property.ForeignKeyProperty> foreignKeyProperties = domain.getForeignKeyProperties(entities.get(0).getEntityId());
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final Property.ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
-      final int conditionFetchDepthLimit = condition.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyId());
+      Integer conditionFetchDepthLimit = condition.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyId());
+      if (conditionFetchDepthLimit == null) {//use the default one
+        conditionFetchDepthLimit = foreignKeyProperty.getFetchDepth();
+      }
       if (!limitForeignKeyFetchDepth || conditionFetchDepthLimit == -1 || currentForeignKeyFetchDepth < conditionFetchDepthLimit) {
         try {
           logAccess("setForeignKeys", new Object[] {foreignKeyProperty});
