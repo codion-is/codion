@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultForeignKeyConditionModel;
@@ -20,7 +19,6 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
 
   /**
    * Constructs a SwingForeignKeyConditionModel instance
-   * @param entityConditions the {@link EntityConditions} instance to use
    * @param property the property
    * @param entityComboBoxModel a EntityComboBoxModel
    */

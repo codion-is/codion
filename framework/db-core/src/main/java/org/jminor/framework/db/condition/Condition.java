@@ -55,7 +55,6 @@ public interface Condition extends Serializable {
 
   /**
    * For providing dynamic Conditions
-   * @param <T> the type used to describe the condition values
    */
   interface Provider {
 
