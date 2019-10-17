@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.empdept.minimal;
 
 import org.jminor.common.User;
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.remote.Server;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -104,8 +104,8 @@ public class EmpDeptMinimalApp {
             final Property.ForeignKeyProperty foreignKeyProperty) {
       final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
-        comboBoxModel.setSelectConditionProvider(() -> new EntityConditions(getDomain()).propertyCondition(
-                "scott.emp", "job", Condition.Type.LIKE, asList("MANAGER", "PRESIDENT")));
+        comboBoxModel.setSelectConditionProvider(() -> EntityConditions.using(getDomain()).propertyCondition(
+                "scott.emp", "job", ConditionType.LIKE, asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }
 

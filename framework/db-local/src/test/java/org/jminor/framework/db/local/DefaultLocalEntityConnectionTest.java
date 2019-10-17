@@ -7,11 +7,11 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.User;
 import org.jminor.common.db.AbstractFunction;
 import org.jminor.common.db.AbstractProcedure;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultIterator;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.MultipleRecordsFoundException;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -24,12 +24,12 @@ import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
-import org.jminor.framework.domain.Property;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,7 +51,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.EntityConditions.stringCondition;
+import static org.jminor.framework.db.condition.Conditions.stringCondition;
 import static org.jminor.framework.domain.Entities.getKeys;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,7 +67,7 @@ public class DefaultLocalEntityConnectionTest {
   private DefaultLocalEntityConnection connection;
 
   private static final TestDomain DOMAIN = new TestDomain();
-  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(DOMAIN);
+  private static final EntityConditions ENTITY_CONDITIONS = EntityConditions.using(DOMAIN);
 
   @BeforeAll
   public static void beforeClass() {
@@ -115,7 +115,7 @@ public class DefaultLocalEntityConnectionTest {
       connection.beginTransaction();
       final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT);
       key.put(TestDomain.DEPARTMENT_ID, 40);
-      connection.delete(ENTITY_CONDITIONS.condition(key));
+      connection.delete(EntityConditions.condition(key));
       try {
         connection.selectSingle(key);
         fail();
@@ -174,7 +174,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void deleteByConditionWithForeignKeys() throws DatabaseException {
-    assertThrows(DatabaseException.class, () -> connection.delete(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "ACCOUNTING")));
+    assertThrows(DatabaseException.class, () -> connection.delete(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "ACCOUNTING")));
   }
 
   @Test
@@ -217,7 +217,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectManyLimitOffset() throws Exception {
-    final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP)
+    final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP)
             .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_NAME)).setLimit(2);
     List<Entity> result = connection.selectMany(condition);
     assertEquals(2, result.size());
@@ -244,12 +244,12 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(2, result.size());
     result = connection.selectMany(getKeys(result));
     assertEquals(2, result.size());
-    result = connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT, stringCondition("deptno in (10, 20)")));
+    result = connection.selectMany(EntityConditions.selectCondition(TestDomain.T_DEPARTMENT, stringCondition("deptno in (10, 20)")));
     assertEquals(2, result.size());
-    result = connection.selectMany(ENTITY_CONDITIONS.selectCondition(JOINED_QUERY_ENTITY_ID, stringCondition("d.deptno = 10")));
+    result = connection.selectMany(EntityConditions.selectCondition(JOINED_QUERY_ENTITY_ID, stringCondition("d.deptno = 10")));
     assertEquals(7, result.size());
 
-    final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP, stringCondition("ename = 'BLAKE'"));
+    final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP, stringCondition("ename = 'BLAKE'"));
     result = connection.selectMany(condition);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
@@ -299,7 +299,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectManyPropertyIds() throws Exception {
-    final List<Entity> emps = connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP)
+    final List<Entity> emps = connection.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP)
             .setSelectPropertyIds(TestDomain.EMP_ID, TestDomain.EMP_JOB, TestDomain.EMP_DEPARTMENT));
     for (final Entity emp : emps) {
       assertTrue(emp.containsKey(TestDomain.EMP_ID));
@@ -315,32 +315,32 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectManyInvalidPropertyIds() throws Exception {
     assertThrows(IllegalArgumentException.class, () ->
-            connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP)
+            connection.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP)
                     .setSelectPropertyIds(TestDomain.EMP_ID, TestDomain.EMP_JOB, TestDomain.EMP_DEPARTMENT_FK)));
   }
 
   @Test
   public void selectManyInvalidColumn() throws Exception {
-    assertThrows(DatabaseException.class, () -> connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+    assertThrows(DatabaseException.class, () -> connection.selectMany(EntityConditions.selectCondition(TestDomain.T_DEPARTMENT,
             stringCondition("no_column is null"))));
   }
 
   @Test
   public void selectRowCount() throws Exception {
-    int rowCount = connection.selectRowCount(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT));
+    int rowCount = connection.selectRowCount(EntityConditions.condition(TestDomain.T_DEPARTMENT));
     assertEquals(4, rowCount);
-    Condition<Property.ColumnProperty> deptNoCondition = ENTITY_CONDITIONS.propertyCondition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_ID, Condition.Type.GREATER_THAN, 30);
-    rowCount = connection.selectRowCount(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT, deptNoCondition));
+    Condition deptNoCondition = ENTITY_CONDITIONS.propertyCondition(TestDomain.T_DEPARTMENT,
+            TestDomain.DEPARTMENT_ID, ConditionType.GREATER_THAN, 30);
+    rowCount = connection.selectRowCount(EntityConditions.condition(TestDomain.T_DEPARTMENT, deptNoCondition));
     assertEquals(2, rowCount);
 
-    rowCount = connection.selectRowCount(ENTITY_CONDITIONS.condition(JOINED_QUERY_ENTITY_ID));
+    rowCount = connection.selectRowCount(EntityConditions.condition(JOINED_QUERY_ENTITY_ID));
     assertEquals(16, rowCount);
-    deptNoCondition = ENTITY_CONDITIONS.propertyCondition(JOINED_QUERY_ENTITY_ID, "d.deptno", Condition.Type.GREATER_THAN, 30);
-    rowCount = connection.selectRowCount(ENTITY_CONDITIONS.condition(JOINED_QUERY_ENTITY_ID, deptNoCondition));
+    deptNoCondition = ENTITY_CONDITIONS.propertyCondition(JOINED_QUERY_ENTITY_ID, "d.deptno", ConditionType.GREATER_THAN, 30);
+    rowCount = connection.selectRowCount(EntityConditions.condition(JOINED_QUERY_ENTITY_ID, deptNoCondition));
     assertEquals(4, rowCount);
 
-    rowCount = connection.selectRowCount(ENTITY_CONDITIONS.condition(GROUP_BY_QUERY_ENTITY_ID));
+    rowCount = connection.selectRowCount(EntityConditions.condition(GROUP_BY_QUERY_ENTITY_ID));
     assertEquals(4, rowCount);
   }
 
@@ -350,7 +350,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
     sales = connection.selectSingle(sales.getKey());
     assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
-    sales = connection.selectSingle(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+    sales = connection.selectSingle(EntityConditions.selectCondition(TestDomain.T_DEPARTMENT,
             stringCondition("dname = 'SALES'")));
     assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
 
@@ -515,19 +515,19 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectValuesNonColumnProperty() throws Exception {
-    assertThrows(IllegalArgumentException.class, () -> connection.selectValues(TestDomain.EMP_DEPARTMENT_LOCATION, ENTITY_CONDITIONS.condition(TestDomain.T_EMP)));
+    assertThrows(IllegalArgumentException.class, () -> connection.selectValues(TestDomain.EMP_DEPARTMENT_LOCATION, EntityConditions.condition(TestDomain.T_EMP)));
   }
 
   @Test
   public void selectValues() throws Exception {
-    List<Object> result = connection.selectValues(TestDomain.DEPARTMENT_NAME, ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT));
+    List<Object> result = connection.selectValues(TestDomain.DEPARTMENT_NAME, EntityConditions.condition(TestDomain.T_DEPARTMENT));
     assertEquals("ACCOUNTING", result.get(0));
     assertEquals("OPERATIONS", result.get(1));
     assertEquals("RESEARCH", result.get(2));
     assertEquals("SALES", result.get(3));
 
     result = connection.selectValues(TestDomain.DEPARTMENT_NAME, ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, 10));
+            TestDomain.DEPARTMENT_ID, ConditionType.LIKE, 10));
     assertTrue(result.contains("ACCOUNTING"));
     assertFalse(result.contains("SALES"));
   }
@@ -538,7 +538,7 @@ public class DefaultLocalEntityConnectionTest {
     final DefaultLocalEntityConnection connection2 = initializeConnection();
     final String originalLocation;
     try {
-      final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "SALES");
+      final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "SALES");
       condition.setForUpdate(true);
 
       Entity sales = connection.selectSingle(condition);
@@ -553,7 +553,7 @@ public class DefaultLocalEntityConnectionTest {
         connection2.getDatabaseConnection().rollback();
       }
 
-      connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT));//any query will do
+      connection.selectMany(EntityConditions.selectCondition(TestDomain.T_DEPARTMENT));//any query will do
 
       try {
         sales = connection2.update(singletonList(sales)).get(0);
@@ -577,7 +577,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.setOptimisticLocking(true);
     final Entity allen;
     try {
-      final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP, TestDomain.EMP_NAME, Condition.Type.LIKE, "ALLEN");
+      final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP, TestDomain.EMP_NAME, ConditionType.LIKE, "ALLEN");
 
       allen = connection.selectSingle(condition);
 
@@ -645,10 +645,10 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void dualIterator() throws Exception {
     final DefaultLocalEntityConnection connection = initializeConnection();
-    final ResultIterator<Entity> deptIterator = connection.iterator(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT));
+    final ResultIterator<Entity> deptIterator = connection.iterator(EntityConditions.selectCondition(TestDomain.T_DEPARTMENT));
     while (deptIterator.hasNext()) {
       final ResultIterator<Entity> empIterator = connection.iterator(ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP,
-              TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, deptIterator.next()));
+              TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, deptIterator.next()));
       while (empIterator.hasNext()) {
         empIterator.next();
       }

@@ -9,7 +9,6 @@ module org.jminor.common.db {
   requires transitive org.jminor.common.core;
 
   exports org.jminor.common.db;
-  exports org.jminor.common.db.condition;
   exports org.jminor.common.db.exception;
   exports org.jminor.common.db.reports;
   exports org.jminor.common.db.pool;

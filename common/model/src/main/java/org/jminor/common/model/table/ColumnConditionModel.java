@@ -10,7 +10,7 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.PropertyValue;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 
 import java.text.Format;
 
@@ -94,7 +94,7 @@ public interface ColumnConditionModel<K> {
   /**
    * Sets the automatic wildcard type.
    * Note that this is only applicable to string based condition models and only used for
-   * condition types {@link Condition.Type#LIKE} and {@link Condition.Type#NOT_LIKE}
+   * condition types {@link ConditionType#LIKE} and {@link ConditionType#NOT_LIKE}
    * @param automaticWildcard the automatic wildcard type to use
    */
   void setAutomaticWildcard(final AutomaticWildcard automaticWildcard);
@@ -155,12 +155,12 @@ public interface ColumnConditionModel<K> {
   /**
    * @return the search type
    */
-  Condition.Type getConditionType();
+  ConditionType getConditionType();
 
   /**
    * @param conditionType the search type
    */
-  void setConditionType(final Condition.Type conditionType);
+  void setConditionType(final ConditionType conditionType);
 
   /**
    * @return true if the current search type requires a lower bound value to be specified,
@@ -191,7 +191,7 @@ public interface ColumnConditionModel<K> {
 
   /**
    * Disables and clears this condition model, that is, sets the upper and lower bounds to null
-   * and the condition type to the default value {@link Condition.Type#LIKE}
+   * and the condition type to the default value {@link ConditionType#LIKE}
    */
   void clearCondition();
 
@@ -218,7 +218,7 @@ public interface ColumnConditionModel<K> {
   /**
    * @return an observer notified each time the condition type changes
    */
-  EventObserver<Condition.Type> getConditionTypeObserver();
+  EventObserver<ConditionType> getConditionTypeObserver();
 
   /**
    * @param listener a listener to be notified each time the enabled state changes
@@ -233,7 +233,7 @@ public interface ColumnConditionModel<K> {
   /**
    * @param listener a listener to be notified each time the condition type changes
    */
-  void addConditionTypeListener(final EventDataListener<Condition.Type> listener);
+  void addConditionTypeListener(final EventDataListener<ConditionType> listener);
 
   /**
    * @param listener the listener to remove

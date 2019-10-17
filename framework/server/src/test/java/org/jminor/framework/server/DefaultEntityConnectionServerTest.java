@@ -7,7 +7,6 @@ import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.Clients;
@@ -17,12 +16,13 @@ import org.jminor.common.remote.Server;
 import org.jminor.common.remote.ServerException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.condition.Condition;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Property;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -73,11 +73,10 @@ public class DefaultEntityConnectionServerTest {
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
     final Domain domain = connection.getDomain();
-    final EntityConditions conditions = new EntityConditions(domain);
-    final Condition<Property.ColumnProperty> condition = conditions.stringCondition("mgr > ?",
+    final Condition condition = Conditions.stringCondition("mgr > ?",
             singletonList(4), singletonList(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_MGR)));
 
-    connection.selectMany(conditions.selectCondition(TestDomain.T_EMP, condition));
+    connection.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP, condition));
 
     connection.disconnect();
   }
@@ -164,8 +163,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    final EntityConditions entityConditions = new EntityConditions(remoteConnectionTwo.getDomain());
-    final EntitySelectCondition selectCondition = entityConditions.selectCondition(TestDomain.T_EMP)
+    final EntitySelectCondition selectCondition = EntityConditions.selectCondition(TestDomain.T_EMP)
             .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.selectMany(selectCondition);
 
@@ -174,7 +172,7 @@ public class DefaultEntityConnectionServerTest {
     final ClientLog log = admin.getClientLog(connectionRequestTwo.getClientId());
 
     final MethodLogger.Entry entry = log.getEntries().get(0);
-    assertEquals("getDomain", entry.getMethod());
+    assertEquals("selectMany", entry.getMethod());
     assertTrue(entry.getDuration() >= 0);
 
     admin.removeConnections(true);

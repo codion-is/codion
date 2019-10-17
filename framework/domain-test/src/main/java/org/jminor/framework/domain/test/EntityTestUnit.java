@@ -59,7 +59,6 @@ public class EntityTestUnit {
 
   private EntityConnection connection;
   private Domain domain;
-  private EntityConditions conditions;
 
   /**
    * Instantiates a new EntityTestUnit.
@@ -79,17 +78,6 @@ public class EntityTestUnit {
     }
 
     return domain;
-  }
-
-  /**
-   * @return the domain conditions
-   */
-  public final EntityConditions getConditions() {
-    if (conditions == null) {
-      conditions = new EntityConditions(getDomain());
-    }
-
-    return conditions;
   }
 
   /**
@@ -291,7 +279,7 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
     }
     else {
-      connection.selectMany(getConditions().selectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
+      connection.selectMany(EntityConditions.selectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
     }
   }
 

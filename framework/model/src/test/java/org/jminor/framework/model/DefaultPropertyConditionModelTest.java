@@ -3,9 +3,8 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Property;
 
@@ -18,30 +17,29 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultPropertyConditionModelTest {
 
   private static final Domain DOMAIN = new TestDomain();
-  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(DOMAIN);
 
   @Test
   public void propertyConditionModel() throws Exception {
     final Property.ColumnProperty property = (Property.ColumnProperty) DOMAIN.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
-    final PropertyConditionModel model = new DefaultPropertyConditionModel(ENTITY_CONDITIONS, property);
+    final PropertyConditionModel model = new DefaultPropertyConditionModel(property);
     assertEquals(property, model.getColumnIdentifier());
-    model.setConditionType(Condition.Type.LIKE);
+    model.setConditionType(ConditionType.LIKE);
     assertFalse(model.isLowerBoundRequired());
     model.setUpperBound("upper%");
     assertEquals(property.getPropertyId() + " like ?", model.getCondition().getWhereClause());
     model.setUpperBound("upper");
     assertEquals(property.getPropertyId() + " = ?", model.getCondition().getWhereClause());
-    model.setConditionType(Condition.Type.NOT_LIKE);
+    model.setConditionType(ConditionType.NOT_LIKE);
     model.setUpperBound("upper%");
     assertEquals(property.getPropertyId() + " not like ?", model.getCondition().getWhereClause());
     model.setUpperBound("upper");
     assertEquals(property.getPropertyId() + " <> ?", model.getCondition().getWhereClause());
-    model.setConditionType(Condition.Type.GREATER_THAN);
+    model.setConditionType(ConditionType.GREATER_THAN);
     assertEquals(property.getPropertyId() + " >= ?", model.getCondition().getWhereClause());
-    model.setConditionType(Condition.Type.LESS_THAN);
+    model.setConditionType(ConditionType.LESS_THAN);
     assertEquals(property.getPropertyId() + " <= ?", model.getCondition().getWhereClause());
 
-    model.setConditionType(Condition.Type.WITHIN_RANGE);
+    model.setConditionType(ConditionType.WITHIN_RANGE);
     assertTrue(model.isLowerBoundRequired());
     model.setLowerBound("lower");
     List values = model.getCondition().getValues();
@@ -49,12 +47,12 @@ public class DefaultPropertyConditionModelTest {
     assertTrue(values.contains("lower"));
     assertEquals("(" + property.getPropertyId() + " >= ? and " + property.getPropertyId() + " <= ?)", model.getCondition().getWhereClause());
 
-    model.setConditionType(Condition.Type.LIKE);
+    model.setConditionType(ConditionType.LIKE);
     model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
     values = model.getCondition().getValues();
     assertTrue(values.contains("%upper%"));
     assertEquals(property.getPropertyId() + " like ?", model.getCondition().getWhereClause());
-    model.setConditionType(Condition.Type.NOT_LIKE);
+    model.setConditionType(ConditionType.NOT_LIKE);
     assertEquals(property.getPropertyId() + " not like ?", model.getCondition().getWhereClause());
   }
 }

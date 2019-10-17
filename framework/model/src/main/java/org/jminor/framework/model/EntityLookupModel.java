@@ -6,7 +6,7 @@ package org.jminor.framework.model;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
-import org.jminor.common.db.condition.Condition;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -105,7 +105,7 @@ public interface EntityLookupModel extends EntityDataProvider {
    * @param additionalConditionProvider the additional lookup condition provider
    * @return this EntityLookupModel instance
    */
-  EntityLookupModel setAdditionalConditionProvider(final Condition.Provider<Property.ColumnProperty> additionalConditionProvider);
+  EntityLookupModel setAdditionalConditionProvider(final Condition.Provider additionalConditionProvider);
 
   /**
    * Override the default toString() for lookup elements when displayed

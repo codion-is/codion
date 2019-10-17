@@ -24,9 +24,9 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
    * @param property the property
    * @param entityComboBoxModel a EntityComboBoxModel
    */
-  public SwingForeignKeyConditionModel(final EntityConditions entityConditions, final Property.ForeignKeyProperty property,
+  public SwingForeignKeyConditionModel(final Property.ForeignKeyProperty property,
                                        final EntityComboBoxModel entityComboBoxModel) {
-    super(entityConditions, property);
+    super(property);
     this.entityComboBoxModel = entityComboBoxModel;
     if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
       entityComboBoxModel.setSelectedItem((Entity) getUpperBound());

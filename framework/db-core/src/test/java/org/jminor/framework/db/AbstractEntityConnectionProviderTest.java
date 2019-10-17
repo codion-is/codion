@@ -26,7 +26,6 @@ public final class AbstractEntityConnectionProviderTest {
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.getConnectionType());
     assertEquals(provider.getDomain(), DOMAIN);
     assertEquals(USER, provider.getUser());
-    assertNotNull(provider.getConditions());
 
     final EntityConnection connection1 = provider.getConnection();
     assertTrue(provider.isConnectionValid());

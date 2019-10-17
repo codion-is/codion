@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -21,30 +21,25 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
         implements ForeignKeyConditionModel {
 
   private final EntityLookupModel entityLookupModel;
-  private final EntityConditions entityConditions;
 
   private boolean updatingModel = false;
 
   /**
    * Constructs a DefaultForeignKeyConditionModel instance
-   * @param entityConditions the {@link EntityConditions} instance to use
    * @param property the property
    */
-  public DefaultForeignKeyConditionModel(final EntityConditions entityConditions,
-                                         final Property.ForeignKeyProperty property) {
-    this(entityConditions, property, null);
+  public DefaultForeignKeyConditionModel(final Property.ForeignKeyProperty property) {
+    this(property, null);
   }
 
   /**
    * Constructs a DefaultForeignKeyConditionModel instance
-   * @param entityConditions the {@link EntityConditions} instance to use
    * @param property the property
    * @param entityLookupModel a EntityLookupModel
    */
-  public DefaultForeignKeyConditionModel(final EntityConditions entityConditions, final Property.ForeignKeyProperty property,
+  public DefaultForeignKeyConditionModel(final Property.ForeignKeyProperty property,
                                          final EntityLookupModel entityLookupModel) {
     super(property, Entity.class, Property.WILDCARD_CHARACTER.get());
-    this.entityConditions = entityConditions;
     this.entityLookupModel = entityLookupModel;
     if (entityLookupModel != null) {
       bindLookupModelEvents();
@@ -83,13 +78,13 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
 
   /** {@inheritDoc} */
   @Override
-  public final Condition<Property.ColumnProperty> getCondition() {
+  public final Condition getCondition() {
     final Object upperBound = getUpperBound();
     if (upperBound instanceof Collection) {
-      return entityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), (Collection) upperBound);
+      return EntityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), (Collection) upperBound);
     }
 
-    return entityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), singletonList(upperBound));
+    return EntityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), singletonList(upperBound));
   }
 
   /** {@inheritDoc} */

@@ -7,10 +7,10 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -53,11 +53,6 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final Domain domain;
 
   /**
-   * The conditions instance
-   */
-  private final EntityConditions entityConditions;
-
-  /**
    * true if the data should only be fetched once, unless {@code forceRefresh()} is called
    */
   private boolean staticData = false;
@@ -70,7 +65,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /**
    * the Condition.Provider used when querying
    */
-  private Condition.Provider<Property.ColumnProperty> selectConditionProvider;
+  private Condition.Provider selectConditionProvider;
 
   /**
    * A map of entities used to filter the contents of this model by foreign key value.
@@ -104,7 +99,6 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
     this.domain = connectionProvider.getDomain();
-    this.entityConditions = connectionProvider.getConditions();
     setStaticData(this.domain.isStaticData(entityId));
     setFilterCondition(foreignKeyFilterCondition);
   }
@@ -176,20 +170,14 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /** {@inheritDoc} */
   @Override
-  public final void setSelectConditionProvider(final Condition.Provider<Property.ColumnProperty> selectConditionProvider) {
+  public final void setSelectConditionProvider(final Condition.Provider selectConditionProvider) {
     this.selectConditionProvider = selectConditionProvider;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Condition.Provider<Property.ColumnProperty> getSelectConditionProvider() {
+  public final Condition.Provider getSelectConditionProvider() {
     return this.selectConditionProvider;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public EntityConditions getEntityConditions() {
-    return entityConditions;
   }
 
   /** {@inheritDoc} */
@@ -338,7 +326,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(entityConditions.selectCondition(entityId,
+      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityId,
               selectConditionProvider == null ? null : selectConditionProvider.getCondition()));
     }
     catch (final DatabaseException e) {

@@ -37,7 +37,6 @@ public final class DefaultEntityEditModelTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
-  private static final EntityConditions ENTITY_CONDITIONS = CONNECTION_PROVIDER.getConditions();
 
   private EntityEditModel employeeEditModel;
   private Property.ColumnProperty jobProperty;
@@ -182,7 +181,7 @@ public final class DefaultEntityEditModelTest {
 
     assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityId());
     assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectValues(TestDomain.EMP_JOB,
-            ENTITY_CONDITIONS.condition(TestDomain.T_EMP)),
+            EntityConditions.condition(TestDomain.T_EMP)),
             employeeEditModel.getValueProvider(jobProperty).values());
 
     employeeEditModel.refresh();

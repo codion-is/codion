@@ -4,12 +4,10 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.EventListener;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
 
@@ -116,17 +114,12 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
    * Sets the condition provider to use when querying data
    * @param selectConditionProvider the condition provider
    */
-  void setSelectConditionProvider(final Condition.Provider<Property.ColumnProperty> selectConditionProvider);
+  void setSelectConditionProvider(final Condition.Provider selectConditionProvider);
 
   /**
    * @return the select condition provider, null if none is specified
    */
-  Condition.Provider<Property.ColumnProperty> getSelectConditionProvider();
-
-  /**
-   * @return the EntityConditions instance used by this model
-   */
-  EntityConditions getEntityConditions();
+  Condition.Provider getSelectConditionProvider();
 
   /**
    * @param listener a listener to be notified each time this model is refreshed

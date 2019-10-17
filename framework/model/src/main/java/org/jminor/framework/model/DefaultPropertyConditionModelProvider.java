@@ -4,7 +4,6 @@
 package org.jminor.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Property;
 
 /**
@@ -15,8 +14,8 @@ public class DefaultPropertyConditionModelProvider implements PropertyConditionM
   /** {@inheritDoc} */
   @Override
   public PropertyConditionModel<Property.ColumnProperty> initializePropertyConditionModel(
-          final EntityConditions entityConditions, final Property.ColumnProperty property) {
-    return new DefaultPropertyConditionModel(entityConditions, property);
+          final Property.ColumnProperty property) {
+    return new DefaultPropertyConditionModel(property);
   }
 
   /** {@inheritDoc} */
@@ -26,6 +25,6 @@ public class DefaultPropertyConditionModelProvider implements PropertyConditionM
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getForeignEntityId(), connectionProvider);
     lookupModel.getMultipleSelectionAllowedValue().set(true);
 
-    return new DefaultForeignKeyConditionModel(connectionProvider.getConditions(), property, lookupModel);
+    return new DefaultForeignKeyConditionModel(property, lookupModel);
   }
 }

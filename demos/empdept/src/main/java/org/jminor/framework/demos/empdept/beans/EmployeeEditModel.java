@@ -3,8 +3,9 @@
  */
 package org.jminor.framework.demos.empdept.beans;
 
-import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.ConditionType;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -34,8 +35,8 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       comboBoxModel.setFilterSelectedItem(false);
       //Only select the president and managers from the database
       comboBoxModel.setSelectConditionProvider(() ->
-              getConnectionProvider().getConditions().propertyCondition(EmpDept.T_EMPLOYEE,
-                      EmpDept.EMPLOYEE_JOB, Condition.Type.LIKE, asList("MANAGER", "PRESIDENT")));
+              EntityConditions.using(getConnectionProvider().getDomain()).propertyCondition(EmpDept.T_EMPLOYEE,
+                      EmpDept.EMPLOYEE_JOB, ConditionType.LIKE, asList("MANAGER", "PRESIDENT")));
     }
 
     return comboBoxModel;

@@ -99,11 +99,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private final EntityTableConditionModel conditionModel;
 
   /**
-   * The conditions instance
-   */
-  private final EntityConditions entityConditions;
-
-  /**
    * If true then querying should be disabled if no condition is specified
    */
   private final State queryConditionRequiredState = States.state();
@@ -164,7 +159,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
     this.conditionModel = conditionModel;
-    this.entityConditions = connectionProvider.getConditions();
     bindEventsInternal();
     applyPreferences();
   }
@@ -604,7 +598,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
 
     try {
-      return connectionProvider.getConnection().selectMany(entityConditions.selectCondition(entityId,
+      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityId,
               getConditionModel().getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
