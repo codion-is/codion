@@ -41,7 +41,6 @@ public final class Conditions {
   /**
    * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
-   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
   public static Condition.Set conditionSet(final Conjunction conjunction) {
@@ -52,7 +51,6 @@ public final class Conditions {
    * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
    * @param condition the condition
-   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
   public static Condition.Set conditionSet(final Conjunction conjunction, final Condition condition) {
@@ -64,7 +62,6 @@ public final class Conditions {
    * @param conjunction the Conjunction to use
    * @param firstCondition the first condition
    * @param secondCondition the second condition
-   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
   public static Condition.Set conditionSet(final Conjunction conjunction, final Condition firstCondition,
@@ -78,7 +75,6 @@ public final class Conditions {
    * @param firstCondition the first condition
    * @param secondCondition the second condition
    * @param thirdCondition the third condition
-   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
   public static Condition.Set conditionSet(final Conjunction conjunction, final Condition firstCondition,
@@ -93,7 +89,6 @@ public final class Conditions {
    * @param secondCondition the second condition
    * @param thirdCondition the third condition
    * @param fourthCondition the fourth condition
-   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
   public static Condition.Set conditionSet(final Conjunction conjunction, final Condition firstCondition,
@@ -110,7 +105,6 @@ public final class Conditions {
    * @param thirdCondition the third condition
    * @param fourthCondition the fourth condition
    * @param fifthCondition the fifth condition
-   * @param <T> the condition column type
    * @return a {@link Condition.Set} instance
    */
   public static Condition.Set conditionSet(final Conjunction conjunction, final Condition firstCondition,
@@ -123,7 +117,6 @@ public final class Conditions {
    * Initializes a new {@link Condition.Set} instance
    * @param conjunction the conjunction to use
    * @param condition the Condition objects to be included in this set
-   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
   public static Condition.Set conditionSet(final Conjunction conjunction, final Collection<Condition> condition) {
