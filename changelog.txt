@@ -5177,3 +5177,4 @@
   DefaultEntitySelectCondition.domain removed and foreignKeyFetchDepthLimit added
   DefaultLocalEntityConnection.setForeignKeys() now handles using the default foreign key fetch depth
   Major refactoring, common.db.condition contents moved to framework.db.condition
+  Refactoring continued, methods moved from EntityConditions to Conditions

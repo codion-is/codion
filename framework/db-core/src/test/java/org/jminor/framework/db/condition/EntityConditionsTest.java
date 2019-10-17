@@ -13,11 +13,6 @@ import org.jminor.framework.domain.Property;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Types;
 
 import static java.util.Arrays.asList;
@@ -35,16 +30,16 @@ public class EntityConditionsTest {
   public void test() {
     final Condition.Set set1 = Conditions.conditionSet(
             Conjunction.AND,
-            propertyCondition(Properties.columnProperty("stringProperty", Types.VARCHAR), ConditionType.LIKE, "value"),
-            propertyCondition(Properties.columnProperty("intProperty", Types.INTEGER), ConditionType.LIKE, 666)
+            Conditions.propertyCondition(Properties.columnProperty("stringProperty", Types.VARCHAR), ConditionType.LIKE, "value"),
+            Conditions.propertyCondition(Properties.columnProperty("intProperty", Types.INTEGER), ConditionType.LIKE, 666)
     );
     final EntityCondition condition = condition("entityId", set1);
     assertEquals("(stringProperty = ? and intProperty = ?)", condition.getWhereClause());
     assertEquals(set1, condition.getCondition());
     final Condition.Set set2 = Conditions.conditionSet(
             Conjunction.AND,
-            propertyCondition(Properties.columnProperty("doubleProperty", Types.DOUBLE), ConditionType.LIKE, 666.666),
-            propertyCondition(Properties.columnProperty("stringProperty2", Types.VARCHAR), ConditionType.LIKE, false, "valu%e2")
+            Conditions.propertyCondition(Properties.columnProperty("doubleProperty", Types.DOUBLE), ConditionType.LIKE, 666.666),
+            Conditions.propertyCondition(Properties.columnProperty("stringProperty2", Types.VARCHAR), ConditionType.LIKE, false, "valu%e2")
     );
     final Condition.Set set3 = Conditions.conditionSet(Conjunction.OR, set1, set2);
     assertEquals("((stringProperty = ? and intProperty = ?) or (doubleProperty = ? and upper(stringProperty2) like upper(?)))",
@@ -128,7 +123,7 @@ public class EntityConditionsTest {
   @Test
   public void foreignKeyConditionTest() {
     final Property.ForeignKeyProperty foreignKeyProperty = DOMAIN.getForeignKeyProperty(TestDomain.T_MASTER, TestDomain.MASTER_SUPER_FK);
-    final Condition condition = foreignKeyCondition(foreignKeyProperty,
+    final Condition condition = Conditions.foreignKeyCondition(foreignKeyProperty,
             ConditionType.LIKE, singletonList(null));
     assertEquals("super_id is null", condition.getWhereClause());
   }
@@ -225,50 +220,6 @@ public class EntityConditionsTest {
   }
 
   @Test
-  public void stringConditionWithoutValue() {
-    final String crit = "id = 1";
-    final Condition condition = Conditions.stringCondition(crit);
-    assertEquals(crit, condition.getWhereClause());
-    assertEquals(0, condition.getProperties().size());
-    assertEquals(0, condition.getValues().size());
-  }
-
-  @Test
-  public void stringConditionWithValue() {
-    final String crit = "id = ?";
-    final Condition condition = Conditions.stringCondition(crit, singletonList(1),
-            singletonList(DOMAIN.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ID)));
-    assertEquals(crit, condition.getWhereClause());
-    assertEquals(1, condition.getProperties().size());
-    assertEquals(1, condition.getValues().size());
-  }
-
-  @Test
-  public void stringConditionNullConditionString() {
-    assertThrows(NullPointerException.class, () -> Conditions.stringCondition(null));
-  }
-
-  @Test
-  public void stringConditionNullValues() {
-    assertThrows(NullPointerException.class, () -> Conditions.stringCondition("some is null", null,
-            emptyList()));
-  }
-
-  @Test
-  public void stringConditionNullKeys() {
-    assertThrows(NullPointerException.class, () -> Conditions.stringCondition("some is null", emptyList(), null));
-  }
-
-  @Test
-  public void serialization() throws IOException, ClassNotFoundException {
-    final Property.ColumnProperty id = DOMAIN.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ID);
-    final Condition condition = Conditions.conditionSet(Conjunction.AND,
-            Conditions.stringCondition("test", asList("val1", "val2"), asList(id, id)),
-            Conditions.stringCondition("testing", asList("val1", "val2"), asList(id, id)));
-    deserialize(serialize(condition));
-  }
-
-  @Test
   public void stringConditionTest() {
     final EntitySelectCondition condition = selectCondition(TestDomain.T_DEPARTMENT,
             Conditions.stringCondition("department name is not null"))
@@ -341,17 +292,5 @@ public class EntityConditionsTest {
     assertEquals(1, condition.getProperties().size());
     assertEquals("DEPT", condition.getValues().get(0));
     assertEquals(TestDomain.DEPARTMENT_NAME, condition.getProperties().get(0).getPropertyId());
-  }
-
-  private static byte[] serialize(final Object obj) throws IOException {
-    final ByteArrayOutputStream out = new ByteArrayOutputStream();
-    final ObjectOutputStream os = new ObjectOutputStream(out);
-    os.writeObject(obj);
-
-    return out.toByteArray();
-  }
-
-  private static Object deserialize(final byte[] data) throws IOException, ClassNotFoundException {
-    return new ObjectInputStream(new ByteArrayInputStream(data)).readObject();
   }
 }
