@@ -143,8 +143,9 @@ public interface EntityConnection {
    * @param value the value to use in the condition
    * @return an entity of the type {@code entityId}, having the
    * value of {@code propertyId} as {@code value}
-   * @throws DatabaseException in case of a database exception or if many records were found
+   * @throws DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
   Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException;
 
@@ -152,8 +153,9 @@ public interface EntityConnection {
    * Selects a single entity by key
    * @param key the key of the entity to select
    * @return an entity having the key {@code key}
-   * @throws DatabaseException in case of a database exception or if many records were found
+   * @throws DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
   Entity selectSingle(final Entity.Key key) throws DatabaseException;
 
@@ -162,8 +164,9 @@ public interface EntityConnection {
    * if the condition results in more than one entity
    * @param condition the condition specifying the entity to select
    * @return the entities according to the given condition
-   * @throws DatabaseException in case of a database exception or if many records were found
+   * @throws DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
   Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException;
 

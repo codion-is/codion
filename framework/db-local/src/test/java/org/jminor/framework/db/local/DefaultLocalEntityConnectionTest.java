@@ -13,6 +13,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.exception.MultipleRecordsFoundException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
@@ -50,6 +51,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.jminor.framework.db.condition.EntityConditions.stringCondition;
 import static org.jminor.framework.domain.Entities.getKeys;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -242,12 +244,12 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(2, result.size());
     result = connection.selectMany(getKeys(result));
     assertEquals(2, result.size());
-    result = connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT, ENTITY_CONDITIONS.stringCondition("deptno in (10, 20)")));
+    result = connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT, stringCondition("deptno in (10, 20)")));
     assertEquals(2, result.size());
-    result = connection.selectMany(ENTITY_CONDITIONS.selectCondition(JOINED_QUERY_ENTITY_ID, ENTITY_CONDITIONS.stringCondition("d.deptno = 10")));
+    result = connection.selectMany(ENTITY_CONDITIONS.selectCondition(JOINED_QUERY_ENTITY_ID, stringCondition("d.deptno = 10")));
     assertEquals(7, result.size());
 
-    final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP, ENTITY_CONDITIONS.stringCondition("ename = 'BLAKE'"));
+    final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP, stringCondition("ename = 'BLAKE'"));
     result = connection.selectMany(condition);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
@@ -320,7 +322,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectManyInvalidColumn() throws Exception {
     assertThrows(DatabaseException.class, () -> connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-            ENTITY_CONDITIONS.stringCondition("no_column is null"))));
+            stringCondition("no_column is null"))));
   }
 
   @Test
@@ -348,7 +350,8 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
     sales = connection.selectSingle(sales.getKey());
     assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
-    sales = connection.selectSingle(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT, ENTITY_CONDITIONS.stringCondition("dname = 'SALES'")));
+    sales = connection.selectSingle(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+            stringCondition("dname = 'SALES'")));
     assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
 
     final Entity king = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
@@ -385,7 +388,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectSingleManyFound() throws Exception {
-    assertThrows(DatabaseException.class, () -> connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_JOB, "MANAGER"));
+    assertThrows(MultipleRecordsFoundException.class, () -> connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_JOB, "MANAGER"));
   }
 
   @Test

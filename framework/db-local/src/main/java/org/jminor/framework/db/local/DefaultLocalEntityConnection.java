@@ -11,6 +11,7 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.exception.MultipleRecordsFoundException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
@@ -419,7 +420,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
     if (entities.size() > 1) {
-      throw new DatabaseException(MESSAGES.getString("many_records_found"));
+      throw new MultipleRecordsFoundException(MESSAGES.getString("many_records_found"));
     }
 
     return entities.get(0);

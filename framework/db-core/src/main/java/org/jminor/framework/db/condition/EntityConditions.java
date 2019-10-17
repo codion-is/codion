@@ -343,7 +343,7 @@ public final class EntityConditions {
   }
 
   /**
-   * Condition a new Condition based on the given condition string
+   * Creates a new {@link Condition} based on the given condition string
    * @param conditionString the condition string without the WHERE keyword
    * @param values the values used by this condition string
    * @param properties the properties representing the values used by this condition, in the same order as their respective values

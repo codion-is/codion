@@ -157,6 +157,7 @@ public interface RemoteEntityConnection extends Remote {
    * value of {@code propertyId} as {@code value}
    * @throws DatabaseException in case of a db exception
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
   Entity selectSingle(final String entityId, final String propertyId, final Object value) throws RemoteException, DatabaseException;
@@ -167,6 +168,7 @@ public interface RemoteEntityConnection extends Remote {
    * @return an entity having the key {@code key}
    * @throws DatabaseException in case of a db exception
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
   Entity selectSingle(final Entity.Key key) throws RemoteException, DatabaseException;
@@ -178,6 +180,7 @@ public interface RemoteEntityConnection extends Remote {
    * @return the entities according to the given condition
    * @throws DatabaseException if an exception occurs
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
   Entity selectSingle(final EntitySelectCondition condition) throws RemoteException, DatabaseException;

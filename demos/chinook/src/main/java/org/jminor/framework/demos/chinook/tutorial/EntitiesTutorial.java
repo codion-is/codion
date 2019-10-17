@@ -95,8 +95,8 @@ public final class EntitiesTutorial {
     EntityConnection connection = connectionProvider.getConnection();
 
     //select the artist Metallica by name, the selectSingle() method
-    //throws RecordNotFoundException if no record is found and a regular
-    //DatabaseException with a relevant message if more than one are found
+    //throws a RecordNotFoundException if no record is found and a
+    //MultipleRecordsFoundException if more than one are found
     Entity metallica =
             connection.selectSingle(T_ARTIST, ARTIST_NAME, "Metallica");
 
