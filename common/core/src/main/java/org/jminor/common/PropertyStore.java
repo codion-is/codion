@@ -293,9 +293,8 @@ public final class PropertyStore {
     return propertiesFromFile;
   }
 
-  private final class DefaultPropertyValue<T> implements PropertyValue<T> {
+  private final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
 
-    private final Event<T> changeEvent = Events.event();
     private final String property;
     private final Function<T, String> encoder;
 
@@ -329,13 +328,8 @@ public final class PropertyStore {
           properties.setProperty(property, encoder.apply(value));
           System.setProperty(property, properties.getProperty(property));
         }
-        changeEvent.fire(this.value);
+        fireChangeEvent(this.value);
       }
-    }
-
-    @Override
-    public ValueObserver<T> getValueObserver() {
-      return Values.valueObserver(this);
     }
 
     @Override
@@ -346,11 +340,6 @@ public final class PropertyStore {
     @Override
     public boolean isNullable() {
       return true;
-    }
-
-    @Override
-    public EventObserver<T> getChangeObserver() {
-      return changeEvent.getObserver();
     }
 
     @Override

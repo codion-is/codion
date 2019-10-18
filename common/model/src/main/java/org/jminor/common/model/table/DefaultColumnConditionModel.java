@@ -319,25 +319,25 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void addUpperBoundListener(final EventListener listener) {
-    upperBoundValue.getChangeObserver().addListener(listener);
+    upperBoundValue.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeUpperBoundListener(final EventListener listener) {
-    upperBoundValue.getChangeObserver().removeListener(listener);
+    upperBoundValue.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addLowerBoundListener(final EventListener listener) {
-    lowerBoundValue.getChangeObserver().addListener(listener);
+    lowerBoundValue.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeLowerBoundListener(final EventListener listener) {
-    lowerBoundValue.getChangeObserver().removeListener(listener);
+    lowerBoundValue.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -379,19 +379,19 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void addConditionTypeListener(final EventDataListener<ConditionType> listener) {
-    conditionTypeValue.getChangeObserver().addDataListener(listener);
+    conditionTypeValue.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeConditionTypeListener(final EventDataListener listener) {
-    conditionTypeValue.getChangeObserver().removeDataListener(listener);
+    conditionTypeValue.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver<ConditionType> getConditionTypeObserver() {
-    return conditionTypeValue.getChangeObserver();
+    return conditionTypeValue;
   }
 
   /** {@inheritDoc} */
@@ -600,13 +600,13 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
         }
       }
     };
-    upperBoundValue.getChangeObserver().addListener(autoEnableListener);
-    lowerBoundValue.getChangeObserver().addListener(autoEnableListener);
-    upperBoundValue.getChangeObserver().addListener(conditionStateChangedEvent);
-    lowerBoundValue.getChangeObserver().addListener(conditionStateChangedEvent);
-    conditionTypeValue.getChangeObserver().addListener(conditionStateChangedEvent);
+    upperBoundValue.addListener(autoEnableListener);
+    lowerBoundValue.addListener(autoEnableListener);
+    upperBoundValue.addListener(conditionStateChangedEvent);
+    lowerBoundValue.addListener(conditionStateChangedEvent);
+    conditionTypeValue.addListener(conditionStateChangedEvent);
     enabledState.addListener(conditionStateChangedEvent);
-    conditionTypeValue.getChangeObserver().addListener(() ->
+    conditionTypeValue.addListener(() ->
             lowerBoundRequiredState.set(getConditionType().getValues().equals(ConditionType.Values.TWO)));
   }
 

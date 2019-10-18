@@ -5191,3 +5191,5 @@
   DefaultLocalEntityConnection.setForeignKeys() now handles using the default foreign key fetch depth
   Major refactoring, common.db.condition contents moved to framework.db.condition
   Refactoring continued, methods moved from EntityConditions to Conditions
+  ValueObserver now extends EventObserver, related refactoring
+  AbstractObservableValue and AbstractValue added and used throughout
