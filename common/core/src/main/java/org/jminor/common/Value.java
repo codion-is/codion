@@ -18,5 +18,5 @@ public interface Value<V> extends ValueObserver<V> {
   /**
    * @return a read only view of this value
    */
-  ValueObserver<V> getValueObserver();
+  ValueObserver<V> getObserver();
 }

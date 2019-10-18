@@ -3,6 +3,8 @@
  */
 package org.jminor.swing.common.ui.control;
 
+import org.jminor.common.Events;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,18 +45,18 @@ public class ControlProviderTest {
     set = new ControlSet("hello");
     set.add(new Control("one"));
     set.add(new Control("two"));
-    set.add(Controls.toggleControl(this, "booleanValue", "three", null));
+    set.add(Controls.toggleControl(this, "booleanValue", "three", Events.event()));
   }
 
   @Test
   public void createCheckBox() {
-    final JCheckBox box = ControlProvider.createCheckBox(Controls.toggleControl(this, "booleanValue", "Test", null));
+    final JCheckBox box = ControlProvider.createCheckBox(Controls.toggleControl(this, "booleanValue", "Test", Events.event()));
     assertEquals("Test", box.getText());
   }
 
   @Test
   public void createCheckBoxMenuItem() {
-    final JMenuItem item = ControlProvider.createCheckBoxMenuItem(Controls.toggleControl(this, "booleanValue", "Test", null));
+    final JMenuItem item = ControlProvider.createCheckBoxMenuItem(Controls.toggleControl(this, "booleanValue", "Test", Events.event()));
     assertEquals("Test", item.getText());
   }
 

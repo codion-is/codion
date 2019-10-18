@@ -35,8 +35,8 @@ public class ValuesTest {
     final AtomicInteger eventCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42, -1);
     assertFalse(intValue.isNullable());
-    intValue.getChangeObserver().addListener(eventCounter::incrementAndGet);
-    intValue.getValueObserver().getChangeObserver().addDataListener(data -> {
+    intValue.addListener(eventCounter::incrementAndGet);
+    intValue.getObserver().addDataListener(data -> {
       if (eventCounter.get() != 2) {
         assertNotNull(data);
       }
@@ -71,9 +71,9 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.propertyValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue);
-    modelValue.getChangeObserver().addListener(modelValueEventCounter::incrementAndGet);
+    modelValue.addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
-    uiValue.getChangeObserver().addListener(uiValueEventCounter::incrementAndGet);
+    uiValue.addListener(uiValueEventCounter::incrementAndGet);
     assertEquals(Integer.valueOf(42), uiValue.get());
     assertEquals(0, modelValueEventCounter.get());
     assertEquals(0, uiValueEventCounter.get());
@@ -105,9 +105,9 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.propertyValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, true);
-    modelValue.getChangeObserver().addListener(modelValueEventCounter::incrementAndGet);
+    modelValue.addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
-    uiValue.getChangeObserver().addListener(uiValueEventCounter::incrementAndGet);
+    uiValue.addListener(uiValueEventCounter::incrementAndGet);
     assertEquals(Integer.valueOf(42), uiValue.get());
     assertEquals(0, modelValueEventCounter.get());
     assertEquals(0, uiValueEventCounter.get());

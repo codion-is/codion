@@ -145,13 +145,20 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getConfigurationPanel() {
     final JPanel configBase = new JPanel(UiUtil.createGridLayout(0, 1));
 
-    final JSpinner timeoutSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "pooledConnectionTimeout", null));
-    final JSpinner cleanupIntervalSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "poolCleanupInterval", null));
-    final JSpinner maximumSizeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumPoolSize", null));
-    final JSpinner minimumSizeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "minimumPoolSize", null));
-    final JSpinner maximumRetryWaitSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumRetryWaitPeriod", null));
-    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumCheckOutTime", null));
-    final JSpinner newConnectionThresholdSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "newConnectionThreshold", null));
+    final JSpinner timeoutSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "pooledConnectionTimeout",
+            model.getStatisticsObserver()));
+    final JSpinner cleanupIntervalSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "poolCleanupInterval",
+            model.getStatisticsObserver()));
+    final JSpinner maximumSizeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumPoolSize",
+            model.getStatisticsObserver()));
+    final JSpinner minimumSizeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "minimumPoolSize",
+            model.getStatisticsObserver()));
+    final JSpinner maximumRetryWaitSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumRetryWaitPeriod",
+            model.getStatisticsObserver()));
+    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumCheckOutTime",
+            model.getStatisticsObserver()));
+    final JSpinner newConnectionThresholdSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "newConnectionThreshold",
+            model.getStatisticsObserver()));
 
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) cleanupIntervalSpinner.getEditor()).getTextField().setEditable(false);

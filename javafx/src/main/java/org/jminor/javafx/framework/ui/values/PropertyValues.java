@@ -3,14 +3,10 @@
  */
 package org.jminor.javafx.framework.ui.values;
 
+import org.jminor.common.AbstractValue;
 import org.jminor.common.DateFormats;
-import org.jminor.common.Event;
-import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
 import org.jminor.common.Item;
 import org.jminor.common.Value;
-import org.jminor.common.ValueObserver;
-import org.jminor.common.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityLookupModel;
 
@@ -351,16 +347,15 @@ public final class PropertyValues {
     }
   }
 
-  private static final class DefaultStringValue<V> implements StringValue<V> {
+  private static final class DefaultStringValue<V> extends AbstractValue<V> implements StringValue<V> {
 
     private final StringProperty stringProperty;
     private final StringConverter<V> converter;
-    private final Event<V> changeEvent = Events.event();
 
     public DefaultStringValue(final StringProperty stringProperty, final StringConverter<V> converter) {
       this.stringProperty = stringProperty;
       this.converter = converter;
-      this.stringProperty.addListener((observable, oldValue, newValue) -> changeEvent.fire((V) newValue));
+      this.stringProperty.addListener((observable, oldValue, newValue) -> fireChangeEvent(get()));
     }
 
     @Override
@@ -379,33 +374,18 @@ public final class PropertyValues {
     }
 
     @Override
-    public final EventObserver<V> getChangeObserver() {
-      return changeEvent.getObserver();
-    }
-
-    @Override
-    public ValueObserver<V> getValueObserver() {
-      return Values.valueObserver(this);
-    }
-
-    @Override
     public StringConverter<V> getConverter() {
       return converter;
     }
-
-    protected final StringProperty getStringProperty() {
-      return stringProperty;
-    }
   }
 
-  private static final class BooleanPropertyValue implements Value<Boolean> {
+  private static final class BooleanPropertyValue extends AbstractValue<Boolean> {
 
     private final BooleanProperty booleanProperty;
-    private final Event<Boolean> changeEvent = Events.event();
 
     public BooleanPropertyValue(final BooleanProperty booleanProperty) {
       this.booleanProperty = booleanProperty;
-      this.booleanProperty.addListener((observable, oldValue, newValue) -> changeEvent.fire(newValue));
+      this.booleanProperty.addListener((observable, oldValue, newValue) -> fireChangeEvent(newValue));
     }
 
     @Override
@@ -422,26 +402,15 @@ public final class PropertyValues {
     public boolean isNullable() {
       return false;
     }
-
-    @Override
-    public EventObserver<Boolean> getChangeObserver() {
-      return changeEvent.getObserver();
-    }
-
-    @Override
-    public ValueObserver<Boolean> getValueObserver() {
-      return Values.valueObserver(this);
-    }
   }
 
-  private static final class SelectedValue<V> implements Value<V> {
+  private static final class SelectedValue<V> extends AbstractValue<V> {
 
     private final SingleSelectionModel<V> selectionModel;
-    private final Event<V> changeEvent = Events.event();
 
     public SelectedValue(final SingleSelectionModel<V> selectionModel) {
       this.selectionModel = selectionModel;
-      this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> changeEvent.fire(newValue));
+      this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> fireChangeEvent(newValue));
     }
 
     @Override
@@ -458,26 +427,15 @@ public final class PropertyValues {
     public boolean isNullable() {
       return true;
     }
-
-    @Override
-    public EventObserver<V> getChangeObserver() {
-      return changeEvent.getObserver();
-    }
-
-    @Override
-    public ValueObserver<V> getValueObserver() {
-      return Values.valueObserver(this);
-    }
   }
 
-  private static final class SelectedItemValue implements Value {
+  private static final class SelectedItemValue extends AbstractValue {
 
-    private final Event changeEvent = Events.event();
     private final SelectionModel<Item> selectionModel;
 
     public SelectedItemValue(final SelectionModel<Item> selectionModel) {
       this.selectionModel = selectionModel;
-      selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> changeEvent.fire(newValue.getValue()));
+      selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> fireChangeEvent(newValue.getValue()));
     }
 
     @Override
@@ -494,26 +452,15 @@ public final class PropertyValues {
     public boolean isNullable() {
       return true;
     }
-
-    @Override
-    public EventObserver getChangeObserver() {
-      return changeEvent.getObserver();
-    }
-
-    @Override
-    public ValueObserver getValueObserver() {
-      return Values.valueObserver(this);
-    }
   }
 
-  private static final class EntityLookupSingleValue implements Value<Entity> {
+  private static final class EntityLookupSingleValue extends AbstractValue<Entity> {
 
     private final EntityLookupModel lookupModel;
-    private final Event<Entity> selectionListener = Events.event();
 
     private EntityLookupSingleValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(selected -> selectionListener.fire(selected.isEmpty() ? null : selected.iterator().next()));
+      this.lookupModel.addSelectedEntitiesListener(selected -> fireChangeEvent(get()));
     }
 
     @Override
@@ -532,26 +479,15 @@ public final class PropertyValues {
     public boolean isNullable() {
       return true;
     }
-
-    @Override
-    public EventObserver<Entity> getChangeObserver() {
-      return selectionListener.getObserver();
-    }
-
-    @Override
-    public ValueObserver<Entity> getValueObserver() {
-      return Values.valueObserver(this);
-    }
   }
 
-  private static final class EntityLookupMultiValue implements Value<Collection<Entity>> {
+  private static final class EntityLookupMultiValue extends AbstractValue<Collection<Entity>> {
 
     private final EntityLookupModel lookupModel;
-    private final Event<Collection<Entity>> selectionListener = Events.event();
 
     private EntityLookupMultiValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(selectionListener);
+      this.lookupModel.addSelectedEntitiesListener(this::fireChangeEvent);
     }
 
     @Override
@@ -567,16 +503,6 @@ public final class PropertyValues {
     @Override
     public boolean isNullable() {
       return false;
-    }
-
-    @Override
-    public EventObserver<Collection<Entity>> getChangeObserver() {
-      return selectionListener.getObserver();
-    }
-
-    @Override
-    public ValueObserver<Collection<Entity>> getValueObserver() {
-      return Values.valueObserver(this);
     }
   }
 }

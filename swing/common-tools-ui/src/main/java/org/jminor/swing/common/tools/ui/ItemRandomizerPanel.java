@@ -3,12 +3,12 @@
  */
 package org.jminor.swing.common.tools.ui;
 
+import org.jminor.common.AbstractObservableValue;
+import org.jminor.common.AbstractValue;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
-import org.jminor.common.Value;
-import org.jminor.common.ValueObserver;
 import org.jminor.common.Values;
 import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.ItemRandomizerModel;
@@ -158,7 +158,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     return spinnerModel;
   }
 
-  private final class EnabledModelValue implements Value<Boolean> {
+  private final class EnabledModelValue extends AbstractObservableValue<Boolean> {
     private final T item;
 
     private EnabledModelValue(final T item) {
@@ -184,20 +184,14 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     public EventObserver<Boolean> getChangeObserver() {
       return model.getEnabledObserver();
     }
-
-    @Override
-    public ValueObserver<Boolean> getValueObserver() {
-      return Values.valueObserver(this);
-    }
   }
 
-  private static final class EnabledUIValue implements Value<Boolean> {
-    private final Event<Boolean> changeEvent = Events.event();
+  private static final class EnabledUIValue extends AbstractValue<Boolean> {
     private final ButtonModel buttonModel;
 
     private EnabledUIValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
-      buttonModel.addItemListener(e -> changeEvent.fire());
+      buttonModel.addItemListener(e -> fireChangeEvent(get()));
     }
 
     @Override
@@ -214,19 +208,9 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     public boolean isNullable() {
       return false;
     }
-
-    @Override
-    public EventObserver<Boolean> getChangeObserver() {
-      return changeEvent.getObserver();
-    }
-
-    @Override
-    public ValueObserver<Boolean> getValueObserver() {
-      return Values.valueObserver(this);
-    }
   }
 
-  private final class WeightModelValue implements Value<Integer> {
+  private final class WeightModelValue extends AbstractObservableValue<Integer> {
     private final T item;
 
     private WeightModelValue(final T item) {
@@ -252,20 +236,14 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     public EventObserver<Integer> getChangeObserver() {
       return model.getWeightsObserver();
     }
-
-    @Override
-    public ValueObserver<Integer> getValueObserver() {
-      return Values.valueObserver(this);
-    }
   }
 
-  private static final class WeightUIValue implements Value<Integer> {
-    private final Event<Integer> changeEvent = Events.event();
+  private static final class WeightUIValue extends AbstractValue<Integer> {
     private final SpinnerNumberModel spinnerModel;
 
     private WeightUIValue(final SpinnerNumberModel spinnerModel) {
       this.spinnerModel = spinnerModel;
-      spinnerModel.addChangeListener(e -> changeEvent.fire((Integer) spinnerModel.getValue()));
+      spinnerModel.addChangeListener(e -> fireChangeEvent(get()));
     }
 
     @Override
@@ -281,16 +259,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     @Override
     public boolean isNullable() {
       return false;
-    }
-
-    @Override
-    public EventObserver<Integer> getChangeObserver() {
-      return changeEvent.getObserver();
-    }
-
-    @Override
-    public ValueObserver<Integer> getValueObserver() {
-      return Values.valueObserver(this);
     }
   }
 }

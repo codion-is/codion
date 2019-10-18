@@ -3,15 +3,11 @@
  */
 package org.jminor.swing.common.ui;
 
+import org.jminor.common.AbstractValue;
 import org.jminor.common.DateFormats;
-import org.jminor.common.Event;
-import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
 import org.jminor.common.FormatUtil;
 import org.jminor.common.Item;
 import org.jminor.common.Value;
-import org.jminor.common.ValueObserver;
-import org.jminor.common.Values;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
@@ -260,18 +256,7 @@ public final class UiValues {
     return new SelectedItemUIValue<>(comboBox);
   }
 
-  private abstract static class UIValue<V> implements Value<V> {
-    private final Event<V> changeEvent = Events.event();
-
-    @Override
-    public final EventObserver<V> getChangeObserver() {
-      return changeEvent.getObserver();
-    }
-
-    @Override
-    public ValueObserver<V> getValueObserver() {
-      return Values.valueObserver(this);
-    }
+  private abstract static class UIValue<V> extends AbstractValue<V> {
 
     @Override
     public final void set(final V value) {
@@ -297,10 +282,6 @@ public final class UiValues {
       return true;
     }
 
-    protected final void fireChangeEvent() {
-      changeEvent.fire();
-    }
-
     protected abstract void setInternal(final V value);
   }
 
@@ -322,7 +303,7 @@ public final class UiValues {
         document.addDocumentListener(new DocumentAdapter() {
           @Override
           public final void contentsChanged(final DocumentEvent e) {
-            fireChangeEvent();
+            fireChangeEvent(get());
           }
         });
       }
@@ -331,7 +312,7 @@ public final class UiValues {
           @Override
           public void focusLost(final FocusEvent e) {
             if (!e.isTemporary()) {
-              fireChangeEvent();
+              fireChangeEvent(get());
             }
           }
         });
@@ -429,7 +410,7 @@ public final class UiValues {
         numberField.getDocument().addDocumentListener(new DocumentAdapter() {
           @Override
           public final void contentsChanged(final DocumentEvent e) {
-            fireChangeEvent();
+            fireChangeEvent(get());
           }
         });
       }
@@ -438,7 +419,7 @@ public final class UiValues {
           @Override
           public void focusLost(final FocusEvent e) {
             if (!e.isTemporary()) {
-              fireChangeEvent();
+              fireChangeEvent(get());
             }
           }
         });
@@ -582,7 +563,7 @@ public final class UiValues {
 
     private ToggleUIValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
-      buttonModel.addItemListener(e -> fireChangeEvent());
+      buttonModel.addItemListener(e -> fireChangeEvent(get()));
     }
 
     @Override
@@ -617,7 +598,7 @@ public final class UiValues {
       this.comboBox = comboBox;
       comboBox.addItemListener(e -> {
         if (e.getStateChange() == ItemEvent.SELECTED) {
-          fireChangeEvent();
+          fireChangeEvent(get());
         }
       });
     }
@@ -646,7 +627,7 @@ public final class UiValues {
 
     private SpinnerUIValue(final SpinnerNumberModel spinnerModel) {
       this.spinnerModel = spinnerModel;
-      this.spinnerModel.addChangeListener(e -> fireChangeEvent());
+      this.spinnerModel.addChangeListener(e -> fireChangeEvent(get()));
     }
 
     @Override
@@ -665,7 +646,7 @@ public final class UiValues {
 
     public BoundedRangeUIValue(final BoundedRangeModel rangeModel) {
       this.rangeModel = rangeModel;
-      this.rangeModel.addChangeListener(e -> fireChangeEvent());
+      this.rangeModel.addChangeListener(e -> fireChangeEvent(get()));
     }
 
     @Override

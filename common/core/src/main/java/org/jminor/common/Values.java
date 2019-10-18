@@ -78,7 +78,7 @@ public final class Values {
    */
   public static State valueState(final Value<Boolean> booleanValue) {
     final State state = States.state();
-    Values.link(booleanValue, Values.stateValue(state));
+    link(booleanValue, stateValue(state));
 
     return state;
   }
@@ -114,9 +114,8 @@ public final class Values {
     new ValueLink<>(originalValue, linkedValue, oneWay);
   }
 
-  private static final class DefaultValue<V> implements Value<V> {
+  private static final class DefaultValue<V> extends AbstractValue<V> {
 
-    private final Event<V> changeEvent = Events.event();
     private final V nullValue;
     private V value;
 
@@ -130,7 +129,7 @@ public final class Values {
       final V actualValue = value == null ? nullValue : value;
       if (!Objects.equals(this.value, actualValue)) {
         this.value = actualValue;
-        changeEvent.fire(this.value);
+        fireChangeEvent(this.value);
       }
     }
 
@@ -143,19 +142,9 @@ public final class Values {
     public boolean isNullable() {
       return nullValue == null;
     }
-
-    @Override
-    public EventObserver<V> getChangeObserver() {
-      return changeEvent.getObserver();
-    }
-
-    @Override
-    public ValueObserver<V> getValueObserver() {
-      return valueObserver(this);
-    }
   }
 
-  private static final class PropertyValue<V> implements Value<V> {
+  private static final class PropertyValue<V> extends AbstractObservableValue<V> {
 
     private final EventObserver<V> changeEvent;
     private final Object valueOwner;
@@ -168,7 +157,7 @@ public final class Values {
       }
       try {
         this.valueOwner = requireNonNull(valueOwner, "valueOwner");
-        this.changeEvent = changeEvent;
+        this.changeEvent = requireNonNull(changeEvent);
         this.getMethod = Util.getGetMethod(valueClass, propertyName, valueOwner);
       }
       catch (final NoSuchMethodException e) {
@@ -221,17 +210,12 @@ public final class Values {
     public EventObserver<V> getChangeObserver() {
       return changeEvent;
     }
-
-    @Override
-    public ValueObserver<V> getValueObserver() {
-      return valueObserver(this);
-    }
   }
 
   /**
    * A boolean value based on a State, null values are translated to 'false'
    */
-  private static final class StateValue implements Value<Boolean> {
+  private static final class StateValue extends AbstractObservableValue<Boolean> {
 
     private final State state;
 
@@ -258,11 +242,6 @@ public final class Values {
     public EventObserver<Boolean> getChangeObserver() {
       return state.getObserver();
     }
-
-    @Override
-    public ValueObserver<Boolean> getValueObserver() {
-      return valueObserver(this);
-    }
   }
 
   /**
@@ -270,16 +249,6 @@ public final class Values {
    * @param <V> the type of the value
    */
   private static final class ValueLink<V> {
-
-    /**
-     * The Object wrapping the original value
-     */
-    private final Value<V> originalValue;
-
-    /**
-     * The Object wrapping the linked value
-     */
-    private final Value<V> linkedValue;
 
     /**
      * True while the linked value is being updated
@@ -299,18 +268,16 @@ public final class Values {
      * the linked value do not trigger a change in the original value
      */
     private ValueLink(final Value<V> originalValue, final Value<V> linkedValue, final boolean oneWay) {
-      this.originalValue = requireNonNull(originalValue, "originalValue");
-      this.linkedValue = requireNonNull(linkedValue, "linkedValue");
-      this.linkedValue.set(this.originalValue.get());
+      requireNonNull(originalValue, "originalValue");
+      requireNonNull(linkedValue, "linkedValue");
+      linkedValue.set(originalValue.get());
       bindEvents(originalValue, linkedValue, oneWay);
     }
 
     private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean oneWay) {
-      if (originalValue.getChangeObserver() != null) {
-        originalValue.getChangeObserver().addListener(() -> updateLinkedValue(originalValue, linkedValue));
-      }
-      if (!oneWay && linkedValue.getChangeObserver() != null) {//todo changeObserver null?
-        linkedValue.getChangeObserver().addListener(() -> updateOriginalValue(originalValue, linkedValue));
+      originalValue.addListener(() -> updateLinkedValue(originalValue, linkedValue));
+      if (!oneWay) {
+        linkedValue.addListener(() -> updateOriginalValue(originalValue, linkedValue));
       }
     }
 

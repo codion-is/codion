@@ -3,17 +3,13 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.AbstractValue;
 import org.jminor.common.Configuration;
 import org.jminor.common.DateFormats;
-import org.jminor.common.Event;
-import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
 import org.jminor.common.LoggerProxy;
 import org.jminor.common.PropertyValue;
 import org.jminor.common.StateObserver;
 import org.jminor.common.TextUtil;
-import org.jminor.common.Value;
-import org.jminor.common.ValueObserver;
 import org.jminor.common.Values;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -356,33 +352,7 @@ public final class EntityUiUtil {
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    final Event<String> valueChangeEvent = Events.event();
-    editModel.addValueListener(foreignKeyProperty, valueChange -> {
-      final Entity value = (Entity) valueChange.getCurrentValue();
-      valueChangeEvent.fire(value == null ? "" : value.toString());
-    });
-    ValueLinks.textValueLink(textField, new Value<String>() {
-      @Override
-      public void set(final String value) {/*read only*/}
-      @Override
-      public String get() {
-        final Entity value = editModel.getForeignKey(foreignKeyProperty.getPropertyId());
-
-        return value == null ? "" : value.toString();
-      }
-      @Override
-      public boolean isNullable() {
-        return false;
-      }
-      @Override
-      public EventObserver<String> getChangeObserver() {
-        return valueChangeEvent.getObserver();
-      }
-      @Override
-      public ValueObserver<String> getValueObserver() {
-        return Values.valueObserver(this);
-      }
-    });
+    ValueLinks.textValueLink(textField, new ForeignKeyModelValue(editModel, foreignKeyProperty.getPropertyId()));
 
     return textField;
   }
@@ -1144,13 +1114,12 @@ public final class EntityUiUtil {
     }
   }
 
-  private static final class LookupUIValue implements Value<Entity> {
-    private final Event<Entity> changeEvent = Events.event();
+  private static final class LookupUIValue extends AbstractValue<Entity> {
     private final EntityLookupModel lookupModel;
 
     private LookupUIValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(selected -> changeEvent.eventOccurred(selected.isEmpty() ? null : selected.iterator().next()));
+      this.lookupModel.addSelectedEntitiesListener(selected -> fireChangeEvent(get()));
     }
 
     @Override
@@ -1168,15 +1137,32 @@ public final class EntityUiUtil {
     public boolean isNullable() {
       return true;
     }
+  }
 
-    @Override
-    public EventObserver<Entity> getChangeObserver() {
-      return changeEvent.getObserver();
+  private static final class ForeignKeyModelValue extends AbstractValue<String> {
+
+    private final EntityEditModel editModel;
+    private final String foreignKeyPropertyId;
+
+    private ForeignKeyModelValue(final EntityEditModel editModel, final String foreignKeyPropertyId) {
+      this.editModel = editModel;
+      this.foreignKeyPropertyId = foreignKeyPropertyId;
+      editModel.addValueListener(foreignKeyPropertyId, valueChange -> fireChangeEvent(get()));
     }
 
     @Override
-    public ValueObserver<Entity> getValueObserver() {
-      return Values.valueObserver(this);
+    public void set(final String value) {/*read only*/}
+
+    @Override
+    public String get() {
+      final Entity value = editModel.getForeignKey(foreignKeyPropertyId);
+
+      return value == null ? "" : value.toString();
+    }
+
+    @Override
+    public boolean isNullable() {
+      return false;
     }
   }
 }

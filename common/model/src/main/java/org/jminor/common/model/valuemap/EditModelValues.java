@@ -3,12 +3,8 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.Event;
-import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
+import org.jminor.common.AbstractValue;
 import org.jminor.common.Value;
-import org.jminor.common.ValueObserver;
-import org.jminor.common.Values;
 import org.jminor.common.db.Attribute;
 
 /**
@@ -30,10 +26,9 @@ public final class EditModelValues {
     return new EditModelValue<>(editModel, key);
   }
 
-  private static final class EditModelValue<V> implements Value<V> {
+  private static final class EditModelValue<V> extends AbstractValue<V> {
 
     private final ValueMapEditModel<Attribute, V> editModel;
-    private final Event<V> changeEvent = Events.event();
     private final Attribute key;
 
     /**
@@ -44,7 +39,7 @@ public final class EditModelValues {
     private EditModelValue(final ValueMapEditModel editModel, final Attribute key) {
       this.editModel = editModel;
       this.key = key;
-      this.editModel.getValueObserver(key).addDataListener(valueChange -> changeEvent.fire((V) valueChange.getCurrentValue()));
+      this.editModel.getValueObserver(key).addDataListener(valueChange -> fireChangeEvent((V) valueChange.getCurrentValue()));
     }
 
     @Override
@@ -60,16 +55,6 @@ public final class EditModelValues {
     @Override
     public boolean isNullable() {
       return true;
-    }
-
-    @Override
-    public EventObserver<V> getChangeObserver() {
-      return changeEvent.getObserver();
-    }
-
-    @Override
-    public ValueObserver<V> getValueObserver() {
-      return Values.valueObserver(this);
     }
   }
 }
