@@ -120,16 +120,19 @@ public final class Values {
    */
   public abstract static class AbstractObservableValue<V> implements Value<V> {
 
+    private final Object lock = new Object();
     private ValueObserver<V> observer;
 
     /** {@inheritDoc} */
     @Override
     public final ValueObserver<V> getObserver() {
-      if (observer == null) {
-        observer = valueObserver(this);
-      }
+      synchronized (lock) {
+        if (observer == null) {
+          observer = valueObserver(this);
+        }
 
-      return observer;
+        return observer;
+      }
     }
   }
 
