@@ -1218,9 +1218,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     final List<String> orderBys = new LinkedList<>();
-    selectCondition.getOrderBy().getOrderByProperties().forEach(property ->
-            orderBys.add(domain.getColumnProperty(selectCondition.getEntityId(), property.getPropertyId()).getColumnName()
-                    + (property.isDescending() ? " desc" : "")));
+    final List<Entity.OrderBy.OrderByProperty> orderByProperties = selectCondition.getOrderBy().getOrderByProperties();
+    for (int i = 0; i < orderByProperties.size(); i++) {
+      final Entity.OrderBy.OrderByProperty property = orderByProperties.get(i);
+      orderBys.add(domain.getColumnProperty(selectCondition.getEntityId(),
+              property.getPropertyId()).getColumnName() + (property.isDescending() ? " desc" : ""));
+    }
 
     return String.join(", ", orderBys);
   }
