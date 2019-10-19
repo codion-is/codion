@@ -5180,3 +5180,4 @@
   Refactoring continued, methods moved from EntityConditions to Conditions
   ValueObserver now extends EventObserver, related refactoring
   AbstractObservableValue and AbstractValue added and used throughout
+  AbstractObservableValue and AbstractValue moved to Values

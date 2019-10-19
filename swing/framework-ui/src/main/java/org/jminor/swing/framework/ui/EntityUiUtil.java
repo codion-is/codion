@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.AbstractValue;
 import org.jminor.common.Configuration;
 import org.jminor.common.DateFormats;
 import org.jminor.common.LoggerProxy;
@@ -1114,7 +1113,7 @@ public final class EntityUiUtil {
     }
   }
 
-  private static final class LookupUIValue extends AbstractValue<Entity> {
+  private static final class LookupUIValue extends Values.AbstractValue<Entity> {
     private final EntityLookupModel lookupModel;
 
     private LookupUIValue(final EntityLookupModel lookupModel) {
@@ -1139,7 +1138,7 @@ public final class EntityUiUtil {
     }
   }
 
-  private static final class ForeignKeyModelValue extends AbstractValue<String> {
+  private static final class ForeignKeyModelValue extends Values.AbstractValue<String> {
 
     private final EntityEditModel editModel;
     private final String foreignKeyPropertyId;

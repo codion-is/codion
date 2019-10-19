@@ -114,6 +114,49 @@ public final class Values {
     new ValueLink<>(originalValue, linkedValue, oneWay);
   }
 
+  /**
+   * A base Value implementation handling the {@link ValueObserver} for a Value.
+   * @param <V> the value type
+   */
+  public abstract static class AbstractObservableValue<V> implements Value<V> {
+
+    private ValueObserver<V> observer;
+
+    /** {@inheritDoc} */
+    @Override
+    public final ValueObserver<V> getObserver() {
+      if (observer == null) {
+        observer = valueObserver(this);
+      }
+
+      return observer;
+    }
+  }
+
+  /**
+   * A base Value implementation handling everything except the value itself.
+   * @param <V> the value type
+   */
+  public abstract static class AbstractValue<V> extends AbstractObservableValue<V> {
+
+    private final Event<V> changeEvent = Events.event();
+
+    /** {@inheritDoc} */
+    @Override
+    public final EventObserver<V> getChangeObserver() {
+      return changeEvent.getObserver();
+    }
+
+    /**
+     * Fires the change event for this value, indicating that the underlying value
+     * has changed or at least that it may have changed
+     * @param value the new value
+     */
+    protected final void fireChangeEvent(final V value) {
+      changeEvent.fire(value);
+    }
+  }
+
   private static final class DefaultValue<V> extends AbstractValue<V> {
 
     private final V nullValue;

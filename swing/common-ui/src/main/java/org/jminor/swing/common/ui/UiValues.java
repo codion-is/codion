@@ -3,11 +3,11 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.AbstractValue;
 import org.jminor.common.DateFormats;
 import org.jminor.common.FormatUtil;
 import org.jminor.common.Item;
 import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
@@ -256,7 +256,7 @@ public final class UiValues {
     return new SelectedItemUIValue<>(comboBox);
   }
 
-  private abstract static class UIValue<V> extends AbstractValue<V> {
+  private abstract static class UIValue<V> extends Values.AbstractValue<V> {
 
     @Override
     public final void set(final V value) {

@@ -3,8 +3,8 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.AbstractValue;
 import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.common.db.Attribute;
 
 /**
@@ -26,7 +26,7 @@ public final class EditModelValues {
     return new EditModelValue<>(editModel, key);
   }
 
-  private static final class EditModelValue<V> extends AbstractValue<V> {
+  private static final class EditModelValue<V> extends Values.AbstractValue<V> {
 
     private final ValueMapEditModel<Attribute, V> editModel;
     private final Attribute key;
