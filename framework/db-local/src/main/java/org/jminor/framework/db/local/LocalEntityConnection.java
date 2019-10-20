@@ -10,7 +10,7 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.condition.EntityCondition;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entity;
 
 /**
@@ -78,7 +78,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * @return an iterator for the given query condition
    * @throws DatabaseException in case of an exception
    */
-  ResultIterator<Entity> iterator(final EntityCondition condition) throws DatabaseException;
+  ResultIterator<Entity> iterator(final EntitySelectCondition condition) throws DatabaseException;
 
   /**
    * @return true if optimistic locking is enabled
