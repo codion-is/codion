@@ -5195,3 +5195,4 @@
   AbstractObservableValue and AbstractValue added and used throughout
   AbstractObservableValue and AbstractValue moved to Values
   Synchronization improvements in Events and Values
+  DefaultLocalEntityConnection, minor refactoring to get rid of an iterator
