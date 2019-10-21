@@ -293,7 +293,7 @@ public final class PropertyStore {
     return propertiesFromFile;
   }
 
-  private final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
+  private final class DefaultPropertyValue<T> extends Values.AbstractValue<T> implements PropertyValue<T> {
 
     private final String property;
     private final Function<T, String> encoder;

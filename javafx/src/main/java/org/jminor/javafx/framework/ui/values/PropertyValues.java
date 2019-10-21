@@ -3,10 +3,10 @@
  */
 package org.jminor.javafx.framework.ui.values;
 
-import org.jminor.common.AbstractValue;
 import org.jminor.common.DateFormats;
 import org.jminor.common.Item;
 import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityLookupModel;
 
@@ -347,7 +347,7 @@ public final class PropertyValues {
     }
   }
 
-  private static final class DefaultStringValue<V> extends AbstractValue<V> implements StringValue<V> {
+  private static final class DefaultStringValue<V> extends Values.AbstractValue<V> implements StringValue<V> {
 
     private final StringProperty stringProperty;
     private final StringConverter<V> converter;
@@ -379,7 +379,7 @@ public final class PropertyValues {
     }
   }
 
-  private static final class BooleanPropertyValue extends AbstractValue<Boolean> {
+  private static final class BooleanPropertyValue extends Values.AbstractValue<Boolean> {
 
     private final BooleanProperty booleanProperty;
 
@@ -404,7 +404,7 @@ public final class PropertyValues {
     }
   }
 
-  private static final class SelectedValue<V> extends AbstractValue<V> {
+  private static final class SelectedValue<V> extends Values.AbstractValue<V> {
 
     private final SingleSelectionModel<V> selectionModel;
 
@@ -429,7 +429,7 @@ public final class PropertyValues {
     }
   }
 
-  private static final class SelectedItemValue extends AbstractValue {
+  private static final class SelectedItemValue extends Values.AbstractValue {
 
     private final SelectionModel<Item> selectionModel;
 
@@ -454,7 +454,7 @@ public final class PropertyValues {
     }
   }
 
-  private static final class EntityLookupSingleValue extends AbstractValue<Entity> {
+  private static final class EntityLookupSingleValue extends Values.AbstractValue<Entity> {
 
     private final EntityLookupModel lookupModel;
 
@@ -481,7 +481,7 @@ public final class PropertyValues {
     }
   }
 
-  private static final class EntityLookupMultiValue extends AbstractValue<Collection<Entity>> {
+  private static final class EntityLookupMultiValue extends Values.AbstractValue<Collection<Entity>> {
 
     private final EntityLookupModel lookupModel;
 
