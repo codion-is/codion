@@ -4,8 +4,9 @@
 package org.jminor.common;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -47,7 +48,7 @@ public final class Events {
   private static final class DefaultEvent<T> implements Event<T> {
 
     private final Object lock = new Object();
-    private volatile DefaultObserver<T> observer;
+    private DefaultObserver<T> observer;
 
     @Override
     public void fire() {
@@ -56,12 +57,14 @@ public final class Events {
 
     @Override
     public void fire(final T data) {
-      if (observer != null && observer.hasListeners()) {
-        for (final EventListener listener : observer.getEventListeners()) {
-          listener.eventOccurred();
-        }
-        for (final EventDataListener<T> dataListener : observer.getEventDataListeners()) {
-          dataListener.eventOccurred(data);
+      synchronized (lock) {
+        if (observer != null && observer.hasListeners()) {
+          for (final EventListener listener : observer.getEventListeners()) {
+            listener.eventOccurred();
+          }
+          for (final EventDataListener<T> dataListener : observer.getEventDataListeners()) {
+            dataListener.eventOccurred(data);
+          }
         }
       }
     }
@@ -111,8 +114,8 @@ public final class Events {
   private static final class DefaultObserver<T> implements EventObserver<T> {
 
     private final Object lock = new Object();
-    private Collection<EventListener> listeners;
-    private Collection<EventDataListener<T>> dataListeners;
+    private Set<EventListener> listeners;
+    private Set<EventDataListener<T>> dataListeners;
 
     @Override
     public void addDataListener(final EventDataListener<T> listener) {
@@ -142,7 +145,7 @@ public final class Events {
       }
     }
 
-    private Collection<EventListener> getEventListeners() {
+    private List<EventListener> getEventListeners() {
       synchronized (lock) {
         if (listeners == null) {
           return emptyList();
@@ -152,7 +155,7 @@ public final class Events {
       }
     }
 
-    private Collection<EventDataListener<T>> getEventDataListeners() {
+    private List<EventDataListener<T>> getEventDataListeners() {
       synchronized (lock) {
         if (dataListeners == null) {
           return emptyList();
@@ -168,7 +171,7 @@ public final class Events {
       }
     }
 
-    private Collection<EventListener> getListeners() {
+    private Set<EventListener> getListeners() {
       if (listeners == null) {
         listeners = new LinkedHashSet<>(1);
       }
@@ -176,7 +179,7 @@ public final class Events {
       return listeners;
     }
 
-    private Collection<EventDataListener<T>> getDataListeners() {
+    private Set<EventDataListener<T>> getDataListeners() {
       if (dataListeners == null) {
         dataListeners = new LinkedHashSet<>(1);
       }
