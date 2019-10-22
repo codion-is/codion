@@ -8,6 +8,7 @@ import org.jminor.framework.domain.Entity;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,7 +20,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   private static final long serialVersionUID = 1;
 
   private HashMap<String, Integer> foreignKeyFetchDepthLimits;
-  private List<String> selectPropertyIds;
+  private ArrayList<String> selectPropertyIds;
 
   private Entity.OrderBy orderBy;
   private Integer foreignKeyFetchDepthLimit;
@@ -147,7 +148,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   /** {@inheritDoc} */
   @Override
   public EntitySelectCondition setSelectPropertyIds(final String... propertyIds) {
-    this.selectPropertyIds = asList(propertyIds);
+    this.selectPropertyIds = new ArrayList<>(asList(propertyIds));
     return this;
   }
 
@@ -186,8 +187,8 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
     fetchCount = stream.readInt();
     forUpdate = stream.readBoolean();
     foreignKeyFetchDepthLimit = (Integer) stream.readObject();
-    foreignKeyFetchDepthLimits = (HashMap<String, Integer>) stream.readObject();
-    selectPropertyIds = (List<String>) stream.readObject();
+    foreignKeyFetchDepthLimits = (HashMap) stream.readObject();
+    selectPropertyIds = (ArrayList) stream.readObject();
     limit = stream.readInt();
     offset = stream.readInt();
   }

@@ -21,7 +21,7 @@ final class DefaultConditionSet implements Condition.Set {
 
   static final NullCondition NULL_CONDITION = new NullCondition();
 
-  private List<Condition> conditions = new ArrayList<>();
+  private ArrayList<Condition> conditions = new ArrayList<>();
   private Conjunction conjunction;
 
   DefaultConditionSet(final Conjunction conjunction, final Collection<Condition> conditions) {
@@ -80,10 +80,12 @@ final class DefaultConditionSet implements Condition.Set {
 
   private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
     conjunction = (Conjunction) stream.readObject();
-    conditions = (List) stream.readObject();
+    conditions = (ArrayList) stream.readObject();
   }
 
   static final class NullCondition implements Condition {
+
+    private static final long serialVersionUID = 1;
 
     @Override
     public List getValues() {
