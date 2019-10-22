@@ -32,7 +32,7 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
   /**
    * The values used in this condition
    */
-  private List values;
+  private ArrayList values;
 
   /**
    * True if this condition tests for null
@@ -126,11 +126,11 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
     conditionType = (ConditionType) stream.readObject();
     isNullCondition = stream.readBoolean();
     caseSensitive = stream.readBoolean();
-    values = (List) stream.readObject();
+    values = (ArrayList) stream.readObject();
   }
 
-  private static List initializeValues(final Object value) {
-    final List values = new ArrayList();
+  private static ArrayList initializeValues(final Object value) {
+    final ArrayList values = new ArrayList();
     if (value instanceof Collection) {
       values.addAll((Collection) value);
     }

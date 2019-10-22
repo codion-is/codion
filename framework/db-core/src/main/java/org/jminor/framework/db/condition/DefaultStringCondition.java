@@ -6,6 +6,7 @@ package org.jminor.framework.db.condition;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -15,13 +16,13 @@ final class DefaultStringCondition implements Condition.StringCondition {
   private static final long serialVersionUID = 1;
 
   private String conditionString;
-  private List values;
-  private List<String> propertyIds;
+  private ArrayList values;
+  private ArrayList<String> propertyIds;
 
   DefaultStringCondition(final String conditionString, final List values, final List<String> propertyIds) {
     this.conditionString = requireNonNull(conditionString, "conditionString");
-    this.values = requireNonNull(values, "values");
-    this.propertyIds = requireNonNull(propertyIds, "propertyIds");
+    this.values = new ArrayList(requireNonNull(values, "values"));
+    this.propertyIds = new ArrayList<>(requireNonNull(propertyIds, "propertyIds"));
   }
 
   /** {@inheritDoc} */
@@ -50,7 +51,7 @@ final class DefaultStringCondition implements Condition.StringCondition {
 
   private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
     conditionString = (String) stream.readObject();
-    values = (List) stream.readObject();
-    propertyIds = (List) stream.readObject();
+    values = (ArrayList) stream.readObject();
+    propertyIds = (ArrayList) stream.readObject();
   }
 }

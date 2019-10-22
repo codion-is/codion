@@ -162,7 +162,7 @@ class DefaultEntityCondition implements EntityCondition {
       return columnIdentifier + (conditionType == LIKE ? " is null" : " is not null");
     }
 
-    final int valueCount = isNullCondition ? 0 : values.size();
+    final int valueCount = values.size();
 
     final String valuePlaceholder = getValuePlaceholder(property, isCaseSensitive);
     final String value2Placeholder = valueCount == 2 ? getValuePlaceholder(property, isCaseSensitive) : null;
