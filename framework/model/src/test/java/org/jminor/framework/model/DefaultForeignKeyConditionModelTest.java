@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -40,7 +41,7 @@ public class DefaultForeignKeyConditionModelTest {
     Collection<Entity> searchEntities = conditionModel.getConditionEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
-    assertEquals("deptno = ?", conditionModel.getCondition().getWhereClause());
+    assertEquals("deptno = ?", Conditions.condition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final List<Entity> salesAccounting = asList(sales, accounting);
     lookupModel.setSelectedEntities(salesAccounting);
@@ -50,7 +51,7 @@ public class DefaultForeignKeyConditionModelTest {
     assertEquals(2, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     assertTrue(searchEntities.contains(accounting));
-    assertEquals("(deptno in (?, ?))", conditionModel.getCondition().getWhereClause());
+    assertEquals("(deptno in (?, ?))", Conditions.condition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
 
     assertEquals("dept_fkLIKEdeptno:30deptno:10null", conditionModel.toString());
 

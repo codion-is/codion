@@ -13,8 +13,8 @@ import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -92,7 +92,6 @@ final class HttpEntityConnection implements EntityConnection {
   private final HttpClientContext httpContext;
 
   private final Domain domain;
-  private final EntityConditions conditions;
 
   private boolean closed;
 
@@ -118,7 +117,6 @@ final class HttpEntityConnection implements EntityConnection {
     this.targetHost = new HttpHost(serverHostName, serverPort, httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);
     this.domain = initializeDomain();
-    this.conditions = EntityConditions.using(this.domain);
   }
 
   /** {@inheritDoc} */
@@ -328,13 +326,13 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(conditions.selectCondition(entityId, propertyId, ConditionType.LIKE, value));
+    return selectSingle(Conditions.selectCondition(entityId, propertyId, ConditionType.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return selectSingle(EntityConditions.selectCondition(key));
+    return selectSingle(Conditions.selectCondition(key));
   }
 
   /** {@inheritDoc} */
@@ -387,7 +385,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return selectMany(conditions.selectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
+    return selectMany(Conditions.selectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
   }
 
   /** {@inheritDoc} */

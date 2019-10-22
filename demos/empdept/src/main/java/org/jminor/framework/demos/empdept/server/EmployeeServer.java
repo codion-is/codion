@@ -8,7 +8,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.remote.RemoteClient;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -54,7 +54,7 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
     @Override
     public List<Entity> getEmployees() throws DatabaseException {
       synchronized (connectionProxy) {
-        return connectionProxy.selectMany(EntityConditions.selectCondition(EmpDept.T_EMPLOYEE));
+        return connectionProxy.selectMany(Conditions.selectCondition(EmpDept.T_EMPLOYEE));
       }
     }
   }

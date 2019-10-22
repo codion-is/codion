@@ -13,7 +13,7 @@ import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -279,7 +279,7 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
     }
     else {
-      connection.selectMany(EntityConditions.selectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
+      connection.selectMany(Conditions.selectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
     }
   }
 

@@ -5185,3 +5185,4 @@
   DefaultLocalEntityConnection, minor refactoring to get rid of an iterator
   LocalEntityConnection.createIterator() parameter type changed from EntityCondition to EntitySelectCondition
   DefaultLocalEntityConnection, some refactoring
+  EntityConditions merged into Conditions, major refactoring of framework.db.conditions, simplification even
