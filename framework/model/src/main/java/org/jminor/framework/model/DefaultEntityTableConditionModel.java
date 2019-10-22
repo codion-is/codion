@@ -228,7 +228,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
       conditionSet.add(additionalConditionProvider.getCondition());
     }
 
-    return conditionSet.getConditionCount() > 0 ? conditionSet : null;
+    return conditionSet.getConditions().size() > 0 ? conditionSet : null;
   }
 
   /** {@inheritDoc} */

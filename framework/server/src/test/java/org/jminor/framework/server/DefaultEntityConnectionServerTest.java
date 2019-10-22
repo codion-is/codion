@@ -18,7 +18,6 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
@@ -72,11 +71,9 @@ public class DefaultEntityConnectionServerTest {
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
-    final Domain domain = connection.getDomain();
-    final Condition condition = Conditions.stringCondition("mgr > ?",
-            singletonList(4), singletonList(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_MGR)));
+    final Condition condition = Conditions.stringCondition("mgr > ?", singletonList(4), singletonList(TestDomain.EMP_MGR));
 
-    connection.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP, condition));
+    connection.selectMany(Conditions.selectCondition(TestDomain.T_EMP, condition));
 
     connection.disconnect();
   }
@@ -163,7 +160,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    final EntitySelectCondition selectCondition = EntityConditions.selectCondition(TestDomain.T_EMP)
+    final EntitySelectCondition selectCondition = Conditions.selectCondition(TestDomain.T_EMP)
             .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.selectMany(selectCondition);
 

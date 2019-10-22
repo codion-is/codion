@@ -10,7 +10,7 @@ import org.jminor.common.db.ConditionType;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
@@ -42,7 +42,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityServletServerTest {
 
   private static final Domain DOMAIN = new TestDomain();
-  private static final EntityConditions CONDITIONS = EntityConditions.using(DOMAIN);
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -143,7 +142,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(EntityConditions.selectCondition(TestDomain.T_DEPARTMENT)))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Conditions.selectCondition(TestDomain.T_DEPARTMENT)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -172,7 +171,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/delete"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(EntityConditions.selectCondition(department.getKey())))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Conditions.selectCondition(department.getKey())))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -209,7 +208,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Conditions.selectCondition(TestDomain.T_DEPARTMENT,
                     TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "New name")))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
@@ -221,7 +220,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(EntityConditions.selectCondition(department.getKey())))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Conditions.selectCondition(department.getKey())))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -232,7 +231,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/delete"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Conditions.selectCondition(TestDomain.T_DEPARTMENT,
                     TestDomain.DEPARTMENT_ID, ConditionType.LIKE, -42)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());

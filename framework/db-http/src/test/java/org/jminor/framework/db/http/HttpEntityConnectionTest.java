@@ -5,13 +5,14 @@ package org.jminor.framework.db.http;
 
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.servlet.EntityServletServer;
@@ -166,12 +167,12 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectRowCount() throws IOException, DatabaseException {
-    assertEquals(4, connection.selectRowCount(EntityConditions.condition(TestDomain.T_DEPARTMENT)));
+    assertEquals(4, connection.selectRowCount(Conditions.condition(TestDomain.T_DEPARTMENT)));
   }
 
   @Test
   public void selectValues() throws IOException, DatabaseException {
-    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, EntityConditions.condition(TestDomain.T_DEPARTMENT));
+    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, Conditions.condition(TestDomain.T_DEPARTMENT));
     assertEquals(4, values.size());
   }
 
@@ -208,7 +209,7 @@ public final class HttpEntityConnectionTest {
   public void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
-    assertThrows(DatabaseException.class, () -> connection.delete(EntityConditions.condition(department.getKey())));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.condition(department.getKey())));
   }
 
   @Test

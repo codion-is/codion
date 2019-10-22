@@ -9,9 +9,8 @@ import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.TestDomain;
 
@@ -27,8 +26,6 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ObservableEntityListTest {
-
-  protected static final Domain DOMAIN = new TestDomain();
 
   protected static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -47,7 +44,7 @@ public final class ObservableEntityListTest {
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
-    list.setSelectCondition(EntityConditions.using(DOMAIN).propertyCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME,
+    list.setSelectCondition(Conditions.propertyCondition(TestDomain.DEPARTMENT_NAME,
             ConditionType.NOT_LIKE, asList("SALES", "OPERATIONS")));
     list.refresh();
     assertEquals(2, list.size());

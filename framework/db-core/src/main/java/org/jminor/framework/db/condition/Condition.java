@@ -3,7 +3,8 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.framework.domain.Property;
+import org.jminor.common.Conjunction;
+import org.jminor.common.db.ConditionType;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,15 +13,6 @@ import java.util.List;
  * Specifies objects serving as where conditions in database queries
  */
 public interface Condition extends Serializable {
-
-  /**
-   * Returns a condition clause based on this Condition without the WHERE keyword,
-   * note that this clause contains the ? substitution character instead of actual values.
-   * Note that this method can return an empty string.
-   * @return a where clause based on this Condition or an empty string if it does not represent a condition
-   * @see #getValues()
-   */
-  String getWhereClause();
 
   /**
    * @return a list of the values this condition is based on, in the order they appear
@@ -33,7 +25,44 @@ public interface Condition extends Serializable {
    * order as their respective values appear in the condition clause.
    * An empty list is returned in case no values are specified.
    */
-  List<Property.ColumnProperty> getProperties();
+  List<String> getPropertyIds();
+
+  /**
+   * A Condition based around a hard coded string
+   */
+  interface StringCondition extends Condition {
+
+    /**
+     * @return the condition string, with ? as substitution character
+     */
+    String getConditionString();
+  }
+
+  /**
+   * A Condition based on a {@link org.jminor.framework.domain.Property}
+   */
+  interface PropertyCondition extends Condition {
+
+    /**
+     * @return the propertyId
+     */
+    String getPropertyId();
+
+    /**
+     * @return the condition type
+     */
+    ConditionType getConditionType();
+
+    /**
+     * @return true if this condition denotes a null condition, as in, where x is null
+     */
+    boolean isNullCondition();
+
+    /**
+     * @return true if this condition is case sensitive, only applicable to conditions based on string properties
+     */
+    boolean isCaseSensitive();
+  }
 
   /**
    * An interface encapsulating a set of PropertyCondition objects,
@@ -48,9 +77,14 @@ public interface Condition extends Serializable {
     void add(final Condition condition);
 
     /**
-     * @return the number of conditions in this set
+     * @return the Conditions contained in this Set
      */
-    int getConditionCount();
+    List<Condition> getConditions();
+
+    /**
+     * @return the Set conjunction
+     */
+    Conjunction getConjunction();
   }
 
   /**

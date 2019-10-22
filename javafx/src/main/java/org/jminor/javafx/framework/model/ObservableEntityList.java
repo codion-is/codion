@@ -14,7 +14,7 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Entity;
 
 import javafx.beans.property.SimpleListProperty;
@@ -286,7 +286,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityId, selectCondition)
+      return connectionProvider.getConnection().selectMany(Conditions.selectCondition(entityId, selectCondition)
               .setOrderBy(connectionProvider.getDomain().getOrderBy(entityId)));
     }
     catch (final DatabaseException e) {

@@ -6,7 +6,7 @@ package org.jminor.swing.framework.model;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.PropertyComboBoxModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
@@ -34,7 +34,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
     this(() -> {
       try {
         return (Collection<T>) connectionProvider.getConnection().selectValues(property.getPropertyId(),
-                EntityConditions.condition(entityId));
+                Conditions.condition(entityId));
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);

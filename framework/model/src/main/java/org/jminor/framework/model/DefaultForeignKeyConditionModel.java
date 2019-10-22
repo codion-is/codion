@@ -81,10 +81,10 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   public final Condition getCondition() {
     final Object upperBound = getUpperBound();
     if (upperBound instanceof Collection) {
-      return Conditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), (Collection) upperBound);
+      return Conditions.propertyCondition(getColumnIdentifier().getPropertyId(), getConditionType(), (Collection) upperBound);
     }
 
-    return Conditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), singletonList(upperBound));
+    return Conditions.propertyCondition(getColumnIdentifier().getPropertyId(), getConditionType(), singletonList(upperBound));
   }
 
   /** {@inheritDoc} */

@@ -10,7 +10,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
@@ -110,13 +110,12 @@ public final class EntitiesTutorial {
     albums.forEach(System.out::println);
 
     //for more complex queries we use a EntitySelectCondition, provided
-    //by a EntityConditions instance based on the domain model
-    EntityConditions conditions = EntityConditions.using(connection.getDomain());
+    //by the Conditions factory class.
     //we create a select condition, where we specify the id of the entity
     //we're selecting, the id of the property we're searching by, the type
     //of condition and the value.
     EntitySelectCondition artistsCondition =
-            conditions.selectCondition(T_ARTIST,
+            Conditions.selectCondition(T_ARTIST,
                     ARTIST_NAME, ConditionType.LIKE, "An%");
     //and we set the order by clause
     artistsCondition.setOrderBy(
@@ -129,7 +128,7 @@ public final class EntitiesTutorial {
 
     //create a select condition
     EntitySelectCondition albumsCondition =
-            conditions.selectCondition(T_ALBUM,
+            Conditions.selectCondition(T_ALBUM,
                     ALBUM_ARTIST_FK, ConditionType.LIKE, artistsStartingWithAn);
     albumsCondition.setOrderBy(Domain.orderBy()
             .ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));

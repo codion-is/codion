@@ -6,7 +6,7 @@ package org.jminor.framework.db;
 import org.jminor.common.ProgressReporter;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Entity;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public final class EntityConnectionUtil {
   public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
                                   final boolean includePrimaryKeys, final String... entityIds) throws DatabaseException {
     for (final String entityId : entityIds) {
-      final List<Entity> entities = source.selectMany(EntityConditions.selectCondition(entityId).setForeignKeyFetchDepthLimit(0));
+      final List<Entity> entities = source.selectMany(Conditions.selectCondition(entityId).setForeignKeyFetchDepthLimit(0));
       if (!includePrimaryKeys) {
         entities.forEach(Entity::clearKeyValues);
       }

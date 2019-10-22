@@ -17,7 +17,7 @@ import org.jminor.common.remote.Clients;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Servers;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.domain.Domain;
@@ -59,7 +59,7 @@ public class DefaultRemoteEntityConnectionTest {
   public void rollbackOnDisconnect() throws Exception {
     final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238, true);
-    final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP);
+    final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.selectMany(condition).isEmpty());
@@ -93,7 +93,7 @@ public class DefaultRemoteEntityConnectionTest {
     };
     final ConnectionPool connectionPool = ConnectionPools.createDefaultConnectionPool(connectionProvider);
     final DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, connectionPool, client, 1238, true);
-    final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP);
+    final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.selectMany(condition);
     connection.delete(condition);
@@ -129,7 +129,7 @@ public class DefaultRemoteEntityConnectionTest {
         }
       });
 
-      proxy.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP));
+      proxy.selectMany(Conditions.selectCondition(TestDomain.T_EMP));
     }
     finally {
       if (registry != null) {

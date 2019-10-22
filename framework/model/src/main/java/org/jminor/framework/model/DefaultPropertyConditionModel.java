@@ -45,8 +45,10 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<P
   @Override
   public final Condition getCondition() {
     return getConditionType().getValues().equals(ConditionType.Values.TWO) ?
-            Conditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), asList(getLowerBound(), getUpperBound())) :
-            Conditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), getUpperBound());
+            Conditions.propertyCondition(getColumnIdentifier().getPropertyId(), getConditionType(),
+                    asList(getLowerBound(), getUpperBound()), isCaseSensitive()) :
+            Conditions.propertyCondition(getColumnIdentifier().getPropertyId(), getConditionType(),
+                    getUpperBound(), isCaseSensitive());
   }
 
   private static String toString(final Object object) {
