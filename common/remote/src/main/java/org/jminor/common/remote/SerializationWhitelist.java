@@ -36,7 +36,8 @@ public final class SerializationWhitelist {
   public static void configureSerializationWhitelist(final String whitelist, final Boolean dryRun) {
     if (!nullOrEmpty(whitelist)) {
       try (final Stream<String> stream = Files.lines(Paths.get(whitelist))) {
-        ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(stream.collect(Collectors.toSet())));
+        ObjectInputFilter.Config.setSerialFilter(dryRun ?
+                new SerializationFilterDryRun() : new SerializationFilter(stream.collect(Collectors.toSet())));
         LOG.debug("Serialization filter whitelist set: " + whitelist + " (dry run: " + dryRun + ")");
       }
       catch (final IOException e) {
