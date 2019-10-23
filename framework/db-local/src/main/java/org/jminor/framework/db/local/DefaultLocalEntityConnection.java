@@ -402,7 +402,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(Conditions.selectCondition(entityId, Conditions.propertyCondition(propertyId, LIKE, value)));
+    return selectSingle(Conditions.selectCondition(entityId, propertyId, LIKE, value));
   }
 
   /** {@inheritDoc} */
@@ -454,7 +454,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
-    return selectMany(Conditions.selectCondition(entityId, Conditions.propertyCondition(propertyId, LIKE, values == null ? null : asList(values))));
+    return selectMany(Conditions.selectCondition(entityId, propertyId, LIKE, values == null ? null : asList(values)));
   }
 
   /** {@inheritDoc} */
