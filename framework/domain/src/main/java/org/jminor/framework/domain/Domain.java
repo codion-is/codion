@@ -218,7 +218,7 @@ public class Domain implements Serializable {
     if (entityDefinitions.containsKey(entityId) && !ALLOW_REDEFINE_ENTITY.get()) {
       throw new IllegalArgumentException("Entity has already been defined: " + entityId + ", for table: " + tableName);
     }
-    final Map<String, Property> propertyMap = initializePropertyMap(domainId, entityId, properties);
+    final Map<String, Property> propertyMap = initializePropertyMap(entityId, properties);
     final List<Property.ColumnProperty> columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
     final List<Property.ForeignKeyProperty> foreignKeyProperties = unmodifiableList(getForeignKeyProperties(propertyMap.values()));
     final List<Property.TransientProperty> transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
@@ -866,12 +866,12 @@ public class Domain implements Serializable {
     return definition;
   }
 
-  private Map<String, Property> initializePropertyMap(final String domainId, final String entityId, final Property... properties) {
+  private Map<String, Property> initializePropertyMap(final String entityId, final Property... properties) {
     final Map<String, Property> propertyMap = new LinkedHashMap<>(properties.length);
     for (final Property property : properties) {
-      validateAndAddProperty(property, domainId, entityId, propertyMap);
+      validateAndAddProperty(property, entityId, propertyMap);
       if (property instanceof Property.ForeignKeyProperty) {
-        initializeForeignKeyProperty(domainId, entityId, propertyMap, (Property.ForeignKeyProperty) property);
+        initializeForeignKeyProperty(entityId, propertyMap, (Property.ForeignKeyProperty) property);
       }
     }
     checkIfPrimaryKeyIsSpecified(entityId, propertyMap);
@@ -879,7 +879,7 @@ public class Domain implements Serializable {
     return unmodifiableMap(propertyMap);
   }
 
-  private void initializeForeignKeyProperty(final String domainId, final String entityId, final Map<String, Property> propertyMap,
+  private void initializeForeignKeyProperty(final String entityId, final Map<String, Property> propertyMap,
                                             final Property.ForeignKeyProperty foreignKeyProperty) {
     final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
     if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
@@ -896,15 +896,14 @@ public class Domain implements Serializable {
     }
     for (final Property.ColumnProperty property : properties) {
       if (!(property instanceof Property.MirrorProperty)) {
-        validateAndAddProperty(property, domainId, entityId, propertyMap);
+        validateAndAddProperty(property, entityId, propertyMap);
       }
     }
   }
 
-  private static void validateAndAddProperty(final Property property, final String domainId, final String entityId,
+  private static void validateAndAddProperty(final Property property, final String entityId,
                                              final Map<String, Property> propertyMap) {
     checkIfUniquePropertyId(property, entityId, propertyMap);
-    property.setDomainId(domainId);
     property.setEntityId(entityId);
     propertyMap.put(property.getPropertyId(), property);
   }
