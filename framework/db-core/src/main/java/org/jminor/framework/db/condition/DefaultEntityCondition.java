@@ -23,13 +23,13 @@ import static org.jminor.common.Conjunction.AND;
 import static org.jminor.common.Conjunction.OR;
 import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.common.db.ConditionType.LIKE;
-import static org.jminor.framework.db.condition.DefaultConditionSet.NULL_CONDITION;
 import static org.jminor.framework.domain.Entities.getValues;
 
 class DefaultEntityCondition implements EntityCondition {
 
   private static final long serialVersionUID = 1;
 
+  private static final Condition.EmptyCondition EMPTY_CONDITION = new Condition.EmptyCondition();
   private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
   private static final String IN_PREFIX = " in (";
   private static final String NOT_IN_PREFIX = " not in (";
@@ -74,7 +74,7 @@ class DefaultEntityCondition implements EntityCondition {
    */
   DefaultEntityCondition(final String entityId, final Condition condition) {
     this.entityId = requireNonNull(entityId, "entityId");
-    this.condition = condition == null ? NULL_CONDITION : condition;
+    this.condition = condition == null ? EMPTY_CONDITION : condition;
   }
 
   /** {@inheritDoc} */
@@ -103,7 +103,7 @@ class DefaultEntityCondition implements EntityCondition {
 
   private void expandForeignKeyConditions(final Domain domain) {
     if (expandRequired && !expanded) {
-      condition = expandForeignKeyConditions(this.condition, domain);
+      condition = expandForeignKeyConditions(condition, domain);
       expanded = true;
     }
   }
@@ -128,7 +128,7 @@ class DefaultEntityCondition implements EntityCondition {
   }
 
   private String getWhereClause(final Condition condition, final Domain domain) {
-    if (condition instanceof DefaultConditionSet.NullCondition) {
+    if (condition instanceof DefaultConditionSet.EmptyCondition) {
       return "";
     }
     if (condition instanceof Condition.Set) {

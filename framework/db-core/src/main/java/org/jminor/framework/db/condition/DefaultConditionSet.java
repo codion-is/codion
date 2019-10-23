@@ -12,14 +12,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultConditionSet implements Condition.Set {
 
   private static final long serialVersionUID = 1;
-
-  static final NullCondition NULL_CONDITION = new NullCondition();
 
   private ArrayList<Condition> conditions = new ArrayList<>();
   private Conjunction conjunction;
@@ -34,7 +31,7 @@ final class DefaultConditionSet implements Condition.Set {
   /** {@inheritDoc} */
   @Override
   public void add(final Condition condition) {
-    if (condition != null && !(condition instanceof NullCondition)) {
+    if (condition != null && !(condition instanceof EmptyCondition)) {
       conditions.add(condition);
     }
   }
@@ -81,20 +78,5 @@ final class DefaultConditionSet implements Condition.Set {
   private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
     conjunction = (Conjunction) stream.readObject();
     conditions = (ArrayList) stream.readObject();
-  }
-
-  static final class NullCondition implements Condition {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public List getValues() {
-      return emptyList();
-    }
-
-    @Override
-    public List<String> getPropertyIds() {
-      return emptyList();
-    }
   }
 }
