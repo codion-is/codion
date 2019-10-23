@@ -165,7 +165,7 @@ public final class Conditions {
    * @return a new Condition instance
    * @throws NullPointerException in case the condition string is null
    */
-  public static Condition stringCondition(final String conditionString) {
+  public static Condition.StringCondition stringCondition(final String conditionString) {
     return stringCondition(conditionString, emptyList(), emptyList());
   }
 
@@ -177,7 +177,7 @@ public final class Conditions {
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
    */
-  public static Condition stringCondition(final String conditionString, final List values, final List<String> propertyIds) {
+  public static Condition.StringCondition stringCondition(final String conditionString, final List values, final List<String> propertyIds) {
     return new DefaultStringCondition(conditionString, values, propertyIds);
   }
 

@@ -19,7 +19,7 @@ public interface EntityCondition extends Serializable {
 
   /**
    * @param domain the underlying domain model
-   * @return the underlying {@link Condition} object, can be null
+   * @return the underlying {@link Condition} object, may not be null
    */
   Condition getCondition(final Domain domain);
 

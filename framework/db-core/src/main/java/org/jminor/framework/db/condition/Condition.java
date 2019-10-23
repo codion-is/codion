@@ -9,6 +9,8 @@ import org.jminor.common.db.ConditionType;
 import java.io.Serializable;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 /**
  * Specifies objects serving as where conditions in database queries
  */
@@ -71,7 +73,7 @@ public interface Condition extends Serializable {
   interface Set extends Condition {
 
     /**
-     * Adds a new Condition object to this set, adding a null condition has no effect
+     * Adds a new Condition object to this set, adding null or a {@link EmptyCondition} instance has no effect
      * @param condition the Condition to add
      */
     void add(final Condition condition);
@@ -96,5 +98,23 @@ public interface Condition extends Serializable {
      * @return the Condition
      */
     Condition getCondition();
+  }
+
+  /**
+   * An empty condition, with no values or propertyIds
+   */
+  final class EmptyCondition implements Condition {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public List getValues() {
+      return emptyList();
+    }
+
+    @Override
+    public List<String> getPropertyIds() {
+      return emptyList();
+    }
   }
 }
