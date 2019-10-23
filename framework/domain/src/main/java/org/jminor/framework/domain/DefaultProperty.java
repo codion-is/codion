@@ -47,11 +47,6 @@ class DefaultProperty implements Property {
   private static final ValueProvider DEFAULT_VALUE_PROVIDER = new DefaultValueProvider();
 
   /**
-   * The domain id
-   */
-  private String domainId;
-
-  /**
    * The ID of the entity this property is associated with
    */
   private String entityId;
@@ -276,22 +271,6 @@ class DefaultProperty implements Property {
   @Override
   public final String getPropertyId() {
     return propertyId;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getDomainId() {
-    return domainId;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Property setDomainId(final String domainId) {
-    if (this.domainId != null) {
-      throw new IllegalStateException("domainId (" + this.domainId + ") has already been set for property: " + propertyId);
-    }
-    this.domainId = domainId;
-    return this;
   }
 
   /** {@inheritDoc} */
@@ -686,7 +665,7 @@ class DefaultProperty implements Property {
 
     @Override
     public final String getColumnName() {
-      return this.columnName;
+      return columnName;
     }
 
     @Override
@@ -903,9 +882,8 @@ class DefaultProperty implements Property {
         else if (isDouble()) {
           return getDouble(resultSet, COLUMN_INDEX);
         }
-        else {
-          return resultSet.getObject(COLUMN_INDEX);
-        }
+
+        return resultSet.getObject(COLUMN_INDEX);
       }
     }
 

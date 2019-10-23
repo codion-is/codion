@@ -79,17 +79,6 @@ public interface Property extends Attribute, Serializable {
   PropertyValue<String> WILDCARD_CHARACTER = Configuration.stringValue("jminor.wildcardCharacter", "%");
 
   /**
-   * @return the id of the domain model this property belongs to
-   */
-  String getDomainId();
-
-  /**
-   * @param domainId the id of the domain model this property belongs to
-   * @return this Property instance
-   */
-  Property setDomainId(final String domainId);
-
-  /**
    * @return the id of the entity this property is associated with
    */
   String getEntityId();
