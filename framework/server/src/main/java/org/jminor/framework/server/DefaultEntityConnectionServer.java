@@ -155,7 +155,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private static final String FROM_CLASSPATH = "' from classpath";
 
   private final Database database;
-  private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new DefaultEntityConnectionServer.MaintenanceTask(),
+  private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
   private final int registryPort;
   private final Registry registry;
@@ -366,14 +366,14 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   /**
    * @return info on all connected users
    */
-  Collection<User> getUsers() {
+  final Collection<User> getUsers() {
     return getConnections().keySet().stream().map(ConnectionRequest::getUser).collect(toSet());
   }
 
   /**
    * @return info on all connected clients
    */
-  Collection<RemoteClient> getClients() {
+  final Collection<RemoteClient> getClients() {
     return new ArrayList<>(getConnections().keySet());
   }
 
@@ -381,7 +381,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @param user the user
    * @return all clients connected with the given user
    */
-  Collection<RemoteClient> getClients(final User user) {
+  final Collection<RemoteClient> getClients(final User user) {
     return getConnections().keySet().stream().filter(remoteClient ->
             user == null || remoteClient.getUser().equals(user)).collect(toList());
   }
@@ -390,7 +390,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @param clientTypeId the client type ID
    * @return all clients of the given type
    */
-  Collection<RemoteClient> getClients(final String clientTypeId) {
+  final Collection<RemoteClient> getClients(final String clientTypeId) {
     //using the remoteClient from the connection since it contains the correct database user
     return getConnections().values().stream()
             .filter(connection -> connection.getRemoteClient().getClientTypeId().equals(clientTypeId))
@@ -400,7 +400,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   /**
    * @return a map containing all defined entityIds, with their respective table names as an associated value
    */
-  Map<String, String> getEntityDefinitions() {
+  final Map<String, String> getEntityDefinitions() {
     final Map<String, String> definitions = new HashMap<>();
     for (final Domain domain : Domain.getRegisteredDomains()) {
       for (final String entityId : domain.getDefinedEntities()) {
