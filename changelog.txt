@@ -5203,3 +5203,4 @@
   Property.setDomainId() removed, domainId no longer used internally
   Entity.Definition.addConditionProvider(), getConditionProvider() and Domain.getConditionProvider() added, conditionProviders map transient
   Condition.StringCondition replaced with CustomCondition, implemented using the above
+  DefaultEntityConnectionServer, some methods made final
