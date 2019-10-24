@@ -11,24 +11,24 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultStringCondition implements Condition.StringCondition {
+final class DefaultCustomCondition implements Condition.CustomCondition {
 
   private static final long serialVersionUID = 1;
 
-  private String conditionString;
+  private String conditionId;
   private ArrayList values;
   private ArrayList<String> propertyIds;
 
-  DefaultStringCondition(final String conditionString, final List values, final List<String> propertyIds) {
-    this.conditionString = requireNonNull(conditionString, "conditionString");
+  DefaultCustomCondition(final String conditionId, final List values, final List<String> propertyIds) {
+    this.conditionId = requireNonNull(conditionId, "conditionId");
     this.values = new ArrayList(requireNonNull(values, "values"));
     this.propertyIds = new ArrayList<>(requireNonNull(propertyIds, "propertyIds"));
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getConditionString() {
-    return conditionString;
+  public String getConditionId() {
+    return conditionId;
   }
 
   /** {@inheritDoc} */
@@ -44,13 +44,13 @@ final class DefaultStringCondition implements Condition.StringCondition {
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
-    stream.writeObject(conditionString);
+    stream.writeObject(conditionId);
     stream.writeObject(values);
     stream.writeObject(propertyIds);
   }
 
   private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-    conditionString = (String) stream.readObject();
+    conditionId = (String) stream.readObject();
     values = (ArrayList) stream.readObject();
     propertyIds = (ArrayList) stream.readObject();
   }

@@ -137,8 +137,10 @@ class DefaultEntityCondition implements EntityCondition {
     else if (condition instanceof Condition.PropertyCondition) {
       return getConditionString((Condition.PropertyCondition) condition, domain);
     }
-    else if (condition instanceof Condition.StringCondition) {
-      return ((Condition.StringCondition) condition).getConditionString();
+    else if (condition instanceof Condition.CustomCondition) {
+      final Condition.CustomCondition customCondition = (Condition.CustomCondition) condition;
+
+      return domain.getConditionProvider(entityId, customCondition.getConditionId()).getConditionString(condition.getValues());
     }
 
     throw new IllegalArgumentException("Unsupported condition: " + condition.getClass());

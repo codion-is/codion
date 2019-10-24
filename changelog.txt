@@ -5201,3 +5201,5 @@
   EntityConditions merged into Conditions, major refactoring of framework.db.conditions, simplification even
   Condition.EmptyCondition added to indicate a null or empty condition
   Property.setDomainId() removed, domainId no longer used internally
+  Entity.Definition.addConditionProvider(), getConditionProvider() and Domain.getConditionProvider() added, conditionProviders map transient
+  Condition.StringCondition replaced with CustomCondition, implemented using the above

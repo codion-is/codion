@@ -574,6 +574,19 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   }
 
   /**
+   * Provides condition strings for where clauses
+   */
+  interface ConditionProvider {
+
+    /**
+     * Creates a query condition string for the given values
+     * @param values the values
+     * @return a query condition string
+     */
+    String getConditionString(final List values);
+  }
+
+  /**
    * Specifies a order by clause
    */
   interface OrderBy extends Serializable {
@@ -643,6 +656,24 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return the name of the underlying table, with schema prefix if applicable
      */
     String getTableName();
+
+    /**
+     * Adds a {@link ConditionProvider} which provides a dynamic query condition string.
+     * The condition string should not include the WHERE keyword and use the ?
+     * substitution character where values should be inserted.
+     * @param conditionId the condition id
+     * @param conditionProvider the condition provider
+     * @return this Entity.Definition instance
+     */
+    Entity.Definition addConditionProvider(final String conditionId, final ConditionProvider conditionProvider);
+
+    /**
+     * Returns the {@link ConditionProvider} associated with the given id
+     * @param conditionId the condition id
+     * @return the condition provider associated with the given id
+     * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionId
+     */
+    ConditionProvider getConditionProvider(final String conditionId);
 
     /**
      * @return the ID of the domain this entity type belongs to

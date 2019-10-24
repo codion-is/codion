@@ -204,7 +204,7 @@ public final class DefaultEntityLookupModelTest {
     List<Entity> result = lookupModel.performQuery();
     assertEquals(1, result.size());
     lookupModel.setSelectedEntities(result);
-    lookupModel.setAdditionalConditionProvider(() -> Conditions.stringCondition("1 = 2"));
+    lookupModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_1_ID));
     assertEquals(1, lookupModel.getSelectedEntities().size());
     result = lookupModel.performQuery();
     assertTrue(result.isEmpty());

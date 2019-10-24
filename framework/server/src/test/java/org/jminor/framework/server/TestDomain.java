@@ -16,7 +16,6 @@ public final class TestDomain extends Domain {
   public TestDomain() {
     department();
     employee();
-    registerDomain();
   }
 
   public static final String DEPARTMENT_ID = "deptno";
@@ -52,6 +51,8 @@ public final class TestDomain extends Domain {
   public static final String EMP_DEPARTMENT_LOCATION = "location";
   public static final String T_EMP = "scott.emp";
 
+  public static final String EMP_MGR_CONDITION_ID = "mgrConditionId";
+
   void employee() {
     define(T_EMP,
             Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
@@ -75,6 +76,7 @@ public final class TestDomain extends Domain {
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
             .setStringProvider(new StringProvider(EMP_NAME))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
+            .addConditionProvider(EMP_MGR_CONDITION_ID, values -> "mgr > ?")
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setCaption("Employee");
   }

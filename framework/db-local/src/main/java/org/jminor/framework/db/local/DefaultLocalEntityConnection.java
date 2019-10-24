@@ -55,10 +55,10 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.common.db.ConditionType.LIKE;
+import static org.jminor.common.db.ConditionType.NOT_LIKE;
 import static org.jminor.common.db.DatabaseConnections.createConnection;
 import static org.jminor.common.db.Databases.*;
 import static org.jminor.framework.db.condition.Conditions.conditionSet;
-import static org.jminor.framework.db.condition.Conditions.stringCondition;
 import static org.jminor.framework.domain.Entities.*;
 
 /**
@@ -486,7 +486,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final Property.ColumnProperty property = domain.getColumnProperty(condition.getEntityId(), propertyId);
     final String columnName = property.getColumnName();
     final EntityCondition entityCondition = Conditions.condition(condition.getEntityId(),
-            conditionSet(Conjunction.AND, condition.getCondition(domain), stringCondition(columnName + " is not null")));
+            conditionSet(Conjunction.AND, condition.getCondition(domain),
+                    Conditions.propertyCondition(propertyId, NOT_LIKE, null)));
     final String selectSQL = createSelectSQL(domain.getSelectTableName(condition.getEntityId()), "distinct " + columnName,
             WHERE + entityCondition.getWhereClause(domain), columnName);
     PreparedStatement statement = null;
