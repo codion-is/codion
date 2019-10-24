@@ -33,6 +33,10 @@ public final class TestDomain extends Domain {
 
   public static final String T_DEPARTMENT = "scott.dept";
 
+  public static final String DEPARTMENT_CONDITION_ID = "condition";
+  public static final String DEPARTMENT_CONDITION_SALES_ID = "conditionSalesId";
+  public static final String DEPARTMENT_CONDITION_INVALID_COLUMN_ID = "conditionInvalidColumnId";
+
   void department() {
     define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
@@ -44,6 +48,15 @@ public final class TestDomain extends Domain {
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
             .setStringProvider(new StringProvider(DEPARTMENT_NAME))
+            .addConditionProvider(DEPARTMENT_CONDITION_ID, values -> {
+              final StringBuilder builder = new StringBuilder("deptno in (");
+              values.forEach(value -> builder.append("?,"));
+              builder.deleteCharAt(builder.length() - 1);
+
+              return builder.append(")").toString();
+            })
+            .addConditionProvider(DEPARTMENT_CONDITION_SALES_ID, values -> "dname = 'SALES'")
+            .addConditionProvider(DEPARTMENT_CONDITION_INVALID_COLUMN_ID, values -> "no_column is null")
             .setCaption("Department");
   }
 
@@ -61,6 +74,9 @@ public final class TestDomain extends Domain {
   public static final String EMP_DEPARTMENT_LOCATION = "location";
   public static final String EMP_DATA = "data";
   public static final String T_EMP = "scott.emp";
+
+  public static final String EMP_NAME_IS_BLAKE_CONDITION_ID = "condition1Id";
+  public static final String EMP_MGR_GREATER_THAN_CONDITION_ID = "condition2Id";
 
   void employee() {
     define(T_EMP,
@@ -90,6 +106,8 @@ public final class TestDomain extends Domain {
             .setStringProvider(new StringProvider(EMP_NAME))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
+            .addConditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, values -> "ename = 'BLAKE'")
+            .addConditionProvider(EMP_MGR_GREATER_THAN_CONDITION_ID, values -> "mgr > ?")
             .setCaption("Employee");
   }
 

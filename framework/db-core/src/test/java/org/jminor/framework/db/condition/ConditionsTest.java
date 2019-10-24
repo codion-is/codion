@@ -199,9 +199,9 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void stringConditionTest() {
+  public void customConditionTest() {
     final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_DEPARTMENT,
-            Conditions.stringCondition("department name is not null"))
+            Conditions.customCondition(TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID))
             .setOrderBy(Domain.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getCondition(DOMAIN).getValues().isEmpty());
     assertTrue(condition.getCondition(DOMAIN).getPropertyIds().isEmpty());

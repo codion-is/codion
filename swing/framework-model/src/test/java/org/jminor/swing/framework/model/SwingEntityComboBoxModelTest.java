@@ -173,7 +173,7 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.clear();
     assertEquals(0, comboBoxModel.getSize());
 
-    comboBoxModel.setSelectConditionProvider(() -> Conditions.stringCondition(" ename = 'CLARK'"));
+    comboBoxModel.setSelectConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_3_ID));
     comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();

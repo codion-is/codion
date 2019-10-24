@@ -130,6 +130,10 @@ public final class TestDomain extends Domain {
   public static final String EMP_MGR_FK = "mgr_fk";
   public static final String EMP_DEPARTMENT_LOCATION = "location";
 
+  public static final String EMP_CONDITION_1_ID = "condition1Id";
+  public static final String EMP_CONDITION_2_ID = "condition2Id";
+  public static final String EMP_CONDITION_3_ID = "condition3Id";
+
   /**
    * Otherwise we'd depend on java.awt.Color
    */
@@ -160,6 +164,9 @@ public final class TestDomain extends Domain {
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
+            .addConditionProvider(EMP_CONDITION_1_ID, values -> "1 = 2")
+            .addConditionProvider(EMP_CONDITION_2_ID, values -> "1 = 1")
+            .addConditionProvider(EMP_CONDITION_3_ID, values -> " ename = 'CLARK'")
             .setCaption("Employee")
             .setBackgroundColorProvider((entity, property) -> {
               if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {

@@ -30,14 +30,15 @@ public interface Condition extends Serializable {
   List<String> getPropertyIds();
 
   /**
-   * A Condition based around a hard coded string
+   * A Condition based on a custom {@link org.jminor.framework.domain.Entity.ConditionProvider}
+   * associated with {@link CustomCondition#getConditionId()}
    */
-  interface StringCondition extends Condition {
+  interface CustomCondition extends Condition {
 
     /**
-     * @return the condition string, with ? as substitution character
+     * @return the condition id
      */
-    String getConditionString();
+    String getConditionId();
   }
 
   /**

@@ -125,7 +125,7 @@ public class DefaultEntityTableConditionModelTest {
     assertEquals("(ename = ? and (deptno in (?, ?)))", Conditions.condition(TestDomain.T_EMP,
             conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
 
-    conditionModel.setAdditionalConditionProvider(() -> Conditions.stringCondition("1 = 1"));
+    conditionModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_ID));
     assertNotNull(conditionModel.getAdditionalConditionProvider());
     assertEquals("(ename = ? and (deptno in (?, ?)) and 1 = 1)",
             Conditions.condition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));

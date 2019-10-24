@@ -120,6 +120,8 @@ public final class TestDomain extends Domain {
 
   public static final String T_DEPARTMENT = "db.scott.dept";
 
+  public static final String DEPARTMENT_NAME_NOT_NULL_CONDITION_ID = "departmentNameNotNull";
+
   void department() {
     define(T_DEPARTMENT, "scott.dept",
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
@@ -132,6 +134,7 @@ public final class TestDomain extends Domain {
             .setSearchPropertyIds(DEPARTMENT_NAME)
             .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
             .setStringProvider(new StringProvider(DEPARTMENT_NAME))
+            .addConditionProvider(DEPARTMENT_NAME_NOT_NULL_CONDITION_ID, values -> "department name is not null")
             .setCaption("Department");
   }
 

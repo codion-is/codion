@@ -66,12 +66,17 @@ public class DefaultEntityConnectionServerTest {
   }
 
   @Test
-  public void stringCondition() throws Exception {
+  public void customCondition() throws Exception {
+    //Fix side-effect from remoteEntityConnectionProvider() test,
+    //which registeres the domain received from the server
+    //thus overwriting the domain containing the custom conditions
+    new TestDomain().registerDomain();
     final ConnectionRequest connectionRequestOne = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
-    final Condition condition = Conditions.stringCondition("mgr > ?", singletonList(4), singletonList(TestDomain.EMP_MGR));
+    final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_ID,
+            singletonList(4), singletonList(TestDomain.EMP_MGR));
 
     connection.selectMany(Conditions.selectCondition(TestDomain.T_EMP, condition));
 

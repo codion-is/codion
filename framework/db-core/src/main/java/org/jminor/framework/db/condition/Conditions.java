@@ -160,25 +160,27 @@ public final class Conditions {
   }
 
   /**
-   * Creates a new {@link Condition} based on the given condition string
-   * @param conditionString the condition string without the WHERE keyword
+   * Creates a new {@link Condition.CustomCondition} based on the condition with the given id
+   * @param conditionId the id of the condition
    * @return a new Condition instance
-   * @throws NullPointerException in case the condition string is null
+   * @throws NullPointerException in case the condition id
+   * @see Entity.Definition#addConditionProvider(String, Entity.ConditionProvider)
    */
-  public static Condition.StringCondition stringCondition(final String conditionString) {
-    return stringCondition(conditionString, emptyList(), emptyList());
+  public static Condition.CustomCondition customCondition(final String conditionId) {
+    return customCondition(conditionId, emptyList(), emptyList());
   }
 
   /**
-   * Creates a new {@link Condition} based on the given condition string
-   * @param conditionString the condition string without the WHERE keyword
+   * Creates a new {@link Condition.CustomCondition} based on the condition with the given id
+   * @param conditionId the id of the condition
    * @param values the values used by this condition string
    * @param propertyIds the properties representing the values used by this condition, in the same order as their respective values
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
+   * @see Entity.Definition#addConditionProvider(String, Entity.ConditionProvider)
    */
-  public static Condition.StringCondition stringCondition(final String conditionString, final List values, final List<String> propertyIds) {
-    return new DefaultStringCondition(conditionString, values, propertyIds);
+  public static Condition.CustomCondition customCondition(final String conditionId, final List values, final List<String> propertyIds) {
+    return new DefaultCustomCondition(conditionId, values, propertyIds);
   }
 
   /**

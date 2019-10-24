@@ -325,6 +325,18 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Returns the {@link org.jminor.framework.domain.Entity.ConditionProvider} for the given entity
+   * assocated with the given {@code conditionId}
+   * @param entityId the entityId
+   * @param conditionId the condition id
+   * @return the ConditionProvider associated with the given conditionId
+   * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionId
+   */
+  public final Entity.ConditionProvider getConditionProvider(final String entityId, final String conditionId) {
+    return getDefinition(entityId).getConditionProvider(conditionId);
+  }
+
+  /**
    * @param entityId the entity id
    * @return the sql query used when selecting entities identified by {@code entityId}
    * @throws IllegalArgumentException if the entity is undefined

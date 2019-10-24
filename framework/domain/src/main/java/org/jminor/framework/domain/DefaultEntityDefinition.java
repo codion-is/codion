@@ -145,6 +145,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private Collection<String> searchPropertyIds;
 
   /**
+   * The {@link org.jminor.framework.domain.Entity.ConditionProvider}s
+   * mapped to their respective conditionIds
+   */
+  private transient Map<String, Entity.ConditionProvider> conditionProviders;
+
+  /**
    * Links a set of derived property ids to a parent property id
    */
   private final Map<String, Set<Property.DerivedProperty>> derivedProperties;
@@ -204,6 +210,35 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public String getTableName() {
     return tableName;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.Definition addConditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
+    rejectNullOrEmpty(conditionId, "contitionId");
+    requireNonNull(conditionProvider, "conditionProvider");
+    if (conditionProviders == null) {
+      conditionProviders = new HashMap<>();
+    }
+    if (conditionProviders.containsKey(conditionId)) {
+      throw new IllegalStateException("ConditionProvider with id " + conditionId + " has already been added");
+    }
+    conditionProviders.put(conditionId, conditionProvider);
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.ConditionProvider getConditionProvider(final String conditionId) {
+    requireNonNull(conditionId);
+    if (conditionProviders != null) {
+      final Entity.ConditionProvider conditionProvider = conditionProviders.get(conditionId);
+      if (conditionProvider != null) {
+        return conditionProvider;
+      }
+    }
+
+    throw new IllegalArgumentException("ConditionProvider with id " + conditionId + " not found");
   }
 
   /** {@inheritDoc} */

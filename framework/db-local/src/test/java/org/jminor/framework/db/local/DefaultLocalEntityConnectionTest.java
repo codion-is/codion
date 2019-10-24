@@ -51,7 +51,6 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.stringCondition;
 import static org.jminor.framework.domain.Entities.getKeys;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,6 +62,7 @@ public class DefaultLocalEntityConnectionTest {
 
   private static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
   private static final String GROUP_BY_QUERY_ENTITY_ID = "groupByQueryEntityID";
+  private static final String JOINED_QUERY_CONDITION_ID = "conditionId";
 
   private DefaultLocalEntityConnection connection;
 
@@ -73,7 +73,8 @@ public class DefaultLocalEntityConnectionTest {
     DOMAIN.define(JOINED_QUERY_ENTITY_ID,
             Properties.primaryKeyProperty("e.empno"),
             Properties.columnProperty("d.deptno", Types.INTEGER))
-            .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true);
+            .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
+            .addConditionProvider(JOINED_QUERY_CONDITION_ID, values -> "d.deptno = 10");
 
     DOMAIN.define(GROUP_BY_QUERY_ENTITY_ID,
             Properties.columnProperty("job", Types.VARCHAR)
@@ -244,12 +245,16 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(2, result.size());
     result = connection.selectMany(getKeys(result));
     assertEquals(2, result.size());
-    result = connection.selectMany(Conditions.selectCondition(TestDomain.T_DEPARTMENT, stringCondition("deptno in (10, 20)")));
+    result = connection.selectMany(Conditions.selectCondition(TestDomain.T_DEPARTMENT,
+            Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID, asList(10, 20),
+                    asList(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_ID))));
     assertEquals(2, result.size());
-    result = connection.selectMany(Conditions.selectCondition(JOINED_QUERY_ENTITY_ID, stringCondition("d.deptno = 10")));
+    result = connection.selectMany(Conditions.selectCondition(JOINED_QUERY_ENTITY_ID,
+            Conditions.customCondition(JOINED_QUERY_CONDITION_ID)));
     assertEquals(7, result.size());
 
-    final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP, stringCondition("ename = 'BLAKE'"));
+    final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP,
+            Conditions.customCondition(TestDomain.EMP_NAME_IS_BLAKE_CONDITION_ID));
     result = connection.selectMany(condition);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
@@ -322,7 +327,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectManyInvalidColumn() throws Exception {
     assertThrows(DatabaseException.class, () -> connection.selectMany(Conditions.selectCondition(TestDomain.T_DEPARTMENT,
-            stringCondition("no_column is null"))));
+            Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_INVALID_COLUMN_ID))));
   }
 
   @Test
@@ -350,12 +355,20 @@ public class DefaultLocalEntityConnectionTest {
     sales = connection.selectSingle(sales.getKey());
     assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
     sales = connection.selectSingle(Conditions.selectCondition(TestDomain.T_DEPARTMENT,
-            stringCondition("dname = 'SALES'")));
+            Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_SALES_ID)));
     assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
 
     final Entity king = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
     assertTrue(king.containsKey(TestDomain.EMP_MGR_FK));
     assertNull(king.get(TestDomain.EMP_MGR_FK));
+  }
+
+  @Test
+  public void customCondition() throws DatabaseException {
+    final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_GREATER_THAN_CONDITION_ID,
+            singletonList(5), singletonList(TestDomain.EMP_MGR));
+
+    assertEquals(4, connection.selectMany(Conditions.selectCondition(TestDomain.T_EMP, condition)).size());
   }
 
   @Test
