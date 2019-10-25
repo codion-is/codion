@@ -69,7 +69,7 @@ We must provide a constructor with a single *EntityConnectionProvider* parameter
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=17..22]
+include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=17..23]
 ----
 
 At some point we are going to be editing the manager property of an employee which means we'll need a value list of managers. We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager property.
@@ -208,4 +208,49 @@ include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPan
 [source,java]
 ----
 include::{dir-source}/org/jminor/framework/demos/empdept/testing/EmpDeptLoadTest.java[lines=4..-1]
+----
+
+== Full Demo Source
+
+=== Domain model
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=4..-1]
+----
+
+=== Domain model test
+
+[source,java]
+----
+include::{dir-test-source}/org/jminor/framework/demos/empdept/domain/EmpDeptTest.java[lines=4..-1]
+----
+
+=== Application model
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=4..-1]
+----
+
+=== Application UI
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/DepartmentEditPanel.java[lines=4..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/DepartmentTablePanel.java[lines=4..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/EmployeeEditPanel.java[lines=4..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=4..-1]
 ----
