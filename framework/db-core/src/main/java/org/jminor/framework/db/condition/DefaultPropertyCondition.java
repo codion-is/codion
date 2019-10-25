@@ -4,7 +4,9 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.db.ConditionType;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.common.db.ConditionType.LIKE;
 
 /**
  * A object for encapsulating a query condition based on a single property with one or more values.
@@ -23,6 +26,10 @@ import static java.util.Objects.requireNonNull;
 final class DefaultPropertyCondition implements Condition.PropertyCondition {
 
   private static final long serialVersionUID = 1;
+
+  private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
+  private static final String IN_PREFIX = " in (";
+  private static final String NOT_IN_PREFIX = " not in (";
 
   /**
    * The property used in this condition
@@ -113,6 +120,13 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
     return caseSensitive;
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public String getConditionString(final Domain domain, final String entityId) {
+    return createColumnPropertyConditionString(domain.getColumnProperty(entityId, getPropertyId()),
+            getConditionType(), getValues(), isNullCondition(), isCaseSensitive());
+  }
+
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(propertyId);
     stream.writeObject(conditionType);
@@ -149,5 +163,96 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
     }
 
     return values;
+  }
+
+  private static String createColumnPropertyConditionString(final Property.ColumnProperty property,
+                                                            final ConditionType conditionType, final List values,
+                                                            final boolean isNullCondition, final boolean isCaseSensitive) {
+    for (int i = 0; i < values.size(); i++) {
+      property.validateType(values.get(i));
+    }
+    final String columnIdentifier = initializeColumnIdentifier(property, isNullCondition, isCaseSensitive);
+    if (isNullCondition) {
+      return columnIdentifier + (conditionType == LIKE ? " is null" : " is not null");
+    }
+
+    final int valueCount = values.size();
+
+    final String valuePlaceholder = getValuePlaceholder(property, isCaseSensitive);
+    final String value2Placeholder = valueCount == 2 ? getValuePlaceholder(property, isCaseSensitive) : null;
+
+    switch (conditionType) {
+      case LIKE:
+        return getLikeCondition(property, columnIdentifier, valuePlaceholder, false, values, valueCount);
+      case NOT_LIKE:
+        return getLikeCondition(property, columnIdentifier, valuePlaceholder, true, values, valueCount);
+      case LESS_THAN:
+        return columnIdentifier + " <= " + valuePlaceholder;
+      case GREATER_THAN:
+        return columnIdentifier + " >= " + valuePlaceholder;
+      case WITHIN_RANGE:
+        return "(" + columnIdentifier + " >= " + valuePlaceholder + " and " + columnIdentifier + " <= " + value2Placeholder + ")";
+      case OUTSIDE_RANGE:
+        return "(" + columnIdentifier + " <= " + valuePlaceholder + " or " + columnIdentifier + " >= " + value2Placeholder + ")";
+      default:
+        throw new IllegalArgumentException("Unknown search type" + conditionType);
+    }
+  }
+
+  private static String getValuePlaceholder(final Property.ColumnProperty property, final boolean caseSensitive) {
+    return property.isString() && !caseSensitive ? "upper(?)" : "?";
+  }
+
+  private static String getLikeCondition(final Property.ColumnProperty property, final String columnIdentifier,
+                                         final String valuePlaceholder, final boolean notLike, final List values,
+                                         final int valueCount) {
+    if (valueCount > 1) {
+      return getInList(columnIdentifier, valuePlaceholder, valueCount, notLike);
+    }
+    if (property.isString() && containsWildcards((String) values.get(0))) {
+      return columnIdentifier + (notLike ? " not like " : " like ") + valuePlaceholder;
+    }
+    else {
+      return columnIdentifier + (notLike ? " <> " : " = ") + valuePlaceholder;
+    }
+  }
+
+  private static String getInList(final String columnIdentifier, final String valuePlaceholder, final int valueCount, final boolean not) {
+    final StringBuilder stringBuilder = new StringBuilder("(").append(columnIdentifier).append(not ? NOT_IN_PREFIX : IN_PREFIX);
+    int cnt = 1;
+    for (int i = 0; i < valueCount; i++) {
+      stringBuilder.append(valuePlaceholder);
+      if (cnt++ == IN_CLAUSE_LIMIT && i < valueCount - 1) {
+        stringBuilder.append(not ? ") and " : ") or ").append(columnIdentifier).append(not ? NOT_IN_PREFIX : IN_PREFIX);
+        cnt = 1;
+      }
+      else if (i < valueCount - 1) {
+        stringBuilder.append(", ");
+      }
+    }
+    stringBuilder.append("))");
+
+    return stringBuilder.toString();
+  }
+
+  private static String initializeColumnIdentifier(final Property.ColumnProperty property, final boolean isNullCondition,
+                                                   final boolean caseSensitive) {
+    String columnName;
+    if (property instanceof Property.SubqueryProperty) {
+      columnName = "(" + ((Property.SubqueryProperty) property).getSubQuery() + ")";
+    }
+    else {
+      columnName = property.getColumnName();
+    }
+
+    if (!isNullCondition && property.isString() && !caseSensitive) {
+      columnName = "upper(" + columnName + ")";
+    }
+
+    return columnName;
+  }
+
+  private static boolean containsWildcards(final String value) {
+    return value.contains("%") || value.contains("_");
   }
 }

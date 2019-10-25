@@ -5204,3 +5204,4 @@
   Entity.Definition.addConditionProvider(), getConditionProvider() and Domain.getConditionProvider() added, conditionProviders map transient
   Condition.StringCondition replaced with CustomCondition, implemented using the above
   DefaultEntityConnectionServer, some methods made final
+  Condition.getConditionString() added, related methods moved from DefaultEntityCondition to their respective Condition subclasses
