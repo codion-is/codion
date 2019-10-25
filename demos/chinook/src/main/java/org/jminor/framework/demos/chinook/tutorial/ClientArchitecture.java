@@ -24,6 +24,11 @@ import org.jminor.swing.framework.ui.EntityTablePanel;
 public final class ClientArchitecture {
 
   // tag::entityModel[]
+  /**
+   * Creates a SwingEntityModel based on the Chinook.T_ARTIST entity
+   * with a detail model based on Chinook.T_ALBUM
+   * @param connectionProvider the connection provider
+   */
   static SwingEntityModel artistModel(EntityConnectionProvider connectionProvider) {
     //initialize a default edit model
     SwingEntityEditModel artistEditModel =
@@ -35,7 +40,7 @@ public final class ClientArchitecture {
     SwingEntityModel artistModel =
             new SwingEntityModel(artistEditModel, artistTableModel);
 
-    //Note that this does the same as the above, that is, initialises
+    //Note that this does the same as the above, that is, initializes
     //a SwingEntityModel with a default edit and table model
     SwingEntityModel albumModel =
             new SwingEntityModel(Chinook.T_ALBUM, connectionProvider);
@@ -46,6 +51,11 @@ public final class ClientArchitecture {
   }
   // end::entityModel[]
   // tag::entityPanel[]
+  /**
+   * Creates a EntityPanel based on the Chinook.T_ARTIST entity
+   * with a detail panel based on Chinook.T_ALBUM
+   * @param connectionProvider the connection provider
+   */
   static EntityPanel artistPanel(EntityConnectionProvider connectionProvider) {
     //initialize the EntityModel to base the panel on
     SwingEntityModel artistModel = artistModel(connectionProvider);

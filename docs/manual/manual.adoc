@@ -126,7 +126,9 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=foreignKeyPropertyCapital]
 ----
 
-Referring to an entity with composite primary key
+Referring to an entity with composite primary key.
+
+NOTE: The order of the properties must be the same as the order of the respective primary key properties in the referenced entity.
 
 [source,java]
 ----
@@ -135,6 +137,17 @@ foreignKeyProperty(MASTER_FK, "Master", T_MASTER,
                 columnProperty(MASTER_ID_1),
                 columnProperty(MASTER_ID_2)
         });
+----
+
+The above assumes the below master definition.
+
+[source,java]
+----
+define(T_MASTER,
+    columnProperty(ID_1).setPrimaryKeyIndex(0),
+    columnProperty(ID_2).setPrimaryKeyIndex(1)
+    ...
+);
 ----
 
 ==== Boolean Properties
@@ -146,7 +159,7 @@ For databases supporting *Types.BOOLEAN* you simply use *Properties.columnProper
 include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=booleanProperty]
 ----
 
-For databases lacking native boolean support we use the *Properties.booleanProperty* method, specifying the actual true/false values.
+For databases lacking native boolean support we use the *Properties.booleanProperty* method, specifying the underlying true/false values.
 
 [source,java]
 ----
