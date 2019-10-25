@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.db.condition;
 
+import org.jminor.framework.domain.Domain;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -41,6 +43,12 @@ final class DefaultCustomCondition implements Condition.CustomCondition {
   @Override
   public List<String> getPropertyIds() {
     return propertyIds;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getConditionString(final Domain domain, final String entityId) {
+    return domain.getConditionProvider(entityId, getConditionId()).getConditionString(getValues());
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
