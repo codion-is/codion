@@ -86,6 +86,13 @@ include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/TrackEditPanel
 include::{dir-source}/org/jminor/framework/demos/chinook/client/ui/ChinookAppPanel.java[lines=4..-1]
 ----
 
+== Login proxy
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/chinook/server/ChinookLoginProxy.java[lines=4..-1]
+----
+
 == Application load test
 
 [source,java]

@@ -1,4 +1,5 @@
 = Server
+:dir-tutorials: ../tutorials
 :dir-source: ../../framework/server
 :url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 
@@ -22,6 +23,10 @@ The JMinor server does not perform any user authentication by default, it leaves
 jminor.server.loginProxyClasses=com.app.server.AppLoginProxy # <1>
 ----
 <1> A comma separated list of login proxies
+
+==== Login proxy examples
+
+<<{dir-tutorials}/chinook.adoc#login-proxy, ChinookLoginProxy>>
 
 === SSL encryption
 

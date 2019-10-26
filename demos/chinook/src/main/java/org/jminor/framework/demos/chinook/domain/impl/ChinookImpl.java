@@ -22,6 +22,7 @@ import static org.jminor.framework.domain.Properties.*;
 public final class ChinookImpl extends Domain implements Chinook {
 
   public ChinookImpl() {
+    user();
     artist();
     album();
     employee();
@@ -34,6 +35,20 @@ public final class ChinookImpl extends Domain implements Chinook {
     playlist();
     playlistTrack();
     dbOperations();
+  }
+
+  void user() {
+    define(T_USER, "chinook.user",
+            primaryKeyProperty(USER_USERID),
+            columnProperty(USER_USERNAME, Types.VARCHAR, "Username")
+                    .setNullable(false)
+                    .setMaxLength(20),
+            columnProperty(USER_PASSWORD_HASH, Types.INTEGER, "Password hash"))
+            .setKeyGenerator(automaticKeyGenerator("chinook.user"))
+            .setOrderBy(orderBy().ascending(USER_USERNAME))
+            .setStringProvider(new StringProvider(USER_USERNAME))
+            .setSearchPropertyIds(USER_USERNAME)
+            .setCaption("Users");
   }
 
   void artist() {

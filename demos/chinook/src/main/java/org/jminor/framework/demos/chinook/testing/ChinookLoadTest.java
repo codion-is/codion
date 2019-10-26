@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
@@ -205,16 +206,35 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
             }
           };
 
+  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> LOGOUT_LOGIN =
+          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("logoutLogin") {
+            final Random random = new Random();
+            @Override
+            protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
+              try {
+                application.getConnectionProvider().disconnect();
+                Thread.sleep(random.nextInt(1500));
+                application.getConnectionProvider().getConnection();
+              }
+              catch (final InterruptedException ignored) {/*ignored*/}
+            }
+
+            @Override
+            public int getDefaultWeight() {
+              return 0;
+            }
+          };
+
   public ChinookLoadTest() {
     super(UNIT_TEST_USER, asList(VIEW_GENRE, VIEW_CUSTOMER_REPORT, VIEW_INVOICE, VIEW_ALBUM,
-            UPDATE_TOTALS, INSERT_DELETE_ALBUM));
+            UPDATE_TOTALS, INSERT_DELETE_ALBUM, LOGOUT_LOGIN));
   }
 
   @Override
   protected ChinookAppPanel.ChinookApplicationModel initializeApplication() throws CancelException {
     final ChinookAppPanel.ChinookApplicationModel applicationModel = new ChinookAppPanel.ChinookApplicationModel(
             EntityConnectionProviders.connectionProvider().setDomainClassName("org.jminor.framework.demos.chinook.domain.impl.ChinookImpl")
-                    .setClientTypeId(ChinookLoadTest.class.getSimpleName()).setUser(getUser()));
+                    .setClientTypeId(ChinookAppPanel.class.getName()).setUser(getUser()));
     /* ARTIST
      *   ALBUM
      *     TRACK

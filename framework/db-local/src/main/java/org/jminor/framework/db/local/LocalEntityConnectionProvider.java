@@ -27,6 +27,13 @@ import static java.util.Objects.requireNonNull;
  */
 public final class LocalEntityConnectionProvider extends AbstractEntityConnectionProvider<LocalEntityConnection> {
 
+  /**
+   * Specifies whether method logging is enabled by default on local connections.<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  private static final PropertyValue<Boolean> METHOD_LOGGER_ENABLED = Configuration.booleanValue("jminor.db.local.methodLoggerEnabled", false);
+
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
 
   /**
@@ -122,7 +129,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
       this.connection = connection;
       this.methodLogger = LocalEntityConnections.createLogger(domain);
       this.connection.setMethodLogger(methodLogger);
-      this.methodLogger.setEnabled(true);
+      this.methodLogger.setEnabled(METHOD_LOGGER_ENABLED.get());
     }
 
     @Override

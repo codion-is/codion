@@ -60,6 +60,20 @@ public final class Servers {
   }
 
   /**
+   * Instantiates a new RemoteClient based on the given client
+   * but with the specified database user
+   * @param remoteClient the remote client to copy
+   * @param databaseUser the database user to use
+   * @return a new RemoteClient instance
+   */
+  public static RemoteClient remoteClient(final RemoteClient remoteClient, final User databaseUser) {
+    final RemoteClient client = remoteClient(remoteClient.getConnectionRequest(), databaseUser);
+    client.setClientHost(remoteClient.getClientHost());
+
+    return client;
+  }
+
+  /**
    * Initializes a Registry if one is not running
    * @param port the port on which to look for (or create) a registry
    * @return the Registry
