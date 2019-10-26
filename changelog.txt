@@ -5196,3 +5196,4 @@
   AbstractServer.connections and loginProxies are now CuncurrentHashMaps
   Servers.remoteClient(remoteClient, databaseUser) added
   ChinookLoginProxy added, implements database user lookup
+  EntityEditPanel.InsertEntityAction now adds a CTRL-+ and CTRL-(numpad+) key events to the associated component to trigger the action
