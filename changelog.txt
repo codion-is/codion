@@ -5194,3 +5194,4 @@
   Condition.getConditionString() added, related methods moved from DefaultEntityCondition to their respective Condition subclasses
   LocalEntityConnectionProvider.METHOD_LOGGER_ENABLED configuration value added, default false
   AbstractServer.connections and loginProxies are now CuncurrentHashMaps
+  Servers.remoteClient(remoteClient, databaseUser) added
