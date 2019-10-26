@@ -9,6 +9,11 @@ import java.math.BigDecimal;
 
 public interface Chinook {
 
+  String T_USER = "user@chinook";
+  String USER_USERID = "userid";
+  String USER_USERNAME = "username";
+  String USER_PASSWORD_HASH = "passwordhash";
+
   String T_ARTIST = "artist@chinook";
   String ARTIST_ARTISTID = "artistid";
   String ARTIST_NAME = "name";

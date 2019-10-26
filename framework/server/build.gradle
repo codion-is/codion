@@ -114,6 +114,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'jminor.server.domain.classes'              : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.impl.ChinookImpl,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
             'jminor.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
             'jminor.server.serializationFilterDryRun'   : 'false',
+            'jminor.server.loginProxyClasses'           : 'org.jminor.framework.demos.chinook.server.ChinookLoginProxy',
             'javax.net.ssl.keyStore'                    : 'src/main/security/jminor_keystore.jks',
             'java.security.policy'                      : 'src/main/security/all_permissions.policy',
             'javax.net.ssl.keyStorePassword'            : 'crappypass',

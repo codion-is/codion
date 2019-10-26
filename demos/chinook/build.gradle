@@ -1,6 +1,8 @@
 apply from: '../demos.gradle'
 
 dependencies {
+    implementation project(':jminor-common-remote')
+
     implementation project(':jminor-framework-db-local')
 
     implementation project(':jminor-swing-common-tools')

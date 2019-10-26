@@ -5195,3 +5195,4 @@
   LocalEntityConnectionProvider.METHOD_LOGGER_ENABLED configuration value added, default false
   AbstractServer.connections and loginProxies are now CuncurrentHashMaps
   Servers.remoteClient(remoteClient, databaseUser) added
+  ChinookLoginProxy added, implements database user lookup
