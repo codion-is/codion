@@ -317,6 +317,7 @@ public class DefaultEntityConnectionServerTest {
     DefaultEntityConnectionServer.SERVER_LOGIN_PROXY_CLASSES.set("org.jminor.framework.server.TestLoginProxy");
     DefaultEntityConnectionServer.SERVER_CONNECTION_VALIDATOR_CLASSES.set("org.jminor.framework.server.TestConnectionValidator");
     DefaultEntityConnectionServer.SERVER_CLIENT_LOGGING_ENABLED.set(true);
+    DefaultEntityConnectionServer.SERIALIZATION_FILTER_WHITELIST.set("src/main/security/serialization-whitelist.txt");
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(TestWebServer.class.getName());
     Server.RMI_SERVER_HOSTNAME.set("localhost");
     Server.TRUSTSTORE.set("src/main/security/jminor_truststore.jks");
