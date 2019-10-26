@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,8 +43,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-  private final Map<UUID, RemoteClientConnection<T>> connections = Collections.synchronizedMap(new HashMap<>());
-  private final Map<String, LoginProxy> loginProxies = Collections.synchronizedMap(new HashMap<>());
+  private final Map<UUID, RemoteClientConnection<T>> connections = new ConcurrentHashMap<>();
+  private final Map<String, LoginProxy> loginProxies = new ConcurrentHashMap<>();
   private final List<LoginProxy> sharedLoginProxies = Collections.synchronizedList(new LinkedList<>());
   private final Map<String, ConnectionValidator> connectionValidators = Collections.synchronizedMap(new HashMap<>());
   private final ConnectionValidator defaultConnectionValidator = new DefaultConnectionValidator();
@@ -80,14 +81,12 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    * @return a map containing the current connections
    */
   public final Map<RemoteClient, T> getConnections() {
-    synchronized (connections) {
-      final Map<RemoteClient, T> clients = new HashMap<>(connections.size());
-      for (final RemoteClientConnection<T> remoteClientConnection : connections.values()) {
-        clients.put(remoteClientConnection.getClient(), remoteClientConnection.getConnection());
-      }
-
-      return clients;
+    final Map<RemoteClient, T> clients = new HashMap<>();
+    for (final RemoteClientConnection<T> remoteClientConnection : connections.values()) {
+      clients.put(remoteClientConnection.getClient(), remoteClientConnection.getConnection());
     }
+
+    return clients;
   }
 
   /**
@@ -95,23 +94,19 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    * @return the connection associated with the given client, null if none exists
    */
   public final T getConnection(final UUID clientId) {
-    synchronized (connections) {
-      final RemoteClientConnection<T> clientConnection = connections.get(clientId);
-      if (clientConnection != null) {
-        return clientConnection.getConnection();
-      }
-
-      return null;
+    final RemoteClientConnection<T> clientConnection = connections.get(clientId);
+    if (clientConnection != null) {
+      return clientConnection.getConnection();
     }
+
+    return null;
   }
 
   /**
    * @return the current number of connections
    */
   public final int getConnectionCount() {
-    synchronized (connections) {
-      return connections.size();
-    }
+    return connections.size();
   }
 
   /**
@@ -155,8 +150,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     requireNonNull(connectionRequest.getClientTypeId(), "clientTypeId");
 
     getConnectionValidator(connectionRequest.getClientTypeId()).validate(connectionRequest);
-    final LoginProxy clientLoginProxy = getLoginProxy(connectionRequest.getClientTypeId());
-    LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, clientLoginProxy);
     synchronized (connections) {
       RemoteClientConnection<T> remoteClientConnection = connections.get(connectionRequest.getClientId());
       if (remoteClientConnection != null) {
@@ -175,6 +168,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       for (final LoginProxy loginProxy : sharedLoginProxies) {
         remoteClient = loginProxy.doLogin(remoteClient);
       }
+      final LoginProxy clientLoginProxy = loginProxies.get(connectionRequest.getClientTypeId());
+      LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, clientLoginProxy);
       if (clientLoginProxy != null) {
         remoteClient = clientLoginProxy.doLogin(remoteClient);
       }
@@ -193,16 +188,14 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
 
     final RemoteClientConnection<T> remoteClientConnection;
-    synchronized (connections) {
-      remoteClientConnection = connections.remove(clientId);
-    }
+    remoteClientConnection = connections.remove(clientId);
     if (remoteClientConnection != null) {
       doDisconnect(remoteClientConnection.getConnection());
       final RemoteClient remoteClient = remoteClientConnection.getClient();
       for (final LoginProxy loginProxy : sharedLoginProxies) {
         loginProxy.doLogout(remoteClient);
       }
-      final LoginProxy loginProxy = getLoginProxy(remoteClient.getClientTypeId());
+      final LoginProxy loginProxy = loginProxies.get(remoteClient.getClientTypeId());
       if (loginProxy != null) {
         loginProxy.doLogout(remoteClient);
       }
@@ -345,12 +338,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private boolean maximumNumberOfConnectionsReached() {
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
-  }
-
-  private LoginProxy getLoginProxy(final String clientTypeId) {
-    synchronized (loginProxies) {
-      return loginProxies.get(clientTypeId);
-    }
   }
 
   private ConnectionValidator getConnectionValidator(final String clientTypeId) {
