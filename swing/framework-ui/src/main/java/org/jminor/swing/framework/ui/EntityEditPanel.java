@@ -2102,31 +2102,33 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     private final JComponent component;
     private final EntityPanelProvider panelProvider;
     private final EntityConnectionProvider connectionProvider;
-    private final EventDataListener<List<Entity>> listener;
+    private final EventDataListener<List<Entity>> insertListener;
     private final List<Entity> lastInsertedEntities = new ArrayList<>();
 
     private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
-      this(comboBox, panelProvider, ((EntityComboBoxModel) comboBox.getModel()).getConnectionProvider(), entities -> {
+      this(comboBox, panelProvider, ((EntityComboBoxModel) comboBox.getModel()).getConnectionProvider(), insertedEntities -> {
         final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBox.getModel();
         comboBoxModel.refresh();
-        comboBoxModel.setSelectedItem(entities.get(0));
+        comboBoxModel.setSelectedItem(insertedEntities.get(0));
       });
     }
 
     private InsertEntityAction(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
-      this(lookupField, panelProvider, lookupField.getModel().getConnectionProvider(), entities ->
-              lookupField.getModel().setSelectedEntities(entities));
+      this(lookupField, panelProvider, lookupField.getModel().getConnectionProvider(), insertedEntities ->
+              lookupField.getModel().setSelectedEntities(insertedEntities));
     }
 
     private InsertEntityAction(final JComponent component, final EntityPanelProvider panelProvider,
-                               final EntityConnectionProvider connectionProvider, final EventDataListener<List<Entity>> listener) {
+                               final EntityConnectionProvider connectionProvider,
+                               final EventDataListener<List<Entity>> insertListener) {
       super("", Images.loadImage(Images.IMG_ADD_16));
       this.component = component;
       this.panelProvider = panelProvider;
       this.connectionProvider = connectionProvider;
-      this.listener = listener;
+      this.insertListener = insertListener;
       this.component.addPropertyChangeListener("enabled", changeEvent -> setEnabled((Boolean) changeEvent.getNewValue()));
       setEnabled(component.isEnabled());
+      addLookupKey();
     }
 
     @Override
@@ -2147,10 +2149,19 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
       if (pane.getValue() != null && pane.getValue().equals(0)) {
         final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
         if (insertPerformed && !lastInsertedEntities.isEmpty()) {
-          listener.eventOccurred(lastInsertedEntities);
+          insertListener.eventOccurred(lastInsertedEntities);
         }
       }
       component.requestFocusInWindow();
+    }
+
+    private void addLookupKey() {
+      JComponent keyComponent = component;
+      if (component instanceof JComboBox && ((JComboBox) component).isEditable()) {
+        keyComponent = (JComponent) ((JComboBox) component).getEditor().getEditorComponent();
+      }
+      UiUtil.addKeyEvent(keyComponent, KeyEvent.VK_ADD, KeyEvent.CTRL_DOWN_MASK, this);
+      UiUtil.addKeyEvent(keyComponent, KeyEvent.VK_PLUS, KeyEvent.CTRL_DOWN_MASK, this);
     }
   }
 

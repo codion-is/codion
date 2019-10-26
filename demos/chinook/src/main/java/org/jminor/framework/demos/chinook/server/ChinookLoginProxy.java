@@ -6,7 +6,6 @@ package org.jminor.framework.demos.chinook.server;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.remote.LoginProxy;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.ServerException;
@@ -75,15 +74,15 @@ public final class ChinookLoginProxy implements LoginProxy {
           throws ServerException.LoginException {
     synchronized (connectionProvider) {
       try {
-        connectionProvider.getConnection().selectSingle(
-                selectCondition(T_USER, conditionSet(AND,
+        final int rows = connectionProvider.getConnection().selectRowCount(
+                condition(T_USER, conditionSet(AND,
                         propertyCondition(USER_USERNAME,
                                 LIKE, user.getUsername(), false),
                         propertyCondition(USER_PASSWORD_HASH,
                                 LIKE, valueOf(user.getPassword()).hashCode()))));
-      }
-      catch (final RecordNotFoundException e) {
-        throw ServerException.loginException("Wrong username or password");
+        if (rows == 0) {
+          throw ServerException.loginException("Wrong username or password");
+        }
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);
