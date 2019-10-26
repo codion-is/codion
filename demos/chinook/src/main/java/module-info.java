@@ -1,4 +1,5 @@
 module org.jminor.framework.demos.chinook {
+  requires org.jminor.common.remote;
   requires org.jminor.framework.db.local;
   requires org.jminor.swing.common.tools.ui;
   requires org.jminor.swing.framework.tools;
