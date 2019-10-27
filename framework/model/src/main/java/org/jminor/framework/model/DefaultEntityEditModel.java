@@ -36,8 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -954,7 +953,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
      * @param insertedEntities the inserted entities
      */
     public DefaultInsertEvent(final List<Entity> insertedEntities) {
-      this.insertedEntities = insertedEntities;
+      this.insertedEntities = unmodifiableList(insertedEntities);
     }
 
     @Override
@@ -972,7 +971,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
      * @param deletedEntities the deleted entities
      */
     public DefaultDeleteEvent(final List<Entity> deletedEntities) {
-      this.deletedEntities = deletedEntities;
+      this.deletedEntities = unmodifiableList(deletedEntities);
     }
 
     @Override
@@ -991,7 +990,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
      * the primary key prior to the update
      */
     public DefaultUpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
-      this.updatedEntities = updatedEntities;
+      this.updatedEntities = unmodifiableMap(updatedEntities);
     }
 
     @Override
