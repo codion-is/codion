@@ -1285,7 +1285,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   /**
    * Provides value input components for multiple entity update, override to supply
    * specific InputValueProvider implementations for properties.
-   * Remember to return with a call to super.getInputProviderInputProvider().
+   * Remember to return with a call to super.getInputProvider() after handling your case.
    * @param property the property for which to get the InputProvider
    * @param toUpdate the entities that are about to be updated
    * @return the InputProvider handling input for {@code property}
