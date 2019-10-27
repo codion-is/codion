@@ -156,7 +156,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       throw new IllegalStateException("Master model has already been set for " + this);
     }
     this.masterModel = entityModel;
-    bindMasterModelEvents();
   }
 
   /** {@inheritDoc} */
@@ -476,7 +475,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param insertEvent the insert event
    * @see EntityModel#FILTER_ON_MASTER_INSERT
    */
-  private void handleMasterInsert(final EntityEditModel.InsertEvent insertEvent) {
+  protected final void handleMasterInsert(final EntityEditModel.InsertEvent insertEvent) {
     editModel.addForeignKeyValues(insertEvent.getInsertedEntities());
     editModel.setForeignKeyValues(insertEvent.getInsertedEntities());
     if (containsTableModel() && filterOnMasterInsert) {
@@ -492,14 +491,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Replaces the updated master entities wherever they are referenced
    * @param updateEvent the update event
    */
-  private void handleMasterUpdate(final EntityEditModel.UpdateEvent updateEvent) {
+  protected final void handleMasterUpdate(final EntityEditModel.UpdateEvent updateEvent) {
     editModel.replaceForeignKeyValues(masterModel.getEntityId(), updateEvent.getUpdatedEntities().values());
     if (containsTableModel()) {
-      getTableModel().replaceForeignKeyValues(masterModel.getEntityId(), updateEvent.getUpdatedEntities().values());
+      tableModel.replaceForeignKeyValues(masterModel.getEntityId(), updateEvent.getUpdatedEntities().values());
     }
   }
 
-  private void handleMasterDelete(final EntityEditModel.DeleteEvent deleteEvent) {
+  protected final void handleMasterDelete(final EntityEditModel.DeleteEvent deleteEvent) {
     editModel.removeForeignKeyValues(deleteEvent.getDeletedEntities());
   }
 
@@ -539,17 +538,17 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     final EventListener initializer = this::initializeDetailModels;
     linkedDetailModelAddedEvent.addListener(initializer);
     linkedDetailModelRemovedEvent.addListener(initializer);
+    editModel.addAfterInsertListener(insertEvent ->
+            detailModels.forEach(detailModel -> detailModel.handleMasterInsert(insertEvent)));
+    editModel.addAfterUpdateListener(updateEvent ->
+            detailModels.forEach(detailModel -> detailModel.handleMasterUpdate(updateEvent)));
+    editModel.addAfterDeleteListener(deleteEvent ->
+            detailModels.forEach(detailModel -> detailModel.handleMasterDelete(deleteEvent)));
     if (containsTableModel()) {
       getTableModel().addSelectionChangedListener(initializer);
     }
     else {
-      getEditModel().addEntitySetListener(entity -> initializeDetailModels());
+      editModel.addEntitySetListener(entity -> initializeDetailModels());
     }
-  }
-
-  private void bindMasterModelEvents() {
-    masterModel.getEditModel().addAfterInsertListener(this::handleMasterInsert);
-    masterModel.getEditModel().addAfterUpdateListener(this::handleMasterUpdate);
-    masterModel.getEditModel().addAfterDeleteListener(this::handleMasterDelete);
   }
 }

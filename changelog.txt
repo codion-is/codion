@@ -5199,3 +5199,4 @@
   EntityEditPanel.InsertEntityAction now adds a CTRL-+ and CTRL-(numpad+) key events to the associated component to trigger the action
   Attribute and Column removed, methods moved to Property and ColumnProperty respectively
   ValueMap keys no longer restricted to descendants of Attribute, obviously
+  DefaultEntityModel.bindMasterModelEvents() removed, minor related refactoring
