@@ -228,19 +228,11 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   }
 
   private Event<ValueChange<K, V>> getValueSetEvent(final K key) {
-    if (!valueSetEventMap.containsKey(key)) {
-      valueSetEventMap.put(key, Events.event());
-    }
-
-    return valueSetEventMap.get(key);
+    return valueSetEventMap.computeIfAbsent(key, k -> Events.event());
   }
 
   private Event<ValueChange<K, V>> getValueChangeEvent(final K key) {
-    if (!valueChangeEventMap.containsKey(key)) {
-      valueChangeEventMap.put(key, Events.event());
-    }
-
-    return valueChangeEventMap.get(key);
+    return valueChangeEventMap.computeIfAbsent(key, k -> Events.event());
   }
 
   private void bindEvents() {

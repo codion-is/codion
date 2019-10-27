@@ -36,7 +36,7 @@ public interface ColumnConditionModel<K> {
    * Default value: true
    */
   PropertyValue<Boolean> CASE_SENSITIVE = Configuration.booleanValue(
-                  "org.jminor.common.model.table.ColumnConditionModel.caseSensitive", true);
+          "org.jminor.common.model.table.ColumnConditionModel.caseSensitive", true);
 
   /**
    * The possible automatic wildcard types
