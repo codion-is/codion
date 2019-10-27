@@ -211,13 +211,13 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /** {@inheritDoc} */
   @Override
-  public void setStrictForeignKeyFiltering(final boolean strictForeignKeyFiltering) {
+  public final void setStrictForeignKeyFiltering(final boolean strictForeignKeyFiltering) {
     this.strictForeignKeyFiltering = strictForeignKeyFiltering;
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isStrictForeignKeyFiltering() {
+  public final boolean isStrictForeignKeyFiltering() {
     return strictForeignKeyFiltering;
   }
 
