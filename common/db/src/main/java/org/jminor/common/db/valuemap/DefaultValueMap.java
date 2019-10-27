@@ -12,7 +12,6 @@ import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
-import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
@@ -34,7 +33,7 @@ import static java.util.Objects.requireNonNull;
  * @param <K> the key type
  * @param <V> the value type
  */
-public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
+public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultValueMap.class.getName(), Locale.getDefault());
 
@@ -426,7 +425,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
    * @param <K> the type identifying the keys in the value map
    * @param <V> the value map type
    */
-  public static class DefaultValidator<K extends Attribute, V extends ValueMap<K, ?>> implements Validator<K, V> {
+  public static class DefaultValidator<K, V extends ValueMap<K, ?>> implements Validator<K, V> {
 
     private final Event revalidateEvent = Events.event();
 

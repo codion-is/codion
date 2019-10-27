@@ -10,7 +10,6 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.PropertyValue;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
-import org.jminor.common.db.Attribute;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
@@ -447,7 +446,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
 
   /**
    * Adds a listener notified each time the value associated with the given property is set via
-   * {@link ValueMapEditModel#put(Attribute, Object)}, note that this event is only fired when the the value changes
+   * {@link ValueMapEditModel#put(Object, Object)}, note that this event is only fired when the the value changes
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the given property is set via this model
    */

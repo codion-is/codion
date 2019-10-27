@@ -3,14 +3,12 @@
  */
 package org.jminor.common.db.valuemap;
 
-import org.jminor.common.db.Attribute;
-
 /**
  * Provides values mapped to keys.
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueProvider<K extends Attribute, V> {
+public interface ValueProvider<K, V> {
 
   /**
    * Retrieves the value mapped to the given key

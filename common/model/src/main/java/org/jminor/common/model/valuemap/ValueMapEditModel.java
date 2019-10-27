@@ -6,7 +6,6 @@ package org.jminor.common.model.valuemap;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
-import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -18,7 +17,7 @@ import java.util.Collection;
  * @param <K> the type of the value map keys
  * @param <V> the type of the value map values
  */
-public interface ValueMapEditModel<K extends Attribute, V> {
+public interface ValueMapEditModel<K, V> {
 
   /**
    * @return a StateObserver indicating the valid status of the underlying value map
@@ -29,7 +28,7 @@ public interface ValueMapEditModel<K extends Attribute, V> {
 
   /**
    * Adds a listener notified each time the value associated with the given key is set via
-   * {@link ValueMapEditModel#put(Attribute, Object)}, note that this event is only fired when the the value changes
+   * {@link ValueMapEditModel#put(Object, Object)}, note that this event is only fired when the the value changes
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of {@code key} is set via this model
    */
@@ -140,7 +139,7 @@ public interface ValueMapEditModel<K extends Attribute, V> {
    * Returns true if the value associated with the given key is valid, using the {@code validate} method
    * @param key the key the value is associated with
    * @return true if the value is valid
-   * @see #validate(Attribute)
+   * @see #validate(Object)
    * @see ValueMap.Validator#validate(ValueMap)
    */
   boolean isValid(final K key);

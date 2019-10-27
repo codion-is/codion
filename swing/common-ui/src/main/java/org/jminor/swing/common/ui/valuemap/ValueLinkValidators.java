@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.valuemap;
 
-import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
 
@@ -28,7 +27,7 @@ public final class ValueLinkValidators {
    * @param editModel the edit model
    * @param <K> the type of the edit model value keys
    */
-  public static <K extends Attribute> void addValidator(final K key, final JTextComponent textComponent, final ValueMapEditModel<K, ?> editModel) {
+  public static <K> void addValidator(final K key, final JTextComponent textComponent, final ValueMapEditModel<K, ?> editModel) {
     addValidator(key, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
   }
 
@@ -39,8 +38,8 @@ public final class ValueLinkValidators {
    * @param editModel the edit model
    * @param <K> the type of the edit model value keys
    */
-  public static <K extends Attribute> void addFormattedValidator(final K key, final JTextComponent textComponent,
-                                                                 final ValueMapEditModel<K, Object> editModel) {
+  public static <K> void addFormattedValidator(final K key, final JTextComponent textComponent,
+                                               final ValueMapEditModel<K, Object> editModel) {
     addFormattedValidator(key, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
   }
 
@@ -53,9 +52,9 @@ public final class ValueLinkValidators {
    * @param defaultToolTip the tooltip to use while the value is valid
    * @param <K> the type of the edit model value keys
    */
-  public static <K extends Attribute> void addValidator(final K key, final JTextComponent textComponent,
-                                                        final ValueMapEditModel<K, ?> editModel, final Color invalidBackgroundColor,
-                                                        final String defaultToolTip) {
+  public static <K> void addValidator(final K key, final JTextComponent textComponent,
+                                      final ValueMapEditModel<K, ?> editModel, final Color invalidBackgroundColor,
+                                      final String defaultToolTip) {
     new TextValidator<>(key, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
   }
 
@@ -68,13 +67,13 @@ public final class ValueLinkValidators {
    * @param defaultToolTip the tooltip to use while the value is valid
    * @param <K> the type of the edit model value keys
    */
-  public static <K extends Attribute> void addFormattedValidator(final K key, final JTextComponent textComponent,
-                                                                 final ValueMapEditModel<K, ?> editModel, final Color invalidBackgroundColor,
-                                                                 final String defaultToolTip) {
+  public static <K> void addFormattedValidator(final K key, final JTextComponent textComponent,
+                                               final ValueMapEditModel<K, ?> editModel, final Color invalidBackgroundColor,
+                                               final String defaultToolTip) {
     new FormattedTextValidator<>(key, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
   }
 
-  private abstract static class AbstractValidator<K extends Attribute> {
+  private abstract static class AbstractValidator<K> {
 
     private final K key;
     private final JComponent component;
@@ -134,7 +133,7 @@ public final class ValueLinkValidators {
     protected abstract void validate();
   }
 
-  private static class TextValidator<K extends Attribute> extends AbstractValidator<K> {
+  private static class TextValidator<K> extends AbstractValidator<K> {
 
     protected static final Color VALID_ENABLED_BACKGROUND_COLOR;
     protected static final Color VALID_DISABLED_BACKGROUND_COLOR;
@@ -183,7 +182,7 @@ public final class ValueLinkValidators {
     }
   }
 
-  private static final class FormattedTextValidator<K extends Attribute> extends TextValidator<K> {
+  private static final class FormattedTextValidator<K> extends TextValidator<K> {
 
     private final String maskString;
 

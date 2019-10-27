@@ -6,7 +6,6 @@ package org.jminor.framework.domain;
 import org.jminor.common.Configuration;
 import org.jminor.common.Item;
 import org.jminor.common.PropertyValue;
-import org.jminor.common.db.Attribute;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 
@@ -22,7 +21,7 @@ import java.util.Map;
 /**
  * Specifies a Property.
  */
-public interface Property extends Attribute, Serializable {
+public interface Property extends Serializable {
 
   int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
   int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
@@ -96,6 +95,27 @@ public interface Property extends Attribute, Serializable {
    * @return the id of this property
    */
   String getPropertyId();
+
+  /**
+   * @return the caption
+   */
+  String getCaption();
+
+  /**
+   * @return a String describing this attribute
+   */
+  String getDescription();
+
+  /**
+   * @return the Class representing the values of this attribute
+   */
+  Class getTypeClass();
+
+  /**
+   * @param value the value to validate
+   * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
+   */
+  void validateType(final Object value);
 
   /**
    * @param propertyId the property ID
@@ -376,7 +396,12 @@ public interface Property extends Attribute, Serializable {
   /**
    * Specifies a property based on a table column
    */
-  interface ColumnProperty extends Property, org.jminor.common.db.Column {
+  interface ColumnProperty extends Property {
+
+    /**
+     * @return the column name
+     */
+    String getColumnName();
 
     /**
      * @return the data type of the underlying column, usually the same as {@link #getType()}
@@ -464,6 +489,12 @@ public interface Property extends Attribute, Serializable {
      * @return true if this is an aggregate column
      */
     boolean isAggregateColumn();
+
+    /**
+     * Indicates whether or not this column is updatable
+     * @return true if this column is updatable
+     */
+    boolean isUpdatable();
 
     /**
      * @return true if this column is a denormalized column, one should which receives a value

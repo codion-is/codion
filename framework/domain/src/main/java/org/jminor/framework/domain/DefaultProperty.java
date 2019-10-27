@@ -5,7 +5,6 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.FormatUtil;
 import org.jminor.common.Item;
-import org.jminor.common.db.Column;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.ValueFetcher;
@@ -982,7 +981,7 @@ class DefaultProperty implements Property {
 
     @Override
     public boolean isUpdatable() {
-      return columnProperties.stream().allMatch(Column::isUpdatable);
+      return columnProperties.stream().allMatch(ColumnProperty::isUpdatable);
     }
 
     @Override
