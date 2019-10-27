@@ -4,7 +4,6 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.EventDataListener;
-import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueMap;
@@ -24,15 +23,15 @@ public class DefaultValueMapEditModelTest {
     final AtomicInteger valueChangeCounter = new AtomicInteger();
     final AtomicInteger valueSetCounter = new AtomicInteger();
 
-    final EventDataListener<ValueChange<TestAttribute, ?>> anyValueChangeListener = data -> anyValueChangeCounter.incrementAndGet();
-    final EventDataListener<ValueChange<TestAttribute, ?>> valueChangeListener = data -> valueChangeCounter.incrementAndGet();
-    final EventDataListener<ValueChange<TestAttribute, ?>> valueSetListener = data -> valueSetCounter.incrementAndGet();
+    final EventDataListener<ValueChange<String, ?>> anyValueChangeListener = data -> anyValueChangeCounter.incrementAndGet();
+    final EventDataListener<ValueChange<String, ?>> valueChangeListener = data -> valueChangeCounter.incrementAndGet();
+    final EventDataListener<ValueChange<String, ?>> valueSetListener = data -> valueSetCounter.incrementAndGet();
 
-    final TestAttribute testAttribute = new TestAttribute();
+    final String testAttribute = "test";
 
-    final ValueMapEditModel model = new DefaultValueMapEditModel<>(new DefaultValueMap<>(), new DefaultValueMap.DefaultValidator<TestAttribute, ValueMap<TestAttribute, ?>>() {
+    final ValueMapEditModel model = new DefaultValueMapEditModel<>(new DefaultValueMap<>(), new DefaultValueMap.DefaultValidator<String, ValueMap<String, ?>>() {
       @Override
-      public boolean isNullable(final ValueMap valueMap, final TestAttribute key) {
+      public boolean isNullable(final ValueMap valueMap, final String key) {
         return !key.equals(testAttribute);
       }
     });
@@ -75,7 +74,7 @@ public class DefaultValueMapEditModelTest {
     assertTrue(model.isNull(testAttribute));
     assertFalse(model.isNotNull(testAttribute));
 
-    final TestAttribute nameAttribute = new TestAttribute();
+    final String nameAttribute = "name";
 
     model.put(nameAttribute, "Name");
     assertEquals(2, valueSetCounter.get());
@@ -89,16 +88,5 @@ public class DefaultValueMapEditModelTest {
 
     model.removeValueListener(testAttribute, valueChangeListener);
     model.removeValueSetListener(testAttribute, valueSetListener);
-  }
-
-  private static final class TestAttribute implements Attribute {
-    @Override
-    public String getCaption() {return null;}
-    @Override
-    public String getDescription() {return null;}
-    @Override
-    public Class getTypeClass() {return null;}
-    @Override
-    public void validateType(final Object value) {}
   }
 }

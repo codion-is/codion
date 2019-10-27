@@ -10,7 +10,6 @@ import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
-import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueChanges;
 import org.jminor.common.db.valuemap.ValueMap;
@@ -29,7 +28,7 @@ import static java.util.Objects.requireNonNull;
  * @param <K> the type of the value map keys
  * @param <V> the type of values in this map
  */
-public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMapEditModel<K, V> {
+public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
 
   private static final String KEY = "key";
 

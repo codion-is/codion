@@ -5,7 +5,6 @@ package org.jminor.common.db.valuemap;
 
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
-import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
@@ -25,9 +24,9 @@ public class DefaultValueMapTest {
 
   @Test
   public void test() {
-    final TestAttribute attr1 = new TestAttribute();
-    final TestAttribute attr2 = new TestAttribute();
-    final DefaultValueMap<TestAttribute, Object> map = new DefaultValueMap<>();
+    final String attr1 = "1";
+    final String attr2 = "2";
+    final DefaultValueMap<String, Object> map = new DefaultValueMap<>();
     assertNotEquals(map, attr1);
     assertEquals(0, map.size());
     assertFalse(map.containsKey(attr1));
@@ -51,9 +50,9 @@ public class DefaultValueMapTest {
     assertFalse(map.containsKey(attr1));
     assertEquals(0, map.size());
 
-    final ValueMap<TestAttribute, Integer> valueMap = new DefaultValueMap<>();
+    final ValueMap<String, Integer> valueMap = new DefaultValueMap<>();
 
-    final EventDataListener<ValueChange<TestAttribute, Integer>> valueListener = valueChange -> {
+    final EventDataListener<ValueChange<String, Integer>> valueListener = valueChange -> {
       assertEquals(attr1, valueChange.getKey());
       valueChange.toString();
       valueChange.getPreviousValue();
@@ -132,14 +131,14 @@ public class DefaultValueMapTest {
 
   @Test
   public void setAs() {
-    final TestAttribute one = new TestAttribute();
-    final TestAttribute two = new TestAttribute();
-    final TestAttribute three = new TestAttribute();
+    final String one = "one";
+    final String two = "two";
+    final String three = "three";
 
-    final ValueMap<TestAttribute, String> dest = new DefaultValueMap<>();
+    final ValueMap<String, String> dest = new DefaultValueMap<>();
     dest.getValueObserver();
 
-    final ValueMap<TestAttribute, String> source = new DefaultValueMap<>();
+    final ValueMap<String, String> source = new DefaultValueMap<>();
     source.put(one, "1");
     source.put(two, "2");
     source.put(two, "3");
@@ -166,14 +165,14 @@ public class DefaultValueMapTest {
 
   @Test
   public void equals() {
-    final ValueMap<TestAttribute, Integer> mapOne = new DefaultValueMap<>();
-    final ValueMap<TestAttribute, Integer> mapTwo = mapOne.newInstance();
+    final ValueMap<String, Integer> mapOne = new DefaultValueMap<>();
+    final ValueMap<String, Integer> mapTwo = mapOne.newInstance();
     mapOne.getValueObserver();
     mapTwo.getValueObserver();
 
-    final TestAttribute one = new TestAttribute();
-    final TestAttribute two = new TestAttribute();
-    final TestAttribute three = new TestAttribute();
+    final String one = "one";
+    final String two = "two";
+    final String three = "three";
 
     mapOne.put(one, 1);
     mapOne.put(two, 2);
@@ -208,11 +207,11 @@ public class DefaultValueMapTest {
 
   @Test
   public void clear() {
-    final TestAttribute one = new TestAttribute();
-    final TestAttribute two = new TestAttribute();
-    final TestAttribute three = new TestAttribute();
+    final String one = "one";
+    final String two = "two";
+    final String three = "three";
 
-    final ValueMap<TestAttribute, Integer> map = new DefaultValueMap<>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<>();
     map.put(one, 1);
     map.put(two, 2);
     map.put(three, 3);
@@ -237,11 +236,11 @@ public class DefaultValueMapTest {
 
   @Test
   public void testHashCode() {
-    final TestAttribute one = new TestAttribute();
-    final TestAttribute two = new TestAttribute();
-    final TestAttribute three = new TestAttribute();
+    final String one = "one";
+    final String two = "two";
+    final String three = "three";
 
-    final ValueMap<TestAttribute, Integer> map = new DefaultValueMap<>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<>();
     map.put(one, 1);
     map.put(two, 2);
     map.put(three, 3);
@@ -255,15 +254,15 @@ public class DefaultValueMapTest {
 
   @Test
   public void nullValidation() throws ValidationException {
-    final TestAttribute testAttribute = new TestAttribute();
-    final ValueMap.Validator<TestAttribute, ValueMap<TestAttribute, Integer>> validator =
-            new DefaultValueMap.DefaultValidator<TestAttribute, ValueMap<TestAttribute, Integer>>() {
+    final String testAttribute = "test";
+    final ValueMap.Validator<String, ValueMap<String, Integer>> validator =
+            new DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>>() {
               @Override
-              public boolean isNullable(final ValueMap<TestAttribute, Integer> valueMap, final TestAttribute key) {
+              public boolean isNullable(final ValueMap<String, Integer> valueMap, final String key) {
                 return super.isNullable(valueMap, key) && !key.equals(testAttribute);
               }
             };
-    final ValueMap<TestAttribute, Integer> map = new DefaultValueMap<>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<>();
     map.put(testAttribute, null);
     assertThrows(NullValidationException.class, () -> validator.validate(map));
     map.put(testAttribute, 1);
@@ -274,18 +273,18 @@ public class DefaultValueMapTest {
 
   @Test
   public void isValid() {
-    final TestAttribute testAttribute = new TestAttribute();
-    final DefaultValueMap.DefaultValidator<TestAttribute, ValueMap<TestAttribute, Integer>> validator =
-            new DefaultValueMap.DefaultValidator<TestAttribute, ValueMap<TestAttribute, Integer>>() {
+    final String testAttribute = "test";
+    final DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>> validator =
+            new DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>>() {
               @Override
-              public void validate(final ValueMap<TestAttribute, Integer> valueMap, final TestAttribute key) throws ValidationException {
+              public void validate(final ValueMap<String, Integer> valueMap, final String key) throws ValidationException {
                 final Integer value = valueMap.get(testAttribute);
                 if (value.equals(1)) {
                   throw new ValidationException(testAttribute, 1, "Invalid");
                 }
               }
             };
-    final ValueMap<TestAttribute, Integer> map = new DefaultValueMap<>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<>();
     map.put(testAttribute, 0);
     assertTrue(validator.isValid(map));
     map.put(testAttribute, 1);
@@ -294,16 +293,16 @@ public class DefaultValueMapTest {
 
   @Test
   public void validate() throws ValidationException {
-    final TestAttribute testAttribute = new TestAttribute();
-    final DefaultValueMap.DefaultValidator<TestAttribute, ValueMap<TestAttribute, Integer>> validator =
-            new DefaultValueMap.DefaultValidator<TestAttribute, ValueMap<TestAttribute, Integer>>() {
+    final String testAttribute = "test";
+    final DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>> validator =
+            new DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>>() {
               @Override
-              public void validate(final ValueMap<TestAttribute, Integer> valueMap, final TestAttribute key) throws ValidationException {
+              public void validate(final ValueMap<String, Integer> valueMap, final String key) throws ValidationException {
                 super.validate(valueMap, key);
                 throw new ValidationException(testAttribute, valueMap.get(testAttribute), "Invalid");
               }
             };
-    final ValueMap<TestAttribute, Integer> map = new DefaultValueMap<>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<>();
     map.put(testAttribute, 1);
 
     assertThrows(ValidationException.class, () -> validator.validate(map));
@@ -312,7 +311,7 @@ public class DefaultValueMapTest {
   @Test
   public void revalidate() {
     final AtomicInteger counter = new AtomicInteger();
-    final DefaultValueMap.DefaultValidator<TestAttribute, ValueMap<TestAttribute, Integer>> validator = new DefaultValueMap.DefaultValidator<>();
+    final DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMap.DefaultValidator<>();
     final EventListener listener = counter::incrementAndGet;
     validator.addRevalidationListener(listener);
     validator.revalidate();
@@ -320,16 +319,5 @@ public class DefaultValueMapTest {
     validator.removeRevalidationListener(listener);
     validator.revalidate();
     assertEquals(1, counter.get());
-  }
-
-  private static final class TestAttribute implements Attribute {
-    @Override
-    public String getCaption() {return null;}
-    @Override
-    public String getDescription() {return null;}
-    @Override
-    public Class getTypeClass() {return null;}
-    @Override
-    public void validateType(final Object value) {}
   }
 }

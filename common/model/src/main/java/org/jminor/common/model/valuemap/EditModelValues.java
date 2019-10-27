@@ -5,7 +5,6 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.common.db.Attribute;
 
 /**
  * A factory class for creating values based on {@link ValueMapEditModel}
@@ -22,21 +21,21 @@ public final class EditModelValues {
    * @param <V> the value type
    * @return a Value base on the given edit model value
    */
-  public static <V> Value<V> value(final ValueMapEditModel editModel, final Attribute key) {
+  public static <V> Value<V> value(final ValueMapEditModel editModel, final Object key) {
     return new EditModelValue<>(editModel, key);
   }
 
   private static final class EditModelValue<V> extends Values.AbstractValue<V> {
 
-    private final ValueMapEditModel<Attribute, V> editModel;
-    private final Attribute key;
+    private final ValueMapEditModel<Object, V> editModel;
+    private final Object key;
 
     /**
      * Instantiates a new EditModelValue
      * @param editModel the edit model
      * @param key the key associated with the value
      */
-    private EditModelValue(final ValueMapEditModel editModel, final Attribute key) {
+    private EditModelValue(final ValueMapEditModel editModel, final Object key) {
       this.editModel = editModel;
       this.key = key;
       this.editModel.getValueObserver(key).addDataListener(valueChange -> fireChangeEvent((V) valueChange.getCurrentValue()));
