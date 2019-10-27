@@ -173,7 +173,7 @@ public final class ControlProvider {
     return menuBar;
   }
 
-  private static final class ButtonControlIterator implements ControlIterator {
+  private static final class ButtonControlIterator implements Control.Iterator {
 
     private final JPanel panel;
     private final boolean vertical;
@@ -214,7 +214,7 @@ public final class ControlProvider {
     }
   }
 
-  private static final class MenuControlIterator implements ControlIterator {
+  private static final class MenuControlIterator implements Control.Iterator {
 
     private final JMenu menu;
 
@@ -274,7 +274,7 @@ public final class ControlProvider {
     }
   }
 
-  private static final class ToolBarControlIterator implements ControlIterator {
+  private static final class ToolBarControlIterator implements Control.Iterator {
 
     private final JToolBar toolbar;
     private final boolean includeCaption;
@@ -354,7 +354,7 @@ public final class ControlProvider {
    * @param controlIterator the control iterator
    * @param controlSet the control set
    */
-  private static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
+  private static void iterate(final Control.Iterator controlIterator, final ControlSet controlSet) {
     requireNonNull(controlIterator, "controlIterator");
     requireNonNull(controlSet, "controlSet");
     for (final Action action : controlSet.getActions()) {
