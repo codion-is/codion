@@ -53,7 +53,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     super.replaceForeignKeyValues(foreignKeyEntityId, foreignKeyValues);
     final List<Property.ForeignKeyProperty> foreignKeyProperties =
             getDomain().getForeignKeyProperties(getEntityId(), foreignKeyEntityId);
@@ -193,7 +193,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public void addForeignKeyValues(final List<Entity> values) {
+  public final void addForeignKeyValues(final List<Entity> values) {
     final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain().getForeignKeyProperties(getEntityId(), entry.getKey())) {
@@ -209,7 +209,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public void removeForeignKeyValues(final List<Entity> values) {
+  public final void removeForeignKeyValues(final List<Entity> values) {
     final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain().getForeignKeyProperties(getEntityId(), entry.getKey())) {

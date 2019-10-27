@@ -422,7 +422,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
+  public final void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
@@ -560,7 +560,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a database exception
    */
-  public Map<String, Collection<Entity>> selectDependentEntities(final List<Entity> entities) throws DatabaseException {
+  public final Map<String, Collection<Entity>> selectDependentEntities(final List<Entity> entities) throws DatabaseException {
     return getConnectionProvider().getConnection().selectDependentEntities(entities);
   }
 
