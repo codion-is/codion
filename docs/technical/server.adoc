@@ -50,6 +50,10 @@ javax.net.ssl.trustStore=truststore.jks
 javax.net.ssl.trustStorePassword=password
 ----
 
+=== Class loading
+
+No dynamic class loading is performed.
+
 === Serialization whitelist
 
 A {url-javadoc}/org/jminor/common/remote/SerializationWhitelist.html[serialization whitelist] can be used by setting the following system property.
