@@ -50,6 +50,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.domain.Entities.getKeys;
 import static org.junit.jupiter.api.Assertions.*;
@@ -369,6 +370,26 @@ public class DefaultLocalEntityConnectionTest {
             singletonList(5), singletonList(TestDomain.EMP_MGR));
 
     assertEquals(4, connection.selectMany(Conditions.selectCondition(TestDomain.T_EMP, condition)).size());
+  }
+
+  @Test
+  public void customStringCondition() throws DatabaseException {
+    class StringCondition implements Condition {
+      @Override
+      public List getValues() {
+        return emptyList();
+      }
+      @Override
+      public List<String> getPropertyIds() {
+        return emptyList();
+      }
+      @Override
+      public String getConditionString(final Domain domain, final String entityId) {
+        return "1 = 2";
+      }
+    }
+
+    assertEquals(0, connection.selectMany(Conditions.selectCondition(TestDomain.T_EMP, new StringCondition())).size());
   }
 
   @Test
