@@ -30,17 +30,17 @@ dependencies {
     implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
-    runtime project(':jminor-framework-plugins-logback-proxy')
+    runtimeOnly project(':jminor-framework-plugins-logback-proxy')
 
     compile("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
     }
 
-    runtime "commons-logging:commons-logging:${commonsLoggingVersion}"
-    runtime "commons-digester:commons-digester:${commonsDigesterVersion}"
-    runtime "org.apache.commons:commons-collections4:${commonsCollectionsVersion}"
-    runtime "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
-    runtime "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
+    runtimeOnly "commons-logging:commons-logging:${commonsLoggingVersion}"
+    runtimeOnly "commons-digester:commons-digester:${commonsDigesterVersion}"
+    runtimeOnly "org.apache.commons:commons-collections4:${commonsCollectionsVersion}"
+    runtimeOnly "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
+    runtimeOnly "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
 
     runtimeOnly project(':jminor-dbms-h2database')
     runtimeOnly "com.h2database:h2:${h2Version}"
@@ -90,7 +90,7 @@ task buildReports(dependsOn: 'compileJava') {
     outputs.dir jasperTargetDir
     doLast {
         ant {
-            taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtime.asPath)
+            taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtimeClasspath.asPath)
             jasperTargetDir.mkdirs()
             jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
                 classpath(path: sourceSets.main.output.classesDirs)

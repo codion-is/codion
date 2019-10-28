@@ -12,9 +12,9 @@ dependencies {
     implementation project(':jminor-swing-common-ui')
     api project(':jminor-swing-framework-tools')
 
-    testRuntime project(':jminor-framework-db-local')
-    testRuntime project(':jminor-framework-db-remote')
-    testRuntime project(':jminor-framework-server')
+    testRuntimeOnly project(':jminor-framework-db-local')
+    testRuntimeOnly project(':jminor-framework-db-remote')
+    testRuntimeOnly project(':jminor-framework-server')
 
     testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
