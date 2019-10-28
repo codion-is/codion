@@ -167,26 +167,26 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
               final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
               final EntityEditModel albumEditModel = albumModel.getEditModel();
               final Entity album = application.getDomain().entity(T_ALBUM);
-              album.put(ALBUM_ARTISTID_FK, artist);
+              album.put(ALBUM_ARTIST_FK, artist);
               album.put(ALBUM_TITLE, "Title");
 
               albumEditModel.setEntity(album);
               try {
                 final Entity insertedAlbum = albumEditModel.insert().get(0);
                 final SwingEntityEditModel trackEditModel = (SwingEntityEditModel) albumModel.getDetailModel(T_TRACK).getEditModel();
-                final EntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_GENREID_FK);
+                final EntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_GENRE_FK);
                 selectRandomItem(genreComboBoxModel);
-                final EntityComboBoxModel mediaTypeComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_MEDIATYPEID_FK);
+                final EntityComboBoxModel mediaTypeComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_MEDIATYPE_FK);
                 selectRandomItem(mediaTypeComboBoxModel);
                 for (int i = 0; i < 10; i++) {
-                  trackEditModel.put(TRACK_ALBUMID_FK, insertedAlbum);
+                  trackEditModel.put(TRACK_ALBUM_FK, insertedAlbum);
                   trackEditModel.put(TRACK_NAME, "Track " + i);
                   trackEditModel.put(TRACK_BYTES, 10000000);
                   trackEditModel.put(TRACK_COMPOSER, "Composer");
                   trackEditModel.put(TRACK_MILLISECONDS, 1000000);
                   trackEditModel.put(TRACK_UNITPRICE, BigDecimal.valueOf(2));
-                  trackEditModel.put(TRACK_GENREID_FK, genreComboBoxModel.getSelectedValue());
-                  trackEditModel.put(TRACK_MEDIATYPEID_FK, mediaTypeComboBoxModel.getSelectedValue());
+                  trackEditModel.put(TRACK_GENRE_FK, genreComboBoxModel.getSelectedValue());
+                  trackEditModel.put(TRACK_MEDIATYPE_FK, mediaTypeComboBoxModel.getSelectedValue());
                   trackEditModel.insert();
                 }
 

@@ -34,8 +34,8 @@ public class InvoiceEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(INVOICE_CUSTOMERID_FK);
-    final EntityLookupField customerField = createForeignKeyLookupField(INVOICE_CUSTOMERID_FK);
+    setInitialFocusProperty(INVOICE_CUSTOMER_FK);
+    final EntityLookupField customerField = createForeignKeyLookupField(INVOICE_CUSTOMER_FK);
     configureCustomerLookup(customerField);
     customerField.setColumns(16);
     final TemporalInputPanel datePanel = createDateInputPanel(INVOICE_INVOICEDATE);
@@ -54,7 +54,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     totalField.setColumns(16);
 
     final JPanel centerPanel = new JPanel(new GridLayout(4, 2, 5, 5));
-    centerPanel.add(createPropertyPanel(INVOICE_CUSTOMERID_FK));
+    centerPanel.add(createPropertyPanel(INVOICE_CUSTOMER_FK));
     centerPanel.add(createPropertyPanel(INVOICE_INVOICEDATE));
     centerPanel.add(createPropertyPanel(INVOICE_BILLINGADDRESS));
     centerPanel.add(createPropertyPanel(INVOICE_BILLINGCITY));

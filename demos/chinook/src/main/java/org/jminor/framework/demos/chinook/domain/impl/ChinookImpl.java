@@ -68,7 +68,7 @@ public final class ChinookImpl extends Domain implements Chinook {
   void album() {
     define(T_ALBUM, "chinook.album",
             primaryKeyProperty(ALBUM_ALBUMID, Types.BIGINT),
-            foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
+            foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
                     columnProperty(ALBUM_ARTISTID, Types.BIGINT))
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
@@ -150,7 +150,7 @@ public final class ChinookImpl extends Domain implements Chinook {
             columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
                     .setNullable(false)
                     .setMaxLength(60),
-            foreignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
+            foreignKeyProperty(CUSTOMER_SUPPORTREP_FK, "Support rep", T_EMPLOYEE,
                     columnProperty(CUSTOMER_SUPPORTREPID, Types.BIGINT)))
             .setKeyGenerator(automaticKeyGenerator("chinook.customer"))
             .setOrderBy(orderBy().ascending(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME))
@@ -198,10 +198,10 @@ public final class ChinookImpl extends Domain implements Chinook {
   void track() {
     define(T_TRACK, "chinook.track",
             primaryKeyProperty(TRACK_TRACKID, Types.BIGINT),
-            denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUMID_FK,
-                    getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
+            denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUM_FK,
+                    getProperty(T_ALBUM, ALBUM_ARTIST_FK), "Artist")
                     .setPreferredColumnWidth(160),
-            foreignKeyProperty(TRACK_ALBUMID_FK, "Album", T_ALBUM,
+            foreignKeyProperty(TRACK_ALBUM_FK, "Album", T_ALBUM,
                     columnProperty(TRACK_ALBUMID, Types.BIGINT))
                     .setFetchDepth(2)
                     .setPreferredColumnWidth(160),
@@ -209,12 +209,12 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setMaxLength(200)
                     .setPreferredColumnWidth(160),
-            foreignKeyProperty(TRACK_GENREID_FK, "Genre", T_GENRE,
+            foreignKeyProperty(TRACK_GENRE_FK, "Genre", T_GENRE,
                     columnProperty(TRACK_GENREID, Types.BIGINT)),
             columnProperty(TRACK_COMPOSER, Types.VARCHAR, "Composer")
                     .setMaxLength(220)
                     .setPreferredColumnWidth(160),
-            foreignKeyProperty(TRACK_MEDIATYPEID_FK, "Media type", T_MEDIATYPE,
+            foreignKeyProperty(TRACK_MEDIATYPE_FK, "Media type", T_MEDIATYPE,
                     columnProperty(TRACK_MEDIATYPEID, Types.BIGINT))
                     .setNullable(false),
             columnProperty(TRACK_MILLISECONDS, Types.INTEGER, "Duration (ms)")
@@ -242,7 +242,7 @@ public final class ChinookImpl extends Domain implements Chinook {
             columnProperty(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
                     .setReadOnly(true)
                     .setHidden(true),
-            foreignKeyProperty(INVOICE_CUSTOMERID_FK, "Customer", T_CUSTOMER,
+            foreignKeyProperty(INVOICE_CUSTOMER_FK, "Customer", T_CUSTOMER,
                     columnProperty(INVOICE_CUSTOMERID, Types.BIGINT))
                     .setNullable(false),
             columnProperty(INVOICE_INVOICEDATE, Types.TIMESTAMP, "Date/time")
@@ -272,15 +272,15 @@ public final class ChinookImpl extends Domain implements Chinook {
   void invoiceLine() {
     define(T_INVOICELINE, "chinook.invoiceline",
             primaryKeyProperty(INVOICELINE_INVOICELINEID, Types.BIGINT),
-            foreignKeyProperty(INVOICELINE_INVOICEID_FK, "Invoice", T_INVOICE,
+            foreignKeyProperty(INVOICELINE_INVOICE_FK, "Invoice", T_INVOICE,
                     columnProperty(INVOICELINE_INVOICEID, Types.BIGINT))
                     .setFetchDepth(0)
                     .setNullable(false),
-            foreignKeyProperty(INVOICELINE_TRACKID_FK, "Track", T_TRACK,
+            foreignKeyProperty(INVOICELINE_TRACK_FK, "Track", T_TRACK,
                     columnProperty(INVOICELINE_TRACKID, Types.BIGINT))
                     .setNullable(false)
                     .setPreferredColumnWidth(100),
-            denormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACKID_FK,
+            denormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACK_FK,
                     getProperty(T_TRACK, TRACK_UNITPRICE), "Unit price")
                     .setNullable(false),
             columnProperty(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
@@ -307,26 +307,26 @@ public final class ChinookImpl extends Domain implements Chinook {
 
   void playlistTrack() {
     define(T_PLAYLISTTRACK, "chinook.playlisttrack",
-            foreignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
+            foreignKeyProperty(PLAYLISTTRACK_PLAYLIST_FK, "Playlist", T_PLAYLIST,
                     primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID, Types.BIGINT)
                             .setUpdatable(true))
                     .setNullable(false)
                     .setPreferredColumnWidth(120),
             denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
-                    getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
+                    getProperty(T_ALBUM, ALBUM_ARTIST_FK), "Artist")
                     .setPreferredColumnWidth(160),
-            foreignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
+            foreignKeyProperty(PLAYLISTTRACK_TRACK_FK, "Track", T_TRACK,
                     primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.BIGINT)
                             .setPrimaryKeyIndex(1)
                             .setUpdatable(true))
                     .setFetchDepth(3)
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
-            denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
-                    getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
+            denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACK_FK,
+                    getProperty(T_TRACK, TRACK_ALBUM_FK), "Album")
                     .setPreferredColumnWidth(160))
-            .setStringProvider(new StringProvider(PLAYLISTTRACK_PLAYLISTID_FK)
-                    .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
+            .setStringProvider(new StringProvider(PLAYLISTTRACK_PLAYLIST_FK)
+                    .addText(" - ").addValue(PLAYLISTTRACK_TRACK_FK))
             .setCaption("Playlist tracks");
   }
 

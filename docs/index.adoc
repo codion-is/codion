@@ -36,6 +36,7 @@ image::jminor_logo_medium.png[Logo,200]
 
 * Basics
 ** <<{dir-tutorials}/chinook-entities.adoc#, Entities>>.
+** <<{dir-tutorials}/chinook-ui.adoc#, UI>>.
 * Clients
 ** <<{dir-tutorials}/empdept.adoc#, EmpDept Tutorial>>.
 ** <<{dir-tutorials}/chinook-minimal.adoc#, Chinook Minimal>>.

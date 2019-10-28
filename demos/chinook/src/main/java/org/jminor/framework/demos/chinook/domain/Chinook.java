@@ -22,7 +22,7 @@ public interface Chinook {
   String ALBUM_ALBUMID = "albumid";
   String ALBUM_TITLE = "title";
   String ALBUM_ARTISTID = "artistid";
-  String ALBUM_ARTISTID_FK = "artistid_fk";
+  String ALBUM_ARTIST_FK = "artist_fk";
 
   String T_EMPLOYEE = "employee@chinook";
   String EMPLOYEE_EMPLOYEEID = "employeeid";
@@ -56,7 +56,7 @@ public interface Chinook {
   String CUSTOMER_FAX = "fax";
   String CUSTOMER_EMAIL = "email";
   String CUSTOMER_SUPPORTREPID = "supportrepid";
-  String CUSTOMER_SUPPORTREPID_FK = "supportrepid_fk";
+  String CUSTOMER_SUPPORTREP_FK = "supportrep_fk";
 
   String T_GENRE = "genre@chinook";
   String GENRE_GENREID = "genreid";
@@ -71,11 +71,11 @@ public interface Chinook {
   String TRACK_NAME = "name";
   String TRACK_ARTIST_DENORM = "artist_denorm";
   String TRACK_ALBUMID = "albumid";
-  String TRACK_ALBUMID_FK = "albumid_fk";
+  String TRACK_ALBUM_FK = "album_fk";
   String TRACK_MEDIATYPEID = "mediatypeid";
-  String TRACK_MEDIATYPEID_FK = "mediatypeid_fk";
+  String TRACK_MEDIATYPE_FK = "mediatype_fk";
   String TRACK_GENREID = "genreid";
-  String TRACK_GENREID_FK = "genreid_fk";
+  String TRACK_GENRE_FK = "genre_fk";
   String TRACK_COMPOSER = "composer";
   String TRACK_MILLISECONDS = "milliseconds";
   String TRACK_MINUTES_SECONDS_DERIVED = "minutes_seconds_transient";
@@ -99,7 +99,7 @@ public interface Chinook {
   String INVOICE_INVOICEID = "invoiceid";
   String INVOICE_INVOICEID_AS_STRING = "invoiceid || ''";
   String INVOICE_CUSTOMERID = "customerid";
-  String INVOICE_CUSTOMERID_FK = "customerid_fk";
+  String INVOICE_CUSTOMER_FK = "customer_fk";
   String INVOICE_INVOICEDATE = "invoicedate";
   String INVOICE_BILLINGADDRESS = "billingaddress";
   String INVOICE_BILLINGCITY = "billingcity";
@@ -112,9 +112,9 @@ public interface Chinook {
   String T_INVOICELINE = "invoiceline@chinook";
   String INVOICELINE_INVOICELINEID = "invoicelineid";
   String INVOICELINE_INVOICEID = "invoiceid";
-  String INVOICELINE_INVOICEID_FK = "invoiceid_fk";
+  String INVOICELINE_INVOICE_FK = "invoice_fk";
   String INVOICELINE_TRACKID = "trackid";
-  String INVOICELINE_TRACKID_FK = "trackid_fk";
+  String INVOICELINE_TRACK_FK = "track_fk";
   String INVOICELINE_UNITPRICE = "unitprice";
   String INVOICELINE_QUANTITY = "quantity";
   String INVOICELINE_TOTAL = "total";
@@ -136,9 +136,9 @@ public interface Chinook {
 
   String T_PLAYLISTTRACK = "playlisttrack@chinook";
   String PLAYLISTTRACK_PLAYLISTID = "playlistid";
-  String PLAYLISTTRACK_PLAYLISTID_FK = "playlistid_fk";
+  String PLAYLISTTRACK_PLAYLIST_FK = "playlist_fk";
   String PLAYLISTTRACK_TRACKID = "trackid";
-  String PLAYLISTTRACK_TRACKID_FK = "trackid_fk";
+  String PLAYLISTTRACK_TRACK_FK = "track_fk";
   String PLAYLISTTRACK_ALBUM_DENORM = "album_denorm";
   String PLAYLISTTRACK_ARTIST_DENORM = "artist_denorm";
 
