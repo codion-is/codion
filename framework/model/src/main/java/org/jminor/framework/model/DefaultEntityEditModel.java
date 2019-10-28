@@ -13,6 +13,8 @@ import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.TextUtil;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
@@ -595,6 +597,12 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
+  public final <V> Value<V> value(final String propertyId) {
+    return new EditModelValue<V>(this, propertyId);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
       for (final Property.ColumnProperty property : getDomain().getColumnProperties(entityId)) {
@@ -941,6 +949,33 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       catch (final DatabaseException e) {
         throw new RuntimeException(e);
       }
+    }
+  }
+
+  private static final class EditModelValue<V> extends Values.AbstractValue<V> {
+
+    private final EntityEditModel editModel;
+    private final String propertyId;
+
+    private EditModelValue(final EntityEditModel editModel, final String propertyId) {
+      this.editModel = editModel;
+      this.propertyId = propertyId;
+      this.editModel.getValueObserver(propertyId).addDataListener(valueChange -> fireChangeEvent(get()));
+    }
+
+    @Override
+    public V get() {
+      return (V) editModel.get(propertyId);
+    }
+
+    @Override
+    public void set(final V value) {
+      editModel.put(propertyId, value);
+    }
+
+    @Override
+    public boolean isNullable() {
+      return true;
     }
   }
 
