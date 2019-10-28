@@ -27,16 +27,16 @@ public class TrackEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(TRACK_ALBUMID_FK);
+    setInitialFocusProperty(TRACK_ALBUM_FK);
 
-    createForeignKeyLookupField(TRACK_ALBUMID_FK).setColumns(18);
+    createForeignKeyLookupField(TRACK_ALBUM_FK).setColumns(18);
     createTextField(TRACK_NAME).setColumns(18);
-    final EntityComboBox mediaTypeBox = createForeignKeyComboBox(TRACK_MEDIATYPEID_FK);
+    final EntityComboBox mediaTypeBox = createForeignKeyComboBox(TRACK_MEDIATYPE_FK);
     final Action newMediaTypeAction = EntityEditPanel.createEditPanelAction(mediaTypeBox,
             new EntityPanelProvider(T_MEDIATYPE)
                     .setEditPanelClass(MediaTypeEditPanel.class));
     final JPanel mediaTypePanel = UiUtil.createEastButtonPanel(mediaTypeBox, newMediaTypeAction, false);
-    final EntityComboBox genreBox = createForeignKeyComboBox(TRACK_GENREID_FK);
+    final EntityComboBox genreBox = createForeignKeyComboBox(TRACK_GENRE_FK);
     final Action newGenreAction = EntityEditPanel.createEditPanelAction(genreBox,
             new EntityPanelProvider(T_GENRE)
                     .setEditPanelClass(GenreEditPanel.class));
@@ -54,11 +54,11 @@ public class TrackEditPanel extends EntityEditPanel {
     durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), durationField));
 
     setLayout(new FlexibleGridLayout(4, 2, 5, 5, true, false));
-    addPropertyPanel(TRACK_ALBUMID_FK);
+    addPropertyPanel(TRACK_ALBUM_FK);
     addPropertyPanel(TRACK_NAME);
-    add(createPropertyPanel(TRACK_GENREID_FK, genrePanel));
+    add(createPropertyPanel(TRACK_GENRE_FK, genrePanel));
     addPropertyPanel(TRACK_COMPOSER);
-    add(createPropertyPanel(TRACK_MEDIATYPEID_FK, mediaTypePanel));
+    add(createPropertyPanel(TRACK_MEDIATYPE_FK, mediaTypePanel));
     addPropertyPanel(TRACK_BYTES);
     addPropertyPanel(TRACK_UNITPRICE);
     add(durationPanel);

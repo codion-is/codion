@@ -8,7 +8,7 @@ import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_ARTISTID_FK;
+import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_ARTIST_FK;
 import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_TITLE;
 
 public class AlbumEditPanel extends EntityEditPanel {
@@ -19,13 +19,13 @@ public class AlbumEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(ALBUM_ARTISTID_FK);
+    setInitialFocusProperty(ALBUM_ARTIST_FK);
 
-    createForeignKeyLookupField(ALBUM_ARTISTID_FK).setColumns(18);
+    createForeignKeyLookupField(ALBUM_ARTIST_FK).setColumns(18);
     createTextField(ALBUM_TITLE).setColumns(18);
 
     setLayout(new GridLayout(2, 1, 5, 5));
-    addPropertyPanel(ALBUM_ARTISTID_FK);
+    addPropertyPanel(ALBUM_ARTIST_FK);
     addPropertyPanel(ALBUM_TITLE);
   }
 }

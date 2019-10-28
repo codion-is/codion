@@ -31,7 +31,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     createTextField(CUSTOMER_PHONE).setColumns(16);
     createTextField(CUSTOMER_FAX).setColumns(16);
     createTextField(CUSTOMER_EMAIL).setColumns(16);
-    createForeignKeyComboBox(CUSTOMER_SUPPORTREPID_FK);
+    createForeignKeyComboBox(CUSTOMER_SUPPORTREP_FK);
 
     setLayout(new FlexibleGridLayout(3, 4, 5, 5));
     addPropertyPanel(CUSTOMER_FIRSTNAME);
@@ -45,6 +45,6 @@ public class CustomerEditPanel extends EntityEditPanel {
     addPropertyPanel(CUSTOMER_PHONE);
     addPropertyPanel(CUSTOMER_FAX);
     addPropertyPanel(CUSTOMER_EMAIL);
-    addPropertyPanel(CUSTOMER_SUPPORTREPID_FK);
+    addPropertyPanel(CUSTOMER_SUPPORTREP_FK);
   }
 }

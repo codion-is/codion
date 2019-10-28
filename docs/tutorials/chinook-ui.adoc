@@ -1,0 +1,9 @@
+= Ui Basics
+:dir-source: ../../demos/chinook/src/main/java
+
+UI basics, EntityEditModel, inserting.
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/ClientUI.java[lines=4..-1]
+----
