@@ -13,7 +13,6 @@ import org.jminor.common.Value;
 import org.jminor.common.Values;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -370,8 +369,7 @@ public final class FXUiUtil {
   public static CheckBox createCheckBox(final Property property, final FXEntityEditModel editModel,
                                         final StateObserver enabledState) {
     final CheckBox checkBox = createCheckBox(enabledState);
-    final Value<Boolean> propertyValue = createBooleanValue(checkBox);
-    Values.link(EditModelValues.value(editModel, property), propertyValue);
+    Values.link(editModel.value(property.getPropertyId()), createBooleanValue(checkBox));
 
     return checkBox;
   }
@@ -405,8 +403,7 @@ public final class FXUiUtil {
   public static TextField createTextField(final Property property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    final StringValue<String> propertyValue = createStringValue(textField);
-    Values.link(EditModelValues.value(editModel, property), propertyValue);
+    Values.link(editModel.value(property.getPropertyId()), createStringValue(textField));
 
     return textField;
   }
@@ -440,8 +437,7 @@ public final class FXUiUtil {
   public static TextField createLongField(final Property property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    final StringValue<Long> propertyValue = createLongValue(property, textField);
-    Values.link(EditModelValues.value(editModel, property), propertyValue);
+    Values.link(editModel.value(property.getPropertyId()), createLongValue(property, textField));
 
     return textField;
   }
@@ -480,8 +476,7 @@ public final class FXUiUtil {
   public static TextField createIntegerField(final Property property, final FXEntityEditModel editModel,
                                              final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    final StringValue<Integer> propertyValue = createIntegerValue(property, textField);
-    Values.link(EditModelValues.value(editModel, property), propertyValue);
+    Values.link(editModel.value(property.getPropertyId()), createIntegerValue(property, textField));
 
     return textField;
   }
@@ -520,8 +515,7 @@ public final class FXUiUtil {
   public static TextField createDoubleField(final Property property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    final StringValue<Double> propertyValue = createDoubleValue(property, textField);
-    Values.link(EditModelValues.value(editModel, property), propertyValue);
+    Values.link(editModel.value(property.getPropertyId()), createDoubleValue(property, textField));
 
     return textField;
   }
@@ -546,8 +540,7 @@ public final class FXUiUtil {
   public static TextField createBigDecimalField(final Property property, final FXEntityEditModel editModel,
                                                 final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    final StringValue<BigDecimal> propertyValue = createBigDecimalValue(property, textField);
-    Values.link(EditModelValues.value(editModel, property), propertyValue);
+    Values.link(editModel.value(property.getPropertyId()), createBigDecimalValue(property, textField));
 
     return textField;
   }
@@ -600,7 +593,7 @@ public final class FXUiUtil {
   public static DatePicker createDatePicker(final Property property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final DatePicker picker = createDatePicker(enabledState);
-    Values.link(EditModelValues.value(editModel, property), createDateValue(property, picker));
+    Values.link(editModel.value(property.getPropertyId()), createDateValue(property, picker));
 
     return picker;
   }
@@ -667,7 +660,7 @@ public final class FXUiUtil {
                                                     final FXEntityEditModel editModel) {
     final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty);
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
-    Values.link(EditModelValues.value(editModel, foreignKeyProperty), PropertyValues.lookupValue(lookupModel));
+    Values.link(editModel.value(foreignKeyProperty.getPropertyId()), PropertyValues.lookupValue(lookupModel));
 
     return lookupField;
   }
@@ -684,7 +677,8 @@ public final class FXUiUtil {
     listModel.refresh();
     final ComboBox<Entity> box = new ComboBox<>(listModel.getSortedList());
     listModel.setSelectionModel(box.getSelectionModel());
-    Values.link(EditModelValues.value(editModel, foreignKeyProperty), PropertyValues.selectedValue(box.getSelectionModel()));
+    Values.link(editModel.value(foreignKeyProperty.getPropertyId()),
+            PropertyValues.selectedValue(box.getSelectionModel()));
 
     return box;
   }
@@ -698,7 +692,8 @@ public final class FXUiUtil {
   public static ComboBox<Item> createValueListComboBox(final Property.ValueListProperty valueListProperty,
                                                        final FXEntityEditModel editModel) {
     final ComboBox<Item> comboBox = new ComboBox<>(createValueListComboBoxModel(valueListProperty));
-    Values.link(EditModelValues.value(editModel, valueListProperty), PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
+    Values.link(editModel.value(valueListProperty.getPropertyId()),
+            PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
     return comboBox;
   }
 

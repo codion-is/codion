@@ -5201,3 +5201,4 @@
   ValueMap keys no longer restricted to descendants of Attribute, obviously
   DefaultEntityModel.bindMasterModelEvents() removed, minor related refactoring
   DefaultEntityEditModel, insert, update and delete events now use Collections.unmodifiableList/Map
+  EditModelValues removed, EntityEditModel.value() added instead

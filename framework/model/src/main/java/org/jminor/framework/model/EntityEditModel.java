@@ -10,6 +10,7 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.PropertyValue;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
+import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
@@ -163,6 +164,14 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return a value provider for the given property
    */
   ValueCollectionProvider getValueProvider(final Property property);
+
+  /**
+   * Instantiates a new Value based on the value identified by {@code propertyId} in this edit model
+   * @param propertyId the property id
+   * @param <V> the value type
+   * @return a Value based on the given edit model value
+   */
+  <V> Value<V> value(final String propertyId);
 
   /**
    * @return the underlying domain model
