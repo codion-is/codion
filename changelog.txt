@@ -5202,3 +5202,4 @@
   DefaultEntityModel.bindMasterModelEvents() removed, minor related refactoring
   DefaultEntityEditModel, insert, update and delete events now use Collections.unmodifiableList/Map
   EditModelValues removed, EntityEditModel.value() added instead
+  Preparing for Gradle 6.0

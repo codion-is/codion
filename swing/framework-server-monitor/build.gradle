@@ -13,7 +13,7 @@ dependencies {
     testImplementation project(':jminor-framework-domain')
     testImplementation project(':jminor-framework-db-core')
     testImplementation project(':jminor-framework-db-remote')
-    testRuntime project(':jminor-framework-db-local')
+    testRuntimeOnly project(':jminor-framework-db-local')
 
     implementation "org.json:json:${jsonVersion}"
     implementation "org.jfree:jcommon:${jcommonVersion}"
@@ -22,7 +22,7 @@ dependencies {
     testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 
-    runtime project(':jminor-framework-plugins-logback-proxy')
+    runtimeOnly project(':jminor-framework-plugins-logback-proxy')
 }
 
 mainClassName = 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel'

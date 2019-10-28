@@ -26,7 +26,7 @@ configurations {
 
 task jarDomain(type: Jar, dependsOn: classes) {
     group 'build'
-    baseName = baseName + '-domain'
+    archiveBaseName.set(archiveBaseName.get() + '-domain')
     from sourceSets.main.output
     include '**/domain/**/*'
     include '**/server/**/*'

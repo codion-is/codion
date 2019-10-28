@@ -12,8 +12,8 @@ dependencies {
 
     testImplementation project(':jminor-common-remote')
     testImplementation project(':jminor-framework-server')
-    testRuntime project(':jminor-framework-db-local')
-    testRuntime project(':jminor-framework-db-remote')
+    testRuntimeOnly project(':jminor-framework-db-local')
+    testRuntimeOnly project(':jminor-framework-db-remote')
 
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
