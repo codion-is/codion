@@ -63,7 +63,9 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
   @Override
   public final void setEditable(final boolean editable) {
     super.setEditable(editable);
-    getCalendarButton().setEnabled(editable);
+    if (button != null) {
+      button.setEnabled(editable);
+    }
   }
 
   private void displayCalendar() {

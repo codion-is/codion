@@ -1145,7 +1145,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
                                            final boolean updateOnKeystroke, final StateObserver enabledState) {
     final Property property = editModel.getDomain().getProperty(editModel.getEntityId(), propertyId);
     final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, rows, columns, updateOnKeystroke, enabledState);
-    textArea.setEditable(!isReadOnly(propertyId));
     setComponent(propertyId, textArea);
 
     return textArea;
@@ -1193,7 +1192,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final TextInputPanel createTextInputPanel(final Property property, final boolean updateOnKeystroke,
                                                       final boolean buttonFocusable) {
     final TextInputPanel inputPanel = EntityUiUtil.createTextInputPanel(property, editModel, updateOnKeystroke, buttonFocusable);
-    inputPanel.getTextField().setEditable(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), inputPanel.getTextField());
 
     return inputPanel;
@@ -1290,7 +1288,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
                                                           final StateObserver enabledState, final boolean updateOnKeystroke) {
     final TemporalInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, updateOnKeystroke, includeButton, enabledState);
-    panel.setEditable(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), panel);
 
     return panel;
@@ -1414,7 +1411,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
                                              final boolean valueIncludesLiteralCharacters) {
     final JTextField textField = EntityUiUtil.createTextField(property, editModel,  maskString, updateOnKeystroke,
             enabledState, valueIncludesLiteralCharacters);
-    textField.setEditable(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), textField);
 
     return textField;
@@ -1480,7 +1476,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState,
                                            final boolean includeCaption) {
     final JCheckBox box = EntityUiUtil.createCheckBox(property, editModel, enabledState, includeCaption);
-    box.setEnabled(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), box);
 
     return box;
@@ -1546,7 +1541,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final TristateCheckBox createTristateCheckBox(final Property property, final StateObserver enabledState,
                                                           final boolean includeCaption) {
     final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(property, editModel, enabledState, includeCaption);
-    box.setEnabled(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), box);
 
     return box;
@@ -1592,7 +1586,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final JComboBox createBooleanComboBox(final Property property, final StateObserver enabledState) {
     final JComboBox comboBox = EntityUiUtil.createBooleanComboBox(property, editModel, enabledState);
-    comboBox.setEnabled(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), comboBox);
 
     return comboBox;
@@ -1651,7 +1644,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final StateObserver enabledState) {
     final SteppedComboBox comboBox = EntityUiUtil.createComboBox(property, editModel, comboBoxModel, enabledState);
-    comboBox.setEnabled(!isReadOnly(property.getPropertyId()));
     if (maximumMatch) {
       MaximumMatch.enable(comboBox);
     }
@@ -1759,7 +1751,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final boolean sortItems,
                                                           final StateObserver enabledState) {
     final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, editModel, sortItems, enabledState);
-    box.setEnabled(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), box);
 
     return box;
@@ -1798,7 +1789,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final SteppedComboBox createEditableComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                          final StateObserver enabledState) {
     final SteppedComboBox comboBox = EntityUiUtil.createComboBox(property, editModel, comboBoxModel, enabledState, true);
-    comboBox.setEnabled(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), comboBox);
 
     return comboBox;
@@ -1871,7 +1861,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final StateObserver enabledState,
                                                          final boolean editable) {
     final SteppedComboBox comboBox = EntityUiUtil.createPropertyComboBox(property, editModel, enabledState, editable);
-    comboBox.setEnabled(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), comboBox);
 
     return comboBox;
@@ -1920,7 +1909,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final EntityComboBox createForeignKeyComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final StateObserver enabledState) {
     final EntityComboBox comboBox = EntityUiUtil.createForeignKeyComboBox(foreignKeyProperty, editModel, enabledState);
-    comboBox.setEnabled(!isReadOnly(foreignKeyProperty.getPropertyId()));
     setComponent(foreignKeyProperty.getPropertyId(), comboBox);
 
     return comboBox;
@@ -1969,7 +1957,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final StateObserver enabledState) {
     final EntityLookupField lookupField = EntityUiUtil.createForeignKeyLookupField(foreignKeyProperty, editModel, enabledState);
-    lookupField.setEditable(!isReadOnly(foreignKeyProperty.getPropertyId()));
     setComponent(foreignKeyProperty.getPropertyId(), lookupField);
 
     return lookupField;
@@ -2090,11 +2077,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     else {
       requestFocus();
     }
-  }
-
-  private boolean isReadOnly(final String propertyId) {
-    final Property property = editModel.getDomain().getProperty(editModel.getEntityId(), propertyId);
-    return property.isReadOnly() || (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
   }
 
   private static final class InsertEntityAction extends AbstractAction {

@@ -30,7 +30,7 @@ public final class PropertyStoreTest {
             .append("double.property=3.14").append(Util.LINE_SEPARATOR)
             .append("boolean.property=true");
     FileUtil.writeFile(configBuilder.toString(), configFile);
-    final PropertyStore store = new PropertyStore(configFile.getAbsolutePath());
+    final PropertyStore store = new PropertyStore(configFile);
 
     final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
     assertTrue(store.containsProperty("string.property"));
@@ -116,7 +116,7 @@ public final class PropertyStoreTest {
   public void testDefaultValues() throws IOException {
     final File configFile = File.createTempFile("config_store", "properties");
     configFile.deleteOnExit();
-    final PropertyStore store = new PropertyStore(configFile.getAbsolutePath());
+    final PropertyStore store = new PropertyStore(configFile);
     final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
     assertEquals("value", stringValue.get());
     stringValue.set(null);
@@ -145,7 +145,7 @@ public final class PropertyStoreTest {
 
   @Test
   public void exceptions() throws IOException {
-    final PropertyStore store = new PropertyStore("test.file");
+    final PropertyStore store = new PropertyStore(new File("test.file"));
 
     store.propertyValue("test", "test");
     assertThrows(IllegalArgumentException.class, () -> store.propertyValue("test", "test"));
