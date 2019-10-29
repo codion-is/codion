@@ -73,7 +73,6 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(5, empBox.getSize());
     empBox.setSelectedItem(empBox.getVisibleItems().get(1));
     empBox.setSelectedItem(null);
-    assertNull(deptBox.getSelectedValue());
   }
 
   @Test

@@ -3,6 +3,8 @@
  */
 package org.jminor.common;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Function;
@@ -10,6 +12,7 @@ import java.util.function.Function;
 /**
  * A utility class for configuration values.
  * Parses a property file on class load, specified by the {@link #CONFIGURATION_FILE} system property.
+ * @see #CONFIGURATION_FILE_REQUIRED
  */
 public final class Configuration {
 
@@ -20,14 +23,27 @@ public final class Configuration {
    */
   public static final String CONFIGURATION_FILE = "jminor.configurationFile";
 
-  private static final String DEFAULT_CONFIGURATION_FILE = System.getProperty("user.home") + "/jminor.config";
+  /**
+   * Specifies whether or not the application requires configuration file to run.<br>
+   * If this is set to true and the file referenced by {@link #CONFIGURATION_FILE}<br>
+   * is not found an exception is thrown.<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final String CONFIGURATION_FILE_REQUIRED = "jminor.configurationFileRequired";
 
   private static final PropertyStore STORE;
 
   static {
-    final String configurationFile = System.getProperty(CONFIGURATION_FILE, DEFAULT_CONFIGURATION_FILE);
+    final String configurationFile = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + "/jminor.config");
     try {
-      STORE = new PropertyStore(configurationFile);
+      final File file = new File(configurationFile);
+      final boolean configurationFileRequired =
+              System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
+      if (configurationFileRequired && !file.exists()) {
+        throw new FileNotFoundException(configurationFile);
+      }
+      STORE = new PropertyStore(file);
     }
     catch (final IOException e) {
       throw new RuntimeException("Unable to read configuration file: " + configurationFile, e);

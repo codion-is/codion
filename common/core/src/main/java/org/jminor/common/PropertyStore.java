@@ -73,10 +73,10 @@ public final class PropertyStore {
   /**
    * Instantiates a new PropertyStore backed by the given file.
    * If the file exists this PropertyStore is initialized with the properties and values found in it.
-   * @param propertiesFile the path to the file to read from initially
+   * @param propertiesFile the file to read from initially
    * @throws IOException in case the given properties file exists but reading it failed
    */
-  public PropertyStore(final String propertiesFile) throws IOException {
+  public PropertyStore(final File propertiesFile) throws IOException {
     this(readFromFile(requireNonNull(propertiesFile)));
   }
 
@@ -275,17 +275,16 @@ public final class PropertyStore {
   }
 
   /**
-   * Reads all properties from the givcen properties file if it exists
+   * Reads all properties from the given properties file if it exists
    * @param propertiesFile the properties file to read from
    * @return the properties read from the given file
    * @throws IOException in case the file exists but can not be read
    */
-  public static Properties readFromFile(final String propertiesFile) throws IOException {
+  public static Properties readFromFile(final File propertiesFile) throws IOException {
     final Properties propertiesFromFile = new Properties();
-    final File file = new File(requireNonNull(propertiesFile, "propertiesFile"));
-    if (file.exists()) {
+    if (propertiesFile.exists()) {
       LOG.debug("Reading configuration from file: {}", propertiesFile);
-      try (final InputStream input = new FileInputStream(file)) {
+      try (final InputStream input = new FileInputStream(propertiesFile)) {
         propertiesFromFile.load(input);
       }
     }

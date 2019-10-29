@@ -5216,3 +5216,7 @@
   DefaultEntityEditModel, insert, update and delete events now use Collections.unmodifiableList/Map
   EditModelValues removed, EntityEditModel.value() added instead
   Preparing for Gradle 6.0
+  LocalDateInputPanel, bug fixed, NullPointerException when no button was present prevented
+  EntityEditPanel, no longer disables components created for read-only properties
+  SwingEntityComboBoxModel.linkForeignKeyComboBoxModel() no longer selects null in the foreign key model when null is selected
+  Configuration, now throws exception if jminor.configurationFileRequired system property is set to true and the configuration file is not found
