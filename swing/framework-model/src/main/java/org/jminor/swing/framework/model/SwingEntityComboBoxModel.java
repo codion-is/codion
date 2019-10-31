@@ -11,7 +11,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -29,6 +28,7 @@ import java.util.Set;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
@@ -323,7 +323,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(Conditions.entitySelectCondition(entityId,
+      return connectionProvider.getConnection().selectMany(entitySelectCondition(entityId,
               selectConditionProvider == null ? null : selectConditionProvider.getCondition()));
     }
     catch (final DatabaseException e) {

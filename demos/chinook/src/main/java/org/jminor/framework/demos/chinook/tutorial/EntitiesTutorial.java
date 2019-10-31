@@ -10,7 +10,6 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
@@ -22,6 +21,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
 import static org.jminor.framework.domain.Entities.getKeys;
 import static org.jminor.framework.domain.Properties.*;
@@ -115,7 +115,7 @@ public final class EntitiesTutorial {
     //we're selecting, the id of the property we're searching by, the type
     //of condition and the value.
     EntitySelectCondition artistsCondition =
-            Conditions.entitySelectCondition(T_ARTIST,
+            entitySelectCondition(T_ARTIST,
                     ARTIST_NAME, ConditionType.LIKE, "An%");
     //and we set the order by clause
     artistsCondition.setOrderBy(
@@ -128,7 +128,7 @@ public final class EntitiesTutorial {
 
     //create a select condition
     EntitySelectCondition albumsCondition =
-            Conditions.entitySelectCondition(T_ALBUM,
+            entitySelectCondition(T_ALBUM,
                     ALBUM_ARTIST_FK, ConditionType.LIKE, artistsStartingWithAn);
     albumsCondition.setOrderBy(Domain.orderBy()
             .ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));

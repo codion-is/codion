@@ -12,7 +12,6 @@ import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.servlet.EntityServletServer;
@@ -33,6 +32,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class HttpEntityConnectionTest {
@@ -167,12 +167,12 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectRowCount() throws IOException, DatabaseException {
-    assertEquals(4, connection.selectRowCount(Conditions.entityCondition(TestDomain.T_DEPARTMENT)));
+    assertEquals(4, connection.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)));
   }
 
   @Test
   public void selectValues() throws IOException, DatabaseException {
-    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, Conditions.entityCondition(TestDomain.T_DEPARTMENT));
+    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, entityCondition(TestDomain.T_DEPARTMENT));
     assertEquals(4, values.size());
   }
 
@@ -209,7 +209,7 @@ public final class HttpEntityConnectionTest {
   public void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.entityCondition(department.getKey())));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(entityCondition(department.getKey())));
   }
 
   @Test
