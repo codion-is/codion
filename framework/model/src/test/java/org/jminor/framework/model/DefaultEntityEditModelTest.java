@@ -181,7 +181,7 @@ public final class DefaultEntityEditModelTest {
 
     assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityId());
     assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectValues(TestDomain.EMP_JOB,
-            Conditions.condition(TestDomain.T_EMP)),
+            Conditions.entityCondition(TestDomain.T_EMP)),
             employeeEditModel.getValueProvider(jobProperty).values());
 
     employeeEditModel.refresh();

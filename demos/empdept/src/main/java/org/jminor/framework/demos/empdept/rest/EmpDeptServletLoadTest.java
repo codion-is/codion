@@ -69,7 +69,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().selectMany(Conditions.selectCondition(EmpDept.T_DEPARTMENT));
+        final List<Entity> departments = client.getConnection().selectMany(Conditions.entitySelectCondition(EmpDept.T_DEPARTMENT));
         final Entity entity = departments.get(new Random().nextInt(departments.size()));
         entity.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(10, 13));
         client.getConnection().update(singletonList(entity));
@@ -108,7 +108,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().selectMany(Conditions.selectCondition(EmpDept.T_DEPARTMENT));
+        final List<Entity> departments = client.getConnection().selectMany(Conditions.entitySelectCondition(EmpDept.T_DEPARTMENT));
 
         client.getConnection().selectMany(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT,
                 departments.get(new Random().nextInt(departments.size())).getAsString(EmpDept.DEPARTMENT_ID));
@@ -155,7 +155,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().selectMany(Conditions.selectCondition(EmpDept.T_DEPARTMENT));
+        final List<Entity> departments = client.getConnection().selectMany(Conditions.entitySelectCondition(EmpDept.T_DEPARTMENT));
         final Entity department = departments.get(random.nextInt(departments.size()));
         final Entity employee = client.getDomain().entity(EmpDept.T_EMPLOYEE);
         employee.put(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);

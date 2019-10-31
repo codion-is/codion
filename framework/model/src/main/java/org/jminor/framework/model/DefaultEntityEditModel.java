@@ -944,7 +944,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     @Override
     public Collection<Object> values() {
       try {
-        return connectionProvider.getConnection().selectValues(propertyId, Conditions.condition(entityId));
+        return connectionProvider.getConnection().selectValues(propertyId, Conditions.entityCondition(entityId));
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);
