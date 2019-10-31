@@ -146,7 +146,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
         return method.invoke(connection, args);
       }
       catch (final InvocationTargetException e) {
-        LOG.error(e.getMessage(), e);
         exception = e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
         throw exception;
       }
@@ -160,7 +159,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
           final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
           final StringBuilder messageBuilder = new StringBuilder(connection.getUser().toString()).append("\n");
           MethodLogger.appendLogEntry(messageBuilder, entry, 0);
-          LOG.info(messageBuilder.toString());
         }
       }
     }
