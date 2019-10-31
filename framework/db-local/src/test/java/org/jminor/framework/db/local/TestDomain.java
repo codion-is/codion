@@ -4,7 +4,10 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.Item;
+import org.jminor.common.db.AbstractFunction;
+import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.DatabaseConnection;
+import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
@@ -13,17 +16,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.List;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {
 
+  public static final String PROCEDURE_ID = "procedureId";
+  public static final String FUNCTION_ID = "functionId";
+
   public TestDomain() {
     department();
     employee();
     uuidTestDefaultValue();
     uuidTestNoDefaultValue();
+    operations();
     registerDomain();
   }
 
@@ -158,5 +166,18 @@ public final class TestDomain extends Domain {
             Properties.primaryKeyProperty(UUID_TEST_NO_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
             Properties.columnProperty(UUID_TEST_NO_DEFAULT_DATA, Types.VARCHAR, "Data"))
             .setKeyGenerator(uuidKeyGenerator);
+  }
+
+  private void operations() {
+    addOperation(new AbstractProcedure<EntityConnection>(PROCEDURE_ID, "executeProcedure") {
+      @Override
+      public void execute(final EntityConnection connection, final Object... arguments) {}
+    });
+    addOperation(new AbstractFunction<EntityConnection>(FUNCTION_ID, "executeFunction") {
+      @Override
+      public List execute(final EntityConnection connection, final Object... arguments) {
+        return null;
+      }
+    });
   }
 }

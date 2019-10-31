@@ -5,11 +5,8 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.DateFormats;
 import org.jminor.common.User;
-import org.jminor.common.db.AbstractFunction;
-import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.exception.DatabaseException;
@@ -295,6 +292,20 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
+  public void selectManyFetchCount() throws DatabaseException {
+    List<Entity> departments = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT));
+    assertEquals(4, departments.size());
+    departments = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(0));
+    assertTrue(departments.isEmpty());
+    departments = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(2));
+    assertEquals(2, departments.size());
+    departments = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(3));
+    assertEquals(3, departments.size());
+    departments = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(-1));
+    assertEquals(4, departments.size());
+  }
+
+  @Test
   public void selectManyByKey() throws DatabaseException {
     final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
     deptKey.put(TestDomain.DEPARTMENT_ID, 10);
@@ -396,24 +407,12 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void executeFunction() throws DatabaseException {
-    final DatabaseConnection.Function func = new AbstractFunction<EntityConnection>("executeFunction", "executeFunction") {
-      @Override
-      public List execute(final EntityConnection connection, final Object... arguments) {
-        return null;
-      }
-    };
-    DOMAIN.addOperation(func);
-    connection.executeFunction(func.getId());
+    connection.executeFunction(TestDomain.FUNCTION_ID);
   }
 
   @Test
   public void executeProcedure() throws DatabaseException {
-    final DatabaseConnection.Procedure proc = new AbstractProcedure<EntityConnection>("executeProcedure", "executeProcedure") {
-      @Override
-      public void execute(final EntityConnection connection, final Object... arguments) {}
-    };
-    DOMAIN.addOperation(proc);
-    connection.executeProcedure(proc.getId());
+    connection.executeProcedure(TestDomain.PROCEDURE_ID);
   }
 
   @Test

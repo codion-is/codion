@@ -102,6 +102,9 @@ public class Domain implements Serializable {
   public Domain(final Domain domain) {
     this.domainId = requireNonNull(domain).domainId;
     this.entityDefinitions.putAll(domain.entityDefinitions);
+    if (domain.databaseOperations != null) {
+      this.databaseOperations.putAll(domain.databaseOperations);
+    }
   }
 
   /**
