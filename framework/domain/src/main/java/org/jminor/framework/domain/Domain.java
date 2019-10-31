@@ -75,8 +75,6 @@ public class Domain implements Serializable {
 
   private final String domainId;
   private final Map<String, Entity.Definition> entityDefinitions = new LinkedHashMap<>();
-
-  private final transient Map<String, List<Property.ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
   private final transient Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
 
   /**
@@ -96,7 +94,8 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Instantiates a new domain and copies all the entity definitions from {@code domain}
+   * Instantiates a new domain and copies all the entity definitions
+   * and database operations from {@code domain}
    * @param domain the domain to copy
    */
   public Domain(final Domain domain) {
@@ -610,27 +609,6 @@ public class Domain implements Serializable {
     }
 
     throw new IllegalArgumentException("Foreign key property with id: " + propertyId + " not found in entity of type: " + entityId);
-  }
-
-  /**
-   * @param entityId the entityId
-   * @return all foreign keys referencing entities of type {@code entityId}
-   */
-  public final Collection<Property.ForeignKeyProperty> getForeignKeyReferences(final String entityId) {
-    List<Property.ForeignKeyProperty> foreignKeyReferences = foreignKeyReferenceMap.get(entityId);
-    if (foreignKeyReferences == null) {
-      foreignKeyReferences = new ArrayList<>();
-      for (final String definedEntityId : entityDefinitions.keySet()) {
-        for (final Property.ForeignKeyProperty foreignKeyProperty : getDefinition(definedEntityId).getForeignKeyProperties()) {
-          if (foreignKeyProperty.getForeignEntityId().equals(entityId)) {
-            foreignKeyReferences.add(foreignKeyProperty);
-          }
-        }
-      }
-      foreignKeyReferenceMap.put(entityId, foreignKeyReferences);
-    }
-
-    return foreignKeyReferences;
   }
 
   /**

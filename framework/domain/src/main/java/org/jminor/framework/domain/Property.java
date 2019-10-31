@@ -587,11 +587,13 @@ public interface Property extends Serializable {
 
     /**
      * @return true if this foreign key is not based on a physical (table) foreign key
+     * and should not prevent deletion
      */
     boolean isSoftReference();
 
     /**
      * @param softReference true if this foreign key is not based on a physical (table) foreign key
+     * and should not prevent deletion
      * @return this ForeignKeyProperty instance
      */
     ForeignKeyProperty setSoftReference(final boolean softReference);

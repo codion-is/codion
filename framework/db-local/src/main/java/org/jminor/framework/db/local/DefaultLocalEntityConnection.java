@@ -83,6 +83,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final DatabaseConnection connection;
   private final Map<String, List<Property.ColumnProperty>> insertProperties = new HashMap<>();
   private final Map<String, List<Property.ColumnProperty>> updateProperties = new HashMap<>();
+  private final Map<String, List<Property.ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
   private final Map<String, String[]> writableColumns = new HashMap<>();
 
   private boolean optimisticLocking;
@@ -552,7 +553,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       return dependencyMap;
     }
 
-    final Collection<Property.ForeignKeyProperty> foreignKeyReferences = domain.getForeignKeyReferences(
+    final Collection<Property.ForeignKeyProperty> foreignKeyReferences = getForeignKeyReferences(
             entities.iterator().next().getEntityId());
     for (final Property.ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
@@ -986,6 +987,25 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     return columnNames;
+  }
+
+  /**
+   * @param entityId the entityId
+   * @return all foreign keys referencing entities of type {@code entityId}
+   */
+  private Collection<Property.ForeignKeyProperty> getForeignKeyReferences(final String entityId) {
+    return foreignKeyReferenceMap.computeIfAbsent(entityId, e -> {
+      final List<Property.ForeignKeyProperty> foreignKeyReferences = new ArrayList<>();
+      for (final String definedEntityId : domain.getDefinedEntities()) {
+        for (final Property.ForeignKeyProperty foreignKeyProperty : domain.getForeignKeyProperties(definedEntityId)) {
+          if (foreignKeyProperty.getForeignEntityId().equals(entityId)) {
+            foreignKeyReferences.add(foreignKeyProperty);
+          }
+        }
+      }
+
+      return foreignKeyReferences;
+    });
   }
 
   private List<Entity> packResult(final ResultIterator<Entity> iterator) throws SQLException {
