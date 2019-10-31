@@ -83,12 +83,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final DatabaseConnection connection;
   private final Map<String, List<Property.ColumnProperty>> insertProperties = new HashMap<>();
   private final Map<String, List<Property.ColumnProperty>> updateProperties = new HashMap<>();
+  private final Map<String, List<Property.ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
   private final Map<String, String[]> writableColumns = new HashMap<>();
 
   private boolean optimisticLocking;
   private boolean limitForeignKeyFetchDepth;
-
-  private MethodLogger methodLogger;
 
   /**
    * Constructs a new LocalEntityConnection instance
@@ -103,7 +102,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   DefaultLocalEntityConnection(final Domain domain, final Database database, final User user, final boolean optimisticLocking,
                                final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
-    this.domain = requireNonNull(domain, "domain");
+    this.domain = new Domain(requireNonNull(domain, "domain"));
     this.connection = createConnection(database, user, validityCheckTimeout);
     this.optimisticLocking = optimisticLocking;
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
@@ -123,7 +122,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection, final boolean optimisticLocking,
                                final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
-    this.domain = requireNonNull(domain, "domain");
+    this.domain = new Domain(requireNonNull(domain, "domain"));
     this.connection = createConnection(database, connection, validityCheckTimeout);
     this.optimisticLocking = optimisticLocking;
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
@@ -133,7 +132,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public void setMethodLogger(final MethodLogger methodLogger) {
     synchronized (connection) {
-      this.methodLogger = methodLogger;
       connection.setMethodLogger(methodLogger);
     }
   }
@@ -142,14 +140,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public MethodLogger getMethodLogger() {
     synchronized (connection) {
-      return this.methodLogger;
+      return connection.getMethodLogger();
     }
   }
 
   /** {@inheritDoc} */
   @Override
   public Domain getDomain() {
-    return new Domain(domain);
+    return domain;
   }
 
   /** {@inheritDoc} */
@@ -277,9 +275,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
         final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
-        for (final Map.Entry<String, List<Entity>> mappedEntitiesMapEntry : mappedEntities.entrySet()) {
-          final String entityId = mappedEntitiesMapEntry.getKey();
-          final List<Entity> toUpdate = mappedEntitiesMapEntry.getValue();
+        for (final Map.Entry<String, List<Entity>> mappedEntitiesEntry : mappedEntities.entrySet()) {
+          final String entityId = mappedEntitiesEntry.getKey();
+          final List<Entity> toUpdate = mappedEntitiesEntry.getValue();
           final String tableName = domain.getTableName(entityId);
           final List<Property.ColumnProperty> updateColumnProperties = updateProperties.computeIfAbsent(entityId,
                   e -> domain.getWritableColumnProperties(entityId, true, false));
@@ -555,7 +553,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       return dependencyMap;
     }
 
-    final Collection<Property.ForeignKeyProperty> foreignKeyReferences = domain.getForeignKeyReferences(
+    final Collection<Property.ForeignKeyProperty> foreignKeyReferences = getForeignKeyReferences(
             entities.iterator().next().getEntityId());
     for (final Property.ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
@@ -909,7 +907,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
       return new EntityResultIterator(statement, resultSet, new EntityResultPacker(
               condition.getEntityId(), columnProperties,
-              domain.getTransientProperties(condition.getEntityId())));
+              domain.getTransientProperties(condition.getEntityId())), condition.getFetchCount());
     }
     catch (final SQLException e) {
       closeSilently(resultSet);
@@ -991,6 +989,25 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return columnNames;
   }
 
+  /**
+   * @param entityId the entityId
+   * @return all foreign keys referencing entities of type {@code entityId}
+   */
+  private Collection<Property.ForeignKeyProperty> getForeignKeyReferences(final String entityId) {
+    return foreignKeyReferenceMap.computeIfAbsent(entityId, e -> {
+      final List<Property.ForeignKeyProperty> foreignKeyReferences = new ArrayList<>();
+      for (final String definedEntityId : domain.getDefinedEntities()) {
+        for (final Property.ForeignKeyProperty foreignKeyProperty : domain.getForeignKeyProperties(definedEntityId)) {
+          if (foreignKeyProperty.getForeignEntityId().equals(entityId)) {
+            foreignKeyReferences.add(foreignKeyProperty);
+          }
+        }
+      }
+
+      return foreignKeyReferences;
+    });
+  }
+
   private List<Entity> packResult(final ResultIterator<Entity> iterator) throws SQLException {
     SQLException packingException = null;
     final List<Entity> result = new ArrayList<>();
@@ -1065,6 +1082,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+    final MethodLogger methodLogger = connection.getMethodLogger();
     if (methodLogger != null && methodLogger.isEnabled()) {
       return methodLogger.logExit(method, exception, exitMessage);
     }
@@ -1073,6 +1091,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private void logAccess(final String method, final Object[] arguments) {
+    final MethodLogger methodLogger = connection.getMethodLogger();
     if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.logAccess(method, arguments);
     }
@@ -1434,17 +1453,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     private final Statement statement;
     private final ResultSet resultSet;
     private final ResultPacker<Entity> resultPacker;
+    private final int fetchCount;
+    private int counter = 0;
 
-    private EntityResultIterator(final Statement statement, final ResultSet resultSet, final ResultPacker<Entity> resultPacker) {
+    private EntityResultIterator(final Statement statement, final ResultSet resultSet,
+                                 final ResultPacker<Entity> resultPacker, final int fetchCount) {
       this.statement = statement;
       this.resultSet = resultSet;
       this.resultPacker = resultPacker;
+      this.fetchCount = fetchCount;
     }
 
     @Override
     public boolean hasNext() throws SQLException {
       try {
-        if (resultSet.next()) {
+        if ((fetchCount < 0 || counter < fetchCount) && resultSet.next()) {
           return true;
         }
         close();
@@ -1459,6 +1482,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     @Override
     public Entity next() throws SQLException {
+      counter++;
       try {
         return resultPacker.fetch(resultSet);
       }

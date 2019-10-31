@@ -280,6 +280,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
     catch (final Exception e) {
       LOG.debug(remoteClient + " unable to connect", e);
+      e.printStackTrace();
       throw ServerException.loginException(e.getMessage());
     }
   }

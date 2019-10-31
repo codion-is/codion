@@ -5223,3 +5223,8 @@
   LocalEntityConnectionProvider.LocalConnectionHandler, removed excessive exception logging, no longer logs InvocationTargetExceptions, since the underlying exception is logged by the connection
   Conditions.condition() and selectCondition() renamed to entityCondition() and entitySelectCondition() respectively
   Static imports used for Conditions.entityCondition() and Conditions.entitySelectCondition() since those can no longer be confused with other methods in class
+  DefaultEntityConnection.methodLogger field removed
+  DefaultLocalEntityConnection, now initializes the Domain as a copy instead of always returning a new copy via getDomain()
+  DefaultLocalEntityConnection bug fixed, EntitySelectCondition.fetchCount wasn't being respected anymore, re-implemented
+  Domain bug fixed, did not copy databaseOperations in copy constructor
+  Domain.getForeignKeyReferences() moved to DefaultLocalEntityConnection
