@@ -10,7 +10,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.dbms.h2database.H2Database;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionUtil;
+import org.jminor.framework.db.EntityConnections;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 
@@ -28,7 +28,7 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class EntityConnectionUtilTest {
+public class EntityConnectionsTest {
 
   private static final Domain DOMAIN = new TestDomain();
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
@@ -60,12 +60,12 @@ public class EntityConnectionUtilTest {
   @Test
   public void copyEntities() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
-    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_DEPARTMENT);
+    EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_DEPARTMENT);
 
     assertEquals(sourceConnection.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)),
             DESTINATION_CONNECTION.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)));
 
-    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_EMP);
+    EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_EMP);
     DESTINATION_CONNECTION.selectMany(entitySelectCondition(TestDomain.T_EMP));
 
     DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_EMP));
@@ -79,16 +79,16 @@ public class EntityConnectionUtilTest {
     final List<Entity> source = sourceConnection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT));
     final List<Entity.Key> dest = new ArrayList<>();
     final ProgressReporter progressReporter = currentProgress -> {};
-    EntityConnectionUtil.batchInsert(DESTINATION_CONNECTION, source, dest, 2, progressReporter);
+    EntityConnections.batchInsert(DESTINATION_CONNECTION, source, dest, 2, progressReporter);
     assertEquals(sourceConnection.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)),
             DESTINATION_CONNECTION.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)));
 
-    EntityConnectionUtil.batchInsert(DESTINATION_CONNECTION, emptyList(), null, 10, null);
+    EntityConnections.batchInsert(DESTINATION_CONNECTION, emptyList(), null, 10, null);
     DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_DEPARTMENT));
   }
 
   @Test
   public void batchInsertNegativeBatchSize() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> EntityConnectionUtil.batchInsert(null, null, null, -6, null));
+    assertThrows(IllegalArgumentException.class, () -> EntityConnections.batchInsert(null, null, null, -6, null));
   }
 }
