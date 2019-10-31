@@ -569,6 +569,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * Returns a string representation of the given entity
      * @param entity the entity
      * @return a string representation of the entity
+     * @throws NullPointerException in case {@code entity} is null
      */
     String toString(final Entity entity);
   }
@@ -756,8 +757,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     KeyGenerator getKeyGenerator();
 
     /**
-     * Sets the primary key generator, if {@code keyGenerator} is null then a default no-op generator is used.
-     * @param keyGenerator the primary key generator, null for a no-op generator
+     * Sets the primary key generator
+     * @param keyGenerator the primary key generator
      * @return this {@link Entity.Definition} instance
      */
     Definition setKeyGenerator(final KeyGenerator keyGenerator);

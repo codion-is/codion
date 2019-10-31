@@ -183,23 +183,25 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void setToStringProvider() {
-    final Entity.Definition def = domain.define("entityToString",
+    final Entity.Definition definition = domain.define("entityToString",
             Properties.primaryKeyProperty("propertyId"));
     final Entity entity = domain.entity("entityToString");
     entity.put("propertyId", 1);
     assertEquals("entityToString: propertyId:1", entity.toString());
-    def.setStringProvider(valueMap -> "test");
+    definition.setStringProvider(valueMap -> "test");
     //the toString value is cached, so we need to clear it by setting a value
     entity.put("propertyId", 2);
     assertEquals("test", entity.toString());
+    assertThrows(NullPointerException.class, () -> definition.setStringProvider(null));
   }
 
   @Test
-  public void nullKeyGenerator() {
+  public void keyGenerator() {
     final Entity.Definition definition = domain.define("nullKeyGenerator",
-            Properties.primaryKeyProperty("propertyId")).setKeyGenerator(domain.automaticKeyGenerator("table"));
-    assertEquals(Entity.KeyGenerator.Type.AUTOMATIC, definition.getKeyGeneratorType());
-    definition.setKeyGenerator(null);
+            Properties.primaryKeyProperty("propertyId"));
     assertEquals(Entity.KeyGenerator.Type.NONE, definition.getKeyGeneratorType());
+    definition.setKeyGenerator(domain.automaticKeyGenerator("table"));
+    assertEquals(Entity.KeyGenerator.Type.AUTOMATIC, definition.getKeyGeneratorType());
+    assertThrows(NullPointerException.class, () -> definition.setKeyGenerator(null));
   }
 }
