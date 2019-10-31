@@ -15,9 +15,9 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
 /**
  * A static helper class for mass data manipulation.
  */
-public final class EntityConnectionUtil {
+public final class EntityConnections {
 
-  private EntityConnectionUtil() {}
+  private EntityConnections() {}
 
   /**
    * Copies the given entities from source to destination
