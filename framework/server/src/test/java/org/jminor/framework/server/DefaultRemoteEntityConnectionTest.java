@@ -17,7 +17,6 @@ import org.jminor.common.remote.Clients;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Servers;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.domain.Domain;
@@ -32,6 +31,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,7 +59,7 @@ public class DefaultRemoteEntityConnectionTest {
   public void rollbackOnDisconnect() throws Exception {
     final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238, true);
-    final EntitySelectCondition condition = Conditions.entitySelectCondition(TestDomain.T_EMP);
+    final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.selectMany(condition).isEmpty());
@@ -93,7 +93,7 @@ public class DefaultRemoteEntityConnectionTest {
     };
     final ConnectionPool connectionPool = ConnectionPools.createDefaultConnectionPool(connectionProvider);
     final DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, connectionPool, client, 1238, true);
-    final EntitySelectCondition condition = Conditions.entitySelectCondition(TestDomain.T_EMP);
+    final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.selectMany(condition);
     connection.delete(condition);
@@ -129,7 +129,7 @@ public class DefaultRemoteEntityConnectionTest {
         }
       });
 
-      proxy.selectMany(Conditions.entitySelectCondition(TestDomain.T_EMP));
+      proxy.selectMany(entitySelectCondition(TestDomain.T_EMP));
     }
     finally {
       if (registry != null) {

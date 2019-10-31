@@ -36,6 +36,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.framework.db.condition.Conditions.conditionSet;
+import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 
 /**
  * A default EntityLookupModel implementation
@@ -311,7 +312,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       }
     }
 
-    return Conditions.entitySelectCondition(entityId, additionalConditionProvider == null ? baseCondition :
+    return entitySelectCondition(entityId, additionalConditionProvider == null ? baseCondition :
             conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
             .setOrderBy(connectionProvider.getDomain().getOrderBy(entityId));
   }

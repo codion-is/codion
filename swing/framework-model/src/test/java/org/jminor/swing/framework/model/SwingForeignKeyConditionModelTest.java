@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -21,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
+import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingForeignKeyConditionModelTest {
@@ -58,7 +58,7 @@ public class SwingForeignKeyConditionModelTest {
     assertTrue(searchEntities.contains(sales));
     comboBoxModel.refresh();
     assertEquals(sales, comboBoxModel.getSelectedValue());
-    assertEquals("deptno = ?", Conditions.entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(DOMAIN));
+    assertEquals("deptno = ?", entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(DOMAIN));
     searchEntities = conditionModel.getConditionEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));

@@ -12,7 +12,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -25,6 +24,7 @@ import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -193,7 +193,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = connection.selectMany(Conditions.entitySelectCondition(TestDomain.T_EMP,
+    final List<Entity> salesEmployees = connection.selectMany(entitySelectCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department));
     assertFalse(salesEmployees.isEmpty());
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);

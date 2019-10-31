@@ -14,7 +14,6 @@ import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.table.TableSortModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -51,6 +50,7 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -598,7 +598,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
 
     try {
-      return connectionProvider.getConnection().selectMany(Conditions.entitySelectCondition(entityId,
+      return connectionProvider.getConnection().selectMany(entitySelectCondition(entityId,
               getConditionModel().getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {

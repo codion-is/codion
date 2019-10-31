@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -19,6 +18,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -41,7 +41,7 @@ public class DefaultForeignKeyConditionModelTest {
     Collection<Entity> searchEntities = conditionModel.getConditionEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
-    assertEquals("deptno = ?", Conditions.entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
+    assertEquals("deptno = ?", entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final List<Entity> salesAccounting = asList(sales, accounting);
     lookupModel.setSelectedEntities(salesAccounting);
@@ -51,7 +51,7 @@ public class DefaultForeignKeyConditionModelTest {
     assertEquals(2, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     assertTrue(searchEntities.contains(accounting));
-    assertEquals("(deptno in (?, ?))", Conditions.entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
+    assertEquals("(deptno in (?, ?))", entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
 
     assertEquals("dept_fkLIKEdeptno:30deptno:10null", conditionModel.toString());
 

@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityTableConditionModelTest {
@@ -122,13 +123,13 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     final PropertyConditionModel nameConditionModel = conditionModel.getPropertyConditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setLikeValue("SCOTT");
-    assertEquals("(ename = ? and (deptno in (?, ?)))", Conditions.entityCondition(TestDomain.T_EMP,
+    assertEquals("(ename = ? and (deptno in (?, ?)))", entityCondition(TestDomain.T_EMP,
             conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
 
     conditionModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_ID));
     assertNotNull(conditionModel.getAdditionalConditionProvider());
     assertEquals("(ename = ? and (deptno in (?, ?)) and 1 = 1)",
-            Conditions.entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
+            entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
   }
 
   @Test

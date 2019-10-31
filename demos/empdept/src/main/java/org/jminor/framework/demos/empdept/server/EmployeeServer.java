@@ -8,7 +8,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.remote.RemoteClient;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -19,6 +18,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.List;
+
+import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 
 public final class EmployeeServer extends DefaultEntityConnectionServer {
 
@@ -54,7 +55,7 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
     @Override
     public List<Entity> getEmployees() throws DatabaseException {
       synchronized (connectionProxy) {
-        return connectionProxy.selectMany(Conditions.entitySelectCondition(EmpDept.T_EMPLOYEE));
+        return connectionProxy.selectMany(entitySelectCondition(EmpDept.T_EMPLOYEE));
       }
     }
   }

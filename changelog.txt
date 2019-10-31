@@ -5209,3 +5209,4 @@
   Configuration, now throws exception if jminor.configurationFileRequired system property is set to true and the configuration file is not found
   LocalEntityConnectionProvider.LocalConnectionHandler, removed excessive exception logging, no longer logs InvocationTargetExceptions, since the underlying exception is logged by the connection
   Conditions.condition() and selectCondition() renamed to entityCondition() and entitySelectCondition() respectively
+  Static imports used for Conditions.entityCondition() and Conditions.entitySelectCondition() since those can no longer be confused with other methods in class

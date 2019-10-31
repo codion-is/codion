@@ -6,7 +6,6 @@ package org.jminor.swing.framework.model;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.PropertyComboBoxModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
@@ -14,6 +13,8 @@ import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static org.jminor.framework.db.condition.Conditions.entityCondition;
 
 /**
  * A combo box model based on a single entity property.
@@ -34,7 +35,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
     this(() -> {
       try {
         return (Collection<T>) connectionProvider.getConnection().selectValues(property.getPropertyId(),
-                Conditions.entityCondition(entityId));
+                entityCondition(entityId));
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);

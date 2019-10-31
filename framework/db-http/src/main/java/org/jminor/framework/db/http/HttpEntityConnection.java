@@ -13,7 +13,6 @@ import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Domain;
@@ -56,6 +55,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 
 /**
  * A Http based {@link EntityConnection} implementation based on EntityService
@@ -326,13 +326,13 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(Conditions.entitySelectCondition(entityId, propertyId, ConditionType.LIKE, value));
+    return selectSingle(entitySelectCondition(entityId, propertyId, ConditionType.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return selectSingle(Conditions.entitySelectCondition(key));
+    return selectSingle(entitySelectCondition(key));
   }
 
   /** {@inheritDoc} */
@@ -385,7 +385,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return selectMany(Conditions.entitySelectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
+    return selectMany(entitySelectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
   }
 
   /** {@inheritDoc} */
