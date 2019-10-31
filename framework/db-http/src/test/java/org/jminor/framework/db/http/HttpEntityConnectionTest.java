@@ -167,12 +167,12 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectRowCount() throws IOException, DatabaseException {
-    assertEquals(4, connection.selectRowCount(Conditions.condition(TestDomain.T_DEPARTMENT)));
+    assertEquals(4, connection.selectRowCount(Conditions.entityCondition(TestDomain.T_DEPARTMENT)));
   }
 
   @Test
   public void selectValues() throws IOException, DatabaseException {
-    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, Conditions.condition(TestDomain.T_DEPARTMENT));
+    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, Conditions.entityCondition(TestDomain.T_DEPARTMENT));
     assertEquals(4, values.size());
   }
 
@@ -209,7 +209,7 @@ public final class HttpEntityConnectionTest {
   public void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.condition(department.getKey())));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.entityCondition(department.getKey())));
   }
 
   @Test

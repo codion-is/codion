@@ -287,7 +287,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           for (final Entity entity : toUpdate) {
             populateStatementPropertiesAndValues(false, entity, updateColumnProperties, statementProperties, statementValues);
 
-            final EntityCondition condition = Conditions.condition(entity.getOriginalKey());
+            final EntityCondition condition = Conditions.entityCondition(entity.getOriginalKey());
             updateSQL = createUpdateSQL(tableName, statementProperties, condition);
             statementProperties.addAll(domain.getColumnProperties(entityId, condition.getCondition(domain).getPropertyIds()));
             statementValues.addAll(condition.getCondition(domain).getValues());
@@ -301,7 +301,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          final List<Entity> selected = doSelectMany(Conditions.selectCondition(getKeys(toUpdate)), 0);
+          final List<Entity> selected = doSelectMany(Conditions.entitySelectCondition(getKeys(toUpdate)), 0);
           if (selected.size() != toUpdate.size()) {
             throw new UpdateException(toUpdate.size() + " updated rows expected, query returned " + selected.size() + " entityId: " + entityId);
           }
@@ -378,7 +378,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         final List<Entity.Key> conditionKeys = new ArrayList<>();
         for (final Map.Entry<String, List<Entity.Key>> mappedKeysEntry : mappedKeys.entrySet()) {
           conditionKeys.addAll(mappedKeysEntry.getValue());
-          final EntityCondition condition = Conditions.condition(conditionKeys);
+          final EntityCondition condition = Conditions.entityCondition(conditionKeys);
           deleteSQL = createDeleteSQL(condition);
           statement = prepareStatement(deleteSQL);
           executePreparedUpdate(statement, deleteSQL, domain.getColumnProperties(condition.getEntityId(),
@@ -402,13 +402,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(Conditions.selectCondition(entityId, propertyId, LIKE, value));
+    return selectSingle(Conditions.entitySelectCondition(entityId, propertyId, LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return selectSingle(Conditions.selectCondition(key));
+    return selectSingle(Conditions.entitySelectCondition(key));
   }
 
   /** {@inheritDoc} */
@@ -436,7 +436,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         final List<Entity> result = new ArrayList<>();
         for (final Map.Entry<String, List<Entity.Key>> entry : mapKeysToEntityId(keys).entrySet()) {
-          result.addAll(doSelectMany(Conditions.selectCondition(entry.getValue()), 0));
+          result.addAll(doSelectMany(Conditions.entitySelectCondition(entry.getValue()), 0));
         }
         if (!isTransactionOpen()) {
           commitQuietly();
@@ -454,7 +454,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
-    return selectMany(Conditions.selectCondition(entityId, propertyId, LIKE, values == null ? null : asList(values)));
+    return selectMany(Conditions.entitySelectCondition(entityId, propertyId, LIKE, values == null ? null : asList(values)));
   }
 
   /** {@inheritDoc} */
@@ -485,7 +485,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     final Property.ColumnProperty property = domain.getColumnProperty(condition.getEntityId(), propertyId);
     final String columnName = property.getColumnName();
-    final EntityCondition entityCondition = Conditions.condition(condition.getEntityId(),
+    final EntityCondition entityCondition = Conditions.entityCondition(condition.getEntityId(),
             conditionSet(Conjunction.AND, condition.getCondition(domain),
                     Conditions.propertyCondition(propertyId, NOT_LIKE, null)));
     final String selectSQL = createSelectSQL(domain.getSelectTableName(condition.getEntityId()), "distinct " + columnName,
@@ -559,7 +559,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entities.iterator().next().getEntityId());
     for (final Property.ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
-        final List<Entity> dependencies = selectMany(Conditions.selectCondition(foreignKeyReference.getEntityId(),
+        final List<Entity> dependencies = selectMany(Conditions.entitySelectCondition(foreignKeyReference.getEntityId(),
                 foreignKeyReference.getPropertyId(), LIKE, entities));
         if (!dependencies.isEmpty()) {
           dependencyMap.put(foreignKeyReference.getEntityId(), dependencies);
@@ -653,7 +653,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw new IllegalArgumentException("Property " + property.getPropertyId() + " in entity " +
               primaryKey.getEntityId() + " does not have column type BLOB");
     }
-    final EntityCondition condition = Conditions.condition(primaryKey);
+    final EntityCondition condition = Conditions.entityCondition(primaryKey);
     final String sql = "update " + domain.getTableName(primaryKey.getEntityId()) + " set " + property.getColumnName() +
             " = ?" + WHERE_SPACE_PREFIX + condition.getWhereClause(domain);
     final List<Object> values = new ArrayList<>();
@@ -702,7 +702,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     PreparedStatement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
-    final EntityCondition condition = Conditions.condition(primaryKey);
+    final EntityCondition condition = Conditions.entityCondition(primaryKey);
     final String sql = "select " + property.getColumnName() + " from " +
             domain.getTableName(primaryKey.getEntityId()) + WHERE_SPACE_PREFIX + condition.getWhereClause(domain);
     QUERY_COUNTER.count(sql);
@@ -794,7 +794,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void lockAndCheckForUpdate(final Map<String, List<Entity>> entities) throws SQLException, RecordModifiedException {
     for (final Map.Entry<String, List<Entity>> entry : entities.entrySet()) {
       final List<Entity.Key> originalKeys = getKeys(entry.getValue(), true);
-      final EntitySelectCondition selectForUpdateCondition = Conditions.selectCondition(originalKeys);
+      final EntitySelectCondition selectForUpdateCondition = Conditions.entitySelectCondition(originalKeys);
       selectForUpdateCondition.setForUpdate(true);
       selectForUpdateCondition.setSelectPropertyIds(writableColumns.computeIfAbsent(entry.getKey(), entityId ->
               domain.getWritableColumnProperties(entityId, true, true)
@@ -861,7 +861,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             }
           }
           else {
-            final EntitySelectCondition referencedEntitiesCondition = Conditions.selectCondition(referencedKeys);
+            final EntitySelectCondition referencedEntitiesCondition = Conditions.entitySelectCondition(referencedKeys);
             referencedEntitiesCondition.setForeignKeyFetchDepthLimit(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);

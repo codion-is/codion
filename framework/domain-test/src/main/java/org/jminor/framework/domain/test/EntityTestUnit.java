@@ -279,7 +279,7 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
     }
     else {
-      connection.selectMany(Conditions.selectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
+      connection.selectMany(Conditions.entitySelectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
     }
   }
 

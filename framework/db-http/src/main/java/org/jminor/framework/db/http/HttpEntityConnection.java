@@ -307,13 +307,13 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(Conditions.selectCondition(entityId, propertyId, ConditionType.LIKE, value));
+    return selectSingle(Conditions.entitySelectCondition(entityId, propertyId, ConditionType.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return selectSingle(Conditions.selectCondition(key));
+    return selectSingle(Conditions.entitySelectCondition(key));
   }
 
   /** {@inheritDoc} */
@@ -366,7 +366,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return selectMany(Conditions.selectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
+    return selectMany(Conditions.entitySelectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
   }
 
   /** {@inheritDoc} */

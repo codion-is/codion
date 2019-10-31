@@ -115,7 +115,7 @@ public final class EntitiesTutorial {
     //we're selecting, the id of the property we're searching by, the type
     //of condition and the value.
     EntitySelectCondition artistsCondition =
-            Conditions.selectCondition(T_ARTIST,
+            Conditions.entitySelectCondition(T_ARTIST,
                     ARTIST_NAME, ConditionType.LIKE, "An%");
     //and we set the order by clause
     artistsCondition.setOrderBy(
@@ -128,7 +128,7 @@ public final class EntitiesTutorial {
 
     //create a select condition
     EntitySelectCondition albumsCondition =
-            Conditions.selectCondition(T_ALBUM,
+            Conditions.entitySelectCondition(T_ALBUM,
                     ALBUM_ARTIST_FK, ConditionType.LIKE, artistsStartingWithAn);
     albumsCondition.setOrderBy(Domain.orderBy()
             .ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));
