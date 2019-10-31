@@ -49,8 +49,6 @@ public class Domain implements Serializable {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Domain.class.getName(), Locale.getDefault());
 
-  private static final String MSG_PROPERTY_VALUE_IS_REQUIRED = "property_value_is_required";
-
   /**
    * Specifies whether or not to allow entities to be re-defined, that is,
    * allow a new definition to replace an old one.
@@ -70,6 +68,7 @@ public class Domain implements Serializable {
   private static final String ENTITY_ID_PARAM = "entityId";
   private static final String PROPERTY_ID_PARAM = "propertyId";
   private static final String PROPERTY_PARAM = "property";
+  private static final String VALUE_REQUIRED_KEY = "property_value_is_required";
 
   private static final Map<String, Domain> REGISTERED_DOMAINS = new HashMap<>();
 
@@ -226,8 +225,7 @@ public class Domain implements Serializable {
     final List<Property.TransientProperty> transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
 
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(domainId, entityId,
-            tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties);
-    entityDefinition.setValidator(new Validator());
+            tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties, new Validator());
     entityDefinitions.put(entityId, entityDefinition);
 
     return entityDefinition;
@@ -720,6 +718,7 @@ public class Domain implements Serializable {
    * @throws IllegalArgumentException in case an operation with the same id has already been added
    */
   public final void addOperation(final DatabaseConnection.Operation operation) {
+    checkIfDeserialized();
     if (databaseOperations.containsKey(operation.getId())) {
       throw new IllegalArgumentException("Operation already defined: " + databaseOperations.get(operation.getId()).getName());
     }
@@ -734,6 +733,7 @@ public class Domain implements Serializable {
    * @throws IllegalArgumentException in case the procedure is not found
    */
   public final <C> DatabaseConnection.Procedure<C> getProcedure(final String procedureId) {
+    checkIfDeserialized();
     final DatabaseConnection.Operation operation = databaseOperations.get(procedureId);
     if (operation == null) {
       throw new IllegalArgumentException("Procedure not found: " + procedureId);
@@ -749,6 +749,7 @@ public class Domain implements Serializable {
    * @throws IllegalArgumentException in case the function is not found
    */
   public final <C> DatabaseConnection.Function<C> getFunction(final String functionId) {
+    checkIfDeserialized();
     final DatabaseConnection.Operation operation = databaseOperations.get(functionId);
     if (operation == null) {
       throw new IllegalArgumentException("Function not found: " + functionId);
@@ -891,6 +892,15 @@ public class Domain implements Serializable {
       if (!(property instanceof Property.MirrorProperty)) {
         validateAndAddProperty(property, entityId, propertyMap);
       }
+    }
+  }
+
+  /**
+   * databaseOperations is transient and only null after deserialization.
+   */
+  private void checkIfDeserialized() {
+    if (databaseOperations == null) {
+      throw new IllegalStateException("Database operations are not available in a deserialized Domain model");
     }
   }
 
@@ -1241,11 +1251,11 @@ public class Domain implements Serializable {
           final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
           final boolean primaryKeyPropertyWithoutAutoGenerate = isPrimaryKeyPropertyWithoutAutoGenerate(entity, property);
           if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
-            throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(MSG_PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+            throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
           }
         }
         else {
-          throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(MSG_PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+          throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
         }
       }
     }

@@ -28,9 +28,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   private static final long serialVersionUID = 1;
 
-  private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
-  private static final Entity.ToString DEFAULT_STRING_PROVIDER = new DefaultStringProvider();
-
   /**
    * The domainId
    */
@@ -85,12 +82,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * The primary key value generator
    */
-  private transient Entity.KeyGenerator keyGenerator = DEFAULT_KEY_GENERATOR;
+  private transient Entity.KeyGenerator keyGenerator = new DefaultKeyGenerator();
 
   /**
    * The key generator type
    */
-  private Entity.KeyGenerator.Type keyGeneratorType = DEFAULT_KEY_GENERATOR.getType();
+  private Entity.KeyGenerator.Type keyGeneratorType = keyGenerator.getType();
 
   /**
    * If true then it should not be possible to insert, update or delete entities of this type
@@ -112,12 +109,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * The Entity.ToString instance used when toString() is called for this entity type
    */
-  private Entity.ToString stringProvider = DEFAULT_STRING_PROVIDER;
+  private Entity.ToString stringProvider = new DefaultStringProvider();
 
   /**
    * Provides the background color
    */
-  private Entity.BackgroundColorProvider backgroundColorProvider = null;
+  private Entity.BackgroundColorProvider backgroundColorProvider;
 
   /**
    * The comparator
@@ -171,13 +168,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
                           final Map<String, Property> propertyMap,
                           final List<Property.ColumnProperty> columnProperties,
                           final List<Property.ForeignKeyProperty> foreignKeyProperties,
-                          final List<Property.TransientProperty> transientProperties) {
-    rejectNullOrEmpty(entityId, "entityId");
-    rejectNullOrEmpty(tableName, "tableName");
-    this.domainId = domainId;
-    this.entityId = entityId;
+                          final List<Property.TransientProperty> transientProperties,
+                          final Entity.Validator validator) {
+    this.domainId = rejectNullOrEmpty(domainId, "domainId");
+    this.entityId = rejectNullOrEmpty(entityId, "entityId");
+    this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.caption = entityId;
-    this.tableName = tableName;
     this.propertyMap = propertyMap;
     this.columnProperties = columnProperties;
     this.foreignKeyProperties = foreignKeyProperties;
@@ -190,6 +186,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.derivedProperties = initializeDerivedProperties(this.propertyMap.values());
     this.groupByClause = initializeGroupByClause(columnProperties);
     this.hasDenormalizedProperties = !this.denormalizedProperties.isEmpty();
+    this.validator = validator;
   }
 
   /** {@inheritDoc} */
@@ -201,8 +198,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setTableName(final String tableName) {
-    rejectNullOrEmpty(tableName, "tableName");
-    this.tableName = tableName;
+    this.tableName = rejectNullOrEmpty(tableName, "tableName");
     return this;
   }
 
@@ -256,8 +252,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setCaption(final String caption) {
-    requireNonNull(caption, "caption");
-    this.caption = caption;
+    this.caption = requireNonNull(caption, "caption");
     return this;
   }
 
@@ -309,8 +304,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
-    this.keyGenerator = keyGenerator == null ? DEFAULT_KEY_GENERATOR : keyGenerator;
-    this.keyGeneratorType = this.keyGenerator.getType();
+    this.keyGenerator = requireNonNull(keyGenerator, "keyGenerator");
+    this.keyGeneratorType = keyGenerator.getType();
     return this;
   }
 
@@ -380,8 +375,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setSelectTableName(final String selectTableName) {
-    requireNonNull(selectTableName, "selectTableName");
-    this.selectTableName = selectTableName;
+    this.selectTableName = requireNonNull(selectTableName, "selectTableName");
     return this;
   }
 
@@ -400,8 +394,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
-    requireNonNull(selectQuery, "selectQuery");
-    this.selectQuery = selectQuery;
+    this.selectQuery = requireNonNull(selectQuery, "selectQuery");
     this.selectQueryContainsWhereClause = containsWhereClause;
     return this;
   }
@@ -415,8 +408,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setStringProvider(final Entity.ToString stringProvider) {
-    requireNonNull(stringProvider, "stringProvider");
-    this.stringProvider = stringProvider;
+    this.stringProvider = requireNonNull(stringProvider, "stringProvider");
     return this;
   }
 
@@ -429,8 +421,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setComparator(final Comparator<Entity> comparator) {
-    requireNonNull(comparator, "comparator");
-    this.comparator = comparator;
+    this.comparator = requireNonNull(comparator, "comparator");
     return this;
   }
 
@@ -489,10 +480,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public Collection<Property.DerivedProperty> getDerivedProperties(final String property) {
     final Collection<Property.DerivedProperty> derived = derivedProperties.get(property);
-    if (derived == null) {
-      return emptyList();
-    }
-    return derived;
+
+    return derived == null ? emptyList() : derived;
   }
 
   /** {@inheritDoc} */
@@ -557,14 +546,14 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
-    this.backgroundColorProvider = colorProvider;
+    this.backgroundColorProvider = requireNonNull(colorProvider, "colorProvider");
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setValidator(final Entity.Validator validator) {
-    this.validator = validator;
+    this.validator = requireNonNull(validator, "validator");
     return this;
   }
 
@@ -585,7 +574,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public String toString(final Entity entity) {
-    return stringProvider.toString(entity);
+    return stringProvider.toString(requireNonNull(entity, "entity"));
   }
 
   /** {@inheritDoc} */

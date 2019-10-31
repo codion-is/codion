@@ -5,8 +5,10 @@ package org.jminor.framework.server;
 
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
+import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.Clients;
@@ -81,6 +83,21 @@ public class DefaultEntityConnectionServerTest {
 
     connection.selectMany(entitySelectCondition(TestDomain.T_EMP, condition));
 
+    connection.disconnect();
+  }
+
+  @Test
+  public void remoteDomain() throws Exception {
+    final ConnectionRequest connectionRequestOne = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
+            "ClientTypeID", CONNECTION_PARAMS);
+    final RemoteEntityConnection connection = server.connect(connectionRequestOne);
+    final Domain domain = connection.getDomain();
+    assertThrows(IllegalStateException.class, () -> domain.addOperation(new AbstractProcedure<EntityConnection>("id", "name") {
+      @Override
+      public void execute(final EntityConnection connection, final Object... arguments) throws DatabaseException {}
+    }));
+    assertThrows(IllegalStateException.class, () -> domain.getProcedure("id"));
+    assertThrows(IllegalStateException.class, () -> domain.getFunction("id"));
     connection.disconnect();
   }
 
