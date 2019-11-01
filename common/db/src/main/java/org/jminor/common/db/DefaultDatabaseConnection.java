@@ -20,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
+ * This class is not thread-safe.
  */
 final class DefaultDatabaseConnection implements DatabaseConnection {
 
@@ -337,10 +338,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     SQLException exception = null;
     ResultSet resultSet = null;
     try {
-      if (methodLogger != null && methodLogger.isEnabled()) {
-        methodLogger.logAccess("query", new Object[] {sql});
-      }
-      statement = getConnection().createStatement();
+      logAccess("query", new Object[] {sql});
+      statement = connection.createStatement();
       resultSet = statement.executeQuery(sql);
 
       return resultPacker.pack(resultSet, fetchCount);
@@ -352,18 +351,10 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     finally {
       Databases.closeSilently(statement);
       Databases.closeSilently(resultSet);
-      if (methodLogger != null && methodLogger.isEnabled()) {
-        final MethodLogger.Entry logEntry = methodLogger.logExit("query", exception, null);
-        if (LOG != null && LOG.isDebugEnabled()) {
-          LOG.debug(Databases.createLogMessage(getUser(), sql, null, exception, logEntry));
-        }
+      final MethodLogger.Entry logEntry = logExit("query", exception, null);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(Databases.createLogMessage(getUser(), sql, null, exception, logEntry));
       }
-    }
-  }
-
-  private void logExit(final String method, final Throwable exception, final String exitMessage) {
-    if (methodLogger != null && methodLogger.isEnabled()) {
-      methodLogger.logExit(method, exception, exitMessage);
     }
   }
 
@@ -371,6 +362,14 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.logAccess(method, arguments);
     }
+  }
+
+  private MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+    if (methodLogger != null && methodLogger.isEnabled()) {
+      return methodLogger.logExit(method, exception, exitMessage);
+    }
+
+    return null;
   }
 
   /**
