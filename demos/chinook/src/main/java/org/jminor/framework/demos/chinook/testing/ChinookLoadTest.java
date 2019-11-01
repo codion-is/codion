@@ -71,7 +71,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
                 selectRandomRow(genreModel.getTableModel());
                 final SwingEntityModel trackModel = genreModel.getDetailModel(T_TRACK);
                 selectRandomRows(trackModel.getTableModel(), 2);
-                genreModel.getConnectionProvider().getConnection().selectDependentEntities(trackModel.getTableModel().getSelectionModel().getSelectedItems());
+                genreModel.getConnectionProvider().getConnection().selectDependencies(trackModel.getTableModel().getSelectionModel().getSelectedItems());
               }
               catch (final Exception e) {
                 throw new ScenarioException(e);

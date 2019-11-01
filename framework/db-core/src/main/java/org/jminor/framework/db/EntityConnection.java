@@ -21,7 +21,9 @@ import java.util.Map;
 /**
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
  * operations specified by a single {@link Domain} model.
- * All DML operations are automatically committed unless they are run within a transaction.
+ * {@link #executeFunction(String, Object...)} and {@link #executeProcedure(String, Object...)}
+ * do not perform any transaction control but {@link #insert(List)}, {@link #update(List)} and
+ * {@link #delete(List)} perform a commit unless they are run within a transaction.
  * @see #beginTransaction()
  * @see #rollbackTransaction()
  * @see #commitTransaction()
@@ -100,11 +102,12 @@ public interface EntityConnection {
 
   /**
    * Updates the given entities according to their properties. Returns the updated entities, in no particular order.
-   * Throws an exception if any of the given entities is unmodified.
+   * Throws an exception if any of the given entities is unmodified..
+   * Performs a commit unless a transaction is open.
    * @param entities the entities to update
    * @return the updated entities, in no particular order
    * @throws DatabaseException in case of a database exception
-   * @throws org.jminor.common.db.exception.UpdateException in case there is a mismatch between expected and actual umber of updated rows
+   * @throws org.jminor.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    */
   List<Entity> update(final List<Entity> entities) throws DatabaseException;
@@ -119,6 +122,7 @@ public interface EntityConnection {
 
   /**
    * Deletes the entities specified by the given condition.
+   * Performs a commit unless a transaction is open.
    * @param condition the condition specifying the entities to delete
    * @throws DatabaseException in case of a database exception
    */
@@ -203,7 +207,7 @@ public interface EntityConnection {
    * @throws DatabaseException in case of a database exception
    * @see Property.ForeignKeyProperty#isSoftReference()
    */
-  Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException;
+  Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException;
 
   /**
    * Selects the number of rows returned according to the given condition

@@ -620,7 +620,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     try {
       UiUtil.setWaitCursor(true, this);
       final Map<String, Collection<Entity>> dependencies =
-              tableModel.selectDependentEntities(tableModel.getSelectionModel().getSelectedItems());
+              tableModel.getConnectionProvider().getConnection()
+                      .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
       if (!dependencies.isEmpty()) {
         showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this, MESSAGES.getString("dependent_records_found"));
       }
@@ -816,7 +817,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   public static void showDependenciesDialog(final Collection<Entity> entities, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent) {
     try {
-      final Map<String, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependentEntities(entities);
+      final Map<String, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependencies(entities);
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, MESSAGES.getString("delete_dependent_records"));
     }
     catch (final DatabaseException e) {

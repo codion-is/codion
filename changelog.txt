@@ -5234,3 +5234,5 @@
   Sonar run
   DefaultDatabaseConnection, some refactoring
   ResultIterator, javadoc improvements
+  EntityConnection.selectDependentEntities() renamed to selectDependencies()
+  SwingEntityTableModel.selectDependentEntities() removed

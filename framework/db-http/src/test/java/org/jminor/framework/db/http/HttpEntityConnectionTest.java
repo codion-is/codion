@@ -157,9 +157,9 @@ public final class HttpEntityConnectionTest {
   }
 
   @Test
-  public void selectDependentEntities() throws IOException, DatabaseException {
+  public void selectDependencies() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final Map<String, Collection<Entity>> dependentEntities = connection.selectDependentEntities(singletonList(department));
+    final Map<String, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
     assertNotNull(dependentEntities);
     assertTrue(dependentEntities.containsKey(TestDomain.T_EMP));
     assertFalse(dependentEntities.get(TestDomain.T_EMP).isEmpty());

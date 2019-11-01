@@ -262,9 +262,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
+  public Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectDependentEntities(entities);
+      return connectionProxy.selectDependencies(entities);
     }
   }
 
