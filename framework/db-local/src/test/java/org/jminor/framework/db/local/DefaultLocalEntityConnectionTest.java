@@ -202,17 +202,17 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void selectDependentEntities() throws Exception {
-    final Map<String, Collection<Entity>> empty = connection.selectDependentEntities(new ArrayList<>());
+  public void selectDependencies() throws Exception {
+    final Map<String, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
     assertTrue(empty.isEmpty());
     final List<Entity> accounting = connection.selectMany(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
-    final Map<String, Collection<Entity>> emps = connection.selectDependentEntities(accounting);
+    final Map<String, Collection<Entity>> emps = connection.selectDependencies(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(TestDomain.T_EMP));
     assertEquals(7, emps.get(TestDomain.T_EMP).size());
 
     final Entity emp = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
-    final Map<String, Collection<Entity>> deps = connection.selectDependentEntities(singletonList(emp));
+    final Map<String, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
     assertTrue(deps.isEmpty());//soft foreign key reference
   }
 

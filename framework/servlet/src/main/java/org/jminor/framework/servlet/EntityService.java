@@ -281,7 +281,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.selectDependentEntities(deserialize(request)))).build();
+      return Response.ok(Util.serialize(connection.selectDependencies(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

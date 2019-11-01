@@ -547,7 +547,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
+  public Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     final Map<String, Collection<Entity>> dependencyMap = new HashMap<>();
     if (nullOrEmpty(entities)) {
       return dependencyMap;

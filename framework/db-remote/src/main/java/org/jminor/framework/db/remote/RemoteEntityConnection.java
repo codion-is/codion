@@ -221,7 +221,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws RemoteException, DatabaseException;
+  Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Selects the number of rows returned according to the given condition
