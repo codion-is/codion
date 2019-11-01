@@ -360,7 +360,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
   }
 
-  private void setClientHost(final RemoteClient remoteClient, final String requestParameterHost) {
+  private static void setClientHost(final RemoteClient remoteClient, final String requestParameterHost) {
     if (requestParameterHost == null) {
       try {
         remoteClient.setClientHost(getClientHost());

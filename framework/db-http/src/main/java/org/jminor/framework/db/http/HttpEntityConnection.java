@@ -528,17 +528,17 @@ final class HttpEntityConnection implements EntityConnection {
     return createHttpPost(createURIBuilder(path), data);
   }
 
-  private HttpPost createHttpPost(final URIBuilder uriBuilder, final Object data) throws URISyntaxException, IOException {
+  private URIBuilder createURIBuilder(final String path) {
+    return new URIBuilder().setScheme(httpsEnabled ? HTTPS : HTTP).setHost(baseurl).setPath(path);
+  }
+
+  private static HttpPost createHttpPost(final URIBuilder uriBuilder, final Object data) throws URISyntaxException, IOException {
     final HttpPost post = new HttpPost(uriBuilder.build());
     if (data != null) {
       post.setEntity(new ByteArrayEntity(Util.serialize(data)));
     }
 
     return post;
-  }
-
-  private URIBuilder createURIBuilder(final String path) {
-    return new URIBuilder().setScheme(httpsEnabled ? HTTPS : HTTP).setHost(baseurl).setPath(path);
   }
 
   private static <T> T handleResponse(final CloseableHttpResponse closeableHttpResponse) throws Exception {

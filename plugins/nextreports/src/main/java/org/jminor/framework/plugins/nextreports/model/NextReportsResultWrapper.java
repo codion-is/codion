@@ -12,6 +12,8 @@ import java.io.Serializable;
  */
 public final class NextReportsResultWrapper implements ReportResult<NextReportsResult>, Serializable {
 
+  private static final long serialVersionUID = 1;
+
   private final NextReportsResult result;
 
   /**

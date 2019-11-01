@@ -943,6 +943,8 @@ class DefaultProperty implements Property {
 
   static final class DefaultForeignKeyProperty extends DefaultProperty implements Property.ForeignKeyProperty {
 
+    private static final long serialVersionUID = 1;
+
     private final String foreignEntityId;
     private final List<ColumnProperty> columnProperties;
     private final boolean compositeReference;
@@ -1046,6 +1048,8 @@ class DefaultProperty implements Property {
 
   static final class DefaultMirrorProperty extends DefaultColumnProperty implements MirrorProperty {
 
+    private static final long serialVersionUID = 1;
+
     DefaultMirrorProperty(final String propertyId) {
       super(propertyId, -1, null);
       super.setReadOnly(true);
@@ -1056,6 +1060,8 @@ class DefaultProperty implements Property {
    * A property representing a column that should get its value automatically from a column in a referenced table
    */
   static final class DefaultDenormalizedProperty extends DefaultColumnProperty implements DenormalizedProperty {
+
+    private static final long serialVersionUID = 1;
 
     private final String foreignKeyPropertyId;
     private final Property denormalizedProperty;
@@ -1091,6 +1097,8 @@ class DefaultProperty implements Property {
   }
 
   static final class DefaultValueListProperty extends DefaultColumnProperty implements ValueListProperty {
+
+    private static final long serialVersionUID = 1;
 
     private final List<Item> items;
 
@@ -1136,6 +1144,8 @@ class DefaultProperty implements Property {
 
   static class DefaultTransientProperty extends DefaultProperty implements TransientProperty {
 
+    private static final long serialVersionUID = 1;
+
     private boolean modifiesEntity = true;
 
     /**
@@ -1161,6 +1171,8 @@ class DefaultProperty implements Property {
   }
 
   static final class DefaultDerivedProperty extends DefaultTransientProperty implements DerivedProperty {
+
+    private static final long serialVersionUID = 1;
 
     private final Provider valueProvider;
     private final List<String> sourcePropertyIds;
@@ -1194,6 +1206,8 @@ class DefaultProperty implements Property {
 
   static final class DefaultSubqueryProperty extends DefaultColumnProperty implements SubqueryProperty {
 
+    private static final long serialVersionUID = 1;
+
     private final transient String subquery;
 
     /**
@@ -1225,6 +1239,8 @@ class DefaultProperty implements Property {
 
   static class DefaultAuditProperty extends DefaultColumnProperty implements AuditProperty {
 
+    private static final long serialVersionUID = 1;
+
     private final AuditAction auditAction;
 
     DefaultAuditProperty(final String propertyId, final int type, final AuditAction auditAction, final String caption) {
@@ -1241,12 +1257,16 @@ class DefaultProperty implements Property {
 
   static final class DefaultAuditTimeProperty extends DefaultAuditProperty implements AuditTimeProperty {
 
+    private static final long serialVersionUID = 1;
+
     DefaultAuditTimeProperty(final String propertyId, final AuditAction auditAction, final String caption) {
       super(propertyId, Types.TIMESTAMP, auditAction, caption);
     }
   }
 
   static final class DefaultAuditUserProperty extends DefaultAuditProperty implements AuditUserProperty {
+
+    private static final long serialVersionUID = 1;
 
     DefaultAuditUserProperty(final String propertyId, final AuditAction auditAction, final String caption) {
       super(propertyId, Types.VARCHAR, auditAction, caption);

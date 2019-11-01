@@ -353,7 +353,7 @@ public final class EntityLookupField extends JTextField {
       add(generalSettingsPanel, BorderLayout.SOUTH);
     }
 
-    private JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
+    private static JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
       final JPanel panel = new JPanel(UiUtil.createGridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
       ValueLinks.toggleValueLink(boxCaseSensitive.getModel(), settings.getCaseSensitiveValue(), false);

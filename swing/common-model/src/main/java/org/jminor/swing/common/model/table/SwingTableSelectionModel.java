@@ -358,7 +358,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     }
   }
 
-  private void checkIndex(final int index, final int size) {
+  private static void checkIndex(final int index, final int size) {
     if (index < 0 || index > size - 1) {
       throw new IndexOutOfBoundsException("Index: " + index + ", size: " + size);
     }

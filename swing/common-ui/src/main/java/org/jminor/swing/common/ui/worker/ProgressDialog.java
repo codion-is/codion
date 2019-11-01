@@ -92,7 +92,7 @@ public class ProgressDialog extends JDialog {
     return progressBar;
   }
 
-  private JProgressBar initializeProgressBar(final int maxProgress) {
+  private static JProgressBar initializeProgressBar(final int maxProgress) {
     final JProgressBar bar = new JProgressBar();
     UiUtil.setPreferredWidth(bar, DEFAULT_PROGRESS_BAR_WIDTH);
     if (maxProgress < 0) {
@@ -105,7 +105,7 @@ public class ProgressDialog extends JDialog {
     return bar;
   }
 
-  private JPanel initializeButtonPanel(final ControlSet buttonControls) {
+  private static JPanel initializeButtonPanel(final ControlSet buttonControls) {
     return ControlProvider.createHorizontalButtonPanel(buttonControls);
   }
 }
