@@ -1180,34 +1180,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     return popupControls;
   }
 
-  private void addAdditionalControls(final ControlSet popupControls, final List<ControlSet> additionalPopupControlSets) {
-    additionalPopupControlSets.forEach(controlSet -> {
-      if (controlSet.hasName()) {
-        popupControls.add(controlSet);
-      }
-      else {
-        popupControls.addAll(controlSet);
-      }
-      popupControls.addSeparator();
-    });
-  }
-
-  private void addConditionControls(final ControlSet popupControls) {
-    if (conditionPanel != null) {
-      final ControlSet controls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
-      if (controlMap.containsKey(CONDITION_PANEL_VISIBLE)) {
-        controls.add(getControl(CONDITION_PANEL_VISIBLE));
-      }
-      final ControlSet searchPanelControls = conditionPanel.getControls();
-      if (searchPanelControls != null) {
-        controls.addAll(searchPanelControls);
-      }
-      if (controls.size() > 0) {
-        popupControls.add(controls);
-      }
-    }
-  }
-
   protected ControlSet getPrintControls() {
     final String printCaption = Messages.get(Messages.PRINT);
     final ControlSet printControls = new ControlSet(printCaption, printCaption.charAt(0), Images.loadImage("Print16.gif"));
@@ -1615,6 +1587,34 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     if (panelInitialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
+  }
+
+  private void addConditionControls(final ControlSet popupControls) {
+    if (conditionPanel != null) {
+      final ControlSet controls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
+      if (controlMap.containsKey(CONDITION_PANEL_VISIBLE)) {
+        controls.add(getControl(CONDITION_PANEL_VISIBLE));
+      }
+      final ControlSet searchPanelControls = conditionPanel.getControls();
+      if (searchPanelControls != null) {
+        controls.addAll(searchPanelControls);
+      }
+      if (controls.size() > 0) {
+        popupControls.add(controls);
+      }
+    }
+  }
+
+  private static void addAdditionalControls(final ControlSet popupControls, final List<ControlSet> additionalPopupControlSets) {
+    additionalPopupControlSets.forEach(controlSet -> {
+      if (controlSet.hasName()) {
+        popupControls.add(controlSet);
+      }
+      else {
+        popupControls.addAll(controlSet);
+      }
+      popupControls.addSeparator();
+    });
   }
 
   private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies,

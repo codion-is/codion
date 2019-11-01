@@ -31,6 +31,8 @@ import java.util.Map;
  */
 public final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>, Serializable {
 
+  private static final long serialVersionUID = 1;
+
   static {
     DialectFactory.addDialect(Database.Type.H2.toString().toUpperCase(), OracleDialect.class.getName());
   }
@@ -87,7 +89,7 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
     throw new UnsupportedOperationException();
   }
 
-  private Report loadReport(final String reportPath) throws FileNotFoundException, LoadReportException {
+  private static Report loadReport(final String reportPath) throws FileNotFoundException, LoadReportException {
     return ReportUtil.loadReport(new FileInputStream(reportPath));
   }
 }

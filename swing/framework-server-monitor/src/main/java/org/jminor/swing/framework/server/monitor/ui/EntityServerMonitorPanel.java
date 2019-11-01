@@ -194,7 +194,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     return Controls.control(this::exit, "Exit", null, null, 'X');
   }
 
-  private JPanel initializeSouthPanel() {
+  private static JPanel initializeSouthPanel() {
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
     southPanel.setBorder(BorderFactory.createEtchedBorder());
     southPanel.add(new JLabel("Memory usage:"));

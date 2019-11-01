@@ -136,7 +136,7 @@ public final class ClientInstanceMonitor {
     return remoteClient.toString();
   }
 
-  private void addSubLog(final DefaultMutableTreeNode entryNode, final List<MethodLogger.Entry> subLog) {
+  private static void addSubLog(final DefaultMutableTreeNode entryNode, final List<MethodLogger.Entry> subLog) {
     for (final MethodLogger.Entry entry : subLog) {
       final DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(getEntryString(entry));
       if (entry.containsSubLog()) {
@@ -146,7 +146,7 @@ public final class ClientInstanceMonitor {
     }
   }
 
-  private String getEntryString(final MethodLogger.Entry entry) {
+  private static String getEntryString(final MethodLogger.Entry entry) {
     return new StringBuilder(entry.getMethod()).append(" [")
             .append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.getDuration())))
             .append(" μs").append("]").append(": ").append(entry.getAccessMessage()).toString();

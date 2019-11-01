@@ -248,7 +248,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
    */
   protected abstract M initializeApplicationModel(final EntityConnectionProvider connectionProvider);
 
-  private void handleException(final Exception e) {
+  private static void handleException(final Exception e) {
     if (e instanceof CancelException) {
       return;
     }

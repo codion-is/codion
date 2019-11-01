@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A base class for testing a {@link EntityEditPanel}
  */
-public abstract class EntityEditPanelTestUnit {
+public class EntityEditPanelTestUnit {
 
   private final SwingEntityEditModel editModel;
   private final Class<? extends EntityEditPanel> editPanelClass;

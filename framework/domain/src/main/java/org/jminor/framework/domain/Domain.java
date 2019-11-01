@@ -471,6 +471,7 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Returns the {@link org.jminor.framework.domain.Property}s identified by the propertyIds in {@code propertyIds}
    * @param entityId the entity id
    * @param propertyIds the ids of the properties to retrieve
    * @return a list containing the properties identified by {@code propertyIds}, found in
@@ -484,6 +485,7 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Returns all {@link org.jminor.framework.domain.Property}s for the given entity
    * @param entityId the entity id
    * @param includeHidden true if hidden properties should be included in the result
    * @return a list containing the properties found in the entity identified by {@code entityId}
@@ -493,6 +495,7 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Returns all {@link org.jminor.framework.domain.Property.ColumnProperty}s for the given entity
    * @param entityId the entity id
    * @return a list containing all column properties found in the entity identified by {@code entityId},
    * that is, properties that map to database columns, an empty list if none exist
@@ -502,6 +505,8 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Returns the {@link org.jminor.framework.domain.Property.ColumnProperty}s identified
+   * by the propertyIds in {@code propertyIds}
    * @param entityId the entity id
    * @param propertyIds the ids of the properties to retrieve
    * @return a list containing all column properties found in the entity identified by {@code entityId},
@@ -939,7 +944,7 @@ public class Domain implements Serializable {
     throw new IllegalArgumentException("Entity is missing a primary key: " + entityId);
   }
 
-  private Domain registerDomain(final String domainId, final Domain domain) {
+  private static Domain registerDomain(final String domainId, final Domain domain) {
     REGISTERED_DOMAINS.put(domainId, domain);
 
     return domain;
@@ -981,6 +986,8 @@ public class Domain implements Serializable {
    * {@code key1=value1, key3='value3' foreign key value=refValue}
    */
   public static final class StringProvider implements Entity.ToString {
+
+    private static final long serialVersionUID = 1;
 
     /**
      * Holds the ValueProviders used when constructing the String representation

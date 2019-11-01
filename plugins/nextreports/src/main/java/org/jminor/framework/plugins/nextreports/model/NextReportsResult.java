@@ -18,6 +18,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class NextReportsResult implements ReportResult<byte[]>, Serializable {
 
+  private static final long serialVersionUID = 1;
+
   private final byte[] bytes;
   private final String format;
 

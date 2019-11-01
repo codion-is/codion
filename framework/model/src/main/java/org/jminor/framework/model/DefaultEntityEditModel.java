@@ -598,7 +598,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final <V> Value<V> value(final String propertyId) {
-    return new EditModelValue<V>(this, propertyId);
+    return new EditModelValue<>(this, propertyId);
   }
 
   /** {@inheritDoc} */

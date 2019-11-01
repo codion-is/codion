@@ -184,7 +184,7 @@ public final class EntityGeneratorModel {
     definitionTextValue.set(builder.toString());
   }
 
-  private String getPropertyConstants(final Table table) {
+  private static String getPropertyConstants(final Table table) {
     final StringBuilder builder = new StringBuilder();
     appendPropertyConstants(builder, table);
 
