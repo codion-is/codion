@@ -157,7 +157,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
-  private final int registryPort;
   private final Registry registry;
   private final boolean sslEnabled;
   private final boolean clientLoggingEnabled;
@@ -212,7 +211,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       this.shutdownHook = new Thread(getShutdownHook());
       Runtime.getRuntime().addShutdownHook(this.shutdownHook);
       this.database = requireNonNull(database, "database");
-      this.registryPort = registryPort;
       this.registry = LocateRegistry.createRegistry(registryPort);
       this.sslEnabled = sslEnabled;
       this.clientLoggingEnabled = clientLoggingEnabled;
@@ -226,7 +224,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       setConnectionLimit(connectionLimit);
       startAuxiliaryServers(auxiliaryServerClassNames);
       serverAdmin = new DefaultEntityConnectionServerAdmin(this, serverAdminPort);
-      bindToRegistry();
+      bindToRegistry(registryPort);
     }
     catch (final Throwable t) {
       throw logShutdownAndReturn(new RuntimeException(t), this);
@@ -285,7 +283,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
     catch (final Exception e) {
       LOG.debug(remoteClient + " unable to connect", e);
-      e.printStackTrace();
       throw ServerException.loginException(e.getMessage());
     }
   }
@@ -465,13 +462,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * @return the port of the registry this server is using
-   */
-  final int getRegistryPort() {
-    return registryPort;
-  }
-
-  /**
    * @return true if connections to this server are ssl enabled
    */
   final boolean isSslEnabled() {
@@ -550,8 +540,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   /**
    * Binds this server instance to the registry
    * @throws RemoteException in case of an exception
+   * @param registryPort the registry port
    */
-  private void bindToRegistry() throws RemoteException {
+  private void bindToRegistry(final int registryPort) throws RemoteException {
     registry.rebind(getServerInfo().getServerName(), this);
     final String connectInfo = getServerInfo().getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
@@ -672,7 +663,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     return connection.hasBeenInactive(timeout);
   }
 
-  private void loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
+  private static void loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
     try {
       if (domainModelClassNames != null) {
         for (final String className : domainModelClassNames) {

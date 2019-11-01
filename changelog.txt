@@ -5217,3 +5217,4 @@
   Domain.getForeignKeyReferences() moved to DefaultLocalEntityConnection
   Domain bug fixed, NullPointerException prevented when referencing database operations in a deserialized Domain, plus some minor refactoring
   EntityConnectionUtil renamed to EntityConnections
+  DefaultEntityConnectionServer.getRegistryPort() removed
