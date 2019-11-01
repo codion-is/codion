@@ -5219,3 +5219,5 @@
   EntityConnectionUtil renamed to EntityConnections
   DefaultEntityConnectionServer.getRegistryPort() removed
   Sonar run
+  DefaultDatabaseConnection, some refactoring
+  ResultIterator, javadoc improvements

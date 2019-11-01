@@ -173,11 +173,11 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
           throws DatabaseException, IllegalAccessException, InvocationTargetException {
     if ("getConnection".equals(dataSourceMethod.getName())) {
       final Connection connection = database.createConnection(user);
-      getCounter().incrementConnectionsCreatedCounter();
+      counter.incrementConnectionsCreatedCounter();
 
       return Util.initializeProxy(Connection.class, (connectionProxy, connectionMethod, connectionArgs) -> {
         if ("close".equals(connectionMethod.getName())) {
-          getCounter().incrementConnectionsDestroyedCounter();
+          counter.incrementConnectionsDestroyedCounter();
         }
 
         return connectionMethod.invoke(connection, connectionArgs);
