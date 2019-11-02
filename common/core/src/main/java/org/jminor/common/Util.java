@@ -51,6 +51,11 @@ public final class Util {
    */
   public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
+  /**
+   * The path separator for the current system
+   */
+  public static final String PATH_SEPARATOR = System.getProperty("path.separator");
+
   private Util() {}
 
   /**
@@ -219,6 +224,15 @@ public final class Util {
    * @return a String containing all system properties, one per line
    */
   public static String getSystemProperties() {
+    return getSystemProperties((property, value) -> value);
+  }
+
+  /**
+   * @param propertyWriter for specific property formatting or exclusions
+   * @return a String containing all system properties, one per line
+   */
+  public static String getSystemProperties(final PropertyWriter propertyWriter) {
+    requireNonNull(propertyWriter, "propertyWriter");
     try {
       final SecurityManager manager = System.getSecurityManager();
       if (manager != null) {
@@ -238,7 +252,8 @@ public final class Util {
 
     Collections.sort(propertyNames);
 
-    return propertyNames.stream().map(key -> key + ": " + props.getProperty(key)).collect(Collectors.joining("\n"));
+    return propertyNames.stream().map(key -> key + ": " +
+            propertyWriter.writeValue(key, props.getProperty(key))).collect(Collectors.joining("\n"));
   }
 
   /**
@@ -298,6 +313,19 @@ public final class Util {
      * @return a map key for the given value
      */
     K getKey(final V value);
+  }
+
+  /**
+   * Writes a property value
+   */
+  public interface PropertyWriter {
+    /**
+     * Writes the given value.
+     * @param property the property
+     * @param value the value
+     * @return the value
+     */
+    String writeValue(final String property, final String value);
   }
 
   /**

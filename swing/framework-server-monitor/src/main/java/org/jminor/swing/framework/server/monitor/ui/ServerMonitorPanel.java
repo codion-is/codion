@@ -194,6 +194,8 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextArea infoArea = new JTextArea();
     infoArea.setAutoscrolls(false);
     infoArea.setEditable(false);
+    infoArea.setLineWrap(true);
+    infoArea.setWrapStyleWord(true);
     infoArea.setText(model.getEnvironmentInfo());
     infoArea.setCaretPosition(0);
 

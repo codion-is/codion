@@ -5227,3 +5227,6 @@
   Plugin modules renamed from jminor-framework-plugins... to jminor-plugin...
   Plugin packages renamed to reflect module names
   Java 8 version now has groupId org.jminor.jdk8
+  ServerMonitorPanel, environment info text area now uses word wrap
+  Util.PropertyWriter added, getSystemProperties() overloaded with one of these as a parameter
+  DefaultEntityConnectionServerAdmin.getSystemProperties() now writes the classpath as one item per line
