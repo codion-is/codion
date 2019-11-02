@@ -1,4 +1,4 @@
-module org.jminor.framework.plugins.tomcat.pool {
+module org.jminor.plugin.tomcat.pool {
   requires java.management;
   requires tomcat.jdbc;
   requires org.jminor.common.db;

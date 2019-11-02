@@ -1,4 +1,4 @@
-module org.jminor.framework.plugins.logback.proxy {
+module org.jminor.plugin.logback.proxy {
   requires ch.qos.logback.classic;
   requires org.jminor.common.core;
 

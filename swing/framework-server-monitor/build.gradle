@@ -53,7 +53,7 @@ task runServerMonitor(type: ModularJavaExec) {
     group 'run'
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    jvmArgs = ['--add-modules', 'org.jminor.framework.plugins.logback.proxy']
+    jvmArgs = ['--add-modules', 'org.jminor.plugin.logback.proxy']
     systemProperties = [
             'jminor.server.hostname'          : 'localhost',
             'jminor.server.admin.user'        : 'scott:tiger',
@@ -72,7 +72,7 @@ applicationDistribution.from(files(
 }
 
 applicationDefaultJvmArgs = [
-        '--add-modules', 'org.jminor.framework.plugins.logback.proxy',
+        '--add-modules', 'org.jminor.plugin.logback.proxy',
         '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
         '-Djavax.net.ssl.trustStorePassword=crappypass',
         '-Djava.security.policy=../config/all_permissions.policy',

@@ -1,4 +1,4 @@
-module org.jminor.framework.plugins.hikari.pool {
+module org.jminor.plugin.hikari.pool {
   requires com.zaxxer.hikari;
   requires org.jminor.common.db;
 

@@ -5238,3 +5238,4 @@
   SwingEntityTableModel.selectDependentEntities() removed
 0.12.5
   Plugin modules renamed from jminor-framework-plugins... to jminor-plugin...
+  Java modules renamed to reflect Gradle module names

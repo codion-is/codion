@@ -1,4 +1,4 @@
-module org.jminor.framework.plugins.nextreports {
+module org.jminor.plugin.nextreports {
   requires java.desktop;
   requires nextreports.engine;
   requires org.jminor.common.db;

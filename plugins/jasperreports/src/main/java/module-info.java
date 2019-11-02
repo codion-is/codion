@@ -1,4 +1,4 @@
-module org.jminor.framework.plugins.jasperreports {
+module org.jminor.plugin.jasperreports {
   requires jasperreports;
   requires org.jminor.framework.db.core;
   requires org.jminor.swing.common.ui;

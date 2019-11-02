@@ -10,7 +10,7 @@ dependencies {
 
 ext {
     testAddModules = ['org.jminor.dbms.h2database']
-    testAddReads = ['org.jminor.framework.plugins.hikari.pool': 'org.jminor.dbms.h2database']
+    testAddReads = ['org.jminor.plugin.hikari.pool': 'org.jminor.dbms.h2database']
 }
 
 compileTestJava {

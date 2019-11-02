@@ -1,4 +1,4 @@
-module org.jminor.framework.plugins.json {
+module org.jminor.plugin.json {
   requires json;
   requires org.jminor.framework.db.core;
 

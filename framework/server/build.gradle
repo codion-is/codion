@@ -101,7 +101,7 @@ task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
     group = 'run'
     classpath = configurations.serverRuntime
     main = mainClassName
-    jvmArgs = ['-Xmx256m', '--add-modules', 'org.jminor.framework.servlet,org.jminor.framework.plugins.jasperreports,java.xml.bind']
+    jvmArgs = ['-Xmx256m', '--add-modules', 'org.jminor.framework.servlet,org.jminor.plugin.jasperreports,java.xml.bind']
     systemProperties = [
             'jminor.db.type'                            : 'h2',
             'jminor.db.host'                            : 'h2db',

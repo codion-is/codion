@@ -8,8 +8,8 @@ module org.jminor.framework.demos.empdept {
   requires org.jminor.swing.framework.ui;
   requires org.jminor.javafx.framework;
   requires org.jminor.framework.server;
-  requires org.jminor.framework.plugins.jasperreports;
-  requires org.jminor.framework.plugins.json;
+  requires org.jminor.plugin.jasperreports;
+  requires org.jminor.plugin.json;
 
   exports org.jminor.framework.demos.empdept.domain
           to org.jminor.framework.db.local;

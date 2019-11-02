@@ -28,7 +28,7 @@ dependencies {
 
 ext {
     testAddModules = ['org.jminor.dbms.h2database,org.jminor.framework.db.local,org.jminor.swing.framework.model']
-    testAddReads = ['org.jminor.framework.plugins.jasperreports': 'org.jminor.dbms.h2database,org.jminor.framework.db.local,org.jminor.swing.framework.model']
+    testAddReads = ['org.jminor.plugin.jasperreports': 'org.jminor.dbms.h2database,org.jminor.framework.db.local,org.jminor.swing.framework.model']
 }
 
 compileTestJava {
