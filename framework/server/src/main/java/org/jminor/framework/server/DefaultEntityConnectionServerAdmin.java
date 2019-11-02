@@ -62,6 +62,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
    */
   private final DefaultEntityConnectionServer server;
   private final LinkedList<GcEvent> gcEventList = new LinkedList();
+  private final Util.PropertyWriter propertyWriter = new SystemPropertyWriter();
 
   private final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
 
@@ -89,7 +90,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public String getSystemProperties() {
-    return Util.getSystemProperties();
+    return Util.getSystemProperties(propertyWriter);
   }
 
   /** {@inheritDoc} */
@@ -451,6 +452,18 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
           gcEventList.removeFirst();
         }
       }
+    }
+  }
+
+  private static final class SystemPropertyWriter implements Util.PropertyWriter {
+
+    @Override
+    public String writeValue(final String property, final String value) {
+      if ("java.class.path".equals(property)) {
+        return "\n" + String.join("\n", value.split(Util.PATH_SEPARATOR));
+      }
+
+      return value;
     }
   }
 

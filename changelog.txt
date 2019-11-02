@@ -5242,3 +5242,7 @@
   Plugin packages renamed to reflect module names
   Plugin module-info files updated to reflect package name changes
   Java 11 version now has groupId org.jminor.jdk11
+  Java 8 version now has groupId org.jminor.jdk8
+  ServerMonitorPanel, environment info text area now uses word wrap
+  Util.PropertyWriter added, getSystemProperties() overloaded with one of these as a parameter
+  DefaultEntityConnectionServerAdmin.getSystemProperties() now writes the classpath as one item per line
