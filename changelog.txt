@@ -5223,3 +5223,4 @@
   ResultIterator, javadoc improvements
   EntityConnection.selectDependentEntities() renamed to selectDependencies()
   SwingEntityTableModel.selectDependentEntities() removed
+0.12.5
