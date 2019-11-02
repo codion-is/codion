@@ -12,7 +12,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
+import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
 import org.jminor.swing.common.tools.ui.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;

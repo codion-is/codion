@@ -19,10 +19,10 @@ public interface LoggerProxy {
   /**
    * Specifies the logger proxy implementation.<br>
    * Value type: String<br>
-   * Default value: org.jminor.framework.plugins.logback.LogbackProxy.
+   * Default value: org.jminor.plugin.logback.LogbackProxy.
    * @see LoggerProxy
    */
-  PropertyValue<String> LOGGER_PROXY_IMPLEMENTATION = Configuration.stringValue("jminor.logger.proxy", "org.jminor.framework.plugins.logback.LogbackProxy");
+  PropertyValue<String> LOGGER_PROXY_IMPLEMENTATION = Configuration.stringValue("jminor.logger.proxy", "org.jminor.plugin.logback.LogbackProxy");
 
   /**
    * @return the current log level

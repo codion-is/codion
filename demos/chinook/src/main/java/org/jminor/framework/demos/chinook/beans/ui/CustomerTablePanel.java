@@ -5,8 +5,8 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.model.EntityApplicationModel;
-import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
-import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
+import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
+import org.jminor.plugin.jasperreports.ui.JasperReportsUIWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityTableModel;

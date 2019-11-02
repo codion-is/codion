@@ -13,7 +13,7 @@ import org.jminor.framework.demos.empdept.beans.ui.DepartmentEditPanel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentTablePanel;
 import org.jminor.framework.demos.empdept.beans.ui.EmployeeEditPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.plugins.json.EntityJSONParser;
+import org.jminor.plugin.json.EntityJSONParser;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
