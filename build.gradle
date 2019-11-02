@@ -98,7 +98,7 @@ configure(project.frameworkModules) {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                groupId 'org.jminor'
+                groupId 'org.jminor.jdk8'
                 from components.java
                 artifact jarSources
                 artifact jarJavadoc
