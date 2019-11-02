@@ -3,8 +3,8 @@ module org.jminor.plugin.tomcat.pool {
   requires tomcat.jdbc;
   requires org.jminor.common.db;
 
-  exports org.jminor.framework.plugins.tomcat.pool;
+  exports org.jminor.plugin.tomcat.pool;
 
   provides org.jminor.common.db.pool.ConnectionPoolProvider
-          with org.jminor.framework.plugins.tomcat.pool.TomcatConnectionPoolProvider;
+          with org.jminor.plugin.tomcat.pool.TomcatConnectionPoolProvider;
 }

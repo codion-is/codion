@@ -5240,3 +5240,4 @@
   Plugin modules renamed from jminor-framework-plugins... to jminor-plugin...
   Java modules renamed to reflect Gradle module names
   Plugin packages renamed to reflect module names
+  Plugin module-info files updated to reflect package name changes

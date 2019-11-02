@@ -2,8 +2,8 @@ module org.jminor.plugin.logback.proxy {
   requires ch.qos.logback.classic;
   requires org.jminor.common.core;
 
-  exports org.jminor.framework.plugins.logback;
+  exports org.jminor.plugin.logback;
 
   provides org.jminor.common.LoggerProxy
-          with org.jminor.framework.plugins.logback.LogbackProxy;
+          with org.jminor.plugin.logback.LogbackProxy;
 }

@@ -3,6 +3,6 @@ module org.jminor.plugin.nextreports {
   requires nextreports.engine;
   requires org.jminor.common.db;
 
-  exports org.jminor.framework.plugins.nextreports.model;
-  exports org.jminor.framework.plugins.nextreports.swing;
+  exports org.jminor.plugin.nextreports.model;
+  exports org.jminor.plugin.nextreports.swing;
 }

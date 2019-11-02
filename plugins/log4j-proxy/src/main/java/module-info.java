@@ -3,8 +3,8 @@ module org.jminor.plugin.log4j.proxy {
   requires org.apache.logging.log4j;
   requires org.jminor.common.core;
 
-  exports org.jminor.framework.plugins.log4j;
+  exports org.jminor.plugin.log4j;
 
   provides org.jminor.common.LoggerProxy
-          with org.jminor.framework.plugins.log4j.Log4jProxy;
+          with org.jminor.plugin.log4j.Log4jProxy;
 }
