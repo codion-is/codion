@@ -837,7 +837,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       return Util.roundDouble((Double) value, property.getMaximumFractionDigits());
     }
     if (value != null && property.isBigDecimal()) {
-      return ((BigDecimal) value).setScale(property.getMaximumFractionDigits(), Property.BIG_DECIMAL_ROUNDING_MODE.get());
+      return ((BigDecimal) value).setScale(property.getMaximumFractionDigits(),
+              Property.BIG_DECIMAL_ROUNDING_MODE.get()).stripTrailingZeros();
     }
 
     return value;

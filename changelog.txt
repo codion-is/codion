@@ -5230,3 +5230,4 @@
   ServerMonitorPanel, environment info text area now uses word wrap
   Util.PropertyWriter added, getSystemProperties() overloaded with one of these as a parameter
   DefaultEntityConnectionServerAdmin.getSystemProperties() now writes the classpath as one item per line
+  DefaultEntity.prepareValue() now strips trailing zeros on BigDecimals as well as setting the scale
