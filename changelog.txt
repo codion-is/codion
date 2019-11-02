@@ -5241,3 +5241,4 @@
   Java modules renamed to reflect Gradle module names
   Plugin packages renamed to reflect module names
   Plugin module-info files updated to reflect package name changes
+  Java 11 version now has groupId org.jminor.jdk11

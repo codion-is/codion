@@ -115,7 +115,7 @@ configure(project.frameworkModules) {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                groupId 'org.jminor11'
+                groupId 'org.jminor.jdk11'
                 from components.java
                 artifact jarSources
                 artifact jarJavadoc
