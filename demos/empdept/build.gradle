@@ -22,15 +22,15 @@ dependencies {
 
     implementation project(':jminor-javafx-framework')
 
-    implementation project(':jminor-framework-plugins-jasperreports')
-    implementation project(':jminor-framework-plugins-json')
+    implementation project(':jminor-plugin-jasperreports')
+    implementation project(':jminor-plugin-json')
 
     testImplementation project(':jminor-swing-framework-ui-test')
 
     implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
-    runtimeOnly project(':jminor-framework-plugins-logback-proxy')
+    runtimeOnly project(':jminor-plugin-logback-proxy')
 
     compile("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
