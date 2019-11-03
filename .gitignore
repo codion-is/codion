@@ -1,4 +1,5 @@
 .gradle
 .idea
-#ignore build folders everywhere
+#ignore build and logs folders everywhere
 build/
+logs/
