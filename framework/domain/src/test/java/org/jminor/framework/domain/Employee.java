@@ -11,10 +11,12 @@ public class Employee {
   private String name;
   private String job;
   private Integer mgr;
+  private Employee manager;
   private LocalDateTime hiredate;
   private Double salary;
   private Double commission;
   private Integer deptno;
+  private Department department;
 
   public Employee() {}
 
@@ -32,6 +34,14 @@ public class Employee {
 
   public void setDeptno(final Integer deptno) {
     this.deptno = deptno;
+  }
+
+  public Department getDepartment() {
+    return department;
+  }
+
+  public void setDepartment(final Department department) {
+    this.department = department;
   }
 
   public LocalDateTime getHiredate() {
@@ -64,6 +74,14 @@ public class Employee {
 
   public void setMgr(final Integer mgr) {
     this.mgr = mgr;
+  }
+
+  public Employee getManager() {
+    return manager;
+  }
+
+  public void setManager(final Employee manager) {
+    this.manager = manager;
   }
 
   public String getName() {

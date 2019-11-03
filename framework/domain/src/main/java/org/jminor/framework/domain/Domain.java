@@ -221,7 +221,12 @@ public class Domain implements Serializable {
       final V bean = beanClass.getConstructor().newInstance();
       for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = getProperty(definition.getEntityId(), propertyEntry.getKey());
-        propertyEntry.getValue().getSetter().invoke(bean, entity.get(property));
+        Object value = entity.get(property);
+        if (property instanceof Property.ForeignKeyProperty && value != null) {
+          value = toBean((Entity) value);
+        }
+
+        propertyEntry.getValue().getSetter().invoke(bean, value);
       }
 
       return bean;
@@ -265,7 +270,12 @@ public class Domain implements Serializable {
               getBeanProperties(definition.getEntityId());
       for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = getProperty(definition.getEntityId(), propertyEntry.getKey());
-        entity.put(property, propertyEntry.getValue().getGetter().invoke(bean));
+        Object value = propertyEntry.getValue().getGetter().invoke(bean);
+        if (property instanceof Property.ForeignKeyProperty && value != null) {
+          value = fromBean(value);
+        }
+
+        entity.put(property, value);
       }
 
       return entity;
@@ -1025,6 +1035,7 @@ public class Domain implements Serializable {
     if (beanProperties == null) {
       beanProperties = new HashMap<>();
     }
+
     return beanProperties.computeIfAbsent(entityId, this::initializeBeanProperties);
   }
 
@@ -1038,9 +1049,14 @@ public class Domain implements Serializable {
       final Map<String, BeanProperty> map = new HashMap<>();
       for (final Property property : getProperties(entityId)) {
         final String beanProperty = property.getBeanProperty();
-        if (beanProperty != null) {
-          final Method getter = Util.getGetMethod(property.getTypeClass(), beanProperty, beanClass);
-          final Method setter = Util.getSetMethod(property.getTypeClass(), beanProperty, beanClass);
+        Class typeClass = property.getTypeClass();
+        if (property instanceof Property.ForeignKeyProperty) {
+          typeClass = getDefinition(((Property.ForeignKeyProperty) property)
+                  .getForeignEntityId()).getBeanClass();
+        }
+        if (beanProperty != null && typeClass != null) {
+          final Method getter = Util.getGetMethod(typeClass, beanProperty, beanClass);
+          final Method setter = Util.getSetMethod(typeClass, beanProperty, beanClass);
           map.put(property.getPropertyId(), new BeanProperty(getter, setter));
         }
       }

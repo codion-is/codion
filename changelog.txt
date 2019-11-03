@@ -5237,3 +5237,4 @@
   CredentialServer moved to new plugin module
   CredentialServer renamed to CredentialsServer along with related classes
   EntityBeanMapper disassembled, functionality moved to Domain
+  Domain bean transformation now handles foreign key properties

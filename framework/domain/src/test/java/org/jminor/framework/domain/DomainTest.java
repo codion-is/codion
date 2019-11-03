@@ -555,11 +555,14 @@ public class DomainTest {
     assertEquals(deptLocation, departmentBean.getLocation());
     assertEquals(deptActive, departmentBean.getActive());
 
+    final Entity manager = domain.entity(TestDomain.T_EMP);
+    manager.put(TestDomain.EMP_ID, 12);
+
     final Integer id = 42;
     final Double commission = 42.2;
     final LocalDateTime hiredate = LocalDateTime.now();
     final String job = "CLERK";
-    final Integer manager = 12;
+    final Integer mgr = 12;
     final String name = "John Doe";
     final Double salary = 1234.5;
 
@@ -569,7 +572,7 @@ public class DomainTest {
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
     employee.put(TestDomain.EMP_HIREDATE, hiredate);
     employee.put(TestDomain.EMP_JOB, job);
-    employee.put(TestDomain.EMP_MGR, manager);
+    employee.put(TestDomain.EMP_MGR_FK, manager);
     employee.put(TestDomain.EMP_NAME, name);
     employee.put(TestDomain.EMP_SALARY, salary);
 
@@ -578,9 +581,11 @@ public class DomainTest {
     assertEquals(id, employeeBean.getId());
     assertEquals(commission, employeeBean.getCommission());
     assertEquals(deptNo, employeeBean.getDeptno());
+    assertEquals(deptNo, employeeBean.getDepartment().getDeptNo());
     assertEquals(hiredate.truncatedTo(ChronoUnit.DAYS), employeeBean.getHiredate());
     assertEquals(job, employeeBean.getJob());
-    assertEquals(manager, employeeBean.getMgr());
+    assertEquals(mgr, employeeBean.getMgr());
+    assertEquals(12, employeeBean.getManager().getId());
     assertEquals(name, employeeBean.getName());
     assertEquals(salary, employeeBean.getSalary());
 
@@ -610,11 +615,14 @@ public class DomainTest {
     assertEquals(deptLocation, department.get(TestDomain.DEPARTMENT_LOCATION));
     assertEquals(deptActive, department.get(TestDomain.DEPARTMENT_ACTIVE));
 
+    final Employee manager = new Employee();
+    manager.setId(12);
+
     final Integer id = 42;
     final Double commission = 42.2;
     final LocalDateTime hiredate = LocalDateTime.now();
     final String job = "CLERK";
-    final Integer manager = 12;
+    final Integer mgr = 12;
     final String name = "John Doe";
     final Double salary = 1234.5;
 
@@ -622,9 +630,11 @@ public class DomainTest {
     employeeBean.setId(id);
     employeeBean.setCommission(commission);
     employeeBean.setDeptno(deptNo);
+    employeeBean.setDepartment(departmentBean);
     employeeBean.setHiredate(hiredate);
     employeeBean.setJob(job);
-    employeeBean.setMgr(manager);
+    employeeBean.setMgr(mgr);
+    employeeBean.setManager(manager);
     employeeBean.setName(name);
     employeeBean.setSalary(salary);
 
@@ -633,9 +643,12 @@ public class DomainTest {
     assertEquals(id, employee.get(TestDomain.EMP_ID));
     assertEquals(commission, employee.get(TestDomain.EMP_COMMISSION));
     assertEquals(deptNo, employee.get(TestDomain.EMP_DEPARTMENT));
+    assertEquals(deptNo, employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK)
+            .getInteger(TestDomain.DEPARTMENT_ID));
     assertEquals(hiredate, employee.get(TestDomain.EMP_HIREDATE));
     assertEquals(job, employee.get(TestDomain.EMP_JOB));
-    assertEquals(manager, employee.get(TestDomain.EMP_MGR));
+    assertEquals(mgr, employee.get(TestDomain.EMP_MGR));
+    assertEquals(12, employee.getForeignKey(TestDomain.EMP_MGR_FK).getInteger(TestDomain.EMP_ID));
     assertEquals(name, employee.get(TestDomain.EMP_NAME));
     assertEquals(salary, employee.get(TestDomain.EMP_SALARY));
 
