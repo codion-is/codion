@@ -35,6 +35,8 @@ GEM
     jekyll-asciidoc (3.0.0)
       asciidoctor (>= 1.5.0)
       jekyll (>= 3.0.0)
+    jekyll-feed (0.12.1)
+      jekyll (>= 3.7, < 5.0)
     jekyll-sass-converter (2.0.1)
       sassc (> 2.0.1, < 3.0)
     jekyll-seo-tag (2.6.1)
@@ -76,6 +78,7 @@ DEPENDENCIES
   asciidoctor-diagram
   jekyll (~> 4.0.0)
   jekyll-asciidoc
+  jekyll-feed
   jekyll-seo-tag
   tzinfo (~> 1.2)
   tzinfo-data
