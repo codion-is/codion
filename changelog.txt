@@ -5234,3 +5234,4 @@
   ServiceLoader used throughout
   Minima 2.5.1 Jekyll theme files added to documentation
   CredentialServer.DefaultCredentialsProvider moved up, made ServiceLoader compatible
+  CredentialServer moved to new plugin module

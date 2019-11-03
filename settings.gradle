@@ -99,6 +99,9 @@ project(':jminor-swing-framework-ui-test').projectDir = file('swing/framework-ui
 include 'jminor-swing-framework-server-monitor'
 project(':jminor-swing-framework-server-monitor').projectDir = file('swing/framework-server-monitor')
 
+include 'jminor-plugin-credentials-server'
+project(':jminor-plugin-credentials-server').projectDir = file('plugins/credentials-server')
+
 include 'jminor-plugin-hikari-pool'
 project(':jminor-plugin-hikari-pool').projectDir = file('plugins/hikari-pool')
 
