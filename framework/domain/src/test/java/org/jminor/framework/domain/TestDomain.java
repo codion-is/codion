@@ -179,7 +179,9 @@ public final class TestDomain extends Domain {
                     .setColumnName("ename").setMaxLength(10).setNullable(false)
                     .setBeanProperty("name"),
             Properties.foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
-                    (Property.ColumnProperty) Properties.columnProperty(EMP_DEPARTMENT).setBeanProperty("deptno"))
+                    (Property.ColumnProperty) Properties.columnProperty(EMP_DEPARTMENT)
+                            .setBeanProperty("deptno"))
+                    .setBeanProperty("department")
                     .setNullable(false),
             Properties.valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(new Item("ANALYST"), new Item("CLERK"),
@@ -192,7 +194,9 @@ public final class TestDomain extends Domain {
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2)
             .setBeanProperty("commission"),
             Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    (Property.ColumnProperty) Properties.columnProperty(EMP_MGR).setBeanProperty("mgr")),
+                    (Property.ColumnProperty) Properties.columnProperty(EMP_MGR)
+                            .setBeanProperty("mgr"))
+                    .setBeanProperty("manager"),
             Properties.columnProperty(EMP_HIREDATE, Types.TIMESTAMP, EMP_HIREDATE)
                     .setUpdatable(false)
                     .setDateTimeFormatPattern(DateFormats.SHORT_DOT)
@@ -221,7 +225,7 @@ public final class TestDomain extends Domain {
   @Override
   public <V> V toBean(final Entity entity) {
     final V bean = super.toBean(entity);
-    if (entity.is(T_EMP)) {
+    if (entity.is(T_EMP) && !entity.isNull(EMP_HIREDATE)) {
       ((Employee) bean).setHiredate(entity.getTimestamp(EMP_HIREDATE).truncatedTo(ChronoUnit.DAYS));
     }
 
