@@ -9,5 +9,5 @@ module org.jminor.common.remote {
   exports org.jminor.common.remote;
 
   provides org.jminor.common.CredentialsProvider
-          with org.jminor.common.remote.CredentialServer;
+          with org.jminor.common.remote.DefaultCredentialsProvider;
 }
