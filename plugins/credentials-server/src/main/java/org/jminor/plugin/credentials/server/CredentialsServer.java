@@ -43,6 +43,8 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
 
   private static final Logger LOG = LoggerFactory.getLogger(CredentialsServer.class);
 
+  private static final long serialVersionUID = 1;
+
   public static final String LOCALHOST = "127.0.0.1";
 
   private final Registry registry;

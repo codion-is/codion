@@ -459,10 +459,8 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
     @Override
     public String writeValue(final String property, final String value) {
-      if ("java.class.path".equals(property)) {
-        if (!value.isEmpty()) {
-          return "\n" + String.join("\n", value.split(Util.PATH_SEPARATOR));
-        }
+      if ("java.class.path".equals(property) && !value.isEmpty()) {
+        return "\n" + String.join("\n", value.split(Util.PATH_SEPARATOR));
       }
 
       return value;
