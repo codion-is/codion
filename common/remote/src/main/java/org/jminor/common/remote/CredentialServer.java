@@ -11,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.AlreadyBoundException;
-import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.ServerNotActiveException;
@@ -24,8 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A simple credential server for one-time authentication tokens for applications running on localhost.
@@ -121,36 +117,6 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
     }
     catch (final Exception e) {
       LOG.error("Error on exit", e);
-    }
-  }
-
-  /**
-   * @return a {@link CredentialsProvider} implementation based on {@link CredentialServer}
-   */
-  public static CredentialsProvider provider() {
-    return new DefaultCredentialsProvider();
-  }
-
-  private static final class DefaultCredentialsProvider implements CredentialsProvider {
-
-    /** {@inheritDoc} */
-    @Override
-    public User getCredentials(final UUID authenticationToken) {
-      LOG.debug("DefaultCredentialsProvider.getCredentials(" + authenticationToken + ")");
-      if (authenticationToken == null) {
-        return null;
-      }
-      try {
-        final Remote credentialService = Servers.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialService.class.getSimpleName());
-        LOG.debug("CredentialService found: " + credentialService);
-
-        return ((CredentialService) credentialService).getUser(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
-      }
-      catch (final NotBoundException | RemoteException e) {
-        LOG.debug("No CredentialService found", e);
-        //no credential server available or not reachable
-        return null;
-      }
     }
   }
 

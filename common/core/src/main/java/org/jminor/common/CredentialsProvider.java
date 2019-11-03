@@ -4,6 +4,8 @@
 package org.jminor.common;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 import java.util.UUID;
 
 /**
@@ -42,6 +44,20 @@ public interface CredentialsProvider {
    * was null, the user credentials were not found, have expired or if no authentication service is running
    */
   User getCredentials(final UUID authenticationToken);
+
+  /**
+   * Returns the first {@link CredentialsProvider} implementation service found.
+   * @return a {@link CredentialsProvider} implementation, null if none is available
+   */
+  static CredentialsProvider credentialsProvider() {
+    final ServiceLoader<CredentialsProvider> loader = ServiceLoader.load(CredentialsProvider.class);
+    final Iterator<CredentialsProvider> providerIterator = loader.iterator();
+    if (providerIterator.hasNext()) {
+      return providerIterator.next();
+    }
+
+    return null;
+  }
 
   /**
    * @param argument the argument

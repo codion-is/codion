@@ -85,9 +85,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
@@ -1401,15 +1399,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * the user credentials have expired or if no authentication server is running
    */
   protected static User getUser(final String[] args) {
-    final ServiceLoader<CredentialsProvider> loader = ServiceLoader.load(CredentialsProvider.class);
-    final Optional<CredentialsProvider> credentialsProvider = loader.findFirst();
-    if (credentialsProvider.isEmpty()) {
-      LOG.debug("No CredentialsProvider service available");
-      return null;
-    }
-    final CredentialsProvider provider = credentialsProvider.get();
     try {
-      return provider.getCredentials(provider.getAuthenticationToken(args));
+      final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
+      if (provider != null) {
+        return provider.getCredentials(provider.getAuthenticationToken(args));
+      }
+
+      LOG.debug("No CredentialsProvider available");
+      return null;
     }
     catch (final IllegalArgumentException e) {
       LOG.debug("Invalid UUID authentication token");
