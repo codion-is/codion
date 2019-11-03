@@ -19,7 +19,7 @@ public final class CredentialServerTest {
 
   @Test
   public void test() throws AlreadyBoundException, RemoteException, InterruptedException {
-    final CredentialsProvider provider = CredentialServer.provider();
+    final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 
     System.setProperty("java.rmi.server.hostname", CredentialServer.LOCALHOST);
     final User scott = new User("scott", "tiger".toCharArray());

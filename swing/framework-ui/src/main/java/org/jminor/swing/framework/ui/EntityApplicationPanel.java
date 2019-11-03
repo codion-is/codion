@@ -18,7 +18,6 @@ import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
-import org.jminor.common.remote.CredentialServer;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Domain;
@@ -1401,9 +1400,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected static User getUser(final String[] args) {
     try {
-      final CredentialsProvider provider = CredentialServer.provider();
+      final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
+      if (provider != null) {
+        return provider.getCredentials(provider.getAuthenticationToken(args));
+      }
 
-      return provider.getCredentials(provider.getAuthenticationToken(args));
+      LOG.debug("No CredentialsProvider available");
+      return null;
     }
     catch (final IllegalArgumentException e) {
       LOG.debug("Invalid UUID authentication token");
