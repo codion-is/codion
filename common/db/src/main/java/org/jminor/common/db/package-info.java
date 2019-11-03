@@ -3,7 +3,6 @@
  * {@link org.jminor.common.db.Database#DATABASE_EMBEDDED}<br>
  * {@link org.jminor.common.db.Database#DATABASE_EMBEDDED_IN_MEMORY}<br>
  * {@link org.jminor.common.db.Database#DATABASE_HOST}<br>
- * {@link org.jminor.common.db.Database#DATABASE_IMPLEMENTATION_CLASS}<br>
  * {@link org.jminor.common.db.Database#DATABASE_INIT_SCRIPT}<br>
  * {@link org.jminor.common.db.Database#DATABASE_PORT}<br>
  * {@link org.jminor.common.db.Database#DATABASE_SID}<br>

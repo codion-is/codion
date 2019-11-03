@@ -6,8 +6,8 @@ package org.jminor.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.ServiceLoader;
 
 /**
  * A simple logging proxy facilitating the setting of log levels
@@ -41,26 +41,19 @@ public interface LoggerProxy {
   List getLogLevels();
 
   /**
-   * @return the LoggerProxy implementation
+   * @return the LoggerProxy implementation, null if none is found
    * @see LoggerProxy#LOGGER_PROXY_IMPLEMENTATION
    */
   static LoggerProxy createLoggerProxy() {
     final String loggingProxyImpl = LoggerProxy.LOGGER_PROXY_IMPLEMENTATION.get();
-    try {
-      return ((Class<LoggerProxy>) Class.forName(loggingProxyImpl)).getDeclaredConstructor().newInstance();
+    final ServiceLoader<LoggerProxy> loader = ServiceLoader.load(LoggerProxy.class);
+    for (final LoggerProxy provider : loader) {
+      if (provider.getClass().getName().equals(loggingProxyImpl)) {
+        return provider;
+      }
     }
-    catch (final NoSuchMethodException e) {
-      LOG.warn("Unable to instantiate LoggerProxy implementation class: " + e.getMessage());
-      return null;
-    }
-    catch (final ClassNotFoundException e) {
-      LOG.warn("LoggerProxy implementation class not found: " + e.getMessage());
-      return null;
-    }
-    catch (final InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      LOG.error("Error while instantiating LoggerProxy", e);
 
-      throw new RuntimeException(e);
-    }
+    LOG.warn("No LoggerProxy service implementation of type: " + loggingProxyImpl + " found");
+    return null;
   }
 }

@@ -73,12 +73,6 @@ public interface Database {
   PropertyValue<String> DATABASE_INIT_SCRIPT = Configuration.stringValue("jminor.db.initScript", null);
 
   /**
-   * Specifies the Database implementation class to use in case of a dbms that is not directly supported
-   * @see Database
-   */
-  PropertyValue<String> DATABASE_IMPLEMENTATION_CLASS = Configuration.stringValue("jminor.db.implementation", getDatabaseClassName());
-
-  /**
    * The constant used to denote the username value in the connection properties
    */
   String USER_PROPERTY = "user";
@@ -278,45 +272,6 @@ public interface Database {
      * @return the timestamp of these statistics
      */
     long getTimestamp();
-  }
-
-  /**
-   * @return true if the configuration value {@link Database#DATABASE_TYPE} is available as a system property
-   */
-  static boolean isDatabaseTypeSpecified() {
-    return Database.DATABASE_TYPE.get() != null;
-  }
-
-  /**
-   * @return the database implementation class name associated with the specified database type, null if none is specified
-   */
-  static String getDatabaseClassName() {
-    if (!isDatabaseTypeSpecified()) {
-      return null;
-    }
-    final Database.Type dbType = Database.getDatabaseType();
-    switch (dbType) {
-      case POSTGRESQL:
-        return "org.jminor.dbms.postgresql.PostgreSQLDatabase";
-      case MYSQL:
-        return "org.jminor.dbms.mysql.MySQLDatabase";
-      case ORACLE:
-        return "org.jminor.dbms.oracle.OracleDatabase";
-      case SQLSERVER:
-        return "org.jminor.dbms.sqlserver.SQLServerDatabase";
-      case DERBY:
-        return "org.jminor.dbms.derby.DerbyDatabase";
-      case H2:
-        return "org.jminor.dbms.h2database.H2Database";
-      case HSQL:
-        return "org.jminor.dbms.hsqldb.HSQLDatabase";
-      case SQLITE:
-        return "org.jminor.dbms.sqlite.SQLiteDatabase";
-      case OTHER:
-        throw new IllegalArgumentException("Database type OTHER does not have an implementation");
-      default:
-        throw new IllegalArgumentException("Unknown database type: " + dbType);
-    }
   }
 
   /**

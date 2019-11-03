@@ -56,27 +56,6 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
   PropertyValue<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("jminor.client.connectionType", CONNECTION_TYPE_LOCAL);
 
   /**
-   * Specifies the class providing http db connections<br>
-   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
-   * Default value: org.jminor.framework.db.http.HttpEntityConnectionProvider
-   */
-  PropertyValue<String> HTTP_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.httpConnectionProvider", "org.jminor.framework.db.http.HttpEntityConnectionProvider");
-
-  /**
-   * Specifies the class providing remote db connections<br>
-   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
-   * Default value: org.jminor.framework.db.remote.RemoteEntityConnectionProvider
-   */
-  PropertyValue<String> REMOTE_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.remoteConnectionProvider", "org.jminor.framework.db.remote.RemoteEntityConnectionProvider");
-
-  /**
-   * Specifies the class providing local db connections<br>
-   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
-   * Default value: org.jminor.framework.db.local.LocalEntityConnectionProvider
-   */
-  PropertyValue<String> LOCAL_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.localConnectionProvider", "org.jminor.framework.db.local.LocalEntityConnectionProvider");
-
-  /**
    * Returns the domain model this connection is based on
    * @return the underlying domain model
    */
