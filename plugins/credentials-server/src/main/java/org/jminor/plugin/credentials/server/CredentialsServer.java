@@ -25,12 +25,12 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A simple credential server for one-time authentication tokens for applications running on localhost.
+ * A simple credentials server for one-time authentication tokens for applications running on localhost.
  * Setting the following before the server is constructed is recommended:
  * {@code System.setProperty("java.rmi.server.hostname", CredentialServer.LOCALHOST);}
  * <pre>
  * {@code
- * CredentialServer credentialServer = new CredentialServer(12345, 30000, 60000);
+ * CredentialsServer credentialsServer = new CredentialsServer(12345, 30000, 60000);
  * String jnlpUrl = getApplicationJNLPUrl();
  * UUID token = UUID.randomUUID();
  * credentialServer.addAuthenticationToken(token, user);
@@ -39,9 +39,9 @@ import java.util.concurrent.TimeUnit;
  * </pre>
  * @see CredentialsProvider#getCredentials(UUID)
  */
-public final class CredentialServer extends UnicastRemoteObject implements CredentialService {
+public final class CredentialsServer extends UnicastRemoteObject implements CredentialsService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CredentialServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CredentialsServer.class);
 
   public static final String LOCALHOST = "127.0.0.1";
 
@@ -58,12 +58,12 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
    * @throws RemoteException in case of a communication error
    * @throws AlreadyBoundException if a credential server is already running
    */
-  public CredentialServer(final int port, final int tokenValidity, final int cleanupInterval) throws AlreadyBoundException, RemoteException {
+  public CredentialsServer(final int port, final int tokenValidity, final int cleanupInterval) throws AlreadyBoundException, RemoteException {
     super(port);
     this.tokenValidity = tokenValidity;
     this.expiredCleaner = new TaskScheduler(this::removeExpired, cleanupInterval, TimeUnit.MILLISECONDS).start();
     this.registry = Servers.initializeRegistry(Registry.REGISTRY_PORT);
-    this.registry.bind(CredentialService.class.getSimpleName(), this);
+    this.registry.bind(CredentialsService.class.getSimpleName(), this);
   }
 
   /**
@@ -112,7 +112,7 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
       expiredCleaner.stop();
       synchronized (authenticationTokens) {
         authenticationTokens.clear();
-        registry.unbind(CredentialService.class.getSimpleName());
+        registry.unbind(CredentialsService.class.getSimpleName());
         UnicastRemoteObject.unexportObject(registry, true);
       }
     }
