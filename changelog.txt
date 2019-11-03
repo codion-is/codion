@@ -5249,3 +5249,4 @@
   DefaultEntityConnectionServerAdmin.getSystemProperties() now writes the module path as one item per line
   DefaultEntity.prepareValue() now strips trailing zeros on BigDecimals as well as setting the scale
   ServiceLoader used throughout
+  Minima 2.5.1 Jekyll theme files added to documentation
