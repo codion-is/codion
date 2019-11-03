@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.remote;
+package org.jminor.plugin.credentials.server;
 
 import org.jminor.common.CredentialsProvider;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
+import org.jminor.common.remote.Servers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
