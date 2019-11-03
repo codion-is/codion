@@ -65,6 +65,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private String caption;
 
   /**
+   * The bean class, if any
+   */
+  private Class beanClass;
+
+  /**
    * Holds the order by clause
    */
   private Entity.OrderBy orderBy;
@@ -253,6 +258,19 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public Entity.Definition setCaption(final String caption) {
     this.caption = requireNonNull(caption, "caption");
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Class getBeanClass() {
+    return beanClass;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.Definition setBeanClass(final Class beanClass) {
+    this.beanClass = requireNonNull(beanClass, "beanClass");
     return this;
   }
 

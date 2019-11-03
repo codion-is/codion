@@ -7,6 +7,7 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.Item;
 
 import java.sql.Types;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 
@@ -111,6 +112,7 @@ public final class TestDomain extends Domain {
             Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, linkedValues -> {
               final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
               if (intValue == null) {
+
                 return null;
               }
 
@@ -135,17 +137,22 @@ public final class TestDomain extends Domain {
   void department() {
     define(T_DEPARTMENT, "scott.dept",
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
-                    .setUpdatable(true).setNullable(false),
+                    .setUpdatable(true).setNullable(false)
+                    .setBeanProperty("deptNo"),
             Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
-                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
+                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false)
+                    .setBeanProperty("name"),
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
-                    .setPreferredColumnWidth(150).setMaxLength(13),
+                    .setPreferredColumnWidth(150).setMaxLength(13)
+                    .setBeanProperty("location"),
             Properties.booleanProperty(DEPARTMENT_ACTIVE, Types.INTEGER, null, 1, 0)
-                    .setReadOnly(true))
+                    .setReadOnly(true)
+                    .setBeanProperty("active"))
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
             .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
             .setStringProvider(new StringProvider(DEPARTMENT_NAME))
+            .setBeanClass(Department.class)
             .setCaption("Department");
   }
 
@@ -165,25 +172,32 @@ public final class TestDomain extends Domain {
 
   void employee() {
     define(T_EMP, "scott.emp",
-            Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID).setColumnName("empno"),
+            Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID)
+                    .setColumnName("empno")
+                    .setBeanProperty("id"),
             Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
-                    .setColumnName("ename").setMaxLength(10).setNullable(false),
+                    .setColumnName("ename").setMaxLength(10).setNullable(false)
+                    .setBeanProperty("name"),
             Properties.foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
-                    Properties.columnProperty(EMP_DEPARTMENT))
+                    (Property.ColumnProperty) Properties.columnProperty(EMP_DEPARTMENT).setBeanProperty("deptno"))
                     .setNullable(false),
             Properties.valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(new Item("ANALYST"), new Item("CLERK"),
-                            new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
+                            new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN")))
+                    .setBeanProperty("job"),
             Properties.columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
-                    .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
+                    .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2)
+                    .setBeanProperty("salary"),
             Properties.columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
-                    .setMin(100).setMax(2000).setMaximumFractionDigits(2),
+                    .setMin(100).setMax(2000).setMaximumFractionDigits(2)
+            .setBeanProperty("commission"),
             Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    Properties.columnProperty(EMP_MGR)),
+                    (Property.ColumnProperty) Properties.columnProperty(EMP_MGR).setBeanProperty("mgr")),
             Properties.columnProperty(EMP_HIREDATE, Types.TIMESTAMP, EMP_HIREDATE)
                     .setUpdatable(false)
                     .setDateTimeFormatPattern(DateFormats.SHORT_DOT)
-                    .setNullable(false),
+                    .setNullable(false)
+                    .setBeanProperty("hiredate"),
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100),
@@ -200,6 +214,17 @@ public final class TestDomain extends Domain {
             .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .setStringProvider(new StringProvider(EMP_NAME))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
+            .setBeanClass(Employee.class)
             .setCaption("Employee");
+  }
+
+  @Override
+  public <V> V toBean(final Entity entity) {
+    final V bean = super.toBean(entity);
+    if (entity.is(T_EMP)) {
+      ((Employee) bean).setHiredate(entity.getTimestamp(EMP_HIREDATE).truncatedTo(ChronoUnit.DAYS));
+    }
+
+    return bean;
   }
 }

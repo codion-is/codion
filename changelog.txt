@@ -5254,3 +5254,4 @@
   CredentialServer moved to new plugin module
   Credentials server module-info added
   CredentialServer renamed to CredentialsServer along with related classes
+  EntityBeanMapper disassembled, functionality moved to Domain

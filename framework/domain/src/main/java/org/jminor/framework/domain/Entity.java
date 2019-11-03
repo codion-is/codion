@@ -711,6 +711,19 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     Definition setCaption(final String caption);
 
     /**
+     * Returns the bean class associated with this entity type
+     * @return the bean class
+     */
+    Class getBeanClass();
+
+    /**
+     * Sets the bean class to associate with this entity type
+     * @param beanClass the bean class
+     * @return this {@link Entity.Definition} instance
+     */
+    Definition setBeanClass(final Class beanClass);
+
+    /**
      * @return true if the underlying table is small enough for displaying the contents in a combo box
      */
     boolean isSmallDataset();
