@@ -210,7 +210,7 @@ public class Domain implements Serializable {
    * @return a bean derived from the given entity
    */
   public <V> V toBean(final Entity entity) {
-    requireNonNull(entity, "entity");
+    requireNonNull(entity, ENTITY_PARAM);
     final Entity.Definition definition = getDefinition(entity.getEntityId());
     final Class<V> beanClass = definition.getBeanClass();
     if (beanClass == null) {
