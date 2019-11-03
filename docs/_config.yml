@@ -7,10 +7,10 @@ url: "http://jminor.org"
 twitter_username: bjorndarri
 github_username:  bjorndarri
 
-# theme: minima
-theme: minima
 plugins:
   - jekyll-asciidoc
+  - jekyll-seo-tag
+  - jekyll-feed
 
 exclude:
   - vendor
@@ -32,3 +32,7 @@ asciidoctor:
 # are for the asciidoctor-diagram plugin
 keep_files:
   - images
+
+header_pages:
+  - introduction.adoc
+  - manual/manual.adoc
