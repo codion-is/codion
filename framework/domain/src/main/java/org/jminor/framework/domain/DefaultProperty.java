@@ -83,6 +83,11 @@ class DefaultProperty implements Property {
   private final boolean isDouble;
 
   /**
+   * The name of a bean property linked to this property, if any
+   */
+  private String beanProperty;
+
+  /**
    * The default value provider for this property
    */
   private ValueProvider defaultValueProvider = DEFAULT_VALUE_PROVIDER;
@@ -298,6 +303,19 @@ class DefaultProperty implements Property {
   @Override
   public final boolean isType(final int type) {
     return this.type == type;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Property setBeanProperty(final String beanProperty) {
+    this.beanProperty = requireNonNull(beanProperty, "beanProperty");
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String getBeanProperty() {
+    return beanProperty;
   }
 
   /** {@inheritDoc} */

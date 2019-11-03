@@ -112,6 +112,18 @@ public interface Property extends Serializable {
   Class getTypeClass();
 
   /**
+   * Sets the bean name property to associate with this property
+   * @param beanProperty the bean property name
+   * @return this Property instance
+   */
+  Property setBeanProperty(final String beanProperty);
+
+  /**
+   * @return the bean property name associated with this property
+   */
+  String getBeanProperty();
+
+  /**
    * @param value the value to validate
    * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
    */

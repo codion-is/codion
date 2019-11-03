@@ -13,9 +13,11 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -529,5 +531,126 @@ public class DomainTest {
             Properties.primaryKeyProperty("id"))
             .addConditionProvider("id", values -> null)
             .addConditionProvider("id", values -> null));
+  }
+
+  @Test
+  public void toBeans() throws InvocationTargetException, NoSuchMethodException,
+          InstantiationException, IllegalAccessException {
+
+    final Integer deptNo = 13;
+    final String deptName = "Department";
+    final String deptLocation = "Location";
+    final Boolean deptActive = true;
+
+    final Entity department = domain.entity(TestDomain.T_DEPARTMENT);
+    department.put(TestDomain.DEPARTMENT_ID, deptNo);
+    department.put(TestDomain.DEPARTMENT_NAME, deptName);
+    department.put(TestDomain.DEPARTMENT_LOCATION, deptLocation);
+    department.put(TestDomain.DEPARTMENT_ACTIVE, deptActive);
+
+    final List<Object> deptBeans = domain.toBeans(singletonList(department));
+    final Department departmentBean = (Department) deptBeans.get(0);
+    assertEquals(deptNo, departmentBean.getDeptNo());
+    assertEquals(deptName, departmentBean.getName());
+    assertEquals(deptLocation, departmentBean.getLocation());
+    assertEquals(deptActive, departmentBean.getActive());
+
+    final Integer id = 42;
+    final Double commission = 42.2;
+    final LocalDateTime hiredate = LocalDateTime.now();
+    final String job = "CLERK";
+    final Integer manager = 12;
+    final String name = "John Doe";
+    final Double salary = 1234.5;
+
+    final Entity employee = domain.entity(TestDomain.T_EMP);
+    employee.put(TestDomain.EMP_ID, id);
+    employee.put(TestDomain.EMP_COMMISSION, commission);
+    employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
+    employee.put(TestDomain.EMP_HIREDATE, hiredate);
+    employee.put(TestDomain.EMP_JOB, job);
+    employee.put(TestDomain.EMP_MGR, manager);
+    employee.put(TestDomain.EMP_NAME, name);
+    employee.put(TestDomain.EMP_SALARY, salary);
+
+    final List<Object> empBeans = domain.toBeans(singletonList(employee));
+    final Employee employeeBean = (Employee) empBeans.get(0);
+    assertEquals(id, employeeBean.getId());
+    assertEquals(commission, employeeBean.getCommission());
+    assertEquals(deptNo, employeeBean.getDeptno());
+    assertEquals(hiredate.truncatedTo(ChronoUnit.DAYS), employeeBean.getHiredate());
+    assertEquals(job, employeeBean.getJob());
+    assertEquals(manager, employeeBean.getMgr());
+    assertEquals(name, employeeBean.getName());
+    assertEquals(salary, employeeBean.getSalary());
+
+    final List<Object> empty = domain.toBeans(null);
+    assertTrue(empty.isEmpty());
+  }
+
+  @Test
+  public void fromBeans() throws InvocationTargetException, NoSuchMethodException,
+          IllegalAccessException {
+
+    final Integer deptNo = 13;
+    final String deptName = "Department";
+    final String deptLocation = "Location";
+    final Boolean deptActive = true;
+
+    final Department departmentBean = new Department();
+    departmentBean.setDeptNo(deptNo);
+    departmentBean.setLocation(deptLocation);
+    departmentBean.setName(deptName);
+    departmentBean.setActive(deptActive);
+
+    final List<Entity> departments = domain.fromBeans(singletonList(departmentBean));
+    final Entity department = departments.get(0);
+    assertEquals(deptNo, department.get(TestDomain.DEPARTMENT_ID));
+    assertEquals(deptName, department.get(TestDomain.DEPARTMENT_NAME));
+    assertEquals(deptLocation, department.get(TestDomain.DEPARTMENT_LOCATION));
+    assertEquals(deptActive, department.get(TestDomain.DEPARTMENT_ACTIVE));
+
+    final Integer id = 42;
+    final Double commission = 42.2;
+    final LocalDateTime hiredate = LocalDateTime.now();
+    final String job = "CLERK";
+    final Integer manager = 12;
+    final String name = "John Doe";
+    final Double salary = 1234.5;
+
+    final Employee employeeBean = new Employee();
+    employeeBean.setId(id);
+    employeeBean.setCommission(commission);
+    employeeBean.setDeptno(deptNo);
+    employeeBean.setHiredate(hiredate);
+    employeeBean.setJob(job);
+    employeeBean.setMgr(manager);
+    employeeBean.setName(name);
+    employeeBean.setSalary(salary);
+
+    final List<Entity> employees = domain.fromBeans(singletonList(employeeBean));
+    final Entity employee = employees.get(0);
+    assertEquals(id, employee.get(TestDomain.EMP_ID));
+    assertEquals(commission, employee.get(TestDomain.EMP_COMMISSION));
+    assertEquals(deptNo, employee.get(TestDomain.EMP_DEPARTMENT));
+    assertEquals(hiredate, employee.get(TestDomain.EMP_HIREDATE));
+    assertEquals(job, employee.get(TestDomain.EMP_JOB));
+    assertEquals(manager, employee.get(TestDomain.EMP_MGR));
+    assertEquals(name, employee.get(TestDomain.EMP_NAME));
+    assertEquals(salary, employee.get(TestDomain.EMP_SALARY));
+
+    final List<Entity> empty = domain.fromBeans(null);
+    assertTrue(empty.isEmpty());
+  }
+
+  @Test
+  public void testNullEntity() throws NoSuchMethodException, IllegalAccessException, InstantiationException,
+          InvocationTargetException {
+    assertThrows(NullPointerException.class, () -> domain.toBean(null));
+  }
+
+  @Test
+  public void testNullBean() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    assertThrows(NullPointerException.class, () -> domain.fromBean(null));
   }
 }

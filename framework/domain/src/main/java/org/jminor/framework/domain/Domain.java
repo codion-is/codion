@@ -17,6 +17,7 @@ import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
@@ -31,10 +32,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -76,6 +78,9 @@ public class Domain implements Serializable {
   private final Map<String, Entity.Definition> entityDefinitions = new LinkedHashMap<>();
   private final transient Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
 
+  private Map<Class, Entity.Definition> beanEntities;
+  private Map<String, Map<String, BeanProperty>> beanProperties;
+
   /**
    * Instantiates a new Domain with the simple name of the class as domain id
    * @see Class#getSimpleName()
@@ -100,6 +105,8 @@ public class Domain implements Serializable {
   public Domain(final Domain domain) {
     this.domainId = requireNonNull(domain).domainId;
     this.entityDefinitions.putAll(domain.entityDefinitions);
+    this.beanEntities = domain.beanEntities;
+    this.beanProperties = domain.beanProperties;
     if (domain.databaseOperations != null) {
       this.databaseOperations.putAll(domain.databaseOperations);
     }
@@ -177,6 +184,95 @@ public class Domain implements Serializable {
     entity.saveAll();
 
     return entity;
+  }
+
+  /**
+   * Transforms the given entities into beans according to the information found in this Domain model
+   * @param entities the entities to transform
+   * @return a List containing the beans derived from the given entities, an empty List if {@code entities} is null or empty
+   */
+  public final List toBeans(final List<Entity> entities) {
+    if (Util.nullOrEmpty(entities)) {
+      return emptyList();
+    }
+    final List beans = new ArrayList(entities.size());
+    for (final Entity entity : entities) {
+      beans.add(toBean(entity));
+    }
+
+    return beans;
+  }
+
+  /**
+   * Transforms the given entity into a bean according to the information found in this Domain model
+   * @param <V> the bean type
+   * @param entity the entity to transform
+   * @return a bean derived from the given entity
+   */
+  public <V> V toBean(final Entity entity) {
+    requireNonNull(entity, "entity");
+    final Entity.Definition definition = getDefinition(entity.getEntityId());
+    final Class<V> beanClass = definition.getBeanClass();
+    if (beanClass == null) {
+      throw new IllegalArgumentException("No bean class defined for entityId: " + definition.getEntityId());
+    }
+    final Map<String, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityId());
+    try {
+      final V bean = beanClass.getConstructor().newInstance();
+      for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
+        final Property property = getProperty(definition.getEntityId(), propertyEntry.getKey());
+        propertyEntry.getValue().getSetter().invoke(bean, entity.get(property));
+      }
+
+      return bean;
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Transforms the given beans into a entities according to the information found in this Domain model
+   * @param beans the beans to transform
+   * @return a List containing the entities derived from the given beans, an empty List if {@code beans} is null or empty
+   */
+  public final List<Entity> fromBeans(final List beans) {
+    if (Util.nullOrEmpty(beans)) {
+      return emptyList();
+    }
+    final List<Entity> result = new ArrayList<>(beans.size());
+    for (final Object bean : beans) {
+      result.add(fromBean(bean));
+    }
+
+    return result;
+  }
+
+  /**
+   * Creates a Entity from the given bean object.
+   * @param bean the bean to convert to an Entity
+   * @param <V> the bean type
+   * @return a Entity based on the given bean
+   * @see Entity.Definition#setBeanClass(Class)
+   */
+  public <V> Entity fromBean(final V bean) {
+    requireNonNull(bean, "bean");
+    final Class beanClass = bean.getClass();
+    final Entity.Definition definition = getBeanEntity(beanClass);
+    final Entity entity = entity(definition.getEntityId());
+    try {
+      final Map<String, BeanProperty> beanPropertyMap =
+              getBeanProperties(definition.getEntityId());
+      for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
+        final Property property = getProperty(definition.getEntityId(), propertyEntry.getKey());
+        entity.put(property, propertyEntry.getValue().getGetter().invoke(bean));
+      }
+
+      return entity;
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -909,6 +1005,53 @@ public class Domain implements Serializable {
     }
   }
 
+  private Entity.Definition getBeanEntity(final Class beanClass) {
+    if (beanEntities == null) {
+      beanEntities = new HashMap<>();
+    }
+    if (!beanEntities.containsKey(beanClass)) {
+      final Optional<Entity.Definition> optionalDefinition = entityDefinitions.values().stream()
+              .filter(def -> Objects.equals(beanClass, def.getBeanClass())).findFirst();
+      if (!optionalDefinition.isPresent()) {
+        throw new IllegalArgumentException("No entity associated with bean class: " + beanClass);
+      }
+      beanEntities.put(beanClass, optionalDefinition.get());
+    }
+
+    return beanEntities.get(beanClass);
+  }
+
+  private Map<String, BeanProperty> getBeanProperties(final String entityId) {
+    if (beanProperties == null) {
+      beanProperties = new HashMap<>();
+    }
+    return beanProperties.computeIfAbsent(entityId, this::initializeBeanProperties);
+  }
+
+  private Map<String, BeanProperty> initializeBeanProperties(final String entityId) {
+    final Entity.Definition definition = getDefinition(entityId);
+    final Class beanClass = definition.getBeanClass();
+    if (beanClass == null) {
+      throw new IllegalArgumentException("No bean class specified for entity: " + entityId);
+    }
+    try {
+      final Map<String, BeanProperty> map = new HashMap<>();
+      for (final Property property : getProperties(entityId)) {
+        final String beanProperty = property.getBeanProperty();
+        if (beanProperty != null) {
+          final Method getter = Util.getGetMethod(property.getTypeClass(), beanProperty, beanClass);
+          final Method setter = Util.getSetMethod(property.getTypeClass(), beanProperty, beanClass);
+          map.put(property.getPropertyId(), new BeanProperty(getter, setter));
+        }
+      }
+
+      return map;
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private static void validateAndAddProperty(final Property property, final String entityId,
                                              final Map<String, Property> propertyMap) {
     checkIfUniquePropertyId(property, entityId, propertyMap);
@@ -1483,6 +1626,27 @@ public class Domain implements Serializable {
       public int hashCode() {
         return propertyId.hashCode();
       }
+    }
+  }
+
+  private static final class BeanProperty implements Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private final Method getter;
+    private final Method setter;
+
+    public BeanProperty(final Method getter, final Method setter) {
+      this.getter = getter;
+      this.setter = setter;
+    }
+
+    public Method getGetter() {
+      return getter;
+    }
+
+    public Method getSetter() {
+      return setter;
     }
   }
 }

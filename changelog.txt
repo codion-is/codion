@@ -5236,3 +5236,4 @@
   CredentialServer.DefaultCredentialsProvider moved up, made ServiceLoader compatible
   CredentialServer moved to new plugin module
   CredentialServer renamed to CredentialsServer along with related classes
+  EntityBeanMapper disassembled, functionality moved to Domain
