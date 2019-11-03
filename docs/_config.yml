@@ -25,7 +25,7 @@ asciidoctor:
   safe: unsafe
   attributes:
     - imagesdir=/images
-    - jminor-version=0.12.4-SNAPSHOT
+    - jminor-version=0.12.5-SNAPSHOT
     - source-highlighter=rouge
 
 # this and the imagesdir attribute above
