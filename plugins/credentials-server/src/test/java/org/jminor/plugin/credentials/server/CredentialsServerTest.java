@@ -15,15 +15,15 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public final class CredentialServerTest {
+public final class CredentialsServerTest {
 
   @Test
   public void test() throws AlreadyBoundException, RemoteException, InterruptedException {
     final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 
-    System.setProperty("java.rmi.server.hostname", CredentialServer.LOCALHOST);
+    System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
     final User scott = new User("scott", "tiger".toCharArray());
-    final CredentialServer server = new CredentialServer(54321, 200, 20);
+    final CredentialsServer server = new CredentialsServer(54321, 200, 20);
 
     UUID token = UUID.randomUUID();
     server.addAuthenticationToken(token, scott);

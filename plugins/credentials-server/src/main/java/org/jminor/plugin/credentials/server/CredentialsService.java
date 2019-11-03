@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * A service for supplying user credentials for one-time authentication tokens.
  */
-public interface CredentialService extends Remote {
+public interface CredentialsService extends Remote {
 
   /**
    * @param authenticationToken the token

@@ -19,8 +19,8 @@ import java.util.UUID;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default CredentialsProvider implementation, based on {@link CredentialServer}.
- * @see CredentialServer
+ * A default CredentialsProvider implementation, based on {@link CredentialsServer}.
+ * @see CredentialsServer
  */
 public final class DefaultCredentialsProvider implements CredentialsProvider {
 
@@ -34,13 +34,13 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
       return null;
     }
     try {
-      final Remote credentialService = Servers.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialService.class.getSimpleName());
-      LOG.debug("CredentialService found: " + credentialService);
+      final Remote credentialsService = Servers.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialsService.class.getSimpleName());
+      LOG.debug("CredentialsService found: " + credentialsService);
 
-      return ((CredentialService) credentialService).getUser(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
+      return ((CredentialsService) credentialsService).getUser(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
     }
     catch (final NotBoundException | RemoteException e) {
-      LOG.debug("No CredentialService found", e);
+      LOG.debug("No CredentialsService found", e);
       //no credential server available or not reachable
       return null;
     }
