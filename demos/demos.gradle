@@ -30,6 +30,7 @@ task jarDomain(type: Jar, dependsOn: classes) {
     from sourceSets.main.output
     include '**/domain/**/*'
     include '**/server/**/*'
+    includeEmptyDirs false
 }
 
 artifacts {
