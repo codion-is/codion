@@ -1390,7 +1390,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Looks up user credentials via {@link org.jminor.common.remote.CredentialServer} using an authentication token
+   * Looks up user credentials via a {@link org.jminor.common.CredentialsProvider} service using an authentication token
    * found in the program arguments list. Useful for single sign on application launch.
    * <pre>javaws -open authenticationToken:123-123-123 http://jminor.org/demo/demo.jnlp</pre>
    * <pre>java -jar application/getdown-1.7.1.jar app_dir app_id authenticationToken:123-123-123</pre>
