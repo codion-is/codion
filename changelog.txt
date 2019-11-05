@@ -5259,3 +5259,5 @@
   FormatUtil renamed to Formats
   DateUtil renamed to Dates
   PropertyStore.writeToFile() parameter is now File instead of String
+  EntityConnections.batchInsert() now uses EventDataListener instead of ProgressReporter
+  ProgressReporter removed
