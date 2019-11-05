@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 
+import java.util.Iterator;
 import java.util.ServiceLoader;
 
 /**
@@ -31,5 +32,15 @@ public interface ConnectionPoolProvider {
     }
 
     throw new IllegalArgumentException("No connection pool provider of type: " + classname + " available");
+  }
+
+  static ConnectionPoolProvider getConnectionPoolProvider() {
+    final ServiceLoader<ConnectionPoolProvider> loader = ServiceLoader.load(ConnectionPoolProvider.class);
+    final Iterator<ConnectionPoolProvider> iterator = loader.iterator();
+    if (iterator.hasNext()) {
+      return iterator.next();
+    }
+
+    throw new IllegalStateException("No connection pool provider available");
   }
 }

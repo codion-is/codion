@@ -5245,3 +5245,4 @@
   ProgressReporter removed
   AbstractEntityConnectionProvider.onDisconnect() removed, unused
   Some refactoring in common.db.pool
+  DefaultConnectionPool removed, a bug from the above fixed

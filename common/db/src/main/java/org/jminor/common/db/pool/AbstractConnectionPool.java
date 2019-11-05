@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractConnectionPool<T> implements ConnectionPool {
 
-  private static final int FINE_GRAINED_STATS_SIZE = 10000;
+  private static final int FINE_GRAINED_STATS_SIZE = 1000;
   private static final int FINE_GRAINED_COLLECTION_INTERVAL = 10;
 
   /**
@@ -112,10 +112,10 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
       statistics.setMaximumCheckOutTime(counter.getMaximumCheckOutTime());
       statistics.setResetDate(counter.getResetDate());
       statistics.setTimestamp(System.currentTimeMillis());
-    }
-    if (collectFineGrainedStatistics && since >= 0) {
-      statistics.setFineGrainedStatistics(fineGrainedCStatistics.stream()
-              .filter(state -> state.getTimestamp() >= since).collect(Collectors.toList()));
+      if (collectFineGrainedStatistics && since >= 0) {
+        statistics.setFineGrainedStatistics(fineGrainedCStatistics.stream()
+                .filter(state -> state.getTimestamp() >= since).collect(Collectors.toList()));
+      }
     }
 
     return statistics;

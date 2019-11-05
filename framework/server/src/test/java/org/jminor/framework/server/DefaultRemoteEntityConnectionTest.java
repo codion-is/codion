@@ -5,14 +5,8 @@ package org.jminor.framework.server;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.DatabaseConnectionProvider;
-import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.remote.Clients;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Servers;
@@ -70,39 +64,6 @@ public class DefaultRemoteEntityConnectionTest {
   }
 
   @Test
-  public void pooledTransaction() throws Exception {
-    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
-    final Database database = Databases.getInstance();
-    final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider() {
-      @Override
-      public Database getDatabase() {
-        return database;
-      }
-      @Override
-      public DatabaseConnection createConnection() throws DatabaseException {
-        return DatabaseConnections.createConnection(database, getUser());
-      }
-      @Override
-      public void destroyConnection(final DatabaseConnection connection) {
-        connection.disconnect();
-      }
-      @Override
-      public User getUser() {
-        return UNIT_TEST_USER;
-      }
-    };
-    final ConnectionPool connectionPool = ConnectionPools.createDefaultConnectionPool(connectionProvider);
-    final DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, connectionPool, client, 1238, true);
-    final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP);
-    connection.beginTransaction();
-    connection.selectMany(condition);
-    connection.delete(condition);
-    connection.selectMany(condition);
-    connection.rollbackTransaction();
-    connection.selectMany(condition);
-  }
-
-  @Test
   public void test() throws Exception {
     Registry registry = null;
     DefaultRemoteEntityConnection adapter = null;
@@ -129,7 +90,13 @@ public class DefaultRemoteEntityConnectionTest {
         }
       });
 
-      proxy.selectMany(entitySelectCondition(TestDomain.T_EMP));
+      final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP);
+      proxy.beginTransaction();
+      proxy.selectMany(condition);
+      proxy.delete(condition);
+      proxy.selectMany(condition);
+      proxy.rollbackTransaction();
+      proxy.selectMany(condition);
     }
     finally {
       if (registry != null) {

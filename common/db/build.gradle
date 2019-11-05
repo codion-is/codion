@@ -10,5 +10,6 @@ dependencies {
     testImplementation project(':jminor-dbms-sqlite')
     testImplementation project(':jminor-dbms-sqlserver')
 
+    testRuntimeOnly project(':jminor-plugin-hikari-pool')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

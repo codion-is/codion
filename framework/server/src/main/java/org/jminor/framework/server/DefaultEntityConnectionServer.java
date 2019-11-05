@@ -18,7 +18,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.db.pool.DefaultConnectionPoolProvider;
 import org.jminor.common.remote.AbstractServer;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.ConnectionRequest;
@@ -687,11 +686,14 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private static void initializeConnectionPools(final Database database, final Collection<User> startupPoolUsers)
           throws DatabaseException {
     if (startupPoolUsers != null) {
-      String connectionPoolProviderClassName = SERVER_CONNECTION_POOL_PROVIDER_CLASS.get();
+      final String connectionPoolProviderClassName = SERVER_CONNECTION_POOL_PROVIDER_CLASS.get();
+      final ConnectionPoolProvider poolProvider;
       if (Util.nullOrEmpty(connectionPoolProviderClassName)) {
-        connectionPoolProviderClassName = DefaultConnectionPoolProvider.class.getName();
+        poolProvider = ConnectionPoolProvider.getConnectionPoolProvider();
       }
-      final ConnectionPoolProvider poolProvider = ConnectionPoolProvider.getConnectionPoolProvider(connectionPoolProviderClassName);
+      else {
+        poolProvider = ConnectionPoolProvider.getConnectionPoolProvider(connectionPoolProviderClassName);
+      }
       ConnectionPools.initializeConnectionPools(poolProvider, database, startupPoolUsers);
     }
   }
