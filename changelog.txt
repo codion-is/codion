@@ -5261,3 +5261,4 @@
   PropertyStore.writeToFile() parameter is now File instead of String
   EntityConnections.batchInsert() now uses EventDataListener instead of ProgressReporter
   ProgressReporter removed
+  AbstractEntityConnectionProvider.onDisconnect() removed, unused
