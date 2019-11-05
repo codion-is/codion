@@ -5262,3 +5262,4 @@
   EntityConnections.batchInsert() now uses EventDataListener instead of ProgressReporter
   ProgressReporter removed
   AbstractEntityConnectionProvider.onDisconnect() removed, unused
+  Some refactoring in common.db.pool
