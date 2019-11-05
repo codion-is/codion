@@ -221,7 +221,6 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
         entityConnection = null;
       }
     }
-    onDisconnect();
   }
 
   /**
@@ -234,11 +233,6 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
    * @param connection the connection to be disconnected
    */
   protected abstract void disconnect(final T connection);
-
-  /**
-   * Called after {@link #disconnect()}, default implementation is, empty provided for subclasses
-   */
-  protected void onDisconnect() {}
 
   protected static String getDomainId(final String domainClass) {
     if (domainClass.contains(".")) {
