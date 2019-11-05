@@ -98,7 +98,8 @@ final class DefaultConnectionPoolCounter implements ConnectionPool.Counter {
       long total = 0;
       long min = -1;
       long max = -1;
-      for (final Long time : checkOutTimes) {
+      for (int i = 0; i < checkOutTimes.size(); i++){
+        final Long time = checkOutTimes.get(i);
         total += time;
         if (min == -1) {
           min = time;

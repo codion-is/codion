@@ -18,9 +18,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.xy.YIntervalSeries;
 import org.jfree.data.xy.YIntervalSeriesCollection;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -308,7 +305,7 @@ public final class ConnectionPoolMonitor {
     failedRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getFailedRequestsPerSecond());
     averageCheckOutTime.add(poolStatistics.getTimestamp(), poolStatistics.getAverageGetTime(),
             poolStatistics.getMinimumCheckOutTime(), poolStatistics.getMaximumCheckOutTime());
-    final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStatistics.getFineGrainedStatistics());
+    final List<ConnectionPoolState> stats = poolStatistics.getFineGrainedStatistics();
     if (!stats.isEmpty()) {
       final XYSeries fineGrainedInPoolSeries = new XYSeries("In pool");
       final XYSeries fineGrainedInUseSeries = new XYSeries("In use");
@@ -325,29 +322,5 @@ public final class ConnectionPoolMonitor {
       this.fineGrainedStatisticsCollection.addSeries(fineGrainedWaitingSeries);
     }
     statisticsUpdatedEvent.fire();
-  }
-
-  private static List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {
-    final List<ConnectionPoolState> poolStates = new ArrayList<>(stats.size());
-    stats.sort(new StateComparator());
-    long time = -1;
-    for (int i = stats.size() - 1; i >= 0; i--) {
-      final ConnectionPoolState state = stats.get(i);
-      if (state.getTimestamp() != time) {
-        poolStates.add(state);
-      }
-
-      time = state.getTimestamp();
-    }
-
-    return poolStates;
-  }
-
-  private static final class StateComparator implements Comparator<ConnectionPoolState>, Serializable {
-    private static final long serialVersionUID = 1;
-    @Override
-    public int compare(final ConnectionPoolState o1, final ConnectionPoolState o2) {
-      return Long.compare(o1.getTimestamp(), o2.getTimestamp());
-    }
   }
 }

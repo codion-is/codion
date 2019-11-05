@@ -14,8 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A default base implementation of ConnectionPool, handling the collection of statistics
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractConnectionPool<T> implements ConnectionPool {
 
-  private static final int FINE_GRAINED_STATS_SIZE = 1000;
+  private static final int FINE_GRAINED_STATS_SIZE = 10000;
   private static final int FINE_GRAINED_COLLECTION_INTERVAL = 10;
 
   /**
@@ -114,7 +114,8 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
       statistics.setTimestamp(System.currentTimeMillis());
     }
     if (collectFineGrainedStatistics && since >= 0) {
-      statistics.setFineGrainedStatistics(getFineGrainedStatistics(since));
+      statistics.setFineGrainedStatistics(fineGrainedCStatistics.stream()
+              .filter(state -> state.getTimestamp() >= since).collect(Collectors.toList()));
     }
 
     return statistics;
@@ -191,20 +192,6 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {
       fineGrainedCStatistics.add(new DefaultConnectionPoolState());
     }
-  }
-
-  /**
-   * @param since the time
-   * @return stats collected since {@code since}
-   */
-  private List<ConnectionPoolState> getFineGrainedStatistics(final long since) {
-    final List<ConnectionPoolState> poolStates;
-    synchronized (pool) {
-      poolStates = new LinkedList<>(fineGrainedCStatistics);
-    }
-    poolStates.removeIf(state -> state.getTimestamp() < since);
-
-    return poolStates;
   }
 
   private final class StatisticsCollector implements Runnable {
