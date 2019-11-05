@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
  * Initial values parsed from a configuration file are overridden by system properties.
  * If values are not found in the configuration file or in system properties the default value is used.
  * <pre>
- * String configurationFile = System.getProperty("user.home") + "/app.properties";
+ * File configurationFile = new File(System.getProperty("user.home") + "/app.properties");
  *
  * PropertyStore store = new PropertyStore(configurationFile);
  *
@@ -263,13 +263,13 @@ public final class PropertyStore {
    * @param propertiesFile the properties file to write to
    * @throws IOException in case writing the file was not successful
    */
-  public void writeToFile(final String propertiesFile) throws IOException {
-    final File configurationFile = new File(requireNonNull(propertiesFile, "propertiesFile"));
-    if (!configurationFile.exists() && !configurationFile.createNewFile()) {
-      throw new IOException("Unable to create configuration file");
+  public void writeToFile(final File propertiesFile) throws IOException {
+    requireNonNull(propertiesFile, "propertiesFile");
+    if (!propertiesFile.exists() && !propertiesFile.createNewFile()) {
+      throw new IOException("Unable to create properties file: " + propertiesFile);
     }
-    LOG.debug("Writing configuration to file: {}", configurationFile);
-    try (final OutputStream output = new FileOutputStream(configurationFile)) {
+    LOG.debug("Writing configuration to file: {}", propertiesFile);
+    try (final OutputStream output = new FileOutputStream(propertiesFile)) {
       properties.store(output, null);
     }
   }
