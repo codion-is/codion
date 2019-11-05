@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
-import org.jminor.common.FormatUtil;
+import org.jminor.common.Formats;
 
 import java.text.NumberFormat;
 
@@ -16,7 +16,7 @@ public final class IntegerField extends NumberField {
    * Constructs a new IntegerField.
    */
   public IntegerField() {
-    this(FormatUtil.getNonGroupingNumberFormat(true));
+    this(Formats.getNonGroupingNumberFormat(true));
   }
 
   /**
@@ -24,7 +24,7 @@ public final class IntegerField extends NumberField {
    * @param columns the number of columns
    */
   public IntegerField(final int columns) {
-    this(FormatUtil.getNonGroupingNumberFormat(true), columns);
+    this(Formats.getNonGroupingNumberFormat(true), columns);
   }
 
   /**

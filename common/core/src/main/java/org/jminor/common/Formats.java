@@ -11,14 +11,14 @@ import java.text.ParsePosition;
 /**
  * A static utility class for formats.
  */
-public final class FormatUtil {
+public final class Formats {
 
   /**
    * A Format object performing no formatting
    */
   public static final Format NULL_FORMAT = new NullFormat();
 
-  private FormatUtil() {}
+  private Formats() {}
 
   /**
    * @return a NumberFormat instance with grouping disabled

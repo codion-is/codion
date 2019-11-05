@@ -11,13 +11,13 @@ import java.text.ParseException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public final class FormatUtilTest {
+public final class FormatsTest {
 
   @Test
   public void test() throws ParseException {
-    assertEquals("test123", FormatUtil.NULL_FORMAT.format("test123"));
-    assertEquals("test123", FormatUtil.NULL_FORMAT.parseObject("test123"));
-    final NumberFormat format = FormatUtil.getNonGroupingNumberFormat();
+    assertEquals("test123", Formats.NULL_FORMAT.format("test123"));
+    assertEquals("test123", Formats.NULL_FORMAT.parseObject("test123"));
+    final NumberFormat format = Formats.getNonGroupingNumberFormat();
     assertFalse(format.isGroupingUsed());
   }
 }
