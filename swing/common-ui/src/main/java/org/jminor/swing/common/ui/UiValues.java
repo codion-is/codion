@@ -4,7 +4,7 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.DateFormats;
-import org.jminor.common.FormatUtil;
+import org.jminor.common.Formats;
 import org.jminor.common.Item;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
@@ -298,7 +298,7 @@ public final class UiValues {
       else {
         this.formatter = null;
       }
-      this.format = format == null ? FormatUtil.NULL_FORMAT : format;
+      this.format = format == null ? Formats.NULL_FORMAT : format;
       if (updateOnKeystroke) {
         document.addDocumentListener(new DocumentAdapter() {
           @Override

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.FormatUtil;
+import org.jminor.common.Formats;
 import org.jminor.common.Item;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
@@ -583,7 +583,7 @@ class DefaultProperty implements Property {
 
   private Format initializeDefaultFormat() {
     if (isNumerical()) {
-      final NumberFormat numberFormat = FormatUtil.getNonGroupingNumberFormat(isInteger());
+      final NumberFormat numberFormat = Formats.getNonGroupingNumberFormat(isInteger());
       if (isBigDecimal()) {
         ((DecimalFormat) numberFormat).setParseBigDecimal(true);
       }
@@ -594,7 +594,7 @@ class DefaultProperty implements Property {
       return numberFormat;
     }
 
-    return FormatUtil.NULL_FORMAT;
+    return Formats.NULL_FORMAT;
   }
 
   private String getDefaultDateTimeFormatPattern() {
