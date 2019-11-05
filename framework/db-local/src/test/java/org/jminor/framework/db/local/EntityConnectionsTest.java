@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.ProgressReporter;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
@@ -78,7 +78,7 @@ public class EntityConnectionsTest {
 
     final List<Entity> source = sourceConnection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT));
     final List<Entity.Key> dest = new ArrayList<>();
-    final ProgressReporter progressReporter = currentProgress -> {};
+    final EventDataListener<Integer> progressReporter = currentProgress -> {};
     EntityConnections.batchInsert(DESTINATION_CONNECTION, source, dest, 2, progressReporter);
     assertEquals(sourceConnection.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)),
             DESTINATION_CONNECTION.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)));

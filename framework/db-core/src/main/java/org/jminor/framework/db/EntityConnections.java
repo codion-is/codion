@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.ProgressReporter;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.domain.Entity;
@@ -52,7 +52,7 @@ public final class EntityConnections {
    */
   public static void batchInsert(final EntityConnection connection, final List<Entity> entities,
                                  final List<Entity.Key> committed, final int batchSize,
-                                 final ProgressReporter progressReporter) throws DatabaseException {
+                                 final EventDataListener<Integer> progressReporter) throws DatabaseException {
     if (batchSize <= 0) {
       throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
     }
@@ -68,7 +68,7 @@ public final class EntityConnections {
         committed.addAll(insertedKeys);
       }
       if (progressReporter != null) {
-        progressReporter.reportProgress(insertedCount);
+        progressReporter.eventOccurred(insertedCount);
       }
     }
   }
