@@ -5240,3 +5240,4 @@
   Domain bean transformation now handles foreign key properties
   FormatUtil renamed to Formats
   DateUtil renamed to Dates
+  PropertyStore.writeToFile() parameter is now File instead of String

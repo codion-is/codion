@@ -97,7 +97,7 @@ public final class PropertyStoreTest {
     doubleValue.set(4.22);
     booleanValue.set(null);
 
-    store.writeToFile(configFile.getAbsolutePath());
+    store.writeToFile(configFile);
 
     final List<String> propertyValues = Files.readAllLines(configFile.toPath());
     assertTrue(propertyValues.contains("string.property=newValue"));
