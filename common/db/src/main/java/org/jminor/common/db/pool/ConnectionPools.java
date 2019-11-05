@@ -5,7 +5,6 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
 
 import java.util.ArrayList;
@@ -43,19 +42,6 @@ public final class ConnectionPools {
     for (final User user : users) {
       CONNECTION_POOLS.put(user, connectionPoolProvider.createConnectionPool(user, database));
     }
-  }
-
-  /**
-   * Instantiates a new ConnectionPool and associates it with the given user
-   * @param connectionProvider the connection provider
-   * @return a new connection pool
-   * @throws DatabaseException in case of an exception while constructing the initial connections
-   */
-  public static synchronized ConnectionPool createDefaultConnectionPool(final DatabaseConnectionProvider connectionProvider) throws DatabaseException {
-    final ConnectionPool connectionPool = new DefaultConnectionPool(connectionProvider);
-    CONNECTION_POOLS.put(connectionProvider.getUser(), connectionPool);
-
-    return connectionPool;
   }
 
   /**

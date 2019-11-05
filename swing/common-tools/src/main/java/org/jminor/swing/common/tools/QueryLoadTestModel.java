@@ -6,11 +6,10 @@ package org.jminor.swing.common.tools;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.db.pool.ConnectionPools;
+import org.jminor.common.db.pool.ConnectionPoolProvider;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,7 +41,8 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    */
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_QUERY_WARNING_TIME_MS);
-    this.pool = ConnectionPools.createDefaultConnectionPool(DatabaseConnections.connectionProvider(database, user));
+    final ConnectionPoolProvider poolProvider = ConnectionPoolProvider.getConnectionPoolProvider();
+    this.pool = poolProvider.createConnectionPool(user, database);
     addExitListener(pool::close);
   }
 
