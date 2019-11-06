@@ -6,6 +6,6 @@ module org.jminor.dbms.hsqldb {
 
   exports org.jminor.dbms.hsqldb;
 
-  provides org.jminor.common.db.Database
-          with org.jminor.dbms.hsqldb.HSQLDatabase;
+  provides org.jminor.common.db.DatabaseProvider
+          with org.jminor.dbms.hsqldb.HSQLDatabaseProvider;
 }
