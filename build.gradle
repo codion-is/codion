@@ -11,7 +11,7 @@ buildscript {
 
 plugins {
     id "org.sonarqube" version "2.8"
-    id "com.github.ben-manes.versions" version "0.21.0"
+    id "com.github.ben-manes.versions" version "0.27.0"
 }
 
 ext {
@@ -28,11 +28,11 @@ ext {
     javaxActivationVersion = '1.2.0'
     junitVersion = '5.5.2'
     //jasperreports
-    jasperReportsVersion = '6.9.0'
+    jasperReportsVersion = '6.10.0'
     commonsLoggingVersion = '1.2'
     commonsDigesterVersion = '2.1'
     commonsCollectionsVersion = '4.4'
-    commonsBeanUtilsVersion = '1.9.3'
+    commonsBeanUtilsVersion = '1.9.4'
     jdtCoreCompilerVersion = '4.6.1'
 
     versionPropertiesFile = '/org/jminor/common/version.properties'

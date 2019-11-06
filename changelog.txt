@@ -5264,3 +5264,4 @@
   AbstractEntityConnectionProvider.onDisconnect() removed, unused
   Some refactoring in common.db.pool
   DefaultConnectionPool removed, a bug from the above fixed
+  H2Database, tomcat connection pool, jaxrs-ri, commons-beanutils and jasperreports dependencies upgraded
