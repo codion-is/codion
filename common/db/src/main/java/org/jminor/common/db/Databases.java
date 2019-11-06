@@ -52,14 +52,12 @@ public final class Databases {
    */
   public static synchronized Database getInstance() {
     try {
-      final Database.Type currentType = Database.getDatabaseType();
-      final ServiceLoader<Database> loader = ServiceLoader.load(Database.class);
-      if (instance == null || !instance.getType().equals(currentType)) {
+      if (Databases.instance == null || !Databases.instance.getType().equals(Database.getDatabaseType())) {
         //refresh the instance
-        instance = findDatabaseServiceOfType(loader, currentType);
+        Databases.instance = DatabaseProvider.getInstance().createDatabase();
       }
 
-      return instance;
+      return Databases.instance;
     }
     catch (final IllegalArgumentException e) {
       throw e;

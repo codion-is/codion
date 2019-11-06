@@ -5265,3 +5265,4 @@
   Some refactoring in common.db.pool
   DefaultConnectionPool removed, a bug from the above fixed
   H2Database, tomcat connection pool, jaxrs-ri, commons-beanutils and jasperreports dependencies upgraded
+  DatabaseProvider interface added, implemented in dbms modules. Database interface did not lend itself to ServiceLoader usage, since initializing a Database (H2Database f.ex) performed some actions, like initializing a in-memory database
