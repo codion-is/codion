@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
 
@@ -183,16 +182,6 @@ public final class Databases {
     finally {
       closeSilently(rs);
     }
-  }
-
-  private static Database findDatabaseServiceOfType(final ServiceLoader<Database> loader, final Database.Type type) {
-    for (final Database database : loader) {
-      if (database.getType().equals(type)) {
-        return database;
-      }
-    }
-
-    throw new IllegalArgumentException("No database implementation available for type: " + type);
   }
 
   /**
