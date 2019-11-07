@@ -91,7 +91,8 @@ public final class TestDomain extends Domain {
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
             Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE)
                     .setColumnHasDefaultValue(true),
-            Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string"),
+            Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string")
+                    .setSelectable(false),
             Properties.columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE)
                     .setColumnHasDefaultValue(true),
             Properties.columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP),

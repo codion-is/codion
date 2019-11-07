@@ -562,6 +562,23 @@ public class Domain implements Serializable {
   /**
    * @param entityId the entity id
    * @param propertyId the property id
+   * @return the column property identified by property id
+   * @throws IllegalArgumentException in case the propertyId does not represent a {@link Property.ColumnProperty}
+   * or if it is not selectable
+   * @see Property.ColumnProperty#isSelectable()
+   */
+  public final Property.ColumnProperty getSelectableColumnProperty(final String entityId, final String propertyId) {
+    final Property.ColumnProperty property = getColumnProperty(entityId, propertyId);
+    if (!property.isSelectable()) {
+      throw new IllegalArgumentException(propertyId + " is not selectable");
+    }
+
+    return property;
+  }
+
+  /**
+   * @param entityId the entity id
+   * @param propertyId the property id
    * @return the property identified by {@code propertyId} in the entity identified by {@code entityId}
    * @throws IllegalArgumentException in case no such property exists
    */
@@ -621,6 +638,30 @@ public class Domain implements Serializable {
   public final List<Property.ColumnProperty> getColumnProperties(final String entityId,
                                                                  final Collection<String> propertyIds) {
     return propertyIds.stream().map(propertyId -> getColumnProperty(entityId, propertyId)).collect(toList());
+  }
+
+  /**
+   * Returns all {@link org.jminor.framework.domain.Property.ColumnProperty}s for the given entity
+   * @param entityId the entity id
+   * @return a list containing all column properties found in the entity identified by {@code entityId},
+   * that is, properties that map to database columns, an empty list if none exist
+   */
+  public final List<Property.ColumnProperty> getSelectableColumnProperties(final String entityId) {
+    return getDefinition(entityId).getSelectableColumnProperties();
+  }
+
+  /**
+   * Returns the selectable {@link org.jminor.framework.domain.Property.ColumnProperty}s identified
+   * by the propertyIds in {@code propertyIds}
+   * @param entityId the entity id
+   * @param propertyIds the ids of the properties to retrieve
+   * @return a list containing all column properties found in the entity identified by {@code entityId},
+   * that is, properties that map to database columns, an empty list if none exist
+   */
+  public final List<Property.ColumnProperty> getSelectableColumnProperties(final String entityId,
+                                                                           final Collection<String> propertyIds) {
+
+    return propertyIds.stream().map(propertyId -> getSelectableColumnProperty(entityId, propertyId)).collect(toList());
   }
 
   /**

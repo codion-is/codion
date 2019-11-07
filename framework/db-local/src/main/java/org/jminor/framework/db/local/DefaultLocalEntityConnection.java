@@ -898,8 +898,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     ResultSet resultSet = null;
     String selectSQL = null;
     final List<Property.ColumnProperty> columnProperties = condition.getSelectPropertyIds().isEmpty() ?
-            domain.getColumnProperties(condition.getEntityId()) :
-            domain.getColumnProperties(condition.getEntityId(), condition.getSelectPropertyIds());
+            domain.getSelectableColumnProperties(condition.getEntityId()) :
+            domain.getSelectableColumnProperties(condition.getEntityId(), condition.getSelectPropertyIds());
     try {
       selectSQL = getSelectSQL(condition, columnProperties);
       statement = prepareStatement(selectSQL);

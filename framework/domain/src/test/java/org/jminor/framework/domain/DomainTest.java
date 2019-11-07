@@ -381,6 +381,12 @@ public class DomainTest {
   }
 
   @Test
+  public void selectableProperty() {
+    assertThrows(IllegalArgumentException.class, () ->
+            domain.getSelectableColumnProperties(TestDomain.T_DETAIL, singletonList(TestDomain.DETAIL_STRING)));
+  }
+
+  @Test
   public void stringProvider() {
     final Entity department = domain.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);

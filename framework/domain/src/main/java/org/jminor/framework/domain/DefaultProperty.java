@@ -660,6 +660,7 @@ class DefaultProperty implements Property {
     private transient ValueConverter<Object, Object> valueConverter;
     private transient boolean groupingColumn = false;
     private transient boolean aggregateColumn = false;
+    private transient boolean selectable = true;
 
     DefaultColumnProperty(final String propertyId, final int type, final String caption) {
       this(propertyId, type, caption, type);
@@ -769,6 +770,17 @@ class DefaultProperty implements Property {
     @Override
     public final boolean isAggregateColumn() {
       return aggregateColumn;
+    }
+
+    @Override
+    public ColumnProperty setSelectable(final boolean selectable) {
+      this.selectable = selectable;
+      return this;
+    }
+
+    @Override
+    public boolean isSelectable() {
+      return selectable;
     }
 
     @Override
