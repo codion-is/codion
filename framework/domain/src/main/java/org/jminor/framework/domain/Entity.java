@@ -947,6 +947,11 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     List<Property.ColumnProperty> getColumnProperties();
 
     /**
+     * @return a list containing the column properties to include in select queries
+     */
+    List<Property.ColumnProperty> getSelectableColumnProperties();
+
+    /**
      * @return a list containing the non-column-based properties for this entity type
      */
     List<Property.TransientProperty> getTransientProperties();

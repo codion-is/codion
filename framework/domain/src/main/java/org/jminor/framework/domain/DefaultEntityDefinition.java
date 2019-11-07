@@ -162,6 +162,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final List<Property.TransientProperty> transientProperties;
   private final List<Property> visibleProperties;
   private final List<Property.ColumnProperty> columnProperties;
+  private final List<Property.ColumnProperty> selectableColumnProperties;
   private final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties;
   private final boolean hasDenormalizedProperties;
 
@@ -183,6 +184,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.columnProperties = columnProperties;
     this.foreignKeyProperties = foreignKeyProperties;
     this.transientProperties = transientProperties;
+    this.selectableColumnProperties = unmodifiableList(getSelectableProperties(columnProperties));
     this.properties = unmodifiableList(new ArrayList(this.propertyMap.values()));
     this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties(this.propertyMap.values()));
     this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
@@ -527,6 +529,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
+  public List<Property.ColumnProperty> getSelectableColumnProperties() {
+    return selectableColumnProperties;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public List<Property.TransientProperty> getTransientProperties() {
     return transientProperties;
   }
@@ -659,6 +667,10 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
               return index1.compareTo(index2);
             }).collect(toList());
+  }
+
+  private static List<Property.ColumnProperty> getSelectableProperties(final List<Property.ColumnProperty> columnProperties) {
+    return columnProperties.stream().filter(Property.ColumnProperty::isSelectable).collect(toList());
   }
 
   private static List<Property> getVisibleProperties(final Collection<Property> properties) {

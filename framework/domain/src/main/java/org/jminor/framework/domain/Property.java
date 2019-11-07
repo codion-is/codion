@@ -503,6 +503,17 @@ public interface Property extends Serializable {
     boolean isAggregateColumn();
 
     /**
+     * @return true if this property should be included in select queries
+     */
+    boolean isSelectable();
+
+    /**
+     * @param selectable false if this property should not be included in select queries
+     * @return this Property instance
+     */
+    ColumnProperty setSelectable(final boolean selectable);
+
+    /**
      * Indicates whether or not this column is updatable
      * @return true if this column is updatable
      */
