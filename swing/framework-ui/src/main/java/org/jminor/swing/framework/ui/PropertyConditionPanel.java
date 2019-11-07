@@ -83,7 +83,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
       if (property instanceof Property.ValueListProperty) {
         return initializeValueListField((Property.ValueListProperty) property);
       }
-      if (property.isDateOrTime()) {
+      if (property.isTemporal()) {
         return UiUtil.createFormattedField(DateFormats.getDateMask(model.getDateTimeFormatPattern()));
       }
       else if (property.isDecimal()) {

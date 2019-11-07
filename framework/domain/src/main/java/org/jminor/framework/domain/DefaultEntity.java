@@ -367,7 +367,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         return referencedKey.toString();
       }
     }
-    if (property.isDateOrTime()) {
+    if (property.isTemporal()) {
       final TemporalAccessor value = (TemporalAccessor) get(property);
 
       return value == null ? "" : property.getDateTimeFormatter().format(value);
