@@ -678,7 +678,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   private static void initializeConnectionPools(final Database database, final Collection<User> startupPoolUsers)
           throws DatabaseException {
-    if (startupPoolUsers != null) {
+    if (!nullOrEmpty(startupPoolUsers)) {
       final String connectionPoolProviderClassName = SERVER_CONNECTION_POOL_PROVIDER_CLASS.get();
       final ConnectionPoolProvider poolProvider;
       if (Util.nullOrEmpty(connectionPoolProviderClassName)) {
