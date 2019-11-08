@@ -5252,3 +5252,6 @@
   Property.isDateOrTime() renamed to isTemporal(), DefaultProperty no longer caches isDouble
   DefaultEntityConnectionServer, bug fixed, initializeConnectionPools() only checked for null on startupPoolUsers, not if empty
   Hunted down a bunch of non-final methods and finalized them
+  DefaultEntity bug fixed, did not validate values for foreign key properties correctly
+  DefaultForeignKeyProperty.getTypeClass() now returns Entity.class
+  DefaultForeignKeyProperty overrides DefaultProperty.validateType() and validates correctly

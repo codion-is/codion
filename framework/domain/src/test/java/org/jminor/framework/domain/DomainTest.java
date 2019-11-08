@@ -484,6 +484,7 @@ public class DomainTest {
   public void validateTypeEntity() {
     final Entity entity = domain.entity(TestDomain.T_DETAIL);
     final Entity entity1 = domain.entity(TestDomain.T_DETAIL);
+    assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_MASTER_FK, "hello"));
     assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_MASTER_FK, entity1));
   }
 

@@ -197,7 +197,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(LocalDateTime.class, testModel.getColumnClass(4));
     assertEquals(Boolean.class, testModel.getColumnClass(5));
     assertEquals(Boolean.class, testModel.getColumnClass(6));
-    assertEquals(Object.class, testModel.getColumnClass(7));
+    assertEquals(Entity.class, testModel.getColumnClass(7));
   }
 
   @Test

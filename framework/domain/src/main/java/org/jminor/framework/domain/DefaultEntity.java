@@ -187,8 +187,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   public Object put(final Property property, final Object value, final boolean validateType) {
     requireNonNull(property, PROPERTY_PARAM);
     validateValue(property, value);
-    if (validateType) {
-      validateType(property, value);
+    if (validateType && value != null) {
+      property.validateType(value);
     }
     if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) {
       key = null;
@@ -842,28 +842,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     return value;
-  }
-
-  /**
-   * Performs a basic data validation of {@code value}, checking if the {@code value} data type is
-   * consistent with the data type of this property.
-   * @param value the value to validate
-   * @param property the property
-   * @throws IllegalArgumentException when the value type does not fit the property type
-   */
-  private static void validateType(final Property property, final Object value) {
-    if (value == null) {
-      return;
-    }
-
-    property.validateType(value);
-    if (property instanceof Property.ForeignKeyProperty) {
-      final String fkPropertyEntityId = ((Property.ForeignKeyProperty) property).getForeignEntityId();
-      final String actualEntityId = ((Entity) value).getEntityId();
-      if (!Objects.equals(fkPropertyEntityId, actualEntityId)) {
-        throw new IllegalArgumentException("Entity of type " + fkPropertyEntityId + " expected for property " + property + ", got: " + actualEntityId);
-      }
-    }
   }
 
   private static void validateValue(final Property property, final Object value) {
