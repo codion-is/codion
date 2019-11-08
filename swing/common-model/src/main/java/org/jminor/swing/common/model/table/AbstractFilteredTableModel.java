@@ -395,13 +395,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public void addRowsDeletedListener(final EventDataListener<List<Integer>> listener) {
+  public final void addRowsDeletedListener(final EventDataListener<List<Integer>> listener) {
     rowsDeletedEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeRowsDeletedListener(final EventDataListener listener) {
+  public final void removeRowsDeletedListener(final EventDataListener listener) {
     rowsDeletedEvent.removeDataListener(listener);
   }
 

@@ -131,7 +131,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public void setResultSorter(final Comparator<Entity> resultSorter) {
+  public final void setResultSorter(final Comparator<Entity> resultSorter) {
     requireNonNull(resultSorter, "resultSorter");
     this.resultSorter = resultSorter;
   }
@@ -179,7 +179,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   @Override
-  public Map<Property.ColumnProperty, LookupSettings> getPropertyLookupSettings() {
+  public final Map<Property.ColumnProperty, LookupSettings> getPropertyLookupSettings() {
     return propertyLookupSettings;
   }
 
@@ -205,13 +205,13 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.ToString getToStringProvider() {
+  public final Entity.ToString getToStringProvider() {
     return toStringProvider;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityLookupModel setToStringProvider(final Entity.ToString toStringProvider) {
+  public final EntityLookupModel setToStringProvider(final Entity.ToString toStringProvider) {
     this.toStringProvider = toStringProvider;
     return this;
   }
@@ -262,19 +262,19 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public Value<String> getSearchStringValue() {
+  public final Value<String> getSearchStringValue() {
     return searchStringValue;
   }
 
   /** {@inheritDoc} */
   @Override
-  public Value<String> getMultipleItemSeparatorValue() {
+  public final Value<String> getMultipleItemSeparatorValue() {
     return multipleItemSeparatorValue;
   }
 
   /** {@inheritDoc} */
   @Override
-  public Value<Boolean> getMultipleSelectionAllowedValue() {
+  public final Value<Boolean> getMultipleSelectionAllowedValue() {
     return multipleSelectionAllowedValue;
   }
 

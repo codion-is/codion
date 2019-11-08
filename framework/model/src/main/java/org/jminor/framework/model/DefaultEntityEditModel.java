@@ -393,31 +393,31 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public Object get(final String propertyId) {
+  public final Object get(final String propertyId) {
     return get(getDomain().getProperty(entityId, propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
-  public void put(final String propertyId, final Object value) {
+  public final void put(final String propertyId, final Object value) {
     put(getDomain().getProperty(entityId, propertyId), value);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Object remove(final String propertyId) {
+  public final Object remove(final String propertyId) {
     return remove(getDomain().getProperty(entityId, propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isNull(final String propertyId) {
+  public final boolean isNull(final String propertyId) {
     return isNull(getDomain().getProperty(entityId, propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isNotNull(final String propertyId) {
+  public final boolean isNotNull(final String propertyId) {
     return !isNull(propertyId);
   }
 
@@ -624,25 +624,25 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public void removeValueSetListener(final String propertyId, final EventDataListener listener) {
+  public final void removeValueSetListener(final String propertyId, final EventDataListener listener) {
     removeValueSetListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void addValueSetListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
+  public final void addValueSetListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
     addValueSetListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeValueListener(final String propertyId, final EventDataListener listener) {
+  public final void removeValueListener(final String propertyId, final EventDataListener listener) {
     removeValueListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void addValueListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
+  public final void addValueListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
     addValueListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 

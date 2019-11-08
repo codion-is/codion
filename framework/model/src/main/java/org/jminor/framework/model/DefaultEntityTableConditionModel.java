@@ -246,13 +246,13 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public FilterCondition<Entity> getAdditionalFilterCondition() {
+  public final FilterCondition<Entity> getAdditionalFilterCondition() {
     return this.additionalFilterCondition;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityTableConditionModel setAdditionalFilterCondition(final FilterCondition<Entity> filterCondition) {
+  public final EntityTableConditionModel setAdditionalFilterCondition(final FilterCondition<Entity> filterCondition) {
     this.additionalFilterCondition = filterCondition;
 
     return this;
