@@ -937,7 +937,7 @@ public final class FXUiUtil {
       if (maxLength > -1 && value != null && value.length() > maxLength) {
         return false;
       }
-      if (property.isDateOrTime()) {
+      if (property.isTemporal()) {
         try {
           if (value != null) {
             property.getDateTimeFormatter().parse(value);

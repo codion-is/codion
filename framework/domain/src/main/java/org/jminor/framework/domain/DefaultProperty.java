@@ -78,11 +78,6 @@ class DefaultProperty implements Property {
   private final int hashCode;
 
   /**
-   * Very frequently used, so cache it
-   */
-  private final boolean isDouble;
-
-  /**
    * The name of a bean property linked to this property, if any
    */
   private String beanProperty;
@@ -167,7 +162,6 @@ class DefaultProperty implements Property {
     this.type = type;
     this.caption = caption;
     this.typeClass = getTypeClass(type);
-    this.isDouble = isType(Types.DOUBLE);
     setHidden(caption == null);
     this.format = initializeDefaultFormat();
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
@@ -201,7 +195,7 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isDateOrTime() {
+  public final boolean isTemporal() {
     return isDate() || isTimestamp() || isTime();
   }
 
@@ -250,7 +244,7 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final boolean isDouble() {
-    return isDouble;
+    return isType(Types.DOUBLE);
   }
 
   /** {@inheritDoc} */
@@ -490,7 +484,7 @@ class DefaultProperty implements Property {
     if (isNumerical() && !(format instanceof NumberFormat)) {
       throw new IllegalArgumentException("NumberFormat required for numerical property: " + propertyId);
     }
-    if (isDateOrTime()) {
+    if (isTemporal()) {
       throw new IllegalArgumentException("Use setDateTimeFormatPattern() for date/time based property: " + propertyId);
     }
     this.format = format;
@@ -499,8 +493,8 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public Property setDateTimeFormatPattern(final String dateTimeFormatPattern) {
-    if (!isDateOrTime()) {
+  public final Property setDateTimeFormatPattern(final String dateTimeFormatPattern) {
+    if (!isTemporal()) {
       throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to date/time based property: " + propertyId);
     }
     this.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
@@ -510,13 +504,13 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public String getDateTimeFormatPattern() {
+  public final String getDateTimeFormatPattern() {
     return dateTimeFormatPattern;
   }
 
   /** {@inheritDoc} */
   @Override
-  public DateTimeFormatter getDateTimeFormatter() {
+  public final DateTimeFormatter getDateTimeFormatter() {
     if (dateTimeFormatter == null && dateTimeFormatPattern != null) {
       dateTimeFormatter = ofPattern(dateTimeFormatPattern);
     }
@@ -676,7 +670,7 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public ColumnProperty setColumnName(final String columnName) {
+    public final ColumnProperty setColumnName(final String columnName) {
       this.columnName = requireNonNull(columnName, "columnName");
       return this;
     }
@@ -773,13 +767,13 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public ColumnProperty setSelectable(final boolean selectable) {
+    public final ColumnProperty setSelectable(final boolean selectable) {
       this.selectable = selectable;
       return this;
     }
 
     @Override
-    public boolean isSelectable() {
+    public final boolean isSelectable() {
       return selectable;
     }
 

@@ -5249,4 +5249,5 @@
   H2Database, tomcat connection pool, jaxrs-ri, commons-beanutils and jasperreports dependencies upgraded
   DatabaseProvider interface added, implemented in dbms modules. Database interface did not lend itself to ServiceLoader usage, since initializing a Database (H2Database f.ex) performed some actions, like initializing a in-memory database
   Property.ColumnProperty.isSelectable() added, useful for properties that are only used in conditions
+  Property.isDateOrTime() renamed to isTemporal(), DefaultProperty no longer caches isDouble
   DefaultEntityConnectionServer, bug fixed, initializeConnectionPools() only checked for null on startupPoolUsers, not if empty
