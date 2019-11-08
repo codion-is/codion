@@ -153,7 +153,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
 
   /** {@inheritDoc} */
   @Override
-  public boolean containsColumn(final C identifier) {
+  public final boolean containsColumn(final C identifier) {
     requireNonNull(identifier, "identifier");
 
     return columns.stream().anyMatch(column -> identifier.equals(column.getIdentifier()));
@@ -167,7 +167,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
 
   /** {@inheritDoc} */
   @Override
-  public Collection<ColumnConditionModel<C>> getColumnFilterModels() {
+  public final Collection<ColumnConditionModel<C>> getColumnFilterModels() {
     return columnFilterModels.values();
   }
 

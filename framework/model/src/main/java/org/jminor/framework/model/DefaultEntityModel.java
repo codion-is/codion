@@ -393,25 +393,25 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /** {@inheritDoc} */
   @Override
-  public void addLinkedDetailModelAddedListener(final EventDataListener<M> listener) {
+  public final void addLinkedDetailModelAddedListener(final EventDataListener<M> listener) {
     linkedDetailModelAddedEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeLinkedDetailModelAddedListener(final EventDataListener listener) {
+  public final void removeLinkedDetailModelAddedListener(final EventDataListener listener) {
     linkedDetailModelAddedEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void addLinkedDetailModelRemovedListener(final EventDataListener<M> listener) {
+  public final void addLinkedDetailModelRemovedListener(final EventDataListener<M> listener) {
     linkedDetailModelRemovedEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeLinkedDetailModelRemovedListener(final EventDataListener listener) {
+  public final void removeLinkedDetailModelRemovedListener(final EventDataListener listener) {
     linkedDetailModelRemovedEvent.removeDataListener(listener);
   }
 

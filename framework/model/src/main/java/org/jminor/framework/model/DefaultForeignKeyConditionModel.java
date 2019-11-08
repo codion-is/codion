@@ -67,7 +67,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
 
   /** {@inheritDoc} */
   @Override
-  public Collection<Entity> getConditionEntities() {
+  public final Collection<Entity> getConditionEntities() {
     final Object upperBound = getUpperBound();
     if (upperBound instanceof Entity) {
       return singletonList((Entity) upperBound);
@@ -95,11 +95,11 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   @Override
   public void clear() {/*Nothing to clear in this default implementation*/}
 
-  protected boolean isUpdatingModel() {
+  protected final boolean isUpdatingModel() {
     return updatingModel;
   }
 
-  protected void setUpdatingModel(final boolean updatingModel) {
+  protected final void setUpdatingModel(final boolean updatingModel) {
     this.updatingModel = updatingModel;
   }
 

@@ -83,13 +83,13 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
 
   /** {@inheritDoc} */
   @Override
-  public StateObserver getConnectionValidObserver() {
+  public final StateObserver getConnectionValidObserver() {
     return connectionValidState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public Domain getDomain() {
+  public final Domain getDomain() {
     return connectionProvider.getDomain();
   }
 
