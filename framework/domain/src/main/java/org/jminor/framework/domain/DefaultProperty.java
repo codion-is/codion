@@ -154,14 +154,16 @@ class DefaultProperty implements Property {
    * @param propertyId the property ID, this is used as the underlying column name
    * @param type the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
+   * @param typeClass the type associated with this property
    */
-  DefaultProperty(final String propertyId, final int type, final String caption) {
+  DefaultProperty(final String propertyId, final int type, final String caption,
+                  final Class typeClass) {
     requireNonNull(propertyId, "propertyId");
     this.propertyId = propertyId;
     this.hashCode = propertyId.hashCode();
     this.type = type;
     this.caption = caption;
-    this.typeClass = getTypeClass(type);
+    this.typeClass = typeClass;
     setHidden(caption == null);
     this.format = initializeDefaultFormat();
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
@@ -569,9 +571,10 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public final void validateType(final Object value) {
-    if (value != null && !typeClass.equals(value.getClass()) && !typeClass.isAssignableFrom(value.getClass())) {
-      throw new IllegalArgumentException("Value of type " + typeClass + " expected for property " + this + " in entity " + entityId + ", got: " + value.getClass());
+  public void validateType(final Object value) {
+    if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
+      throw new IllegalArgumentException("Value of type " + typeClass +
+              " expected for property " + this + " in entity " + entityId + ", got: " + value.getClass());
     }
   }
 
@@ -609,7 +612,7 @@ class DefaultProperty implements Property {
    * @param sqlType the type
    * @return the Class representing the given type
    */
-  private static Class getTypeClass(final int sqlType) {
+  protected static Class getTypeClass(final int sqlType) {
     switch (sqlType) {
       case Types.BIGINT:
         return Long.class;
@@ -661,7 +664,7 @@ class DefaultProperty implements Property {
     }
 
     DefaultColumnProperty(final String propertyId, final int type, final String caption, final int columnType) {
-      super(propertyId, type, caption);
+      super(propertyId, type, caption, getTypeClass(type));
       this.columnName = propertyId;
       this.columnType = columnType;
       this.valueConverter = initializeValueConverter(this);
@@ -996,7 +999,7 @@ class DefaultProperty implements Property {
      */
     DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
                               final List<ColumnProperty> columnProperties) {
-      super(propertyId, Types.OTHER, caption);
+      super(propertyId, Types.OTHER, caption, Entity.class);
       requireNonNull(foreignEntityId, "foreignEntityId");
       validateParameters(propertyId, foreignEntityId, columnProperties);
       columnProperties.forEach(columnProperty -> columnProperty.setForeignKeyProperty(this));
@@ -1054,6 +1057,18 @@ class DefaultProperty implements Property {
     public ForeignKeyProperty setSoftReference(final boolean softReference) {
       this.softReference = softReference;
       return this;
+    }
+
+    @Override
+    public void validateType(final Object value) {
+      super.validateType(value);
+      if (value != null) {
+        final Entity entity = (Entity) value;
+        if (!Objects.equals(foreignEntityId, entity.getEntityId())) {
+          throw new IllegalArgumentException("Entity of type " + foreignEntityId +
+                  " expected for property " + this + ", got: " + entity.getEntityId());
+        }
+      }
     }
 
     private static void validateParameters(final String propertyId, final String foreignEntityId,
@@ -1179,7 +1194,7 @@ class DefaultProperty implements Property {
      * @param caption the caption of this property
      */
     DefaultTransientProperty(final String propertyId, final int type, final String caption) {
-      super(propertyId, type, caption);
+      super(propertyId, type, caption, getTypeClass(type));
     }
 
     @Override
