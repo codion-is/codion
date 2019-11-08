@@ -160,7 +160,7 @@ public interface Property extends Serializable {
   /**
    * @return true if this is a time based property, Date (LocalDate), Timestamp (LocalDatetime) or Time (LocalTime)
    */
-  boolean isDateOrTime();
+  boolean isTemporal();
 
   /**
    * @return true if this is a date property

@@ -517,7 +517,7 @@ public final class EntityUiUtil {
                                                         final boolean updateOnKeystroke, final boolean includeCalendarButton,
                                                         final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
-    if (!property.isDateOrTime()) {
+    if (!property.isTemporal()) {
       throw new IllegalArgumentException("Property " + property + " is not a date or time property");
     }
 
@@ -849,7 +849,7 @@ public final class EntityUiUtil {
     else if (property.isLong()) {
       field = initializeLongField(property);
     }
-    else if (property.isDateOrTime()) {
+    else if (property.isTemporal()) {
       field = UiUtil.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
     }
     else if (property.isString()) {

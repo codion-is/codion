@@ -100,7 +100,7 @@ public final class EntityTableCellRenderers {
      */
     public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property) {
       this(tableModel, property, property.getFormat(), property.getDateTimeFormatter(),
-              property.isNumerical() || property.isDateOrTime() ? RIGHT : LEFT);
+              property.isNumerical() || property.isTemporal() ? RIGHT : LEFT);
     }
 
     /**
