@@ -19,7 +19,7 @@ dependencies {
 
 distributions {
     main {
-        baseName = "jminor.entity.generator"
+        distributionBaseName = "jminor.entity.generator"
     }
 }
 

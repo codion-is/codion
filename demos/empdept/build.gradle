@@ -25,7 +25,7 @@ dependencies {
 
     runtimeOnly project(':jminor-plugin-logback-proxy')
 
-    compile("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
+    implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
     }
 
