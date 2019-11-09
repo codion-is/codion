@@ -629,6 +629,148 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   }
 
   /**
+   * Defines a entity type
+   */
+  interface Definer {
+
+    /**
+     * @param validator the validator for this entity type
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setValidator(final Validator validator);
+
+    /**
+     * Adds a {@link ConditionProvider} which provides a dynamic query condition string.
+     * The condition string should not include the WHERE keyword and use the ?
+     * substitution character where values should be inserted.
+     * @param conditionId the condition id
+     * @param conditionProvider the condition provider
+     * @return this Entity.Definer instance
+     */
+    Entity.Definer addConditionProvider(final String conditionId, final ConditionProvider conditionProvider);
+
+    /**
+     * @param colorProvider the background color provider
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setBackgroundColorProvider(final BackgroundColorProvider colorProvider);
+
+    /**
+     * Sets the caption for this entity type
+     * @param caption the caption
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setCaption(final String caption);
+
+    /**
+     * Sets the bean class to associate with this entity type
+     * @param beanClass the bean class
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setBeanClass(final Class beanClass);
+
+    /**
+     * Specifies whether or not this entity should be regarded as based on a small dataset,
+     * which primarily means that combo box models can be based on this entity.
+     * This is false by default.
+     * @param smallDataset true if the underlying table is small enough for displaying the contents in a combo box
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setSmallDataset(final boolean smallDataset);
+
+    /**
+     * Specifies whether or not this entity should be regarded as based on a static dataset, that is,
+     * one that changes only infrequently.
+     * This is false by default.
+     * @param staticData true if the underlying table data is static
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setStaticData(final boolean staticData);
+
+    /**
+     * Sets the read only value, if true then it should not be possible to
+     * insert, update or delete entities of this type
+     * @param readOnly true if this entity type should be read only
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setReadOnly(final boolean readOnly);
+
+    /**
+     * Sets the primary key generator
+     * @param keyGenerator the primary key generator
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setKeyGenerator(final KeyGenerator keyGenerator);
+
+    /**
+     * Sets the order by clause for this entity type.
+     * @param orderBy the order by clause
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setOrderBy(final OrderBy orderBy);
+
+    /**
+     * Sets the having clause for this entity type, this clause should not
+     * include the "having" keyword.
+     * @param havingClause the having clause
+     * @return this {@link Entity.Definer} instance
+     * @throws IllegalStateException in case a having clause has already been set,
+     * for example automatically, based on grouping properties
+     */
+    Definer setHavingClause(final String havingClause);
+
+    /**
+     * Sets the group by clause for this entity type, this clause should not
+     * include the "group by" keywords.
+     * @param groupByClause the group by clause
+     * @return this {@link Entity.Definer} instance
+     * @throws IllegalStateException in case a group by clause has already been set,
+     * for example automatically, based on grouping properties
+     * @see Property.ColumnProperty#setGroupingColumn(boolean)
+     */
+    Definer setGroupByClause(final String groupByClause);
+
+    /**
+     * Sets the name of the table to use when selecting entities of this type,
+     * when it differs from the one used to update/insert, such as a view.
+     * @param selectTableName the name of the table
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setSelectTableName(final String selectTableName);
+
+    /**
+     * Sets the select query to use when selecting entities of this type,
+     * use with care. The order of the properties when defining the entity
+     * must match the column order in the given query.
+     * @param selectQuery the select query to use for this entity type
+     * @param containsWhereClause true if the given query contains a where clause
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setSelectQuery(final String selectQuery, final boolean containsWhereClause);
+
+    /**
+     * Sets the string provider, that is, the object responsible for providing toString values for this entity type
+     * @param stringProvider the string provider
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setStringProvider(final ToString stringProvider);
+
+    /**
+     * Sets the comparator to use when comparing this entity type to other entities
+     * @param comparator the comparator
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setComparator(final Comparator<Entity> comparator);
+
+    /**
+     * Sets the IDs of the properties to use when performing a default lookup for this entity type
+     * @param searchPropertyIds the search property IDs
+     * @return this {@link Entity.Definer} instance
+     */
+    Definer setSearchPropertyIds(final String... searchPropertyIds);
+  }
+
+  /**
    * Specifies a entity definition.
    */
   interface Definition extends Serializable {
@@ -652,16 +794,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     String getTableName();
 
     /**
-     * Adds a {@link ConditionProvider} which provides a dynamic query condition string.
-     * The condition string should not include the WHERE keyword and use the ?
-     * substitution character where values should be inserted.
-     * @param conditionId the condition id
-     * @param conditionProvider the condition provider
-     * @return this Entity.Definition instance
-     */
-    Entity.Definition addConditionProvider(final String conditionId, final ConditionProvider conditionProvider);
-
-    /**
      * Returns the {@link ConditionProvider} associated with the given id
      * @param conditionId the condition id
      * @return the condition provider associated with the given id
@@ -675,18 +807,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     String getDomainId();
 
     /**
-     * @param colorProvider the background color provider
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setBackgroundColorProvider(final BackgroundColorProvider colorProvider);
-
-    /**
-     * @param validator the validator for this entity type
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setValidator(final Validator validator);
-
-    /**
      * @return the validator for this entity type
      */
     Validator getValidator();
@@ -697,24 +817,10 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     String getCaption();
 
     /**
-     * Sets the caption for this entity type
-     * @param caption the caption
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setCaption(final String caption);
-
-    /**
      * Returns the bean class associated with this entity type
      * @return the bean class
      */
     Class getBeanClass();
-
-    /**
-     * Sets the bean class to associate with this entity type
-     * @param beanClass the bean class
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setBeanClass(final Class beanClass);
 
     /**
      * @return true if the underlying table is small enough for displaying the contents in a combo box
@@ -722,27 +828,9 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     boolean isSmallDataset();
 
     /**
-     * Specifies whether or not this entity should be regarded as based on a small dataset,
-     * which primarily means that combo box models can be based on this entity.
-     * This is false by default.
-     * @param smallDataset true if the underlying table is small enough for displaying the contents in a combo box
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setSmallDataset(final boolean smallDataset);
-
-    /**
      * @return true if the data in the underlying table can be regarded as static
      */
     boolean isStaticData();
-
-    /**
-     * Specifies whether or not this entity should be regarded as based on a static dataset, that is,
-     * one that changes only infrequently.
-     * This is false by default.
-     * @param staticData true if the underlying table data is static
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setStaticData(final boolean staticData);
 
     /**
      * @return true if this entity type is read only
@@ -750,36 +838,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     boolean isReadOnly();
 
     /**
-     * Sets the read only value, if true then it should not be possible to
-     * insert, update or delete entities of this type
-     * @param readOnly true if this entity type should be read only
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setReadOnly(final boolean readOnly);
-
-    /**
      * @return the object responsible for generating primary key values for entities of this type
      */
     KeyGenerator getKeyGenerator();
 
     /**
-     * Sets the primary key generator
-     * @param keyGenerator the primary key generator
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setKeyGenerator(final KeyGenerator keyGenerator);
-
-    /**
      * @return the type of key generator used for generating primary key values for entities of this type
      */
     KeyGenerator.Type getKeyGeneratorType();
-
-    /**
-     * Sets the order by clause for this entity type.
-     * @param orderBy the order by clause
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setOrderBy(final OrderBy orderBy);
 
     /**
      * @return the default order by clause to use when querying entities of this type
@@ -793,31 +859,10 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     String getGroupByClause();
 
     /**
-     * Sets the group by clause for this entity type, this clause should not
-     * include the "group by" keywords.
-     * @param groupByClause the group by clause
-     * @return this {@link Entity.Definition} instance
-     * @throws IllegalStateException in case a group by clause has already been set,
-     * for example automatically, based on grouping properties
-     * @see Property.ColumnProperty#setGroupingColumn(boolean)
-     */
-    Definition setGroupByClause(final String groupByClause);
-
-    /**
      * @return the having clause to use when querying entities of this type,
      * without the "having" keyword
      */
     String getHavingClause();
-
-    /**
-     * Sets the having clause for this entity type, this clause should not
-     * include the "having" keyword.
-     * @param havingClause the having clause
-     * @return this {@link Entity.Definition} instance
-     * @throws IllegalStateException in case a having clause has already been set,
-     * for example automatically, based on grouping properties
-     */
-    Definition setHavingClause(final String havingClause);
 
     /**
      * @return the name of the table to use when selecting entities of this type
@@ -825,27 +870,9 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     String getSelectTableName();
 
     /**
-     * Sets the name of the table to use when selecting entities of this type,
-     * when it differs from the one used to update/insert, such as a view.
-     * @param selectTableName the name of the table
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setSelectTableName(final String selectTableName);
-
-    /**
      * @return the select query to use when selecting entities of this type
      */
     String getSelectQuery();
-
-    /**
-     * Sets the select query to use when selecting entities of this type,
-     * use with care. The order of the properties when defining the entity
-     * must match the column order in the given query.
-     * @param selectQuery the select query to use for this entity type
-     * @param containsWhereClause true if the given query contains a where clause
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setSelectQuery(final String selectQuery, final boolean containsWhereClause);
 
     /**
      * @return true if the select query, if any, contains a where clause
@@ -858,20 +885,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     ToString getStringProvider();
 
     /**
-     * Sets the string provider, that is, the object responsible for providing toString values for this entity type
-     * @param stringProvider the string provider
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setStringProvider(final ToString stringProvider);
-
-    /**
-     * Sets the comparator to use when comparing this entity type to other entities
-     * @param comparator the comparator
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setComparator(final Comparator<Entity> comparator);
-
-    /**
      * @return the comparator used when comparing this entity type to other entities
      */
     Comparator<Entity> getComparator();
@@ -881,13 +894,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * a default lookup for this entity type
      */
     Collection<String> getSearchPropertyIds();
-
-    /**
-     * Sets the IDs of the properties to use when performing a default lookup for this entity type
-     * @param searchPropertyIds the search property IDs
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setSearchPropertyIds(final String... searchPropertyIds);
 
     /**
      * @return the properties for this entity type mapped to propertyIds

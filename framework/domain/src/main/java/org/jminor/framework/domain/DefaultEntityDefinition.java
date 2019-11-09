@@ -210,21 +210,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition addConditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
-    rejectNullOrEmpty(conditionId, "contitionId");
-    requireNonNull(conditionProvider, "conditionProvider");
-    if (conditionProviders == null) {
-      conditionProviders = new HashMap<>();
-    }
-    if (conditionProviders.containsKey(conditionId)) {
-      throw new IllegalStateException("ConditionProvider with id " + conditionId + " has already been added");
-    }
-    conditionProviders.put(conditionId, conditionProvider);
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Entity.ConditionProvider getConditionProvider(final String conditionId) {
     requireNonNull(conditionId);
     if (conditionProviders != null) {
@@ -251,22 +236,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setCaption(final String caption) {
-    this.caption = requireNonNull(caption, "caption");
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Class getBeanClass() {
     return beanClass;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setBeanClass(final Class beanClass) {
-    this.beanClass = requireNonNull(beanClass, "beanClass");
-    return this;
   }
 
   /** {@inheritDoc} */
@@ -277,22 +248,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setSmallDataset(final boolean smallDataset) {
-    this.smallDataset = smallDataset;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public boolean isStaticData() {
     return staticData;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setStaticData(final boolean staticData) {
-    this.staticData = staticData;
-    return this;
   }
 
   /** {@inheritDoc} */
@@ -303,40 +260,14 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setReadOnly(final boolean readOnly) {
-    this.readOnly = readOnly;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Entity.KeyGenerator getKeyGenerator() {
     return keyGenerator;
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
-    this.keyGenerator = requireNonNull(keyGenerator, "keyGenerator");
-    this.keyGeneratorType = keyGenerator.getType();
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Entity.KeyGenerator.Type getKeyGeneratorType() {
     return keyGeneratorType;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setOrderBy(final Entity.OrderBy orderBy) {
-    requireNonNull(orderBy, "orderBy");
-    if (this.orderBy != null) {
-      throw new IllegalStateException("Order by has already been set: " + this.orderBy);
-    }
-    this.orderBy = orderBy;
-    return this;
   }
 
   /** {@inheritDoc} */
@@ -353,43 +284,14 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setGroupByClause(final String groupByClause) {
-    requireNonNull(groupByClause, "groupByClause");
-    if (this.groupByClause != null) {
-      throw new IllegalStateException("Group by clause has already been set: " + this.groupByClause);
-    }
-    this.groupByClause = groupByClause;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public String getHavingClause() {
     return havingClause;
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setHavingClause(final String havingClause) {
-    requireNonNull(havingClause, "havingClause");
-    if (this.havingClause != null) {
-      throw new IllegalStateException("Having clause has already been set: " + this.havingClause);
-    }
-    this.havingClause = havingClause;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public String getSelectTableName() {
     return selectTableName == null ? tableName : selectTableName;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setSelectTableName(final String selectTableName) {
-    this.selectTableName = requireNonNull(selectTableName, "selectTableName");
-    return this;
   }
 
   /** {@inheritDoc} */
@@ -406,23 +308,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
-    this.selectQuery = requireNonNull(selectQuery, "selectQuery");
-    this.selectQueryContainsWhereClause = containsWhereClause;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Entity.ToString getStringProvider() {
     return stringProvider;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setStringProvider(final Entity.ToString stringProvider) {
-    this.stringProvider = requireNonNull(stringProvider, "stringProvider");
-    return this;
   }
 
   /** {@inheritDoc} */
@@ -433,36 +320,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setComparator(final Comparator<Entity> comparator) {
-    this.comparator = requireNonNull(comparator, "comparator");
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Collection<String> getSearchPropertyIds() {
     if (searchPropertyIds == null) {
       return emptyList();
     }
     return unmodifiableCollection(searchPropertyIds);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setSearchPropertyIds(final String... searchPropertyIds) {
-    requireNonNull(searchPropertyIds, "searchPropertyIds");
-    for (final String propertyId : searchPropertyIds) {
-      final Property property = propertyMap.get(propertyId);
-      if (property == null) {
-        throw new IllegalArgumentException("Property with ID '" + propertyId + "' not found in entity '" + getEntityId() + "'");
-      }
-      if (!propertyMap.get(propertyId).isString()) {
-        throw new IllegalArgumentException("Entity search property must be of type String: " + propertyMap.get(propertyId));
-      }
-    }
-
-    this.searchPropertyIds = asList(searchPropertyIds);
-    return this;
   }
 
   /** {@inheritDoc} */
@@ -564,20 +426,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
-    this.backgroundColorProvider = requireNonNull(colorProvider, "colorProvider");
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setValidator(final Entity.Validator validator) {
-    this.validator = requireNonNull(validator, "validator");
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Entity.Validator getValidator() {
     return validator;
   }
@@ -604,6 +452,107 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     return backgroundColorProvider.getBackgroundColor(entity, property);
+  }
+
+  private void addConditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
+    rejectNullOrEmpty(conditionId, "contitionId");
+    requireNonNull(conditionProvider, "conditionProvider");
+    if (conditionProviders == null) {
+      conditionProviders = new HashMap<>();
+    }
+    if (conditionProviders.containsKey(conditionId)) {
+      throw new IllegalStateException("ConditionProvider with id " + conditionId + " has already been added");
+    }
+    conditionProviders.put(conditionId, conditionProvider);
+  }
+
+  private void setCaption(final String caption) {
+    this.caption = requireNonNull(caption, "caption");
+  }
+
+  private void setBeanClass(final Class beanClass) {
+    this.beanClass = requireNonNull(beanClass, "beanClass");
+  }
+
+  private void setSmallDataset(final boolean smallDataset) {
+    this.smallDataset = smallDataset;
+  }
+
+  private void setStaticData(final boolean staticData) {
+    this.staticData = staticData;
+  }
+
+  private void setReadOnly(final boolean readOnly) {
+    this.readOnly = readOnly;
+  }
+
+  private void setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
+    this.keyGenerator = requireNonNull(keyGenerator, "keyGenerator");
+    this.keyGeneratorType = keyGenerator.getType();
+  }
+
+  private void setOrderBy(final Entity.OrderBy orderBy) {
+    requireNonNull(orderBy, "orderBy");
+    if (this.orderBy != null) {
+      throw new IllegalStateException("Order by has already been set: " + this.orderBy);
+    }
+    this.orderBy = orderBy;
+  }
+
+  private void setGroupByClause(final String groupByClause) {
+    requireNonNull(groupByClause, "groupByClause");
+    if (this.groupByClause != null) {
+      throw new IllegalStateException("Group by clause has already been set: " + this.groupByClause);
+    }
+    this.groupByClause = groupByClause;
+  }
+
+  private void setHavingClause(final String havingClause) {
+    requireNonNull(havingClause, "havingClause");
+    if (this.havingClause != null) {
+      throw new IllegalStateException("Having clause has already been set: " + this.havingClause);
+    }
+    this.havingClause = havingClause;
+  }
+
+  private void setSelectTableName(final String selectTableName) {
+    this.selectTableName = requireNonNull(selectTableName, "selectTableName");
+  }
+
+  private void setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
+    this.selectQuery = requireNonNull(selectQuery, "selectQuery");
+    this.selectQueryContainsWhereClause = containsWhereClause;
+  }
+
+  private void setComparator(final Comparator<Entity> comparator) {
+    this.comparator = requireNonNull(comparator, "comparator");
+  }
+
+  private void setStringProvider(final Entity.ToString stringProvider) {
+    this.stringProvider = requireNonNull(stringProvider, "stringProvider");
+  }
+
+  private void setSearchPropertyIds(final String... searchPropertyIds) {
+    requireNonNull(searchPropertyIds, "searchPropertyIds");
+    for (final String propertyId : searchPropertyIds) {
+      final Property property = propertyMap.get(propertyId);
+      if (property == null) {
+        throw new IllegalArgumentException("Property with ID '" + propertyId + "' not found in entity '" + getEntityId() + "'");
+      }
+      if (!propertyMap.get(propertyId).isString()) {
+        throw new IllegalArgumentException("Entity search property must be of type String: " + propertyMap.get(propertyId));
+      }
+    }
+
+    this.searchPropertyIds = asList(searchPropertyIds);
+  }
+
+  private void setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
+    this.backgroundColorProvider = requireNonNull(colorProvider, "colorProvider");
+  }
+
+  private void setValidator(final Entity.Validator validator) {
+    this.validator = requireNonNull(validator, "validator");
   }
 
   private Map<String, Property.ColumnProperty> initializePrimaryKeyPropertyMap() {
@@ -692,6 +641,117 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     return stringBuilder.toString();
+  }
+
+  static class EntityDefiner implements Entity.Definer {
+
+    private final DefaultEntityDefinition definition;
+
+    EntityDefiner(final DefaultEntityDefinition definition) {
+      this.definition = definition;
+    }
+
+    @Override
+    public Entity.Definer addConditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
+      definition.addConditionProvider(conditionId, conditionProvider);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setCaption(final String caption) {
+      definition.setCaption(caption);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setBeanClass(final Class beanClass) {
+      definition.setBeanClass(beanClass);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setSmallDataset(final boolean smallDataset) {
+      definition.setSmallDataset(smallDataset);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setStaticData(final boolean staticData) {
+      definition.setStaticData(staticData);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setReadOnly(final boolean readOnly) {
+      definition.setReadOnly(readOnly);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
+      definition.setKeyGenerator(keyGenerator);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setOrderBy(final Entity.OrderBy orderBy) {
+      definition.setOrderBy(orderBy);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setGroupByClause(final String groupByClause) {
+      definition.setGroupByClause(groupByClause);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setHavingClause(final String havingClause) {
+      definition.setHavingClause(havingClause);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setSelectTableName(final String selectTableName) {
+      definition.setSelectTableName(selectTableName);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
+      definition.setSelectQuery(selectQuery, containsWhereClause);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setComparator(final Comparator<Entity> comparator) {
+      definition.setComparator(comparator);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setStringProvider(final Entity.ToString stringProvider) {
+      definition.setStringProvider(stringProvider);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setSearchPropertyIds(final String... searchPropertyIds) {
+      definition.setSearchPropertyIds(searchPropertyIds);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
+      definition.setBackgroundColorProvider(colorProvider);
+      return this;
+    }
+
+    @Override
+    public Entity.Definer setValidator(final Entity.Validator validator) {
+      definition.setValidator(validator);
+      return this;
+    }
   }
 
   /**

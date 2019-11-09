@@ -300,11 +300,11 @@ public class Domain implements Serializable {
    * @param entityId the id uniquely identifying the entity type
    * @param properties the {@link Property} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
-   * @return a new {@link Entity.Definition}
+   * @return a {@link Entity.Definer}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.Definition define(final String entityId, final Property... properties) {
+  public final Entity.Definer define(final String entityId, final Property... properties) {
     return define(entityId, entityId, properties);
   }
 
@@ -315,11 +315,11 @@ public class Domain implements Serializable {
    * @param tableName the name of the underlying table
    * @param properties the {@link Property} objects to base the entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
-   * @return a new {@link Entity.Definition}
+   * @return a {@link Entity.Definer}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.Definition define(final String entityId, final String tableName, final Property... properties) {
+  public final Entity.Definer define(final String entityId, final String tableName, final Property... properties) {
     requireNonNull(entityId, ENTITY_ID_PARAM);
     requireNonNull(tableName, "tableName");
     if (entityDefinitions.containsKey(entityId) && !ALLOW_REDEFINE_ENTITY.get()) {
@@ -334,7 +334,7 @@ public class Domain implements Serializable {
             tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties, new Validator());
     entityDefinitions.put(entityId, entityDefinition);
 
-    return entityDefinition;
+    return new DefaultEntityDefinition.EntityDefiner(entityDefinition);
   }
 
   /**
