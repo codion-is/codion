@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.text.Collator;
@@ -387,17 +386,19 @@ public final class TextUtil {
 
     private ComparatorSansSpace(final Locale locale) {
       this.locale = locale;
-      this.collator = Collator.getInstance(locale);
     }
 
     @Override
     public int compare(final T o1, final T o2) {
-      return collateSansSpaces(collator, o1.toString(), o2.toString());
+      return collateSansSpaces(getCollator(), o1.toString(), o2.toString());
     }
 
-    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-      stream.defaultReadObject();
-      this.collator = Collator.getInstance(this.locale);
+    private Collator getCollator() {
+      if (collator == null) {
+        collator = Collator.getInstance(this.locale);
+      }
+
+      return collator;
     }
   }
 }
