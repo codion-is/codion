@@ -19,7 +19,6 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -85,10 +84,10 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * Instantiates a new EntityLookupModel, using the search properties for the given entity type
    * @param entityId the ID of the entity to lookup
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
-   * @see Domain#getSearchProperties(String)
+   * @see Entity.Definition#getSearchProperties()
    */
   public DefaultEntityLookupModel(final String entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, connectionProvider.getDomain().getSearchProperties(entityId));
+    this(entityId, connectionProvider, connectionProvider.getDomain().getDefinition(entityId).getSearchProperties());
   }
 
   /**
@@ -314,7 +313,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
     return entitySelectCondition(entityId, additionalConditionProvider == null ? baseCondition :
             conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
-            .setOrderBy(connectionProvider.getDomain().getOrderBy(entityId));
+            .setOrderBy(connectionProvider.getDomain().getDefinition(entityId).getOrderBy());
   }
 
   private void initializeDefaultSettings() {

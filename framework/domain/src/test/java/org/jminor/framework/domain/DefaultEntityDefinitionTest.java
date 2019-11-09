@@ -210,7 +210,7 @@ public class DefaultEntityDefinitionTest {
   public void defaultKeyGenerator() {
     domain.define("nullKeyGenerator",
             Properties.primaryKeyProperty("propertyId"));
-    assertEquals(Entity.KeyGenerator.Type.NONE, domain.getKeyGeneratorType("nullKeyGenerator"));
+    assertEquals(Entity.KeyGenerator.Type.NONE, domain.getDefinition("nullKeyGenerator").getKeyGeneratorType());
   }
 
   @Test
@@ -224,6 +224,6 @@ public class DefaultEntityDefinitionTest {
     domain.define("nullKeyGenerator",
             Properties.primaryKeyProperty("propertyId"))
             .setKeyGenerator(domain.automaticKeyGenerator("table"));
-    assertEquals(Entity.KeyGenerator.Type.AUTOMATIC, domain.getKeyGeneratorType("nullKeyGenerator"));
+    assertEquals(Entity.KeyGenerator.Type.AUTOMATIC, domain.getDefinition("nullKeyGenerator").getKeyGeneratorType());
   }
 }

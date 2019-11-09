@@ -32,7 +32,7 @@ public final class SwingPropertyComboBoxModelTest {
   private final Event refreshEvent = Events.event();
 
   public SwingPropertyComboBoxModelTest() {
-    final Property.ColumnProperty property = DOMAIN.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
+    final Property.ColumnProperty property = DOMAIN.getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME);
     comboBoxModel = new SwingPropertyComboBoxModel(TestDomain.T_DEPARTMENT,
             CONNECTION_PROVIDER, property, null);
     refreshEvent.addListener(comboBoxModel::refresh);

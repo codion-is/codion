@@ -22,7 +22,8 @@ public class PropertySearchPanelTest {
   @Test
   public void createWithInitializedModel() {
     final PropertyConditionModel<Property.ColumnProperty> conditionModel =
-            new DefaultPropertyConditionModel(DOMAIN.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
+            new DefaultPropertyConditionModel(DOMAIN.getDefinition(TestDomain.T_DEPARTMENT)
+                    .getColumnProperty(TestDomain.DEPARTMENT_NAME));
     conditionModel.setUpperBound("DALLAS");
     conditionModel.setConditionType(ConditionType.LIKE);
     conditionModel.setEnabled(true);

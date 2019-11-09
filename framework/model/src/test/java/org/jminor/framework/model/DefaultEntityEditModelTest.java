@@ -44,8 +44,8 @@ public final class DefaultEntityEditModelTest {
 
   @BeforeEach
   public void setUp() {
-    jobProperty = DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
-    deptProperty = DOMAIN.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
+    jobProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
+    deptProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel = new TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
@@ -65,7 +65,8 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void createForeignKeyLookupModel() {
-    final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(DOMAIN.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+    final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(
+            DOMAIN.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(model);
     assertEquals(TestDomain.T_DEPARTMENT, model.getEntityId());
   }
@@ -126,7 +127,7 @@ public final class DefaultEntityEditModelTest {
     dept = employeeEditModel.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
     assertNull(dept);
     dept = (Entity) employeeEditModel.getDefaultValue(
-            DOMAIN.getProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+            DOMAIN.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(dept);
   }
 
@@ -244,13 +245,13 @@ public final class DefaultEntityEditModelTest {
     //test validation
     try {
       employeeEditModel.put(TestDomain.EMP_COMMISSION, 50d);
-      employeeEditModel.validate(DOMAIN.getProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION));
+      employeeEditModel.validate(DOMAIN.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_COMMISSION));
       fail("Validation should fail on invalid commission value");
     }
     catch (final ValidationException e) {
       assertEquals(TestDomain.EMP_COMMISSION, e.getKey());
       assertEquals(50d, e.getValue());
-      final Property property = DOMAIN.getProperty(TestDomain.T_EMP, (String) e.getKey());
+      final Property property = DOMAIN.getDefinition(TestDomain.T_EMP).getProperty((String) e.getKey());
       assertTrue(e.getMessage().contains(property.toString()));
       assertTrue(e.getMessage().contains(property.getMin().toString()));
     }

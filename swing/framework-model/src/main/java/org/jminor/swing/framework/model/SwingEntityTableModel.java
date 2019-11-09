@@ -316,7 +316,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final int getPropertyColumnIndex(final String propertyId) {
-    return getColumnModel().getColumnIndex(getDomain().getProperty(getEntityId(), propertyId));
+    return getColumnModel().getColumnIndex(getDomain().getDefinition(entityId).getProperty(propertyId));
   }
 
   /**
@@ -366,7 +366,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @see TableSortModel#setSortingDirective(Object, SortingDirective, boolean)
    */
   public final void setSortingDirective(final String propertyId, final SortingDirective directive, final boolean addColumnToSort) {
-    getSortModel().setSortingDirective(getDomain().getProperty(getEntityId(), propertyId), directive, addColumnToSort);
+    getSortModel().setSortingDirective(getDomain().getDefinition(entityId).getProperty(propertyId), directive, addColumnToSort);
   }
 
   /** {@inheritDoc} */
@@ -432,7 +432,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = getDomain().getForeignKeyProperties(this.entityId, foreignKeyEntityId);
+    final List<Property.ForeignKeyProperty> foreignKeyProperties =
+            getDomain().getDefinition(entityId).getForeignKeyProperties(foreignKeyEntityId);
     boolean changed = false;
     for (final Entity entity : getAllItems()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
@@ -501,7 +502,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final ColumnSummaryModel getColumnSummaryModel(final String propertyId) {
-    return getColumnSummaryModel(getDomain().getProperty(entityId, propertyId));
+    return getColumnSummaryModel(getDomain().getDefinition(entityId).getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
@@ -513,7 +514,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void setColumns(final String... propertyIds) {
-    getColumnModel().setColumns(getDomain().getProperties(getEntityId(), asList(propertyIds)).toArray(new Property[0]));
+    getColumnModel().setColumns(getDomain().getDefinition(entityId).getProperties(asList(propertyIds)).toArray(new Property[0]));
   }
 
   /** {@inheritDoc} */
@@ -625,10 +626,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
    * @return the order by clause
-   * @see Domain#getOrderBy(String)
+   * @see Entity.Definition#getOrderBy()
    */
   protected Entity.OrderBy getOrderBy() {
-    return getDomain().getOrderBy(entityId);
+    return getDomain().getDefinition(entityId).getOrderBy();
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
@@ -835,7 +836,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     @Override
     protected Comparator initializeColumnComparator(final Property property) {
       if (property instanceof Property.ForeignKeyProperty) {
-        return domain.getComparator(((Property.ForeignKeyProperty) property).getForeignEntityId());
+        return domain.getDefinition(((Property.ForeignKeyProperty) property).getForeignEntityId()).getComparator();
       }
 
       return super.initializeColumnComparator(property);
@@ -849,7 +850,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
     private static List<TableColumn> initializeColumns(final Domain domain, final String entityId) {
       int modelIndex = 0;
-      final List<Property> visibleProperties = domain.getVisibleProperties(entityId);
+      final List<Property> visibleProperties = domain.getDefinition(entityId).getVisibleProperties();
       if (visibleProperties.isEmpty()) {
         throw new IllegalStateException("No visible properties defined for entity: " + entityId);
       }

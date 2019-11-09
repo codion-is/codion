@@ -293,7 +293,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
     else {
       detailModelForeignKeys.put(detailModel,
-              connectionProvider.getDomain().getForeignKeyProperty(detailModel.getEntityId(), foreignKeyPropertyId));
+              connectionProvider.getDomain().getDefinition(detailModel.getEntityId()).getForeignKeyProperty(foreignKeyPropertyId));
     }
   }
 
@@ -355,7 +355,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final void initialize(final String foreignKeyEntityId, final List<Entity> foreignKeyValues) {
     final List<Property.ForeignKeyProperty> foreignKeyProperties = connectionProvider.getDomain()
-            .getForeignKeyProperties(entityId, foreignKeyEntityId);
+            .getDefinition(entityId).getForeignKeyProperties(foreignKeyEntityId);
     if (!foreignKeyProperties.isEmpty()) {
       initialize(foreignKeyProperties.get(0), foreignKeyValues);
     }
@@ -481,7 +481,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (containsTableModel() && filterOnMasterInsert) {
       Property.ForeignKeyProperty foreignKeyProperty = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKeyProperty == null) {
-        foreignKeyProperty = connectionProvider.getDomain().getForeignKeyProperties(entityId, masterModel.getEntityId()).get(0);
+        foreignKeyProperty = connectionProvider.getDomain()
+                .getDefinition(entityId).getForeignKeyProperties(masterModel.getEntityId()).get(0);
       }
       tableModel.setForeignKeyConditionValues(foreignKeyProperty, insertEvent.getInsertedEntities());
     }

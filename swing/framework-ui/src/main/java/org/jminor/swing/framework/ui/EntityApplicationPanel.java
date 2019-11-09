@@ -596,7 +596,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
     final Domain domain = applicationModel.getDomain();
     for (final String entityId : domain.getDefinedEntities()) {
-      if (domain.getForeignKeyProperties(entityId).isEmpty() || referencesOnlySelf(applicationModel.getDomain(), entityId)) {
+      if (domain.getDefinition(entityId).getForeignKeyProperties().isEmpty() || referencesOnlySelf(applicationModel.getDomain(), entityId)) {
         root.add(new EntityDependencyTreeNode(entityId, domain));
       }
     }
@@ -887,15 +887,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final Comparator<String> comparator = TextUtil.getSpaceAwareCollator();
     final Domain domain = applicationModel.getDomain();
     supportPanelProviders.sort((ep1, ep2) -> {
-      final String thisCompare = ep1.getCaption() == null ? domain.getCaption(ep1.getEntityId()) : ep1.getCaption();
-      final String thatCompare = ep2.getCaption() == null ? domain.getCaption(ep2.getEntityId()) : ep2.getCaption();
+      final String thisCompare = ep1.getCaption() == null ? domain.getDefinition(ep1.getEntityId()).getCaption() : ep1.getCaption();
+      final String thatCompare = ep2.getCaption() == null ? domain.getDefinition(ep2.getEntityId()).getCaption() : ep2.getCaption();
 
       return comparator.compare(thisCompare, thatCompare);
     });
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
     supportPanelProviders.forEach(panelProvider -> controlSet.add(Controls.control(() -> showEntityPanelDialog(panelProvider),
-            panelProvider.getCaption() == null ? domain.getCaption(panelProvider.getEntityId()) : panelProvider.getCaption())));
+            panelProvider.getCaption() == null ?
+                    domain.getDefinition(panelProvider.getEntityId()).getCaption() : panelProvider.getCaption())));
 
     return controlSet;
   }
@@ -931,7 +932,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         }
       }
       final JDialog dialog = new JDialog(getParentWindow(), panelProvider.getCaption() == null ?
-              applicationModel.getDomain().getCaption(panelProvider.getEntityId()) : panelProvider.getCaption());
+              applicationModel.getDomain().getDefinition(panelProvider.getEntityId()).getCaption() : panelProvider.getCaption());
       dialog.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosed(final WindowEvent e) {
@@ -1447,7 +1448,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static boolean referencesOnlySelf(final Domain domain, final String entityId) {
-    return domain.getForeignKeyProperties(entityId).stream()
+    return domain.getDefinition(entityId).getForeignKeyProperties().stream()
             .allMatch(fkProperty -> fkProperty.getForeignEntityId().equals(entityId));
   }
 
@@ -1479,7 +1480,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     private List<EntityDependencyTreeNode> initializeChildren() {
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (final String entityId : domain.getDefinedEntities()) {
-        for (final Property.ForeignKeyProperty fkProperty : domain.getForeignKeyProperties(entityId)) {
+        for (final Property.ForeignKeyProperty fkProperty : domain.getDefinition(entityId).getForeignKeyProperties()) {
           if (fkProperty.getForeignEntityId().equals(getEntityId()) && !fkProperty.isSoftReference()
                   && !foreignKeyCycle(fkProperty.getForeignEntityId())) {
             childrenList.add(new EntityDependencyTreeNode(entityId, domain));

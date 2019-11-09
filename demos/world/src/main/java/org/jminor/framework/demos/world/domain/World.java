@@ -133,7 +133,7 @@ public final class World extends Domain {
             // end::foreignKeyPropertyCapital[]
             // tag::denormalizedViewProperty[]
             denormalizedViewProperty(COUNTRY_CAPITAL_POPULATION, COUNTRY_CAPITAL_FK,
-                    getProperty(T_CITY, CITY_POPULATION), "Capital pop.")
+                    getDefinition(T_CITY).getProperty(CITY_POPULATION), "Capital pop.")
                     .setFormat(getIntegerInstance()),
             // end::denormalizedViewProperty[]
             columnProperty(COUNTRY_CODE2, Types.VARCHAR, "Code2")

@@ -90,7 +90,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityId()
               + ", tableModel: " + entityId);
     }
-    if (connectionProvider.getDomain().getVisibleProperties(entityId).isEmpty()) {
+    if (connectionProvider.getDomain().getDefinition(entityId).getVisibleProperties().isEmpty()) {
       throw new IllegalStateException("No visible properties defined for entity: " + entityId);
     }
     this.conditionModel = conditionModel;
@@ -199,7 +199,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = getDomain().getForeignKeyProperties(getEntityId(), foreignKeyEntityId);
+    final List<Property.ForeignKeyProperty> foreignKeyProperties =
+            getDomain().getDefinition(getEntityId()).getForeignKeyProperties(foreignKeyEntityId);
     for (final Entity entity : getAllItems()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
@@ -471,10 +472,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
    * @return the order by clause
-   * @see Domain#getOrderBy(String)
+   * @see Entity.Definition#getOrderBy()
    */
   protected Entity.OrderBy getOrderBy() {
-    return getDomain().getOrderBy(getEntityId());
+    return getDomain().getDefinition(getEntityId()).getOrderBy();
   }
 
   /**

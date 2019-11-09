@@ -5260,3 +5260,4 @@
   Entity.Definer added, implemented in DefaultEntityDefinition.DefaultEntityDefiner
   Domain.define() now returns a Entity.Definer instead of the Entity.Definition
   Entity.Definition, setters removed, now private in DefaultEntityDefinition
+  Domain, most getters moved to Entity.Definition, Domain.getDefinition() public

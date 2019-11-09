@@ -106,9 +106,9 @@ public final class TestDomain extends Domain {
             Properties.foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK, T_MASTER,
                     Properties.columnProperty(DETAIL_MASTER_ID, Types.BIGINT)),
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
-                    getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
+                    getDefinition(T_MASTER).getProperty(MASTER_NAME), DETAIL_MASTER_NAME),
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK,
-                    getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
+                    getDefinition(T_MASTER).getProperty(MASTER_CODE), DETAIL_MASTER_CODE),
             Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS),
             Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, linkedValues -> {
               final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
@@ -120,7 +120,7 @@ public final class TestDomain extends Domain {
               return intValue * 10;
             }, DETAIL_INT),
             Properties.denormalizedProperty(DETAIL_MASTER_CODE_DENORM, DETAIL_MASTER_FK,
-                    getProperty(T_MASTER, MASTER_CODE)))
+                    getDefinition(T_MASTER).getProperty(MASTER_CODE)))
             .setKeyGenerator(queriedKeyGenerator("select id from dual"))
             .setOrderBy(orderBy().ascending(DETAIL_STRING))
             .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
@@ -204,7 +204,7 @@ public final class TestDomain extends Domain {
                     .setNullable(false)
                     .setBeanProperty("hiredate"),
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
-                    getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
+                    getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100),
             Properties.derivedProperty(EMP_NAME_DEPARTMENT, Types.VARCHAR, null, linkedValues -> {
               final String name = (String) linkedValues.get(EMP_NAME);

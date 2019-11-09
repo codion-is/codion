@@ -71,7 +71,7 @@ public final class TestDomain extends Domain {
             Properties.columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
                     .setNullable(false),
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
-                    getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
+                    getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
             .setStringProvider(new StringProvider(EMP_NAME))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))

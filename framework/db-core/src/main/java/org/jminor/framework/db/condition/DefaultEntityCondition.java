@@ -114,7 +114,7 @@ class DefaultEntityCondition implements EntityCondition {
     }
     else if (condition instanceof Condition.PropertyCondition) {
       final Condition.PropertyCondition propertyCondition = (Condition.PropertyCondition) condition;
-      final Property property = domain.getProperty(entityId, propertyCondition.getPropertyId());
+      final Property property = domain.getDefinition(entityId).getProperty(propertyCondition.getPropertyId());
       if (property instanceof Property.ForeignKeyProperty) {
         return foreignKeyCondition((Property.ForeignKeyProperty) property, propertyCondition.getConditionType(), condition.getValues());
       }

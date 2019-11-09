@@ -129,7 +129,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void initializeColumns() {
-    for (final Property property : getListModel().getDomain().getVisibleProperties(listModel.getEntityId())) {
+    for (final Property property : getListModel().getDomain().getDefinition(listModel.getEntityId()).getVisibleProperties()) {
       getColumns().add(new EntityTableColumn(listModel, property, getCellValueFactory(property)));
     }
     listModel.setColumns(getColumns());
@@ -220,7 +220,7 @@ public class EntityTableView extends TableView<Entity> {
   private Menu createUpdateSelectedItem() {
     final Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED));
     FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
-    Properties.sort(getListModel().getDomain().getUpdatableProperties(listModel.getEntityId())).stream().filter(
+    Properties.sort(getListModel().getDomain().getDefinition(listModel.getEntityId()).getUpdatableProperties()).stream().filter(
             this::includeUpdateSelectedProperty).forEach(property -> {
       final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
       final MenuItem updateProperty = new MenuItem(caption);
@@ -327,7 +327,7 @@ public class EntityTableView extends TableView<Entity> {
 
     return !entityTableModel.isReadOnly() && entityTableModel.isUpdateAllowed() &&
             entityTableModel.isBatchUpdateAllowed() && !entityTableModel.getDomain()
-            .getUpdatableProperties(entityTableModel.getEntityId()).isEmpty();
+            .getDefinition(entityTableModel.getEntityId()).getUpdatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {

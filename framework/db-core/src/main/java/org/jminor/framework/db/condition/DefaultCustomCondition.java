@@ -48,7 +48,7 @@ final class DefaultCustomCondition implements Condition.CustomCondition {
   /** {@inheritDoc} */
   @Override
   public String getConditionString(final Domain domain, final String entityId) {
-    return domain.getConditionProvider(entityId, getConditionId()).getConditionString(getValues());
+    return domain.getDefinition(entityId).getConditionProvider(getConditionId()).getConditionString(getValues());
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

@@ -129,7 +129,7 @@ public final class EntitiesTest {
       values.add(i);
       entityList.add(entity);
     }
-    final Property property = domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
+    final Property property = domain.getDefinition(TestDomain.T_DEPARTMENT).getProperty(TestDomain.DEPARTMENT_ID);
     Collection<Integer> propertyValues = Entities.getValues(TestDomain.DEPARTMENT_ID, entityList);
     assertTrue(propertyValues.containsAll(values));
     propertyValues = Entities.getValues(property.getPropertyId(), entityList);
@@ -200,7 +200,8 @@ public final class EntitiesTest {
     dept2.put(TestDomain.DEPARTMENT_NAME, "name2");
     dept2.put(TestDomain.DEPARTMENT_LOCATION, "loc2");
 
-    final String[][] strings = Entities.getStringValueArray(domain.getColumnProperties(TestDomain.T_DEPARTMENT), asList(dept1, dept2));
+    final String[][] strings =
+            Entities.getStringValueArray(domain.getDefinition(TestDomain.T_DEPARTMENT).getColumnProperties(), asList(dept1, dept2));
     assertEquals("1", strings[0][0]);
     assertEquals("name1", strings[0][1]);
     assertEquals("loc1", strings[0][2]);
@@ -307,17 +308,17 @@ public final class EntitiesTest {
   @Test
   public void putNull() {
     final Entity dept = domain.entity(TestDomain.T_DEPARTMENT);
-    for (final Property property : domain.getProperties(TestDomain.T_DEPARTMENT, true)) {
+    for (final Property property : domain.getDefinition(TestDomain.T_DEPARTMENT).getProperties(true)) {
       assertFalse(dept.containsKey(property));
       assertTrue(dept.isNull(property));
       assertFalse(dept.isNotNull(property));
     }
-    for (final Property property : domain.getProperties(TestDomain.T_DEPARTMENT, true)) {
+    for (final Property property : domain.getDefinition(TestDomain.T_DEPARTMENT).getProperties(true)) {
       dept.put(property, null);
     }
     //putting nulls should not have an effect
     assertFalse(dept.isModified());
-    for (final Property property : domain.getProperties(TestDomain.T_DEPARTMENT, true)) {
+    for (final Property property : domain.getDefinition(TestDomain.T_DEPARTMENT).getProperties(true)) {
       assertTrue(dept.containsKey(property));
       assertTrue(dept.isNull(property));
       assertFalse(dept.isNotNull(property));

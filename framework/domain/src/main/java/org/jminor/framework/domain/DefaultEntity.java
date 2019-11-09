@@ -292,7 +292,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public boolean isLoaded(final String foreignKeyPropertyId) {
-    return super.get(domain.getForeignKeyProperty(getEntityId(), foreignKeyPropertyId)) != null;
+    return super.get(domain.getDefinition(getEntityId()).getForeignKeyProperty(foreignKeyPropertyId)) != null;
   }
 
   /** {@inheritDoc} */
@@ -550,7 +550,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (properties.size() == 1) {
       return isNull(properties.get(0));
     }
-    final List<Property.ColumnProperty> foreignProperties = domain.getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId());
+    final List<Property.ColumnProperty> foreignProperties =
+            domain.getDefinition(foreignKeyProperty.getForeignEntityId()).getPrimaryKeyProperties();
     for (int i = 0; i < properties.size(); i++) {
       if (!foreignProperties.get(i).isNullable() && isNull(properties.get(i))) {
         return true;
@@ -622,7 +623,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     referencedKeyCache = null;
     final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
-    final List<Property.ColumnProperty> foreignProperties = domain.getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId());
+    final List<Property.ColumnProperty> foreignProperties =
+            domain.getDefinition(foreignKeyProperty.getForeignEntityId()).getPrimaryKeyProperties();
     if (properties.size() > 1) {
       setCompositeForeignKeyValues(referencedEntity, properties, foreignProperties);
     }
@@ -671,8 +673,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
+    final Definition entityDefinition = domain.getDefinition(foreignKeyProperty.getForeignEntityId());
     if (foreignKeyProperty.isCompositeKey()) {
-      final List<Property.ColumnProperty> foreignProperties = domain.getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId());
+      final List<Property.ColumnProperty> foreignProperties = entityDefinition.getPrimaryKeyProperties();
       final Map<Property.ColumnProperty, Object> values = new HashMap<>(properties.size());
       for (int i = 0; i < properties.size(); i++) {
         final Property.ColumnProperty foreignProperty = foreignProperties.get(i);
@@ -685,7 +688,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         }
       }
 
-      return new DefaultKey(domain.getDefinition(foreignKeyProperty.getForeignEntityId()), values);
+      return new DefaultKey(entityDefinition, values);
     }
     else {
       final Object value = super.get(properties.get(0));
@@ -693,7 +696,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         return null;
       }
 
-      return new DefaultKey(domain.getDefinition(foreignKeyProperty.getForeignEntityId()), value);
+      return new DefaultKey(entityDefinition, value);
     }
   }
 
