@@ -47,7 +47,7 @@ public class TaskSchedulerTest {
   @Test
   public void startStop() throws InterruptedException {
     final AtomicInteger counter = new AtomicInteger();
-    final TaskScheduler scheduler = new TaskScheduler(counter::incrementAndGet, 5, TimeUnit.MILLISECONDS);
+    final TaskScheduler scheduler = new TaskScheduler(counter::incrementAndGet, 1, TimeUnit.MILLISECONDS);
     assertFalse(scheduler.isRunning());
     scheduler.start();
     assertTrue(scheduler.isRunning());
@@ -61,7 +61,7 @@ public class TaskSchedulerTest {
     assertEquals(currentCount, counter.get());
     final AtomicInteger intervalCounter = new AtomicInteger(0);
     scheduler.getIntervalObserver().addListener(intervalCounter::incrementAndGet);
-    scheduler.setInterval(4);//implicit start
+    scheduler.setInterval(2);//implicit start
     assertEquals(1, intervalCounter.get());
     assertTrue(scheduler.isRunning());
     Thread.sleep(25);
