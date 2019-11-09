@@ -61,13 +61,13 @@ public final class DefaultEntityLookupModelTest {
   @Test
   public void constructorNonStringLookupProperty() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            singletonList(DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION))));
+            singletonList(DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_COMMISSION))));
   }
 
   @Test
   public void constructorIncorrectEntityLookupProperty() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            singletonList(DOMAIN.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME))));
+            singletonList(DOMAIN.getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME))));
   }
 
   @Test
@@ -88,7 +88,7 @@ public final class DefaultEntityLookupModelTest {
 
   @Test
   public void setToStringProvider() {
-    final Property job = DOMAIN.getProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
+    final Property job = DOMAIN.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
     lookupModel.setToStringProvider(entity -> entity.getAsString(job));
     final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, "Darri");
@@ -130,8 +130,8 @@ public final class DefaultEntityLookupModelTest {
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    final Property.ColumnProperty employeeNameProperty = DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME);
-    final Property.ColumnProperty employeeJobProperty = DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
+    final Property.ColumnProperty employeeNameProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME);
+    final Property.ColumnProperty employeeJobProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
 
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
@@ -212,8 +212,8 @@ public final class DefaultEntityLookupModelTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    lookupProperties = asList(DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME),
-            DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB));
+    lookupProperties = asList(DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME),
+            DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB));
     lookupModel = new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, lookupProperties);
 
     CONNECTION_PROVIDER.getConnection().beginTransaction();

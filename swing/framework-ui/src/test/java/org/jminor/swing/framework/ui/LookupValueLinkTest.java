@@ -31,7 +31,7 @@ public class LookupValueLinkTest {
 
   @Test
   public void test() throws Exception {
-    final Property.ForeignKeyProperty fkProperty = DOMAIN.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
+    final Property.ForeignKeyProperty fkProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
     final EntityLookupModel lookupModel = EntityUiUtil.createForeignKeyLookupField(fkProperty, model).getModel();
     assertEquals(0, lookupModel.getSelectedEntities().size());
     Entity department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");

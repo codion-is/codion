@@ -140,7 +140,7 @@ public final class EntityUiUtil {
    * @param lookupCaption the caption for the lookup field, used as a caption for the dialog as well
    * @return the selected entities or an empty collection in case a selection was not performed
    * @see EntityLookupField
-   * @see Domain#getSearchProperties(String)
+   * @see Entity.Definition#getSearchProperties()
    */
   public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,
@@ -159,7 +159,7 @@ public final class EntityUiUtil {
    * @param dialogTitle the title to display on the dialog
    * @return the selected entities or an empty collection in case a selection was not performed
    * @see EntityLookupField
-   * @see Domain#getSearchProperties(String)
+   * @see Entity.Definition#getSearchProperties()
    */
   public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,
@@ -743,8 +743,8 @@ public final class EntityUiUtil {
    */
   public static SteppedComboBox createPropertyComboBox(final String propertyId, final EntityEditModel editModel,
                                                        final StateObserver enabledState) {
-    return createPropertyComboBox(editModel.getDomain().getColumnProperty(editModel.getEntityId(), propertyId),
-            editModel, enabledState);
+    return createPropertyComboBox(editModel.getDomain().getDefinition(editModel.getEntityId())
+                    .getColumnProperty(propertyId), editModel, enabledState);
   }
 
   /**
@@ -948,9 +948,10 @@ public final class EntityUiUtil {
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
                                          final EntityConnectionProvider connectionProvider) {
     final Domain domain = connectionProvider.getDomain();
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(domain.getPrimaryKeyProperties(entity.getEntityId())));
-    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(domain.getForeignKeyProperties(entity.getEntityId())));
-    populateValueMenu(rootMenu, entity, new ArrayList<>(domain.getProperties(entity.getEntityId(), true)), domain);
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(domain.getDefinition(entity.getEntityId()).getPrimaryKeyProperties()));
+    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(domain.getDefinition(entity.getEntityId())
+            .getForeignKeyProperties()));
+    populateValueMenu(rootMenu, entity, new ArrayList<>(domain.getDefinition(entity.getEntityId()).getProperties(true)), domain);
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.ColumnProperty> primaryKeyProperties) {
@@ -973,7 +974,7 @@ public final class EntityUiUtil {
                                              final List<Property.ForeignKeyProperty> fkProperties) {
     try {
       TextUtil.collate(fkProperties);
-      final Entity.Validator validator = connectionProvider.getDomain().getValidator(entity.getEntityId());
+      final Entity.Validator validator = connectionProvider.getDomain().getDefinition(entity.getEntityId()).getValidator();
       for (final Property.ForeignKeyProperty property : fkProperties) {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         final boolean isLoaded = entity.isLoaded(property.getPropertyId());
@@ -1029,7 +1030,7 @@ public final class EntityUiUtil {
                                         final Domain domain) {
     TextUtil.collate(properties);
     final int maxValueLength = 20;
-    final Entity.Validator validator = domain.getValidator(entity.getEntityId());
+    final Entity.Validator validator = domain.getDefinition(entity.getEntityId()).getValidator();
     for (final Property property : properties) {
       final boolean valid = isValid(validator, entity, property);
       final boolean modified = entity.isModified(property);

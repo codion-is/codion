@@ -35,7 +35,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   protected void setupEntityPanelProviders() {
     final EmployeeModelProvider employeeModelProvider = new EmployeeModelProvider();
     final EmployeePanelProvider employeePanelProvider = new EmployeePanelProvider(employeeModelProvider,
-            getModel().getDomain().getCaption(EmpDept.T_EMPLOYEE));
+            getModel().getDomain().getDefinition(EmpDept.T_EMPLOYEE).getCaption());
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
     final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(EmpDept.T_DEPARTMENT) {
@@ -48,7 +48,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);
 
     final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(departmentModelProvider,
-            getModel().getDomain().getCaption(EmpDept.T_DEPARTMENT));
+            getModel().getDomain().getDefinition(EmpDept.T_DEPARTMENT).getCaption());
     departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
     departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
     departmentPanelProvider.addDetailPanelProvider(employeePanelProvider);

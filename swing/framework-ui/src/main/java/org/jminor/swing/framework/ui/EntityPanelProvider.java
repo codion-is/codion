@@ -374,7 +374,8 @@ public class EntityPanelProvider {
       if (panelClass.equals(EntityPanel.class)) {
         final EntityTablePanel tablePanel = entityModel.containsTableModel() ? initializeTablePanel(entityModel.getTableModel()) : null;
         final EntityEditPanel editPanel = editPanelClass == null ? null : initializeEditPanel(entityModel.getEditModel());
-        final String panelCaption = caption == null ? entityModel.getConnectionProvider().getDomain().getCaption(entityModel.getEntityId()) : caption;
+        final String panelCaption = caption == null ? entityModel.getConnectionProvider()
+                .getDomain().getDefinition(entityModel.getEntityId()).getCaption() : caption;
         entityPanel = panelClass.getConstructor(SwingEntityModel.class, String.class, EntityEditPanel.class, EntityTablePanel.class)
                 .newInstance(entityModel, panelCaption, editPanel, tablePanel);
       }

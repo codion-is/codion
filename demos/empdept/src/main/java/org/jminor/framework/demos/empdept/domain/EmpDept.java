@@ -89,7 +89,7 @@ public final class EmpDept extends Domain {
             columnProperty(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate")
                     .setNullable(false),
             denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
-                    getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION), "Location")
+                    getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION), "Location")
                     .setPreferredColumnWidth(100))
             .setKeyGenerator(incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID))
             .setOrderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))

@@ -33,8 +33,8 @@ public class SwingEntityEditModelTest {
 
   @BeforeEach
   public void setUp() {
-    jobProperty = DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
-    deptProperty = DOMAIN.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
+    jobProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
+    deptProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 

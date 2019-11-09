@@ -21,7 +21,7 @@ public class DefaultPropertyConditionModelTest {
 
   @Test
   public void propertyConditionModel() throws Exception {
-    final Property.ColumnProperty property = (Property.ColumnProperty) DOMAIN.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
+    final Property.ColumnProperty property = (Property.ColumnProperty) DOMAIN.getDefinition(TestDomain.T_DEPARTMENT).getProperty(TestDomain.DEPARTMENT_NAME);
     final PropertyConditionModel model = new DefaultPropertyConditionModel(property);
     assertEquals(property, model.getColumnIdentifier());
     model.setConditionType(ConditionType.LIKE);

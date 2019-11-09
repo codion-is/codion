@@ -12,7 +12,6 @@ import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -184,7 +183,7 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
   /**
    * Uses the simpleSearchText as a basis for a wildcard search on all String based condition models,
    * or the condition models representing the search properties for the underlying entity
-   * @see Domain#getSearchProperties(String)
+   * @see Entity.Definition#getSearchProperties()
    */
   void performSimpleSearch();
 

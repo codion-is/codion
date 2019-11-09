@@ -304,7 +304,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
       final String propertyId = propertyValues.names().get(j).toString();
-      key.put(propertyId, parseValue(domain.getProperty(entityId, propertyId), propertyValues));
+      key.put(propertyId, parseValue(domain.getDefinition(entityId).getProperty(propertyId), propertyValues));
     }
 
     return key;
@@ -383,7 +383,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
 
   private JSONObject serializeValues(final Entity.Key key) {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property.ColumnProperty property : domain.getPrimaryKeyProperties(key.getEntityId())) {
+    for (final Property.ColumnProperty property : domain.getDefinition(key.getEntityId()).getPrimaryKeyProperties()) {
       propertyValues.put(property.getPropertyId(), serializeValue(key.get(property), property));
     }
 
@@ -392,7 +392,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
 
   private JSONObject serializeOriginalValues(final Entity entity) {
     final JSONObject originalValues = new JSONObject();
-    for (final Property property : domain.getProperties(entity.getEntityId())) {
+    for (final Property property : domain.getDefinition(entity.getEntityId()).getProperties()) {
       if (entity.isModified(property.getPropertyId()) && (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
         originalValues.put(property.getPropertyId(),
                 serializeValue(entity.getOriginal(property.getPropertyId()), property));
@@ -440,8 +440,9 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final JSONObject propertyValues = entityObject.getJSONObject(valuesKey);
     for (int j = 0; j < propertyValues.names().length(); j++) {
       final String propertyId = propertyValues.names().get(j).toString();
-      valueMap.put(domain.getProperty(entityId, propertyId),
-              parseValue(domain.getProperty(entityId, propertyId), propertyValues));
+      final Entity.Definition entityDefinition = domain.getDefinition(entityId);
+      valueMap.put(entityDefinition.getProperty(propertyId),
+              parseValue(entityDefinition.getProperty(propertyId), propertyValues));
     }
 
     return valueMap;

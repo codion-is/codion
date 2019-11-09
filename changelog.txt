@@ -5275,3 +5275,8 @@
   DefaultForeignKeyProperty.getTypeClass() now returns Entity.class
   DefaultForeignKeyProperty overrides DefaultProperty.validateType() and validates correctly
   Gradle upgraded to 6.0
+  Entity.Definition.setTableName() removed
+  Entity.Definer added, implemented in DefaultEntityDefinition.DefaultEntityDefiner
+  Domain.define() now returns a Entity.Definer instead of the Entity.Definition
+  Entity.Definition, setters removed, now private in DefaultEntityDefinition
+  Domain, most getters moved to Entity.Definition, Domain.getDefinition() public

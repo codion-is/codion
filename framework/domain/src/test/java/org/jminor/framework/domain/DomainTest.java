@@ -34,49 +34,50 @@ public class DomainTest {
 
   @Test
   public void getWritableColumnProperties() {
-    List<String> writable = domain.getWritableColumnProperties(TestDomain.T_DEPARTMENT, true, true)
+    List<String> writable = domain.getDefinition(TestDomain.T_DEPARTMENT)
+            .getWritableColumnProperties(true, true)
             .stream().map(Property::getPropertyId).collect(Collectors.toList());
     assertTrue(writable.contains(TestDomain.DEPARTMENT_ID));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_NAME));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_LOCATION));
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ACTIVE));
 
-    writable = domain.getWritableColumnProperties(TestDomain.T_DEPARTMENT, false, true)
+    writable = domain.getDefinition(TestDomain.T_DEPARTMENT).getWritableColumnProperties(false, true)
             .stream().map(Property::getPropertyId).collect(Collectors.toList());
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ID));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_NAME));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_LOCATION));
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ACTIVE));
 
-    writable = domain.getWritableColumnProperties(TestDomain.T_DEPARTMENT, false, false)
+    writable = domain.getDefinition(TestDomain.T_DEPARTMENT).getWritableColumnProperties(false, false)
             .stream().map(Property::getPropertyId).collect(Collectors.toList());
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ID));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_NAME));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_LOCATION));
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ACTIVE));
 
-    writable = domain.getWritableColumnProperties(TestDomain.T_EMP, true, true)
+    writable = domain.getDefinition(TestDomain.T_EMP).getWritableColumnProperties(true, true)
             .stream().map(Property::getPropertyId).collect(Collectors.toList());
     assertTrue(writable.contains(TestDomain.EMP_ID));
     assertTrue(writable.contains(TestDomain.EMP_HIREDATE));
     assertTrue(writable.contains(TestDomain.EMP_NAME));
     assertFalse(writable.contains(TestDomain.EMP_NAME_DEPARTMENT));
 
-    writable = domain.getWritableColumnProperties(TestDomain.T_EMP, false, true)
+    writable = domain.getDefinition(TestDomain.T_EMP).getWritableColumnProperties(false, true)
             .stream().map(Property::getPropertyId).collect(Collectors.toList());
     assertFalse(writable.contains(TestDomain.EMP_ID));
     assertTrue(writable.contains(TestDomain.EMP_HIREDATE));
     assertTrue(writable.contains(TestDomain.EMP_NAME));
     assertFalse(writable.contains(TestDomain.EMP_NAME_DEPARTMENT));
 
-    writable = domain.getWritableColumnProperties(TestDomain.T_EMP, false, false)
+    writable = domain.getDefinition(TestDomain.T_EMP).getWritableColumnProperties(false, false)
             .stream().map(Property::getPropertyId).collect(Collectors.toList());
     assertFalse(writable.contains(TestDomain.EMP_ID));
     assertFalse(writable.contains(TestDomain.EMP_HIREDATE));
     assertTrue(writable.contains(TestDomain.EMP_NAME));
     assertFalse(writable.contains(TestDomain.EMP_NAME_DEPARTMENT));
 
-    writable = domain.getWritableColumnProperties(TestDomain.T_EMP, true, false)
+    writable = domain.getDefinition(TestDomain.T_EMP).getWritableColumnProperties(true, false)
             .stream().map(Property::getPropertyId).collect(Collectors.toList());
     assertFalse(writable.contains(TestDomain.EMP_ID));//overridden by includeNonUpdatable
     assertFalse(writable.contains(TestDomain.EMP_HIREDATE));
@@ -86,7 +87,7 @@ public class DomainTest {
 
   @Test
   public void sortProperties() {
-    final List<Property> properties = Properties.sort(domain.getProperties(TestDomain.T_EMP,
+    final List<Property> properties = Properties.sort(domain.getDefinition(TestDomain.T_EMP).getProperties(
             asList(TestDomain.EMP_HIREDATE, TestDomain.EMP_COMMISSION,
                     TestDomain.EMP_SALARY, TestDomain.EMP_JOB)));
     assertEquals(TestDomain.EMP_COMMISSION, properties.get(0).getPropertyId());
@@ -97,11 +98,12 @@ public class DomainTest {
 
   @Test
   public void getUpdatableProperties() {
-    final List<Property> properties = domain.getUpdatableProperties(TestDomain.T_DETAIL);
+    final Entity.Definition definition = domain.getDefinition(TestDomain.T_DETAIL);
+    final List<Property> properties = definition.getUpdatableProperties();
     assertEquals(9, properties.size());
-    assertFalse(properties.contains(domain.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_NAME)));
-    assertFalse(properties.contains(domain.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_CODE)));
-    assertFalse(properties.contains(domain.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_INT_DERIVED)));
+    assertFalse(properties.contains(definition.getProperty(TestDomain.DETAIL_MASTER_NAME)));
+    assertFalse(properties.contains(definition.getProperty(TestDomain.DETAIL_MASTER_CODE)));
+    assertFalse(properties.contains(definition.getProperty(TestDomain.DETAIL_INT_DERIVED)));
   }
 
   @Test
@@ -110,12 +112,13 @@ public class DomainTest {
     propertyIds.add(TestDomain.DEPARTMENT_ID);
     propertyIds.add(TestDomain.DEPARTMENT_NAME);
 
-    final Collection<Property> properties = domain.getProperties(TestDomain.T_DEPARTMENT, propertyIds);
+    final Entity.Definition definition = domain.getDefinition(TestDomain.T_DEPARTMENT);
+    final Collection<Property> properties = definition.getProperties(propertyIds);
     assertEquals(2, properties.size());
-    assertTrue(properties.contains(domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID)));
-    assertTrue(properties.contains(domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
+    assertTrue(properties.contains(definition.getProperty(TestDomain.DEPARTMENT_ID)));
+    assertTrue(properties.contains(definition.getProperty(TestDomain.DEPARTMENT_NAME)));
 
-    final Collection<Property> noProperties = domain.getProperties(TestDomain.T_DEPARTMENT, emptyList());
+    final Collection<Property> noProperties = definition.getProperties(emptyList());
     assertEquals(0, noProperties.size());
   }
 
@@ -198,48 +201,51 @@ public class DomainTest {
 
   @Test
   public void getProperties() {
-    final Property id = domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
-    final Property location = domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_LOCATION);
-    final Property name = domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
-    final List<Property> properties = domain.getProperties(TestDomain.T_DEPARTMENT, asList(TestDomain.DEPARTMENT_LOCATION, TestDomain.DEPARTMENT_NAME));
+    final Entity.Definition definition = domain.getDefinition(TestDomain.T_DEPARTMENT);
+    final Property id = definition.getProperty(TestDomain.DEPARTMENT_ID);
+    final Property location = definition.getProperty(TestDomain.DEPARTMENT_LOCATION);
+    final Property name = definition.getProperty(TestDomain.DEPARTMENT_NAME);
+    final List<Property> properties = definition.getProperties(asList(TestDomain.DEPARTMENT_LOCATION, TestDomain.DEPARTMENT_NAME));
     assertEquals(2, properties.size());
     assertFalse(properties.contains(id));
     assertTrue(properties.contains(location));
     assertTrue(properties.contains(name));
 
-    final Collection<Property> visibleProperties = domain.getProperties(TestDomain.T_DEPARTMENT, false);
+    final Collection<Property> visibleProperties = definition.getProperties(false);
     assertEquals(3, visibleProperties.size());
     assertTrue(visibleProperties.contains(id));
     assertTrue(visibleProperties.contains(location));
     assertTrue(visibleProperties.contains(name));
 
-    final Collection<Property> allProperties = domain.getProperties(TestDomain.T_DEPARTMENT, true);
+    final Collection<Property> allProperties = definition.getProperties(true);
     assertTrue(allProperties.containsAll(visibleProperties));
     assertEquals(allProperties.size(), visibleProperties.size() + 1);
   }
 
   @Test
   public void getPropertyInvalid() {
-    assertThrows(IllegalArgumentException.class, () -> domain.getProperty(TestDomain.T_MASTER, "unknown property"));
+    assertThrows(IllegalArgumentException.class, () -> domain.getDefinition(TestDomain.T_MASTER)
+            .getProperty("unknown property"));
   }
 
   @Test
   public void getForeignKeyProperties() {
-    List<Property.ForeignKeyProperty> foreignKeyProperties = domain.getForeignKeyProperties(TestDomain.T_DETAIL, TestDomain.T_EMP);
+    final Entity.Definition definition = domain.getDefinition(TestDomain.T_DETAIL);
+    List<Property.ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyProperties(TestDomain.T_EMP);
     assertEquals(0, foreignKeyProperties.size());
-    foreignKeyProperties = domain.getForeignKeyProperties(TestDomain.T_DETAIL, TestDomain.T_MASTER);
+    foreignKeyProperties = definition.getForeignKeyProperties(TestDomain.T_MASTER);
     assertEquals(1, foreignKeyProperties.size());
-    assertTrue(foreignKeyProperties.contains(domain.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK)));
+    assertTrue(foreignKeyProperties.contains(definition.getProperty(TestDomain.DETAIL_MASTER_FK)));
   }
 
   @Test
   public void getForeignKeyProperty() {
-    assertNotNull(domain.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
+    assertNotNull(domain.getDefinition(TestDomain.T_DETAIL).getForeignKeyProperty(TestDomain.DETAIL_MASTER_FK));
   }
 
   @Test
   public void getForeignKeyPropertyInvalid() {
-    assertThrows(IllegalArgumentException.class, () -> domain.getForeignKeyProperty(TestDomain.T_DETAIL, "bla bla"));
+    assertThrows(IllegalArgumentException.class, () -> domain.getDefinition(TestDomain.T_DETAIL).getForeignKeyProperty("bla bla"));
   }
 
   @Test
@@ -251,41 +257,44 @@ public class DomainTest {
 
   @Test
   public void hasDerivedProperties() {
-    assertFalse(domain.hasDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN));
-    assertTrue(domain.hasDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_INT));
+    final Entity.Definition definition = domain.getDefinition(TestDomain.T_DETAIL);
+    assertFalse(definition.hasDerivedProperties(TestDomain.DETAIL_BOOLEAN));
+    assertTrue(definition.hasDerivedProperties(TestDomain.DETAIL_INT));
   }
 
   @Test
   public void getDerivedProperties() {
-    Collection<Property.DerivedProperty> derivedProperties = domain.getDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN);
+    final Entity.Definition definition = domain.getDefinition(TestDomain.T_DETAIL);
+    Collection<Property.DerivedProperty> derivedProperties = definition.getDerivedProperties(TestDomain.DETAIL_BOOLEAN);
     assertTrue(derivedProperties.isEmpty());
-    derivedProperties = domain.getDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_INT);
+    derivedProperties = definition.getDerivedProperties(TestDomain.DETAIL_INT);
     assertEquals(1, derivedProperties.size());
-    assertTrue(derivedProperties.contains(domain.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_INT_DERIVED)));
+    assertTrue(derivedProperties.contains(definition.getProperty(TestDomain.DETAIL_INT_DERIVED)));
   }
 
   @Test
   public void hasDenormalizedProperties() {
-    assertFalse(domain.hasDenormalizedProperties(TestDomain.T_DEPARTMENT));
-    assertTrue(domain.hasDenormalizedProperties(TestDomain.T_DETAIL));
-    assertTrue(domain.hasDenormalizedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
+    assertFalse(domain.getDefinition(TestDomain.T_DEPARTMENT).hasDenormalizedProperties(TestDomain.T_DEPARTMENT));
+    assertTrue(domain.getDefinition(TestDomain.T_DETAIL).hasDenormalizedProperties());
+    assertTrue(domain.getDefinition(TestDomain.T_DETAIL).hasDenormalizedProperties(TestDomain.DETAIL_MASTER_FK));
   }
 
   @Test
   public void getDenormalizedProperties() {
-    final List<Property.DenormalizedProperty> denormalized = domain.getDenormalizedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK);
+    final List<Property.DenormalizedProperty> denormalized =
+            domain.getDefinition(TestDomain.T_DETAIL).getDenormalizedProperties(TestDomain.DETAIL_MASTER_FK);
     assertFalse(denormalized.isEmpty());
     assertEquals(TestDomain.DETAIL_MASTER_CODE_DENORM, denormalized.get(0).getPropertyId());
   }
 
   @Test
   public void isSmallDataset() {
-    assertTrue(domain.isSmallDataset(TestDomain.T_DETAIL));
+    assertTrue(domain.getDefinition(TestDomain.T_DETAIL).isSmallDataset());
   }
 
   @Test
   public void getStringProvider() {
-    assertNotNull(domain.getStringProvider(TestDomain.T_DEPARTMENT));
+    assertNotNull(domain.getDefinition(TestDomain.T_DEPARTMENT).getStringProvider());
   }
 
   @Test
@@ -299,10 +308,10 @@ public class DomainTest {
   public void redefineAllowed() {
     final String entityId = "entityId2";
     domain.define(entityId, Properties.primaryKeyProperty("id"));
-    assertEquals("id", domain.getPrimaryKeyProperties(entityId).get(0).getPropertyId());
+    assertEquals("id", domain.getDefinition(entityId).getPrimaryKeyProperties().get(0).getPropertyId());
     domain.ALLOW_REDEFINE_ENTITY.set(true);
     domain.define(entityId, Properties.primaryKeyProperty("id2"));
-    assertEquals("id2", domain.getPrimaryKeyProperties(entityId).get(0).getPropertyId());
+    assertEquals("id2", domain.getDefinition(entityId).getPrimaryKeyProperties().get(0).getPropertyId());
     domain.ALLOW_REDEFINE_ENTITY.set(false);
   }
 
@@ -371,19 +380,21 @@ public class DomainTest {
 
   @Test
   public void getSearchProperties() {
-    Collection<Property.ColumnProperty> searchProperties = domain.getSearchProperties(TestDomain.T_EMP);
-    assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB)));
-    assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
+    final Entity.Definition definition = domain.getDefinition(TestDomain.T_EMP);
+    Collection<Property.ColumnProperty> searchProperties = definition.getSearchProperties();
+    assertTrue(searchProperties.contains(definition.getColumnProperty(TestDomain.EMP_JOB)));
+    assertTrue(searchProperties.contains(definition.getColumnProperty(TestDomain.EMP_NAME)));
 
-    searchProperties = domain.getSearchProperties(TestDomain.T_DEPARTMENT);
+    searchProperties = domain.getDefinition(TestDomain.T_DEPARTMENT).getSearchProperties();
     //should contain all string based properties
-    assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
+    assertTrue(searchProperties.contains(domain.getDefinition(TestDomain.T_DEPARTMENT)
+            .getColumnProperty(TestDomain.DEPARTMENT_NAME)));
   }
 
   @Test
   public void selectableProperty() {
     assertThrows(IllegalArgumentException.class, () ->
-            domain.getSelectableColumnProperties(TestDomain.T_DETAIL, singletonList(TestDomain.DETAIL_STRING)));
+            domain.getDefinition(TestDomain.T_DETAIL).getSelectableColumnProperties(singletonList(TestDomain.DETAIL_STRING)));
   }
 
   @Test
@@ -403,7 +414,7 @@ public class DomainTest {
 
     Domain.StringProvider employeeToString = new Domain.StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(domain.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK),
+            .addForeignKeyValue(domain.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK),
                     TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
 
@@ -418,7 +429,7 @@ public class DomainTest {
 
     employeeToString = new Domain.StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(domain.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK),
+            .addForeignKeyValue(domain.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK),
                     TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
 
@@ -457,19 +468,19 @@ public class DomainTest {
     domain.define(entityId,
             Properties.columnProperty("test")
                     .setPrimaryKeyIndex(0));
-    assertTrue(domain.hasSingleIntegerPrimaryKey(entityId));
+    assertTrue(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
     entityId = "hasSingleIntegerPrimaryKey2";
     domain.define(entityId,
             Properties.columnProperty("test")
                     .setPrimaryKeyIndex(0),
             Properties.columnProperty("test2")
                     .setPrimaryKeyIndex(1));
-    assertFalse(domain.hasSingleIntegerPrimaryKey(entityId));
+    assertFalse(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
     entityId = "hasSingleIntegerPrimaryKey3";
     domain.define(entityId,
             Properties.columnProperty("test", Types.VARCHAR)
                     .setPrimaryKeyIndex(0));
-    assertFalse(domain.hasSingleIntegerPrimaryKey(entityId));
+    assertFalse(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
   }
 
   @Test
@@ -477,7 +488,7 @@ public class DomainTest {
     final String havingClause = "p1 > 1";
     domain.define("entityId3",
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
-    assertEquals(havingClause, domain.getHavingClause("entityId3"));
+    assertEquals(havingClause, domain.getDefinition("entityId3").getHavingClause());
   }
 
   @Test

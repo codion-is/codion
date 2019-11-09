@@ -199,7 +199,7 @@ public final class ChinookImpl extends Domain implements Chinook {
     define(T_TRACK, "chinook.track",
             primaryKeyProperty(TRACK_TRACKID, Types.BIGINT),
             denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUM_FK,
-                    getProperty(T_ALBUM, ALBUM_ARTIST_FK), "Artist")
+                    getDefinition(T_ALBUM).getProperty(ALBUM_ARTIST_FK), "Artist")
                     .setPreferredColumnWidth(160),
             foreignKeyProperty(TRACK_ALBUM_FK, "Album", T_ALBUM,
                     columnProperty(TRACK_ALBUMID, Types.BIGINT))
@@ -281,7 +281,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setPreferredColumnWidth(100),
             denormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACK_FK,
-                    getProperty(T_TRACK, TRACK_UNITPRICE), "Unit price")
+                    getDefinition(T_TRACK).getProperty(TRACK_UNITPRICE), "Unit price")
                     .setNullable(false),
             columnProperty(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
                     .setNullable(false),
@@ -313,7 +313,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setPreferredColumnWidth(120),
             denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
-                    getProperty(T_ALBUM, ALBUM_ARTIST_FK), "Artist")
+                    getDefinition(T_ALBUM).getProperty(ALBUM_ARTIST_FK), "Artist")
                     .setPreferredColumnWidth(160),
             foreignKeyProperty(PLAYLISTTRACK_TRACK_FK, "Track", T_TRACK,
                     primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.BIGINT)
@@ -323,7 +323,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
             denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACK_FK,
-                    getProperty(T_TRACK, TRACK_ALBUM_FK), "Album")
+                    getDefinition(T_TRACK).getProperty(TRACK_ALBUM_FK), "Album")
                     .setPreferredColumnWidth(160))
             .setStringProvider(new StringProvider(PLAYLISTTRACK_PLAYLIST_FK)
                     .addText(" - ").addValue(PLAYLISTTRACK_TRACK_FK))

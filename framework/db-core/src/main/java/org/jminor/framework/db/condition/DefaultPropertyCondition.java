@@ -123,7 +123,7 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
   /** {@inheritDoc} */
   @Override
   public String getConditionString(final Domain domain, final String entityId) {
-    return createColumnPropertyConditionString(domain.getColumnProperty(entityId, getPropertyId()),
+    return createColumnPropertyConditionString(domain.getDefinition(entityId).getColumnProperty(getPropertyId()),
             getConditionType(), getValues(), isNullCondition(), isCaseSensitive());
   }
 
