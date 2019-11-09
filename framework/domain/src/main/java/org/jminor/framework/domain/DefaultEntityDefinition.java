@@ -51,7 +51,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * The name of the underlying table
    */
-  private transient String tableName;
+  private final transient String tableName;
 
   /**
    * The table (view, query) from which to select the entity
@@ -200,13 +200,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public String getEntityId() {
     return entityId;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setTableName(final String tableName) {
-    this.tableName = rejectNullOrEmpty(tableName, "tableName");
-    return this;
   }
 
   /** {@inheritDoc} */

@@ -647,13 +647,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     String getEntityId();
 
     /**
-     * Sets the underlying table name for this entity type
-     * @param tableName the table name
-     * @return this Entity.Definition instance
-     */
-    Definition setTableName(final String tableName);
-
-    /**
      * @return the name of the underlying table, with schema prefix if applicable
      */
     String getTableName();
