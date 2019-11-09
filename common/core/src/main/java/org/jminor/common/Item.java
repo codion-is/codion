@@ -3,8 +3,6 @@
  */
 package org.jminor.common;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
@@ -22,7 +20,7 @@ public final class Item<T> implements Comparable<Item>, Serializable {
   private final T value;
   private final String caption;
 
-  private transient Comparator<String> collator = TextUtil.getSpaceAwareCollator();
+  private transient Comparator<String> collator;
 
   /**
    * Instantiates a new Item, with the caption as item.toString() or an empty string in case of a null value
@@ -84,11 +82,14 @@ public final class Item<T> implements Comparable<Item>, Serializable {
    */
   @Override
   public int compareTo(final Item item) {
-    return collator.compare(caption, item.caption);
+    return getCollator().compare(caption, item.caption);
   }
 
-  private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-    stream.defaultReadObject();
-    collator = TextUtil.getSpaceAwareCollator();
+  private Comparator<String> getCollator() {
+    if (collator == null) {
+      collator = TextUtil.getSpaceAwareCollator();
+    }
+
+    return collator;
   }
 }
