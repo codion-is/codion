@@ -5274,3 +5274,4 @@
   DefaultEntity bug fixed, did not validate values for foreign key properties correctly
   DefaultForeignKeyProperty.getTypeClass() now returns Entity.class
   DefaultForeignKeyProperty overrides DefaultProperty.validateType() and validates correctly
+  Gradle upgraded to 6.0

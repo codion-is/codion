@@ -95,21 +95,21 @@ configure(project.frameworkModules) {
         }
     }
 
-    task jarSources(type: Jar, dependsOn: classes) {
+    task sourcesJar(type: Jar, dependsOn: classes) {
         group 'build'
         archiveClassifier = 'sources'
         from sourceSets.main.allSource
     }
 
-    task jarJavadoc(type: Jar, dependsOn: javadoc) {
+    task javadocJar(type: Jar, dependsOn: javadoc) {
         group 'build'
         archiveClassifier = 'javadoc'
         from javadoc.destinationDir
     }
 
     artifacts {
-        archives jarSources
-        archives jarJavadoc
+        archives sourcesJar
+        archives javadocJar
     }
 
     publishing {
@@ -117,8 +117,8 @@ configure(project.frameworkModules) {
             mavenJava(MavenPublication) {
                 groupId 'org.jminor.jdk11'
                 from components.java
-                artifact jarSources
-                artifact jarJavadoc
+                artifact sourcesJar
+                artifact javadocJar
             }
         }
         repositories {
