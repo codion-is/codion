@@ -191,11 +191,11 @@ public class Domain implements Serializable {
    * @param entities the entities to transform
    * @return a List containing the beans derived from the given entities, an empty List if {@code entities} is null or empty
    */
-  public final List toBeans(final List<Entity> entities) {
+  public final List<Object> toBeans(final List<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
       return emptyList();
     }
-    final List beans = new ArrayList(entities.size());
+    final List<Object> beans = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
       beans.add(toBean(entity));
     }

@@ -185,7 +185,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.foreignKeyProperties = foreignKeyProperties;
     this.transientProperties = transientProperties;
     this.selectableColumnProperties = unmodifiableList(getSelectableProperties(columnProperties));
-    this.properties = unmodifiableList(new ArrayList(this.propertyMap.values()));
+    this.properties = unmodifiableList(new ArrayList<>(this.propertyMap.values()));
     this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties(this.propertyMap.values()));
     this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
     this.visibleProperties = unmodifiableList(getVisibleProperties(this.propertyMap.values()));

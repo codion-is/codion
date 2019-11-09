@@ -36,7 +36,7 @@ configurations {
     domain
 }
 
-task jarDomain(type: Jar, dependsOn: classes) {
+task domainJar(type: Jar, dependsOn: classes) {
     group 'build'
     archiveBaseName.set(archiveBaseName.get() + '-domain')
     from sourceSets.main.output
@@ -46,7 +46,7 @@ task jarDomain(type: Jar, dependsOn: classes) {
 }
 
 artifacts {
-    domain jarDomain
+    domain domainJar
 }
 
 test {
