@@ -40,19 +40,19 @@ dependencies {
 mainClassName = 'org.jminor.framework.server.DefaultEntityConnectionServer'
 
 distTar {
-    dependsOn(':jminor-demos-empdept:jarDomain')
-    dependsOn(':jminor-demos-chinook:jarDomain')
-    dependsOn(':jminor-demos-petstore:jarDomain')
-    dependsOn(':jminor-demos-schemabrowser:jarDomain')
-    dependsOn(':jminor-demos-world:jarDomain')
+    dependsOn(':jminor-demos-empdept:domainJar')
+    dependsOn(':jminor-demos-chinook:domainJar')
+    dependsOn(':jminor-demos-petstore:domainJar')
+    dependsOn(':jminor-demos-schemabrowser:domainJar')
+    dependsOn(':jminor-demos-world:domainJar')
 }
 
 distZip {
-    dependsOn(':jminor-demos-empdept:jarDomain')
-    dependsOn(':jminor-demos-chinook:jarDomain')
-    dependsOn(':jminor-demos-petstore:jarDomain')
-    dependsOn(':jminor-demos-schemabrowser:jarDomain')
-    dependsOn(':jminor-demos-world:jarDomain')
+    dependsOn(':jminor-demos-empdept:domainJar')
+    dependsOn(':jminor-demos-chinook:domainJar')
+    dependsOn(':jminor-demos-petstore:domainJar')
+    dependsOn(':jminor-demos-schemabrowser:domainJar')
+    dependsOn(':jminor-demos-world:domainJar')
 }
 
 startScripts {
