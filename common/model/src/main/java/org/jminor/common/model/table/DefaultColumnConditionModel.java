@@ -30,8 +30,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
-  private final Value upperBoundValue = Values.value();
-  private final Value lowerBoundValue = Values.value();
+  private final Value<Object> upperBoundValue = Values.value();
+  private final Value<Object> lowerBoundValue = Values.value();
   private final Value<ConditionType> conditionTypeValue = Values.value(ConditionType.LIKE);
   private final Event conditionStateChangedEvent = Events.event();
   private final Event conditionModelClearedEvent = Events.event();

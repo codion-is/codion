@@ -975,7 +975,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public Entity.Key newInstance() {
-      return new DefaultKey(definition, (Map) null);
+      return new DefaultKey(definition, (Map<Property.ColumnProperty, Object>) null);
     }
 
     @Override

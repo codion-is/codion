@@ -78,7 +78,7 @@ public final class Item<T> implements Comparable<Item>, Serializable {
   }
 
   /**
-   * Compares this items caption with with the caption of the given item
+   * Compares this items caption with the caption of the given item
    * @param item the item to compare with
    * @return the compare result
    */
