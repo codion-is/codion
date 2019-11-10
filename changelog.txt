@@ -5262,3 +5262,4 @@
   Entity.Definition, setters removed, now private in DefaultEntityDefinition
   Domain, most getters moved to Entity.Definition, Domain.getDefinition() public
   Major refactoring, domain.property package added
+  EntityEditModel.getEntityDefinition() and EntityTableModel.getEntityDefinition() added

@@ -180,6 +180,11 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   Domain getDomain();
 
   /**
+   * @return the definition of the underlying entity
+   */
+  Entity.Definition getEntityDefinition();
+
+  /**
    * @return true if this model is read only, that is if insert, update and delete are not allowed
    * @see #isInsertAllowed()
    * @see #isUpdateAllowed()
