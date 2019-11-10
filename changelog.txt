@@ -5281,3 +5281,4 @@
   Entity.Definition, setters removed, now private in DefaultEntityDefinition
   Domain, most getters moved to Entity.Definition, Domain.getDefinition() public
   Major refactoring, domain.property package added
+  domain.property package exported
