@@ -55,17 +55,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final List<Property> properties;
 
   /**
-   * The name of the underlying table
-   */
-  private final transient String tableName;
-
-  /**
-   * The table (view, query) from which to select the entity
-   * Used if it differs from the one used for inserts/updates
-   */
-  private transient String selectTableName;
-
-  /**
    * The caption to use for the entity type
    */
   private String caption;
@@ -79,26 +68,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * Holds the order by clause
    */
   private Entity.OrderBy orderBy;
-
-  /**
-   * Holds the group by clause
-   */
-  private transient String groupByClause;
-
-  /**
-   * Holds the having clause
-   */
-  private transient String havingClause;
-
-  /**
-   * The primary key value generator
-   */
-  private transient Entity.KeyGenerator keyGenerator = new DefaultKeyGenerator();
-
-  /**
-   * The key generator type
-   */
-  private Entity.KeyGenerator.Type keyGeneratorType = keyGenerator.getType();
 
   /**
    * If true then it should not be possible to insert, update or delete entities of this type
@@ -138,6 +107,37 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private Entity.Validator validator;
 
   /**
+   * The IDs of the properties to use when performing a string based lookup on this entity
+   */
+  private Collection<String> searchPropertyIds;
+
+  /**
+   * The name of the underlying table
+   */
+  private final transient String tableName;
+
+  /**
+   * The table (view, query) from which to select the entity
+   * Used if it differs from the one used for inserts/updates
+   */
+  private transient String selectTableName;
+
+  /**
+   * Holds the group by clause
+   */
+  private transient String groupByClause;
+
+  /**
+   * Holds the having clause
+   */
+  private transient String havingClause;
+
+  /**
+   * The primary key value generator
+   */
+  private transient Entity.KeyGenerator keyGenerator = new DefaultKeyGenerator();
+
+  /**
    * A custom sql query used when selecting entities of this type
    */
   private transient String selectQuery;
@@ -146,11 +146,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * Specifies whether or not the select query, if any, contains a where clause
    */
   private transient boolean selectQueryContainsWhereClause = false;
-
-  /**
-   * The IDs of the properties to use when performing a string based lookup on this entity
-   */
-  private Collection<String> searchPropertyIds;
 
   /**
    * The {@link org.jminor.framework.domain.Entity.ConditionProvider}s
@@ -171,6 +166,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final List<ColumnProperty> selectableColumnProperties;
   private final Map<String, List<DenormalizedProperty>> denormalizedProperties;
   private final boolean hasDenormalizedProperties;
+  private Entity.KeyGenerator.Type keyGeneratorType = keyGenerator.getType();
 
   /**
    * Defines a new entity type with the entityId serving as the initial entity caption.

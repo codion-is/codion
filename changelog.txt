@@ -5287,3 +5287,4 @@
   PropertyBuilder now inner classe of relevant Property
   PropertyBuilder implementations now inner classes of relevant Property implementation
   Entity.DefinitionBuilder moved to Entity.Definition and rename Builder, for consistency
+  Code cleanup
