@@ -629,8 +629,7 @@ public class Domain implements Serializable {
 
   private Map<String, BeanProperty> initializeBeanProperties(final String entityId) {
     final Entity.Definition entityDefinition = getDefinition(entityId);
-    final Entity.Definition definition = entityDefinition;
-    final Class beanClass = definition.getBeanClass();
+    final Class beanClass = entityDefinition.getBeanClass();
     if (beanClass == null) {
       throw new IllegalArgumentException("No bean class specified for entity: " + entityId);
     }

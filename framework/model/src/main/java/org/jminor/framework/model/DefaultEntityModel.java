@@ -354,8 +354,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final void initialize(final String foreignKeyEntityId, final List<Entity> foreignKeyValues) {
-    final List<ForeignKeyProperty> foreignKeyProperties = connectionProvider.getDomain()
-            .getDefinition(entityId).getForeignKeyProperties(foreignKeyEntityId);
+    final List<ForeignKeyProperty> foreignKeyProperties =
+            editModel.getEntityDefinition().getForeignKeyProperties(foreignKeyEntityId);
     if (!foreignKeyProperties.isEmpty()) {
       initialize(foreignKeyProperties.get(0), foreignKeyValues);
     }
@@ -481,8 +481,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (containsTableModel() && filterOnMasterInsert) {
       ForeignKeyProperty foreignKeyProperty = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKeyProperty == null) {
-        foreignKeyProperty = connectionProvider.getDomain()
-                .getDefinition(entityId).getForeignKeyProperties(masterModel.getEntityId()).get(0);
+        foreignKeyProperty = editModel.getEntityDefinition().getForeignKeyProperties(masterModel.getEntityId()).get(0);
       }
       tableModel.setForeignKeyConditionValues(foreignKeyProperty, insertEvent.getInsertedEntities());
     }

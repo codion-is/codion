@@ -91,7 +91,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityId()
               + ", tableModel: " + entityId);
     }
-    if (connectionProvider.getDomain().getDefinition(entityId).getVisibleProperties().isEmpty()) {
+    if (getEntityDefinition().getVisibleProperties().isEmpty()) {
       throw new IllegalStateException("No visible properties defined for entity: " + entityId);
     }
     this.conditionModel = conditionModel;
