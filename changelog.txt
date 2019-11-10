@@ -5264,3 +5264,4 @@
   Major refactoring, domain.property package added
   EntityEditModel.getEntityDefinition() and EntityTableModel.getEntityDefinition() added
   DefaultEntityDefinition.EntityDefinitionBuilder renamed to DefaultDefinitionBuilder and refactored
+  PropertyBuilder now inner classe of relevant Property

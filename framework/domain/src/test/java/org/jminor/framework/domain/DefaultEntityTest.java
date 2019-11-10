@@ -7,7 +7,7 @@ import org.jminor.common.FileUtil;
 import org.jminor.common.Util;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
-import org.jminor.framework.domain.property.TransientPropertyBuilder;
+import org.jminor.framework.domain.property.TransientProperty;
 
 import org.junit.jupiter.api.Test;
 
@@ -648,7 +648,7 @@ public class DefaultEntityTest {
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
     final Domain domain = new Domain("transient").registerDomain();
-    final TransientPropertyBuilder transientProperty = Properties.transientProperty("trans", Types.INTEGER);
+    final TransientProperty.Builder transientProperty = Properties.transientProperty("trans", Types.INTEGER);
     domain.define("entityId",
             Properties.primaryKeyProperty("id"),
             transientProperty);

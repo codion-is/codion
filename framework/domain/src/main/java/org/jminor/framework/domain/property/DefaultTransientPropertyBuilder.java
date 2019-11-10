@@ -4,7 +4,7 @@
 package org.jminor.framework.domain.property;
 
 final class DefaultTransientPropertyBuilder extends DefaultPropertyBuilder<DefaultTransientProperty>
-        implements TransientPropertyBuilder<DefaultTransientProperty> {
+        implements TransientProperty.Builder<DefaultTransientProperty> {
 
   DefaultTransientPropertyBuilder(final DefaultTransientProperty property) {
     super(property);

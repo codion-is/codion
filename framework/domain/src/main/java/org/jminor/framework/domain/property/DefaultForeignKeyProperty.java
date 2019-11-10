@@ -26,7 +26,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
-  final transient List<ColumnPropertyBuilder> columnPropertyBuilders;
+  final transient List<ColumnProperty.Builder> columnPropertyBuilders;
 
   /**
    * @param propertyId the property ID
@@ -35,7 +35,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
    * @param columnProperty the underlying column property comprising this foreign key
    */
   DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
-                            final ColumnPropertyBuilder columnProperty) {
+                            final ColumnProperty.Builder columnProperty) {
     this(propertyId, caption, foreignEntityId, singletonList(columnProperty));
   }
 
@@ -48,15 +48,15 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
    * if null then the primary key properties of the referenced entity are used when required
    */
   DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
-                            final List<ColumnPropertyBuilder> columnPropertyBuilders) {
+                            final List<ColumnProperty.Builder> columnPropertyBuilders) {
     super(propertyId, Types.OTHER, caption, Entity.class);
     requireNonNull(foreignEntityId, "foreignEntityId");
     validateParameters(propertyId, foreignEntityId, columnPropertyBuilders);
     this.columnPropertyBuilders = columnPropertyBuilders;
     columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyProperty(this));
     this.foreignEntityId = foreignEntityId;
-    this.columnProperties = unmodifiableList(columnPropertyBuilders.stream().map((Function<ColumnPropertyBuilder,
-            ColumnProperty>) ColumnPropertyBuilder::get).collect(toList()));
+    this.columnProperties = unmodifiableList(columnPropertyBuilders.stream().map((Function<ColumnProperty.Builder,
+            ColumnProperty>) ColumnProperty.Builder::get).collect(toList()));
     this.compositeReference = this.columnProperties.size() > 1;
   }
 
@@ -111,7 +111,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
 
   @Override
   void setNullable(final boolean nullable) {
-    for (final ColumnPropertyBuilder propertyBuilder : columnPropertyBuilders) {
+    for (final ColumnProperty.Builder propertyBuilder : columnPropertyBuilders) {
       propertyBuilder.setNullable(nullable);
     }
 
@@ -127,11 +127,11 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   }
 
   private static void validateParameters(final String propertyId, final String foreignEntityId,
-                                         final List<ColumnPropertyBuilder> columnProperties) {
+                                         final List<ColumnProperty.Builder> columnProperties) {
     if (nullOrEmpty(columnProperties)) {
       throw new IllegalArgumentException("No column properties specified");
     }
-    for (final ColumnPropertyBuilder columnProperty : columnProperties) {
+    for (final ColumnProperty.Builder columnProperty : columnProperties) {
       requireNonNull(columnProperty, "columnProperty");
       if (columnProperty.get().getPropertyId().equals(propertyId)) {
         throw new IllegalArgumentException(foreignEntityId + ", column propertyId is the same as foreign key propertyId: " + propertyId);

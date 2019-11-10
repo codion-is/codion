@@ -288,7 +288,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * returns {@code true} for that property in case the value should persist.
    * @param property the property
    * @return the default value for the property
-   * @see org.jminor.framework.domain.property.PropertyBuilder#setDefaultValue(Object)
+   * @see Property.Builder#setDefaultValue(Object)
    * @see #setValuePersistent(String, boolean)
    * @see #isValuePersistent(Property)
    */

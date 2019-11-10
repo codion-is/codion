@@ -6,7 +6,7 @@ package org.jminor.framework.domain.property;
 import java.util.List;
 
 final class DefaultForeignKeyPropertyBuilder extends DefaultPropertyBuilder<DefaultForeignKeyProperty>
-        implements ForeignKeyPropertyBuilder<DefaultForeignKeyProperty> {
+        implements ForeignKeyProperty.Builder<DefaultForeignKeyProperty> {
 
   DefaultForeignKeyPropertyBuilder(final DefaultForeignKeyProperty property) {
     super(property);
@@ -14,20 +14,20 @@ final class DefaultForeignKeyPropertyBuilder extends DefaultPropertyBuilder<Defa
 
   /** {@inheritDoc} */
   @Override
-  public List<ColumnPropertyBuilder> getPropertyBuilders() {
+  public List<ColumnProperty.Builder> getPropertyBuilders() {
     return property.columnPropertyBuilders;
   }
 
   /** {@inheritDoc} */
   @Override
-  public ForeignKeyPropertyBuilder setFetchDepth(final int fetchDepth) {
+  public ForeignKeyProperty.Builder setFetchDepth(final int fetchDepth) {
     property.setFetchDepth(fetchDepth);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public ForeignKeyPropertyBuilder setSoftReference(final boolean softReference) {
+  public ForeignKeyProperty.Builder setSoftReference(final boolean softReference) {
     property.setSoftReference(softReference);
     return this;
   }

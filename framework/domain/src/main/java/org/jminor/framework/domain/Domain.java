@@ -16,13 +16,10 @@ import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.ColumnPropertyBuilder;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.ForeignKeyPropertyBuilder;
 import org.jminor.framework.domain.property.MirrorProperty;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.PropertyBuilder;
 import org.jminor.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
@@ -168,8 +165,8 @@ public class Domain implements Serializable {
    * @param entityId the entity id
    * @param valueProvider the value provider
    * @return the populated entity
-   * @see ColumnPropertyBuilder#setColumnHasDefaultValue(boolean)
-   * @see ColumnPropertyBuilder#setDefaultValue(Object)
+   * @see ColumnProperty.Builder#setColumnHasDefaultValue(boolean)
+   * @see ColumnProperty.Builder#setDefaultValue(Object)
    */
   public final Entity defaultEntity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
     final Entity entity = entity(entityId);
@@ -308,13 +305,13 @@ public class Domain implements Serializable {
    * Adds a new {@link Entity.Definition} to this domain model, using the {@code entityId} as table name.
    * Returns the {@link Entity.Definition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
-   * @param propertyBuilders the {@link PropertyBuilder} objects to base this entity on. In case a select query is specified
+   * @param propertyBuilders the {@link Property.Builder} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a {@link Entity.DefinitionBuilder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.DefinitionBuilder define(final String entityId, final PropertyBuilder... propertyBuilders) {
+  public final Entity.DefinitionBuilder define(final String entityId, final Property.Builder... propertyBuilders) {
     return define(entityId, entityId, propertyBuilders);
   }
 
@@ -323,14 +320,14 @@ public class Domain implements Serializable {
    * Returns the {@link Entity.Definition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
    * @param tableName the name of the underlying table
-   * @param propertyBuilders the {@link PropertyBuilder} objects to base the entity on. In case a select query is specified
+   * @param propertyBuilders the {@link Property.Builder} objects to base the entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a {@link Entity.DefinitionBuilder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
   public final Entity.DefinitionBuilder define(final String entityId, final String tableName,
-                                               final PropertyBuilder... propertyBuilders) {
+                                               final Property.Builder... propertyBuilders) {
     requireNonNull(entityId, ENTITY_ID_PARAM);
     requireNonNull(tableName, "tableName");
     if (entityDefinitions.containsKey(entityId) && !ALLOW_REDEFINE_ENTITY.get()) {
@@ -556,12 +553,12 @@ public class Domain implements Serializable {
     return definition;
   }
 
-  private Map<String, Property> initializePropertyMap(final String entityId, final PropertyBuilder... properties) {
+  private Map<String, Property> initializePropertyMap(final String entityId, final Property.Builder... properties) {
     final Map<String, Property> propertyMap = new LinkedHashMap<>(properties.length);
-    for (final PropertyBuilder propertyBuilder : properties) {
+    for (final Property.Builder propertyBuilder : properties) {
       validateAndAddProperty(propertyBuilder, entityId, propertyMap);
-      if (propertyBuilder instanceof ForeignKeyPropertyBuilder) {
-        initializeForeignKeyProperty(entityId, propertyMap, (ForeignKeyPropertyBuilder) propertyBuilder);
+      if (propertyBuilder instanceof ForeignKeyProperty.Builder) {
+        initializeForeignKeyProperty(entityId, propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
       }
     }
     checkIfPrimaryKeyIsSpecified(entityId, propertyMap);
@@ -570,11 +567,11 @@ public class Domain implements Serializable {
   }
 
   private void initializeForeignKeyProperty(final String entityId, final Map<String, Property> propertyMap,
-                                            final ForeignKeyPropertyBuilder foreignKeyPropertyBuilder) {
-    final List<ColumnPropertyBuilder> propertyBuilders = foreignKeyPropertyBuilder.getPropertyBuilders();
+                                            final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
+    final List<ColumnProperty.Builder> propertyBuilders = foreignKeyPropertyBuilder.getPropertyBuilders();
     final ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyBuilder.get();
     final List<ColumnProperty> properties = propertyBuilders.stream().map(
-            (Function<ColumnPropertyBuilder, ColumnProperty>) ColumnPropertyBuilder::get).collect(toList());
+            (Function<ColumnProperty.Builder, ColumnProperty>) ColumnProperty.Builder::get).collect(toList());
     if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
       final Entity.Definition foreignEntity = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
       if (foreignEntity == null) {
@@ -587,7 +584,7 @@ public class Domain implements Serializable {
                 "' does not match the number of foreign properties in the referenced entity '" + foreignKeyProperty.getForeignEntityId() + "'");
       }
     }
-    for (final ColumnPropertyBuilder propertyBuilder : propertyBuilders) {
+    for (final ColumnProperty.Builder propertyBuilder : propertyBuilders) {
       if (!(propertyBuilder.get() instanceof MirrorProperty)) {
         validateAndAddProperty(propertyBuilder, entityId, propertyMap);
       }
@@ -656,7 +653,7 @@ public class Domain implements Serializable {
     }
   }
 
-  private static void validateAndAddProperty(final PropertyBuilder propertyBuilder, final String entityId,
+  private static void validateAndAddProperty(final Property.Builder propertyBuilder, final String entityId,
                                              final Map<String, Property> propertyMap) {
     final Property property = propertyBuilder.get();
     checkIfUniquePropertyId(property, entityId, propertyMap);
@@ -895,10 +892,10 @@ public class Domain implements Serializable {
    * range validation for numerical properties with max and/or min values specified and string length validation
    * based on the specified max length.
    * This Validator can be extended to provide further validation.
-   * @see PropertyBuilder#setNullable(boolean)
-   * @see PropertyBuilder#setMin(double)
-   * @see PropertyBuilder#setMax(double)
-   * @see PropertyBuilder#setMaxLength(int)
+   * @see Property.Builder#setNullable(boolean)
+   * @see Property.Builder#setMin(double)
+   * @see Property.Builder#setMax(double)
+   * @see Property.Builder#setMaxLength(int)
    */
   public static class Validator extends DefaultValueMap.DefaultValidator<Property, Entity> implements Entity.Validator {
 
