@@ -7,6 +7,9 @@ import java.text.Format;
 
 public interface PropertyBuilder<T extends Property> {
 
+  /**
+   * @return the property
+   */
   T get();
 
   /**

@@ -308,14 +308,14 @@ public class Domain implements Serializable {
    * Adds a new {@link Entity.Definition} to this domain model, using the {@code entityId} as table name.
    * Returns the {@link Entity.Definition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
-   * @param properties the {@link Property} objects to base this entity on. In case a select query is specified
+   * @param propertyBuilders the {@link PropertyBuilder} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a {@link Entity.DefinitionBuilder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.DefinitionBuilder define(final String entityId, final PropertyBuilder... properties) {
-    return define(entityId, entityId, properties);
+  public final Entity.DefinitionBuilder define(final String entityId, final PropertyBuilder... propertyBuilders) {
+    return define(entityId, entityId, propertyBuilders);
   }
 
   /**
@@ -323,19 +323,20 @@ public class Domain implements Serializable {
    * Returns the {@link Entity.Definition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
    * @param tableName the name of the underlying table
-   * @param properties the {@link Property} objects to base the entity on. In case a select query is specified
+   * @param propertyBuilders the {@link PropertyBuilder} objects to base the entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a {@link Entity.DefinitionBuilder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.DefinitionBuilder define(final String entityId, final String tableName, final PropertyBuilder... properties) {
+  public final Entity.DefinitionBuilder define(final String entityId, final String tableName,
+                                               final PropertyBuilder... propertyBuilders) {
     requireNonNull(entityId, ENTITY_ID_PARAM);
     requireNonNull(tableName, "tableName");
     if (entityDefinitions.containsKey(entityId) && !ALLOW_REDEFINE_ENTITY.get()) {
       throw new IllegalArgumentException("Entity has already been defined: " + entityId + ", for table: " + tableName);
     }
-    final Map<String, Property> propertyMap = initializePropertyMap(entityId, properties);
+    final Map<String, Property> propertyMap = initializePropertyMap(entityId, propertyBuilders);
     final List<ColumnProperty> columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
     final List<ForeignKeyProperty> foreignKeyProperties = unmodifiableList(getForeignKeyProperties(propertyMap.values()));
     final List<TransientProperty> transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
