@@ -28,4 +28,19 @@ class DefaultTransientProperty extends DefaultProperty implements TransientPrope
   void setModifiesEntity(final boolean modifiesEntity) {
     this.modifiesEntity = modifiesEntity;
   }
+
+  static final class Builder extends DefaultProperty.Builder<DefaultTransientProperty>
+          implements TransientProperty.Builder<DefaultTransientProperty> {
+
+    Builder(final DefaultTransientProperty property) {
+      super(property);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Builder setModifiesEntity(final boolean modifiesEntity) {
+      property.setModifiesEntity(modifiesEntity);
+      return this;
+    }
+  }
 }
