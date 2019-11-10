@@ -215,6 +215,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     this.foreignKeyProperty = foreignKeyProperty;
   }
 
+  @Override
   void setReadOnly(final boolean readOnly) {
     if (isForeignKeyProperty()) {
       throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");
@@ -242,11 +243,11 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     return DEFAULT_VALUE_CONVERTER;
   }
 
-  private static ValueFetcher<Object> initializeValueFetcher(final org.jminor.framework.domain.property.DefaultColumnProperty property) {
+  private static ValueFetcher<Object> initializeValueFetcher(final ColumnProperty property) {
     if (property instanceof MirrorProperty) {
       return null;
     }
-    switch (property.columnType) {
+    switch (property.getColumnType()) {
       case Types.INTEGER:
         return (resultSet, index) -> property.fromColumnValue(getInteger(resultSet, index));
       case Types.BIGINT:
@@ -272,7 +273,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
       case Types.JAVA_OBJECT:
         return ResultSet::getObject;
       default:
-        throw new IllegalArgumentException("Unsupported SQL value type: " + property.columnType);
+        throw new IllegalArgumentException("Unsupported SQL value type: " + property.getColumnType());
     }
   }
 

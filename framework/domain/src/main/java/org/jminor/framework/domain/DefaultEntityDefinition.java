@@ -677,16 +677,16 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return stringBuilder.toString();
   }
 
-  static final class DefaultDefinitionBuilder implements Entity.DefinitionBuilder {
+  static final class DefaultBuilder implements Builder {
 
     private final DefaultEntityDefinition definition;
 
-    DefaultDefinitionBuilder(final DefaultEntityDefinition definition) {
+    DefaultBuilder(final DefaultEntityDefinition definition) {
       this.definition = definition;
     }
 
     @Override
-    public Entity.DefinitionBuilder addConditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
+    public Builder addConditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
       rejectNullOrEmpty(conditionId, "contitionId");
       requireNonNull(conditionProvider, "conditionProvider");
       if (definition.conditionProviders == null) {
@@ -700,44 +700,44 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public Entity.DefinitionBuilder setCaption(final String caption) {
+    public Builder setCaption(final String caption) {
       definition.caption = requireNonNull(caption, "caption");
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setBeanClass(final Class beanClass) {
+    public Builder setBeanClass(final Class beanClass) {
       definition.beanClass = requireNonNull(beanClass, "beanClass");
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setSmallDataset(final boolean smallDataset) {
+    public Builder setSmallDataset(final boolean smallDataset) {
       definition.smallDataset = smallDataset;
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setStaticData(final boolean staticData) {
+    public Builder setStaticData(final boolean staticData) {
       definition.staticData = staticData;
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setReadOnly(final boolean readOnly) {
+    public Builder setReadOnly(final boolean readOnly) {
       definition.readOnly = readOnly;
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
+    public Builder setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
       definition.keyGenerator = requireNonNull(keyGenerator, "keyGenerator");
       definition.keyGeneratorType = keyGenerator.getType();
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setOrderBy(final Entity.OrderBy orderBy) {
+    public Builder setOrderBy(final Entity.OrderBy orderBy) {
       requireNonNull(orderBy, "orderBy");
       if (definition.orderBy != null) {
         throw new IllegalStateException("Order by has already been set: " + definition.orderBy);
@@ -747,7 +747,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public Entity.DefinitionBuilder setGroupByClause(final String groupByClause) {
+    public Builder setGroupByClause(final String groupByClause) {
       requireNonNull(groupByClause, "groupByClause");
       if (definition.groupByClause != null) {
         throw new IllegalStateException("Group by clause has already been set: " + definition.groupByClause);
@@ -757,7 +757,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public Entity.DefinitionBuilder setHavingClause(final String havingClause) {
+    public Builder setHavingClause(final String havingClause) {
       requireNonNull(havingClause, "havingClause");
       if (definition.havingClause != null) {
         throw new IllegalStateException("Having clause has already been set: " + definition.havingClause);
@@ -767,32 +767,32 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public Entity.DefinitionBuilder setSelectTableName(final String selectTableName) {
+    public Builder setSelectTableName(final String selectTableName) {
       definition.selectTableName = requireNonNull(selectTableName, "selectTableName");
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
+    public Builder setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
       definition.selectQuery = requireNonNull(selectQuery, "selectQuery");
       definition.selectQueryContainsWhereClause = containsWhereClause;
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setComparator(final Comparator<Entity> comparator) {
+    public Builder setComparator(final Comparator<Entity> comparator) {
       definition.comparator = requireNonNull(comparator, "comparator");
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setStringProvider(final Entity.ToString stringProvider) {
+    public Builder setStringProvider(final Entity.ToString stringProvider) {
       definition.stringProvider = requireNonNull(stringProvider, "stringProvider");
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setSearchPropertyIds(final String... searchPropertyIds) {
+    public Builder setSearchPropertyIds(final String... searchPropertyIds) {
       requireNonNull(searchPropertyIds, "searchPropertyIds");
       for (final String propertyId : searchPropertyIds) {
         final Property property = definition.propertyMap.get(propertyId);
@@ -810,13 +810,13 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public Entity.DefinitionBuilder setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
+    public Builder setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
       definition.backgroundColorProvider = requireNonNull(colorProvider, "colorProvider");
       return this;
     }
 
     @Override
-    public Entity.DefinitionBuilder setValidator(final Entity.Validator validator) {
+    public Builder setValidator(final Entity.Validator validator) {
       definition.validator = requireNonNull(validator, "validator");
       return this;
     }
