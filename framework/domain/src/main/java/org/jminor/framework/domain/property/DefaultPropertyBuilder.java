@@ -5,11 +5,11 @@ package org.jminor.framework.domain.property;
 
 import java.text.Format;
 
-class DefaultPropertyDefinition<T extends DefaultProperty> implements PropertyDefinition<T> {
+class DefaultPropertyBuilder<T extends DefaultProperty> implements PropertyBuilder<T> {
 
   protected final T property;
 
-  DefaultPropertyDefinition(final T property) {
+  DefaultPropertyBuilder(final T property) {
     this.property = property;
   }
 
@@ -19,103 +19,103 @@ class DefaultPropertyDefinition<T extends DefaultProperty> implements PropertyDe
   }
 
   @Override
-  public PropertyDefinition<T> setEntityId(final String entityId) {
+  public PropertyBuilder<T> setEntityId(final String entityId) {
     property.setEntityId(entityId);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setBeanProperty(final String beanProperty) {
+  public final PropertyBuilder<T> setBeanProperty(final String beanProperty) {
     property.setBeanProperty(beanProperty);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setHidden(final boolean hidden) {
+  public final PropertyBuilder<T> setHidden(final boolean hidden) {
     property.setHidden(hidden);
     return this;
   }
 
   @Override
-  public PropertyDefinition<T> setReadOnly(final boolean readOnly) {
+  public PropertyBuilder<T> setReadOnly(final boolean readOnly) {
     property.setReadOnly(readOnly);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setDefaultValue(final Object defaultValue) {
+  public final PropertyBuilder<T> setDefaultValue(final Object defaultValue) {
     property.setDefaultValue(defaultValue);
     return this;
   }
 
   @Override
-  public PropertyDefinition<T> setDefaultValueProvider(final Property.ValueProvider provider) {
+  public PropertyBuilder<T> setDefaultValueProvider(final Property.ValueProvider provider) {
     property.setDefaultValueProvider(provider);
     return this;
   }
 
   @Override
-  public PropertyDefinition<T> setNullable(final boolean nullable) {
+  public PropertyBuilder<T> setNullable(final boolean nullable) {
     property.setNullable(nullable);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setMaxLength(final int maxLength) {
+  public final PropertyBuilder<T> setMaxLength(final int maxLength) {
     property.setMaxLength(maxLength);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setMax(final double max) {
+  public final PropertyBuilder<T> setMax(final double max) {
     property.setMax(max);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setMin(final double min) {
+  public final PropertyBuilder<T> setMin(final double min) {
     property.setMin(min);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setUseNumberFormatGrouping(final boolean useGrouping) {
+  public final PropertyBuilder<T> setUseNumberFormatGrouping(final boolean useGrouping) {
     property.setUseNumberFormatGrouping(useGrouping);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setPreferredColumnWidth(final int preferredColumnWidth) {
+  public final PropertyBuilder<T> setPreferredColumnWidth(final int preferredColumnWidth) {
     property.setPreferredColumnWidth(preferredColumnWidth);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setDescription(final String description) {
+  public final PropertyBuilder<T> setDescription(final String description) {
     property.setDescription(description);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setMnemonic(final Character mnemonic) {
+  public final PropertyBuilder<T> setMnemonic(final Character mnemonic) {
     property.setMnemonic(mnemonic);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setFormat(final Format format) {
+  public final PropertyBuilder<T> setFormat(final Format format) {
     property.setFormat(format);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setDateTimeFormatPattern(final String dateTimeFormatPattern) {
+  public final PropertyBuilder<T> setDateTimeFormatPattern(final String dateTimeFormatPattern) {
     property.setDateTimeFormatPattern(dateTimeFormatPattern);
     return this;
   }
 
   @Override
-  public final PropertyDefinition<T> setMaximumFractionDigits(final int maximumFractionDigits) {
+  public final PropertyBuilder<T> setMaximumFractionDigits(final int maximumFractionDigits) {
     property.setMaximumFractionDigits(maximumFractionDigits);
     return this;
   }

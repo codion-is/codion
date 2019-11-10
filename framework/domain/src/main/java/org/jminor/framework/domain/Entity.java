@@ -12,12 +12,12 @@ import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.ColumnPropertyDefinition;
+import org.jminor.framework.domain.property.ColumnPropertyBuilder;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.PropertyDefinition;
+import org.jminor.framework.domain.property.PropertyBuilder;
 import org.jminor.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
@@ -544,8 +544,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws NullValidationException in case the property value is null and the property is not nullable
-     * @see PropertyDefinition#setNullable(boolean)
-     * @see PropertyDefinition#isNullable()
+     * @see PropertyBuilder#setNullable(boolean)
+     * @see PropertyBuilder#isNullable()
      */
     void performNullValidation(final Entity entity, final Property property) throws NullValidationException;
 
@@ -554,8 +554,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws RangeValidationException in case the value of the given property is outside the legal range
-     * @see PropertyDefinition#setMax(double)
-     * @see PropertyDefinition#setMin(double)
+     * @see PropertyBuilder#setMax(double)
+     * @see PropertyBuilder#setMin(double)
      */
     void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException;
 
@@ -564,7 +564,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws LengthValidationException in case the length of the value of the given property
-     * @see PropertyDefinition#setMaxLength(int)
+     * @see PropertyBuilder#setMaxLength(int)
      */
     void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException;
   }
@@ -734,7 +734,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return this {@link Entity.Definer} instance
      * @throws IllegalStateException in case a group by clause has already been set,
      * for example automatically, based on grouping properties
-     * @see ColumnPropertyDefinition#setGroupingColumn(boolean)
+     * @see ColumnPropertyBuilder#setGroupingColumn(boolean)
      */
     Definer setGroupByClause(final String groupByClause);
 

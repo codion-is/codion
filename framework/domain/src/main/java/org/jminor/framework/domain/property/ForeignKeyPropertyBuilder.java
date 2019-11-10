@@ -5,23 +5,27 @@ package org.jminor.framework.domain.property;
 
 import java.util.List;
 
-public interface ForeignKeyPropertyDefinition<T extends ForeignKeyProperty> extends PropertyDefinition<T> {
+/**
+ * Provides setters for ForeignKeyProperty properties
+ * @param <T> the ColumnProperty type
+ */
+public interface ForeignKeyPropertyBuilder<T extends ForeignKeyProperty> extends PropertyBuilder<T> {
 
   @Override
   T get();
 
-  List<ColumnPropertyDefinition> getPropertyDefiners();
+  List<ColumnPropertyBuilder> getPropertyBuilders();
 
   /**
    * @param fetchDepth the default query fetch depth for this foreign key
    * @return this ForeignKeyProperty instance
    */
-  ForeignKeyPropertyDefinition setFetchDepth(final int fetchDepth);
+  ForeignKeyPropertyBuilder setFetchDepth(final int fetchDepth);
 
   /**
    * @param softReference true if this foreign key is not based on a physical (table) foreign key
    * and should not prevent deletion
    * @return this ForeignKeyProperty instance
    */
-  ForeignKeyPropertyDefinition setSoftReference(final boolean softReference);
+  ForeignKeyPropertyBuilder setSoftReference(final boolean softReference);
 }

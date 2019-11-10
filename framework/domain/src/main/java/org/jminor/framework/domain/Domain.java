@@ -16,13 +16,13 @@ import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.ColumnPropertyDefinition;
+import org.jminor.framework.domain.property.ColumnPropertyBuilder;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.ForeignKeyPropertyDefinition;
+import org.jminor.framework.domain.property.ForeignKeyPropertyBuilder;
 import org.jminor.framework.domain.property.MirrorProperty;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.PropertyDefinition;
+import org.jminor.framework.domain.property.PropertyBuilder;
 import org.jminor.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
@@ -168,8 +168,8 @@ public class Domain implements Serializable {
    * @param entityId the entity id
    * @param valueProvider the value provider
    * @return the populated entity
-   * @see ColumnPropertyDefinition#setColumnHasDefaultValue(boolean)
-   * @see ColumnPropertyDefinition#setDefaultValue(Object)
+   * @see ColumnPropertyBuilder#setColumnHasDefaultValue(boolean)
+   * @see ColumnPropertyBuilder#setDefaultValue(Object)
    */
   public final Entity defaultEntity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
     final Entity entity = entity(entityId);
@@ -314,7 +314,7 @@ public class Domain implements Serializable {
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.Definer define(final String entityId, final PropertyDefinition... properties) {
+  public final Entity.Definer define(final String entityId, final PropertyBuilder... properties) {
     return define(entityId, entityId, properties);
   }
 
@@ -329,7 +329,7 @@ public class Domain implements Serializable {
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.Definer define(final String entityId, final String tableName, final PropertyDefinition... properties) {
+  public final Entity.Definer define(final String entityId, final String tableName, final PropertyBuilder... properties) {
     requireNonNull(entityId, ENTITY_ID_PARAM);
     requireNonNull(tableName, "tableName");
     if (entityDefinitions.containsKey(entityId) && !ALLOW_REDEFINE_ENTITY.get()) {
@@ -555,12 +555,12 @@ public class Domain implements Serializable {
     return definition;
   }
 
-  private Map<String, Property> initializePropertyMap(final String entityId, final PropertyDefinition... properties) {
+  private Map<String, Property> initializePropertyMap(final String entityId, final PropertyBuilder... properties) {
     final Map<String, Property> propertyMap = new LinkedHashMap<>(properties.length);
-    for (final PropertyDefinition propertyDefinition : properties) {
-      validateAndAddProperty(propertyDefinition, entityId, propertyMap);
-      if (propertyDefinition instanceof ForeignKeyPropertyDefinition) {
-        initializeForeignKeyProperty(entityId, propertyMap, (ForeignKeyPropertyDefinition) propertyDefinition);
+    for (final PropertyBuilder propertyBuilder : properties) {
+      validateAndAddProperty(propertyBuilder, entityId, propertyMap);
+      if (propertyBuilder instanceof ForeignKeyPropertyBuilder) {
+        initializeForeignKeyProperty(entityId, propertyMap, (ForeignKeyPropertyBuilder) propertyBuilder);
       }
     }
     checkIfPrimaryKeyIsSpecified(entityId, propertyMap);
@@ -569,11 +569,11 @@ public class Domain implements Serializable {
   }
 
   private void initializeForeignKeyProperty(final String entityId, final Map<String, Property> propertyMap,
-                                            final ForeignKeyPropertyDefinition foreignKeyPropertyDefiner) {
-    final List<ColumnPropertyDefinition> propertyDefiners = foreignKeyPropertyDefiner.getPropertyDefiners();
-    final ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyDefiner.get();
-    final List<ColumnProperty> properties = propertyDefiners.stream().map(
-            (Function<ColumnPropertyDefinition, ColumnProperty>) ColumnPropertyDefinition::get).collect(toList());
+                                            final ForeignKeyPropertyBuilder foreignKeyPropertyBuilder) {
+    final List<ColumnPropertyBuilder> propertyBuilders = foreignKeyPropertyBuilder.getPropertyBuilders();
+    final ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyBuilder.get();
+    final List<ColumnProperty> properties = propertyBuilders.stream().map(
+            (Function<ColumnPropertyBuilder, ColumnProperty>) ColumnPropertyBuilder::get).collect(toList());
     if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
       final Entity.Definition foreignEntity = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
       if (foreignEntity == null) {
@@ -586,9 +586,9 @@ public class Domain implements Serializable {
                 "' does not match the number of foreign properties in the referenced entity '" + foreignKeyProperty.getForeignEntityId() + "'");
       }
     }
-    for (final ColumnPropertyDefinition propertyDefiner : propertyDefiners) {
-      if (!(propertyDefiner.get() instanceof MirrorProperty)) {
-        validateAndAddProperty(propertyDefiner, entityId, propertyMap);
+    for (final ColumnPropertyBuilder propertyBuilder : propertyBuilders) {
+      if (!(propertyBuilder.get() instanceof MirrorProperty)) {
+        validateAndAddProperty(propertyBuilder, entityId, propertyMap);
       }
     }
   }
@@ -656,11 +656,11 @@ public class Domain implements Serializable {
     }
   }
 
-  private static void validateAndAddProperty(final PropertyDefinition propertyDefinition, final String entityId,
+  private static void validateAndAddProperty(final PropertyBuilder propertyBuilder, final String entityId,
                                              final Map<String, Property> propertyMap) {
-    final Property property = propertyDefinition.get();
+    final Property property = propertyBuilder.get();
     checkIfUniquePropertyId(property, entityId, propertyMap);
-    propertyDefinition.setEntityId(entityId);
+    propertyBuilder.setEntityId(entityId);
     propertyMap.put(property.getPropertyId(), property);
   }
 
@@ -895,10 +895,10 @@ public class Domain implements Serializable {
    * range validation for numerical properties with max and/or min values specified and string length validation
    * based on the specified max length.
    * This Validator can be extended to provide further validation.
-   * @see PropertyDefinition#setNullable(boolean)
-   * @see PropertyDefinition#setMin(double)
-   * @see PropertyDefinition#setMax(double)
-   * @see PropertyDefinition#setMaxLength(int)
+   * @see PropertyBuilder#setNullable(boolean)
+   * @see PropertyBuilder#setMin(double)
+   * @see PropertyBuilder#setMax(double)
+   * @see PropertyBuilder#setMaxLength(int)
    */
   public static class Validator extends DefaultValueMap.DefaultValidator<Property, Entity> implements Entity.Validator {
 

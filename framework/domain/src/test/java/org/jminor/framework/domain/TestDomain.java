@@ -5,7 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.DateFormats;
 import org.jminor.common.Item;
-import org.jminor.framework.domain.property.ColumnPropertyDefinition;
+import org.jminor.framework.domain.property.ColumnPropertyBuilder;
 import org.jminor.framework.domain.property.Properties;
 
 import java.sql.Types;
@@ -180,7 +180,7 @@ public final class TestDomain extends Domain {
                     .setColumnName("ename").setMaxLength(10).setNullable(false)
                     .setBeanProperty("name"),
             Properties.foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
-                    (ColumnPropertyDefinition) Properties.columnProperty(EMP_DEPARTMENT)
+                    (ColumnPropertyBuilder) Properties.columnProperty(EMP_DEPARTMENT)
                             .setBeanProperty("deptno"))
                     .setBeanProperty("department")
                     .setNullable(false),
@@ -195,7 +195,7 @@ public final class TestDomain extends Domain {
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2)
             .setBeanProperty("commission"),
             Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    (ColumnPropertyDefinition) Properties.columnProperty(EMP_MGR)
+                    (ColumnPropertyBuilder) Properties.columnProperty(EMP_MGR)
                             .setBeanProperty("mgr"))
                     .setBeanProperty("manager"),
             Properties.columnProperty(EMP_HIREDATE, Types.TIMESTAMP, EMP_HIREDATE)

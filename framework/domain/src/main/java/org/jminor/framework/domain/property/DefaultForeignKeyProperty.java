@@ -26,7 +26,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
-  transient final List<ColumnPropertyDefinition> columnPropertyDefinitions;
+  transient final List<ColumnPropertyBuilder> columnPropertyBuilders;
 
   /**
    * @param propertyId the property ID
@@ -35,7 +35,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
    * @param columnProperty the underlying column property comprising this foreign key
    */
   DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
-                            final ColumnPropertyDefinition columnProperty) {
+                            final ColumnPropertyBuilder columnProperty) {
     this(propertyId, caption, foreignEntityId, singletonList(columnProperty));
   }
 
@@ -43,20 +43,20 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
    * @param propertyId the property ID, note that this is not a column name
    * @param caption the property caption
    * @param foreignEntityId the ID of the entity referenced by this foreign key
-   * @param columnPropertyDefinitions the underlying column properties comprising this foreign key
+   * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    * @param foreignProperties the properties referenced, in the same order as the column properties,
    * if null then the primary key properties of the referenced entity are used when required
    */
   DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
-                            final List<ColumnPropertyDefinition> columnPropertyDefinitions) {
+                            final List<ColumnPropertyBuilder> columnPropertyBuilders) {
     super(propertyId, Types.OTHER, caption, Entity.class);
     requireNonNull(foreignEntityId, "foreignEntityId");
-    validateParameters(propertyId, foreignEntityId, columnPropertyDefinitions);
-    this.columnPropertyDefinitions = columnPropertyDefinitions;
-    columnPropertyDefinitions.forEach(columnProperty -> columnProperty.setForeignKeyProperty(this));
+    validateParameters(propertyId, foreignEntityId, columnPropertyBuilders);
+    this.columnPropertyBuilders = columnPropertyBuilders;
+    columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyProperty(this));
     this.foreignEntityId = foreignEntityId;
-    this.columnProperties = unmodifiableList(columnPropertyDefinitions.stream().map((Function<ColumnPropertyDefinition,
-            ColumnProperty>) ColumnPropertyDefinition::get).collect(toList()));
+    this.columnProperties = unmodifiableList(columnPropertyBuilders.stream().map((Function<ColumnPropertyBuilder,
+            ColumnProperty>) ColumnPropertyBuilder::get).collect(toList()));
     this.compositeReference = this.columnProperties.size() > 1;
   }
 
@@ -103,8 +103,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   }
 
   void setNullable(final boolean nullable) {
-    for (final ColumnPropertyDefinition columnPropertyDefiner : columnPropertyDefinitions) {
-      columnPropertyDefiner.setNullable(nullable);
+    for (final ColumnPropertyBuilder propertyBuilder : columnPropertyBuilders) {
+      propertyBuilder.setNullable(nullable);
     }
 
     super.setNullable(nullable);
@@ -119,11 +119,11 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   }
 
   private static void validateParameters(final String propertyId, final String foreignEntityId,
-                                         final List<ColumnPropertyDefinition> columnProperties) {
+                                         final List<ColumnPropertyBuilder> columnProperties) {
     if (nullOrEmpty(columnProperties)) {
       throw new IllegalArgumentException("No column properties specified");
     }
-    for (final ColumnPropertyDefinition columnProperty : columnProperties) {
+    for (final ColumnPropertyBuilder columnProperty : columnProperties) {
       requireNonNull(columnProperty, "columnProperty");
       if (columnProperty.get().getPropertyId().equals(propertyId)) {
         throw new IllegalArgumentException(foreignEntityId + ", column propertyId is the same as foreign key propertyId: " + propertyId);

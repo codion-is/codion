@@ -5,33 +5,33 @@ package org.jminor.framework.domain.property;
 
 import org.jminor.common.db.ValueConverter;
 
-final class DefaultColumnPropertyDefinition extends DefaultPropertyDefinition<DefaultColumnProperty>
-        implements ColumnPropertyDefinition<DefaultColumnProperty> {
+final class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder<DefaultColumnProperty>
+        implements ColumnPropertyBuilder<DefaultColumnProperty> {
 
-  DefaultColumnPropertyDefinition(final DefaultColumnProperty property) {
+  DefaultColumnPropertyBuilder(final DefaultColumnProperty property) {
     super(property);
   }
 
   @Override
-  public final DefaultColumnPropertyDefinition setColumnName(final String columnName) {
+  public final DefaultColumnPropertyBuilder setColumnName(final String columnName) {
     property.setColumnName(columnName);
     return this;
   }
 
   @Override
-  public final DefaultColumnPropertyDefinition setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
+  public final DefaultColumnPropertyBuilder setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
     property.setColumnHasDefaultValue(columnHasDefaultValue);
     return this;
   }
 
   @Override
-  public final DefaultColumnPropertyDefinition setUpdatable(final boolean updatable) {
+  public final DefaultColumnPropertyBuilder setUpdatable(final boolean updatable) {
     property.setUpdatable(updatable);
     return this;
   }
 
   @Override
-  public final DefaultColumnPropertyDefinition setPrimaryKeyIndex(final int index) {
+  public final DefaultColumnPropertyBuilder setPrimaryKeyIndex(final int index) {
     property.setPrimaryKeyIndex(index);
     setNullable(false);
     setUpdatable(false);
@@ -39,35 +39,35 @@ final class DefaultColumnPropertyDefinition extends DefaultPropertyDefinition<De
   }
 
   @Override
-  public final DefaultColumnPropertyDefinition setGroupingColumn(final boolean groupingColumn) {
+  public final DefaultColumnPropertyBuilder setGroupingColumn(final boolean groupingColumn) {
     property.setGroupingColumn(groupingColumn);
     return this;
   }
 
   @Override
-  public final DefaultColumnPropertyDefinition setAggregateColumn(final boolean aggregateColumn) {
+  public final DefaultColumnPropertyBuilder setAggregateColumn(final boolean aggregateColumn) {
     property.setAggregateColumn(aggregateColumn);
     return this;
   }
 
   @Override
-  public final DefaultColumnPropertyDefinition setSelectable(final boolean selectable) {
+  public final DefaultColumnPropertyBuilder setSelectable(final boolean selectable) {
     property.setSelectable(selectable);
     return this;
   }
 
   @Override
-  public DefaultColumnPropertyDefinition setReadOnly(final boolean readOnly) {
+  public DefaultColumnPropertyBuilder setReadOnly(final boolean readOnly) {
     property.setReadOnly(readOnly);
     if (property.isForeignKeyProperty()) {
       throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");
     }
 
-    return (org.jminor.framework.domain.property.DefaultColumnPropertyDefinition) super.setReadOnly(readOnly);
+    return (DefaultColumnPropertyBuilder) super.setReadOnly(readOnly);
   }
 
   @Override
-  public final DefaultColumnPropertyDefinition setValueConverter(final ValueConverter<?, ?> valueConverter) {
+  public final DefaultColumnPropertyBuilder setValueConverter(final ValueConverter<?, ?> valueConverter) {
     property.setValueConverter(valueConverter);
     return this;
   }
