@@ -31,6 +31,7 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
     return subquery;
   }
 
+  @Override
   void setReadOnly(final boolean readOnly) {
     throw new UnsupportedOperationException("Subquery properties are always read only");
   }

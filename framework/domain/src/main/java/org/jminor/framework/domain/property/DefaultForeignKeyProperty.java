@@ -26,7 +26,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
-  transient final List<ColumnPropertyBuilder> columnPropertyBuilders;
+  final transient List<ColumnPropertyBuilder> columnPropertyBuilders;
 
   /**
    * @param propertyId the property ID
@@ -109,6 +109,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
   }
 
+  @Override
   void setNullable(final boolean nullable) {
     for (final ColumnPropertyBuilder propertyBuilder : columnPropertyBuilders) {
       propertyBuilder.setNullable(nullable);

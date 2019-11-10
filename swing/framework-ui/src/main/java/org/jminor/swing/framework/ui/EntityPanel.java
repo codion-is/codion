@@ -72,6 +72,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName(), Locale.getDefault());
 
+  private static final String ENTITY_MODEL_PARAM = "entityModel";
   private static final String MSG_DETAIL_TABLES = "detail_tables";
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityPanel.class);
@@ -310,7 +311,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(final SwingEntityModel entityModel) {
-    this(entityModel, requireNonNull(entityModel, "entityModel")
+    this(entityModel, requireNonNull(entityModel, ENTITY_MODEL_PARAM)
             .getEditModel().getEntityDefinition().getCaption());
   }
 
@@ -329,7 +330,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel) {
-    this(entityModel, requireNonNull(entityModel, "entityModel")
+    this(entityModel, requireNonNull(entityModel, ENTITY_MODEL_PARAM)
             .getEditModel().getEntityDefinition().getCaption(), editPanel);
   }
 
@@ -339,7 +340,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityTablePanel tablePanel) {
-    this(entityModel, requireNonNull(entityModel, "entityModel")
+    this(entityModel, requireNonNull(entityModel, ENTITY_MODEL_PARAM)
             .getEditModel().getEntityDefinition().getCaption(), tablePanel);
   }
 
@@ -370,7 +371,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel, final EntityTablePanel tablePanel) {
-    this(entityModel, requireNonNull(entityModel, "entityModel")
+    this(entityModel, requireNonNull(entityModel, ENTITY_MODEL_PARAM)
             .getEditModel().getEntityDefinition().getCaption(), editPanel, tablePanel);
   }
 
@@ -383,7 +384,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public EntityPanel(final SwingEntityModel entityModel, final String caption, final EntityEditPanel editPanel,
                      final EntityTablePanel tablePanel) {
-    requireNonNull(entityModel, "entityModel");
+    requireNonNull(entityModel, ENTITY_MODEL_PARAM);
     this.entityModel = entityModel;
     this.caption = caption == null ? entityModel.getEditModel().getEntityDefinition().getCaption() : caption;
     this.editPanel = editPanel;

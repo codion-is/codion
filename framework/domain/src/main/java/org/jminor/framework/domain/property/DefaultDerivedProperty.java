@@ -38,6 +38,7 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
     return sourcePropertyIds;
   }
 
+  @Override
   void setReadOnly(final boolean readOnly) {
     throw new UnsupportedOperationException("Derived properties are always read only");
   }

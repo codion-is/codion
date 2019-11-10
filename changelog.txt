@@ -5263,3 +5263,4 @@
   Domain, most getters moved to Entity.Definition, Domain.getDefinition() public
   Major refactoring, domain.property package added
   EntityEditModel.getEntityDefinition() and EntityTableModel.getEntityDefinition() added
+  DefaultEntityDefinition.EntityDefinitionBuilder renamed to DefaultDefinitionBuilder and refactored
