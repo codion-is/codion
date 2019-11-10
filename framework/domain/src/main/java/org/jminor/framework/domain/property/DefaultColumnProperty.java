@@ -215,6 +215,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     this.foreignKeyProperty = foreignKeyProperty;
   }
 
+  @Override
   void setReadOnly(final boolean readOnly) {
     if (isForeignKeyProperty()) {
       throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");

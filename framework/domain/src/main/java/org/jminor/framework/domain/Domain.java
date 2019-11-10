@@ -553,9 +553,9 @@ public class Domain implements Serializable {
     return definition;
   }
 
-  private Map<String, Property> initializePropertyMap(final String entityId, final Property.Builder... properties) {
-    final Map<String, Property> propertyMap = new LinkedHashMap<>(properties.length);
-    for (final Property.Builder propertyBuilder : properties) {
+  private Map<String, Property> initializePropertyMap(final String entityId, final Property.Builder... propertyBuilders) {
+    final Map<String, Property> propertyMap = new LinkedHashMap<>(propertyBuilders.length);
+    for (final Property.Builder propertyBuilder : propertyBuilders) {
       validateAndAddProperty(propertyBuilder, entityId, propertyMap);
       if (propertyBuilder instanceof ForeignKeyProperty.Builder) {
         initializeForeignKeyProperty(entityId, propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
