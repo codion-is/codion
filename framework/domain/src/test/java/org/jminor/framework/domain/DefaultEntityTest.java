@@ -645,7 +645,7 @@ public class DefaultEntityTest {
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
     final Domain domain = new Domain("transient").registerDomain();
-    final Property.TransientProperty transientProperty = Properties.transientProperty("trans", Types.INTEGER);
+    final PropertyDefinition.TransientPropertyDefinition transientProperty = Properties.transientProperty("trans", Types.INTEGER);
     domain.define("entityId",
             Properties.primaryKeyProperty("id"),
             transientProperty);

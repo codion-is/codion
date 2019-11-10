@@ -14,7 +14,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.PropertyDefinition;
 
 import java.sql.Types;
 import java.util.List;
@@ -51,8 +51,8 @@ public final class EntitiesTutorial {
 
     public Chinook() {
       //create properties for the columns in the table 'chinook.artist'
-      Property artistId = primaryKeyProperty(ARTIST_ID);
-      Property artistName = columnProperty(ARTIST_NAME, Types.VARCHAR, "Name");
+      PropertyDefinition artistId = primaryKeyProperty(ARTIST_ID);
+      PropertyDefinition artistName = columnProperty(ARTIST_NAME, Types.VARCHAR, "Name");
       artistName.setNullable(false).setMaxLength(120);
 
       //define an entity based on the table 'chinook.artist',
@@ -64,12 +64,12 @@ public final class EntitiesTutorial {
               .setCaption("Artist");
 
       //create properties for the columns in the table 'chinook.album'
-      Property albumId = primaryKeyProperty(ALBUM_ALBUMID);
-      Property albumTitle = columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title");
+      PropertyDefinition albumId = primaryKeyProperty(ALBUM_ALBUMID);
+      PropertyDefinition albumTitle = columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title");
       albumTitle.setNullable(false).setMaxLength(160);
       //we wrap the actual 'artistid' column property in a foreign key
       //referencing the entity identified by T_ARTIST
-      Property albumArtist =
+      PropertyDefinition albumArtist =
               foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
                       columnProperty(ALBUM_ARTISTID));
       albumArtist.setNullable(false);

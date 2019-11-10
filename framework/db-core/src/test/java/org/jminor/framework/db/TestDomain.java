@@ -6,7 +6,6 @@ package org.jminor.framework.db;
 import org.jminor.common.Item;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Properties;
-import org.jminor.framework.domain.Property;
 
 import java.sql.Types;
 import java.util.Comparator;
@@ -91,10 +90,8 @@ public final class TestDomain extends Domain {
             Properties.columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
                     .setDefaultValue(true),
             Properties.foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK, T_MASTER,
-                    new Property.ColumnProperty[] {
-                            Properties.columnProperty(DETAIL_MASTER_ID_1),
-                            Properties.columnProperty(DETAIL_MASTER_ID_2)
-                    }),
+                    asList(Properties.columnProperty(DETAIL_MASTER_ID_1),
+                            Properties.columnProperty(DETAIL_MASTER_ID_2))),
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
                     getDefinition(T_MASTER).getProperty(MASTER_NAME), DETAIL_MASTER_NAME),
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK,

@@ -5,12 +5,12 @@ package org.jminor.framework.demos.schemabrowser.domain;
 
 import org.jminor.common.db.Database;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Property;
 
 import java.sql.Types;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static java.util.Arrays.asList;
 import static org.jminor.framework.domain.Properties.*;
 
 public final class SchemaBrowser extends Domain {
@@ -65,9 +65,8 @@ public final class SchemaBrowser extends Domain {
   void defineColumn() {
     define(T_COLUMN, bundle.getString("t_column"),
             foreignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
-                    new Property.ColumnProperty[] {
-                            columnProperty(COLUMN_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            columnProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)}),
+                    asList(columnProperty(COLUMN_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            columnProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1))),
             primaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").setPrimaryKeyIndex(2),
             columnProperty(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
             .setOrderBy(orderBy().ascending(COLUMN_SCHEMA, COLUMN_TABLE_NAME, COLUMN_NAME))
@@ -86,9 +85,8 @@ public final class SchemaBrowser extends Domain {
   void defineConstraint() {
     define(T_CONSTRAINT, bundle.getString("t_constraint"),
             foreignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
-                    new Property.ColumnProperty[] {
-                            columnProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            columnProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)}),
+                    asList(columnProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            columnProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1))),
             primaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setPrimaryKeyIndex(2),
             columnProperty(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
             .setOrderBy(orderBy().ascending(CONSTRAINT_SCHEMA, CONSTRAINT_TABLE_NAME, CONSTRAINT_NAME))
@@ -108,10 +106,9 @@ public final class SchemaBrowser extends Domain {
   void defineColumnConstraint() {
     define(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
             foreignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
-                    new Property.ColumnProperty[] {
-                            columnProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                    asList(columnProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
                             columnProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1),
-                            columnProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setPrimaryKeyIndex(2)}),
+                            columnProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setPrimaryKeyIndex(2))),
             columnProperty(COLUMN_CONSTRAINT_COLUMN_NAME, Types.VARCHAR, "Column name"),
             columnProperty(COLUMN_CONSTRAINT_POSITION, Types.INTEGER, "Position"))
             .setOrderBy(orderBy().ascending(COLUMN_CONSTRAINT_SCHEMA, COLUMN_CONSTRAINT_TABLE_NAME, COLUMN_CONSTRAINT_CONSTRAINT_NAME))

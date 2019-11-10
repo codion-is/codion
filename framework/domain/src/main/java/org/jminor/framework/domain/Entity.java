@@ -536,8 +536,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws NullValidationException in case the property value is null and the property is not nullable
-     * @see Property#setNullable(boolean)
-     * @see Property#isNullable()
+     * @see PropertyDefinition#setNullable(boolean)
+     * @see PropertyDefinition#isNullable()
      */
     void performNullValidation(final Entity entity, final Property property) throws NullValidationException;
 
@@ -546,8 +546,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws RangeValidationException in case the value of the given property is outside the legal range
-     * @see Property#setMax(double)
-     * @see Property#setMin(double)
+     * @see PropertyDefinition#setMax(double)
+     * @see PropertyDefinition#setMin(double)
      */
     void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException;
 
@@ -556,7 +556,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws LengthValidationException in case the length of the value of the given property
-     * @see Property#setMaxLength(int)
+     * @see PropertyDefinition#setMaxLength(int)
      */
     void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException;
   }
@@ -726,7 +726,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return this {@link Entity.Definer} instance
      * @throws IllegalStateException in case a group by clause has already been set,
      * for example automatically, based on grouping properties
-     * @see Property.ColumnProperty#setGroupingColumn(boolean)
+     * @see PropertyDefinition.ColumnPropertyDefinition#setGroupingColumn(boolean)
      */
     Definer setGroupByClause(final String groupByClause);
 

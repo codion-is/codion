@@ -7,7 +7,6 @@ import org.jminor.common.Configuration;
 import org.jminor.common.Item;
 import org.jminor.common.PropertyValue;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.ValueConverter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -83,13 +82,6 @@ public interface Property extends Serializable {
   String getEntityId();
 
   /**
-   * @param entityId the id of the entity this property is associated with
-   * @throws IllegalStateException in case the entityId has already been set
-   * @return this Property instance
-   */
-  Property setEntityId(final String entityId);
-
-  /**
    * The property identifier, should be unique within an Entity.
    * By default this id serves as column name for database properties.
    * @return the id of this property
@@ -110,13 +102,6 @@ public interface Property extends Serializable {
    * @return the Class representing the values of this attribute
    */
   Class getTypeClass();
-
-  /**
-   * Sets the bean name property to associate with this property
-   * @param beanProperty the bean property name
-   * @return this Property instance
-   */
-  Property setBeanProperty(final String beanProperty);
 
   /**
    * @return the bean property name associated with this property
@@ -218,20 +203,6 @@ public interface Property extends Serializable {
   boolean isBoolean();
 
   /**
-   * Sets the default value for this property, overrides the underlying column default value, if any
-   * @param defaultValue the value to use as default
-   * @return this Property instance
-   */
-  Property setDefaultValue(final Object defaultValue);
-
-  /**
-   * Sets the default value provider, use in case of dynamic default values.
-   * @param provider the default value provider
-   * @return this Property instance
-   */
-  Property setDefaultValueProvider(final ValueProvider provider);
-
-  /**
    * @return true if a default value has been set for this property
    */
   boolean hasDefaultValue();
@@ -248,23 +219,10 @@ public interface Property extends Serializable {
   boolean isHidden();
 
   /**
-   * @param hidden specifies whether this property should hidden in table views
-   * @return this Property instance
-   */
-  Property setHidden(final boolean hidden);
-
-  /**
    * @return the maximum allowed value for this property, null if none is defined,
    * only applicable to numerical properties
    */
   Double getMax();
-
-  /**
-   * Sets the maximum allowed value for this property, only applicable to numerical properties
-   * @param max the maximum allowed value
-   * @return this Property instance
-   */
-  Property setMax(final double max);
 
   /**
    * @return the minimum allowed value for this property, null if none is defined,
@@ -273,37 +231,10 @@ public interface Property extends Serializable {
   Double getMin();
 
   /**
-   * Only applicable to numerical properties
-   * @param min the minimum allowed value for this property
-   * @return this Property instance
-   */
-  Property setMin(final double min);
-
-  /**
-   * Sets the maximum fraction digits to show for this property, only applicable to properties based on Types.DOUBLE.
-   * This setting is overridden during subsequent calls to {@link #setFormat(java.text.Format)}.
-   * Note that values associated with this property are automatically rounded to {@code maximumFractionDigits} digits.
-   * @param maximumFractionDigits the maximum fraction digits
-   * @return this Property instance
-   */
-  Property setMaximumFractionDigits(final int maximumFractionDigits);
-
-  /**
    * @return the maximum number of fraction digits to use for this property value,
    * only applicable to properties based on Types.DOUBLE and Types.DECIMAL
    */
   int getMaximumFractionDigits();
-
-  /**
-   * Specifies whether to use number grouping when presenting the value associated with this property.
-   * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
-   * By default grouping is not used.
-   * Only applicable to numerical properties.
-   * This setting is overridden during subsequent calls to {@code setFormat}
-   * @param useGrouping if true then number grouping is used
-   * @return this Property instance
-   */
-  Property setUseNumberFormatGrouping(final boolean useGrouping);
 
   /**
    * @return the preferred column width of this property in pixels when presented in a table, 0 if none has been specified
@@ -311,36 +242,9 @@ public interface Property extends Serializable {
   int getPreferredColumnWidth();
 
   /**
-   * @param preferredColumnWidth the preferred column width of this property in pixels when displayed in a table
-   * @return this Property instance
-   */
-  Property setPreferredColumnWidth(final int preferredColumnWidth);
-
-  /**
-   * @param readOnly specifies whether this property should be included during insert/update operations
-   * @return this Property instance
-   */
-  Property setReadOnly(final boolean readOnly);
-
-  /**
-   * Specifies whether or not this property is nullable, in case of
-   * properties that are parts of a ForeignKeyProperty inherit the nullable state of that property.
-   * @param nullable specifies whether or not this property accepts a null value
-   * @return this Property instance
-   */
-  Property setNullable(final boolean nullable);
-
-  /**
    * @return true if values associated with this property can be set null
    */
   boolean isNullable();
-
-  /**
-   * Sets the maximum length of this property value, this applies to String (varchar) based properties
-   * @param maxLength the maximum length
-   * @return this Property instance
-   */
-  Property setMaxLength(final int maxLength);
 
   /**
    * @return the maximum length of this property value, -1 is returned if the max length is undefined,
@@ -354,45 +258,14 @@ public interface Property extends Serializable {
   Character getMnemonic();
 
   /**
-   * Sets the mnemonic to use when creating a label for this property
-   * @param mnemonic the mnemonic character
-   * @return this Property instance
-   */
-  Property setMnemonic(final Character mnemonic);
-
-  /**
-   * @param description a String describing this property
-   * @return this Property instance
-   */
-  Property setDescription(final String description);
-
-  /**
    * @return the Format object used to format the value of properties when being presented
    */
   Format getFormat();
 
   /**
-   * Sets the Format to use when presenting property values
-   * @param format the format to use
-   * @return this Property instance
-   * @throws NullPointerException in case format is null
-   * @throws IllegalArgumentException in case the format does not fit the property type,
-   * f.ex. NumberFormat is expected for numerical properties
-   */
-  Property setFormat(final Format format);
-
-  /**
    * @return the date/time format pattern
    */
   String getDateTimeFormatPattern();
-
-  /**
-   * Sets the date/time format pattern used when presenting values
-   * @param dateTimeFormatPattern the format pattern
-   * @return this Property instance
-   * @throws IllegalArgumentException in case the pattern is invalid or if this property is not a date/time based one
-   */
-  Property setDateTimeFormatPattern(final String dateTimeFormatPattern);
 
   /**
    * @return the DateTimeFormatter for this property or null if this is not a date/time based property
@@ -423,13 +296,6 @@ public interface Property extends Serializable {
     int getColumnType();
 
     /**
-     * Sets the actual string used as column when querying
-     * @param columnName the column name
-     * @return this Property instance
-     */
-    ColumnProperty setColumnName(final String columnName);
-
-    /**
      * Translates the given value into a sql value, usually this is not required
      * but for certain types this may be necessary, such as boolean values
      * represented by a non-boolean data type in the underlying database
@@ -445,33 +311,9 @@ public interface Property extends Serializable {
     Object fromColumnValue(final Object value);
 
     /**
-     * @param updatable specifies whether this property is updatable
-     * @return this Property instance
-     */
-    ColumnProperty setUpdatable(final boolean updatable);
-
-    /**
-     * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
-     * @return this Property instance
-     */
-    ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue);
-
-    /**
      * @return this propertys zero based index in the primary key, -1 if this property is not part of a primary key
      */
     int getPrimaryKeyIndex();
-
-    /**
-     * Sets the zero based primary key index of this property.
-     * Note that setting the primary key index renders this property non-null and non-updatable by default,
-     * these can be reverted by setting it as updatable after setting the primary key index.
-     * @param index the zero based index
-     * @return this ColumnProperty instance
-     * @throws IllegalArgumentException in case index is a negative number
-     * @see #setNullable(boolean)
-     * @see #setUpdatable(boolean)
-     */
-    ColumnProperty setPrimaryKeyIndex(final int index);
 
     /**
      * @return true if this property is part of a primary key
@@ -479,23 +321,9 @@ public interface Property extends Serializable {
     boolean isPrimaryKeyProperty();
 
     /**
-     * @param groupingColumn true if this column should be used in a group by clause
-     * @throws IllegalStateException in case the column has already been defined as an aggregate column
-     * @return this Property instance
-     */
-    ColumnProperty setGroupingColumn(final boolean groupingColumn);
-
-    /**
      * @return true if this column is a group by column
      */
     boolean isGroupingColumn();
-
-    /**
-     * @param aggregateColumn true if this column is an aggregate function column
-     * @throws IllegalStateException in case the column has already been defined as a grouping column
-     * @return this Property instance
-     */
-    ColumnProperty setAggregateColumn(final boolean aggregateColumn);
 
     /**
      * @return true if this is an aggregate column
@@ -506,12 +334,6 @@ public interface Property extends Serializable {
      * @return true if this property should be included in select queries
      */
     boolean isSelectable();
-
-    /**
-     * @param selectable false if this property should not be included in select queries
-     * @return this Property instance
-     */
-    ColumnProperty setSelectable(final boolean selectable);
 
     /**
      * Indicates whether or not this column is updatable
@@ -531,11 +353,6 @@ public interface Property extends Serializable {
     boolean isForeignKeyProperty();
 
     /**
-     * @param foreignKeyProperty the ForeignKeyProperty this property is part of
-     */
-    void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty);
-
-    /**
      * @return the ForeignKeyProperty this property is part of, if any
      */
     ForeignKeyProperty getForeignKeyProperty();
@@ -553,13 +370,6 @@ public interface Property extends Serializable {
      * @throws java.sql.SQLException in case of an exception
      */
     Object fetchValue(final ResultSet resultSet, final int index) throws SQLException;
-
-    /**
-     * Set a value converter, for converting to and from a sql representation of the value
-     * @param valueConverter the converter
-     * @return this Property instance
-     */
-    ColumnProperty setValueConverter(final ValueConverter<?, ?> valueConverter);
 
     /**
      * @return a ResultPacker responsible for packing this property
@@ -603,23 +413,11 @@ public interface Property extends Serializable {
     int getFetchDepth();
 
     /**
-     * @param fetchDepth the default query fetch depth for this foreign key
-     * @return this ForeignKeyProperty instance
-     */
-    ForeignKeyProperty setFetchDepth(final int fetchDepth);
-
-    /**
      * @return true if this foreign key is not based on a physical (table) foreign key
      * and should not prevent deletion
      */
     boolean isSoftReference();
 
-    /**
-     * @param softReference true if this foreign key is not based on a physical (table) foreign key
-     * and should not prevent deletion
-     * @return this ForeignKeyProperty instance
-     */
-    ForeignKeyProperty setSoftReference(final boolean softReference);
   }
 
   /**
@@ -677,13 +475,6 @@ public interface Property extends Serializable {
    * with only transient values modified will result in an error.
    */
   interface TransientProperty extends Property {
-
-    /**
-     * @param modifiesEntity if true then modifications to the value result in the owning entity becoming modified
-     * @return this property instance
-     */
-    TransientProperty setModifiesEntity(final boolean modifiesEntity);
-
     /**
      * @return true if the value of this property being modified should result in a modified entity
      */

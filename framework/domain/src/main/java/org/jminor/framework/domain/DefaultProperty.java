@@ -24,12 +24,14 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static org.jminor.common.Util.nullOrEmpty;
 
 /**
@@ -169,348 +171,176 @@ class DefaultProperty implements Property {
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
   }
 
-  /**
-   * @return a String representation of this property
-   */
   @Override
   public final String toString() {
     return getCaption();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean is(final String propertyId) {
     return this.propertyId.equals(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean is(final Property property) {
     return is(property.getPropertyId());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isNumerical() {
     return isInteger() || isDecimal() || isLong();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isTemporal() {
     return isDate() || isTimestamp() || isTime();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isDate() {
     return isType(Types.DATE);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isTimestamp() {
     return isType(Types.TIMESTAMP);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isTime() {
     return isType(Types.TIME);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isCharacter() {
     return isType(Types.CHAR);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isString() {
     return isType(Types.VARCHAR);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isLong() {
     return isType(Types.BIGINT);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isInteger() {
     return isType(Types.INTEGER);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isDouble() {
     return isType(Types.DOUBLE);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isBigDecimal() {
     return isType(Types.DECIMAL);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isDecimal() {
     return isDouble() || isBigDecimal();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isBoolean() {
     return isType(Types.BOOLEAN);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getPropertyId() {
     return propertyId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getEntityId() {
     return entityId;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public Property setEntityId(final String entityId) {
-    if (this.entityId != null) {
-      throw new IllegalStateException("entityId (" + this.entityId + ") has already been set for property: " + propertyId);
-    }
-    this.entityId = entityId;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public final int getType() {
     return type;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isType(final int type) {
     return this.type == type;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final Property setBeanProperty(final String beanProperty) {
-    this.beanProperty = requireNonNull(beanProperty, "beanProperty");
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public final String getBeanProperty() {
     return beanProperty;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final Property setHidden(final boolean hidden) {
-    this.hidden = hidden;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public final boolean isHidden() {
     return hidden;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public Property setReadOnly(final boolean readOnly) {
-    this.readOnly = readOnly;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public boolean isReadOnly() {
     return this.readOnly;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final Property setDefaultValue(final Object defaultValue) {
-    return setDefaultValueProvider(() -> defaultValue);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Property setDefaultValueProvider(final ValueProvider provider) {
-    if (provider != null) {
-      validateType(provider.getValue());
-    }
-    this.defaultValueProvider = provider == null ? DEFAULT_VALUE_PROVIDER : provider;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public boolean hasDefaultValue() {
     return !(this.defaultValueProvider instanceof DefaultValueProvider);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Object getDefaultValue() {
     return this.defaultValueProvider.getValue();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public Property setNullable(final boolean nullable) {
-    this.nullable = nullable;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public boolean isNullable() {
     return nullable;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final Property setMaxLength(final int maxLength) {
-    if (maxLength <= 0) {
-      throw new IllegalArgumentException("Max length must be a positive integer");
-    }
-    this.maxLength = maxLength;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public final int getMaxLength() {
     return maxLength;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Double getMax() {
     return max;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final Property setMax(final double max) {
-    this.max = max;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public final Double getMin() {
     return min;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final Property setMin(final double min) {
-    this.min = min;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Property setUseNumberFormatGrouping(final boolean useGrouping) {
-    if (!(format instanceof NumberFormat)) {
-      throw new IllegalStateException("Grouping can only be set for number formats");
-    }
-
-    ((NumberFormat) format).setGroupingUsed(useGrouping);
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Property setPreferredColumnWidth(final int preferredColumnWidth) {
-    this.preferredColumnWidth = preferredColumnWidth;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public final int getPreferredColumnWidth() {
     return preferredColumnWidth;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getDescription() {
     return description;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final Property setDescription(final String description) {
-    this.description = description;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public final Character getMnemonic() {
     return mnemonic;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final Property setMnemonic(final Character mnemonic) {
-    this.mnemonic = mnemonic;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public final Format getFormat() {
     return format;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final Property setFormat(final Format format) {
-    requireNonNull(format, "format");
-    if (isNumerical() && !(format instanceof NumberFormat)) {
-      throw new IllegalArgumentException("NumberFormat required for numerical property: " + propertyId);
-    }
-    if (isTemporal()) {
-      throw new IllegalArgumentException("Use setDateTimeFormatPattern() for date/time based property: " + propertyId);
-    }
-    this.format = format;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Property setDateTimeFormatPattern(final String dateTimeFormatPattern) {
-    if (!isTemporal()) {
-      throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to date/time based property: " + propertyId);
-    }
-    this.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
-    this.dateTimeFormatPattern = dateTimeFormatPattern;
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public final String getDateTimeFormatPattern() {
     return dateTimeFormatPattern;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final DateTimeFormatter getDateTimeFormatter() {
     if (dateTimeFormatter == null && dateTimeFormatPattern != null) {
@@ -520,18 +350,6 @@ class DefaultProperty implements Property {
     return dateTimeFormatter;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final Property setMaximumFractionDigits(final int maximumFractionDigits) {
-    if (!(format instanceof NumberFormat)) {
-      throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
-    }
-
-    ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
-    return this;
-  }
-
-  /** {@inheritDoc} */
   @Override
   public final int getMaximumFractionDigits() {
     if (!(format instanceof NumberFormat)) {
@@ -541,7 +359,6 @@ class DefaultProperty implements Property {
     return ((NumberFormat) format).getMaximumFractionDigits();
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getCaption() {
     if (caption == null) {
@@ -551,31 +368,123 @@ class DefaultProperty implements Property {
     return caption;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
     return this == obj || obj instanceof Property && this.propertyId.equals(((Property) obj).getPropertyId());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int hashCode() {
     return hashCode;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Class getTypeClass() {
     return typeClass;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void validateType(final Object value) {
     if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + typeClass +
               " expected for property " + this + " in entity " + entityId + ", got: " + value.getClass());
     }
+  }
+
+  void setEntityId(final String entityId) {
+    if (this.entityId != null) {
+      throw new IllegalStateException("entityId (" + this.entityId + ") has already been set for property: " + propertyId);
+    }
+    this.entityId = entityId;
+  }
+
+  void setBeanProperty(final String beanProperty) {
+    this.beanProperty = requireNonNull(beanProperty, "beanProperty");
+  }
+
+  void setHidden(final boolean hidden) {
+    this.hidden = hidden;
+  }
+
+  void setReadOnly(final boolean readOnly) {
+    this.readOnly = readOnly;
+  }
+
+  void setDefaultValue(final Object defaultValue) {
+    setDefaultValueProvider(() -> defaultValue);
+  }
+
+  void setDefaultValueProvider(final ValueProvider provider) {
+    if (provider != null) {
+      validateType(provider.getValue());
+    }
+    this.defaultValueProvider = provider == null ? DEFAULT_VALUE_PROVIDER : provider;
+  }
+
+  void setNullable(final boolean nullable) {
+    this.nullable = nullable;
+  }
+
+  void setMaxLength(final int maxLength) {
+    if (maxLength <= 0) {
+      throw new IllegalArgumentException("Max length must be a positive integer");
+    }
+    this.maxLength = maxLength;
+  }
+
+  void setMax(final double max) {
+    this.max = max;
+  }
+
+  void setMin(final double min) {
+    this.min = min;
+  }
+
+  void setUseNumberFormatGrouping(final boolean useGrouping) {
+    if (!(format instanceof NumberFormat)) {
+      throw new IllegalStateException("Grouping can only be set for number formats");
+    }
+
+    ((NumberFormat) format).setGroupingUsed(useGrouping);
+  }
+
+  void setPreferredColumnWidth(final int preferredColumnWidth) {
+    this.preferredColumnWidth = preferredColumnWidth;
+  }
+
+  void setDescription(final String description) {
+    this.description = description;
+  }
+
+  void setMnemonic(final Character mnemonic) {
+    this.mnemonic = mnemonic;
+  }
+
+  void setFormat(final Format format) {
+    requireNonNull(format, "format");
+    if (isNumerical() && !(format instanceof NumberFormat)) {
+      throw new IllegalArgumentException("NumberFormat required for numerical property: " + propertyId);
+    }
+    if (isTemporal()) {
+      throw new IllegalArgumentException("Use setDateTimeFormatPattern() for date/time based property: " + propertyId);
+    }
+    this.format = format;
+  }
+
+  void setDateTimeFormatPattern(final String dateTimeFormatPattern) {
+    if (!isTemporal()) {
+      throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to date/time based property: " + propertyId);
+    }
+    this.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
+    this.dateTimeFormatPattern = dateTimeFormatPattern;
+  }
+
+  final void setMaximumFractionDigits(final int maximumFractionDigits) {
+    if (!(format instanceof NumberFormat)) {
+      throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
+    }
+
+    ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
   }
 
   private Format initializeDefaultFormat() {
@@ -673,12 +582,6 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public final ColumnProperty setColumnName(final String columnName) {
-      this.columnName = requireNonNull(columnName, "columnName");
-      return this;
-    }
-
-    @Override
     public final String getColumnName() {
       return columnName;
     }
@@ -704,20 +607,8 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public final ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
-      this.columnHasDefaultValue = columnHasDefaultValue;
-      return this;
-    }
-
-    @Override
     public final boolean isUpdatable() {
       return this.updatable;
-    }
-
-    @Override
-    public final ColumnProperty setUpdatable(final boolean updatable) {
-      this.updatable = updatable;
-      return this;
     }
 
     @Override
@@ -726,28 +617,8 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public final ColumnProperty setPrimaryKeyIndex(final int index) {
-      if (index < 0) {
-        throw new IllegalArgumentException("Primary key index must be at least 0");
-      }
-      this.primaryKeyIndex = index;
-      setNullable(false);
-      setUpdatable(false);
-      return this;
-    }
-
-    @Override
     public final int getPrimaryKeyIndex() {
       return primaryKeyIndex;
-    }
-
-    @Override
-    public final ColumnProperty setGroupingColumn(final boolean groupingColumn) {
-      if (aggregateColumn) {
-        throw new IllegalStateException(columnName + " is an aggregate column");
-      }
-      this.groupingColumn = groupingColumn;
-      return this;
     }
 
     @Override
@@ -756,33 +627,13 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public final ColumnProperty setAggregateColumn(final boolean aggregateColumn) {
-      if (groupingColumn) {
-        throw new IllegalStateException(columnName + " is a grouping column");
-      }
-      this.aggregateColumn = aggregateColumn;
-      return this;
-    }
-
-    @Override
     public final boolean isAggregateColumn() {
       return aggregateColumn;
     }
 
     @Override
-    public final ColumnProperty setSelectable(final boolean selectable) {
-      this.selectable = selectable;
-      return this;
-    }
-
-    @Override
     public final boolean isSelectable() {
       return selectable;
-    }
-
-    @Override
-    public final void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
-      this.foreignKeyProperty = foreignKeyProperty;
     }
 
     @Override
@@ -798,15 +649,6 @@ class DefaultProperty implements Property {
     @Override
     public final boolean isPrimaryKeyProperty() {
       return primaryKeyIndex >= 0;
-    }
-
-    @Override
-    public Property setReadOnly(final boolean readOnly) {
-      if (isForeignKeyProperty()) {
-        throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");
-      }
-
-      return super.setReadOnly(readOnly);
     }
 
     @Override
@@ -834,15 +676,62 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public final ColumnProperty setValueConverter(final ValueConverter<?, ?> valueConverter) {
-      requireNonNull(valueConverter, "valueConverter");
-      this.valueConverter = (ValueConverter<Object, Object>) valueConverter;
-      return this;
-    }
-
-    @Override
     public final ResultPacker<Object> getResultPacker() {
       return resultPacker;
+    }
+
+    void setColumnName(final String columnName) {
+      this.columnName = requireNonNull(columnName, "columnName");
+    }
+
+    void setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
+      this.columnHasDefaultValue = columnHasDefaultValue;
+    }
+
+    void setUpdatable(final boolean updatable) {
+      this.updatable = updatable;
+    }
+
+    void  setPrimaryKeyIndex(final int index) {
+      if (index < 0) {
+        throw new IllegalArgumentException("Primary key index must be at least 0");
+      }
+      this.primaryKeyIndex = index;
+    }
+
+    void setGroupingColumn(final boolean groupingColumn) {
+      if (aggregateColumn) {
+        throw new IllegalStateException(columnName + " is an aggregate column");
+      }
+      this.groupingColumn = groupingColumn;
+    }
+
+    void setAggregateColumn(final boolean aggregateColumn) {
+      if (groupingColumn) {
+        throw new IllegalStateException(columnName + " is a grouping column");
+      }
+      this.aggregateColumn = aggregateColumn;
+    }
+
+    void setSelectable(final boolean selectable) {
+      this.selectable = selectable;
+    }
+
+    void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
+      this.foreignKeyProperty = foreignKeyProperty;
+    }
+
+    void setReadOnly(final boolean readOnly) {
+      if (isForeignKeyProperty()) {
+        throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");
+      }
+
+      super.setReadOnly(readOnly);
+    }
+
+    void setValueConverter(final ValueConverter<?, ?> valueConverter) {
+      requireNonNull(valueConverter, "valueConverter");
+      this.valueConverter = (ValueConverter<Object, Object>) valueConverter;
     }
 
     private static ValueConverter initializeValueConverter(final ColumnProperty property) {
@@ -978,6 +867,8 @@ class DefaultProperty implements Property {
     private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
     private boolean softReference = false;
 
+    transient final List<PropertyDefinition.ColumnPropertyDefinition> columnPropertyDefinitions;
+
     /**
      * @param propertyId the property ID
      * @param caption the caption
@@ -985,7 +876,7 @@ class DefaultProperty implements Property {
      * @param columnProperty the underlying column property comprising this foreign key
      */
     DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
-                              final ColumnProperty columnProperty) {
+                              final PropertyDefinition.ColumnPropertyDefinition columnProperty) {
       this(propertyId, caption, foreignEntityId, singletonList(columnProperty));
     }
 
@@ -993,33 +884,26 @@ class DefaultProperty implements Property {
      * @param propertyId the property ID, note that this is not a column name
      * @param caption the property caption
      * @param foreignEntityId the ID of the entity referenced by this foreign key
-     * @param columnProperties the underlying column properties comprising this foreign key
+     * @param columnPropertyDefinitions the underlying column properties comprising this foreign key
      * @param foreignProperties the properties referenced, in the same order as the column properties,
      * if null then the primary key properties of the referenced entity are used when required
      */
     DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
-                              final List<ColumnProperty> columnProperties) {
+                              final List<PropertyDefinition.ColumnPropertyDefinition> columnPropertyDefinitions) {
       super(propertyId, Types.OTHER, caption, Entity.class);
       requireNonNull(foreignEntityId, "foreignEntityId");
-      validateParameters(propertyId, foreignEntityId, columnProperties);
-      columnProperties.forEach(columnProperty -> columnProperty.setForeignKeyProperty(this));
+      validateParameters(propertyId, foreignEntityId, columnPropertyDefinitions);
+      this.columnPropertyDefinitions = columnPropertyDefinitions;
+      columnPropertyDefinitions.forEach(columnProperty -> columnProperty.setForeignKeyProperty(this));
       this.foreignEntityId = foreignEntityId;
-      this.columnProperties = unmodifiableList(columnProperties);
+      this.columnProperties = unmodifiableList(columnPropertyDefinitions.stream().map((Function<PropertyDefinition.ColumnPropertyDefinition,
+              ColumnProperty>) PropertyDefinition.ColumnPropertyDefinition::get).collect(toList()));
       this.compositeReference = this.columnProperties.size() > 1;
     }
 
     @Override
     public boolean isUpdatable() {
       return columnProperties.stream().allMatch(ColumnProperty::isUpdatable);
-    }
-
-    @Override
-    public ForeignKeyProperty setNullable(final boolean nullable) {
-      for (final ColumnProperty columnProperty : columnProperties) {
-        columnProperty.setNullable(nullable);
-      }
-
-      return (ForeignKeyProperty) super.setNullable(nullable);
     }
 
     @Override
@@ -1043,20 +927,8 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public ForeignKeyProperty setFetchDepth(final int fetchDepth) {
-      this.fetchDepth = fetchDepth;
-      return this;
-    }
-
-    @Override
     public boolean isSoftReference() {
       return softReference;
-    }
-
-    @Override
-    public ForeignKeyProperty setSoftReference(final boolean softReference) {
-      this.softReference = softReference;
-      return this;
     }
 
     @Override
@@ -1071,14 +943,30 @@ class DefaultProperty implements Property {
       }
     }
 
+    void setNullable(final boolean nullable) {
+      for (final PropertyDefinition.ColumnPropertyDefinition columnPropertyDefiner : columnPropertyDefinitions) {
+        columnPropertyDefiner.setNullable(nullable);
+      }
+
+      super.setNullable(nullable);
+    }
+
+    void setFetchDepth(final int fetchDepth) {
+      this.fetchDepth = fetchDepth;
+    }
+
+    void setSoftReference(final boolean softReference) {
+      this.softReference = softReference;
+    }
+
     private static void validateParameters(final String propertyId, final String foreignEntityId,
-                                           final List<ColumnProperty> columnProperties) {
+                                           final List<PropertyDefinition.ColumnPropertyDefinition> columnProperties) {
       if (nullOrEmpty(columnProperties)) {
         throw new IllegalArgumentException("No column properties specified");
       }
-      for (final Property.ColumnProperty columnProperty : columnProperties) {
+      for (final PropertyDefinition.ColumnPropertyDefinition columnProperty : columnProperties) {
         requireNonNull(columnProperty, "columnProperty");
-        if (columnProperty.getPropertyId().equals(propertyId)) {
+        if (columnProperty.get().getPropertyId().equals(propertyId)) {
           throw new IllegalArgumentException(foreignEntityId + ", column propertyId is the same as foreign key propertyId: " + propertyId);
         }
       }
@@ -1197,10 +1085,8 @@ class DefaultProperty implements Property {
       super(propertyId, type, caption, getTypeClass(type));
     }
 
-    @Override
-    public final TransientProperty setModifiesEntity(final boolean modifiesEntity) {
+    void setModifiesEntity(final boolean modifiesEntity) {
       this.modifiesEntity = modifiesEntity;
-      return this;
     }
 
     @Override
@@ -1237,8 +1123,7 @@ class DefaultProperty implements Property {
       return sourcePropertyIds;
     }
 
-    @Override
-    public Property setReadOnly(final boolean readOnly) {
+    void setReadOnly(final boolean readOnly) {
       throw new UnsupportedOperationException("Derived properties are always read only");
     }
   }
@@ -1270,8 +1155,7 @@ class DefaultProperty implements Property {
       return subquery;
     }
 
-    @Override
-    public Property setReadOnly(final boolean readOnly) {
+    void setReadOnly(final boolean readOnly) {
       throw new UnsupportedOperationException("Subquery properties are always read only");
     }
   }

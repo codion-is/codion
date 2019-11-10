@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -158,8 +159,8 @@ public class Domain implements Serializable {
    * @param entityId the entity id
    * @param valueProvider the value provider
    * @return the populated entity
-   * @see Property.ColumnProperty#setColumnHasDefaultValue(boolean)
-   * @see Property.ColumnProperty#setDefaultValue(Object)
+   * @see PropertyDefinition.ColumnPropertyDefinition#setColumnHasDefaultValue(boolean)
+   * @see PropertyDefinition.ColumnPropertyDefinition#setDefaultValue(Object)
    */
   public final Entity defaultEntity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
     final Entity entity = entity(entityId);
@@ -304,7 +305,7 @@ public class Domain implements Serializable {
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.Definer define(final String entityId, final Property... properties) {
+  public final Entity.Definer define(final String entityId, final PropertyDefinition... properties) {
     return define(entityId, entityId, properties);
   }
 
@@ -319,7 +320,7 @@ public class Domain implements Serializable {
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.Definer define(final String entityId, final String tableName, final Property... properties) {
+  public final Entity.Definer define(final String entityId, final String tableName, final PropertyDefinition... properties) {
     requireNonNull(entityId, ENTITY_ID_PARAM);
     requireNonNull(tableName, "tableName");
     if (entityDefinitions.containsKey(entityId) && !ALLOW_REDEFINE_ENTITY.get()) {
@@ -545,12 +546,12 @@ public class Domain implements Serializable {
     return definition;
   }
 
-  private Map<String, Property> initializePropertyMap(final String entityId, final Property... properties) {
+  private Map<String, Property> initializePropertyMap(final String entityId, final PropertyDefinition... properties) {
     final Map<String, Property> propertyMap = new LinkedHashMap<>(properties.length);
-    for (final Property property : properties) {
-      validateAndAddProperty(property, entityId, propertyMap);
-      if (property instanceof Property.ForeignKeyProperty) {
-        initializeForeignKeyProperty(entityId, propertyMap, (Property.ForeignKeyProperty) property);
+    for (final PropertyDefinition propertyDefinition : properties) {
+      validateAndAddProperty(propertyDefinition, entityId, propertyMap);
+      if (propertyDefinition instanceof PropertyDefinition.ForeignKeyPropertyDefinition) {
+        initializeForeignKeyProperty(entityId, propertyMap, (PropertyDefinition.ForeignKeyPropertyDefinition) propertyDefinition);
       }
     }
     checkIfPrimaryKeyIsSpecified(entityId, propertyMap);
@@ -559,8 +560,11 @@ public class Domain implements Serializable {
   }
 
   private void initializeForeignKeyProperty(final String entityId, final Map<String, Property> propertyMap,
-                                            final Property.ForeignKeyProperty foreignKeyProperty) {
-    final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
+                                            final PropertyDefinition.ForeignKeyPropertyDefinition foreignKeyPropertyDefiner) {
+    final List<PropertyDefinition.ColumnPropertyDefinition> propertyDefiners = foreignKeyPropertyDefiner.getPropertyDefiners();
+    final Property.ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyDefiner.get();
+    final List<Property.ColumnProperty> properties = propertyDefiners.stream().map(
+            (Function<PropertyDefinition.ColumnPropertyDefinition, Property.ColumnProperty>) PropertyDefinition.ColumnPropertyDefinition::get).collect(toList());
     if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
       final Entity.Definition foreignEntity = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
       if (foreignEntity == null) {
@@ -573,9 +577,9 @@ public class Domain implements Serializable {
                 "' does not match the number of foreign properties in the referenced entity '" + foreignKeyProperty.getForeignEntityId() + "'");
       }
     }
-    for (final Property.ColumnProperty property : properties) {
-      if (!(property instanceof Property.MirrorProperty)) {
-        validateAndAddProperty(property, entityId, propertyMap);
+    for (final PropertyDefinition.ColumnPropertyDefinition propertyDefiner : propertyDefiners) {
+      if (!(propertyDefiner.get() instanceof Property.MirrorProperty)) {
+        validateAndAddProperty(propertyDefiner, entityId, propertyMap);
       }
     }
   }
@@ -643,10 +647,11 @@ public class Domain implements Serializable {
     }
   }
 
-  private static void validateAndAddProperty(final Property property, final String entityId,
+  private static void validateAndAddProperty(final PropertyDefinition propertyDefinition, final String entityId,
                                              final Map<String, Property> propertyMap) {
+    final Property property = propertyDefinition.get();
     checkIfUniquePropertyId(property, entityId, propertyMap);
-    property.setEntityId(entityId);
+    propertyDefinition.setEntityId(entityId);
     propertyMap.put(property.getPropertyId(), property);
   }
 
@@ -881,10 +886,10 @@ public class Domain implements Serializable {
    * range validation for numerical properties with max and/or min values specified and string length validation
    * based on the specified max length.
    * This Validator can be extended to provide further validation.
-   * @see Property#setNullable(boolean)
-   * @see Property#setMin(double)
-   * @see Property#setMax(double)
-   * @see Property#setMaxLength(int)
+   * @see PropertyDefinition#setNullable(boolean)
+   * @see PropertyDefinition#setMin(double)
+   * @see PropertyDefinition#setMax(double)
+   * @see PropertyDefinition#setMaxLength(int)
    */
   public static class Validator extends DefaultValueMap.DefaultValidator<Property, Entity> implements Entity.Validator {
 
