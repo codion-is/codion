@@ -15,6 +15,7 @@ class DefaultAuditProperty extends DefaultColumnProperty implements AuditPropert
     super.setReadOnly(true);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final AuditAction getAuditAction() {
     return auditAction;

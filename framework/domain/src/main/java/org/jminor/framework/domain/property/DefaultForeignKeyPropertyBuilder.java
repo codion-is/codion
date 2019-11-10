@@ -12,17 +12,20 @@ final class DefaultForeignKeyPropertyBuilder extends DefaultPropertyBuilder<Defa
     super(property);
   }
 
+  /** {@inheritDoc} */
   @Override
   public List<ColumnPropertyBuilder> getPropertyBuilders() {
     return property.columnPropertyBuilders;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ForeignKeyPropertyBuilder setFetchDepth(final int fetchDepth) {
     property.setFetchDepth(fetchDepth);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ForeignKeyPropertyBuilder setSoftReference(final boolean softReference) {
     property.setSoftReference(softReference);

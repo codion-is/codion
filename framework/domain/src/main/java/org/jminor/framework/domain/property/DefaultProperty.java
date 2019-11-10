@@ -153,176 +153,211 @@ class DefaultProperty implements Property {
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getCaption();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean is(final String propertyId) {
     return this.propertyId.equals(propertyId);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean is(final Property property) {
     return is(property.getPropertyId());
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isNumerical() {
     return isInteger() || isDecimal() || isLong();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isTemporal() {
     return isDate() || isTimestamp() || isTime();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isDate() {
     return isType(Types.DATE);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isTimestamp() {
     return isType(Types.TIMESTAMP);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isTime() {
     return isType(Types.TIME);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isCharacter() {
     return isType(Types.CHAR);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isString() {
     return isType(Types.VARCHAR);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isLong() {
     return isType(Types.BIGINT);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isInteger() {
     return isType(Types.INTEGER);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isDouble() {
     return isType(Types.DOUBLE);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isBigDecimal() {
     return isType(Types.DECIMAL);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isDecimal() {
     return isDouble() || isBigDecimal();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isBoolean() {
     return isType(Types.BOOLEAN);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String getPropertyId() {
     return propertyId;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getEntityId() {
     return entityId;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getType() {
     return type;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isType(final int type) {
     return this.type == type;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String getBeanProperty() {
     return beanProperty;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isHidden() {
     return hidden;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isReadOnly() {
     return this.readOnly;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean hasDefaultValue() {
     return !(this.defaultValueProvider instanceof DefaultValueProvider);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Object getDefaultValue() {
     return this.defaultValueProvider.getValue();
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isNullable() {
     return nullable;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getMaxLength() {
     return maxLength;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Double getMax() {
     return max;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Double getMin() {
     return min;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getPreferredColumnWidth() {
     return preferredColumnWidth;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String getDescription() {
     return description;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Character getMnemonic() {
     return mnemonic;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Format getFormat() {
     return format;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String getDateTimeFormatPattern() {
     return dateTimeFormatPattern;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final DateTimeFormatter getDateTimeFormatter() {
     if (dateTimeFormatter == null && dateTimeFormatPattern != null) {
@@ -332,6 +367,7 @@ class DefaultProperty implements Property {
     return dateTimeFormatter;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getMaximumFractionDigits() {
     if (!(format instanceof NumberFormat)) {
@@ -341,6 +377,7 @@ class DefaultProperty implements Property {
     return ((NumberFormat) format).getMaximumFractionDigits();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getCaption() {
     if (caption == null) {
@@ -350,21 +387,25 @@ class DefaultProperty implements Property {
     return caption;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
     return this == obj || obj instanceof Property && this.propertyId.equals(((Property) obj).getPropertyId());
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int hashCode() {
     return hashCode;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Class getTypeClass() {
     return typeClass;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void validateType(final Object value) {
     if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
