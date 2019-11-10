@@ -268,7 +268,7 @@ public class Domain implements Serializable {
    * @param bean the bean to convert to an Entity
    * @param <V> the bean type
    * @return a Entity based on the given bean
-   * @see Entity.Definer#setBeanClass(Class)
+   * @see Entity.DefinitionBuilder#setBeanClass(Class)
    */
   public <V> Entity fromBean(final V bean) {
     requireNonNull(bean, "bean");
@@ -310,11 +310,11 @@ public class Domain implements Serializable {
    * @param entityId the id uniquely identifying the entity type
    * @param properties the {@link Property} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
-   * @return a {@link Entity.Definer}
+   * @return a {@link Entity.DefinitionBuilder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.Definer define(final String entityId, final PropertyBuilder... properties) {
+  public final Entity.DefinitionBuilder define(final String entityId, final PropertyBuilder... properties) {
     return define(entityId, entityId, properties);
   }
 
@@ -325,11 +325,11 @@ public class Domain implements Serializable {
    * @param tableName the name of the underlying table
    * @param properties the {@link Property} objects to base the entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
-   * @return a {@link Entity.Definer}
+   * @return a {@link Entity.DefinitionBuilder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public final Entity.Definer define(final String entityId, final String tableName, final PropertyBuilder... properties) {
+  public final Entity.DefinitionBuilder define(final String entityId, final String tableName, final PropertyBuilder... properties) {
     requireNonNull(entityId, ENTITY_ID_PARAM);
     requireNonNull(tableName, "tableName");
     if (entityDefinitions.containsKey(entityId) && !ALLOW_REDEFINE_ENTITY.get()) {
@@ -344,7 +344,7 @@ public class Domain implements Serializable {
             tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties, new Validator());
     entityDefinitions.put(entityId, entityDefinition);
 
-    return new DefaultEntityDefinition.EntityDefiner(entityDefinition);
+    return new DefaultEntityDefinition.EntityDefinitionBuilder(entityDefinition);
   }
 
   /**

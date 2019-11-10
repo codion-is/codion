@@ -778,112 +778,112 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return stringBuilder.toString();
   }
 
-  static class EntityDefiner implements Entity.Definer {
+  static class EntityDefinitionBuilder implements Entity.DefinitionBuilder {
 
     private final DefaultEntityDefinition definition;
 
-    EntityDefiner(final DefaultEntityDefinition definition) {
+    EntityDefinitionBuilder(final DefaultEntityDefinition definition) {
       this.definition = definition;
     }
 
     @Override
-    public Entity.Definer addConditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
+    public Entity.DefinitionBuilder addConditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
       definition.addConditionProvider(conditionId, conditionProvider);
       return this;
     }
 
     @Override
-    public Entity.Definer setCaption(final String caption) {
+    public Entity.DefinitionBuilder setCaption(final String caption) {
       definition.setCaption(caption);
       return this;
     }
 
     @Override
-    public Entity.Definer setBeanClass(final Class beanClass) {
+    public Entity.DefinitionBuilder setBeanClass(final Class beanClass) {
       definition.setBeanClass(beanClass);
       return this;
     }
 
     @Override
-    public Entity.Definer setSmallDataset(final boolean smallDataset) {
+    public Entity.DefinitionBuilder setSmallDataset(final boolean smallDataset) {
       definition.setSmallDataset(smallDataset);
       return this;
     }
 
     @Override
-    public Entity.Definer setStaticData(final boolean staticData) {
+    public Entity.DefinitionBuilder setStaticData(final boolean staticData) {
       definition.setStaticData(staticData);
       return this;
     }
 
     @Override
-    public Entity.Definer setReadOnly(final boolean readOnly) {
+    public Entity.DefinitionBuilder setReadOnly(final boolean readOnly) {
       definition.setReadOnly(readOnly);
       return this;
     }
 
     @Override
-    public Entity.Definer setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
+    public Entity.DefinitionBuilder setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
       definition.setKeyGenerator(keyGenerator);
       return this;
     }
 
     @Override
-    public Entity.Definer setOrderBy(final Entity.OrderBy orderBy) {
+    public Entity.DefinitionBuilder setOrderBy(final Entity.OrderBy orderBy) {
       definition.setOrderBy(orderBy);
       return this;
     }
 
     @Override
-    public Entity.Definer setGroupByClause(final String groupByClause) {
+    public Entity.DefinitionBuilder setGroupByClause(final String groupByClause) {
       definition.setGroupByClause(groupByClause);
       return this;
     }
 
     @Override
-    public Entity.Definer setHavingClause(final String havingClause) {
+    public Entity.DefinitionBuilder setHavingClause(final String havingClause) {
       definition.setHavingClause(havingClause);
       return this;
     }
 
     @Override
-    public Entity.Definer setSelectTableName(final String selectTableName) {
+    public Entity.DefinitionBuilder setSelectTableName(final String selectTableName) {
       definition.setSelectTableName(selectTableName);
       return this;
     }
 
     @Override
-    public Entity.Definer setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
+    public Entity.DefinitionBuilder setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
       definition.setSelectQuery(selectQuery, containsWhereClause);
       return this;
     }
 
     @Override
-    public Entity.Definer setComparator(final Comparator<Entity> comparator) {
+    public Entity.DefinitionBuilder setComparator(final Comparator<Entity> comparator) {
       definition.setComparator(comparator);
       return this;
     }
 
     @Override
-    public Entity.Definer setStringProvider(final Entity.ToString stringProvider) {
+    public Entity.DefinitionBuilder setStringProvider(final Entity.ToString stringProvider) {
       definition.setStringProvider(stringProvider);
       return this;
     }
 
     @Override
-    public Entity.Definer setSearchPropertyIds(final String... searchPropertyIds) {
+    public Entity.DefinitionBuilder setSearchPropertyIds(final String... searchPropertyIds) {
       definition.setSearchPropertyIds(searchPropertyIds);
       return this;
     }
 
     @Override
-    public Entity.Definer setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
+    public Entity.DefinitionBuilder setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
       definition.setBackgroundColorProvider(colorProvider);
       return this;
     }
 
     @Override
-    public Entity.Definer setValidator(final Entity.Validator validator) {
+    public Entity.DefinitionBuilder setValidator(final Entity.Validator validator) {
       definition.setValidator(validator);
       return this;
     }
