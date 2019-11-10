@@ -3,6 +3,10 @@
  */
 package org.jminor.framework.domain.property;
 
+/**
+ * Builds a TransientProperty instance
+ * @param <T> the TransientProperty type
+ */
 public interface TransientPropertyBuilder<T extends TransientProperty> extends PropertyBuilder<T> {
 
   /**

@@ -5,6 +5,10 @@ package org.jminor.framework.domain.property;
 
 import java.text.Format;
 
+/**
+ * Builds a Property instance
+ * @param <T> the Property type
+ */
 public interface PropertyBuilder<T extends Property> {
 
   /**
