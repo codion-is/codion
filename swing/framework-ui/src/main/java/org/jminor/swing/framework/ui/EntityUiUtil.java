@@ -748,7 +748,7 @@ public final class EntityUiUtil {
    */
   public static SteppedComboBox createPropertyComboBox(final String propertyId, final EntityEditModel editModel,
                                                        final StateObserver enabledState) {
-    return createPropertyComboBox(editModel.getDomain().getDefinition(editModel.getEntityId())
+    return createPropertyComboBox(editModel.getEntityDefinition()
                     .getColumnProperty(propertyId), editModel, enabledState);
   }
 

@@ -173,6 +173,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
+  public final Entity.Definition getEntityDefinition() {
+    return getDomain().getDefinition(entityId);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + entityId;
   }
@@ -318,7 +324,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final int getPropertyColumnIndex(final String propertyId) {
-    return getColumnModel().getColumnIndex(getDomain().getDefinition(entityId).getProperty(propertyId));
+    return getColumnModel().getColumnIndex(getEntityDefinition().getProperty(propertyId));
   }
 
   /**
@@ -368,7 +374,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @see TableSortModel#setSortingDirective(Object, SortingDirective, boolean)
    */
   public final void setSortingDirective(final String propertyId, final SortingDirective directive, final boolean addColumnToSort) {
-    getSortModel().setSortingDirective(getDomain().getDefinition(entityId).getProperty(propertyId), directive, addColumnToSort);
+    getSortModel().setSortingDirective(getEntityDefinition().getProperty(propertyId), directive, addColumnToSort);
   }
 
   /** {@inheritDoc} */
@@ -435,7 +441,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
-            getDomain().getDefinition(entityId).getForeignKeyProperties(foreignKeyEntityId);
+            getEntityDefinition().getForeignKeyProperties(foreignKeyEntityId);
     boolean changed = false;
     for (final Entity entity : getAllItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
@@ -504,7 +510,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final ColumnSummaryModel getColumnSummaryModel(final String propertyId) {
-    return getColumnSummaryModel(getDomain().getDefinition(entityId).getProperty(propertyId));
+    return getColumnSummaryModel(getEntityDefinition().getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
@@ -516,7 +522,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void setColumns(final String... propertyIds) {
-    getColumnModel().setColumns(getDomain().getDefinition(entityId).getProperties(asList(propertyIds)).toArray(new Property[0]));
+    getColumnModel().setColumns(getEntityDefinition().getProperties(asList(propertyIds)).toArray(new Property[0]));
   }
 
   /** {@inheritDoc} */
@@ -631,7 +637,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @see Entity.Definition#getOrderBy()
    */
   protected Entity.OrderBy getOrderBy() {
-    return getDomain().getDefinition(entityId).getOrderBy();
+    return getEntityDefinition().getOrderBy();
   }
 
   @SuppressWarnings({"UnusedDeclaration"})

@@ -49,7 +49,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @see #createForeignKeyListModel(ForeignKeyProperty)
    */
   public final FXEntityListModel getForeignKeyListModel(final String foreignKeyPropertyId) {
-    return getForeignKeyListModel(getDomain().getDefinition(getEntityId()).getForeignKeyProperty(foreignKeyPropertyId));
+    return getForeignKeyListModel(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
   }
 
   /**
@@ -94,7 +94,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty :
-              getDomain().getDefinition(getEntityId()).getForeignKeyProperties(entry.getKey())) {
+              getEntityDefinition().getForeignKeyProperties(entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {
           listModel.addAll(entry.getValue());
@@ -112,7 +112,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty :
-              getDomain().getDefinition(getEntityId()).getForeignKeyProperties(entry.getKey())) {
+              getEntityDefinition().getForeignKeyProperties(entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {
           listModel.removeAll(entry.getValue());

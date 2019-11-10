@@ -106,6 +106,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
+  public final Entity.Definition getEntityDefinition() {
+    return getDomain().getDefinition(getEntityId());
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void setEditModel(final FXEntityEditModel editModel) {
     requireNonNull(editModel, "editModel");
     if (this.editModel != null) {
@@ -201,7 +207,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
-            getDomain().getDefinition(getEntityId()).getForeignKeyProperties(foreignKeyEntityId);
+            getEntityDefinition().getForeignKeyProperties(foreignKeyEntityId);
     for (final Entity entity : getAllItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
@@ -476,7 +482,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @see Entity.Definition#getOrderBy()
    */
   protected Entity.OrderBy getOrderBy() {
-    return getDomain().getDefinition(getEntityId()).getOrderBy();
+    return getEntityDefinition().getOrderBy();
   }
 
   /**

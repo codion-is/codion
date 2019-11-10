@@ -152,6 +152,8 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public Domain getDomain() {return null;}
     @Override
+    public Entity.Definition getEntityDefinition() {return null;}
+    @Override
     public TestEntityEditModel getEditModel() {return null;}
     @Override
     public boolean hasEditModel() {return false;}

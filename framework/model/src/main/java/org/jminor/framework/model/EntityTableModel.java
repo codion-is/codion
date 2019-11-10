@@ -60,6 +60,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   Domain getDomain();
 
   /**
+   * @return the definition of the underlying entity
+   */
+  Entity.Definition getEntityDefinition();
+
+  /**
    * Returns the {@link EntityEditModel} associated with this table model
    * @return the edit model associated with this table model
    * @see #setEditModel(EntityEditModel)

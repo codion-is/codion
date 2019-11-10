@@ -504,8 +504,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
-    Properties.sort(getEntityTableModel().getDomain()
-            .getDefinition(getEntityTableModel().getEntityId()).getUpdatableProperties()).forEach(property -> {
+    Properties.sort(getEntityTableModel().getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (includeUpdateSelectedProperty(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
         controlSet.add(Controls.control(() -> updateSelectedEntities(property), caption, enabled));
@@ -1454,8 +1453,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     final SwingEntityTableModel entityTableModel = getEntityTableModel();
 
     return !entityTableModel.isReadOnly() && entityTableModel.isUpdateAllowed() &&
-            entityTableModel.isBatchUpdateAllowed() && !entityTableModel.getDomain()
-            .getDefinition(entityTableModel.getEntityId()).getUpdatableProperties().isEmpty();
+            entityTableModel.isBatchUpdateAllowed() &&
+            !entityTableModel.getEntityDefinition().getUpdatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {
