@@ -5283,3 +5283,4 @@
   Major refactoring, domain.property package added
   domain.property package exported
   EntityEditModel.getEntityDefinition() and EntityTableModel.getEntityDefinition() added
+  DefaultEntityDefinition.EntityDefinitionBuilder renamed to DefaultDefinitionBuilder and refactored

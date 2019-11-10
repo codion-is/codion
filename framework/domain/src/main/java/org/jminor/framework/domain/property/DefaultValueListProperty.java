@@ -27,16 +27,19 @@ final class DefaultValueListProperty extends DefaultColumnProperty implements Va
     this.items = unmodifiableList(items);
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isValid(final Object value) {
     return findItem(value) != null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public List<Item> getValues() {
     return items;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getCaption(final Object value) {
     final Item item = findItem(value);

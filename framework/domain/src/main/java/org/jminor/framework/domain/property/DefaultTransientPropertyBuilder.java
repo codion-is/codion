@@ -10,6 +10,7 @@ final class DefaultTransientPropertyBuilder extends DefaultPropertyBuilder<Defau
     super(property);
   }
 
+  /** {@inheritDoc} */
   @Override
   public DefaultTransientPropertyBuilder setModifiesEntity(final boolean modifiesEntity) {
     property.setModifiesEntity(modifiesEntity);

@@ -12,24 +12,28 @@ final class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder<DefaultC
     super(property);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final DefaultColumnPropertyBuilder setColumnName(final String columnName) {
     property.setColumnName(columnName);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final DefaultColumnPropertyBuilder setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
     property.setColumnHasDefaultValue(columnHasDefaultValue);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final DefaultColumnPropertyBuilder setUpdatable(final boolean updatable) {
     property.setUpdatable(updatable);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final DefaultColumnPropertyBuilder setPrimaryKeyIndex(final int index) {
     property.setPrimaryKeyIndex(index);
@@ -38,24 +42,28 @@ final class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder<DefaultC
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final DefaultColumnPropertyBuilder setGroupingColumn(final boolean groupingColumn) {
     property.setGroupingColumn(groupingColumn);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final DefaultColumnPropertyBuilder setAggregateColumn(final boolean aggregateColumn) {
     property.setAggregateColumn(aggregateColumn);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final DefaultColumnPropertyBuilder setSelectable(final boolean selectable) {
     property.setSelectable(selectable);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public DefaultColumnPropertyBuilder setReadOnly(final boolean readOnly) {
     property.setReadOnly(readOnly);
@@ -66,12 +74,14 @@ final class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder<DefaultC
     return (DefaultColumnPropertyBuilder) super.setReadOnly(readOnly);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final DefaultColumnPropertyBuilder setValueConverter(final ValueConverter<?, ?> valueConverter) {
     property.setValueConverter(valueConverter);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
     property.setForeignKeyProperty(foreignKeyProperty);

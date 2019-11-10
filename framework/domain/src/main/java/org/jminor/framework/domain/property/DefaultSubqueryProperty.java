@@ -25,11 +25,13 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
     this.subquery = subquery;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getSubQuery() {
     return subquery;
   }
 
+  @Override
   void setReadOnly(final boolean readOnly) {
     throw new UnsupportedOperationException("Subquery properties are always read only");
   }

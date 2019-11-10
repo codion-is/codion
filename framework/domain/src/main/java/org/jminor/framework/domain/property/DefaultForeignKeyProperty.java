@@ -26,7 +26,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
-  transient final List<ColumnPropertyBuilder> columnPropertyBuilders;
+  final transient List<ColumnPropertyBuilder> columnPropertyBuilders;
 
   /**
    * @param propertyId the property ID
@@ -60,36 +60,43 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     this.compositeReference = this.columnProperties.size() > 1;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isUpdatable() {
     return columnProperties.stream().allMatch(ColumnProperty::isUpdatable);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getForeignEntityId() {
     return foreignEntityId;
   }
 
+  /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getProperties() {
     return columnProperties;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isCompositeKey() {
     return compositeReference;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getFetchDepth() {
     return fetchDepth;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isSoftReference() {
     return softReference;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void validateType(final Object value) {
     super.validateType(value);
@@ -102,6 +109,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
   }
 
+  @Override
   void setNullable(final boolean nullable) {
     for (final ColumnPropertyBuilder propertyBuilder : columnPropertyBuilders) {
       propertyBuilder.setNullable(nullable);

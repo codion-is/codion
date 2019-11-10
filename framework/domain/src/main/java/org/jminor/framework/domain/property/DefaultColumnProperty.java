@@ -57,76 +57,91 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     this.resultPacker = new PropertyResultPacker();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String getColumnName() {
     return columnName;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getColumnType() {
     return columnType;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Object toColumnValue(final Object value) {
     return valueConverter.toColumnValue(value);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Object fromColumnValue(final Object object) {
     return valueConverter.fromColumnValue(object);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean columnHasDefaultValue() {
     return columnHasDefaultValue;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isUpdatable() {
     return this.updatable;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isDenormalized() {
     return false;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int getPrimaryKeyIndex() {
     return primaryKeyIndex;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isGroupingColumn() {
     return groupingColumn;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isAggregateColumn() {
     return aggregateColumn;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isSelectable() {
     return selectable;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final ForeignKeyProperty getForeignKeyProperty() {
     return foreignKeyProperty;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isForeignKeyProperty() {
     return foreignKeyProperty != null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isPrimaryKeyProperty() {
     return primaryKeyIndex >= 0;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isReadOnly() {
     if (foreignKeyProperty != null) {
@@ -136,6 +151,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     return super.isReadOnly();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String getCaption() {
     final String superCaption = super.getCaption();
@@ -146,11 +162,13 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     return superCaption;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Object fetchValue(final ResultSet resultSet, final int index) throws SQLException {
     return valueFetcher.fetchValue(resultSet, index);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final ResultPacker<Object> getResultPacker() {
     return resultPacker;

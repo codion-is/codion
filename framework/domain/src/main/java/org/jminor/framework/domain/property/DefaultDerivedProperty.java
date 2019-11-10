@@ -26,16 +26,19 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
     super.setReadOnly(true);
   }
 
+  /** {@inheritDoc} */
   @Override
   public Provider getValueProvider() {
     return valueProvider;
   }
 
+  /** {@inheritDoc} */
   @Override
   public List<String> getSourcePropertyIds() {
     return sourcePropertyIds;
   }
 
+  @Override
   void setReadOnly(final boolean readOnly) {
     throw new UnsupportedOperationException("Derived properties are always read only");
   }
