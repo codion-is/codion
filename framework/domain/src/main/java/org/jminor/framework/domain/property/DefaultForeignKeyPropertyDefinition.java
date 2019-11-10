@@ -5,10 +5,10 @@ package org.jminor.framework.domain.property;
 
 import java.util.List;
 
-final class DefaultForeignKeyPropertyDefinition extends DefaultPropertyDefinition<DefaultProperty.DefaultForeignKeyProperty>
-        implements ForeignKeyPropertyDefinition<DefaultProperty.DefaultForeignKeyProperty> {
+final class DefaultForeignKeyPropertyDefinition extends DefaultPropertyDefinition<DefaultForeignKeyProperty>
+        implements ForeignKeyPropertyDefinition<DefaultForeignKeyProperty> {
 
-  DefaultForeignKeyPropertyDefinition(final DefaultProperty.DefaultForeignKeyProperty property) {
+  DefaultForeignKeyPropertyDefinition(final DefaultForeignKeyProperty property) {
     super(property);
   }
 

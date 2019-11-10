@@ -3,15 +3,15 @@
  */
 package org.jminor.framework.domain.property;
 
-final class DefaultTransientPropertyDefinition extends DefaultPropertyDefinition<DefaultProperty.DefaultTransientProperty>
-        implements TransientPropertyDefinition<DefaultProperty.DefaultTransientProperty> {
+final class DefaultTransientPropertyDefinition extends DefaultPropertyDefinition<DefaultTransientProperty>
+        implements TransientPropertyDefinition<DefaultTransientProperty> {
 
-  DefaultTransientPropertyDefinition(final DefaultProperty.DefaultTransientProperty property) {
+  DefaultTransientPropertyDefinition(final DefaultTransientProperty property) {
     super(property);
   }
 
   @Override
-  public org.jminor.framework.domain.property.DefaultTransientPropertyDefinition setModifiesEntity(final boolean modifiesEntity) {
+  public DefaultTransientPropertyDefinition setModifiesEntity(final boolean modifiesEntity) {
     property.setModifiesEntity(modifiesEntity);
     return this;
   }
