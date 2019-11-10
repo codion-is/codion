@@ -173,6 +173,13 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     return resultPacker;
   }
 
+  /**
+   * @return a builder for this property instance
+   */
+  ColumnProperty.Builder builder() {
+    return new Builder(this);
+  }
+
   void setColumnName(final String columnName) {
     this.columnName = requireNonNull(columnName, "columnName");
   }
@@ -422,10 +429,10 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
   }
 
-  static final class Builder extends DefaultProperty.Builder<DefaultColumnProperty>
+  private static final class Builder extends DefaultProperty.Builder<DefaultColumnProperty>
           implements ColumnProperty.Builder<DefaultColumnProperty> {
 
-    Builder(final DefaultColumnProperty property) {
+    private Builder(final DefaultColumnProperty property) {
       super(property);
     }
 

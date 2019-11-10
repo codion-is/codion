@@ -109,6 +109,13 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
   }
 
+  /**
+   * @return a builder for this property instance
+   */
+  ForeignKeyProperty.Builder builder() {
+    return new Builder(this);
+  }
+
   @Override
   void setNullable(final boolean nullable) {
     for (final ColumnProperty.Builder propertyBuilder : columnPropertyBuilders) {
@@ -139,10 +146,10 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
   }
 
-  static final class Builder extends DefaultProperty.Builder<DefaultForeignKeyProperty>
+  private static final class Builder extends DefaultProperty.Builder<DefaultForeignKeyProperty>
           implements ForeignKeyProperty.Builder<DefaultForeignKeyProperty> {
 
-    Builder(final DefaultForeignKeyProperty property) {
+    private Builder(final DefaultForeignKeyProperty property) {
       super(property);
     }
 
