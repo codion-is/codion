@@ -635,148 +635,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   }
 
   /**
-   * Builds a Entity.Definition
-   */
-  interface DefinitionBuilder {
-
-    /**
-     * @param validator the validator for this entity type
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setValidator(final Validator validator);
-
-    /**
-     * Adds a {@link ConditionProvider} which provides a dynamic query condition string.
-     * The condition string should not include the WHERE keyword and use the ?
-     * substitution character where values should be inserted.
-     * @param conditionId the condition id
-     * @param conditionProvider the condition provider
-     * @return this Entity.Definer instance
-     */
-    DefinitionBuilder addConditionProvider(final String conditionId, final ConditionProvider conditionProvider);
-
-    /**
-     * @param colorProvider the background color provider
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setBackgroundColorProvider(final BackgroundColorProvider colorProvider);
-
-    /**
-     * Sets the caption for this entity type
-     * @param caption the caption
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setCaption(final String caption);
-
-    /**
-     * Sets the bean class to associate with this entity type
-     * @param beanClass the bean class
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setBeanClass(final Class beanClass);
-
-    /**
-     * Specifies whether or not this entity should be regarded as based on a small dataset,
-     * which primarily means that combo box models can be based on this entity.
-     * This is false by default.
-     * @param smallDataset true if the underlying table is small enough for displaying the contents in a combo box
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setSmallDataset(final boolean smallDataset);
-
-    /**
-     * Specifies whether or not this entity should be regarded as based on a static dataset, that is,
-     * one that changes only infrequently.
-     * This is false by default.
-     * @param staticData true if the underlying table data is static
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setStaticData(final boolean staticData);
-
-    /**
-     * Sets the read only value, if true then it should not be possible to
-     * insert, update or delete entities of this type
-     * @param readOnly true if this entity type should be read only
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setReadOnly(final boolean readOnly);
-
-    /**
-     * Sets the primary key generator
-     * @param keyGenerator the primary key generator
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setKeyGenerator(final KeyGenerator keyGenerator);
-
-    /**
-     * Sets the order by clause for this entity type.
-     * @param orderBy the order by clause
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setOrderBy(final OrderBy orderBy);
-
-    /**
-     * Sets the having clause for this entity type, this clause should not
-     * include the "having" keyword.
-     * @param havingClause the having clause
-     * @return this {@link DefinitionBuilder} instance
-     * @throws IllegalStateException in case a having clause has already been set,
-     * for example automatically, based on grouping properties
-     */
-    DefinitionBuilder setHavingClause(final String havingClause);
-
-    /**
-     * Sets the group by clause for this entity type, this clause should not
-     * include the "group by" keywords.
-     * @param groupByClause the group by clause
-     * @return this {@link DefinitionBuilder} instance
-     * @throws IllegalStateException in case a group by clause has already been set,
-     * for example automatically, based on grouping properties
-     * @see ColumnProperty.Builder#setGroupingColumn(boolean)
-     */
-    DefinitionBuilder setGroupByClause(final String groupByClause);
-
-    /**
-     * Sets the name of the table to use when selecting entities of this type,
-     * when it differs from the one used to update/insert, such as a view.
-     * @param selectTableName the name of the table
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setSelectTableName(final String selectTableName);
-
-    /**
-     * Sets the select query to use when selecting entities of this type,
-     * use with care. The order of the properties when defining the entity
-     * must match the column order in the given query.
-     * @param selectQuery the select query to use for this entity type
-     * @param containsWhereClause true if the given query contains a where clause
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setSelectQuery(final String selectQuery, final boolean containsWhereClause);
-
-    /**
-     * Sets the string provider, that is, the object responsible for providing toString values for this entity type
-     * @param stringProvider the string provider
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setStringProvider(final ToString stringProvider);
-
-    /**
-     * Sets the comparator to use when comparing this entity type to other entities
-     * @param comparator the comparator
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setComparator(final Comparator<Entity> comparator);
-
-    /**
-     * Sets the IDs of the properties to use when performing a default lookup for this entity type
-     * @param searchPropertyIds the search property IDs
-     * @return this {@link DefinitionBuilder} instance
-     */
-    DefinitionBuilder setSearchPropertyIds(final String... searchPropertyIds);
-  }
-
-  /**
    * Specifies a entity definition.
    */
   interface Definition extends Serializable {
@@ -996,7 +854,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * Returns the properties to search by when looking up entities of the type identified by {@code entityId}
      * @return the properties to use when searching
-     * @see DefinitionBuilder#setSearchPropertyIds(String...)
+     * @see Builder#setSearchPropertyIds(String...)
      */
     Collection<ColumnProperty> getSearchProperties();
 
@@ -1110,5 +968,147 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return the background color to use for this entity and property, null if none is specified
      */
     Object getBackgroundColor(final Entity entity, final Property property);
+
+    /**
+     * Builds a Entity.Definition
+     */
+    interface Builder {
+
+      /**
+       * @param validator the validator for this entity type
+       * @return this {@link Builder} instance
+       */
+      Builder setValidator(final Validator validator);
+
+      /**
+       * Adds a {@link ConditionProvider} which provides a dynamic query condition string.
+       * The condition string should not include the WHERE keyword and use the ?
+       * substitution character where values should be inserted.
+       * @param conditionId the condition id
+       * @param conditionProvider the condition provider
+       * @return this Entity.Definer instance
+       */
+      Builder addConditionProvider(final String conditionId, final ConditionProvider conditionProvider);
+
+      /**
+       * @param colorProvider the background color provider
+       * @return this {@link Builder} instance
+       */
+      Builder setBackgroundColorProvider(final BackgroundColorProvider colorProvider);
+
+      /**
+       * Sets the caption for this entity type
+       * @param caption the caption
+       * @return this {@link Builder} instance
+       */
+      Builder setCaption(final String caption);
+
+      /**
+       * Sets the bean class to associate with this entity type
+       * @param beanClass the bean class
+       * @return this {@link Builder} instance
+       */
+      Builder setBeanClass(final Class beanClass);
+
+      /**
+       * Specifies whether or not this entity should be regarded as based on a small dataset,
+       * which primarily means that combo box models can be based on this entity.
+       * This is false by default.
+       * @param smallDataset true if the underlying table is small enough for displaying the contents in a combo box
+       * @return this {@link Builder} instance
+       */
+      Builder setSmallDataset(final boolean smallDataset);
+
+      /**
+       * Specifies whether or not this entity should be regarded as based on a static dataset, that is,
+       * one that changes only infrequently.
+       * This is false by default.
+       * @param staticData true if the underlying table data is static
+       * @return this {@link Builder} instance
+       */
+      Builder setStaticData(final boolean staticData);
+
+      /**
+       * Sets the read only value, if true then it should not be possible to
+       * insert, update or delete entities of this type
+       * @param readOnly true if this entity type should be read only
+       * @return this {@link Builder} instance
+       */
+      Builder setReadOnly(final boolean readOnly);
+
+      /**
+       * Sets the primary key generator
+       * @param keyGenerator the primary key generator
+       * @return this {@link Builder} instance
+       */
+      Builder setKeyGenerator(final KeyGenerator keyGenerator);
+
+      /**
+       * Sets the order by clause for this entity type.
+       * @param orderBy the order by clause
+       * @return this {@link Builder} instance
+       */
+      Builder setOrderBy(final OrderBy orderBy);
+
+      /**
+       * Sets the having clause for this entity type, this clause should not
+       * include the "having" keyword.
+       * @param havingClause the having clause
+       * @return this {@link Builder} instance
+       * @throws IllegalStateException in case a having clause has already been set,
+       * for example automatically, based on grouping properties
+       */
+      Builder setHavingClause(final String havingClause);
+
+      /**
+       * Sets the group by clause for this entity type, this clause should not
+       * include the "group by" keywords.
+       * @param groupByClause the group by clause
+       * @return this {@link Builder} instance
+       * @throws IllegalStateException in case a group by clause has already been set,
+       * for example automatically, based on grouping properties
+       * @see ColumnProperty.Builder#setGroupingColumn(boolean)
+       */
+      Builder setGroupByClause(final String groupByClause);
+
+      /**
+       * Sets the name of the table to use when selecting entities of this type,
+       * when it differs from the one used to update/insert, such as a view.
+       * @param selectTableName the name of the table
+       * @return this {@link Builder} instance
+       */
+      Builder setSelectTableName(final String selectTableName);
+
+      /**
+       * Sets the select query to use when selecting entities of this type,
+       * use with care. The order of the properties when defining the entity
+       * must match the column order in the given query.
+       * @param selectQuery the select query to use for this entity type
+       * @param containsWhereClause true if the given query contains a where clause
+       * @return this {@link Builder} instance
+       */
+      Builder setSelectQuery(final String selectQuery, final boolean containsWhereClause);
+
+      /**
+       * Sets the string provider, that is, the object responsible for providing toString values for this entity type
+       * @param stringProvider the string provider
+       * @return this {@link Builder} instance
+       */
+      Builder setStringProvider(final ToString stringProvider);
+
+      /**
+       * Sets the comparator to use when comparing this entity type to other entities
+       * @param comparator the comparator
+       * @return this {@link Builder} instance
+       */
+      Builder setComparator(final Comparator<Entity> comparator);
+
+      /**
+       * Sets the IDs of the properties to use when performing a default lookup for this entity type
+       * @param searchPropertyIds the search property IDs
+       * @return this {@link Builder} instance
+       */
+      Builder setSearchPropertyIds(final String... searchPropertyIds);
+    }
   }
 }
