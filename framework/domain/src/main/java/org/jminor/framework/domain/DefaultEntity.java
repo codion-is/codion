@@ -300,7 +300,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public boolean isLoaded(final String foreignKeyPropertyId) {
-    return super.get(domain.getDefinition(getEntityId()).getForeignKeyProperty(foreignKeyPropertyId)) != null;
+    return super.get(definition.getForeignKeyProperty(foreignKeyPropertyId)) != null;
   }
 
   /** {@inheritDoc} */

@@ -304,10 +304,11 @@ public final class EntityJSONParser implements Serializer<Entity> {
     }
 
     final Entity.Key key = domain.key(entityId);
+    final Entity.Definition definition = domain.getDefinition(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
       final String propertyId = propertyValues.names().get(j).toString();
-      key.put(propertyId, parseValue(domain.getDefinition(entityId).getProperty(propertyId), propertyValues));
+      key.put(propertyId, parseValue(definition.getProperty(propertyId), propertyValues));
     }
 
     return key;
