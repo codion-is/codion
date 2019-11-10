@@ -8,7 +8,7 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -51,7 +51,7 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * @return a list containing the properties used when performing a lookup
    */
-  Collection<Property.ColumnProperty> getLookupProperties();
+  Collection<ColumnProperty> getLookupProperties();
 
   /**
    * @param resultSorter the comparator used to sort the lookup result, null if the result should not be sorted
@@ -133,7 +133,7 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * @return the settings associated with the lookup properties
    */
-  Map<Property.ColumnProperty, LookupSettings> getPropertyLookupSettings();
+  Map<ColumnProperty, LookupSettings> getPropertyLookupSettings();
 
   /**
    * @return the Value representing the search string

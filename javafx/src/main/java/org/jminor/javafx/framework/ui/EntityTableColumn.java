@@ -5,7 +5,9 @@ package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.javafx.framework.model.FXEntityListModel;
 
 import javafx.beans.value.ObservableValue;
@@ -57,7 +59,7 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
 
   private PropertyConditionView initializeConditionView(final FXEntityListModel listModel) {
     final Property property = getProperty();
-    if (property instanceof Property.ColumnProperty || property instanceof Property.ForeignKeyProperty) {
+    if (property instanceof ColumnProperty || property instanceof ForeignKeyProperty) {
       final ColumnConditionModel<? extends Property> conditionModel =
               listModel.getConditionModel().getPropertyConditionModel(getProperty().getPropertyId());
       if (conditionModel != null) {

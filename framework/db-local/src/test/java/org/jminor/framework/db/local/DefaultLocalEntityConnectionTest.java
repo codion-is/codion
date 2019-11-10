@@ -26,7 +26,7 @@ import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Properties;
+import org.jminor.framework.domain.property.Properties;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

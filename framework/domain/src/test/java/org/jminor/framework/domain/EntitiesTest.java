@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.framework.domain.property.Property;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

@@ -15,6 +15,15 @@ import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ColumnPropertyDefinition;
+import org.jminor.framework.domain.property.DerivedProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.ForeignKeyPropertyDefinition;
+import org.jminor.framework.domain.property.MirrorProperty;
+import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.PropertyDefinition;
+import org.jminor.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -152,34 +161,34 @@ public class Domain implements Serializable {
 
   /**
    * Instantiates a new {@link Entity} of the given type using the values provided by {@code valueProvider}.
-   * Values are fetched for {@link Property.ColumnProperty} and its descendants, {@link Property.ForeignKeyProperty}
-   * and {@link Property.TransientProperty} (excluding its descendants).
-   * If a {@link Property.ColumnProperty}s underlying column has a default value the property is
+   * Values are fetched for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty}
+   * and {@link TransientProperty} (excluding its descendants).
+   * If a {@link ColumnProperty}s underlying column has a default value the property is
    * skipped unless the property itself has a default value, which then overrides the columns default value.
    * @param entityId the entity id
    * @param valueProvider the value provider
    * @return the populated entity
-   * @see PropertyDefinition.ColumnPropertyDefinition#setColumnHasDefaultValue(boolean)
-   * @see PropertyDefinition.ColumnPropertyDefinition#setDefaultValue(Object)
+   * @see ColumnPropertyDefinition#setColumnHasDefaultValue(boolean)
+   * @see ColumnPropertyDefinition#setDefaultValue(Object)
    */
   public final Entity defaultEntity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
     final Entity entity = entity(entityId);
     final Entity.Definition entityDefinition = getDefinition(entityId);
-    final Collection<Property.ColumnProperty> columnProperties = entityDefinition.getColumnProperties();
-    for (final Property.ColumnProperty property : columnProperties) {
+    final Collection<ColumnProperty> columnProperties = entityDefinition.getColumnProperties();
+    for (final ColumnProperty property : columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
         entity.put(property, valueProvider.get(property));
       }
     }
-    final Collection<Property.TransientProperty> transientProperties = entityDefinition.getTransientProperties();
-    for (final Property.TransientProperty transientProperty : transientProperties) {
-      if (!(transientProperty instanceof Property.DerivedProperty)) {
+    final Collection<TransientProperty> transientProperties = entityDefinition.getTransientProperties();
+    for (final TransientProperty transientProperty : transientProperties) {
+      if (!(transientProperty instanceof DerivedProperty)) {
         entity.put(transientProperty, valueProvider.get(transientProperty));
       }
     }
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = entityDefinition.getForeignKeyProperties();
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+    final Collection<ForeignKeyProperty> foreignKeyProperties = entityDefinition.getForeignKeyProperties();
+    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       entity.put(foreignKeyProperty, valueProvider.get(foreignKeyProperty));
     }
     entity.saveAll();
@@ -223,7 +232,7 @@ public class Domain implements Serializable {
       for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = definition.getProperty(propertyEntry.getKey());
         Object value = entity.get(property);
-        if (property instanceof Property.ForeignKeyProperty && value != null) {
+        if (property instanceof ForeignKeyProperty && value != null) {
           value = toBean((Entity) value);
         }
 
@@ -272,7 +281,7 @@ public class Domain implements Serializable {
       for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = definition.getProperty(propertyEntry.getKey());
         Object value = propertyEntry.getValue().getGetter().invoke(bean);
-        if (property instanceof Property.ForeignKeyProperty && value != null) {
+        if (property instanceof ForeignKeyProperty && value != null) {
           value = fromBean(value);
         }
 
@@ -327,9 +336,9 @@ public class Domain implements Serializable {
       throw new IllegalArgumentException("Entity has already been defined: " + entityId + ", for table: " + tableName);
     }
     final Map<String, Property> propertyMap = initializePropertyMap(entityId, properties);
-    final List<Property.ColumnProperty> columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = unmodifiableList(getForeignKeyProperties(propertyMap.values()));
-    final List<Property.TransientProperty> transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
+    final List<ColumnProperty> columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
+    final List<ForeignKeyProperty> foreignKeyProperties = unmodifiableList(getForeignKeyProperties(propertyMap.values()));
+    final List<TransientProperty> transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
 
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(domainId, entityId,
             tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties, new Validator());
@@ -550,8 +559,8 @@ public class Domain implements Serializable {
     final Map<String, Property> propertyMap = new LinkedHashMap<>(properties.length);
     for (final PropertyDefinition propertyDefinition : properties) {
       validateAndAddProperty(propertyDefinition, entityId, propertyMap);
-      if (propertyDefinition instanceof PropertyDefinition.ForeignKeyPropertyDefinition) {
-        initializeForeignKeyProperty(entityId, propertyMap, (PropertyDefinition.ForeignKeyPropertyDefinition) propertyDefinition);
+      if (propertyDefinition instanceof ForeignKeyPropertyDefinition) {
+        initializeForeignKeyProperty(entityId, propertyMap, (ForeignKeyPropertyDefinition) propertyDefinition);
       }
     }
     checkIfPrimaryKeyIsSpecified(entityId, propertyMap);
@@ -560,11 +569,11 @@ public class Domain implements Serializable {
   }
 
   private void initializeForeignKeyProperty(final String entityId, final Map<String, Property> propertyMap,
-                                            final PropertyDefinition.ForeignKeyPropertyDefinition foreignKeyPropertyDefiner) {
-    final List<PropertyDefinition.ColumnPropertyDefinition> propertyDefiners = foreignKeyPropertyDefiner.getPropertyDefiners();
-    final Property.ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyDefiner.get();
-    final List<Property.ColumnProperty> properties = propertyDefiners.stream().map(
-            (Function<PropertyDefinition.ColumnPropertyDefinition, Property.ColumnProperty>) PropertyDefinition.ColumnPropertyDefinition::get).collect(toList());
+                                            final ForeignKeyPropertyDefinition foreignKeyPropertyDefiner) {
+    final List<ColumnPropertyDefinition> propertyDefiners = foreignKeyPropertyDefiner.getPropertyDefiners();
+    final ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyDefiner.get();
+    final List<ColumnProperty> properties = propertyDefiners.stream().map(
+            (Function<ColumnPropertyDefinition, ColumnProperty>) ColumnPropertyDefinition::get).collect(toList());
     if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
       final Entity.Definition foreignEntity = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
       if (foreignEntity == null) {
@@ -577,8 +586,8 @@ public class Domain implements Serializable {
                 "' does not match the number of foreign properties in the referenced entity '" + foreignKeyProperty.getForeignEntityId() + "'");
       }
     }
-    for (final PropertyDefinition.ColumnPropertyDefinition propertyDefiner : propertyDefiners) {
-      if (!(propertyDefiner.get() instanceof Property.MirrorProperty)) {
+    for (final ColumnPropertyDefinition propertyDefiner : propertyDefiners) {
+      if (!(propertyDefiner.get() instanceof MirrorProperty)) {
         validateAndAddProperty(propertyDefiner, entityId, propertyMap);
       }
     }
@@ -629,8 +638,8 @@ public class Domain implements Serializable {
       for (final Property property : entityDefinition.getProperties()) {
         final String beanProperty = property.getBeanProperty();
         Class typeClass = property.getTypeClass();
-        if (property instanceof Property.ForeignKeyProperty) {
-          typeClass = getDefinition(((Property.ForeignKeyProperty) property)
+        if (property instanceof ForeignKeyProperty) {
+          typeClass = getDefinition(((ForeignKeyProperty) property)
                   .getForeignEntityId()).getBeanClass();
         }
         if (beanProperty != null && typeClass != null) {
@@ -667,8 +676,8 @@ public class Domain implements Serializable {
     final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
     boolean primaryKeyPropertyFound = false;
     for (final Property property : propertyMap.values()) {
-      if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) {
-        final Integer index = ((Property.ColumnProperty) property).getPrimaryKeyIndex();
+      if (property instanceof ColumnProperty && ((ColumnProperty) property).isPrimaryKeyProperty()) {
+        final Integer index = ((ColumnProperty) property).getPrimaryKeyIndex();
         if (usedPrimaryKeyIndexes.contains(index)) {
           throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
         }
@@ -689,19 +698,19 @@ public class Domain implements Serializable {
     return domain;
   }
 
-  private static List<Property.ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> property instanceof Property.ForeignKeyProperty)
-            .map(property -> (Property.ForeignKeyProperty) property).collect(toList());
+  private static List<ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
+    return properties.stream().filter(property -> property instanceof ForeignKeyProperty)
+            .map(property -> (ForeignKeyProperty) property).collect(toList());
   }
 
-  private static List<Property.ColumnProperty> getColumnProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> property instanceof Property.ColumnProperty)
-            .map(property -> (Property.ColumnProperty) property).collect(toList());
+  private static List<ColumnProperty> getColumnProperties(final Collection<Property> properties) {
+    return properties.stream().filter(property -> property instanceof ColumnProperty)
+            .map(property -> (ColumnProperty) property).collect(toList());
   }
 
-  private static List<Property.TransientProperty> getTransientProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> property instanceof Property.TransientProperty)
-            .map(property -> (Property.TransientProperty) property)
+  private static List<TransientProperty> getTransientProperties(final Collection<Property> properties) {
+    return properties.stream().filter(property -> property instanceof TransientProperty)
+            .map(property -> (TransientProperty) property)
             .collect(toList());
   }
 
@@ -785,7 +794,7 @@ public class Domain implements Serializable {
      * @param propertyId the id of the property in the referenced entity to use
      * @return this {@link StringProvider} instance
      */
-    public StringProvider addForeignKeyValue(final Property.ForeignKeyProperty foreignKeyProperty,
+    public StringProvider addForeignKeyValue(final ForeignKeyProperty foreignKeyProperty,
                                              final String propertyId) {
       requireNonNull(foreignKeyProperty, "foreignKeyProperty");
       requireNonNull(propertyId, PROPERTY_ID_PARAM);
@@ -833,10 +842,10 @@ public class Domain implements Serializable {
 
     private static final class ForeignKeyValueProvider implements StringProvider.ValueProvider {
       private static final long serialVersionUID = 1;
-      private final Property.ForeignKeyProperty foreignKeyProperty;
+      private final ForeignKeyProperty foreignKeyProperty;
       private final String propertyId;
 
-      private ForeignKeyValueProvider(final Property.ForeignKeyProperty foreignKeyProperty,
+      private ForeignKeyValueProvider(final ForeignKeyProperty foreignKeyProperty,
                                       final String propertyId) {
         this.foreignKeyProperty = foreignKeyProperty;
         this.propertyId = propertyId;
@@ -992,7 +1001,7 @@ public class Domain implements Serializable {
       requireNonNull(entity, ENTITY_PARAM);
       requireNonNull(property, PROPERTY_PARAM);
       if (!isNullable(entity, property) && entity.isNull(property)) {
-        if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
+        if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
           final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
           final boolean primaryKeyPropertyWithoutAutoGenerate = isPrimaryKeyPropertyWithoutAutoGenerate(entity, property);
@@ -1024,8 +1033,8 @@ public class Domain implements Serializable {
     }
 
     private static boolean isPrimaryKeyPropertyWithoutAutoGenerate(final Entity entity, final Property property) {
-      return (property instanceof Property.ColumnProperty
-              && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) && entity.getKeyGeneratorType().isManual();
+      return (property instanceof ColumnProperty
+              && ((ColumnProperty) property).isPrimaryKeyProperty()) && entity.getKeyGeneratorType().isManual();
     }
 
     /**
@@ -1033,12 +1042,12 @@ public class Domain implements Serializable {
      * @return true if the property is a part of a foreign key
      */
     private static boolean isForeignKeyProperty(final Property property) {
-      return property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isForeignKeyProperty();
+      return property instanceof ColumnProperty && ((ColumnProperty) property).isForeignKeyProperty();
     }
 
     private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property property) {
-      return property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isPrimaryKeyProperty()
-              && !((Property.ColumnProperty) property).columnHasDefaultValue();
+      return property instanceof ColumnProperty && !((ColumnProperty) property).isPrimaryKeyProperty()
+              && !((ColumnProperty) property).columnHasDefaultValue();
     }
   }
 
@@ -1049,11 +1058,11 @@ public class Domain implements Serializable {
       return Type.QUERY;
     }
 
-    protected final Property.ColumnProperty getPrimaryKeyProperty(final String entityId) {
+    protected final ColumnProperty getPrimaryKeyProperty(final String entityId) {
       return getDefinition(entityId).getPrimaryKeyProperties().get(0);
     }
 
-    protected final void queryAndSet(final Entity entity, final Property.ColumnProperty keyProperty,
+    protected final void queryAndSet(final Entity entity, final ColumnProperty keyProperty,
                                      final DatabaseConnection connection) throws SQLException {
       final Object value;
       switch (keyProperty.getColumnType()) {
@@ -1087,7 +1096,7 @@ public class Domain implements Serializable {
 
     @Override
     public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
-      final Property.ColumnProperty primaryKeyProperty = getPrimaryKeyProperty(entity.getEntityId());
+      final ColumnProperty primaryKeyProperty = getPrimaryKeyProperty(entity.getEntityId());
       if (entity.isNull(primaryKeyProperty)) {
         queryAndSet(entity, primaryKeyProperty, connection);
       }
@@ -1114,7 +1123,7 @@ public class Domain implements Serializable {
 
     @Override
     public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
-      final Property.ColumnProperty primaryKeyProperty = getPrimaryKeyProperty(entity.getEntityId());
+      final ColumnProperty primaryKeyProperty = getPrimaryKeyProperty(entity.getEntityId());
       if (entity.isNull(primaryKeyProperty)) {
         queryAndSet(entity, primaryKeyProperty, connection);
       }

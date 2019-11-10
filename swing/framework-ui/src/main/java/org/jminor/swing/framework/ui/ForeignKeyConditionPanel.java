@@ -5,7 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.ForeignKeyConditionModel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -18,7 +18,7 @@ import javax.swing.JComponent;
 /**
  * A column condition panel based on foreign key properties.
  */
-public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Property.ForeignKeyProperty> {
+public final class ForeignKeyConditionPanel extends ColumnConditionPanel<ForeignKeyProperty> {
 
   /**
    * Instantiates a new ForeignKeyConditionPanel.
@@ -42,9 +42,9 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Propert
 
   private static final class ForeignKeyInputFieldProvider implements InputFieldProvider {
 
-    private final ColumnConditionModel<Property.ForeignKeyProperty> model;
+    private final ColumnConditionModel<ForeignKeyProperty> model;
 
-    private ForeignKeyInputFieldProvider(final ColumnConditionModel<Property.ForeignKeyProperty> model) {
+    private ForeignKeyInputFieldProvider(final ColumnConditionModel<ForeignKeyProperty> model) {
       this.model = model;
     }
 

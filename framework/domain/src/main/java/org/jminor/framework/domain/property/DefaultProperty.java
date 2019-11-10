@@ -1,13 +1,14 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.property;
 
 import org.jminor.common.Formats;
 import org.jminor.common.Item;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.ValueFetcher;
+import org.jminor.framework.domain.Entity;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -857,7 +858,7 @@ class DefaultProperty implements Property {
     }
   }
 
-  static final class DefaultForeignKeyProperty extends DefaultProperty implements Property.ForeignKeyProperty {
+  static final class DefaultForeignKeyProperty extends DefaultProperty implements ForeignKeyProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -867,7 +868,7 @@ class DefaultProperty implements Property {
     private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
     private boolean softReference = false;
 
-    transient final List<PropertyDefinition.ColumnPropertyDefinition> columnPropertyDefinitions;
+    transient final List<ColumnPropertyDefinition> columnPropertyDefinitions;
 
     /**
      * @param propertyId the property ID
@@ -876,7 +877,7 @@ class DefaultProperty implements Property {
      * @param columnProperty the underlying column property comprising this foreign key
      */
     DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
-                              final PropertyDefinition.ColumnPropertyDefinition columnProperty) {
+                              final ColumnPropertyDefinition columnProperty) {
       this(propertyId, caption, foreignEntityId, singletonList(columnProperty));
     }
 
@@ -889,15 +890,15 @@ class DefaultProperty implements Property {
      * if null then the primary key properties of the referenced entity are used when required
      */
     DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
-                              final List<PropertyDefinition.ColumnPropertyDefinition> columnPropertyDefinitions) {
+                              final List<ColumnPropertyDefinition> columnPropertyDefinitions) {
       super(propertyId, Types.OTHER, caption, Entity.class);
       requireNonNull(foreignEntityId, "foreignEntityId");
       validateParameters(propertyId, foreignEntityId, columnPropertyDefinitions);
       this.columnPropertyDefinitions = columnPropertyDefinitions;
       columnPropertyDefinitions.forEach(columnProperty -> columnProperty.setForeignKeyProperty(this));
       this.foreignEntityId = foreignEntityId;
-      this.columnProperties = unmodifiableList(columnPropertyDefinitions.stream().map((Function<PropertyDefinition.ColumnPropertyDefinition,
-              ColumnProperty>) PropertyDefinition.ColumnPropertyDefinition::get).collect(toList()));
+      this.columnProperties = unmodifiableList(columnPropertyDefinitions.stream().map((Function<ColumnPropertyDefinition,
+              ColumnProperty>) ColumnPropertyDefinition::get).collect(toList()));
       this.compositeReference = this.columnProperties.size() > 1;
     }
 
@@ -944,7 +945,7 @@ class DefaultProperty implements Property {
     }
 
     void setNullable(final boolean nullable) {
-      for (final PropertyDefinition.ColumnPropertyDefinition columnPropertyDefiner : columnPropertyDefinitions) {
+      for (final ColumnPropertyDefinition columnPropertyDefiner : columnPropertyDefinitions) {
         columnPropertyDefiner.setNullable(nullable);
       }
 
@@ -960,11 +961,11 @@ class DefaultProperty implements Property {
     }
 
     private static void validateParameters(final String propertyId, final String foreignEntityId,
-                                           final List<PropertyDefinition.ColumnPropertyDefinition> columnProperties) {
+                                           final List<ColumnPropertyDefinition> columnProperties) {
       if (nullOrEmpty(columnProperties)) {
         throw new IllegalArgumentException("No column properties specified");
       }
-      for (final PropertyDefinition.ColumnPropertyDefinition columnProperty : columnProperties) {
+      for (final ColumnPropertyDefinition columnProperty : columnProperties) {
         requireNonNull(columnProperty, "columnProperty");
         if (columnProperty.get().getPropertyId().equals(propertyId)) {
           throw new IllegalArgumentException(foreignEntityId + ", column propertyId is the same as foreign key propertyId: " + propertyId);
@@ -1178,7 +1179,7 @@ class DefaultProperty implements Property {
     }
   }
 
-  static final class DefaultAuditTimeProperty extends DefaultAuditProperty implements AuditTimeProperty {
+  static final class DefaultAuditTimeProperty extends DefaultAuditProperty implements AuditProperty.AuditTimeProperty {
 
     private static final long serialVersionUID = 1;
 
@@ -1187,7 +1188,7 @@ class DefaultProperty implements Property {
     }
   }
 
-  static final class DefaultAuditUserProperty extends DefaultAuditProperty implements AuditUserProperty {
+  static final class DefaultAuditUserProperty extends DefaultAuditProperty implements AuditProperty.AuditUserProperty {
 
     private static final long serialVersionUID = 1;
 

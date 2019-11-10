@@ -11,8 +11,9 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Properties;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.Properties;
+import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.FXEntityEditModel;
 
@@ -194,7 +195,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final ComboBox<Item> createValueListComboBox(final String propertyId) {
     checkControl(propertyId);
-    final ComboBox<Item> box = FXUiUtil.createValueListComboBox((Property.ValueListProperty)
+    final ComboBox<Item> box = FXUiUtil.createValueListComboBox((ValueListProperty)
             getEditModel().getDomain().getDefinition(editModel.getEntityId()).getProperty(propertyId), editModel);
 
     controls.put(propertyId, box);

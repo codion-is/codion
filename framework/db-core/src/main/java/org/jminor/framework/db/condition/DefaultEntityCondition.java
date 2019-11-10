@@ -6,7 +6,9 @@ package org.jminor.framework.db.condition;
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -115,15 +117,15 @@ class DefaultEntityCondition implements EntityCondition {
     else if (condition instanceof Condition.PropertyCondition) {
       final Condition.PropertyCondition propertyCondition = (Condition.PropertyCondition) condition;
       final Property property = domain.getDefinition(entityId).getProperty(propertyCondition.getPropertyId());
-      if (property instanceof Property.ForeignKeyProperty) {
-        return foreignKeyCondition((Property.ForeignKeyProperty) property, propertyCondition.getConditionType(), condition.getValues());
+      if (property instanceof ForeignKeyProperty) {
+        return foreignKeyCondition((ForeignKeyProperty) property, propertyCondition.getConditionType(), condition.getValues());
       }
     }
 
     return condition;
   }
 
-  private static Condition foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
+  private static Condition foreignKeyCondition(final ForeignKeyProperty foreignKeyProperty,
                                                final ConditionType conditionType, final Collection values) {
     final List<Entity.Key> keys = getKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
@@ -181,7 +183,7 @@ class DefaultEntityCondition implements EntityCondition {
   }
 
   /** Assumes {@code keys} is not empty. */
-  private static Condition createCompositeKeyCondition(final List<Property.ColumnProperty> properties,
+  private static Condition createCompositeKeyCondition(final List<ColumnProperty> properties,
                                                        final ConditionType conditionType,
                                                        final List<Entity.Key> keys) {
     if (keys.size() == 1) {
@@ -192,7 +194,7 @@ class DefaultEntityCondition implements EntityCondition {
   }
 
   /** Assumes {@code keys} is not empty. */
-  private static Condition createMultipleCompositeCondition(final List<Property.ColumnProperty> properties,
+  private static Condition createMultipleCompositeCondition(final List<ColumnProperty> properties,
                                                             final ConditionType conditionType,
                                                             final List<Entity.Key> keys) {
     final Condition.Set conditionSet = Conditions.conditionSet(OR);
@@ -203,7 +205,7 @@ class DefaultEntityCondition implements EntityCondition {
     return conditionSet;
   }
 
-  private static Condition createSingleCompositeCondition(final List<Property.ColumnProperty> properties,
+  private static Condition createSingleCompositeCondition(final List<ColumnProperty> properties,
                                                           final ConditionType conditionType,
                                                           final Entity.Key entityKey) {
     final Condition.Set conditionSet = Conditions.conditionSet(AND);

@@ -14,7 +14,8 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityModel;
@@ -172,7 +173,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
+  public final void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
     if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), entities) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
@@ -199,10 +200,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties =
+    final List<ForeignKeyProperty> foreignKeyProperties =
             getDomain().getDefinition(getEntityId()).getForeignKeyProperties(foreignKeyEntityId);
     for (final Entity entity : getAllItems()) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
           final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getPropertyId());
           if (Objects.equals(currentForeignKeyValue, foreignKeyValue)) {

@@ -16,7 +16,10 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.ValueListProperty;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -237,7 +240,7 @@ public class EntityTestUnit {
    */
   private Map<String, Entity> initializeReferencedEntities(final String entityId, final Map<String, Entity> foreignKeyEntities)
           throws DatabaseException {
-    for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain().getDefinition(entityId).getForeignKeyProperties()) {
+    for (final ForeignKeyProperty foreignKeyProperty : getDomain().getDefinition(entityId).getForeignKeyProperties()) {
       final String foreignEntityId = foreignKeyProperty.getForeignEntityId();
       if (!foreignKeyEntities.containsKey(foreignEntityId)) {
         if (!Objects.equals(entityId, foreignEntityId)) {
@@ -299,7 +302,7 @@ public class EntityTestUnit {
 
     final Entity updated = connection.update(singletonList(testEntity)).get(0);
     assertEquals(testEntity.getKey(), updated.getKey());
-    for (final Property.ColumnProperty property : getDomain().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
+    for (final ColumnProperty property : getDomain().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
       if (!property.isReadOnly() && property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property);
         final Object afterUpdate = updated.get(property);
@@ -359,11 +362,11 @@ public class EntityTestUnit {
    */
   private static Object getRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
     requireNonNull(property, "property");
-    if (property instanceof Property.ForeignKeyProperty) {
-      return getReferenceEntity((Property.ForeignKeyProperty) property, referenceEntities);
+    if (property instanceof ForeignKeyProperty) {
+      return getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
     }
-    if (property instanceof Property.ValueListProperty) {
-      return getRandomListValue((Property.ValueListProperty) property);
+    if (property instanceof ValueListProperty) {
+      return getRandomListValue((ValueListProperty) property);
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
@@ -391,14 +394,14 @@ public class EntityTestUnit {
     }
   }
 
-  private static void populateEntity(final Domain domain, final Entity entity, final Collection<Property.ColumnProperty> properties,
+  private static void populateEntity(final Domain domain, final Entity entity, final Collection<ColumnProperty> properties,
                                      final ValueProvider<Property, Object> valueProvider) {
-    for (final Property.ColumnProperty property : properties) {
+    for (final ColumnProperty property : properties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()) {
         entity.put(property, valueProvider.get(property));
       }
     }
-    for (final Property.ForeignKeyProperty property : domain.getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
+    for (final ForeignKeyProperty property : domain.getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
       final Object value = valueProvider.get(property);
       if (value != null) {
         entity.put(property, value);
@@ -412,11 +415,11 @@ public class EntityTestUnit {
     return TextUtil.createRandomString(length, length);
   }
 
-  private static Object getReferenceEntity(final Property.ForeignKeyProperty property, final Map<String, Entity> referenceEntities) {
+  private static Object getReferenceEntity(final ForeignKeyProperty property, final Map<String, Entity> referenceEntities) {
     return referenceEntities == null ? null : referenceEntities.get(property.getForeignEntityId());
   }
 
-  private static Object getRandomListValue(final Property.ValueListProperty property) {
+  private static Object getRandomListValue(final ValueListProperty property) {
     final List<Item> items = property.getValues();
     final Item item = items.get(RANDOM.nextInt(items.size()));
 

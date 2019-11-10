@@ -21,7 +21,7 @@ import org.jminor.common.model.PreferencesUtil;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
@@ -1480,7 +1480,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     private List<EntityDependencyTreeNode> initializeChildren() {
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (final String entityId : domain.getDefinedEntities()) {
-        for (final Property.ForeignKeyProperty fkProperty : domain.getDefinition(entityId).getForeignKeyProperties()) {
+        for (final ForeignKeyProperty fkProperty : domain.getDefinition(entityId).getForeignKeyProperties()) {
           if (fkProperty.getForeignEntityId().equals(getEntityId()) && !fkProperty.isSoftReference()
                   && !foreignKeyCycle(fkProperty.getForeignEntityId())) {
             childrenList.add(new EntityDependencyTreeNode(entityId, domain));

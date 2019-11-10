@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.property;
 
 import org.jminor.common.Item;
 import org.jminor.common.db.ValueConverter;
@@ -12,8 +12,8 @@ import java.text.Collator;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.domain.Property.AuditProperty.AuditAction.INSERT;
-import static org.jminor.framework.domain.Property.AuditProperty.AuditAction.UPDATE;
+import static org.jminor.framework.domain.property.AuditProperty.AuditAction.INSERT;
+import static org.jminor.framework.domain.property.AuditProperty.AuditAction.UPDATE;
 
 /**
  * A Property factory class.
@@ -26,7 +26,7 @@ public final class Properties {
    * @param propertyId the property ID
    * @return a new column property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition columnProperty(final String propertyId) {
+  public static ColumnPropertyDefinition columnProperty(final String propertyId) {
     return columnProperty(propertyId, Types.INTEGER);
   }
 
@@ -35,7 +35,7 @@ public final class Properties {
    * @param type the property type
    * @return a new column property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition columnProperty(final String propertyId, final int type) {
+  public static ColumnPropertyDefinition columnProperty(final String propertyId, final int type) {
     return columnProperty(propertyId, type, null);
   }
 
@@ -45,18 +45,18 @@ public final class Properties {
    * @param caption the caption
    * @return a new column property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition columnProperty(final String propertyId, final int type, final String caption) {
+  public static ColumnPropertyDefinition columnProperty(final String propertyId, final int type, final String caption) {
     final DefaultProperty.DefaultColumnProperty property =
             new DefaultProperty.DefaultColumnProperty(propertyId, type, caption);
 
-    return new DefaultPropertyDefinition.DefaultColumnPropertyDefinition(property);
+    return new DefaultColumnPropertyDefinition(property);
   }
 
   /**
    * @param propertyId the property ID
    * @return a new primary key property with index 0
    */
-  public static PropertyDefinition.ColumnPropertyDefinition primaryKeyProperty(final String propertyId) {
+  public static ColumnPropertyDefinition primaryKeyProperty(final String propertyId) {
     return primaryKeyProperty(propertyId, Types.INTEGER);
   }
 
@@ -65,7 +65,7 @@ public final class Properties {
    * @param type the property type
    * @return a new primary key property with index 0
    */
-  public static PropertyDefinition.ColumnPropertyDefinition primaryKeyProperty(final String propertyId, final int type) {
+  public static ColumnPropertyDefinition primaryKeyProperty(final String propertyId, final int type) {
     return primaryKeyProperty(propertyId, type, null);
   }
 
@@ -75,45 +75,45 @@ public final class Properties {
    * @param caption the caption
    * @return a new primary key property with index 0
    */
-  public static PropertyDefinition.ColumnPropertyDefinition primaryKeyProperty(final String propertyId, final int type, final String caption) {
+  public static ColumnPropertyDefinition primaryKeyProperty(final String propertyId, final int type, final String caption) {
     final DefaultProperty.DefaultColumnProperty property =
             new DefaultProperty.DefaultColumnProperty(propertyId, type, caption);
 
-    return new DefaultPropertyDefinition.DefaultColumnPropertyDefinition(property).setPrimaryKeyIndex(0);
+    return new DefaultColumnPropertyDefinition(property).setPrimaryKeyIndex(0);
   }
 
   /**
-   * Instantiates a {@link Property.ForeignKeyProperty}
+   * Instantiates a {@link ForeignKeyProperty}
    * @param propertyId the property ID
    * @param caption the caption
    * @param foreignEntityId the ID of the entity referenced by this foreign key
    * @param columnPropertyDefiner the underlying column property comprising this foreign key
    * @return a new foreign key property
    */
-  public static PropertyDefinition.ForeignKeyPropertyDefinition foreignKeyProperty(final String propertyId, final String caption,
-                                                                                   final String foreignEntityId,
-                                                                                   final PropertyDefinition.ColumnPropertyDefinition columnPropertyDefiner) {
+  public static ForeignKeyPropertyDefinition foreignKeyProperty(final String propertyId, final String caption,
+                                                                final String foreignEntityId,
+                                                                final ColumnPropertyDefinition columnPropertyDefiner) {
     final DefaultProperty.DefaultForeignKeyProperty property =
             new DefaultProperty.DefaultForeignKeyProperty(propertyId, caption, foreignEntityId, columnPropertyDefiner);
 
-    return new DefaultPropertyDefinition.DefaultForeignKeyPropertyDefinition(property);
+    return new DefaultForeignKeyPropertyDefinition(property);
   }
 
   /**
-   * Instantiates a {@link Property.ForeignKeyProperty}
+   * Instantiates a {@link ForeignKeyProperty}
    * @param propertyId the property ID, note that this is not a column name
    * @param caption the property caption
    * @param foreignEntityId the ID of the entity referenced by this foreign key
    * @param columnProperties the underlying column properties comprising this foreign key
    * @return a new foreign key property
    */
-  public static PropertyDefinition.ForeignKeyPropertyDefinition foreignKeyProperty(final String propertyId, final String caption,
-                                                                                   final String foreignEntityId,
-                                                                                   final List<PropertyDefinition.ColumnPropertyDefinition> columnProperties) {
+  public static ForeignKeyPropertyDefinition foreignKeyProperty(final String propertyId, final String caption,
+                                                                final String foreignEntityId,
+                                                                final List<ColumnPropertyDefinition> columnProperties) {
     final DefaultProperty.DefaultForeignKeyProperty property =
             new DefaultProperty.DefaultForeignKeyProperty(propertyId, caption, foreignEntityId, columnProperties);
 
-    return new DefaultPropertyDefinition.DefaultForeignKeyPropertyDefinition(property);
+    return new DefaultForeignKeyPropertyDefinition(property);
   }
 
   /**
@@ -124,8 +124,8 @@ public final class Properties {
    * @param caption the caption of this property
    * @return a new denormalized view property
    */
-  public static PropertyDefinition.TransientPropertyDefinition denormalizedViewProperty(final String propertyId, final String foreignKeyPropertyId,
-                                                                                        final Property property, final String caption) {
+  public static TransientPropertyDefinition denormalizedViewProperty(final String propertyId, final String foreignKeyPropertyId,
+                                                                     final Property property, final String caption) {
     final DefaultProperty.DefaultDerivedProperty denormalizedProperty =
             new DefaultProperty.DefaultDerivedProperty(propertyId, property.getType(), caption, linkedValues -> {
               final ValueMap foreignKeyValue = (ValueMap) linkedValues.get(foreignKeyPropertyId);
@@ -133,7 +133,7 @@ public final class Properties {
               return foreignKeyValue == null ? null : foreignKeyValue.get(property);
             }, foreignKeyPropertyId);
 
-    return new DefaultPropertyDefinition.DefaultTransientPropertyDefinition(denormalizedProperty);
+    return new DefaultTransientPropertyDefinition(denormalizedProperty);
   }
 
   /**
@@ -145,13 +145,13 @@ public final class Properties {
    * @return a new derived property
    * @throws IllegalArgumentException in case no linked property IDs are provided
    */
-  public static PropertyDefinition.TransientPropertyDefinition derivedProperty(final String propertyId, final int type, final String caption,
-                                                                               final Property.DerivedProperty.Provider valueProvider,
-                                                                               final String... linkedPropertyIds) {
+  public static TransientPropertyDefinition derivedProperty(final String propertyId, final int type, final String caption,
+                                                            final DerivedProperty.Provider valueProvider,
+                                                            final String... linkedPropertyIds) {
     final DefaultProperty.DefaultDerivedProperty property =
             new DefaultProperty.DefaultDerivedProperty(propertyId, type, caption, valueProvider, linkedPropertyIds);
 
-    return new DefaultPropertyDefinition.DefaultTransientPropertyDefinition(property);
+    return new DefaultTransientPropertyDefinition(property);
   }
 
   /**
@@ -190,8 +190,8 @@ public final class Properties {
    * @param subquery the sql query
    * @return a new subquery property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition subqueryProperty(final String propertyId, final int type, final String caption,
-                                                                             final String subquery) {
+  public static ColumnPropertyDefinition subqueryProperty(final String propertyId, final int type, final String caption,
+                                                          final String subquery) {
     return subqueryProperty(propertyId, type, caption, subquery, type);
   }
 
@@ -204,12 +204,12 @@ public final class Properties {
    * @param columnType the actual column type
    * @return a new subquery property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition subqueryProperty(final String propertyId, final int type, final String caption,
-                                                                             final String subquery, final int columnType) {
+  public static ColumnPropertyDefinition subqueryProperty(final String propertyId, final int type, final String caption,
+                                                          final String subquery, final int columnType) {
     final DefaultProperty.DefaultSubqueryProperty property =
             new DefaultProperty.DefaultSubqueryProperty(propertyId, type, caption, subquery, columnType);
 
-    return new DefaultPropertyDefinition.DefaultColumnPropertyDefinition(property);
+    return new DefaultColumnPropertyDefinition(property);
   }
 
   /**
@@ -219,12 +219,12 @@ public final class Properties {
    * @param validItems all allowed values for this property
    * @return a new value list property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition valueListProperty(final String propertyId, final int type, final String caption,
-                                                                              final List<Item> validItems) {
+  public static ColumnPropertyDefinition valueListProperty(final String propertyId, final int type, final String caption,
+                                                           final List<Item> validItems) {
     final DefaultProperty.DefaultValueListProperty property =
             new DefaultProperty.DefaultValueListProperty(propertyId, type, caption, validItems);
 
-    return new DefaultPropertyDefinition.DefaultColumnPropertyDefinition(property);
+    return new DefaultColumnPropertyDefinition(property);
   }
 
   /**
@@ -233,7 +233,7 @@ public final class Properties {
    * @param type the data type of this property
    * @return a new transient property
    */
-  public static PropertyDefinition.TransientPropertyDefinition transientProperty(final String propertyId, final int type) {
+  public static TransientPropertyDefinition transientProperty(final String propertyId, final int type) {
     return transientProperty(propertyId, type, null);
   }
 
@@ -244,12 +244,12 @@ public final class Properties {
    * @param caption the caption of this property
    * @return a new transient property
    */
-  public static PropertyDefinition.TransientPropertyDefinition transientProperty(final String propertyId, final int type,
-                                                                                 final String caption) {
+  public static TransientPropertyDefinition transientProperty(final String propertyId, final int type,
+                                                              final String caption) {
     final DefaultProperty.DefaultTransientProperty property =
             new DefaultProperty.DefaultTransientProperty(propertyId, type, caption);
 
-    return new DefaultPropertyDefinition.DefaultTransientPropertyDefinition(property);
+    return new DefaultTransientPropertyDefinition(property);
   }
 
   /**
@@ -259,8 +259,8 @@ public final class Properties {
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new boolean property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition booleanProperty(final String propertyId, final int columnType,
-                                                                            final Object trueValue, final Object falseValue) {
+  public static ColumnPropertyDefinition booleanProperty(final String propertyId, final int columnType,
+                                                         final Object trueValue, final Object falseValue) {
     return booleanProperty(propertyId, columnType, null, trueValue, falseValue);
   }
 
@@ -272,20 +272,20 @@ public final class Properties {
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new boolean property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition booleanProperty(final String propertyId, final int columnType,
-                                                                            final String caption,
-                                                                            final Object trueValue, final Object falseValue) {
+  public static ColumnPropertyDefinition booleanProperty(final String propertyId, final int columnType,
+                                                         final String caption,
+                                                         final Object trueValue, final Object falseValue) {
     final DefaultProperty.DefaultColumnProperty property =
             new DefaultProperty.DefaultColumnProperty(propertyId, Types.BOOLEAN, caption, columnType);
 
-    return new DefaultPropertyDefinition.DefaultColumnPropertyDefinition(property).setValueConverter(booleanValueConverter(trueValue, falseValue));
+    return new DefaultColumnPropertyDefinition(property).setValueConverter(booleanValueConverter(trueValue, falseValue));
   }
 
   /**
    * @param propertyId the property ID
    * @return a new audit insert time property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition auditInsertTimeProperty(final String propertyId) {
+  public static ColumnPropertyDefinition auditInsertTimeProperty(final String propertyId) {
     return auditInsertTimeProperty(propertyId, null);
   }
 
@@ -294,18 +294,18 @@ public final class Properties {
    * @param caption the caption
    * @return a new audit insert time property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition auditInsertTimeProperty(final String propertyId, final String caption) {
+  public static ColumnPropertyDefinition auditInsertTimeProperty(final String propertyId, final String caption) {
     final DefaultProperty.DefaultAuditTimeProperty property =
             new DefaultProperty.DefaultAuditTimeProperty(propertyId, INSERT, caption);
 
-    return new DefaultPropertyDefinition.DefaultColumnPropertyDefinition(property);
+    return new DefaultColumnPropertyDefinition(property);
   }
 
   /**
    * @param propertyId the property ID
    * @return a new audit update time property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition auditUpdateTimeProperty(final String propertyId) {
+  public static ColumnPropertyDefinition auditUpdateTimeProperty(final String propertyId) {
     return auditUpdateTimeProperty(propertyId, null);
   }
 
@@ -314,18 +314,18 @@ public final class Properties {
    * @param caption the caption
    * @return a new audit update time property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition auditUpdateTimeProperty(final String propertyId, final String caption) {
+  public static ColumnPropertyDefinition auditUpdateTimeProperty(final String propertyId, final String caption) {
     final DefaultProperty.DefaultAuditTimeProperty property =
             new DefaultProperty.DefaultAuditTimeProperty(propertyId, UPDATE, caption);
 
-    return new DefaultPropertyDefinition.DefaultColumnPropertyDefinition(property);
+    return new DefaultColumnPropertyDefinition(property);
   }
 
   /**
    * @param propertyId the property ID
    * @return a new audit insert user property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition auditInsertUserProperty(final String propertyId) {
+  public static ColumnPropertyDefinition auditInsertUserProperty(final String propertyId) {
     return auditInsertUserProperty(propertyId, null);
   }
 
@@ -334,18 +334,18 @@ public final class Properties {
    * @param caption the caption
    * @return a new audit insert user property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition auditInsertUserProperty(final String propertyId, final String caption) {
+  public static ColumnPropertyDefinition auditInsertUserProperty(final String propertyId, final String caption) {
     final DefaultProperty.DefaultAuditUserProperty property =
             new DefaultProperty.DefaultAuditUserProperty(propertyId, INSERT, caption);
 
-    return new DefaultPropertyDefinition.DefaultColumnPropertyDefinition(property);
+    return new DefaultColumnPropertyDefinition(property);
   }
 
   /**
    * @param propertyId the property ID
    * @return a new audit update user property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition auditUpdateUserProperty(final String propertyId) {
+  public static ColumnPropertyDefinition auditUpdateUserProperty(final String propertyId) {
     return auditUpdateUserProperty(propertyId, null);
   }
 
@@ -354,21 +354,21 @@ public final class Properties {
    * @param caption the caption
    * @return a new audit update user property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition auditUpdateUserProperty(final String propertyId, final String caption) {
+  public static ColumnPropertyDefinition auditUpdateUserProperty(final String propertyId, final String caption) {
     final DefaultProperty.DefaultAuditUserProperty property =
             new DefaultProperty.DefaultAuditUserProperty(propertyId, UPDATE, caption);
 
-    return new DefaultPropertyDefinition.DefaultColumnPropertyDefinition(property);
+    return new DefaultColumnPropertyDefinition(property);
   }
 
   /**
    * @param propertyId the property ID
    * @return a new mirror property
    */
-  public static PropertyDefinition.ColumnPropertyDefinition mirrorProperty(final String propertyId) {
+  public static ColumnPropertyDefinition mirrorProperty(final String propertyId) {
     final DefaultProperty.DefaultMirrorProperty property = new DefaultProperty.DefaultMirrorProperty(propertyId);
 
-    return new DefaultPropertyDefinition.DefaultColumnPropertyDefinition(property);
+    return new DefaultColumnPropertyDefinition(property);
   }
 
   /**

@@ -20,7 +20,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
-import static org.jminor.framework.domain.Properties.*;
+import static org.jminor.framework.domain.property.Properties.*;
 import static org.jminor.swing.common.ui.UiUtil.getScreenSizeRatio;
 import static org.jminor.swing.common.ui.UiUtil.setPreferredWidth;
 

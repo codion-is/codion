@@ -5,7 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.Property;
 
 /**
  * A base interface for a column condition based on a property.

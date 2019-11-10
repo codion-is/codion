@@ -25,7 +25,9 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +96,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /**
    * Holds the EntityLookupModels used by this {@link EntityEditModel}
    */
-  private final Map<Property.ForeignKeyProperty, EntityLookupModel> entityLookupModels = new HashMap<>();
+  private final Map<ForeignKeyProperty, EntityLookupModel> entityLookupModels = new HashMap<>();
 
   /**
    * Contains true if values should persist for the given property when the model is cleared
@@ -163,8 +165,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   public Object getDefaultValue(final Property property) {
     if (isValuePersistent(property)) {
       final Entity entity = (Entity) getValueMap();
-      if (property instanceof Property.ForeignKeyProperty) {
-        return entity.getForeignKey((Property.ForeignKeyProperty) property);
+      if (property instanceof ForeignKeyProperty) {
+        return entity.getForeignKey((ForeignKeyProperty) property);
       }
 
       return entity.get(property);
@@ -204,7 +206,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public boolean isLookupAllowed(final Property property) {
-    return property instanceof Property.ColumnProperty;
+    return property instanceof ColumnProperty;
   }
 
   /** {@inheritDoc} */
@@ -214,7 +216,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       return persistentValues.get(property.getPropertyId());
     }
 
-    return property instanceof Property.ForeignKeyProperty && EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get();
+    return property instanceof ForeignKeyProperty && EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get();
   }
 
   /** {@inheritDoc} */
@@ -322,9 +324,9 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = getDomain().getDefinition(entityId)
+    final List<ForeignKeyProperty> foreignKeyProperties = getDomain().getDefinition(entityId)
             .getForeignKeyProperties(foreignKeyEntityId);
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       final Entity currentForeignKeyValue = getForeignKey(foreignKeyProperty.getPropertyId());
       if (currentForeignKeyValue != null) {
         for (final Entity newForeignKeyValue : foreignKeyValues) {
@@ -383,7 +385,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   public final void setForeignKeyValues(final List<Entity> values) {
     final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain().getDefinition(entityId)
+      for (final ForeignKeyProperty foreignKeyProperty : getDomain().getDefinition(entityId)
               .getForeignKeyProperties(entry.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
         put(foreignKeyProperty, entry.getValue().iterator().next());
@@ -556,8 +558,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public EntityLookupModel createForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    final Collection<Property.ColumnProperty> searchProperties = getDomain()
+  public EntityLookupModel createForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty) {
+    final Collection<ColumnProperty> searchProperties = getDomain()
             .getDefinition(foreignKeyProperty.getForeignEntityId()).getSearchProperties();
     if (searchProperties.isEmpty()) {
       throw new IllegalStateException("No search properties defined for entity: " + foreignKeyProperty.getForeignEntityId());
@@ -578,7 +580,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final EntityLookupModel getForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+  public final EntityLookupModel getForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     return entityLookupModels.computeIfAbsent(foreignKeyProperty, fk -> createForeignKeyLookupModel(foreignKeyProperty));
   }
@@ -606,12 +608,12 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
       final Entity.Definition entityDefinition = getDomain().getDefinition(entityId);
-      for (final Property.ColumnProperty property : entityDefinition.getColumnProperties()) {
+      for (final ColumnProperty property : entityDefinition.getColumnProperties()) {
         if (!property.isForeignKeyProperty() && valueModified(property)) {
           return true;
         }
       }
-      for (final Property.ForeignKeyProperty property : entityDefinition.getForeignKeyProperties()) {
+      for (final ForeignKeyProperty property : entityDefinition.getForeignKeyProperties()) {
         if (valueModified(property)) {
           return true;
         }

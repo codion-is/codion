@@ -14,7 +14,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.PropertyDefinition;
+import org.jminor.framework.domain.property.PropertyDefinition;
 
 import java.sql.Types;
 import java.util.List;
@@ -24,7 +24,7 @@ import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
 import static org.jminor.framework.domain.Entities.getKeys;
-import static org.jminor.framework.domain.Properties.*;
+import static org.jminor.framework.domain.property.Properties.*;
 
 /**
  * When running this make sure the chinook demo module directory is the

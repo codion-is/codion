@@ -11,6 +11,14 @@ import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ColumnPropertyDefinition;
+import org.jminor.framework.domain.property.DenormalizedProperty;
+import org.jminor.framework.domain.property.DerivedProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.PropertyDefinition;
+import org.jminor.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -66,7 +74,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * @return the primary key properties of this entity type, sorted by primary key column index
    */
-  List<Property.ColumnProperty> getPrimaryKeyProperties();
+  List<ColumnProperty> getPrimaryKeyProperties();
 
   /**
    * @param propertyId the ID of the property for which to retrieve the value
@@ -209,15 +217,15 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @return the value of the foreign key property
    * @see #isLoaded(String)
    */
-  Entity getForeignKey(final Property.ForeignKeyProperty foreignKeyProperty);
+  Entity getForeignKey(final ForeignKeyProperty foreignKeyProperty);
 
   /**
-   * Returns the primary key of the entity referenced by the given {@link Property.ForeignKeyProperty},
+   * Returns the primary key of the entity referenced by the given {@link ForeignKeyProperty},
    * if the reference is null this method returns null.
    * @param foreignKeyProperty the foreign key property for which to retrieve the underlying {@link Entity.Key}
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
-  Key getReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty);
+  Key getReferencedKey(final ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Returns true if the value of the given foreign key is null, in case of composite
@@ -225,7 +233,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @param foreignKeyProperty the foreign key property
    * @return true if the foreign key value is null
    */
-  boolean isForeignKeyNull(final Property.ForeignKeyProperty foreignKeyProperty);
+  boolean isForeignKeyNull(final ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Sets the value of the given property
@@ -336,7 +344,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * A class representing a primary key.
    */
-  interface Key extends ValueMap<Property.ColumnProperty, Object>, Serializable {
+  interface Key extends ValueMap<ColumnProperty, Object>, Serializable {
 
     /**
      * @return the entity ID
@@ -346,7 +354,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * @return a List containing the properties comprising this key
      */
-    List<Property.ColumnProperty> getProperties();
+    List<ColumnProperty> getProperties();
 
     /**
      * @return the number of properties comprising this key
@@ -385,7 +393,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * @return the first key property, useful for single property keys
      */
-    Property.ColumnProperty getFirstProperty();
+    ColumnProperty getFirstProperty();
 
     /**
      * @return the first value contained in this key, useful for single property keys
@@ -726,7 +734,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return this {@link Entity.Definer} instance
      * @throws IllegalStateException in case a group by clause has already been set,
      * for example automatically, based on grouping properties
-     * @see PropertyDefinition.ColumnPropertyDefinition#setGroupingColumn(boolean)
+     * @see ColumnPropertyDefinition#setGroupingColumn(boolean)
      */
     Definer setGroupByClause(final String groupByClause);
 
@@ -931,17 +939,17 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param propertyId the ID of the property
      * @return a collection containing the properties which are derived from the given property
      */
-    Collection<Property.DerivedProperty> getDerivedProperties(final String propertyId);
+    Collection<DerivedProperty> getDerivedProperties(final String propertyId);
 
     /**
      * @return the primary key properties of this entity type, sorted by primary key column index
      */
-    List<Property.ColumnProperty> getPrimaryKeyProperties();
+    List<ColumnProperty> getPrimaryKeyProperties();
 
     /**
      * @return a map containing the primary key properties mapped to their respective propertyIds
      */
-    Map<String, Property.ColumnProperty> getPrimaryKeyPropertyMap();
+    Map<String, ColumnProperty> getPrimaryKeyPropertyMap();
 
     /**
      * @return a list containing the visible properties for this entity type
@@ -951,22 +959,22 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * @return a list containing the column-based properties for this entity type
      */
-    List<Property.ColumnProperty> getColumnProperties();
+    List<ColumnProperty> getColumnProperties();
 
     /**
      * @return a list containing the column properties to include in select queries
      */
-    List<Property.ColumnProperty> getSelectableColumnProperties();
+    List<ColumnProperty> getSelectableColumnProperties();
 
     /**
      * @return a list containing the non-column-based properties for this entity type
      */
-    List<Property.TransientProperty> getTransientProperties();
+    List<TransientProperty> getTransientProperties();
 
     /**
      * @return a list containing the foreign key properties for this entity type
      */
-    List<Property.ForeignKeyProperty> getForeignKeyProperties();
+    List<ForeignKeyProperty> getForeignKeyProperties();
 
     /**
      * @return true if this entity type has any denormalized properties
@@ -985,21 +993,21 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return a list containing the denormalized properties which values originate from the entity
      * referenced by the given foreign key property
      */
-    List<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyId);
+    List<DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyId);
 
     /**
      * Returns the properties to search by when looking up entities of the type identified by {@code entityId}
      * @return the properties to use when searching
      * @see Entity.Definer#setSearchPropertyIds(String...)
      */
-    Collection<Property.ColumnProperty> getSearchProperties();
+    Collection<ColumnProperty> getSearchProperties();
 
     /**
      * @param propertyId the property id
      * @return the column property identified by property id
-     * @throws IllegalArgumentException in case the propertyId does not represent a {@link Property.ColumnProperty}
+     * @throws IllegalArgumentException in case the propertyId does not represent a {@link ColumnProperty}
      */
-    Property.ColumnProperty getColumnProperty(final String propertyId);
+    ColumnProperty getColumnProperty(final String propertyId);
 
     /**
      * @param propertyId the property id
@@ -1009,7 +1017,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     Property getProperty(final String propertyId);
 
     /**
-     * Returns the {@link org.jminor.framework.domain.Property}s identified by the propertyIds in {@code propertyIds}
+     * Returns the {@link Property}s identified by the propertyIds in {@code propertyIds}
      * @param propertyIds the ids of the properties to retrieve
      * @return a list containing the properties identified by {@code propertyIds}, found in
      * the entity identified by {@code entityId}
@@ -1019,20 +1027,20 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * @param propertyId the property id
      * @return the column property identified by property id
-     * @throws IllegalArgumentException in case the propertyId does not represent a {@link Property.ColumnProperty}
+     * @throws IllegalArgumentException in case the propertyId does not represent a {@link ColumnProperty}
      * or if it is not selectable
-     * @see Property.ColumnProperty#isSelectable()
+     * @see ColumnProperty#isSelectable()
      */
-    Property.ColumnProperty getSelectableColumnProperty(final String propertyId);
+    ColumnProperty getSelectableColumnProperty(final String propertyId);
 
     /**
-     * Returns the {@link org.jminor.framework.domain.Property.ColumnProperty}s identified
+     * Returns the {@link ColumnProperty}s identified
      * by the propertyIds in {@code propertyIds}
      * @param propertyIds the ids of the properties to retrieve
      * @return a list containing all column properties found in the entity identified by {@code entityId},
      * that is, properties that map to database columns, an empty list if none exist
      */
-    List<Property.ColumnProperty> getColumnProperties(Collection<String> propertyIds);
+    List<ColumnProperty> getColumnProperties(Collection<String> propertyIds);
 
     /**
      * @return true if the primary key of the given type of entity is comprised of a single integer value
@@ -1047,42 +1055,42 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return a list containing the writable column properties (properties that map to database columns) comprising
      * the entity identified by {@code entityId}
      */
-    List<Property.ColumnProperty> getWritableColumnProperties(boolean includePrimaryKeyProperties,
-                                                              boolean includeNonUpdatable);
+    List<ColumnProperty> getWritableColumnProperties(boolean includePrimaryKeyProperties,
+                                                     boolean includeNonUpdatable);
     /**
      * @return a list containing all updatable properties associated with the given entity id
      */
     List<Property> getUpdatableProperties();
 
     /**
-     * Returns all {@link org.jminor.framework.domain.Property}s for the given entity
+     * Returns all {@link Property}s for the given entity
      * @param includeHidden true if hidden properties should be included in the result
      * @return a list containing the properties found in the entity identified by {@code entityId}
      */
     List<Property> getProperties(boolean includeHidden);
 
     /**
-     * Returns the selectable {@link org.jminor.framework.domain.Property.ColumnProperty}s identified
+     * Returns the selectable {@link ColumnProperty}s identified
      * by the propertyIds in {@code propertyIds}
      * @param propertyIds the ids of the properties to retrieve
      * @return a list containing all column properties found in the entity identified by {@code entityId},
      * that is, properties that map to database columns, an empty list if none exist
      */
-    List<Property.ColumnProperty> getSelectableColumnProperties(Collection<String> propertyIds);
+    List<ColumnProperty> getSelectableColumnProperties(Collection<String> propertyIds);
 
     /**
      * Returns the foreign key properties referencing entities of the given type
      * @param foreignEntityId the id of the referenced entity
      * @return a List containing the properties, an empty list is returned in case no properties fit the condition
      */
-    List<Property.ForeignKeyProperty> getForeignKeyProperties(String foreignEntityId);
+    List<ForeignKeyProperty> getForeignKeyProperties(String foreignEntityId);
 
     /**
      * @param propertyId the property id
      * @return the Property.ForeignKeyProperty with the given propertyId
      * @throws IllegalArgumentException in case no such property exists
      */
-    Property.ForeignKeyProperty getForeignKeyProperty(String propertyId);
+    ForeignKeyProperty getForeignKeyProperty(String propertyId);
 
     /**
      * Compares the given entities.

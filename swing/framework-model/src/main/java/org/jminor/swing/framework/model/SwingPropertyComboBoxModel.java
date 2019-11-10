@@ -6,7 +6,7 @@ package org.jminor.swing.framework.model;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.model.PropertyComboBoxModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
@@ -31,7 +31,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
    * @param nullValue the value to use to represent a null value
    */
   public SwingPropertyComboBoxModel(final String entityId, final EntityConnectionProvider connectionProvider,
-                                    final Property.ColumnProperty property, final T nullValue) {
+                                    final ColumnProperty property, final T nullValue) {
     this(() -> {
       try {
         return (Collection<T>) connectionProvider.getConnection().selectValues(property.getPropertyId(),

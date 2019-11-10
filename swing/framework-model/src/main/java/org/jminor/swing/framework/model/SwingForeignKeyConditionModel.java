@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.DefaultForeignKeyConditionModel;
 import org.jminor.framework.model.EntityComboBoxModel;
 
@@ -22,7 +22,7 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
    * @param property the property
    * @param entityComboBoxModel a EntityComboBoxModel
    */
-  public SwingForeignKeyConditionModel(final Property.ForeignKeyProperty property,
+  public SwingForeignKeyConditionModel(final ForeignKeyProperty property,
                                        final EntityComboBoxModel entityComboBoxModel) {
     super(property);
     this.entityComboBoxModel = entityComboBoxModel;

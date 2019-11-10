@@ -4,7 +4,7 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.DefaultForeignKeyConditionModel;
 
 import java.util.Collection;
@@ -21,7 +21,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
    * @param property the property
    * @param listModel the list model to use
    */
-  public FXForeignKeyConditionListModel(final Property.ForeignKeyProperty property,
+  public FXForeignKeyConditionListModel(final ForeignKeyProperty property,
                                         final ObservableEntityList listModel) {
     super(property);
     this.listModel = listModel;

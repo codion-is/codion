@@ -8,8 +8,8 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Properties;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.Properties;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.FXEntityListModel;
 

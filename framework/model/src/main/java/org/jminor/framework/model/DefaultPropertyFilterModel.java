@@ -5,7 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.Property;
 
 /**
  * A class for filtering a set of entities based on a property.

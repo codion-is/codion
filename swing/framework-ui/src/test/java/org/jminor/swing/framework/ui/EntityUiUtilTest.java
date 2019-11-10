@@ -8,7 +8,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -114,7 +114,7 @@ public final class EntityUiUtilTest {
 
   @Test
   public void createValueListComboBox() {
-    final JComboBox box = EntityUiUtil.createValueListComboBox((Property.ValueListProperty)
+    final JComboBox box = EntityUiUtil.createValueListComboBox((ValueListProperty)
             DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_INT_VALUE_LIST), editModel);
 
     assertNull(editModel.get(TestDomain.DETAIL_INT_VALUE_LIST));

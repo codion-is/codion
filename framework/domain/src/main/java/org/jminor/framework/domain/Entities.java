@@ -4,6 +4,8 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.db.valuemap.ValueMap;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.Property;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -70,22 +72,22 @@ public final class Entities {
   }
 
   /**
-   * Returns all {@link Property.ColumnProperty}s which value is missing or the original value differs from the one in the comparison
+   * Returns all {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @param includeReadOnlyProperties if true then readOnly properties are included in the comparison
    * @return the properties which values differ from the ones in the comparison entity
    */
-  public static final Collection<Property.ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison,
-                                                                                      final boolean includeReadOnlyProperties) {
+  public static final Collection<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison,
+                                                                             final boolean includeReadOnlyProperties) {
     //BLOB property values are not loaded, so we can't compare those
     return comparison.keySet().stream().filter(property ->
-            property instanceof Property.ColumnProperty
+            property instanceof ColumnProperty
                     && (!property.isReadOnly() || includeReadOnlyProperties)
                     && !property.isType(Types.BLOB)
                     && isValueMissingOrModified(entity, comparison, property.getPropertyId()))
-            .map(property -> (Property.ColumnProperty) property).collect(toList());
+            .map(property -> (ColumnProperty) property).collect(toList());
   }
 
   /**

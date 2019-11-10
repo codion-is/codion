@@ -12,7 +12,8 @@ import org.jminor.common.Values;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
@@ -317,8 +318,8 @@ public final class EntityLookupField extends JTextField {
 
     private void initializeUI(final EntityLookupModel lookupModel) {
       final JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
-      final SwingFilteredComboBoxModel<Property.ColumnProperty> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
-      for (final Map.Entry<Property.ColumnProperty, EntityLookupModel.LookupSettings> entry :
+      final SwingFilteredComboBoxModel<ColumnProperty> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
+      for (final Map.Entry<ColumnProperty, EntityLookupModel.LookupSettings> entry :
               lookupModel.getPropertyLookupSettings().entrySet()) {
         propertyComboBoxModel.addItem(entry.getKey());
         propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getPropertyId());
@@ -460,7 +461,7 @@ public final class EntityLookupField extends JTextField {
       final String enterActionKey = "EntityLookupField.enter";
       table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
       table.getActionMap().put(enterActionKey, selectControl);
-      final Collection<Property.ColumnProperty> lookupProperties = model.getLookupProperties();
+      final Collection<ColumnProperty> lookupProperties = model.getLookupProperties();
       tableModel.getColumnModel().setColumns(lookupProperties.toArray(new Property[0]));
       tableModel.getSortModel().setSortingDirective((Property) tableModel.getColumnModel().getColumn(0).getIdentifier(),
               SortingDirective.ASCENDING, false);

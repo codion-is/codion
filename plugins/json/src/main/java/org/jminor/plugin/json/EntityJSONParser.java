@@ -6,7 +6,10 @@ package org.jminor.plugin.json;
 import org.jminor.common.Serializer;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.DerivedProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -210,7 +213,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     if (value == null) {
       return JSONObject.NULL;
     }
-    if (property instanceof Property.ForeignKeyProperty) {
+    if (property instanceof ForeignKeyProperty) {
       return toJSONObject((Entity) value);
     }
     if (property.isBigDecimal()) {
@@ -344,7 +347,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     else if (property.isBigDecimal()) {
       return propertyValues.getBigDecimal(property.getPropertyId());
     }
-    else if (property instanceof Property.ForeignKeyProperty) {
+    else if (property instanceof ForeignKeyProperty) {
       return parseEntity(propertyValues.getJSONObject(property.getPropertyId()));
     }
 
@@ -383,7 +386,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
 
   private JSONObject serializeValues(final Entity.Key key) {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property.ColumnProperty property : domain.getDefinition(key.getEntityId()).getPrimaryKeyProperties()) {
+    for (final ColumnProperty property : domain.getDefinition(key.getEntityId()).getPrimaryKeyProperties()) {
       propertyValues.put(property.getPropertyId(), serializeValue(key.get(property), property));
     }
 
@@ -393,7 +396,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private JSONObject serializeOriginalValues(final Entity entity) {
     final JSONObject originalValues = new JSONObject();
     for (final Property property : domain.getDefinition(entity.getEntityId()).getProperties()) {
-      if (entity.isModified(property.getPropertyId()) && (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
+      if (entity.isModified(property.getPropertyId()) && (!(property instanceof ForeignKeyProperty) || includeForeignKeyValues)) {
         originalValues.put(property.getPropertyId(),
                 serializeValue(entity.getOriginal(property.getPropertyId()), property));
       }
@@ -403,10 +406,10 @@ public final class EntityJSONParser implements Serializer<Entity> {
   }
 
   private boolean include(final Property property, final Entity entity) {
-    if (property instanceof Property.DerivedProperty) {
+    if (property instanceof DerivedProperty) {
       return false;
     }
-    if (!includeForeignKeyValues && property instanceof Property.ForeignKeyProperty) {
+    if (!includeForeignKeyValues && property instanceof ForeignKeyProperty) {
       return false;
     }
     if (!includeReadOnlyValues && property.isReadOnly()) {

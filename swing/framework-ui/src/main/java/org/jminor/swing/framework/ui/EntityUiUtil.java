@@ -15,7 +15,12 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.DenormalizedProperty;
+import org.jminor.framework.domain.property.DerivedProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.DefaultEntityLookupModel;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -301,7 +306,7 @@ public final class EntityUiUtil {
    * @param editModel the edit model to bind with the value
    * @return a EntityComboBox based on the given foreign key property
    */
-  public static EntityComboBox createForeignKeyComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
+  public static EntityComboBox createForeignKeyComboBox(final ForeignKeyProperty foreignKeyProperty,
                                                         final EntityEditModel editModel) {
     return createForeignKeyComboBox(foreignKeyProperty, editModel, null);
   }
@@ -313,7 +318,7 @@ public final class EntityUiUtil {
    * @param enabledState the state controlling the enabled state of the combobox
    * @return a EntityComboBox based on the given foreign key property
    */
-  public static EntityComboBox createForeignKeyComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
+  public static EntityComboBox createForeignKeyComboBox(final ForeignKeyProperty foreignKeyProperty,
                                                         final EntityEditModel editModel, final StateObserver enabledState) {
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
@@ -341,7 +346,7 @@ public final class EntityUiUtil {
    * @param editModel the edit model
    * @return a read-only, non-focusable JTextField displaying the value of the given property
    */
-  public static JTextField createForeignKeyField(final Property.ForeignKeyProperty foreignKeyProperty,
+  public static JTextField createForeignKeyField(final ForeignKeyProperty foreignKeyProperty,
                                                  final EntityEditModel editModel) {
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
@@ -361,7 +366,7 @@ public final class EntityUiUtil {
    * @param editModel the edit model providing the {@link EntityLookupModel} to use and to bind with the value
    * @return a lookup model based on the given foreign key property
    */
-  public static EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+  public static EntityLookupField createForeignKeyLookupField(final ForeignKeyProperty foreignKeyProperty,
                                                               final EntityEditModel editModel) {
     return createForeignKeyLookupField(foreignKeyProperty, editModel, null);
   }
@@ -373,7 +378,7 @@ public final class EntityUiUtil {
    * @param enabledState the state controlling the enabled state of the lookup field
    * @return a lookup model based on the given foreign key property
    */
-  public static EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+  public static EntityLookupField createForeignKeyLookupField(final ForeignKeyProperty foreignKeyProperty,
                                                               final EntityEditModel editModel, final StateObserver enabledState) {
     requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
@@ -398,7 +403,7 @@ public final class EntityUiUtil {
    * @param editModel the edit model to bind with the value
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel) {
+  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final EntityEditModel editModel) {
     return createValueListComboBox(property, editModel, true, null);
   }
 
@@ -409,7 +414,7 @@ public final class EntityUiUtil {
    * @param enabledState the state controlling the enabled state of the combo box
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel,
+  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final EntityEditModel editModel,
                                                         final StateObserver enabledState) {
     return createValueListComboBox(property, editModel, true, enabledState);
   }
@@ -421,7 +426,7 @@ public final class EntityUiUtil {
    * @param sortItems if true then the items are sorted
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel,
+  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final EntityEditModel editModel,
                                                         final boolean sortItems) {
     return createValueListComboBox(property, editModel, sortItems, null);
   }
@@ -434,7 +439,7 @@ public final class EntityUiUtil {
    * @param enabledState the state controlling the enabled state of the combo box
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel,
+  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final EntityEditModel editModel,
                                                         final boolean sortItems, final StateObserver enabledState) {
     final ItemComboBoxModel model;
     if (sortItems) {
@@ -753,7 +758,7 @@ public final class EntityUiUtil {
    * @param editModel the edit model to bind with the value
    * @return a combo box based on the property values
    */
-  public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel) {
+  public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final EntityEditModel editModel) {
     return createPropertyComboBox(property, editModel, null);
   }
 
@@ -764,7 +769,7 @@ public final class EntityUiUtil {
    * @param enabledState the state controlling the enabled state of the panel
    * @return a combo box based on the property values
    */
-  public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
+  public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final EntityEditModel editModel,
                                                        final StateObserver enabledState) {
     return createPropertyComboBox(property, editModel, enabledState, false);
   }
@@ -777,7 +782,7 @@ public final class EntityUiUtil {
    * @param editable if true then the combo box will be editable
    * @return a combo box based on the property values
    */
-  public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
+  public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final EntityEditModel editModel,
                                                        final StateObserver enabledState, final boolean editable) {
     final SteppedComboBox comboBox = createComboBox(property, editModel,
             (ComboBoxModel) ((SwingEntityEditModel) editModel).getComboBoxModel(property.getPropertyId()), enabledState, editable);
@@ -954,9 +959,9 @@ public final class EntityUiUtil {
     populateValueMenu(rootMenu, entity, new ArrayList<>(domain.getDefinition(entity.getEntityId()).getProperties(true)), domain);
   }
 
-  private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.ColumnProperty> primaryKeyProperties) {
+  private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<ColumnProperty> primaryKeyProperties) {
     TextUtil.collate(primaryKeyProperties);
-    for (final Property.ColumnProperty property : primaryKeyProperties) {
+    for (final ColumnProperty property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property);
       final StringBuilder builder = new StringBuilder("[PK] ").append(property.getPropertyId()).append(": ").append(entity.getAsString(property));
       if (modified) {
@@ -971,11 +976,11 @@ public final class EntityUiUtil {
 
   private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity,
                                              final EntityConnectionProvider connectionProvider,
-                                             final List<Property.ForeignKeyProperty> fkProperties) {
+                                             final List<ForeignKeyProperty> fkProperties) {
     try {
       TextUtil.collate(fkProperties);
       final Entity.Validator validator = connectionProvider.getDomain().getDefinition(entity.getEntityId()).getValidator();
-      for (final Property.ForeignKeyProperty property : fkProperties) {
+      for (final ForeignKeyProperty property : fkProperties) {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         final boolean isLoaded = entity.isLoaded(property.getPropertyId());
         final boolean valid = isValid(validator, entity, property);
@@ -1019,7 +1024,7 @@ public final class EntityUiUtil {
     }
   }
 
-  private static String getForeignKeyColumnNames(final Property.ForeignKeyProperty foreignKeyProperty) {
+  private static String getForeignKeyColumnNames(final ForeignKeyProperty foreignKeyProperty) {
     final List<String> columnNames = new LinkedList<>();
     foreignKeyProperty.getProperties().forEach(property -> columnNames.add(property.getColumnName()));
 
@@ -1034,12 +1039,12 @@ public final class EntityUiUtil {
     for (final Property property : properties) {
       final boolean valid = isValid(validator, entity, property);
       final boolean modified = entity.isModified(property);
-      final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
-              && ((Property.ColumnProperty) property).isForeignKeyProperty();
-      if (!isForeignKeyProperty && !(property instanceof Property.ForeignKeyProperty)) {
+      final boolean isForeignKeyProperty = property instanceof ColumnProperty
+              && ((ColumnProperty) property).isForeignKeyProperty();
+      if (!isForeignKeyProperty && !(property instanceof ForeignKeyProperty)) {
         final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
-                + (property instanceof Property.DerivedProperty ? "*" : "")
-                + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
+                + (property instanceof DerivedProperty ? "*" : "")
+                + (property instanceof DenormalizedProperty ? "+" : "") + "] ";
         final String value = entity.isNull(property) ? "<null>" : entity.getAsString(property);
         final boolean longValue = value != null && value.length() > maxValueLength;
         final StringBuilder builder = new StringBuilder(prefix).append(property).append(": ");
@@ -1055,7 +1060,7 @@ public final class EntityUiUtil {
         final JMenuItem menuItem = new JMenuItem(builder.toString());
         setInvalidModified(menuItem, valid, modified);
         final StringBuilder toolTipBuilder = new StringBuilder();
-        if (property instanceof Property.ColumnProperty) {
+        if (property instanceof ColumnProperty) {
           toolTipBuilder.append(property.getPropertyId());
         }
         if (longValue) {

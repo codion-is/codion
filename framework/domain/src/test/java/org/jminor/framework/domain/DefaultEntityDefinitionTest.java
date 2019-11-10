@@ -3,6 +3,9 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.framework.domain.property.DerivedProperty;
+import org.jminor.framework.domain.property.Properties;
+
 import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
@@ -86,7 +89,7 @@ public class DefaultEntityDefinitionTest {
             Properties.derivedProperty("derived", Types.VARCHAR, null, linkedValues ->
                     ((String) linkedValues.get("name")) + linkedValues.get("info"), "name", "info"));
     final Entity.Definition definition = domain.getDefinition("entityId");
-    Collection<Property.DerivedProperty> linked = definition.getDerivedProperties("name");
+    Collection<DerivedProperty> linked = definition.getDerivedProperties("name");
     assertTrue(linked.contains(definition.getPropertyMap().get("derived")));
     assertEquals(1, linked.size());
     linked = definition.getDerivedProperties("info");

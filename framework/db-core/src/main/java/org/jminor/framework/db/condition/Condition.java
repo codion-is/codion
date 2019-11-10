@@ -6,6 +6,7 @@ package org.jminor.framework.db.condition;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.util.List;
@@ -52,7 +53,7 @@ public interface Condition extends Serializable {
   }
 
   /**
-   * A Condition based on a {@link org.jminor.framework.domain.Property}
+   * A Condition based on a {@link Property}
    */
   interface PropertyCondition extends Condition {
 

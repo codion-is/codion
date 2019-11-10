@@ -4,6 +4,12 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.TextUtil;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.DenormalizedProperty;
+import org.jminor.framework.domain.property.DerivedProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.TransientProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -155,15 +161,15 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * Links a set of derived property ids to a parent property id
    */
-  private final Map<String, Set<Property.DerivedProperty>> derivedProperties;
-  private final List<Property.ColumnProperty> primaryKeyProperties;
-  private final Map<String, Property.ColumnProperty> primaryKeyPropertyMap;
-  private final List<Property.ForeignKeyProperty> foreignKeyProperties;
-  private final List<Property.TransientProperty> transientProperties;
+  private final Map<String, Set<DerivedProperty>> derivedProperties;
+  private final List<ColumnProperty> primaryKeyProperties;
+  private final Map<String, ColumnProperty> primaryKeyPropertyMap;
+  private final List<ForeignKeyProperty> foreignKeyProperties;
+  private final List<TransientProperty> transientProperties;
   private final List<Property> visibleProperties;
-  private final List<Property.ColumnProperty> columnProperties;
-  private final List<Property.ColumnProperty> selectableColumnProperties;
-  private final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties;
+  private final List<ColumnProperty> columnProperties;
+  private final List<ColumnProperty> selectableColumnProperties;
+  private final Map<String, List<DenormalizedProperty>> denormalizedProperties;
   private final boolean hasDenormalizedProperties;
 
   /**
@@ -172,9 +178,9 @@ final class DefaultEntityDefinition implements Entity.Definition {
    */
   DefaultEntityDefinition(final String domainId, final String entityId, final String tableName,
                           final Map<String, Property> propertyMap,
-                          final List<Property.ColumnProperty> columnProperties,
-                          final List<Property.ForeignKeyProperty> foreignKeyProperties,
-                          final List<Property.TransientProperty> transientProperties,
+                          final List<ColumnProperty> columnProperties,
+                          final List<ForeignKeyProperty> foreignKeyProperties,
+                          final List<TransientProperty> transientProperties,
                           final Entity.Validator validator) {
     this.domainId = rejectNullOrEmpty(domainId, "domainId");
     this.entityId = rejectNullOrEmpty(entityId, "entityId");
@@ -335,19 +341,19 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Collection<Property.ColumnProperty> getSearchProperties() {
+  public Collection<ColumnProperty> getSearchProperties() {
     return getSearchPropertyIds().stream().map(this::getColumnProperty).collect(toList());
   }
 
   /** {@inheritDoc} */
   @Override
-  public Property.ColumnProperty getColumnProperty(final String propertyId) {
+  public ColumnProperty getColumnProperty(final String propertyId) {
     final Property property = getProperty(propertyId);
-    if (!(property instanceof Property.ColumnProperty)) {
+    if (!(property instanceof ColumnProperty)) {
       throw new IllegalArgumentException(propertyId + ", " + property.getClass() + " does not implement Property.ColumnProperty");
     }
 
-    return (Property.ColumnProperty) property;
+    return (ColumnProperty) property;
   }
 
   /** {@inheritDoc} */
@@ -372,8 +378,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Property.ColumnProperty getSelectableColumnProperty(final String propertyId) {
-    final Property.ColumnProperty property = getColumnProperty(propertyId);
+  public ColumnProperty getSelectableColumnProperty(final String propertyId) {
+    final ColumnProperty property = getColumnProperty(propertyId);
     if (!property.isSelectable()) {
       throw new IllegalArgumentException(propertyId + " is not selectable");
     }
@@ -383,21 +389,21 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.ColumnProperty> getColumnProperties(final Collection<String> propertyIds) {
+  public List<ColumnProperty> getColumnProperties(final Collection<String> propertyIds) {
     return propertyIds.stream().map(this::getColumnProperty).collect(toList());
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean hasSingleIntegerPrimaryKey() {
-    final List<Property.ColumnProperty> primaryKeyProperties = getPrimaryKeyProperties();
+    final List<ColumnProperty> primaryKeyProperties = getPrimaryKeyProperties();
     return primaryKeyProperties.size() == 1 && primaryKeyProperties.get(0).isInteger();
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.ColumnProperty> getWritableColumnProperties(final boolean includePrimaryKeyProperties,
-                                                                   final boolean includeNonUpdatable) {
+  public List<ColumnProperty> getWritableColumnProperties(final boolean includePrimaryKeyProperties,
+                                                          final boolean includeNonUpdatable) {
     return getColumnProperties().stream()
             .filter(property -> !property.isReadOnly() &&
                     (includeNonUpdatable || property.isUpdatable()) &&
@@ -408,12 +414,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public List<Property> getUpdatableProperties() {
-    final List<Property.ColumnProperty> columnProperties = getWritableColumnProperties(
+    final List<ColumnProperty> columnProperties = getWritableColumnProperties(
             getKeyGeneratorType().isManual(), false);
     columnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
     final List<Property> updatable = new ArrayList<>(columnProperties);
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties();
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+    final Collection<ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties();
+    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       if (!foreignKeyProperty.isReadOnly() && foreignKeyProperty.isUpdatable()) {
         updatable.add(foreignKeyProperty);
       }
@@ -430,24 +436,24 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.ColumnProperty> getSelectableColumnProperties(final Collection<String> propertyIds) {
+  public List<ColumnProperty> getSelectableColumnProperties(final Collection<String> propertyIds) {
 
     return propertyIds.stream().map(this::getSelectableColumnProperty).collect(toList());
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.ForeignKeyProperty> getForeignKeyProperties(final String foreignEntityId) {
+  public List<ForeignKeyProperty> getForeignKeyProperties(final String foreignEntityId) {
     return getForeignKeyProperties().stream().filter(foreignKeyProperty ->
             foreignKeyProperty.getForeignEntityId().equals(foreignEntityId)).collect(toList());
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Property.ForeignKeyProperty getForeignKeyProperty(final String propertyId) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties();
+  public final ForeignKeyProperty getForeignKeyProperty(final String propertyId) {
+    final List<ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties();
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
-      final Property.ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
+      final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       if (foreignKeyProperty.is(propertyId)) {
         return foreignKeyProperty;
       }
@@ -482,20 +488,20 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Collection<Property.DerivedProperty> getDerivedProperties(final String property) {
-    final Collection<Property.DerivedProperty> derived = derivedProperties.get(property);
+  public Collection<DerivedProperty> getDerivedProperties(final String property) {
+    final Collection<DerivedProperty> derived = derivedProperties.get(property);
 
     return derived == null ? emptyList() : derived;
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.ColumnProperty> getPrimaryKeyProperties() {
+  public List<ColumnProperty> getPrimaryKeyProperties() {
     return primaryKeyProperties;
   }
 
   @Override
-  public Map<String, Property.ColumnProperty> getPrimaryKeyPropertyMap() {
+  public Map<String, ColumnProperty> getPrimaryKeyPropertyMap() {
     return primaryKeyPropertyMap;
   }
 
@@ -507,25 +513,25 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.ColumnProperty> getColumnProperties() {
+  public List<ColumnProperty> getColumnProperties() {
     return columnProperties;
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.ColumnProperty> getSelectableColumnProperties() {
+  public List<ColumnProperty> getSelectableColumnProperties() {
     return selectableColumnProperties;
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.TransientProperty> getTransientProperties() {
+  public List<TransientProperty> getTransientProperties() {
     return transientProperties;
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.ForeignKeyProperty> getForeignKeyProperties() {
+  public List<ForeignKeyProperty> getForeignKeyProperties() {
     return foreignKeyProperties;
   }
 
@@ -543,7 +549,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyId) {
+  public List<DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyId) {
     return denormalizedProperties.get(foreignKeyPropertyId);
   }
 
@@ -684,19 +690,19 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.validator = requireNonNull(validator, "validator");
   }
 
-  private Map<String, Property.ColumnProperty> initializePrimaryKeyPropertyMap() {
-    final Map<String, Property.ColumnProperty> map = new HashMap<>(this.primaryKeyProperties.size());
+  private Map<String, ColumnProperty> initializePrimaryKeyPropertyMap() {
+    final Map<String, ColumnProperty> map = new HashMap<>(this.primaryKeyProperties.size());
     this.primaryKeyProperties.forEach(property -> map.put(property.getPropertyId(), property));
 
     return unmodifiableMap(map);
   }
 
-  private static Map<String, List<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
-    final Map<String, List<Property.DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
+  private static Map<String, List<DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
+    final Map<String, List<DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
     for (final Property property : properties) {
-      if (property instanceof Property.DenormalizedProperty) {
-        final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
-        final Collection<Property.DenormalizedProperty> denormalizedProperties =
+      if (property instanceof DenormalizedProperty) {
+        final DenormalizedProperty denormalizedProperty = (DenormalizedProperty) property;
+        final Collection<DenormalizedProperty> denormalizedProperties =
                 denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyPropertyId(), k -> new ArrayList<>());
         denormalizedProperties.add(denormalizedProperty);
       }
@@ -705,14 +711,14 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return denormalizedPropertiesMap;
   }
 
-  private static Map<String, Set<Property.DerivedProperty>> initializeDerivedProperties(final Collection<Property> properties) {
-    final Map<String, Set<Property.DerivedProperty>> derivedProperties = new HashMap<>();
+  private static Map<String, Set<DerivedProperty>> initializeDerivedProperties(final Collection<Property> properties) {
+    final Map<String, Set<DerivedProperty>> derivedProperties = new HashMap<>();
     for (final Property property : properties) {
-      if (property instanceof Property.DerivedProperty) {
-        final Collection<String> derived = ((Property.DerivedProperty) property).getSourcePropertyIds();
+      if (property instanceof DerivedProperty) {
+        final Collection<String> derived = ((DerivedProperty) property).getSourcePropertyIds();
         if (!nullOrEmpty(derived)) {
           for (final String parentLinkPropertyId : derived) {
-            linkProperties(derivedProperties, parentLinkPropertyId, (Property.DerivedProperty) property);
+            linkProperties(derivedProperties, parentLinkPropertyId, (DerivedProperty) property);
           }
         }
       }
@@ -721,17 +727,17 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return derivedProperties;
   }
 
-  private static void linkProperties(final Map<String, Set<Property.DerivedProperty>> derivedProperties,
-                                     final String parentPropertyId, final Property.DerivedProperty derivedProperty) {
+  private static void linkProperties(final Map<String, Set<DerivedProperty>> derivedProperties,
+                                     final String parentPropertyId, final DerivedProperty derivedProperty) {
     if (!derivedProperties.containsKey(parentPropertyId)) {
       derivedProperties.put(parentPropertyId, new HashSet<>());
     }
     derivedProperties.get(parentPropertyId).add(derivedProperty);
   }
 
-  private static List<Property.ColumnProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> property instanceof Property.ColumnProperty
-            && ((Property.ColumnProperty) property).isPrimaryKeyProperty()).map(property -> (Property.ColumnProperty) property)
+  private static List<ColumnProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
+    return properties.stream().filter(property -> property instanceof ColumnProperty
+            && ((ColumnProperty) property).isPrimaryKeyProperty()).map(property -> (ColumnProperty) property)
             .sorted((pk1, pk2) -> {
               final Integer index1 = pk1.getPrimaryKeyIndex();
               final Integer index2 = pk2.getPrimaryKeyIndex();
@@ -740,8 +746,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
             }).collect(toList());
   }
 
-  private static List<Property.ColumnProperty> getSelectableProperties(final List<Property.ColumnProperty> columnProperties) {
-    return columnProperties.stream().filter(Property.ColumnProperty::isSelectable).collect(toList());
+  private static List<ColumnProperty> getSelectableProperties(final List<ColumnProperty> columnProperties) {
+    return columnProperties.stream().filter(ColumnProperty::isSelectable).collect(toList());
   }
 
   private static List<Property> getVisibleProperties(final Collection<Property> properties) {
@@ -753,9 +759,9 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * @return a list of grouping columns separated with a comma, to serve as a group by clause,
    * null if no grouping properties are defined
    */
-  private static String initializeGroupByClause(final Collection<Property.ColumnProperty> columnProperties) {
+  private static String initializeGroupByClause(final Collection<ColumnProperty> columnProperties) {
     final List<Property> groupingProperties = columnProperties.stream()
-            .filter(Property.ColumnProperty::isGroupingColumn).collect(toList());
+            .filter(ColumnProperty::isGroupingColumn).collect(toList());
     if (groupingProperties.isEmpty()) {
       return null;
     }

@@ -6,7 +6,8 @@ package org.jminor.framework.db.condition;
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.SubqueryProperty;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -165,7 +166,7 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
     return values;
   }
 
-  private static String createColumnPropertyConditionString(final Property.ColumnProperty property,
+  private static String createColumnPropertyConditionString(final ColumnProperty property,
                                                             final ConditionType conditionType, final List values,
                                                             final boolean isNullCondition, final boolean isCaseSensitive) {
     for (int i = 0; i < values.size(); i++) {
@@ -199,11 +200,11 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
     }
   }
 
-  private static String getValuePlaceholder(final Property.ColumnProperty property, final boolean caseSensitive) {
+  private static String getValuePlaceholder(final ColumnProperty property, final boolean caseSensitive) {
     return property.isString() && !caseSensitive ? "upper(?)" : "?";
   }
 
-  private static String getLikeCondition(final Property.ColumnProperty property, final String columnIdentifier,
+  private static String getLikeCondition(final ColumnProperty property, final String columnIdentifier,
                                          final String valuePlaceholder, final boolean notLike, final List values,
                                          final int valueCount) {
     if (valueCount > 1) {
@@ -235,11 +236,11 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
     return stringBuilder.toString();
   }
 
-  private static String initializeColumnIdentifier(final Property.ColumnProperty property, final boolean isNullCondition,
+  private static String initializeColumnIdentifier(final ColumnProperty property, final boolean isNullCondition,
                                                    final boolean caseSensitive) {
     String columnName;
-    if (property instanceof Property.SubqueryProperty) {
-      columnName = "(" + ((Property.SubqueryProperty) property).getSubQuery() + ")";
+    if (property instanceof SubqueryProperty) {
+      columnName = "(" + ((SubqueryProperty) property).getSubQuery() + ")";
     }
     else {
       columnName = property.getColumnName();

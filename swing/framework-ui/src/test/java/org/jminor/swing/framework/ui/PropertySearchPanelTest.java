@@ -5,7 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.model.DefaultPropertyConditionModel;
 import org.jminor.framework.model.PropertyConditionModel;
 
@@ -21,7 +21,7 @@ public class PropertySearchPanelTest {
 
   @Test
   public void createWithInitializedModel() {
-    final PropertyConditionModel<Property.ColumnProperty> conditionModel =
+    final PropertyConditionModel<ColumnProperty> conditionModel =
             new DefaultPropertyConditionModel(DOMAIN.getDefinition(TestDomain.T_DEPARTMENT)
                     .getColumnProperty(TestDomain.DEPARTMENT_NAME));
     conditionModel.setUpperBound("DALLAS");

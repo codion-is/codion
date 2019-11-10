@@ -9,7 +9,8 @@ import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.TestDomain;
 
@@ -28,8 +29,8 @@ public class SwingEntityEditModelTest {
           System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
 
   private SwingEntityEditModel employeeEditModel;
-  private Property.ColumnProperty jobProperty;
-  private Property.ForeignKeyProperty deptProperty;
+  private ColumnProperty jobProperty;
+  private ForeignKeyProperty deptProperty;
 
   @BeforeEach
   public void setUp() {

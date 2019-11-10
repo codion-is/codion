@@ -5,6 +5,9 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.FileUtil;
 import org.jminor.common.Util;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Properties;
+import org.jminor.framework.domain.property.TransientPropertyDefinition;
 
 import org.junit.jupiter.api.Test;
 
@@ -127,7 +130,7 @@ public class DefaultEntityTest {
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 2);
 
-    final Property.ForeignKeyProperty foreignKeyProperty =
+    final ForeignKeyProperty foreignKeyProperty =
             DOMAIN.getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(
             TestDomain.COMPOSITE_DETAIL_MASTER_FK);
     final Entity.Key referencedKey = detail.getReferencedKey(foreignKeyProperty);
@@ -145,7 +148,7 @@ public class DefaultEntityTest {
     final Entity detail = DOMAIN.entity(TestDomain.T_COMPOSITE_DETAIL);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
 
-    final Property.ForeignKeyProperty foreignKeyProperty =
+    final ForeignKeyProperty foreignKeyProperty =
             DOMAIN.getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
     assertEquals(master.getKey(), detail.getReferencedKey(foreignKeyProperty));
 
@@ -332,7 +335,7 @@ public class DefaultEntityTest {
     assertFalse(testEntity.isNull(TestDomain.DETAIL_MASTER_FK));
     assertFalse(testEntity.isNull(TestDomain.DETAIL_MASTER_ID));
 
-    final Property.ForeignKeyProperty foreignKeyProperty =
+    final ForeignKeyProperty foreignKeyProperty =
             DOMAIN.getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
     final Entity composite = DOMAIN.entity(TestDomain.T_COMPOSITE_DETAIL);
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, null);
@@ -645,7 +648,7 @@ public class DefaultEntityTest {
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
     final Domain domain = new Domain("transient").registerDomain();
-    final PropertyDefinition.TransientPropertyDefinition transientProperty = Properties.transientProperty("trans", Types.INTEGER);
+    final TransientPropertyDefinition transientProperty = Properties.transientProperty("trans", Types.INTEGER);
     domain.define("entityId",
             Properties.primaryKeyProperty("id"),
             transientProperty);

@@ -11,7 +11,7 @@ import java.sql.Types;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.domain.Properties.*;
+import static org.jminor.framework.domain.property.Properties.*;
 
 /**
  * This class contains the specification for the EmpDept application domain model

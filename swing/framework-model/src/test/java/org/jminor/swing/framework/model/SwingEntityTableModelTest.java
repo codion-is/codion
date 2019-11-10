@@ -13,7 +13,8 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.model.AbstractEntityTableModelTest;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
@@ -103,7 +104,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(0, employeeTableModel.getRowCount());
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_ID, 10);
-    final Property.ForeignKeyProperty deptFkProperty = DOMAIN.getDefinition(TestDomain.T_EMP)
+    final ForeignKeyProperty deptFkProperty = DOMAIN.getDefinition(TestDomain.T_EMP)
             .getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
     employeeTableModel.setForeignKeyConditionValues(deptFkProperty,
             singletonList(accounting));
