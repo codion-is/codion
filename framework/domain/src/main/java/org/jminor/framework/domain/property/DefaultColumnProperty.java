@@ -29,7 +29,6 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   private static final ValueConverter<LocalDateTime, java.sql.Timestamp> TIMESTAMP_VALUE_CONVERTER = new TimestampValueConverter();
   private static final ValueConverter<LocalTime, java.sql.Time> TIME_VALUE_CONVERTER = new TimeValueConverter();
 
-
   private final int columnType;
   private int primaryKeyIndex = -1;
   private boolean columnHasDefaultValue = false;

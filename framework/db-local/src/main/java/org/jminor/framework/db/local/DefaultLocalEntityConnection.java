@@ -20,6 +20,7 @@ import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
@@ -76,8 +77,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
   private static final String CONDITION_PARAM_NAME = "condition";
-  private static final String WHERE = "where ";
-  private static final String WHERE_SPACE_PREFIX = " " + WHERE;
+  private static final String WHERE_SPACE_PREFIX_POSTFIX = " where ";
 
   /**
    * A result packer for fetching blobs from a result set containing a single blob column
@@ -235,8 +235,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                   e -> entityDefinition.getWritableColumnProperties(!keyGenerator.getType().isAutoIncrement(), true));
           populateStatementPropertiesAndValues(true, entity, insertColumnProperties, statementProperties, statementValues);
 
+          final String[] returnColumns = keyGenerator.returnPrimaryKeyValues() ? getPrimaryKeyColumnNames(entityDefinition) : null;
           insertSQL = createInsertSQL(entityDefinition.getTableName(), statementProperties);
-          statement = prepareStatement(insertSQL, keyGenerator.returnPrimaryKeyValues() ? getPrimaryKeyColumnNames(entityId) : null);
+          statement = prepareStatement(insertSQL, returnColumns);
           executePreparedUpdate(statement, insertSQL, statementProperties, statementValues);
           keyGenerator.afterInsert(entity, connection, statement);
 
@@ -269,42 +270,43 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     checkReadOnly(entities);
 
-    final List<Object> statementValues = new ArrayList<>();
+    final List<Object> propertyValuesToSet = new ArrayList<>();
     PreparedStatement statement = null;
     String updateSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, List<Entity>> mappedEntities = mapToEntityId(entities);
+        final Map<String, List<Entity>> entitiesByType = mapToEntityId(entities);
         if (optimisticLocking) {
-          lockAndCheckForUpdate(mappedEntities);
+          lockAndCheckForUpdate(entitiesByType);
         }
 
-        final List<ColumnProperty> statementProperties = new ArrayList<>();
+        final List<ColumnProperty> propertiesToUpdate = new ArrayList<>();
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
-        for (final Map.Entry<String, List<Entity>> mappedEntitiesEntry : mappedEntities.entrySet()) {
-          final String entityId = mappedEntitiesEntry.getKey();
-          final List<Entity> toUpdate = mappedEntitiesEntry.getValue();
+        for (final Map.Entry<String, List<Entity>> entitiesByTypeEntry : entitiesByType.entrySet()) {
+          final String entityId = entitiesByTypeEntry.getKey();
+          final List<Entity> toUpdate = entitiesByTypeEntry.getValue();
           final Entity.Definition entityDefinition = domain.getDefinition(entityId);
           final String tableName = entityDefinition.getTableName();
-          final List<ColumnProperty> updateColumnProperties = updateProperties.computeIfAbsent(entityId,
+          final List<ColumnProperty> writableProperties = updateProperties.computeIfAbsent(entityId,
                   e -> entityDefinition.getWritableColumnProperties(true, false));
 
           for (final Entity entity : toUpdate) {
-            populateStatementPropertiesAndValues(false, entity, updateColumnProperties, statementProperties, statementValues);
+            populateStatementPropertiesAndValues(false, entity, writableProperties, propertiesToUpdate, propertyValuesToSet);
 
-            final EntityCondition condition = entityCondition(entity.getOriginalKey());
-            updateSQL = createUpdateSQL(tableName, statementProperties, condition);
-            statementProperties.addAll(entityDefinition.getColumnProperties(condition.getCondition(domain).getPropertyIds()));
-            statementValues.addAll(condition.getCondition(domain).getValues());
+            final EntityCondition updateCondition = entityCondition(entity.getOriginalKey());
+            final Condition updatePropertyCondition = updateCondition.getCondition(domain);
+            updateSQL = createUpdateSQL(tableName, propertiesToUpdate, updateCondition.getWhereClause(domain));
+            propertiesToUpdate.addAll(entityDefinition.getColumnProperties(updatePropertyCondition.getPropertyIds()));
+            propertyValuesToSet.addAll(updatePropertyCondition.getValues());
             statement = prepareStatement(updateSQL);
-            final int updated = executePreparedUpdate(statement, updateSQL, statementProperties, statementValues);
+            final int updated = executePreparedUpdate(statement, updateSQL, propertiesToUpdate, propertyValuesToSet);
             if (updated == 0) {
               throw new UpdateException("Update did not affect any rows");
             }
 
             statement.close();
-            statementProperties.clear();
-            statementValues.clear();
+            propertiesToUpdate.clear();
+            propertyValuesToSet.clear();
           }
           final List<Entity> selected = doSelectMany(entitySelectCondition(getKeys(toUpdate)), 0);
           if (selected.size() != toUpdate.size()) {
@@ -319,7 +321,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateSQL, statementValues, e, null));
+        LOG.error(createLogMessage(getUser(), updateSQL, propertyValuesToSet, e, null));
         throw translateInsertUpdateSQLException(e);
       }
       catch (final RecordModifiedException e) {
@@ -329,7 +331,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final UpdateException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateSQL, statementValues, e, null));
+        LOG.error(createLogMessage(getUser(), updateSQL, propertyValuesToSet, e, null));
         throw e;
       }
       finally {
@@ -347,16 +349,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     PreparedStatement statement = null;
     String deleteSQL = null;
     synchronized (connection) {
+      final Condition propertyCondition = condition.getCondition(domain);
+      final List conditionPropertyValues = propertyCondition.getValues();
+      final List<ColumnProperty> conditionProperties =
+              domain.getDefinition(condition.getEntityId()).getColumnProperties(propertyCondition.getPropertyIds());
       try {
         deleteSQL = createDeleteSQL(condition);
         statement = prepareStatement(deleteSQL);
-        executePreparedUpdate(statement, deleteSQL, domain.getDefinition(condition.getEntityId()).getColumnProperties(
-                condition.getCondition(domain).getPropertyIds()), condition.getCondition(domain).getValues());
+        executePreparedUpdate(statement, deleteSQL, conditionProperties, conditionPropertyValues);
         commitIfTransactionIsNotOpen();
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), deleteSQL, condition.getCondition(domain).getValues(), e, null));
+        LOG.error(createLogMessage(getUser(), deleteSQL, conditionPropertyValues, e, null));
         throw translateDeleteSQLException(e);
       }
       finally {
@@ -376,20 +381,20 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String deleteSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, List<Entity.Key>> mappedKeys = mapKeysToEntityId(entityKeys);
-        for (final String entityId : mappedKeys.keySet()) {
+        final Map<String, List<Entity.Key>> keysByType = mapKeysToEntityId(entityKeys);
+        for (final String entityId : keysByType.keySet()) {
           checkReadOnly(entityId);
         }
-        final List<Entity.Key> conditionKeys = new ArrayList<>();
-        for (final Map.Entry<String, List<Entity.Key>> mappedKeysEntry : mappedKeys.entrySet()) {
-          conditionKeys.addAll(mappedKeysEntry.getValue());
-          final EntityCondition condition = entityCondition(conditionKeys);
-          deleteSQL = createDeleteSQL(condition);
+        for (final List<Entity.Key> keysForType : keysByType.values()) {
+          final EntityCondition deleteByKeysCondition = entityCondition(keysForType);
+          final Condition deleteCondition = deleteByKeysCondition.getCondition(domain);
+          final List<ColumnProperty> deleteConditionProperties =
+                  domain.getDefinition(deleteByKeysCondition.getEntityId()).getColumnProperties(
+                          deleteCondition.getPropertyIds());
+          deleteSQL = createDeleteSQL(deleteByKeysCondition);
           statement = prepareStatement(deleteSQL);
-          executePreparedUpdate(statement, deleteSQL, domain.getDefinition(condition.getEntityId()).getColumnProperties(
-                  condition.getCondition(domain).getPropertyIds()), condition.getCondition(domain).getValues());
+          executePreparedUpdate(statement, deleteSQL, deleteConditionProperties, deleteCondition.getValues());
           statement.close();
-          conditionKeys.clear();
         }
         commitIfTransactionIsNotOpen();
       }
@@ -440,8 +445,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         final List<Entity> result = new ArrayList<>();
-        for (final Map.Entry<String, List<Entity.Key>> entry : mapKeysToEntityId(keys).entrySet()) {
-          result.addAll(doSelectMany(entitySelectCondition(entry.getValue()), 0));
+        for (final List<Entity.Key> keysByEntityId : mapKeysToEntityId(keys).values()) {
+          result.addAll(doSelectMany(entitySelectCondition(keysByEntityId), 0));
         }
         if (!isTransactionOpen()) {
           commitQuietly();
@@ -489,28 +494,28 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entityDefinition.getSelectQuery() != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
-    final ColumnProperty property = entityDefinition.getColumnProperty(propertyId);
-    final String columnName = property.getColumnName();
-    final EntityCondition entityCondition = entityCondition(condition.getEntityId(),
+    final ColumnProperty propertyToSelect = entityDefinition.getColumnProperty(propertyId);
+    final String columnName = propertyToSelect.getColumnName();
+    final EntityCondition combinedWithNotNullCondition = entityCondition(condition.getEntityId(),
             conditionSet(Conjunction.AND, condition.getCondition(domain),
                     Conditions.propertyCondition(propertyId, NOT_LIKE, null)));
     final String selectSQL = createSelectSQL(entityDefinition.getSelectTableName(),
-            "distinct " + columnName,WHERE + entityCondition.getWhereClause(domain), columnName);
+            "distinct " + columnName, combinedWithNotNullCondition.getWhereClause(domain), columnName);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     QUERY_COUNTER.count(selectSQL);
     synchronized (connection) {
       try {
         statement = prepareStatement(selectSQL);
-        resultSet = executePreparedSelect(statement, selectSQL, condition);
-        final List<Object> result = property.getResultPacker().pack(resultSet, -1);
+        resultSet = executePreparedSelect(statement, selectSQL, combinedWithNotNullCondition);
+        final List<Object> result = propertyToSelect.getResultPacker().pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
 
         return result;
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), selectSQL, asList(propertyId, condition), e, null));
+        LOG.error(createLogMessage(getUser(), selectSQL, asList(propertyId, combinedWithNotNullCondition), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -524,15 +529,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
-    final String query = getSelectSQL(condition, domain.getDefinition(condition.getEntityId()).getPrimaryKeyProperties());
-    final String selectSQL = createSelectSQL("(" + query + ")", "count(*)", null, null);
+    final String baseSQLQuery = createSelectSQL(condition, domain.getDefinition(condition.getEntityId()).getPrimaryKeyProperties());
+    final String rowCountSQLQuery = createSelectSQL("(" + baseSQLQuery + ")", "count(*)", null, null);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    QUERY_COUNTER.count(selectSQL);
+    QUERY_COUNTER.count(rowCountSQLQuery);
     synchronized (connection) {
       try {
-        statement = prepareStatement(selectSQL);
-        resultSet = executePreparedSelect(statement, selectSQL, condition);
+        statement = prepareStatement(rowCountSQLQuery);
+        resultSet = executePreparedSelect(statement, rowCountSQLQuery, condition);
         final List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
         if (result.isEmpty()) {
@@ -543,7 +548,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), selectSQL, condition.getCondition(domain).getValues(), e, null));
+        LOG.error(createLogMessage(getUser(), rowCountSQLQuery, condition.getCondition(domain).getValues(), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -655,29 +660,30 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException {
     final Entity.Definition entityDefinition = domain.getDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
-    final ColumnProperty property = entityDefinition.getColumnProperty(blobPropertyId);
-    if (property.getColumnType() != Types.BLOB) {
-      throw new IllegalArgumentException("Property " + property.getPropertyId() + " in entity " +
+    final ColumnProperty blobProperty = entityDefinition.getColumnProperty(blobPropertyId);
+    if (blobProperty.getColumnType() != Types.BLOB) {
+      throw new IllegalArgumentException("Property " + blobProperty.getPropertyId() + " in entity " +
               primaryKey.getEntityId() + " does not have column type BLOB");
     }
-    final EntityCondition condition = entityCondition(primaryKey);
-    final String sql = "update " + entityDefinition.getTableName() + " set " +
-            property.getColumnName() + " = ?" + WHERE_SPACE_PREFIX + condition.getWhereClause(domain);
-    final List<Object> values = new ArrayList<>();
-    final List<ColumnProperty> properties = new ArrayList<>();
-    QUERY_COUNTER.count(sql);
+    final EntityCondition updateByKeyCondition = entityCondition(primaryKey);
+    final String updateSQL = "update " + entityDefinition.getTableName() + " set " + blobProperty.getColumnName() + " = ?" +
+            WHERE_SPACE_PREFIX_POSTFIX + updateByKeyCondition.getWhereClause(domain);
+    final List<Object> statementValues = new ArrayList<>();
+    final List<ColumnProperty> statementProperties = new ArrayList<>();
+    QUERY_COUNTER.count(updateSQL);
     synchronized (connection) {
       SQLException exception = null;
       PreparedStatement statement = null;
       try {
-        logAccess("writeBlob", new Object[] {sql});
-        values.add(null);//the blob value, set explicitly later
-        values.addAll(condition.getCondition(domain).getValues());
-        properties.add(property);
-        properties.addAll(entityDefinition.getColumnProperties(condition.getCondition(domain).getPropertyIds()));
+        logAccess("writeBlob", new Object[] {updateSQL});
+        final Condition updateCondition = updateByKeyCondition.getCondition(domain);
+        statementValues.add(null);//the blob value, set explicitly later
+        statementValues.addAll(updateCondition.getValues());
+        statementProperties.add(blobProperty);
+        statementProperties.addAll(entityDefinition.getColumnProperties(updateCondition.getPropertyIds()));
 
-        statement = prepareStatement(sql);
-        setParameterValues(statement, values, properties);
+        statement = prepareStatement(updateSQL);
+        setParameterValues(statement, statementProperties, statementValues);
         statement.setBinaryStream(1, new ByteArrayInputStream(blobData));//no need to close ByteArrayInputStream
         statement.executeUpdate();
         commitIfTransactionIsNotOpen();
@@ -685,14 +691,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), sql, values, exception, null));
+        LOG.error(createLogMessage(getUser(), updateSQL, statementValues, exception, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
         closeSilently(statement);
         final MethodLogger.Entry logEntry = logExit("writeBlob", exception, null);
         if (LOG.isDebugEnabled()) {
-          LOG.debug(createLogMessage(getUser(), sql, values, exception, logEntry));
+          LOG.debug(createLogMessage(getUser(), updateSQL, statementValues, exception, logEntry));
         }
       }
     }
@@ -702,24 +708,25 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException {
     final Entity.Definition entityDefinition = domain.getDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
-    final ColumnProperty property = entityDefinition.getColumnProperty(blobPropertyId);
-    if (property.getColumnType() != Types.BLOB) {
-      throw new IllegalArgumentException("Property " + property.getPropertyId() + " in entity " +
+    final ColumnProperty blobProperty = entityDefinition.getColumnProperty(blobPropertyId);
+    if (blobProperty.getColumnType() != Types.BLOB) {
+      throw new IllegalArgumentException("Property " + blobProperty.getPropertyId() + " in entity " +
               primaryKey.getEntityId() + " does not have column type BLOB");
     }
     PreparedStatement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
-    final EntityCondition condition = entityCondition(primaryKey);
-    final String sql = "select " + property.getColumnName() + " from " +
-            entityDefinition.getTableName() + WHERE_SPACE_PREFIX + condition.getWhereClause(domain);
+    final EntityCondition selectByKeyCondition = entityCondition(primaryKey);
+    final String sql = "select " + blobProperty.getColumnName() + " from " +
+            entityDefinition.getTableName() + WHERE_SPACE_PREFIX_POSTFIX + selectByKeyCondition.getWhereClause(domain);
     QUERY_COUNTER.count(sql);
     synchronized (connection) {
+      final Condition whereCondition = selectByKeyCondition.getCondition(domain);
       try {
         logAccess("readBlob", new Object[] {sql});
         statement = prepareStatement(sql);
-        setParameterValues(statement, condition.getCondition(domain).getValues(),
-                entityDefinition.getColumnProperties(condition.getCondition(domain).getPropertyIds()));
+        setParameterValues(statement, entityDefinition.getColumnProperties(
+                whereCondition.getPropertyIds()), whereCondition.getValues());
 
         resultSet = statement.executeQuery();
         final List<Blob> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
@@ -732,7 +739,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), sql, condition.getCondition(domain).getValues(), exception, null));
+        LOG.error(createLogMessage(getUser(), sql, whereCondition.getValues(), exception, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -740,7 +747,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         closeSilently(resultSet);
         final MethodLogger.Entry logEntry = logExit("readBlob", exception, null);
         if (LOG.isDebugEnabled()) {
-          LOG.debug(createLogMessage(getUser(), sql, condition.getCondition(domain).getValues(), exception, logEntry));
+          LOG.debug(createLogMessage(getUser(), sql, whereCondition.getValues(), exception, logEntry));
         }
       }
     }
@@ -800,17 +807,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * the {@code modifiedRow} provided by the exception is null
    */
   private void lockAndCheckForUpdate(final Map<String, List<Entity>> entities) throws SQLException, RecordModifiedException {
-    for (final Map.Entry<String, List<Entity>> entry : entities.entrySet()) {
-      final List<Entity.Key> originalKeys = getKeys(entry.getValue(), true);
+    for (final Map.Entry<String, List<Entity>> entitiesByTypeEntry : entities.entrySet()) {
+      final List<Entity.Key> originalKeys = getKeys(entitiesByTypeEntry.getValue(), true);
       final EntitySelectCondition selectForUpdateCondition = entitySelectCondition(originalKeys);
       selectForUpdateCondition.setForUpdate(true);
-      selectForUpdateCondition.setSelectPropertyIds(writableColumns.computeIfAbsent(entry.getKey(), entityId ->
+      selectForUpdateCondition.setSelectPropertyIds(writableColumns.computeIfAbsent(entitiesByTypeEntry.getKey(), entityId ->
               domain.getDefinition(entityId).getWritableColumnProperties(true, true)
                       .stream().map(Property::getPropertyId).toArray(String[]::new)));
       final List<Entity> currentValues = doSelectMany(selectForUpdateCondition, 0);
-      final Map<Entity.Key, Entity> mappedEntities = mapToKey(currentValues);
-      for (final Entity entity : entry.getValue()) {
-        final Entity current = mappedEntities.get(entity.getOriginalKey());
+      final Map<Entity.Key, Entity> entitiesByKey = mapToKey(currentValues);
+      for (final Entity entity : entitiesByTypeEntry.getValue()) {
+        final Entity current = entitiesByKey.get(entity.getOriginalKey());
         if (current == null) {
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
                   + ", " + entity.getOriginalCopy() + " " + MESSAGES.getString("has_been_deleted"));
@@ -874,11 +881,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             referencedEntitiesCondition.setForeignKeyFetchDepthLimit(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
-            final Map<Entity.Key, Entity> mappedReferencedEntities = mapToKey(referencedEntities);
+            final Map<Entity.Key, Entity> referencedEntitiesMappedByKey = mapToKey(referencedEntities);
             for (int j = 0; j < entities.size(); j++) {
               final Entity entity = entities.get(j);
               final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyProperty);
-              entity.put(foreignKeyProperty, getReferencedEntity(referencedKey, mappedReferencedEntities), false);
+              entity.put(foreignKeyProperty, getReferencedEntity(referencedKey, referencedEntitiesMappedByKey), false);
             }
           }
         }
@@ -889,11 +896,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private Entity getReferencedEntity(final Entity.Key referencedPrimaryKey, final Map<Entity.Key, Entity> mappedReferencedEntities) {
+  private Entity getReferencedEntity(final Entity.Key referencedPrimaryKey, final Map<Entity.Key, Entity> entitiesMappedByKey) {
     if (referencedPrimaryKey == null) {
       return null;
     }
-    Entity referencedEntity = mappedReferencedEntities.get(referencedPrimaryKey);
+    Entity referencedEntity = entitiesMappedByKey.get(referencedPrimaryKey);
     if (referencedEntity == null) {
       //if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
       //we create an empty entity wrapping the primary key since that's the best we can do under the circumstances
@@ -903,39 +910,39 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return referencedEntity;
   }
 
-  private ResultIterator<Entity> createIterator(final EntitySelectCondition condition) throws SQLException {
-    requireNonNull(condition, CONDITION_PARAM_NAME);
+  private ResultIterator<Entity> createIterator(final EntitySelectCondition selectCondition) throws SQLException {
+    requireNonNull(selectCondition, CONDITION_PARAM_NAME);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectSQL = null;
-    final Entity.Definition entityDefinition = domain.getDefinition(condition.getEntityId());
-    final List<ColumnProperty> columnProperties = condition.getSelectPropertyIds().isEmpty() ?
+    final Entity.Definition entityDefinition = domain.getDefinition(selectCondition.getEntityId());
+    final List<ColumnProperty> propertiesToSelect = selectCondition.getSelectPropertyIds().isEmpty() ?
             entityDefinition.getSelectableColumnProperties() :
-            entityDefinition.getSelectableColumnProperties(condition.getSelectPropertyIds());
+            entityDefinition.getSelectableColumnProperties(selectCondition.getSelectPropertyIds());
     try {
-      selectSQL = getSelectSQL(condition, columnProperties);
+      selectSQL = createSelectSQL(selectCondition, propertiesToSelect);
       statement = prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, condition);
+      resultSet = executePreparedSelect(statement, selectSQL, selectCondition);
 
       return new EntityResultIterator(statement, resultSet, new EntityResultPacker(
-              condition.getEntityId(), columnProperties,
-              entityDefinition.getTransientProperties()), condition.getFetchCount());
+              selectCondition.getEntityId(), propertiesToSelect,
+              entityDefinition.getTransientProperties()), selectCondition.getFetchCount());
     }
     catch (final SQLException e) {
       closeSilently(resultSet);
       closeSilently(statement);
-      LOG.error(createLogMessage(getUser(), selectSQL, condition.getCondition(domain).getValues(), e, null));
+      LOG.error(createLogMessage(getUser(), selectSQL, selectCondition.getCondition(domain).getValues(), e, null));
       throw e;
     }
   }
 
   private int executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
-                                    final List<ColumnProperty> properties, final List values) throws SQLException {
+                                    final List<ColumnProperty> statementProperties, final List statementValues) throws SQLException {
     SQLException exception = null;
     QUERY_COUNTER.count(sqlStatement);
     try {
-      logAccess("executePreparedUpdate", new Object[] {sqlStatement, values});
-      setParameterValues(statement, values, properties);
+      logAccess("executePreparedUpdate", new Object[] {sqlStatement, statementValues});
+      setParameterValues(statement, statementProperties, statementValues);
       return statement.executeUpdate();
     }
     catch (final SQLException e) {
@@ -945,7 +952,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     finally {
       final MethodLogger.Entry entry = logExit("executePreparedUpdate", exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
+        LOG.debug(createLogMessage(getUser(), sqlStatement, statementValues, exception, entry));
       }
     }
   }
@@ -954,11 +961,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                           final EntityCondition condition) throws SQLException {
     SQLException exception = null;
     QUERY_COUNTER.count(sqlStatement);
-    final List values = condition.getCondition(domain).getValues();
+    final Condition whereCondition = condition.getCondition(domain);
+    final List statementValues = whereCondition.getValues();
     try {
-      logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
-      setParameterValues(statement, values, domain.getDefinition(condition.getEntityId())
-              .getColumnProperties(condition.getCondition(domain).getPropertyIds()));
+      logAccess("executePreparedSelect", statementValues == null ?
+              new Object[] {sqlStatement} :
+              new Object[] {sqlStatement, statementValues});
+      setParameterValues(statement, domain.getDefinition(condition.getEntityId())
+              .getColumnProperties(whereCondition.getPropertyIds()), statementValues);
+
       return statement.executeQuery();
     }
     catch (final SQLException e) {
@@ -968,7 +979,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     finally {
       final MethodLogger.Entry entry = logExit("executePreparedSelect", exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
+        LOG.debug(createLogMessage(getUser(), sqlStatement, statementValues, exception, entry));
       }
     }
   }
@@ -983,17 +994,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       if (returnColumns == null) {
         return connection.getConnection().prepareStatement(sqlStatement);
       }
-      else {
-        return connection.getConnection().prepareStatement(sqlStatement, returnColumns);
-      }
+
+      return connection.getConnection().prepareStatement(sqlStatement, returnColumns);
     }
     finally {
       logExit("prepareStatement", null, null);
     }
   }
 
-  private String[] getPrimaryKeyColumnNames(final String entityId) {
-    final List<ColumnProperty> primaryKeyProperties = domain.getDefinition(entityId).getPrimaryKeyProperties();
+  private String[] getPrimaryKeyColumnNames(final Entity.Definition definition) {
+    final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
     final String[] columnNames = new String[primaryKeyProperties.size()];
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       columnNames[i] = primaryKeyProperties.get(i).getColumnName();
@@ -1004,7 +1014,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /**
    * @param entityId the entityId
-   * @return all foreign keys referencing entities of type {@code entityId}
+   * @return all foreign keys in the domain referencing entities of type {@code entityId}
    */
   private Collection<ForeignKeyProperty> getForeignKeyReferences(final String entityId) {
     return foreignKeyReferenceMap.computeIfAbsent(entityId, e -> {
@@ -1049,9 +1059,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     else if (database.isReferentialIntegrityException(exception)) {
       return new ReferentialIntegrityException(exception, database.getErrorMessage(exception));
     }
-    else {
-      return new DatabaseException(exception, database.getErrorMessage(exception));
-    }
+
+    return new DatabaseException(exception, database.getErrorMessage(exception));
   }
 
   private DatabaseException translateDeleteSQLException(final SQLException exception) {
@@ -1059,9 +1068,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (database.isReferentialIntegrityException(exception)) {
       return new ReferentialIntegrityException(exception, database.getErrorMessage(exception));
     }
-    else {
-      return new DatabaseException(exception, database.getErrorMessage(exception));
-    }
+
+    return new DatabaseException(exception, database.getErrorMessage(exception));
   }
 
   private void commitQuietly() {
@@ -1110,18 +1118,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private static void setParameterValues(final PreparedStatement statement, final List values,
-                                         final List<ColumnProperty> parameterProperties) throws SQLException {
-    if (nullOrEmpty(values) || statement.getParameterMetaData().getParameterCount() == 0) {
+  private static void setParameterValues(final PreparedStatement statement, final List<ColumnProperty> statementProperties,
+                                         final List statementValues) throws SQLException {
+    if (nullOrEmpty(statementValues) || statement.getParameterMetaData().getParameterCount() == 0) {
       return;
     }
-    if (parameterProperties == null || parameterProperties.size() != values.size()) {
-      throw new SQLException("Parameter property value count mismatch: " + (parameterProperties == null ?
-              "no properties" : ("expected: " + values.size() + ", got: " + parameterProperties.size())));
+    if (statementProperties == null || statementProperties.size() != statementValues.size()) {
+      throw new SQLException("Parameter property value count mismatch: " + (statementProperties == null ?
+              "no properties" : ("expected: " + statementValues.size() + ", got: " + statementProperties.size())));
     }
 
-    for (int i = 0; i < parameterProperties.size(); i++) {
-      setParameterValue(statement, i + 1, values.get(i), parameterProperties.get(i));
+    for (int i = 0; i < statementProperties.size(); i++) {
+      setParameterValue(statement, i + 1, statementValues.get(i), statementProperties.get(i));
     }
   }
 
@@ -1155,15 +1163,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return new ArrayList<>(keySet);
   }
 
-  private String getSelectSQL(final EntityCondition condition, final List<ColumnProperty> columnProperties) {
+  private String createSelectSQL(final EntityCondition condition, final List<ColumnProperty> columnProperties) {
     final String entityId = condition.getEntityId();
     final boolean isForUpdate = condition instanceof EntitySelectCondition &&
             ((EntitySelectCondition) condition).isForUpdate();
     boolean containsWhereClause = false;
     final Entity.Definition entityDefinition = domain.getDefinition(entityId);
-    String selectSQL = entityDefinition.getSelectQuery();
-    if (selectSQL == null) {
-      selectSQL = createSelectSQL(isForUpdate ?
+    String selectQuery = entityDefinition.getSelectQuery();
+    if (selectQuery == null) {
+      selectQuery = createSelectSQL(isForUpdate ?
                       entityDefinition.getTableName() : entityDefinition.getSelectTableName(),
               initializeSelectColumnsString(columnProperties), null, null);
     }
@@ -1171,10 +1179,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       containsWhereClause = entityDefinition.selectQueryContainsWhereClause();
     }
 
-    final StringBuilder queryBuilder = new StringBuilder(selectSQL);
+    final StringBuilder queryBuilder = new StringBuilder(selectQuery);
     final String whereClause = condition.getWhereClause(domain);
     if (whereClause.length() > 0) {
-      queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX).append(whereClause);
+      queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
     }
     if (isForUpdate) {
       addForUpdate(connection.getDatabase(), queryBuilder);
@@ -1248,10 +1256,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     final List<String> orderBys = new LinkedList<>();
     final List<Entity.OrderBy.OrderByProperty> orderByProperties = selectCondition.getOrderBy().getOrderByProperties();
+    final Entity.Definition definition = domain.getDefinition(selectCondition.getEntityId());
     for (int i = 0; i < orderByProperties.size(); i++) {
       final Entity.OrderBy.OrderByProperty property = orderByProperties.get(i);
-      orderBys.add(domain.getDefinition(selectCondition.getEntityId()).getColumnProperty(
-              property.getPropertyId()).getColumnName() + (property.isDescending() ? " desc" : ""));
+      orderBys.add(definition.getColumnProperty(property.getPropertyId()).getColumnName() +
+              (property.isDescending() ? " desc" : ""));
     }
 
     return String.join(", ", orderBys);
@@ -1260,11 +1269,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /**
    * @param tableName the table name
    * @param updateProperties the properties being updated
-   * @param condition the primary key condition for the given entity
+   * @param whereClause the where clause, without the WHERE keyword
    * @return a query for updating this entity instance
    */
   private String createUpdateSQL(final String tableName, final List<ColumnProperty> updateProperties,
-                                 final EntityCondition condition) {
+                                 final String whereClause) {
     final StringBuilder sql = new StringBuilder("update ").append(tableName).append(" set ");
     for (int i = 0; i < updateProperties.size(); i++) {
       sql.append(updateProperties.get(i).getColumnName()).append(" = ?");
@@ -1273,7 +1282,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
     }
 
-    return sql.append(WHERE_SPACE_PREFIX).append(condition.getWhereClause(domain)).toString();
+    return sql.append(WHERE_SPACE_PREFIX_POSTFIX).append(whereClause).toString();
   }
 
   /**
@@ -1304,23 +1313,23 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private String createDeleteSQL(final EntityCondition condition) {
     final String whereClause = condition.getWhereClause(domain);
     return "delete from " + domain.getDefinition(condition.getEntityId()).getTableName() +
-            (whereClause.isEmpty() ? "" : WHERE_SPACE_PREFIX + whereClause);
+            (whereClause.isEmpty() ? "" : WHERE_SPACE_PREFIX_POSTFIX + whereClause);
   }
 
   /**
    * Generates a sql select query with the given parameters
    * @param tableName the name of the table from which to select
    * @param columns the columns to select, example: "col1, col2"
-   * @param whereCondition the where condition
+   * @param whereClause the where condition without the WHERE keyword
    * @param orderByClause a string specifying the columns 'ORDER BY' clause,
    * "col1, col2" as input results in the following order by clause "order by col1, col2"
    * @return the generated sql query
    */
-  private static String createSelectSQL(final String tableName, final String columns, final String whereCondition,
+  private static String createSelectSQL(final String tableName, final String columns, final String whereClause,
                                         final String orderByClause) {
     final StringBuilder sql = new StringBuilder("select ").append(columns).append(" from ").append(tableName);
-    if (!nullOrEmpty(whereCondition)) {
-      sql.append(" ").append(whereCondition);
+    if (!nullOrEmpty(whereClause)) {
+      sql.append(WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
     }
     if (!nullOrEmpty(orderByClause)) {
       sql.append(" order by ").append(orderByClause);
@@ -1350,9 +1359,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
     }
     if (statementProperties.isEmpty()) {
-      throw inserting ?
-              new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert") :
-              new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
+      if (inserting) {
+        throw new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert");
+      }
+
+      throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
     }
   }
 
@@ -1429,7 +1440,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       final StringBuilder builder = new StringBuilder(condition.getEntityId());
       final String whereClause = condition.getWhereClause(domain);
       if (!nullOrEmpty(whereClause)) {
-        builder.append(",").append(WHERE_SPACE_PREFIX).append(whereClause);
+        builder.append(",").append(WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
       }
       final List values = condition.getCondition(domain).getValues();
       if (values != null) {
