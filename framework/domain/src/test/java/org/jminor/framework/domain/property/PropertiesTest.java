@@ -31,7 +31,7 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyWithoutReferenceProperty() {
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty("propertyId", "caption", "referencedEntityId", (ColumnPropertyBuilder) null));
+    assertThrows(NullPointerException.class, () -> foreignKeyProperty("propertyId", "caption", "referencedEntityId", (ColumnProperty.Builder) null));
   }
 
   @Test
@@ -100,15 +100,15 @@ public final class PropertiesTest {
 
   @Test
   public void setEntityIdAlreadySet() {
-    final PropertyBuilder property = columnProperty("propertyId").setEntityId("entityId");
+    final Property.Builder property = columnProperty("propertyId").setEntityId("entityId");
     assertThrows(IllegalStateException.class, () -> property.setEntityId("test"));
   }
 
   @Test
   public void foreignKeyPropertyNullable() {
-    final ColumnPropertyBuilder columnProperty = columnProperty("propertyId");
-    final ColumnPropertyBuilder columnProperty2 = columnProperty("propertyId2");
-    final ForeignKeyPropertyBuilder foreignKeyProperty =
+    final ColumnProperty.Builder columnProperty = columnProperty("propertyId");
+    final ColumnProperty.Builder columnProperty2 = columnProperty("propertyId2");
+    final ForeignKeyProperty.Builder foreignKeyProperty =
             foreignKeyProperty("fkPropertyID", "fk", "referenceEntityID",
                     Arrays.asList(columnProperty, columnProperty2));
     foreignKeyProperty.setNullable(false);
@@ -119,10 +119,10 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyUpdatable() {
-    final ColumnPropertyBuilder updatableReferenceProperty = columnProperty("propertyId");
-    final ColumnPropertyBuilder nonUpdatableReferenceProperty = columnProperty("propertyId").setUpdatable(false);
+    final ColumnProperty.Builder updatableReferenceProperty = columnProperty("propertyId");
+    final ColumnProperty.Builder nonUpdatableReferenceProperty = columnProperty("propertyId").setUpdatable(false);
 
-    final ForeignKeyPropertyBuilder updatableForeignKeyProperty = foreignKeyProperty("fkProperty", "test",
+    final ForeignKeyProperty.Builder updatableForeignKeyProperty = foreignKeyProperty("fkProperty", "test",
             "referencedEntityID", updatableReferenceProperty);
     assertTrue(updatableForeignKeyProperty.get().isUpdatable());
 
@@ -139,7 +139,7 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyNullProperty() {
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty("id", "caption", "entityId", (ColumnPropertyBuilder) null));
+    assertThrows(NullPointerException.class, () -> foreignKeyProperty("id", "caption", "entityId", (ColumnProperty.Builder) null));
   }
 
   @Test
@@ -161,7 +161,7 @@ public final class PropertiesTest {
 
   @Test
   public void denormalizedViewPropertySetReadOnlyFalse() {
-    final ColumnPropertyBuilder columnProperty = columnProperty("property", Types.INTEGER);
+    final ColumnProperty.Builder columnProperty = columnProperty("property", Types.INTEGER);
     foreignKeyProperty("foreignId", "caption","entityId", columnProperty);
     assertThrows(UnsupportedOperationException.class, () -> denormalizedViewProperty("test", "foreignId", columnProperty.get(), "caption").setReadOnly(false));
   }
