@@ -545,7 +545,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param property the property
      * @throws NullValidationException in case the property value is null and the property is not nullable
      * @see PropertyBuilder#setNullable(boolean)
-     * @see PropertyBuilder#isNullable()
+     * @see Property#isNullable()
      */
     void performNullValidation(final Entity entity, final Property property) throws NullValidationException;
 
