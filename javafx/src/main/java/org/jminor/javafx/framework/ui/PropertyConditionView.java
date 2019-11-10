@@ -10,7 +10,8 @@ import org.jminor.common.Values;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.model.DefaultForeignKeyConditionModel;
 import org.jminor.javafx.framework.model.FXForeignKeyConditionListModel;
 
@@ -121,7 +122,7 @@ public final class PropertyConditionView extends BorderPane {
   }
 
   private Control createLowerBoundControl() {
-    if (model.getColumnIdentifier() instanceof Property.ForeignKeyProperty) {
+    if (model.getColumnIdentifier() instanceof ForeignKeyProperty) {
       //never required
       return null;
     }
@@ -190,7 +191,7 @@ public final class PropertyConditionView extends BorderPane {
 
   private static Collection<Item<ConditionType>> getConditionTypes(final Property property) {
     final Collection<Item<ConditionType>> types = new ArrayList<>();
-    if (property instanceof Property.ForeignKeyProperty) {
+    if (property instanceof ForeignKeyProperty) {
       types.add(new Item<>(ConditionType.LIKE, ConditionType.LIKE.getCaption()));
       types.add(new Item<>(ConditionType.NOT_LIKE, ConditionType.NOT_LIKE.getCaption()));
     }

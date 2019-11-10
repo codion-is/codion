@@ -12,7 +12,8 @@ import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
 import java.util.List;
@@ -130,7 +131,7 @@ public interface EntityConnection {
 
   /**
    * Selects ordered and distinct non-null values of the given property, note that the given property
-   * must be of type {@link org.jminor.framework.domain.Property.ColumnProperty}.
+   * must be of type {@link ColumnProperty}.
    * @param propertyId the ID of the property
    * @param condition the condition
    * @return the values in the given column (Property)
@@ -205,7 +206,7 @@ public interface EntityConnection {
    * @param entities the entities for which to retrieve dependencies, must be of same type
    * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a database exception
-   * @see Property.ForeignKeyProperty#isSoftReference()
+   * @see ForeignKeyProperty#isSoftReference()
    */
   Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException;
 

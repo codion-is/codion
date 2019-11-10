@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.Property;
 
 /**
  * Specifies an object responsible for providing property filter models

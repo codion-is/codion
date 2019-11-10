@@ -11,7 +11,8 @@ import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.Property;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +37,7 @@ public final class DefaultEntityLookupModelTest {
           System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
 
   private EntityLookupModel lookupModel;
-  private Collection<Property.ColumnProperty> lookupProperties;
+  private Collection<ColumnProperty> lookupProperties;
 
   @Test
   public void constructorNullEntityId() {
@@ -130,8 +131,8 @@ public final class DefaultEntityLookupModelTest {
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    final Property.ColumnProperty employeeNameProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME);
-    final Property.ColumnProperty employeeJobProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
+    final ColumnProperty employeeNameProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME);
+    final ColumnProperty employeeJobProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
 
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);

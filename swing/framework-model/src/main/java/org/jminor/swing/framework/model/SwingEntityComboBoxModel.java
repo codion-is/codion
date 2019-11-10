@@ -13,7 +13,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
@@ -224,7 +224,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /** {@inheritDoc} */
   @Override
   public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyId) {
-    final Property.ForeignKeyProperty foreignKeyProperty = domain.getDefinition(entityId).getForeignKeyProperty(foreignKeyPropertyId);
+    final ForeignKeyProperty foreignKeyProperty = domain.getDefinition(entityId).getForeignKeyProperty(foreignKeyPropertyId);
     final EntityComboBoxModel foreignKeyModel =
             new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(), connectionProvider);
     foreignKeyModel.setNullValue(domain.createToStringEntity(foreignKeyProperty.getForeignEntityId(), "-"));
@@ -237,7 +237,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /** {@inheritDoc} */
   @Override
   public final void linkForeignKeyComboBoxModel(final String foreignKeyPropertyId, final EntityComboBoxModel foreignKeyModel) {
-    final Property.ForeignKeyProperty foreignKeyProperty = domain.getDefinition(entityId).getForeignKeyProperty(foreignKeyPropertyId);
+    final ForeignKeyProperty foreignKeyProperty = domain.getDefinition(entityId).getForeignKeyProperty(foreignKeyPropertyId);
     if (!foreignKeyProperty.getForeignEntityId().equals(foreignKeyModel.getEntityId())) {
       throw new IllegalArgumentException("Foreign key ComboBoxModel is of type: " + foreignKeyModel.getEntityId()
               + ", should be: " + foreignKeyProperty.getForeignEntityId());

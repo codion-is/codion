@@ -17,7 +17,9 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,8 +41,8 @@ public final class DefaultEntityEditModelTest {
           System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
 
   private EntityEditModel employeeEditModel;
-  private Property.ColumnProperty jobProperty;
-  private Property.ForeignKeyProperty deptProperty;
+  private ColumnProperty jobProperty;
+  private ForeignKeyProperty deptProperty;
 
   @BeforeEach
   public void setUp() {

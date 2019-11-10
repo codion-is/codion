@@ -5,7 +5,7 @@ package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.Property;
 
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;

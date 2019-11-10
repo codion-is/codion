@@ -14,7 +14,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.PropertyBuilder;
 
 import java.sql.Types;
 import java.util.List;
@@ -24,7 +24,7 @@ import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
 import static org.jminor.framework.domain.Entities.getKeys;
-import static org.jminor.framework.domain.Properties.*;
+import static org.jminor.framework.domain.property.Properties.*;
 
 /**
  * When running this make sure the chinook demo module directory is the
@@ -51,8 +51,8 @@ public final class EntitiesTutorial {
 
     public Chinook() {
       //create properties for the columns in the table 'chinook.artist'
-      Property artistId = primaryKeyProperty(ARTIST_ID);
-      Property artistName = columnProperty(ARTIST_NAME, Types.VARCHAR, "Name");
+      PropertyBuilder artistId = primaryKeyProperty(ARTIST_ID);
+      PropertyBuilder artistName = columnProperty(ARTIST_NAME, Types.VARCHAR, "Name");
       artistName.setNullable(false).setMaxLength(120);
 
       //define an entity based on the table 'chinook.artist',
@@ -64,12 +64,12 @@ public final class EntitiesTutorial {
               .setCaption("Artist");
 
       //create properties for the columns in the table 'chinook.album'
-      Property albumId = primaryKeyProperty(ALBUM_ALBUMID);
-      Property albumTitle = columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title");
+      PropertyBuilder albumId = primaryKeyProperty(ALBUM_ALBUMID);
+      PropertyBuilder albumTitle = columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title");
       albumTitle.setNullable(false).setMaxLength(160);
       //we wrap the actual 'artistid' column property in a foreign key
       //referencing the entity identified by T_ARTIST
-      Property albumArtist =
+      PropertyBuilder albumArtist =
               foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
                       columnProperty(ALBUM_ARTISTID));
       albumArtist.setNullable(false);

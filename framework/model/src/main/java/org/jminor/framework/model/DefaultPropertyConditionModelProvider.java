@@ -4,7 +4,8 @@
 package org.jminor.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 
 /**
  * A default PropertyConditionModelProvider implementation.
@@ -13,15 +14,15 @@ public class DefaultPropertyConditionModelProvider implements PropertyConditionM
 
   /** {@inheritDoc} */
   @Override
-  public PropertyConditionModel<Property.ColumnProperty> initializePropertyConditionModel(
-          final Property.ColumnProperty property) {
+  public PropertyConditionModel<ColumnProperty> initializePropertyConditionModel(
+          final ColumnProperty property) {
     return new DefaultPropertyConditionModel(property);
   }
 
   /** {@inheritDoc} */
   @Override
-  public PropertyConditionModel<Property.ForeignKeyProperty> initializeForeignKeyConditionModel(
-          final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
+  public PropertyConditionModel<ForeignKeyProperty> initializeForeignKeyConditionModel(
+          final ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getForeignEntityId(), connectionProvider);
     lookupModel.getMultipleSelectionAllowedValue().set(true);
 

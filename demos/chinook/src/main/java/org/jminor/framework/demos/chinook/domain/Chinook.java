@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.domain;
 
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.DerivedProperty;
 
 import java.math.BigDecimal;
 
@@ -82,7 +82,7 @@ public interface Chinook {
   String TRACK_BYTES = "bytes";
   String TRACK_UNITPRICE = "unitprice";
 
-  Property.DerivedProperty.Provider TRACK_MIN_SEC_PROVIDER =
+  DerivedProperty.Provider TRACK_MIN_SEC_PROVIDER =
           linkedValues -> {
             final Integer milliseconds = (Integer) linkedValues.get(TRACK_MILLISECONDS);
             if (milliseconds == null || milliseconds <= 0) {
@@ -119,7 +119,7 @@ public interface Chinook {
   String INVOICELINE_QUANTITY = "quantity";
   String INVOICELINE_TOTAL = "total";
 
-  Property.DerivedProperty.Provider INVOICELINE_TOTAL_PROVIDER =
+  DerivedProperty.Provider INVOICELINE_TOTAL_PROVIDER =
           linkedValues -> {
             final Integer quantity = (Integer) linkedValues.get(INVOICELINE_QUANTITY);
             final BigDecimal unitPrice = (BigDecimal) linkedValues.get(INVOICELINE_UNITPRICE);

@@ -3,7 +3,9 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.EntityTableModel;
 
 import javax.swing.JCheckBox;
@@ -54,7 +56,7 @@ public final class EntityTableCellRenderers {
    * @param property the property
    * @return the table cell renderer
    * @see org.jminor.framework.domain.Entity.BackgroundColorProvider
-   * @see org.jminor.framework.domain.Entity.Definer#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
+   * @see Entity.DefinitionBuilder#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
   public static EntityTableCellRenderer getTableCellRenderer(final EntityTableModel tableModel, final Property property) {
     if (!Objects.equals(tableModel.getEntityId(), property.getEntityId())) {
@@ -192,7 +194,7 @@ public final class EntityTableCellRenderers {
         super.setValue(value);
       }
       else {
-        if (property instanceof Property.ValueListProperty) {
+        if (property instanceof ValueListProperty) {
           setText((String) value);
         }
         else if (value instanceof Temporal) {

@@ -10,7 +10,7 @@ import org.jminor.common.PropertyValue;
 import org.jminor.common.Util;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
 import java.util.List;
@@ -92,7 +92,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param foreignKeyProperty the ID of the foreign key
    * @param foreignKeyValues the foreign key values
    */
-  void initialize(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues);
+  void initialize(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues);
 
   /**
    * Sets the model serving as master model
@@ -171,17 +171,17 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * If {@code foreignKeyPropertyId} is null the association is removed.
    * @param detailModel the detail model
    * @param foreignKeyPropertyId the foreign key property ID
-   * @see #initialize(org.jminor.framework.domain.Property.ForeignKeyProperty, java.util.List)
+   * @see #initialize(ForeignKeyProperty, java.util.List)
    * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
    */
   void setDetailModelForeignKey(final M detailModel, final String foreignKeyPropertyId);
 
   /**
    * @param detailModel the detail model
-   * @return the {@link org.jminor.framework.domain.Property.ForeignKeyProperty}
+   * @return the {@link ForeignKeyProperty}
    * the given detail model is based on, null if none has been defined
    */
-  Property.ForeignKeyProperty getDetailModelForeignKey(final M detailModel);
+  ForeignKeyProperty getDetailModelForeignKey(final M detailModel);
 
   /**
    * Refreshes the detail models.

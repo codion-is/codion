@@ -9,7 +9,7 @@ import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Properties;
+import org.jminor.framework.domain.property.Properties;
 
 import java.sql.Types;
 import java.util.List;

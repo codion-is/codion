@@ -7,7 +7,8 @@ import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
 
@@ -17,7 +18,7 @@ import static java.util.Collections.singletonList;
 /**
  * A default ForeignKeyConditionModel implementation.
  */
-public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel<Property.ForeignKeyProperty>
+public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel<ForeignKeyProperty>
         implements ForeignKeyConditionModel {
 
   private final EntityLookupModel entityLookupModel;
@@ -28,7 +29,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
    * Constructs a DefaultForeignKeyConditionModel instance
    * @param property the property
    */
-  public DefaultForeignKeyConditionModel(final Property.ForeignKeyProperty property) {
+  public DefaultForeignKeyConditionModel(final ForeignKeyProperty property) {
     this(property, null);
   }
 
@@ -37,7 +38,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
    * @param property the property
    * @param entityLookupModel a EntityLookupModel
    */
-  public DefaultForeignKeyConditionModel(final Property.ForeignKeyProperty property,
+  public DefaultForeignKeyConditionModel(final ForeignKeyProperty property,
                                          final EntityLookupModel entityLookupModel) {
     super(property, Entity.class, Property.WILDCARD_CHARACTER.get());
     this.entityLookupModel = entityLookupModel;

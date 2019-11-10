@@ -5,14 +5,14 @@ package org.jminor.framework.model;
 
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
 
 /**
  * A condition model based on foreign key properties, using one or more {@link Entity} instances as condition values.
  */
-public interface ForeignKeyConditionModel extends PropertyConditionModel<Property.ForeignKeyProperty>, Refreshable {
+public interface ForeignKeyConditionModel extends PropertyConditionModel<ForeignKeyProperty>, Refreshable {
 
   /**
    * @return the EntityLookupModel used by this ForeignKeyConditionModel, if any

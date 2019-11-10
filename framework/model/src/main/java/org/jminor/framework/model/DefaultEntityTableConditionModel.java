@@ -19,7 +19,9 @@ import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -354,9 +356,9 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   }
 
   private void setConditionString(final String searchString) {
-    final Collection<Property.ColumnProperty> searchProperties =
+    final Collection<ColumnProperty> searchProperties =
             connectionProvider.getDomain().getDefinition(entityId).getSearchProperties();
-    for (final Property.ColumnProperty searchProperty : searchProperties) {
+    for (final ColumnProperty searchProperty : searchProperties) {
       final PropertyConditionModel conditionModel = getPropertyConditionModel(searchProperty.getPropertyId());
       conditionModel.setCaseSensitive(false);
       conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
@@ -385,10 +387,10 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   }
 
   private void initializeColumnPropertyConditionModels(final String entityId, final PropertyConditionModelProvider conditionModelProvider) {
-    for (final Property.ColumnProperty columnProperty :
+    for (final ColumnProperty columnProperty :
             connectionProvider.getDomain().getDefinition(entityId).getColumnProperties()) {
       if (!columnProperty.isForeignKeyProperty() && !columnProperty.isAggregateColumn()) {
-        final PropertyConditionModel<Property.ColumnProperty> conditionModel =
+        final PropertyConditionModel<ColumnProperty> conditionModel =
                 conditionModelProvider.initializePropertyConditionModel(columnProperty);
         if (conditionModel != null) {
           this.propertyConditionModels.put(conditionModel.getColumnIdentifier().getPropertyId(), conditionModel);
@@ -399,9 +401,9 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   private void initializeForeignKeyPropertyConditionModels(final String entityId, final EntityConnectionProvider connectionProvider,
                                                            final PropertyConditionModelProvider conditionModelProvider) {
-    for (final Property.ForeignKeyProperty foreignKeyProperty :
+    for (final ForeignKeyProperty foreignKeyProperty :
             connectionProvider.getDomain().getDefinition(entityId).getForeignKeyProperties()) {
-      final PropertyConditionModel<Property.ForeignKeyProperty> conditionModel =
+      final PropertyConditionModel<ForeignKeyProperty> conditionModel =
               conditionModelProvider.initializeForeignKeyConditionModel(foreignKeyProperty, connectionProvider);
       if (conditionModel != null) {
         this.propertyConditionModels.put(conditionModel.getColumnIdentifier().getPropertyId(), conditionModel);

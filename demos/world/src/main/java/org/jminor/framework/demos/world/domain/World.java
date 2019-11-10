@@ -11,7 +11,7 @@ import java.sql.Types;
 import static java.text.NumberFormat.getIntegerInstance;
 import static java.text.NumberFormat.getNumberInstance;
 import static org.jminor.common.Util.notNull;
-import static org.jminor.framework.domain.Properties.*;
+import static org.jminor.framework.domain.property.Properties.*;
 
 // tag::entityAndPropertyIds[]
 public final class World extends Domain {

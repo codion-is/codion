@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.property;
 
 import org.jminor.common.DateFormats;
 
@@ -10,8 +10,10 @@ import org.junit.jupiter.api.Test;
 import java.sql.Types;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 
-import static org.jminor.framework.domain.Properties.*;
+import static org.jminor.framework.domain.property.Properties.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class PropertiesTest {
@@ -29,7 +31,7 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyWithoutReferenceProperty() {
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty("propertyId", "caption", "referencedEntityId", (Property.ColumnProperty) null));
+    assertThrows(NullPointerException.class, () -> foreignKeyProperty("propertyId", "caption", "referencedEntityId", (ColumnPropertyBuilder) null));
   }
 
   @Test
@@ -64,7 +66,7 @@ public final class PropertiesTest {
 
   @Test
   public void getMaximumFractionDigitsNotNumerical() {
-    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.DATE).getMaximumFractionDigits());
+    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.DATE).get().getMaximumFractionDigits());
   }
 
   @Test
@@ -74,7 +76,7 @@ public final class PropertiesTest {
 
   @Test
   public void setColumnName() {
-    assertEquals("hello", columnProperty("propertyId").setColumnName("hello").getColumnName());
+    assertEquals("hello", columnProperty("propertyId").setColumnName("hello").get().getColumnName());
   }
 
   @Test
@@ -85,62 +87,65 @@ public final class PropertiesTest {
   @Test
   public void description() {
     final String description = "Here is a description";
-    final Property property = columnProperty("propertyId").setDescription(description);
+    final Property property = columnProperty("propertyId").setDescription(description).get();
     assertEquals(description, property.getDescription());
   }
 
   @Test
   public void mnemonic() {
     final Character mnemonic = 'M';
-    final Property property = columnProperty("propertyId").setMnemonic(mnemonic);
+    final Property property = columnProperty("propertyId").setMnemonic(mnemonic).get();
     assertEquals(mnemonic, property.getMnemonic());
   }
 
   @Test
   public void setEntityIdAlreadySet() {
-    final Property property = columnProperty("propertyId").setEntityId("entityId");
+    final PropertyBuilder property = columnProperty("propertyId").setEntityId("entityId");
     assertThrows(IllegalStateException.class, () -> property.setEntityId("test"));
   }
 
   @Test
   public void foreignKeyPropertyNullable() {
-    final Property.ColumnProperty columnProperty = columnProperty("propertyId");
-    final Property.ColumnProperty columnProperty2 = columnProperty("propertyId2");
-    final Property.ForeignKeyProperty foreignKeyProperty = foreignKeyProperty("fkPropertyID", "fk", "referenceEntityID",
-            new Property.ColumnProperty[] {columnProperty, columnProperty2});
+    final ColumnPropertyBuilder columnProperty = columnProperty("propertyId");
+    final ColumnPropertyBuilder columnProperty2 = columnProperty("propertyId2");
+    final ForeignKeyPropertyBuilder foreignKeyProperty =
+            foreignKeyProperty("fkPropertyID", "fk", "referenceEntityID",
+                    Arrays.asList(columnProperty, columnProperty2));
     foreignKeyProperty.setNullable(false);
-    assertFalse(columnProperty.isNullable());
-    assertFalse(columnProperty2.isNullable());
-    assertFalse(foreignKeyProperty.isNullable());
+    assertFalse(columnProperty.get().isNullable());
+    assertFalse(columnProperty2.get().isNullable());
+    assertFalse(foreignKeyProperty.get().isNullable());
   }
 
   @Test
   public void foreignKeyPropertyUpdatable() {
-    final Property.ColumnProperty updatableReferenceProperty = columnProperty("propertyId");
-    final Property.ColumnProperty nonUpdatableReferenceProperty = columnProperty("propertyId").setUpdatable(false);
+    final ColumnPropertyBuilder updatableReferenceProperty = columnProperty("propertyId");
+    final ColumnPropertyBuilder nonUpdatableReferenceProperty = columnProperty("propertyId").setUpdatable(false);
 
-    final Property.ForeignKeyProperty updatableForeignKeyProperty = foreignKeyProperty("fkProperty", "test",
+    final ForeignKeyPropertyBuilder updatableForeignKeyProperty = foreignKeyProperty("fkProperty", "test",
             "referencedEntityID", updatableReferenceProperty);
-    assertTrue(updatableForeignKeyProperty.isUpdatable());
+    assertTrue(updatableForeignKeyProperty.get().isUpdatable());
 
-    final Property.ForeignKeyProperty nonUpdatableForeignKeyProperty = foreignKeyProperty("fkProperty", "test",
-            "referencedEntityID", nonUpdatableReferenceProperty);
+    final ForeignKeyProperty nonUpdatableForeignKeyProperty = foreignKeyProperty("fkProperty", "test",
+            "referencedEntityID", nonUpdatableReferenceProperty).get();
 
     assertFalse(nonUpdatableForeignKeyProperty.isUpdatable());
 
-    final Property.ForeignKeyProperty nonUpdatableCompositeForeignKeyProperty = foreignKeyProperty("fkProperty", "test",
-            "referencedEntityID", new Property.ColumnProperty[] {updatableReferenceProperty, nonUpdatableReferenceProperty});
+    final ForeignKeyProperty nonUpdatableCompositeForeignKeyProperty =
+            foreignKeyProperty("fkProperty", "test", "referencedEntityID",
+                    Arrays.asList(updatableReferenceProperty, nonUpdatableReferenceProperty)).get();
     assertFalse(nonUpdatableCompositeForeignKeyProperty.isUpdatable());
   }
 
   @Test
   public void foreignKeyPropertyNullProperty() {
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty("id", "caption", "entityId", (Property.ColumnProperty) null));
+    assertThrows(NullPointerException.class, () -> foreignKeyProperty("id", "caption", "entityId", (ColumnPropertyBuilder) null));
   }
 
   @Test
   public void foreignKeyPropertyNoProperties() {
-    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty("id", "caption", "entityId", new Property.ColumnProperty[0]));
+    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty("id", "caption", "entityId",
+            Collections.emptyList()));
   }
 
   @Test
@@ -156,9 +161,9 @@ public final class PropertiesTest {
 
   @Test
   public void denormalizedViewPropertySetReadOnlyFalse() {
-    final Property.ColumnProperty columnProperty = columnProperty("property", Types.INTEGER);
+    final ColumnPropertyBuilder columnProperty = columnProperty("property", Types.INTEGER);
     foreignKeyProperty("foreignId", "caption","entityId", columnProperty);
-    assertThrows(UnsupportedOperationException.class, () -> denormalizedViewProperty("test", "foreignId", columnProperty, "caption").setReadOnly(false));
+    assertThrows(UnsupportedOperationException.class, () -> denormalizedViewProperty("test", "foreignId", columnProperty.get(), "caption").setReadOnly(false));
   }
 
   @Test

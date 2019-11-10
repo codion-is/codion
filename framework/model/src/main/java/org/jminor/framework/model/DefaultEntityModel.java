@@ -10,7 +10,7 @@ import org.jminor.common.Events;
 import org.jminor.common.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * Maps detail models to the foreign key property they are based on
    */
-  private final Map<M, Property.ForeignKeyProperty> detailModelForeignKeys = new HashMap<>();
+  private final Map<M, ForeignKeyProperty> detailModelForeignKeys = new HashMap<>();
 
   /**
    * The master model, if any, so that detail models can refer to their masters
@@ -299,7 +299,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /** {@inheritDoc} */
   @Override
-  public final Property.ForeignKeyProperty getDetailModelForeignKey(final M detailModel) {
+  public final ForeignKeyProperty getDetailModelForeignKey(final M detailModel) {
     return detailModelForeignKeys.get(detailModel);
   }
 
@@ -354,7 +354,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final void initialize(final String foreignKeyEntityId, final List<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = connectionProvider.getDomain()
+    final List<ForeignKeyProperty> foreignKeyProperties = connectionProvider.getDomain()
             .getDefinition(entityId).getForeignKeyProperties(foreignKeyEntityId);
     if (!foreignKeyProperties.isEmpty()) {
       initialize(foreignKeyProperties.get(0), foreignKeyValues);
@@ -363,7 +363,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /** {@inheritDoc} */
   @Override
-  public final void initialize(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
+  public final void initialize(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
     if (containsTableModel()) {
       tableModel.setForeignKeyConditionValues(foreignKeyProperty, foreignKeyValues);
     }
@@ -444,7 +444,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param foreignKeyProperty the foreign key referring to the master model doing the initialization
    * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model
    */
-  protected void handleInitialization(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
+  protected void handleInitialization(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
     if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
       editModel.put(foreignKeyProperty, foreignKeyValues.get(0));
     }
@@ -454,7 +454,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Initializes all linked detail models according to the active entities in this master model
    * @see #getActiveEntities()
    * @see #addLinkedDetailModel(EntityModel)
-   * @see #initialize(org.jminor.framework.domain.Property.ForeignKeyProperty, java.util.List)
+   * @see #initialize(ForeignKeyProperty, java.util.List)
    * @see #initialize(String, java.util.List)
    */
   protected final void initializeDetailModels() {
@@ -479,7 +479,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     editModel.addForeignKeyValues(insertEvent.getInsertedEntities());
     editModel.setForeignKeyValues(insertEvent.getInsertedEntities());
     if (containsTableModel() && filterOnMasterInsert) {
-      Property.ForeignKeyProperty foreignKeyProperty = masterModel.getDetailModelForeignKey((M) this);
+      ForeignKeyProperty foreignKeyProperty = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKeyProperty == null) {
         foreignKeyProperty = connectionProvider.getDomain()
                 .getDefinition(entityId).getForeignKeyProperties(masterModel.getEntityId()).get(0);

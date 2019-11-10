@@ -13,7 +13,8 @@ import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -90,7 +91,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
    * @param foreignKeyProperty the ID of the foreign key property
    * @param foreignKeyValues the entities to use as condition values
    */
-  void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues);
+  void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
@@ -172,7 +173,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
    * @param row the row for which to retrieve the background color
    * @param property the property for which to retrieve the background color
    * @return an Object representing the background color for this row and property, specified by the row entity
-   * @see org.jminor.framework.domain.Entity.Definer#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
+   * @see Entity.DefinitionBuilder#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
   Object getPropertyBackgroundColor(final int row, final Property property);
 
@@ -327,14 +328,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
 
   /**
    * @param value true if this table model should automatically refresh when foreign key condition values are set
-   * @see #setForeignKeyConditionValues(Property.ForeignKeyProperty, Collection)
+   * @see #setForeignKeyConditionValues(ForeignKeyProperty, Collection)
    * @return this {@link EntityTableModel} instance
    */
   EntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean value);
 
   /**
    * @return true if this table model automatically refreshes when foreign key condition values are set
-   * @see #setForeignKeyConditionValues(Property.ForeignKeyProperty, Collection)
+   * @see #setForeignKeyConditionValues(ForeignKeyProperty, Collection)
    */
   boolean isRefreshOnForeignKeyConditionValuesSet();
 }

@@ -20,7 +20,8 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.List;
@@ -56,7 +57,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
 
   /**
    * @return an Entity instance populated with default values for all properties
-   * @see #getDefaultValue(org.jminor.framework.domain.Property)
+   * @see #getDefaultValue(Property)
    */
   Entity getDefaultEntity();
 
@@ -251,7 +252,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @throws IllegalStateException in case no searchable properties can be found for the entity type referenced by the
    * given foreign key property
    */
-  EntityLookupModel createForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty);
+  EntityLookupModel createForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key property
@@ -272,7 +273,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
    * has been initialized for the given property, a new one is created, associated with the property and returned.
    */
-  EntityLookupModel getForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty);
+  EntityLookupModel getForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Returns the default value for the given property, used when initializing a new default entity for this edit model.
@@ -284,7 +285,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return the default value for the property
    * @see Property#setDefaultValue(Object)
    * @see #setValuePersistent(String, boolean)
-   * @see #isValuePersistent(org.jminor.framework.domain.Property)
+   * @see #isValuePersistent(Property)
    */
   Object getDefaultValue(final Property property);
 

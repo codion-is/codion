@@ -21,8 +21,10 @@ import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Properties;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Properties;
+import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
@@ -489,7 +491,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * underlying entity, for performing an update on the selected entities
    * @see #initializePanel()
    * @throws IllegalStateException in case the underlying edit model is read only or updating is not allowed
-   * @see #includeUpdateSelectedProperty(org.jminor.framework.domain.Property)
+   * @see #includeUpdateSelectedProperty(Property)
    * @see EntityEditModel#getAllowUpdateObserver()
    */
   public ControlSet getUpdateSelectedControlSet() {
@@ -581,7 +583,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
-   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
+   * @see #getInputProvider(Property, java.util.List)
    */
   public final void updateSelectedEntities(final Property propertyToUpdate) {
     if (getEntityTableModel().getSelectionModel().isSelectionEmpty()) {
@@ -1262,16 +1264,16 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @param property the property for which to get the InputProvider
    * @param toUpdate the entities that are about to be updated
    * @return the InputProvider handling input for {@code property}
-   * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
+   * @see #updateSelectedEntities(Property)
    */
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
     final Collection values = Entities.getDistinctValues(property.getPropertyId(), toUpdate);
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
-    if (property instanceof Property.ValueListProperty) {
-      return new ValueListInputProvider(currentValue, ((Property.ValueListProperty) property).getValues());
+    if (property instanceof ValueListProperty) {
+      return new ValueListInputProvider(currentValue, ((ValueListProperty) property).getValues());
     }
-    if (property instanceof Property.ForeignKeyProperty) {
-      return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue, getEntityTableModel().getEditModel());
+    if (property instanceof ForeignKeyProperty) {
+      return createEntityInputProvider((ForeignKeyProperty) property, (Entity) currentValue, getEntityTableModel().getEditModel());
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
@@ -1308,7 +1310,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @param editModel the edit model involved in the updating
    * @return a Entity InputProvider
    */
-  protected final InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty,
+  protected final InputProvider createEntityInputProvider(final ForeignKeyProperty foreignKeyProperty,
                                                           final Entity currentValue,
                                                           final EntityEditModel editModel) {
     if (getEntityTableModel().getConnectionProvider().getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {

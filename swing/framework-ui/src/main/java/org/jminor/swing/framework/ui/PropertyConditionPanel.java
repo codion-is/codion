@@ -7,7 +7,10 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.Value;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.PropertyConditionModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
@@ -28,13 +31,13 @@ import javax.swing.JTextField;
 /**
  * A column condition panel based on the the Property class.
  */
-public final class PropertyConditionPanel extends ColumnConditionPanel<Property.ColumnProperty> {
+public final class PropertyConditionPanel extends ColumnConditionPanel<ColumnProperty> {
 
   /**
    * Instantiates a new PropertyConditionPanel.
    * @param model the model to base this panel on
    */
-  public PropertyConditionPanel(final PropertyConditionModel<Property.ColumnProperty> model) {
+  public PropertyConditionPanel(final PropertyConditionModel<ColumnProperty> model) {
     this(model, false, false);
   }
 
@@ -44,13 +47,13 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
    * @param includeToggleEnabledButton if true an activation button is included
    * @param includeToggleAdvancedConditionButton if true an advanced toggle button is included
    */
-  public PropertyConditionPanel(final PropertyConditionModel<Property.ColumnProperty> model,
+  public PropertyConditionPanel(final PropertyConditionModel<ColumnProperty> model,
                                 final boolean includeToggleEnabledButton, final boolean includeToggleAdvancedConditionButton) {
     super(model, includeToggleEnabledButton, includeToggleAdvancedConditionButton,
             new PropertyInputFieldProvider(model), getConditionTypes(model));
   }
 
-  private static ConditionType[] getConditionTypes(final PropertyConditionModel<Property.ColumnProperty> model) {
+  private static ConditionType[] getConditionTypes(final PropertyConditionModel<ColumnProperty> model) {
     if (model.getColumnIdentifier().isBoolean()) {
       return new ConditionType[] {ConditionType.LIKE};
     }
@@ -61,9 +64,9 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
 
   private static final class PropertyInputFieldProvider implements InputFieldProvider {
 
-    private final ColumnConditionModel<Property.ColumnProperty> model;
+    private final ColumnConditionModel<ColumnProperty> model;
 
-    private PropertyInputFieldProvider(final ColumnConditionModel<Property.ColumnProperty> model) {
+    private PropertyInputFieldProvider(final ColumnConditionModel<ColumnProperty> model) {
       this.model = model;
     }
 
@@ -80,8 +83,8 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
 
     private JComponent initializeField() {
       final Property property = model.getColumnIdentifier();
-      if (property instanceof Property.ValueListProperty) {
-        return initializeValueListField((Property.ValueListProperty) property);
+      if (property instanceof ValueListProperty) {
+        return initializeValueListField((ValueListProperty) property);
       }
       if (property.isTemporal()) {
         return UiUtil.createFormattedField(DateFormats.getDateMask(model.getDateTimeFormatPattern()));
@@ -106,7 +109,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
     private void bindField(final JComponent field, final boolean upperBound) {
       final Property columnProperty = model.getColumnIdentifier();
       final Value modelValue = upperBound ? model.getUpperBoundValue() : model.getLowerBoundValue();
-      if (columnProperty instanceof Property.ValueListProperty || columnProperty.isBoolean()) {
+      if (columnProperty instanceof ValueListProperty || columnProperty.isBoolean()) {
         ValueLinks.selectedItemValueLink((JComboBox) field, modelValue);
       }
       else if (columnProperty.isTime()) {
@@ -133,12 +136,12 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
       else if (columnProperty.isLong()) {
         ValueLinks.longValueLink((LongField) field, modelValue, true);
       }
-      else if (!(columnProperty instanceof Property.ForeignKeyProperty)) {//entity based properties are bound in the model
+      else if (!(columnProperty instanceof ForeignKeyProperty)) {//entity based properties are bound in the model
         ValueLinks.textValueLink((JTextField) field, modelValue);
       }
     }
 
-    private static JComponent initializeValueListField(final Property.ValueListProperty property) {
+    private static JComponent initializeValueListField(final ValueListProperty property) {
       final ItemComboBoxModel boxModel = new ItemComboBoxModel(property.getValues());
       final SteppedComboBox box = new SteppedComboBox(boxModel);
       MaximumMatch.enable(box);

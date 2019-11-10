@@ -5,7 +5,7 @@ package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.Item;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Properties;
+import org.jminor.framework.domain.property.Properties;
 
 import java.awt.Color;
 import java.sql.Types;

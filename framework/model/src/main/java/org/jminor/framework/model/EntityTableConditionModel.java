@@ -13,7 +13,7 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
 

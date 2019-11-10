@@ -10,8 +10,8 @@ import org.jminor.common.remote.Server;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Properties;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
@@ -101,7 +101,7 @@ public class EmpDeptMinimalApp {
      */
     @Override
     public EntityComboBoxModel createForeignKeyComboBoxModel(
-            final Property.ForeignKeyProperty foreignKeyProperty) {
+            final ForeignKeyProperty foreignKeyProperty) {
       final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
         comboBoxModel.setSelectConditionProvider(() -> Conditions.propertyCondition(

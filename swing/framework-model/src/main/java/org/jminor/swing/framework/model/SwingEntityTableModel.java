@@ -17,7 +17,9 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityEditModel;
@@ -422,7 +424,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
+  public void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
@@ -432,11 +434,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties =
+    final List<ForeignKeyProperty> foreignKeyProperties =
             getDomain().getDefinition(entityId).getForeignKeyProperties(foreignKeyEntityId);
     boolean changed = false;
     for (final Entity entity : getAllItems()) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
           final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getPropertyId());
           if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
@@ -609,7 +611,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   protected Object getValue(final Entity entity, final Property property) {
     requireNonNull(entity, "entity");
     requireNonNull(property, "property");
-    if (property instanceof Property.ValueListProperty || property instanceof Property.ForeignKeyProperty) {
+    if (property instanceof ValueListProperty || property instanceof ForeignKeyProperty) {
       return entity.getAsString(property);
     }
 
@@ -835,8 +837,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     /** {@inheritDoc} */
     @Override
     protected Comparator initializeColumnComparator(final Property property) {
-      if (property instanceof Property.ForeignKeyProperty) {
-        return domain.getDefinition(((Property.ForeignKeyProperty) property).getForeignEntityId()).getComparator();
+      if (property instanceof ForeignKeyProperty) {
+        return domain.getDefinition(((ForeignKeyProperty) property).getForeignEntityId()).getComparator();
       }
 
       return super.initializeColumnComparator(property);

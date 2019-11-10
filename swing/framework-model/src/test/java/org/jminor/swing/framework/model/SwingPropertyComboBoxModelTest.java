@@ -10,7 +10,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.model.TestDomain;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
@@ -32,7 +32,7 @@ public final class SwingPropertyComboBoxModelTest {
   private final Event refreshEvent = Events.event();
 
   public SwingPropertyComboBoxModelTest() {
-    final Property.ColumnProperty property = DOMAIN.getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME);
+    final ColumnProperty property = DOMAIN.getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME);
     comboBoxModel = new SwingPropertyComboBoxModel(TestDomain.T_DEPARTMENT,
             CONNECTION_PROVIDER, property, null);
     refreshEvent.addListener(comboBoxModel::refresh);

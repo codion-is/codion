@@ -7,7 +7,8 @@ import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
 
@@ -16,15 +17,15 @@ import static java.util.Arrays.asList;
 /**
  * A class for searching a set of entities based on a property.
  */
-public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<Property.ColumnProperty>
-        implements PropertyConditionModel<Property.ColumnProperty> {
+public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<ColumnProperty>
+        implements PropertyConditionModel<ColumnProperty> {
 
   /**
    * Constructs a DefaultPropertyConditionModel instance
    * @param property the property
    * @throws IllegalArgumentException if an illegal constant is used
    */
-  public DefaultPropertyConditionModel(final Property.ColumnProperty property) {
+  public DefaultPropertyConditionModel(final ColumnProperty property) {
     super(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimeFormatPattern());
   }
 

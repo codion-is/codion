@@ -10,6 +10,12 @@ import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.DenormalizedProperty;
+import org.jminor.framework.domain.property.DerivedProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Properties;
+import org.jminor.framework.domain.property.Property;
 
 import org.junit.jupiter.api.Test;
 
@@ -231,7 +237,7 @@ public class DomainTest {
   @Test
   public void getForeignKeyProperties() {
     final Entity.Definition definition = domain.getDefinition(TestDomain.T_DETAIL);
-    List<Property.ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyProperties(TestDomain.T_EMP);
+    List<ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyProperties(TestDomain.T_EMP);
     assertEquals(0, foreignKeyProperties.size());
     foreignKeyProperties = definition.getForeignKeyProperties(TestDomain.T_MASTER);
     assertEquals(1, foreignKeyProperties.size());
@@ -265,7 +271,7 @@ public class DomainTest {
   @Test
   public void getDerivedProperties() {
     final Entity.Definition definition = domain.getDefinition(TestDomain.T_DETAIL);
-    Collection<Property.DerivedProperty> derivedProperties = definition.getDerivedProperties(TestDomain.DETAIL_BOOLEAN);
+    Collection<DerivedProperty> derivedProperties = definition.getDerivedProperties(TestDomain.DETAIL_BOOLEAN);
     assertTrue(derivedProperties.isEmpty());
     derivedProperties = definition.getDerivedProperties(TestDomain.DETAIL_INT);
     assertEquals(1, derivedProperties.size());
@@ -281,7 +287,7 @@ public class DomainTest {
 
   @Test
   public void getDenormalizedProperties() {
-    final List<Property.DenormalizedProperty> denormalized =
+    final List<DenormalizedProperty> denormalized =
             domain.getDefinition(TestDomain.T_DETAIL).getDenormalizedProperties(TestDomain.DETAIL_MASTER_FK);
     assertFalse(denormalized.isEmpty());
     assertEquals(TestDomain.DETAIL_MASTER_CODE_DENORM, denormalized.get(0).getPropertyId());
@@ -381,7 +387,7 @@ public class DomainTest {
   @Test
   public void getSearchProperties() {
     final Entity.Definition definition = domain.getDefinition(TestDomain.T_EMP);
-    Collection<Property.ColumnProperty> searchProperties = definition.getSearchProperties();
+    Collection<ColumnProperty> searchProperties = definition.getSearchProperties();
     assertTrue(searchProperties.contains(definition.getColumnProperty(TestDomain.EMP_JOB)));
     assertTrue(searchProperties.contains(definition.getColumnProperty(TestDomain.EMP_NAME)));
 

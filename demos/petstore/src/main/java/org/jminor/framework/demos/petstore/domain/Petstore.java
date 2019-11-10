@@ -7,7 +7,7 @@ import org.jminor.framework.domain.Domain;
 
 import java.sql.Types;
 
-import static org.jminor.framework.domain.Properties.*;
+import static org.jminor.framework.domain.property.Properties.*;
 
 public final class Petstore extends Domain {
 
