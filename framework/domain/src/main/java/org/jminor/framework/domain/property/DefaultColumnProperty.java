@@ -429,7 +429,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
   }
 
-  private static final class Builder extends DefaultProperty.Builder<DefaultColumnProperty>
+  private static final class Builder extends DefaultBuilder<DefaultColumnProperty>
           implements ColumnProperty.Builder<DefaultColumnProperty> {
 
     private Builder(final DefaultColumnProperty property) {

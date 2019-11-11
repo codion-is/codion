@@ -113,7 +113,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
    * @return a builder for this property instance
    */
   ForeignKeyProperty.Builder builder() {
-    return new Builder(this);
+    return new DefaultBuilder(this);
   }
 
   @Override
@@ -146,10 +146,10 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
   }
 
-  private static final class Builder extends DefaultProperty.Builder<DefaultForeignKeyProperty>
+  private static final class DefaultBuilder extends DefaultProperty.DefaultBuilder<DefaultForeignKeyProperty>
           implements ForeignKeyProperty.Builder<DefaultForeignKeyProperty> {
 
-    private Builder(final DefaultForeignKeyProperty property) {
+    private DefaultBuilder(final DefaultForeignKeyProperty property) {
       super(property);
     }
 

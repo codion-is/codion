@@ -585,6 +585,13 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return backgroundColorProvider.getBackgroundColor(entity, property);
   }
 
+  /**
+   * @return a {@link org.jminor.framework.domain.Entity.Definition.Builder} for this definition instance
+   */
+  Builder builder() {
+    return new DefaultBuilder(this);
+  }
+
   private Map<String, ColumnProperty> initializePrimaryKeyPropertyMap() {
     final Map<String, ColumnProperty> map = new HashMap<>(this.primaryKeyProperties.size());
     this.primaryKeyProperties.forEach(property -> map.put(property.getPropertyId(), property));
@@ -673,11 +680,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return stringBuilder.toString();
   }
 
-  static final class DefaultBuilder implements Builder {
+  private static final class DefaultBuilder implements Builder {
 
     private final DefaultEntityDefinition definition;
 
-    DefaultBuilder(final DefaultEntityDefinition definition) {
+    private DefaultBuilder(final DefaultEntityDefinition definition) {
       this.definition = definition;
     }
 
