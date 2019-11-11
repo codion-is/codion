@@ -619,11 +619,11 @@ class DefaultProperty implements Property {
     }
   }
 
-  static class Builder<T extends DefaultProperty> implements Property.Builder<T> {
+  static class DefaultBuilder<T extends DefaultProperty> implements Property.Builder<T> {
 
     protected final T property;
 
-    Builder(final T property) {
+    DefaultBuilder(final T property) {
       this.property = property;
     }
 

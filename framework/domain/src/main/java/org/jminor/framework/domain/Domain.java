@@ -342,7 +342,7 @@ public class Domain implements Serializable {
             tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties, new Validator());
     entityDefinitions.put(entityId, entityDefinition);
 
-    return new DefaultEntityDefinition.DefaultBuilder(entityDefinition);
+    return entityDefinition.builder();
   }
 
   /**
