@@ -392,7 +392,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public boolean hasSingleIntegerPrimaryKey() {
-    final List<ColumnProperty> primaryKeyProperties = getPrimaryKeyProperties();
     return primaryKeyProperties.size() == 1 && primaryKeyProperties.get(0).isInteger();
   }
 
@@ -410,11 +409,10 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public List<Property> getUpdatableProperties() {
-    final List<ColumnProperty> columnProperties = getWritableColumnProperties(
+    final List<ColumnProperty> writableColumnProperties = getWritableColumnProperties(
             getKeyGeneratorType().isManual(), false);
-    columnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
-    final List<Property> updatable = new ArrayList<>(columnProperties);
-    final Collection<ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties();
+    writableColumnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
+    final List<Property> updatable = new ArrayList<>(writableColumnProperties);
     for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       if (!foreignKeyProperty.isReadOnly() && foreignKeyProperty.isUpdatable()) {
         updatable.add(foreignKeyProperty);
@@ -433,7 +431,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getSelectableColumnProperties(final Collection<String> propertyIds) {
-
     return propertyIds.stream().map(this::getSelectableColumnProperty).collect(toList());
   }
 
@@ -447,7 +444,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public final ForeignKeyProperty getForeignKeyProperty(final String propertyId) {
-    final List<ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties();
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       if (foreignKeyProperty.is(propertyId)) {

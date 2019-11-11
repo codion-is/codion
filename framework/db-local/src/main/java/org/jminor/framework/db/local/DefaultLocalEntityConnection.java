@@ -354,7 +354,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       final List<ColumnProperty> conditionProperties =
               domain.getDefinition(condition.getEntityId()).getColumnProperties(propertyCondition.getPropertyIds());
       try {
-        deleteSQL = createDeleteSQL(condition);
+        deleteSQL = createDeleteSQL(domain.getDefinition(condition.getEntityId()).getTableName(),
+                condition.getWhereClause(domain));
         statement = prepareStatement(deleteSQL);
         executePreparedUpdate(statement, deleteSQL, conditionProperties, conditionPropertyValues);
         commitIfTransactionIsNotOpen();
@@ -391,7 +392,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final List<ColumnProperty> deleteConditionProperties =
                   domain.getDefinition(deleteByKeysCondition.getEntityId()).getColumnProperties(
                           deleteCondition.getPropertyIds());
-          deleteSQL = createDeleteSQL(deleteByKeysCondition);
+          deleteSQL = createDeleteSQL(domain.getDefinition(deleteByKeysCondition.getEntityId()).getTableName(),
+                  deleteByKeysCondition.getWhereClause(domain));
           statement = prepareStatement(deleteSQL);
           executePreparedUpdate(statement, deleteSQL, deleteConditionProperties, deleteCondition.getValues());
           statement.close();
@@ -1002,7 +1004,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private String[] getPrimaryKeyColumnNames(final Entity.Definition definition) {
+  private static String[] getPrimaryKeyColumnNames(final Entity.Definition definition) {
     final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
     final String[] columnNames = new String[primaryKeyProperties.size()];
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
@@ -1236,7 +1238,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     if (condition instanceof EntitySelectCondition) {
       final EntitySelectCondition selectCondition = (EntitySelectCondition) condition;
-      final String orderByClause = getOrderByClause(selectCondition);
+      final String orderByClause = getOrderByClause(selectCondition, entityDefinition);
       if (orderByClause != null) {
         queryBuilder.append(" order by ").append(orderByClause);
       }
@@ -1249,14 +1251,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private String getOrderByClause(final EntitySelectCondition selectCondition) {
+  private static String getOrderByClause(final EntitySelectCondition selectCondition, final Entity.Definition definition) {
     if (selectCondition.getOrderBy() == null) {
       return null;
     }
 
     final List<String> orderBys = new LinkedList<>();
     final List<Entity.OrderBy.OrderByProperty> orderByProperties = selectCondition.getOrderBy().getOrderByProperties();
-    final Entity.Definition definition = domain.getDefinition(selectCondition.getEntityId());
     for (int i = 0; i < orderByProperties.size(); i++) {
       final Entity.OrderBy.OrderByProperty property = orderByProperties.get(i);
       orderBys.add(definition.getColumnProperty(property.getPropertyId()).getColumnName() +
@@ -1272,8 +1273,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param whereClause the where clause, without the WHERE keyword
    * @return a query for updating this entity instance
    */
-  private String createUpdateSQL(final String tableName, final List<ColumnProperty> updateProperties,
-                                 final String whereClause) {
+  private static String createUpdateSQL(final String tableName, final List<ColumnProperty> updateProperties,
+                                        final String whereClause) {
     final StringBuilder sql = new StringBuilder("update ").append(tableName).append(" set ");
     for (int i = 0; i < updateProperties.size(); i++) {
       sql.append(updateProperties.get(i).getColumnName()).append(" = ?");
@@ -1307,13 +1308,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /**
    * @param tableName the table name
-   * @param condition the {@link EntityCondition} instance
+   * @param whereClause the where clause
    * @return a query for deleting the entities specified by the given condition
    */
-  private String createDeleteSQL(final EntityCondition condition) {
-    final String whereClause = condition.getWhereClause(domain);
-    return "delete from " + domain.getDefinition(condition.getEntityId()).getTableName() +
-            (whereClause.isEmpty() ? "" : WHERE_SPACE_PREFIX_POSTFIX + whereClause);
+  private static String createDeleteSQL(final String tableName, final String whereClause) {
+    return "delete from " + tableName + (whereClause.isEmpty() ? "" : WHERE_SPACE_PREFIX_POSTFIX + whereClause);
   }
 
   /**
