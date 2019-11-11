@@ -429,11 +429,18 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
   }
 
-  private static final class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder<DefaultColumnProperty>
-          implements ColumnProperty.Builder<DefaultColumnProperty> {
+  private static final class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder implements ColumnProperty.Builder {
+
+    private final DefaultColumnProperty property;
 
     private DefaultColumnPropertyBuilder(final DefaultColumnProperty property) {
       super(property);
+      this.property= property;
+    }
+
+    @Override
+    public ColumnProperty get() {
+      return property;
     }
 
     @Override
@@ -478,16 +485,6 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     public final ColumnProperty.Builder setSelectable(final boolean selectable) {
       property.setSelectable(selectable);
       return this;
-    }
-
-    @Override
-    public ColumnProperty.Builder setReadOnly(final boolean readOnly) {
-      property.setReadOnly(readOnly);
-      if (property.isForeignKeyProperty()) {
-        throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");
-      }
-
-      return (ColumnProperty.Builder) super.setReadOnly(readOnly);
     }
 
     @Override
