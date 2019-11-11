@@ -153,20 +153,17 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
       super(property);
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<ColumnProperty.Builder> getPropertyBuilders() {
       return property.columnPropertyBuilders;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ForeignKeyProperty.Builder setFetchDepth(final int fetchDepth) {
       property.setFetchDepth(fetchDepth);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ForeignKeyProperty.Builder setSoftReference(final boolean softReference) {
       property.setSoftReference(softReference);

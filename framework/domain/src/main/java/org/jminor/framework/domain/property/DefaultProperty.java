@@ -627,127 +627,109 @@ class DefaultProperty implements Property {
       this.property = property;
     }
 
-    /** {@inheritDoc} */
     @Override
     public T get() {
       return property;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Property.Builder<T> setEntityId(final String entityId) {
+    public Property.Builder setEntityId(final String entityId) {
       property.setEntityId(entityId);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setBeanProperty(final String beanProperty) {
+    public final Property.Builder setBeanProperty(final String beanProperty) {
       property.setBeanProperty(beanProperty);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setHidden(final boolean hidden) {
+    public final Property.Builder setHidden(final boolean hidden) {
       property.setHidden(hidden);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Property.Builder<T> setReadOnly(final boolean readOnly) {
+    public Property.Builder setReadOnly(final boolean readOnly) {
       property.setReadOnly(readOnly);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setDefaultValue(final Object defaultValue) {
+    public final Property.Builder setDefaultValue(final Object defaultValue) {
       property.setDefaultValue(defaultValue);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Property.Builder<T> setDefaultValueProvider(final ValueProvider provider) {
+    public Property.Builder setDefaultValueProvider(final ValueProvider provider) {
       property.setDefaultValueProvider(provider);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Property.Builder<T> setNullable(final boolean nullable) {
+    public Property.Builder setNullable(final boolean nullable) {
       property.setNullable(nullable);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setMaxLength(final int maxLength) {
+    public final Property.Builder setMaxLength(final int maxLength) {
       property.setMaxLength(maxLength);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setMax(final double max) {
+    public final Property.Builder setMax(final double max) {
       property.setMax(max);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setMin(final double min) {
+    public final Property.Builder setMin(final double min) {
       property.setMin(min);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setUseNumberFormatGrouping(final boolean useGrouping) {
+    public final Property.Builder setUseNumberFormatGrouping(final boolean useGrouping) {
       property.setUseNumberFormatGrouping(useGrouping);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setPreferredColumnWidth(final int preferredColumnWidth) {
+    public final Property.Builder setPreferredColumnWidth(final int preferredColumnWidth) {
       property.setPreferredColumnWidth(preferredColumnWidth);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setDescription(final String description) {
+    public final Property.Builder setDescription(final String description) {
       property.setDescription(description);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setMnemonic(final Character mnemonic) {
+    public final Property.Builder setMnemonic(final Character mnemonic) {
       property.setMnemonic(mnemonic);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setFormat(final Format format) {
+    public final Property.Builder setFormat(final Format format) {
       property.setFormat(format);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setDateTimeFormatPattern(final String dateTimeFormatPattern) {
+    public final Property.Builder setDateTimeFormatPattern(final String dateTimeFormatPattern) {
       property.setDateTimeFormatPattern(dateTimeFormatPattern);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final Property.Builder<T> setMaximumFractionDigits(final int maximumFractionDigits) {
+    public final Property.Builder setMaximumFractionDigits(final int maximumFractionDigits) {
       property.setMaximumFractionDigits(maximumFractionDigits);
       return this;
     }

@@ -43,9 +43,8 @@ class DefaultTransientProperty extends DefaultProperty implements TransientPrope
       super(property);
     }
 
-    /** {@inheritDoc} */
     @Override
-    public DefaultTransientPropertyBuilder setModifiesEntity(final boolean modifiesEntity) {
+    public TransientProperty.Builder setModifiesEntity(final boolean modifiesEntity) {
       property.setModifiesEntity(modifiesEntity);
       return this;
     }

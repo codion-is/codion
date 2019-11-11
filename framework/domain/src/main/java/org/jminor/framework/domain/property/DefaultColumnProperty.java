@@ -192,7 +192,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     this.updatable = updatable;
   }
 
-  void  setPrimaryKeyIndex(final int index) {
+  void setPrimaryKeyIndex(final int index) {
     if (index < 0) {
       throw new IllegalArgumentException("Primary key index must be at least 0");
     }
@@ -436,28 +436,24 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
       super(property);
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty.Builder setColumnName(final String columnName) {
       property.setColumnName(columnName);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty.Builder setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
       property.setColumnHasDefaultValue(columnHasDefaultValue);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty.Builder setUpdatable(final boolean updatable) {
       property.setUpdatable(updatable);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty.Builder setPrimaryKeyIndex(final int index) {
       property.setPrimaryKeyIndex(index);
@@ -466,28 +462,24 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty.Builder setGroupingColumn(final boolean groupingColumn) {
       property.setGroupingColumn(groupingColumn);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty.Builder setAggregateColumn(final boolean aggregateColumn) {
       property.setAggregateColumn(aggregateColumn);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty.Builder setSelectable(final boolean selectable) {
       property.setSelectable(selectable);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ColumnProperty.Builder setReadOnly(final boolean readOnly) {
       property.setReadOnly(readOnly);
@@ -498,14 +490,12 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
       return (ColumnProperty.Builder) super.setReadOnly(readOnly);
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty.Builder setValueConverter(final ValueConverter<?, ?> valueConverter) {
       property.setValueConverter(valueConverter);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
       property.setForeignKeyProperty(foreignKeyProperty);

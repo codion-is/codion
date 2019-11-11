@@ -566,7 +566,7 @@ public class Domain implements Serializable {
   }
 
   private void initializeForeignKeyProperty(final String entityId, final Map<String, Property> propertyMap,
-                                            final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
+                                            final ForeignKeyProperty.Builder<ForeignKeyProperty> foreignKeyPropertyBuilder) {
     final ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyBuilder.get();
     if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
       final Entity.Definition foreignEntity = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
@@ -580,8 +580,7 @@ public class Domain implements Serializable {
                 "' does not match the number of foreign properties in the referenced entity '" + foreignKeyProperty.getForeignEntityId() + "'");
       }
     }
-    final List<ColumnProperty.Builder> propertyBuilders = foreignKeyPropertyBuilder.getPropertyBuilders();
-    for (final ColumnProperty.Builder propertyBuilder : propertyBuilders) {
+    for (final ColumnProperty.Builder propertyBuilder : foreignKeyPropertyBuilder.getPropertyBuilders()) {
       if (!(propertyBuilder.get() instanceof MirrorProperty)) {
         validateAndAddProperty(propertyBuilder, entityId, propertyMap);
       }
