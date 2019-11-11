@@ -177,7 +177,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
    * @return a builder for this property instance
    */
   ColumnProperty.Builder builder() {
-    return new Builder(this);
+    return new DefaultColumnPropertyBuilder(this);
   }
 
   void setColumnName(final String columnName) {
@@ -429,10 +429,10 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
   }
 
-  private static final class Builder extends DefaultBuilder<DefaultColumnProperty>
+  private static final class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder<DefaultColumnProperty>
           implements ColumnProperty.Builder<DefaultColumnProperty> {
 
-    private Builder(final DefaultColumnProperty property) {
+    private DefaultColumnPropertyBuilder(final DefaultColumnProperty property) {
       super(property);
     }
 

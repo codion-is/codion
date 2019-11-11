@@ -414,6 +414,36 @@ class DefaultProperty implements Property {
     }
   }
 
+  private Format initializeDefaultFormat() {
+    if (isNumerical()) {
+      final NumberFormat numberFormat = Formats.getNonGroupingNumberFormat(isInteger());
+      if (isBigDecimal()) {
+        ((DecimalFormat) numberFormat).setParseBigDecimal(true);
+      }
+      if (isDecimal()) {
+        numberFormat.setMaximumFractionDigits(Property.MAXIMUM_FRACTION_DIGITS.get());
+      }
+
+      return numberFormat;
+    }
+
+    return Formats.NULL_FORMAT;
+  }
+
+  private String getDefaultDateTimeFormatPattern() {
+    if (isDate()) {
+      return DATE_FORMAT.get();
+    }
+    else if (isTime()) {
+      return TIME_FORMAT.get();
+    }
+    else if (isTimestamp()) {
+      return TIMESTAMP_FORMAT.get();
+    }
+
+    return null;
+  }
+
   void setEntityId(final String entityId) {
     if (this.entityId != null) {
       throw new IllegalStateException("entityId (" + this.entityId + ") has already been set for property: " + propertyId);
@@ -510,36 +540,6 @@ class DefaultProperty implements Property {
     ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
   }
 
-  private Format initializeDefaultFormat() {
-    if (isNumerical()) {
-      final NumberFormat numberFormat = Formats.getNonGroupingNumberFormat(isInteger());
-      if (isBigDecimal()) {
-        ((DecimalFormat) numberFormat).setParseBigDecimal(true);
-      }
-      if (isDecimal()) {
-        numberFormat.setMaximumFractionDigits(Property.MAXIMUM_FRACTION_DIGITS.get());
-      }
-
-      return numberFormat;
-    }
-
-    return Formats.NULL_FORMAT;
-  }
-
-  private String getDefaultDateTimeFormatPattern() {
-    if (isDate()) {
-      return DATE_FORMAT.get();
-    }
-    else if (isTime()) {
-      return TIME_FORMAT.get();
-    }
-    else if (isTimestamp()) {
-      return TIMESTAMP_FORMAT.get();
-    }
-
-    return null;
-  }
-
   /**
    * @param sqlType the type
    * @return the Class representing the given type
@@ -619,11 +619,11 @@ class DefaultProperty implements Property {
     }
   }
 
-  static class DefaultBuilder<T extends DefaultProperty> implements Property.Builder<T> {
+  static class DefaultPropertyBuilder<T extends DefaultProperty> implements Property.Builder<T> {
 
     protected final T property;
 
-    DefaultBuilder(final T property) {
+    DefaultPropertyBuilder(final T property) {
       this.property = property;
     }
 
