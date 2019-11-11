@@ -38,8 +38,32 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
     return sourcePropertyIds;
   }
 
+  /**
+   * @return a builder for this property instance
+   */
   @Override
-  void setReadOnly(final boolean readOnly) {
-    throw new UnsupportedOperationException("Derived properties are always read only");
+  TransientProperty.Builder builder() {
+    return new DefaultDerivedPropertyBuilder(this);
+  }
+
+  private static final class DefaultDerivedPropertyBuilder
+          extends DefaultTransientPropertyBuilder implements Property.Builder {
+
+    private final DefaultDerivedProperty derivedProperty;
+
+    private DefaultDerivedPropertyBuilder(final DefaultDerivedProperty derivedProperty) {
+      super(derivedProperty);
+      this.derivedProperty = derivedProperty;
+    }
+
+    @Override
+    public DerivedProperty get() {
+      return derivedProperty;
+    }
+
+    @Override
+    public Property.Builder setReadOnly(final boolean readOnly) {
+      throw new UnsupportedOperationException("Derived properties are always read only");
+    }
   }
 }

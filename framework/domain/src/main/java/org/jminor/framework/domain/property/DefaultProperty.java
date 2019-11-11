@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default Property implementation
  */
-class DefaultProperty implements Property {
+abstract class DefaultProperty implements Property {
 
   private static final long serialVersionUID = 1;
 
@@ -148,7 +148,7 @@ class DefaultProperty implements Property {
     this.type = type;
     this.caption = caption;
     this.typeClass = typeClass;
-    setHidden(caption == null);
+    this.hidden = caption == null;
     this.format = initializeDefaultFormat();
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
   }
@@ -414,6 +414,10 @@ class DefaultProperty implements Property {
     }
   }
 
+  protected void setReadOnly(final boolean readOnly) {
+    this.readOnly = readOnly;
+  }
+
   private Format initializeDefaultFormat() {
     if (isNumerical()) {
       final NumberFormat numberFormat = Formats.getNonGroupingNumberFormat(isInteger());
@@ -442,102 +446,6 @@ class DefaultProperty implements Property {
     }
 
     return null;
-  }
-
-  void setEntityId(final String entityId) {
-    if (this.entityId != null) {
-      throw new IllegalStateException("entityId (" + this.entityId + ") has already been set for property: " + propertyId);
-    }
-    this.entityId = entityId;
-  }
-
-  void setBeanProperty(final String beanProperty) {
-    this.beanProperty = requireNonNull(beanProperty, "beanProperty");
-  }
-
-  void setHidden(final boolean hidden) {
-    this.hidden = hidden;
-  }
-
-  void setReadOnly(final boolean readOnly) {
-    this.readOnly = readOnly;
-  }
-
-  void setDefaultValue(final Object defaultValue) {
-    setDefaultValueProvider(() -> defaultValue);
-  }
-
-  void setDefaultValueProvider(final ValueProvider provider) {
-    if (provider != null) {
-      validateType(provider.getValue());
-    }
-    this.defaultValueProvider = provider == null ? DEFAULT_VALUE_PROVIDER : provider;
-  }
-
-  void setNullable(final boolean nullable) {
-    this.nullable = nullable;
-  }
-
-  void setMaxLength(final int maxLength) {
-    if (maxLength <= 0) {
-      throw new IllegalArgumentException("Max length must be a positive integer");
-    }
-    this.maxLength = maxLength;
-  }
-
-  void setMax(final double max) {
-    this.max = max;
-  }
-
-  void setMin(final double min) {
-    this.min = min;
-  }
-
-  void setUseNumberFormatGrouping(final boolean useGrouping) {
-    if (!(format instanceof NumberFormat)) {
-      throw new IllegalStateException("Grouping can only be set for number formats");
-    }
-
-    ((NumberFormat) format).setGroupingUsed(useGrouping);
-  }
-
-  void setPreferredColumnWidth(final int preferredColumnWidth) {
-    this.preferredColumnWidth = preferredColumnWidth;
-  }
-
-  void setDescription(final String description) {
-    this.description = description;
-  }
-
-  void setMnemonic(final Character mnemonic) {
-    this.mnemonic = mnemonic;
-  }
-
-  void setFormat(final Format format) {
-    requireNonNull(format, "format");
-    if (isNumerical() && !(format instanceof NumberFormat)) {
-      throw new IllegalArgumentException("NumberFormat required for numerical property: " + propertyId);
-    }
-    if (isTemporal()) {
-      throw new IllegalArgumentException("Use setDateTimeFormatPattern() for date/time based property: " + propertyId);
-    }
-    this.format = format;
-  }
-
-  void setDateTimeFormatPattern(final String dateTimeFormatPattern) {
-    if (!isTemporal()) {
-      throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to date/time based property: " + propertyId);
-    }
-    this.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
-    this.dateTimeFormatPattern = dateTimeFormatPattern;
-  }
-
-  final void setMaximumFractionDigits(final int maximumFractionDigits) {
-    if (!(format instanceof NumberFormat)) {
-      throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
-    }
-
-    ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
   }
 
   /**
@@ -619,7 +527,7 @@ class DefaultProperty implements Property {
     }
   }
 
-  static class DefaultPropertyBuilder implements Property.Builder {
+  abstract static class DefaultPropertyBuilder implements Property.Builder {
 
     protected final DefaultProperty property;
 
@@ -634,103 +542,133 @@ class DefaultProperty implements Property {
 
     @Override
     public Property.Builder setEntityId(final String entityId) {
-      property.setEntityId(entityId);
+      if (property.entityId != null) {
+        throw new IllegalStateException("entityId (" + property.entityId +
+                ") has already been set for property: " + property.propertyId);
+      }
+      property.entityId = entityId;
       return this;
     }
 
     @Override
     public final Property.Builder setBeanProperty(final String beanProperty) {
-      property.setBeanProperty(beanProperty);
+      property.beanProperty = requireNonNull(beanProperty, "beanProperty");
       return this;
     }
 
     @Override
     public final Property.Builder setHidden(final boolean hidden) {
-      property.setHidden(hidden);
+      property.hidden = hidden;
       return this;
     }
 
     @Override
     public Property.Builder setReadOnly(final boolean readOnly) {
-      property.setReadOnly(readOnly);
+      property.readOnly = readOnly;
       return this;
     }
 
     @Override
     public final Property.Builder setDefaultValue(final Object defaultValue) {
-      property.setDefaultValue(defaultValue);
+      setDefaultValueProvider(() -> defaultValue);
       return this;
     }
 
     @Override
     public Property.Builder setDefaultValueProvider(final ValueProvider provider) {
-      property.setDefaultValueProvider(provider);
+      if (provider != null) {
+        property.validateType(provider.getValue());
+      }
+      property.defaultValueProvider = provider == null ? DEFAULT_VALUE_PROVIDER : provider;
       return this;
     }
 
     @Override
     public Property.Builder setNullable(final boolean nullable) {
-      property.setNullable(nullable);
+      property.nullable = nullable;
       return this;
     }
 
     @Override
     public final Property.Builder setMaxLength(final int maxLength) {
-      property.setMaxLength(maxLength);
+      if (maxLength <= 0) {
+        throw new IllegalArgumentException("Max length must be a positive integer");
+      }
+      property.maxLength = maxLength;
       return this;
     }
 
     @Override
     public final Property.Builder setMax(final double max) {
-      property.setMax(max);
+      property.max = max;
       return this;
     }
 
     @Override
     public final Property.Builder setMin(final double min) {
-      property.setMin(min);
+      property.min = min;
       return this;
     }
 
     @Override
     public final Property.Builder setUseNumberFormatGrouping(final boolean useGrouping) {
-      property.setUseNumberFormatGrouping(useGrouping);
+      if (!(property.format instanceof NumberFormat)) {
+        throw new IllegalStateException("Grouping can only be set for number formats");
+      }
+      ((NumberFormat) property.format).setGroupingUsed(useGrouping);
       return this;
     }
 
     @Override
     public final Property.Builder setPreferredColumnWidth(final int preferredColumnWidth) {
-      property.setPreferredColumnWidth(preferredColumnWidth);
+      property.preferredColumnWidth = preferredColumnWidth;
       return this;
     }
 
     @Override
     public final Property.Builder setDescription(final String description) {
-      property.setDescription(description);
+      property.description = description;
       return this;
     }
 
     @Override
     public final Property.Builder setMnemonic(final Character mnemonic) {
-      property.setMnemonic(mnemonic);
+      property.mnemonic = mnemonic;
       return this;
     }
 
     @Override
     public final Property.Builder setFormat(final Format format) {
-      property.setFormat(format);
+      requireNonNull(format, "format");
+      if (property.isNumerical() && !(format instanceof NumberFormat)) {
+        throw new IllegalArgumentException("NumberFormat required for numerical property: " +
+                property.propertyId);
+      }
+      if (property.isTemporal()) {
+        throw new IllegalArgumentException("Use setDateTimeFormatPattern() for date/time based property: " +
+                property.propertyId);
+      }
+      property.format = format;
       return this;
     }
 
     @Override
     public final Property.Builder setDateTimeFormatPattern(final String dateTimeFormatPattern) {
-      property.setDateTimeFormatPattern(dateTimeFormatPattern);
+      if (!property.isTemporal()) {
+        throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to date/time based property: " +
+                property.propertyId);
+      }
+      property.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
+      property.dateTimeFormatPattern = dateTimeFormatPattern;
       return this;
     }
 
     @Override
     public final Property.Builder setMaximumFractionDigits(final int maximumFractionDigits) {
-      property.setMaximumFractionDigits(maximumFractionDigits);
+      if (!(property.format instanceof NumberFormat)) {
+        throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
+      }
+      ((NumberFormat) property.format).setMaximumFractionDigits(maximumFractionDigits);
       return this;
     }
   }

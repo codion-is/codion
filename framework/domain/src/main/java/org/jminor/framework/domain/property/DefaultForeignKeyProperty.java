@@ -115,23 +115,6 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     return new DefaultForeignKeyPropertyBuilder(this);
   }
 
-  @Override
-  void setNullable(final boolean nullable) {
-    for (final ColumnProperty.Builder propertyBuilder : columnPropertyBuilders) {
-      propertyBuilder.setNullable(nullable);
-    }
-
-    super.setNullable(nullable);
-  }
-
-  void setFetchDepth(final int fetchDepth) {
-    this.fetchDepth = fetchDepth;
-  }
-
-  void setSoftReference(final boolean softReference) {
-    this.softReference = softReference;
-  }
-
   private static void validateParameters(final String propertyId, final String foreignEntityId,
                                          final List<ColumnProperty.Builder> columnProperties) {
     if (nullOrEmpty(columnProperties)) {
@@ -145,34 +128,44 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
   }
 
-  private static final class DefaultForeignKeyPropertyBuilder extends DefaultPropertyBuilder implements ForeignKeyProperty.Builder {
+  private static final class DefaultForeignKeyPropertyBuilder
+          extends DefaultPropertyBuilder implements ForeignKeyProperty.Builder {
 
-    private final DefaultForeignKeyProperty property;
+    private final DefaultForeignKeyProperty foreignKeyProperty;
 
-    private DefaultForeignKeyPropertyBuilder(final DefaultForeignKeyProperty property) {
-      super(property);
-      this.property = property;
+    private DefaultForeignKeyPropertyBuilder(final DefaultForeignKeyProperty foreignKeyProperty) {
+      super(foreignKeyProperty);
+      this.foreignKeyProperty = foreignKeyProperty;
     }
 
     @Override
     public ForeignKeyProperty get() {
-      return property;
+      return foreignKeyProperty;
     }
 
     @Override
     public List<ColumnProperty.Builder> getColmnPropertyBuilders() {
-      return property.columnPropertyBuilders;
+      return foreignKeyProperty.columnPropertyBuilders;
+    }
+
+    @Override
+    public ForeignKeyProperty.Builder setNullable(final boolean nullable) {
+      for (final ColumnProperty.Builder propertyBuilder : foreignKeyProperty.columnPropertyBuilders) {
+        propertyBuilder.setNullable(nullable);
+      }
+      super.setNullable(nullable);
+      return this;
     }
 
     @Override
     public ForeignKeyProperty.Builder setFetchDepth(final int fetchDepth) {
-      property.setFetchDepth(fetchDepth);
+      foreignKeyProperty.fetchDepth = fetchDepth;
       return this;
     }
 
     @Override
     public ForeignKeyProperty.Builder setSoftReference(final boolean softReference) {
-      property.setSoftReference(softReference);
+      foreignKeyProperty.softReference = softReference;
       return this;
     }
   }
