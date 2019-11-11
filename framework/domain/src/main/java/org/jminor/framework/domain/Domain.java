@@ -787,15 +787,14 @@ public class Domain implements Serializable {
     /**
      * Adds the value mapped to the given property in the {@link Entity} instance mapped to the given foreignKeyProperty
      * to this {@link StringProvider}
-     * @param foreignKeyProperty the foreign key property
+     * @param foreignKeyPropertyId the if of the foreign key property
      * @param propertyId the id of the property in the referenced entity to use
      * @return this {@link StringProvider} instance
      */
-    public StringProvider addForeignKeyValue(final ForeignKeyProperty foreignKeyProperty,
-                                             final String propertyId) {
-      requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    public StringProvider addForeignKeyValue(final String foreignKeyPropertyId, final String propertyId) {
+      requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
       requireNonNull(propertyId, PROPERTY_ID_PARAM);
-      valueProviders.add(new ForeignKeyValueProvider(foreignKeyProperty, propertyId));
+      valueProviders.add(new ForeignKeyValueProvider(foreignKeyPropertyId, propertyId));
       return this;
     }
 
@@ -839,22 +838,22 @@ public class Domain implements Serializable {
 
     private static final class ForeignKeyValueProvider implements StringProvider.ValueProvider {
       private static final long serialVersionUID = 1;
-      private final ForeignKeyProperty foreignKeyProperty;
+      private final String foreignKeyPropertyId;
       private final String propertyId;
 
-      private ForeignKeyValueProvider(final ForeignKeyProperty foreignKeyProperty,
+      private ForeignKeyValueProvider(final String foreignKeyPropertyId,
                                       final String propertyId) {
-        this.foreignKeyProperty = foreignKeyProperty;
+        this.foreignKeyPropertyId = foreignKeyPropertyId;
         this.propertyId = propertyId;
       }
 
       @Override
       public String toString(final Entity entity) {
-        if (entity.isNull(foreignKeyProperty)) {
+        if (entity.isNull(foreignKeyPropertyId)) {
           return "";
         }
 
-        return entity.getForeignKey(foreignKeyProperty).getAsString(propertyId);
+        return entity.getForeignKey(foreignKeyPropertyId).getAsString(propertyId);
       }
     }
 

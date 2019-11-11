@@ -420,8 +420,7 @@ public class DomainTest {
 
     Domain.StringProvider employeeToString = new Domain.StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(domain.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK),
-                    TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
+            .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
 
     assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.toString(employee));
@@ -435,8 +434,7 @@ public class DomainTest {
 
     employeeToString = new Domain.StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(domain.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK),
-                    TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
+            .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
 
     assertEquals(" (department: , location: , hiredate: )", employeeToString.toString(employee));
