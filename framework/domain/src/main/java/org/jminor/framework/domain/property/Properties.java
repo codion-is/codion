@@ -95,13 +95,13 @@ public final class Properties {
    * @param propertyId the property ID, note that this is not a column name
    * @param caption the property caption
    * @param foreignEntityId the ID of the entity referenced by this foreign key
-   * @param columnProperties the underlying column properties comprising this foreign key
+   * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    * @return a new foreign key property
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final String propertyId, final String caption,
                                                               final String foreignEntityId,
-                                                              final List<ColumnProperty.Builder> columnProperties) {
-    return new DefaultForeignKeyProperty(propertyId, caption, foreignEntityId, columnProperties).builder();
+                                                              final List<ColumnProperty.Builder> columnPropertyBuilders) {
+    return new DefaultForeignKeyProperty(propertyId, caption, foreignEntityId, columnPropertyBuilders).builder();
   }
 
   /**
