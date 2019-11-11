@@ -5270,3 +5270,4 @@
   Code cleanup
   DefaultColumnProperty, DefaultForeignKeyProperty, DefaultTransientProperty, builder() method added, Builder implementations now completely privat
   DefaultEntityDefinition.builder() method added, Builder implementation now private
+  StringProvider.ForeignKeyValueProvider now uses foreignKeyPropertyId instead of the actual ForeignKeyProperty
