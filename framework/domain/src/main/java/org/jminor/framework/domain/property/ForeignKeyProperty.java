@@ -48,14 +48,18 @@ public interface ForeignKeyProperty extends Property {
 
   /**
    * Provides setters for ForeignKeyProperty properties
-   * @param <T> the ColumnProperty type
    */
-  interface Builder<T extends ForeignKeyProperty> extends Property.Builder<T> {
+  interface Builder extends Property.Builder {
 
-    @Override
-    T get();
+    /**
+     * @return the property
+     */
+    ForeignKeyProperty get();
 
-    List<ColumnProperty.Builder> getPropertyBuilders();
+    /**
+     * @return the builders for the underlying column properties
+     */
+    List<ColumnProperty.Builder> getColmnPropertyBuilders();
 
     /**
      * @param fetchDepth the default query fetch depth for this foreign key

@@ -8,7 +8,6 @@ import org.jminor.framework.domain.Entity;
 import java.sql.Types;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
@@ -56,8 +55,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     this.columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyProperty(this));
     this.compositeReference = columnPropertyBuilders.size() > 1;
     this.foreignEntityId = foreignEntityId;
-    this.columnProperties = unmodifiableList(columnPropertyBuilders.stream().map((Function<ColumnProperty.Builder,
-            ColumnProperty>) ColumnProperty.Builder::get).collect(toList()));
+    this.columnProperties = unmodifiableList(columnPropertyBuilders.stream()
+            .map(ColumnProperty.Builder::get).collect(toList()));
   }
 
   /** {@inheritDoc} */
@@ -146,15 +145,22 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
   }
 
-  private static final class DefaultForeignKeyPropertyBuilder extends DefaultPropertyBuilder<DefaultForeignKeyProperty>
-          implements ForeignKeyProperty.Builder<DefaultForeignKeyProperty> {
+  private static final class DefaultForeignKeyPropertyBuilder extends DefaultPropertyBuilder implements ForeignKeyProperty.Builder {
+
+    private final DefaultForeignKeyProperty property;
 
     private DefaultForeignKeyPropertyBuilder(final DefaultForeignKeyProperty property) {
       super(property);
+      this.property = property;
     }
 
     @Override
-    public List<ColumnProperty.Builder> getPropertyBuilders() {
+    public ForeignKeyProperty get() {
+      return property;
+    }
+
+    @Override
+    public List<ColumnProperty.Builder> getColmnPropertyBuilders() {
       return property.columnPropertyBuilders;
     }
 

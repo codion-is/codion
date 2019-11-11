@@ -619,16 +619,16 @@ class DefaultProperty implements Property {
     }
   }
 
-  static class DefaultPropertyBuilder<T extends DefaultProperty> implements Property.Builder<T> {
+  static class DefaultPropertyBuilder implements Property.Builder {
 
-    protected final T property;
+    protected final DefaultProperty property;
 
-    DefaultPropertyBuilder(final T property) {
+    DefaultPropertyBuilder(final DefaultProperty property) {
       this.property = property;
     }
 
     @Override
-    public T get() {
+    public Property get() {
       return property;
     }
 

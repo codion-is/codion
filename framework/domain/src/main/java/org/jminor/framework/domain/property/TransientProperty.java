@@ -19,14 +19,18 @@ public interface TransientProperty extends Property {
 
   /**
    * Builds a TransientProperty instance
-   * @param <T> the TransientProperty type
    */
-  interface Builder<T extends TransientProperty> extends Property.Builder<T> {
+  interface Builder extends Property.Builder {
+
+    /**
+     * @return the property
+     */
+    TransientProperty get();
 
     /**
      * @param modifiesEntity if true then modifications to the value result in the owning entity becoming modified
      * @return this property instance
      */
-    TransientProperty.Builder<T> setModifiesEntity(final boolean modifiesEntity);
+    TransientProperty.Builder setModifiesEntity(final boolean modifiesEntity);
   }
 }

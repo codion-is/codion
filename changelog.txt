@@ -5272,3 +5272,4 @@
   DefaultEntityDefinition.builder() method added, Builder implementation now private
   StringProvider.ForeignKeyValueProvider now uses foreignKeyPropertyId instead of the actual ForeignKeyProperty
   Some code cleanup and inner class renamings
+  Removed the unholy mess that was property builder generics

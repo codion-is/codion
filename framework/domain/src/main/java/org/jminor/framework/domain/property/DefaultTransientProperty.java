@@ -36,11 +36,19 @@ class DefaultTransientProperty extends DefaultProperty implements TransientPrope
     this.modifiesEntity = modifiesEntity;
   }
 
-  private static final class DefaultTransientPropertyBuilder extends DefaultPropertyBuilder<DefaultTransientProperty>
-          implements TransientProperty.Builder<DefaultTransientProperty> {
+  private static final class DefaultTransientPropertyBuilder extends DefaultPropertyBuilder
+          implements TransientProperty.Builder {
+
+    private final DefaultTransientProperty property;
 
     private DefaultTransientPropertyBuilder(final DefaultTransientProperty property) {
       super(property);
+      this.property = property;
+    }
+
+    @Override
+    public TransientProperty get() {
+      return property;
     }
 
     @Override

@@ -284,14 +284,13 @@ public interface Property extends Serializable {
 
   /**
    * Builds a Property instance
-   * @param <T> the Property type
    */
-  interface Builder<T extends Property> {
+  interface Builder {
 
     /**
      * @return the property
      */
-    T get();
+    Property get();
 
     /**
      * @param entityId the id of the entity this property is associated with

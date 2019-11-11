@@ -109,12 +109,13 @@ public interface ColumnProperty extends Property {
 
   /**
    * Provides setters for ColumnProperty properties
-   * @param <T> the ColumnProperty type
    */
-  interface Builder<T extends ColumnProperty> extends Property.Builder<T> {
+  interface Builder extends Property.Builder {
 
-    @Override
-    T get();
+    /**
+     * @return the property
+     */
+    ColumnProperty get();
 
     /**
      * Sets the actual string used as column when querying
