@@ -298,48 +298,48 @@ public interface Property extends Serializable {
      * @throws IllegalStateException in case the entityId has already been set
      * @return this instance
      */
-    Builder<T> setEntityId(final String entityId);
+    Property.Builder<T> setEntityId(final String entityId);
 
     /**
      * Sets the bean name property to associate with this property
      * @param beanProperty the bean property name
      * @return this instance
      */
-    Builder<T> setBeanProperty(final String beanProperty);
+    Property.Builder<T> setBeanProperty(final String beanProperty);
 
     /**
      * Sets the default value for this property, overrides the underlying column default value, if any
      * @param defaultValue the value to use as default
      * @return this instance
      */
-    Builder<T> setDefaultValue(final Object defaultValue);
+    Property.Builder<T> setDefaultValue(final Object defaultValue);
 
     /**
      * Sets the default value provider, use in case of dynamic default values.
      * @param provider the default value provider
      * @return this instance
      */
-    Builder<T> setDefaultValueProvider(final ValueProvider provider);
+    Property.Builder<T> setDefaultValueProvider(final ValueProvider provider);
 
     /**
      * @param hidden specifies whether this property should hidden in table views
      * @return this instance
      */
-    Builder<T> setHidden(final boolean hidden);
+    Property.Builder<T> setHidden(final boolean hidden);
 
     /**
      * Sets the maximum allowed value for this property, only applicable to numerical properties
      * @param max the maximum allowed value
      * @return this instance
      */
-    Builder<T> setMax(final double max);
+    Property.Builder<T> setMax(final double max);
 
     /**
      * Only applicable to numerical properties
      * @param min the minimum allowed value for this property
      * @return this instance
      */
-    Builder<T> setMin(final double min);
+    Property.Builder<T> setMin(final double min);
 
     /**
      * Sets the maximum fraction digits to show for this property, only applicable to properties based on Types.DOUBLE.
@@ -348,7 +348,7 @@ public interface Property extends Serializable {
      * @param maximumFractionDigits the maximum fraction digits
      * @return this instance
      */
-    Builder<T> setMaximumFractionDigits(final int maximumFractionDigits);
+    Property.Builder<T> setMaximumFractionDigits(final int maximumFractionDigits);
 
     /**
      * Specifies whether to use number grouping when presenting the value associated with this property.
@@ -359,19 +359,19 @@ public interface Property extends Serializable {
      * @param useGrouping if true then number grouping is used
      * @return this instance
      */
-    Builder<T> setUseNumberFormatGrouping(final boolean useGrouping);
+    Property.Builder<T> setUseNumberFormatGrouping(final boolean useGrouping);
 
     /**
      * @param preferredColumnWidth the preferred column width of this property in pixels when displayed in a table
      * @return this instance
      */
-    Builder<T> setPreferredColumnWidth(final int preferredColumnWidth);
+    Property.Builder<T> setPreferredColumnWidth(final int preferredColumnWidth);
 
     /**
      * @param readOnly specifies whether this property should be included during insert/update operations
      * @return this instance
      */
-    Builder<T> setReadOnly(final boolean readOnly);
+    Property.Builder<T> setReadOnly(final boolean readOnly);
 
     /**
      * Specifies whether or not this property is nullable, in case of
@@ -379,27 +379,27 @@ public interface Property extends Serializable {
      * @param nullable specifies whether or not this property accepts a null value
      * @return this instance
      */
-    Builder<T> setNullable(final boolean nullable);
+    Property.Builder<T> setNullable(final boolean nullable);
 
     /**
      * Sets the maximum length of this property value, this applies to String (varchar) based properties
      * @param maxLength the maximum length
      * @return this instance
      */
-    Builder<T> setMaxLength(final int maxLength);
+    Property.Builder<T> setMaxLength(final int maxLength);
 
     /**
      * Sets the mnemonic to use when creating a label for this property
      * @param mnemonic the mnemonic character
      * @return this instance
      */
-    Builder<T> setMnemonic(final Character mnemonic);
+    Property.Builder<T> setMnemonic(final Character mnemonic);
 
     /**
      * @param description a String describing this property
      * @return this instance
      */
-    Builder<T> setDescription(final String description);
+    Property.Builder<T> setDescription(final String description);
 
     /**
      * Sets the Format to use when presenting property values
@@ -409,7 +409,7 @@ public interface Property extends Serializable {
      * @throws IllegalArgumentException in case the format does not fit the property type,
      * f.ex. NumberFormat is expected for numerical properties
      */
-    Builder<T> setFormat(final Format format);
+    Property.Builder<T> setFormat(final Format format);
 
     /**
      * Sets the date/time format pattern used when presenting values
@@ -417,7 +417,6 @@ public interface Property extends Serializable {
      * @return this instance
      * @throws IllegalArgumentException in case the pattern is invalid or if this property is not a date/time based one
      */
-    Builder<T> setDateTimeFormatPattern(final String dateTimeFormatPattern);
-
+    Property.Builder<T> setDateTimeFormatPattern(final String dateTimeFormatPattern);
   }
 }

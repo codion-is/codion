@@ -27,6 +27,6 @@ public interface TransientProperty extends Property {
      * @param modifiesEntity if true then modifications to the value result in the owning entity becoming modified
      * @return this property instance
      */
-    Builder setModifiesEntity(final boolean modifiesEntity);
+    TransientProperty.Builder<T> setModifiesEntity(final boolean modifiesEntity);
   }
 }

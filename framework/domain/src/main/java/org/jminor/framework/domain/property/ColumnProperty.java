@@ -121,19 +121,19 @@ public interface ColumnProperty extends Property {
      * @param columnName the column name
      * @return this instance
      */
-    Builder<T> setColumnName(final String columnName);
+    ColumnProperty.Builder<T> setColumnName(final String columnName);
 
     /**
      * @param updatable specifies whether this property is updatable
      * @return this instance
      */
-    Builder<T> setUpdatable(final boolean updatable);
+    ColumnProperty.Builder<T> setUpdatable(final boolean updatable);
 
     /**
      * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
      * @return this instance
      */
-    Builder<T> setColumnHasDefaultValue(final boolean columnHasDefaultValue);
+    ColumnProperty.Builder<T> setColumnHasDefaultValue(final boolean columnHasDefaultValue);
 
     /**
      * Sets the zero based primary key index of this property.
@@ -145,34 +145,34 @@ public interface ColumnProperty extends Property {
      * @see #setNullable(boolean)
      * @see #setUpdatable(boolean)
      */
-    Builder<T> setPrimaryKeyIndex(final int index);
+    ColumnProperty.Builder<T> setPrimaryKeyIndex(final int index);
 
     /**
      * @param groupingColumn true if this column should be used in a group by clause
      * @throws IllegalStateException in case the column has already been defined as an aggregate column
      * @return this instance
      */
-    Builder<T> setGroupingColumn(final boolean groupingColumn);
+    ColumnProperty.Builder<T> setGroupingColumn(final boolean groupingColumn);
 
     /**
      * @param aggregateColumn true if this column is an aggregate function column
      * @throws IllegalStateException in case the column has already been defined as a grouping column
      * @return this instance
      */
-    Builder<T> setAggregateColumn(final boolean aggregateColumn);
+    ColumnProperty.Builder<T> setAggregateColumn(final boolean aggregateColumn);
 
     /**
      * @param selectable false if this property should not be included in select queries
      * @return this instance
      */
-    Builder<T> setSelectable(final boolean selectable);
+    ColumnProperty.Builder<T> setSelectable(final boolean selectable);
 
     /**
      * Set a value converter, for converting to and from a sql representation of the value
      * @param valueConverter the converter
      * @return this instance
      */
-    Builder<T> setValueConverter(final ValueConverter<?, ?> valueConverter);
+    ColumnProperty.Builder<T> setValueConverter(final ValueConverter<?, ?> valueConverter);
 
     /**
      * @param foreignKeyProperty the ForeignKeyProperty this property is part of
