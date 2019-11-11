@@ -54,10 +54,10 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     validateParameters(propertyId, foreignEntityId, columnPropertyBuilders);
     this.columnPropertyBuilders = columnPropertyBuilders;
     this.columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyProperty(this));
+    this.compositeReference = columnPropertyBuilders.size() > 1;
     this.foreignEntityId = foreignEntityId;
     this.columnProperties = unmodifiableList(columnPropertyBuilders.stream().map((Function<ColumnProperty.Builder,
             ColumnProperty>) ColumnProperty.Builder::get).collect(toList()));
-    this.compositeReference = this.columnProperties.size() > 1;
   }
 
   /** {@inheritDoc} */
@@ -153,20 +153,17 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
       super(property);
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<ColumnProperty.Builder> getPropertyBuilders() {
       return property.columnPropertyBuilders;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ForeignKeyProperty.Builder setFetchDepth(final int fetchDepth) {
       property.setFetchDepth(fetchDepth);
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ForeignKeyProperty.Builder setSoftReference(final boolean softReference) {
       property.setSoftReference(softReference);

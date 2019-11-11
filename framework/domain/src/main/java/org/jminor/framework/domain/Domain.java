@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Function;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -567,11 +566,8 @@ public class Domain implements Serializable {
   }
 
   private void initializeForeignKeyProperty(final String entityId, final Map<String, Property> propertyMap,
-                                            final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
-    final List<ColumnProperty.Builder> propertyBuilders = foreignKeyPropertyBuilder.getPropertyBuilders();
+                                            final ForeignKeyProperty.Builder<ForeignKeyProperty> foreignKeyPropertyBuilder) {
     final ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyBuilder.get();
-    final List<ColumnProperty> properties = propertyBuilders.stream().map(
-            (Function<ColumnProperty.Builder, ColumnProperty>) ColumnProperty.Builder::get).collect(toList());
     if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
       final Entity.Definition foreignEntity = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
       if (foreignEntity == null) {
@@ -579,12 +575,12 @@ public class Domain implements Serializable {
                 + "' referenced by entity '" + entityId + "' via foreign key property '"
                 + foreignKeyProperty.getPropertyId() + "' has not been defined");
       }
-      if (properties.size() != foreignEntity.getPrimaryKeyProperties().size()) {
+      if (foreignKeyProperty.getProperties().size() != foreignEntity.getPrimaryKeyProperties().size()) {
         throw new IllegalArgumentException("Number of column properties in '" + entityId + "." + foreignKeyProperty.getPropertyId() +
                 "' does not match the number of foreign properties in the referenced entity '" + foreignKeyProperty.getForeignEntityId() + "'");
       }
     }
-    for (final ColumnProperty.Builder propertyBuilder : propertyBuilders) {
+    for (final ColumnProperty.Builder propertyBuilder : foreignKeyPropertyBuilder.getPropertyBuilders()) {
       if (!(propertyBuilder.get() instanceof MirrorProperty)) {
         validateAndAddProperty(propertyBuilder, entityId, propertyMap);
       }
