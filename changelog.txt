@@ -5273,3 +5273,4 @@
   StringProvider.ForeignKeyValueProvider now uses foreignKeyPropertyId instead of the actual ForeignKeyProperty
   Some code cleanup and inner class renamings
   Removed the unholy mess that was property builder generics
+  Further property builder refactoring

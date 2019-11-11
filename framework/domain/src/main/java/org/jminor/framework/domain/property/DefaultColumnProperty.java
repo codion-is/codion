@@ -173,66 +173,15 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     return resultPacker;
   }
 
+  protected void setUpdatable(final boolean updatable) {
+    this.updatable = updatable;
+  }
+
   /**
    * @return a builder for this property instance
    */
   ColumnProperty.Builder builder() {
     return new DefaultColumnPropertyBuilder(this);
-  }
-
-  void setColumnName(final String columnName) {
-    this.columnName = requireNonNull(columnName, "columnName");
-  }
-
-  void setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
-    this.columnHasDefaultValue = columnHasDefaultValue;
-  }
-
-  void setUpdatable(final boolean updatable) {
-    this.updatable = updatable;
-  }
-
-  void setPrimaryKeyIndex(final int index) {
-    if (index < 0) {
-      throw new IllegalArgumentException("Primary key index must be at least 0");
-    }
-    this.primaryKeyIndex = index;
-  }
-
-  void setGroupingColumn(final boolean groupingColumn) {
-    if (aggregateColumn) {
-      throw new IllegalStateException(columnName + " is an aggregate column");
-    }
-    this.groupingColumn = groupingColumn;
-  }
-
-  void setAggregateColumn(final boolean aggregateColumn) {
-    if (groupingColumn) {
-      throw new IllegalStateException(columnName + " is a grouping column");
-    }
-    this.aggregateColumn = aggregateColumn;
-  }
-
-  void setSelectable(final boolean selectable) {
-    this.selectable = selectable;
-  }
-
-  void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
-    this.foreignKeyProperty = foreignKeyProperty;
-  }
-
-  @Override
-  void setReadOnly(final boolean readOnly) {
-    if (isForeignKeyProperty()) {
-      throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");
-    }
-
-    super.setReadOnly(readOnly);
-  }
-
-  void setValueConverter(final ValueConverter<?, ?> valueConverter) {
-    requireNonNull(valueConverter, "valueConverter");
-    this.valueConverter = (ValueConverter<Object, Object>) valueConverter;
   }
 
   private static ValueConverter initializeValueConverter(final ColumnProperty property) {
@@ -429,41 +378,53 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
   }
 
-  private static final class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder implements ColumnProperty.Builder {
+  static class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder implements ColumnProperty.Builder {
 
-    private final DefaultColumnProperty property;
+    private final DefaultColumnProperty columnProperty;
 
-    private DefaultColumnPropertyBuilder(final DefaultColumnProperty property) {
-      super(property);
-      this.property= property;
+    DefaultColumnPropertyBuilder(final DefaultColumnProperty columnProperty) {
+      super(columnProperty);
+      this.columnProperty = columnProperty;
     }
 
     @Override
     public ColumnProperty get() {
-      return property;
+      return columnProperty;
+    }
+
+    @Override
+    public Property.Builder setReadOnly(final boolean readOnly) {
+      if (columnProperty.isForeignKeyProperty()) {
+        throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");
+      }
+      super.setReadOnly(readOnly);
+      return this;
     }
 
     @Override
     public final ColumnProperty.Builder setColumnName(final String columnName) {
-      property.setColumnName(columnName);
+      columnProperty.columnName = requireNonNull(columnName, "columnName");
       return this;
     }
 
     @Override
     public final ColumnProperty.Builder setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
-      property.setColumnHasDefaultValue(columnHasDefaultValue);
+      columnProperty.columnHasDefaultValue = columnHasDefaultValue;
       return this;
     }
 
     @Override
     public final ColumnProperty.Builder setUpdatable(final boolean updatable) {
-      property.setUpdatable(updatable);
+      columnProperty.updatable = updatable;
       return this;
     }
 
     @Override
     public final ColumnProperty.Builder setPrimaryKeyIndex(final int index) {
-      property.setPrimaryKeyIndex(index);
+      if (index < 0) {
+        throw new IllegalArgumentException("Primary key index must be at least 0");
+      }
+      columnProperty.primaryKeyIndex = index;
       setNullable(false);
       setUpdatable(false);
       return this;
@@ -471,31 +432,38 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
 
     @Override
     public final ColumnProperty.Builder setGroupingColumn(final boolean groupingColumn) {
-      property.setGroupingColumn(groupingColumn);
+      if (columnProperty.aggregateColumn) {
+        throw new IllegalStateException(columnProperty.columnName + " is an aggregate column");
+      }
+      columnProperty.groupingColumn = groupingColumn;
       return this;
     }
 
     @Override
     public final ColumnProperty.Builder setAggregateColumn(final boolean aggregateColumn) {
-      property.setAggregateColumn(aggregateColumn);
+      if (columnProperty.groupingColumn) {
+        throw new IllegalStateException(columnProperty.columnName + " is a grouping column");
+      }
+      columnProperty.aggregateColumn = aggregateColumn;
       return this;
     }
 
     @Override
     public final ColumnProperty.Builder setSelectable(final boolean selectable) {
-      property.setSelectable(selectable);
+      columnProperty.selectable = selectable;
       return this;
     }
 
     @Override
     public final ColumnProperty.Builder setValueConverter(final ValueConverter<?, ?> valueConverter) {
-      property.setValueConverter(valueConverter);
+      requireNonNull(valueConverter, "valueConverter");
+      columnProperty.valueConverter = (ValueConverter<Object, Object>) valueConverter;
       return this;
     }
 
     @Override
     public final void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
-      property.setForeignKeyProperty(foreignKeyProperty);
+      columnProperty.foreignKeyProperty = foreignKeyProperty;
     }
   }
 }

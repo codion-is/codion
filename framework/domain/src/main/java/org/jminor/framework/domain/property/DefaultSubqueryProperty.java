@@ -31,8 +31,32 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
     return subquery;
   }
 
+  /**
+   * @return a builder for this property instance
+   */
   @Override
-  void setReadOnly(final boolean readOnly) {
-    throw new UnsupportedOperationException("Subquery properties are always read only");
+  SubqueryProperty.Builder builder() {
+    return new DefaultSubqueryPropertyBuilder(this);
+  }
+
+  private static final class DefaultSubqueryPropertyBuilder
+          extends DefaultColumnPropertyBuilder implements Property.Builder {
+
+    private final DefaultSubqueryProperty subqueryProperty;
+
+    private DefaultSubqueryPropertyBuilder(final DefaultSubqueryProperty subqueryProperty) {
+      super(subqueryProperty);
+      this.subqueryProperty = subqueryProperty;
+    }
+
+    @Override
+    public SubqueryProperty get() {
+      return subqueryProperty;
+    }
+
+    @Override
+    public Property.Builder setReadOnly(final boolean readOnly) {
+      throw new UnsupportedOperationException("Subquery properties are always read only");
+    }
   }
 }
