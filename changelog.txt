@@ -5274,3 +5274,4 @@
   Some code cleanup and inner class renamings
   Removed the unholy mess that was property builder generics
   Further property builder refactoring
+  DefaultProperty, bug fixed, used lambda for defaultValueProvider, which caused serialization problems
