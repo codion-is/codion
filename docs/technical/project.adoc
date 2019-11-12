@@ -45,7 +45,7 @@ To run a demo client with a remote connection use the following command.
 
 [source,shell]
 ----
-gradlew :jminor-demos-chinook:runClientRemote
+gradlew :jminor-demos-chinook:runClientRMI
 ----
 
 You can run the <<server-monitor.adoc#, Server Monitor>> application to see how the server is behaving, with the following command.
