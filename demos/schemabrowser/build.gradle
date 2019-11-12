@@ -40,7 +40,7 @@ startScripts {
     ]
 }
 
-clientRemoteScript {
+clientRMIScript {
     mainClassName = mainClass
 }
 

@@ -70,7 +70,7 @@ startScripts {
     mainClassName = mainClass
 }
 
-clientRemoteScript {
+clientRMIScript {
     mainClassName = mainClass
 }
 
@@ -78,7 +78,7 @@ clientHttpScript {
     mainClassName = mainClass
 }
 
-loadTestRemoteScript {
+loadTestRMIScript {
     mainClassName = loadTestMainClass
 }
 

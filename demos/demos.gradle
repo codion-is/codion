@@ -61,7 +61,7 @@ startScripts {
     ]
 }
 
-task clientRemoteScript(type: CreateStartScripts) {
+task clientRMIScript(type: CreateStartScripts) {
     applicationName = project.name + '-remote'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
@@ -88,7 +88,7 @@ task clientHttpScript(type: CreateStartScripts) {
     ]
 }
 
-task loadTestRemoteScript(type: CreateStartScripts) {
+task loadTestRMIScript(type: CreateStartScripts) {
     applicationName = project.name + '-loadtest-remote'
     mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
     classpath = startScripts.classpath
@@ -129,10 +129,10 @@ applicationDistribution.into('reports') {
 
 applicationDistribution.into('bin') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(clientRemoteScript)
+    from(clientRMIScript)
     from(clientHttpScript)
     from(loadTestHttpScript)
-    from(loadTestRemoteScript)
+    from(loadTestRMIScript)
 }
 
 task runClientLocal(type: JavaExec) {
