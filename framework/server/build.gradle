@@ -16,7 +16,7 @@ dependencies {
     api project(':jminor-framework-domain')
     api project(':jminor-framework-db-core')
     api project(':jminor-framework-db-remote')
-    api project(':jminor-framework-db-local')
+    implementation project(':jminor-framework-db-local')
 
     testRuntimeOnly project(':jminor-plugin-hikari-pool')
     testRuntimeOnly project(':jminor-dbms-h2database')

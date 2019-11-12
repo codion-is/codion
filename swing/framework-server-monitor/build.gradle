@@ -8,6 +8,7 @@ dependencies {
     implementation project(':jminor-common-model')
     implementation project(':jminor-common-remote')
 
+    implementation project(':jminor-framework-db-local')
     implementation project(':jminor-framework-db-remote')
     implementation project(':jminor-framework-server')
     implementation project(':jminor-swing-common-model')
@@ -16,7 +17,6 @@ dependencies {
     testImplementation project(':jminor-framework-domain')
     testImplementation project(':jminor-framework-db-core')
     testImplementation project(':jminor-framework-db-remote')
-    testRuntimeOnly project(':jminor-framework-db-local')
 
     implementation "org.json:json:${jsonVersion}"
     implementation "org.jfree:jcommon:${jcommonVersion}"
