@@ -896,7 +896,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return a list containing all column properties found in the entity identified by {@code entityId},
      * that is, properties that map to database columns, an empty list if none exist
      */
-    List<ColumnProperty> getColumnProperties(Collection<String> propertyIds);
+    List<ColumnProperty> getColumnProperties(final List<String> propertyIds);
 
     /**
      * @return true if the primary key of the given type of entity is comprised of a single integer value

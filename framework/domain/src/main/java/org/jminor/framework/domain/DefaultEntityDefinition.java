@@ -385,8 +385,14 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public List<ColumnProperty> getColumnProperties(final Collection<String> propertyIds) {
-    return propertyIds.stream().map(this::getColumnProperty).collect(toList());
+  public List<ColumnProperty> getColumnProperties(final List<String> propertyIds) {
+    requireNonNull(propertyIds, "propertyIds");
+    final List<ColumnProperty> properties = new ArrayList<>(propertyIds.size());
+    for (int i = 0; i < propertyIds.size(); i++) {
+      properties.add(getColumnProperty(propertyIds.get(i)));
+    }
+
+    return properties;
   }
 
   /** {@inheritDoc} */
