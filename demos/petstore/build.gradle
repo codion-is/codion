@@ -67,7 +67,7 @@ task runClientLocal(type: ModularJavaExec) {
     ]
 }
 
-task runClientRemote(type: ModularJavaExec) {
+task runClientRMI(type: ModularJavaExec) {
     group 'run'
     main = mainClass
     systemProperties = [
@@ -90,7 +90,7 @@ task runClientHttp(type: ModularJavaExec) {
     ]
 }
 
-task runLoadTestRemote(type: ModularJavaExec) {
+task runLoadTestRMI(type: ModularJavaExec) {
     group 'run'
     main = loadTestMainClass
     systemProperties = [
@@ -128,7 +128,7 @@ task clientLocalScript(type: ModularCreateStartScripts) {
 }
 
 task clientRemoteScript(type: ModularCreateStartScripts) {
-    runTask = tasks.runClientRemote
+    runTask = tasks.runClientRMI
     applicationName = project.name + '-remote'
     defaultJvmOpts = [
             '-Djminor.client.connectionType=remote',
@@ -151,7 +151,7 @@ task clientHttpScript(type: ModularCreateStartScripts) {
 }
 
 task loadTestRemoteScript(type: ModularCreateStartScripts) {
-    runTask = tasks.runLoadTestRemote
+    runTask = tasks.runLoadTestRMI
     applicationName = project.name + '-loadtest-remote'
     defaultJvmOpts = [
             '-Djminor.client.connectionType=remote',
