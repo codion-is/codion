@@ -100,7 +100,7 @@ task clientLocalScript(type: ModularCreateStartScripts) {
     ]
 }
 
-task clientRemoteScript(type: ModularCreateStartScripts) {
+task clientRMIScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientRMI
     applicationName = project.name + '-remote'
     defaultJvmOpts = [
@@ -134,6 +134,6 @@ applicationDistribution.into('config') {
 applicationDistribution.into('bin') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(clientLocalScript)
-    from(clientRemoteScript)
+    from(clientRMIScript)
     from(clientHttpScript)
 }

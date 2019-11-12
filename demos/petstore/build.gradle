@@ -127,7 +127,7 @@ task clientLocalScript(type: ModularCreateStartScripts) {
     ]
 }
 
-task clientRemoteScript(type: ModularCreateStartScripts) {
+task clientRMIScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientRMI
     applicationName = project.name + '-remote'
     defaultJvmOpts = [
@@ -150,7 +150,7 @@ task clientHttpScript(type: ModularCreateStartScripts) {
     ]
 }
 
-task loadTestRemoteScript(type: ModularCreateStartScripts) {
+task loadTestRMIScript(type: ModularCreateStartScripts) {
     runTask = tasks.runLoadTestRMI
     applicationName = project.name + '-loadtest-remote'
     defaultJvmOpts = [
@@ -182,8 +182,8 @@ applicationDistribution.into('config') {
 applicationDistribution.into('bin') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(clientLocalScript)
-    from(clientRemoteScript)
+    from(clientRMIScript)
     from(clientHttpScript)
     from(loadTestHttpScript)
-    from(loadTestRemoteScript)
+    from(loadTestRMIScript)
 }
