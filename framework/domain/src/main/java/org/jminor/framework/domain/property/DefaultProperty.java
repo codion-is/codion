@@ -27,7 +27,7 @@ abstract class DefaultProperty implements Property {
 
   private static final long serialVersionUID = 1;
 
-  private static final ValueProvider DEFAULT_VALUE_PROVIDER = new DefaultValueProvider();
+  private static final ValueProvider DEFAULT_VALUE_PROVIDER = new NullDefaultValueProvider();
 
   /**
    * The ID of the entity this property is associated with
@@ -84,7 +84,7 @@ abstract class DefaultProperty implements Property {
   /**
    * True if this property should be hidden in table views
    */
-  private boolean hidden = false;
+  private boolean hidden;
 
   /**
    * True if this property is for selecting only, implicitly not updatable
@@ -294,7 +294,7 @@ abstract class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public boolean hasDefaultValue() {
-    return !(this.defaultValueProvider instanceof DefaultValueProvider);
+    return !(this.defaultValueProvider instanceof NullDefaultValueProvider);
   }
 
   /** {@inheritDoc} */
@@ -517,13 +517,28 @@ abstract class DefaultProperty implements Property {
     }
   }
 
-  private static final class DefaultValueProvider implements ValueProvider {
+  private static class DefaultValueProvider implements ValueProvider {
 
     private static final long serialVersionUID = 1;
 
+    private final Object defaultValue;
+
+    public DefaultValueProvider(final Object defaultValue) {
+      this.defaultValue = defaultValue;
+    }
+
     @Override
     public Object getValue() {
-      return null;
+      return defaultValue;
+    }
+  }
+
+  private static class NullDefaultValueProvider extends DefaultValueProvider {
+
+    private static final long serialVersionUID = 1;
+
+    public NullDefaultValueProvider() {
+      super(null);
     }
   }
 
@@ -570,8 +585,7 @@ abstract class DefaultProperty implements Property {
 
     @Override
     public final Property.Builder setDefaultValue(final Object defaultValue) {
-      setDefaultValueProvider(() -> defaultValue);
-      return this;
+      return setDefaultValueProvider(new DefaultValueProvider(defaultValue));
     }
 
     @Override
