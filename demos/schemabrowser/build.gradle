@@ -60,7 +60,7 @@ runClientLocal {
     ]
 }
 
-runClientRemote {
+runClientRMI {
     main = mainClass
 }
 

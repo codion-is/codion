@@ -105,7 +105,7 @@ task runClientLocalFX(type: JavaExec) {
     ]
 }
 
-runClientRemote {
+runClientRMI {
     main = mainClass
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
@@ -128,7 +128,7 @@ runClientHttp {
     ]
 }
 
-runLoadTestRemote {
+runLoadTestRMI {
     main = loadTestMainClass
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
