@@ -20,7 +20,6 @@ dependencies {
     testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 
-    serverRuntime project(':jminor-common-remote-http')
     serverRuntime project(':jminor-framework-server')
     serverRuntime project(':jminor-framework-servlet')
     serverRuntime project(':jminor-plugin-jasperreports')
