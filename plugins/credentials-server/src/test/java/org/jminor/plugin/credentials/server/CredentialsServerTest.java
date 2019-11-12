@@ -23,7 +23,7 @@ public final class CredentialsServerTest {
 
     System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
     final User scott = new User("scott", "tiger".toCharArray());
-    final CredentialsServer server = new CredentialsServer(54321, 200, 20);
+    final CredentialsServer server = new CredentialsServer(54321, 900, 50);
 
     UUID token = UUID.randomUUID();
     server.addAuthenticationToken(token, scott);
@@ -41,7 +41,7 @@ public final class CredentialsServerTest {
     assertNull(provider.getCredentials(provider.getAuthenticationToken(new String[] {"bla", "bla"})));
 
     server.addAuthenticationToken(token, scott);
-    Thread.sleep(300);
+    Thread.sleep(1300);
     //token expired and cleaned up
     assertNull(provider.getCredentials(token));
     server.exit();
