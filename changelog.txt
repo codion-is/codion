@@ -5298,3 +5298,4 @@
   Entity.Definition.getColumnProperties() parameter now List instead of Collection, implementation now uses old fashioned loop instead of stream
   Conditions.customCondition() parameter ordering changed
   Gradle asciidoctor plugin added, some doc changes
+  jersey-bundle dependency replaced in framework-servlet module, was causing javadoc errors
