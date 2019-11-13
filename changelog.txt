@@ -5277,3 +5277,4 @@
   DefaultProperty, bug fixed, used lambda for defaultValueProvider, which caused serialization problems
   Entity.Definition.getColumnProperties() parameter now List instead of Collection, implementation now uses old fashioned loop instead of stream
   Conditions.customCondition() parameter ordering changed
+  Gradle asciidoctor plugin added, some doc changes
