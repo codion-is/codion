@@ -184,6 +184,7 @@ asciidoctor {
             diagram.use()
             diagram.version '1.5.16'
         }
+        attributes 'source-highlighter': 'coderay'
     }
 }
 
