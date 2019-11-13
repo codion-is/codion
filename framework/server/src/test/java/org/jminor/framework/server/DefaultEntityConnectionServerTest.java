@@ -79,7 +79,7 @@ public class DefaultEntityConnectionServerTest {
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
     final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_ID,
-            singletonList(4), singletonList(TestDomain.EMP_MGR));
+            singletonList(TestDomain.EMP_MGR), singletonList(4));
 
     connection.selectMany(entitySelectCondition(TestDomain.T_EMP, condition));
 

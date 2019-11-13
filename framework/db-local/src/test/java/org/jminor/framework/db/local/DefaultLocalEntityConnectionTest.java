@@ -245,8 +245,8 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.selectMany(getKeys(result));
     assertEquals(2, result.size());
     result = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT,
-            Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID, asList(10, 20),
-                    asList(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_ID))));
+            Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID,
+                    asList(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_ID), asList(10, 20))));
     assertEquals(2, result.size());
     result = connection.selectMany(entitySelectCondition(JOINED_QUERY_ENTITY_ID,
             Conditions.customCondition(JOINED_QUERY_CONDITION_ID)));
@@ -379,7 +379,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void customCondition() throws DatabaseException {
     final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_GREATER_THAN_CONDITION_ID,
-            singletonList(5), singletonList(TestDomain.EMP_MGR));
+            singletonList(TestDomain.EMP_MGR), singletonList(5));
 
     assertEquals(4, connection.selectMany(entitySelectCondition(TestDomain.T_EMP, condition)).size());
   }

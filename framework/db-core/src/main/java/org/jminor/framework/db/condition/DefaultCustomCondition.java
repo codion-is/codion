@@ -18,13 +18,13 @@ final class DefaultCustomCondition implements Condition.CustomCondition {
   private static final long serialVersionUID = 1;
 
   private String conditionId;
-  private ArrayList values;
   private ArrayList<String> propertyIds;
+  private ArrayList values;
 
-  DefaultCustomCondition(final String conditionId, final List values, final List<String> propertyIds) {
+  DefaultCustomCondition(final String conditionId, final List<String> propertyIds, final List values) {
     this.conditionId = requireNonNull(conditionId, "conditionId");
-    this.values = new ArrayList(requireNonNull(values, "values"));
     this.propertyIds = new ArrayList<>(requireNonNull(propertyIds, "propertyIds"));
+    this.values = new ArrayList(requireNonNull(values, "values"));
   }
 
   /** {@inheritDoc} */
@@ -35,14 +35,14 @@ final class DefaultCustomCondition implements Condition.CustomCondition {
 
   /** {@inheritDoc} */
   @Override
-  public List getValues() {
-    return values;
+  public List<String> getPropertyIds() {
+    return propertyIds;
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<String> getPropertyIds() {
-    return propertyIds;
+  public List getValues() {
+    return values;
   }
 
   /** {@inheritDoc} */
@@ -53,13 +53,13 @@ final class DefaultCustomCondition implements Condition.CustomCondition {
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(conditionId);
-    stream.writeObject(values);
     stream.writeObject(propertyIds);
+    stream.writeObject(values);
   }
 
   private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
     conditionId = (String) stream.readObject();
-    values = (ArrayList) stream.readObject();
     propertyIds = (ArrayList) stream.readObject();
+    values = (ArrayList) stream.readObject();
   }
 }

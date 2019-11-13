@@ -173,14 +173,14 @@ public final class Conditions {
   /**
    * Creates a new {@link Condition.CustomCondition} based on the condition with the given id
    * @param conditionId the id of the condition
-   * @param values the values used by this condition string
    * @param propertyIds the properties representing the values used by this condition, in the same order as their respective values
+   * @param values the values used by this condition string
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
    * @see Entity.Definition.Builder#addConditionProvider(String, Entity.ConditionProvider)
    */
-  public static Condition.CustomCondition customCondition(final String conditionId, final List values, final List<String> propertyIds) {
-    return new DefaultCustomCondition(conditionId, values, propertyIds);
+  public static Condition.CustomCondition customCondition(final String conditionId, final List<String> propertyIds, final List values) {
+    return new DefaultCustomCondition(conditionId, propertyIds, values);
   }
 
   /**
