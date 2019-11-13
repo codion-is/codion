@@ -242,7 +242,7 @@ Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
 
 ==== DerivedProperty
 
-{url-javadoc}/org/jminor/framework/domain/property/DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
+{url-javadoc}/org/jminor/framework/domain/property/DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}/org/jminor/framework/domain/property/DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
 
 [source,java,indent=0]
 ----
@@ -251,7 +251,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 === Domain
 
-Each entity type is defined by calling {url-javadoc}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.property.Property...-[Domain.define] for each entity. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
+Each entity type is defined by calling {url-javadoc}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.property.Property.Builder...-[Domain.define] for each entity. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
 
 [source,java,indent=0]
 ----
@@ -259,10 +259,10 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 ----
 
 ==== Examples
-* <<{dir-tutorials}/world.adoc#domain-model, World domain model>>
-* <<{dir-tutorials}/empdept.adoc#domain-model, EmpDept domain model>>
-* <<{dir-tutorials}/chinook.adoc#domain-model, Chinook domain model>>
-* <<{dir-tutorials}/petstore.adoc#domain-model, Petstore domain model>>
+* <<{dir-tutorials}/world.adoc#_domain_model, World domain model>>
+* <<{dir-tutorials}/empdept.adoc#_domain_model, EmpDept domain model>>
+* <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>>
+* <<{dir-tutorials}/petstore.adoc#_domain_model, Petstore domain model>>
 
 === Entity.KeyProvider
 
@@ -415,7 +415,7 @@ define("entityId",
 
 ==== Examples
 
-* <<{dir-tutorials}/empdept.adoc#domain-model, EmpDept domain model>>
+* <<{dir-tutorials}/empdept.adoc#_domain_model, EmpDept domain model>>
 
 === Entities in action
 
@@ -428,9 +428,9 @@ include::{dir-source-petstore}/org/jminor/framework/demos/petstore/manual/Entiti
 
 ==== Examples
 
-* <<{dir-tutorials}/empdept.adoc#domain-model, EmpDept domain model>>
-* <<{dir-tutorials}/chinook.adoc#domain-model, Chinook domain model>>
-* <<{dir-tutorials}/petstore.adoc#domain-model, Petstore domain model>>
+* <<{dir-tutorials}/empdept.adoc#_domain_model, EmpDept domain model>>
+* <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>>
+* <<{dir-tutorials}/petstore.adoc#_domain_model, Petstore domain model>>
 
 == Domain Model Unit Testing
 
@@ -444,96 +444,22 @@ The unit tests are run within a single transaction which is rolled back after th
 
 The following methods all have default implementations which are based on randomly created property values, based on the constraints set in the domain model, override if the default ones are not working.
 
-* {url-javadoc}/org/jminor/framework/domain/testing/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-[initializeReferenceEntity] should initialize return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
-* {url-javadoc}/org/jminor/framework/domain/testing/EntityTestUnit.html#initializeTestEntity-java.lang.String-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
-* {url-javadoc}/org/jminor/framework/domain/testing/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.Entity-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the db layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
+* {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-java.util.Map-[initializeReferenceEntity] should initialize return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
+* {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#initializeTestEntity-java.lang.String-java.util.Map-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
+* {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the db layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
 To run the full CRUD test for a domain entity you need to call the __testEntity(String entityId)__ method with the id of the given entity as parameter. You can either create a single __testDomain()__ method and call the __testEntity__ method in turn for each entityId or create a single __testEntityName__ for each domain entity, as we do in the example below.
 
 [source,java]
 ----
-public class TestStore extends EntityTestUnit {
-
-  public TestStore() {
-    super(new Store());
-  }
-
-  @Test //a unit test method for the address entity
-  public void address() throws Exception {
-    //The testEntity method performs basic insert/select/update/delete tests for the given entity
-    testEntity(Store.T_ADDRESS);
-  }
-
-  @Test //a unit test method for the customer entity
-  public void customer() throws Exception {
-    testEntity(Store.T_CUSTOMER);
-  }
-
-  @Override
-  protected void initializeReferenceEntity(String entityId) throws Exception {
-    //see if the currently running test requires an ADDRESS entity
-    if (entityIDs.contains(Store.T_ADDRESS)) {
-      Entity address = new Entity(Store.ADDRESS);
-      address.put(Store.ADDRESS_ID, 21);
-      address.put(Store.ADDRESS_STREET, "One Way");
-      address.put(Store.ADDRESS_CITY, "Sin City");
-
-      return address;
-    }
-
-    return super.initializeReferenceEntity(entityID);
-  }
-
-  @Override
-  protected Entity initializeTestEntity(String entityID) {
-    if (entityID.equals(Store.T_ADDRESS)) {
-      //Initialize a entity representing the table STORE.ADDRESS,
-      //which can be used for the testing
-      Entity address = new Entity(Store.T_ADDRESS);
-      address.put(Store.ADDRESS_ID, 42);
-      address.put(Store.ADDRESS_STREET, "Street");
-      address.put(Store.ADDRESS_CITY, "City");
-
-      return address;
-    }
-    else if (entityID.equals(Store.T_CUSTOMER)) {
-      //Initialize a entity representing the table STORE.CUSTOMER,
-      //which can be used for the testing
-      Entity customer = new Entity(Store.T_CUSTOMER);
-      customer.put(Store.CUSTOMER_ID, 42);
-      customer.put(Store.CUSTOMER_FIRST_NAME, "Robert");
-      customer.put(Store.CUSTOMER_LAST_NAME, "Ford");
-      //the getReferenceEntity() method returns the entity initialized in initializeReferenceEntities()
-      customer.put(Store.CUSTOMER_ADDRESS_FK, getReferenceEntity(Store.T_ADDRESS));
-      customer.put(Store.CUSTOMER_IS_ACTIVE, true);
-
-      return customer;
-    }
-
-    return null;
-  }
-
-  @Override
-  protected void modifyEntity(Entity testEntity) {
-    if (testEntity.is(Store.T_ADDRESS)) {
-      testEntity.put(Store.ADDRESS_STREET, "New Street");
-      testEntity.put(Store.ADDRESS_CITY, "New City");
-    }
-    else if (testEntity.is(Store.T_CUSTOMER)) {
-      //It is sufficient to change the value of a single property, but the more the merrier
-      testEntity.put(Store.CUSTOMER_FIRST_NAME, "Jesse");
-      testEntity.put(Store.CUSTOMER_LAST_NAME, "James");
-      testEntity.put(Store.CUSTOMER_IS_ACTIVE, false);
-    }
-  }
-}
+include::{dir-source}/org/jminor/framework/demos/manual/store/domain/StoreTest.java[lines=13..-1]
 ----
 
 ==== Examples ====
 
-* <<{dir-tutorials}/empdept.adoc#domain-model-unit-test, EmpDept domain model test>>
-* <<{dir-tutorials}/chinook.adoc#domain-model-unit-test, Chinook domain model test>>
-* <<{dir-tutorials}/petstore.adoc#domain-model-unit-test, Petstore domain model test>>
+* <<{dir-tutorials}/empdept.adoc#_domain_model_unit_test, EmpDept domain model test>>
+* <<{dir-tutorials}/chinook.adoc#_domain_model_unit_test, Chinook domain model test>>
+* <<{dir-tutorials}/petstore.adoc#_domain_model_unit_test, Petstore domain model test>>
 
 == EntityModel
 
@@ -543,79 +469,25 @@ The {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditMode
 
 [source,java]
 ----
-public class CustomerEditModel extends SwingEntityEditModel {
-  public CustomerEditModel(EntityConnectionProvider connectionProvider) {
-    super(Store.T_CUSTOMER, connectionProvider);
-  }
-}
-----
-[source,java]
-----
-public class AddressEditModel extends SwingEntityEditModel {
-  public AddressModel(EntityConnectionProvider connectionProvider) {
-    super(Store.T_ADDRESS, connectionProvider);
-    addDetailModel(new CustomerModel(connectionProvider));
-  }
-}
-----
-[source,java]
-----
-//Initialize a database provider object using the credentials scott/tiger and application identifier TestApp
-EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider().setDomainClassName(Store.class.getName()).setUser(new User("scott", "tiger".toCharArray()).setClientTypeId("TestApp");
-
-CustomerEditModel customerModel = new CustomerEditModel(connectionProvider);
-
-customerModel.put(Store.CUSTOMER_ID, 42);
-customerModel.put(Store.CUSTOMER_FIRST_NAME, "Björn");
-customerModel.put(Store.CUSTOMER_LAST_NAME, "Sigurðsson");
-customerModel.put(Store.CUSTOMER_IS_ACTIVE, true);
-
-//inserts the active entity
-List<Entity.Key> primaryKeys = customerModel.insert();
-
-//select the customer we just inserted
-Entity customer = connectionProvider.getConnection().selectSingle(primaryKeys.get(0));
-
-//set the customer as the entity to edit in the edit model
-customerModel.setEntity(customer);
-
-//modify some property values
-customerModel.put(Store.CUSTOMER_FIRST_NAME, "John");
-customerModel.put(Store.CUSTOMER_LAST_NAME, "Doe");
-
-//updates the active entity
-customerModel.update();
-
-//deletes the active entity
-customerModel.delete();
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressModel.java[lines=10..-1]
 ----
 
 === Detail models
 
-Directly adding a detail models is a trivial matter, the framework handles everything as long as the master/detail relationship is defined in the domain model.
-
-[source,java]
-----
-addDetailModel(new CustomerModel(connectionProvider);
-----
+Directly adding a detail models is a trivial matter, the framework handles everything as long as the master/detail relationship is defined in the domain model. See link:#_entityapplicationmodel[EntityApplicationModel].
 
 === Table model
 
-Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] can contain a single {url-javadoc}/org/jminor/framework/model/EntityTableModel.html[EntityTableModel] instance. This table model can be created automatically by the //EntityModel// or supplied via a constructor argument in case of a specialized implementation.
+Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] can contain a single {url-javadoc}/org/jminor/framework/model/EntityTableModel.html[EntityTableModel] instance. This table model can be created automatically by the **EntityModel** or supplied via a constructor argument in case of a specialized implementation.
 
 [source,java]
 ----
-static class CustomerTableModel extends SwingEntityTableModel {
-  public CustomerTableModel(EntityConnectionProvider connectionProvider) {
-    super(Store.T_CUSTOMER, connectionProvider);
-  }
-}
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerTableModel.java[lines=10..-1]
+----
 
-static class CustomerModel extends SwingEntityModel {
-  public CustomerModel(EntityConnectionProvider connectionProvider) {
-    super(new CustomerTableModel(connectionProvider));
-  }
-}
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressTableModel.java[lines=10..-1]
 ----
 
 === Edit model
@@ -624,17 +496,17 @@ Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] cont
 
 [source,java]
 ----
-static class CustomerEditModel extends SwingEntityEditModel {
-  public CustomerEditModel(EntityConnectionProvider connectionProvider) {
-    super(Store.T_CUSTOMER, connectionProvider);
-  }
-}
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerEditModel.java[lines=10..-1]
+----
 
-static class CustomerModel extends SwingEntityModel {
-  public CustomerModel(EntityConnectionProvider connectionProvider) {
-    super(new CustomerEditModel(connectionProvider));
-  }
-}
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressEditModel.java[lines=10..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/Misc.java[lines=20..52]
 ----
 
 === Event binding
@@ -642,24 +514,14 @@ static class CustomerModel extends SwingEntityModel {
 The EntityModel, EntityEditModel and EntityTableModel classes expose a number of *addListener* methods.
 
 The following example prints, to the standard output, all changes made to a given property as well as a message indicating that a refresh has started.
+
 [source,java]
 ----
-protected void bindEvents() {
-  getTableModel().addRefreshStartedListener(new EventListener() {
-    public void eventOccurred() {
-      System.out.println("Refresh is about to start");
-    }
-  });
-  getEditModel().addValueListener(EmpDept.EMPLOYEE_DEPARTMENT_FK, new ValueChangeListener() {
-    protected void valueChanged(ValueChangeEvent event) {
-      System.out.println("Property " + e.getKey() + " changed from " + e.getOldValue() + " to " + e.getNewValue());
-    }
-  });
-}
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerModel.java[lines=21..29]
 ----
 
 === Examples
-* <<{dir-tutorials}/empdept.adoc#application-model-layer, EmpDept entity models>>
+* <<{dir-tutorials}/empdept.adoc#_application_model_layer, EmpDept entity models>>
 
 == EntityApplicationModel
 
@@ -671,13 +533,7 @@ When implementing this class you must provide a constructor taking a single Enti
 
 [source,java]
 ----
-public class StoreApplicationModel extends SwingEntityApplicationModel {
-
-  public StoreApplicationModel(EntityConnectionProvider connectionProvider) {
-    super(connectionProvider);
-    addEntityModel(new CustomerModel(connectionProvider));
-  }
-}
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/StoreAppModel.java[lines=10..-1]
 ----
 
 == Application load testing
@@ -688,42 +544,14 @@ The application load testing harness is used to see how your application, server
 
 [source,java]
 ----
-public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
-
-  private static final Store STORE = new Store();
-
-  public StoreLoadTest() {
-    super(new User("scott", "tiger".toCharArray()));
-  }
-
-  @Override
-  protected void performWork(StoreAppModel application) {
-    try {
-      EntityModel customerModel = application.getMainApplicationModels().iterator().next();
-      customerModel.getTableModel().clearSelection();
-      customerModel.refresh();
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Override
-  protected StoreAppModel initializeApplication() {
-    return new StoreAppModel(new RemoteEntityConnectionProvider(STORE, getUser(), UUID.randomUUID(), getClass().getSimpleName()));
-  }
-
-  public static void main(String[] args) {
-    new LoadTestPanel(new StoreLoadTest()).showFrame();
-  }
-}
+include::{dir-source}/org/jminor/framework/demos/manual/store/test/StoreLoadTest.java[lines=17..-1]
 ----
 
 === Examples
 
-* <<{dir-tutorials}/empdept.adoc#application-load-test, EmpDept application load test>>
-* <<{dir-tutorials}/chinook.adoc#application-load-test, Chinook application load test>>
-* <<{dir-tutorials}/petstore.adoc#application-load-test, Petstore application load test>>
+* <<{dir-tutorials}/empdept.adoc#_application_load_test, EmpDept application load test>>
+* <<{dir-tutorials}/chinook.adoc#_application_load_test, Chinook application load test>>
+* <<{dir-tutorials}/petstore.adoc#_application_load_test, Petstore application load test>>
 
 == EntityPanel
 
@@ -734,48 +562,15 @@ The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanel] is
 ==== EntityEditPanel
 
 When instantiating an EntityPanel you can supply an EntityEditPanel instance as a parameter. When implementing an EntityEditPanel you must implement the __initializeUI()__ method, in which you should initialize the edit panel UI. The EntityEditPanel class exposes methods for creating input components and binding them with the underlying EntityEditModel instance.
+
 [source,java]
 ----
-public class CustomerEditPanel extends EntityEditPanel {
-
-  public CustomerEditPanel(SwingEntityEditModel editModel) {
-    super(editModel);
-  }
-
-  @Override
-  protected void initializeUI() {
-    //the firstName field should receive the focus whenever the panel is initialized
-    setInitialFocusProperty(Store.CUSTOMER_FIRST_NAME);
-
-    setLayout(new GridLayout(4,1));
-    createTextField(Store.CUSTOMER_FIRST_NAME);
-    createTextField(Store.CUSTOMER_LAST_NAME);
-    createForeignKeyComboBox(Store.CUSTOMER_ADDRESS_FK);
-    createCheckBox(Store.CUSTOMER_IS_ACTIVE, null, false);
-
-    //the createControlPanel method creates a panel containing the
-    //component associated with the property as well as a JLabel with the
-    //property caption as defined in the domain model
-    addPropertyPanel(Store.CUSTOMER_FIRST_NAME);
-    addPropertyPanel(Store.CUSTOMER_LAST_NAME);
-    addPropertyPanel(Store.CUSTOMER_ADDRESS_FK);
-    addPropertyPanel(Store.CUSTOMER_IS_ACTIVE);
-  }
-}
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerEditPanel.java[lines=12..-1]
 ----
 
 === Detail panels
 
-Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the correct detail model for the detail panel, in this case a *CustomerModel* instance, see <<Detail models, detail models>>.
-[source,java]
-----
-public TestPanel extends EntityPanel {
-  public TestPanel(EntityModel model) {
-    super("caption", model);
-    addDetailPanel(new CustomerPanel(model.getDetailModel(CustomerModel.class)));
-  }
-}
-----
+Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the correct detail model for the detail panel, in this case a *CustomerModel* instance, see <<Detail models, detail models>>. See link:#_entityapplicationpanel[EntityApplicationPanel].
 
 === Custom actions
 The action mechanism used throughout the JMinor framework is based on the {url-javadoc}/org/jminor/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/org/jminor/swing/common/ui/control/ControlSet.html[ControlSet] class which, as the name suggests, represents a set of controls. There are two static utility classes for creating and presenting controls, {url-javadoc}/org/jminor/swing/common/ui/control/Controls.html[Controls] and {url-javadoc}/org/jminor/swing/common/ui/control/ControlProvider.html[ControlProvider] respectively.
@@ -843,11 +638,16 @@ public ControlSet getPrintControls() {
 
 == EntityApplicationPanel
 
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/StoreAppPanel.java[lines=17..-1]
+----
+
 === Examples
 
-* <<{dir-tutorials}/empdept.adoc#main-application-panel, EmpDept application panel>>
-* <<{dir-tutorials}/chinook.adoc#main-application-panel, Chinook application panel>>
-* <<{dir-tutorials}/petstore.adoc#main-application-panel, Petstore application panel>>
+* <<{dir-tutorials}/empdept.adoc#_main_application_panel, EmpDept application panel>>
+* <<{dir-tutorials}/chinook.adoc#_main_application_panel, Chinook application panel>>
+* <<{dir-tutorials}/petstore.adoc#_main_application_panel, Petstore application panel>>
 
 == Reporting with JasperReports
 
@@ -902,4 +702,4 @@ The way you view the report is just like in the jdbc report example above except
 
 === Examples
 
-* <<{dir-tutorials}/empdept.adoc#application-ui-layer, EmpDept UI layer>>
+* <<{dir-tutorials}/empdept.adoc#_application_ui_layer, EmpDept UI layer>>
