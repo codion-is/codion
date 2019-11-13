@@ -59,7 +59,7 @@ NOTE: Typically the *entityId* constant contains the underlying table name, but 
 
 === Properties
 
-Each column in a table is represented by the {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property] class or one of its subclasses. The {url-javadoc}/org/jminor/framework/domain/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is identified by a *propertyId*, a String, unique within the Entity.
+Each column in a table is represented by the {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property] class or one of its subclasses. The {url-javadoc}/org/jminor/framework/domain/property/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is identified by a *propertyId*, a String, unique within the Entity.
 
 NOTE: Typically the *propertyId* contains the underlying column name, but as with the *entityId* you can use whatever value you want and specify the column name via *setColumnName()* when instantiating the Property.
 
