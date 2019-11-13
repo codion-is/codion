@@ -8,7 +8,7 @@ dependencies {
     api project(':jminor-framework-model')
 
     api project(':jminor-swing-common-model')
-    implementation project(':jminor-swing-common-tools')
+    api project(':jminor-swing-common-tools')
 
     testImplementation project(':jminor-common-remote')
     testImplementation project(':jminor-framework-server')

@@ -2,6 +2,9 @@ apply from: '../demos.gradle'
 
 dependencies {
     implementation project(':jminor-swing-framework-ui')
+    implementation project(':jminor-swing-framework-tools')
+    implementation project(':jminor-framework-domain-test')
+    implementation project(':jminor-framework-db-remote')
 
     runtimeOnly project(':jminor-plugin-logback-proxy')
 
