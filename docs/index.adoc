@@ -1,5 +1,7 @@
 = JMinor Application Framework
 Björn Darri Sigurðsson <bjorndarri@gmail.com>
+:toclevels: 1
+:toc-title: Table of contents
 :dir-tutorials: tutorials
 :dir-manual: manual
 :dir-technical: technical

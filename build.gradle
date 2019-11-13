@@ -12,6 +12,7 @@ buildscript {
 plugins {
     id "org.sonarqube" version "2.8"
     id "com.github.ben-manes.versions" version "0.27.0"
+    id "org.asciidoctor.jvm.convert" version "2.3.0"
 }
 
 ext {
@@ -47,6 +48,9 @@ file("${projectDir}/common/core/src/main/resources" +
 
 allprojects {
     project.version = project.versionProperties.getProperty('version')
+    repositories {
+        jcenter()
+    }
 }
 
 configure(project.frameworkModules) {
@@ -58,10 +62,6 @@ configure(project.frameworkModules) {
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-
-    repositories {
-        jcenter()
-    }
 
     dependencies {
         api "org.slf4j:slf4j-api:${slf4jApiVersion}"
@@ -195,6 +195,20 @@ configure(project.frameworkModules) {
 }
 
 apply plugin: 'project-report'
+
+asciidoctor {
+    sourceDir = file('docs')
+    outputDir = file('build/docs/site')
+    //so asciidoc include works in intellij, relative path
+    baseDir = file('docs/noop')
+    attributes toc: 'left'
+    asciidoctorj {
+        modules {
+            diagram.use()
+            diagram.version '1.5.16'
+        }
+    }
+}
 
 htmlDependencyReport {
     projects = frameworkModules

@@ -1,4 +1,6 @@
 = Manual
+:toclevels: 4
+:toc-title: Table of contents
 :dir-tutorials: ../tutorials
 :dir-source: ../../demos/manual/src/main/java
 :dir-source-world: ../../demos/world/src/main/java
@@ -46,7 +48,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[t
 
 == Domain Model
 
-The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[org.jminor.framework.domain.Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/Property.html[org.jminor.framework.domain.Property], which represents columns. The
+The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[org.jminor.framework.domain.Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/property/Property.html[org.jminor.framework.domain.property.Property], which represents columns. The
 {url-javadoc}/org/jminor/framework/domain/Domain.html[org.jminor.framework.domain.Domain] class serves as a container for the domain model and as a factory for Entity and Entity.Key objects.
 
 === Entities
@@ -57,7 +59,7 @@ NOTE: Typically the *entityId* constant contains the underlying table name, but 
 
 === Properties
 
-Each column in a table is represented by the {url-javadoc}/org/jminor/framework/domain/Property.html[Property] class or one of its subclasses. The {url-javadoc}/org/jminor/framework/domain/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is identified by a *propertyId*, a String, unique within the Entity.
+Each column in a table is represented by the {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property] class or one of its subclasses. The {url-javadoc}/org/jminor/framework/domain/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is identified by a *propertyId*, a String, unique within the Entity.
 
 NOTE: Typically the *propertyId* contains the underlying column name, but as with the *entityId* you can use whatever value you want and specify the column name via *setColumnName()* when instantiating the Property.
 
@@ -88,7 +90,7 @@ JMinor supports the following column data types:
 
 ==== Property
 
-{url-javadoc}/org/jminor/framework/domain/Property.html[Property] and its subclasses are used to represent entity properties, these can be transient or based on table columns.
+{url-javadoc}/org/jminor/framework/domain/property/Property.html[Property] and its subclasses are used to represent entity properties, these can be transient or based on table columns.
 
 ==== Primary key
 
@@ -110,7 +112,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 ==== ColumnProperty
 
-{url-javadoc}/org/jminor/framework/domain/Property.ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
+{url-javadoc}/org/jminor/framework/domain/property/ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
 
 [source,java,indent=0]
 ----
@@ -119,7 +121,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 ==== ForeignKeyProperty
 
-{url-javadoc}/org/jminor/framework/domain/Property.ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
+{url-javadoc}/org/jminor/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
 
 [source,java,indent=0]
 ----
@@ -133,10 +135,10 @@ NOTE: The order of the properties must be the same as the order of the respectiv
 [source,java]
 ----
 foreignKeyProperty(MASTER_FK, "Master", T_MASTER,
-        new Property.ColumnProperty[] {
+        asList(
                 columnProperty(MASTER_ID_1),
                 columnProperty(MASTER_ID_2)
-        });
+        ));
 ----
 
 The above assumes the below master definition.
@@ -197,7 +199,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 ==== DenormalizedProperty
 
-{url-javadoc}/org/jminor/framework/domain/Property.DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
+{url-javadoc}/org/jminor/framework/domain/property/DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
 [source,java]
 ----
 denormalizedProperty(CUSTOMER_CITY, CUSTOMER_ADDRESS_FK,
@@ -227,7 +229,7 @@ customer.get(CUSTOMER_CITY);//now this returns "Canastota"
 
 ==== SubqueryProperty
 
-{url-javadoc}/org/jminor/framework/domain/Property.SubqueryProperty.html[SubqueryProperty] is used to represent properties which get their value from a subquery returning a single value. Note that in the example below __reference_id__ must be available when the query is run, that is, the entity must include that column as a property.
+{url-javadoc}/org/jminor/framework/domain/property/SubqueryProperty.html[SubqueryProperty] is used to represent properties which get their value from a subquery returning a single value. Note that in the example below __reference_id__ must be available when the query is run, that is, the entity must include that column as a property.
 [source,java]
 ----
 Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
@@ -236,11 +238,11 @@ Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
 
 ==== TransientProperty
 
-{url-javadoc}/org/jminor/framework/domain/Property.TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.
+{url-javadoc}/org/jminor/framework/domain/property/TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.
 
 ==== DerivedProperty
 
-{url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
+{url-javadoc}/org/jminor/framework/domain/property/DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
 
 [source,java,indent=0]
 ----
@@ -249,7 +251,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 === Domain
 
-Each entity type is defined by calling {url-javadoc}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.Property...-[Domain.define] for each entity. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
+Each entity type is defined by calling {url-javadoc}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.property.Property...-[Domain.define] for each entity. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
 
 [source,java,indent=0]
 ----
