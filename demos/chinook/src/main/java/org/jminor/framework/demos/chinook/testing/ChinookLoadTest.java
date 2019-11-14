@@ -4,12 +4,12 @@
 package org.jminor.framework.demos.chinook.testing;
 
 import org.jminor.common.User;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
@@ -93,7 +93,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
                 customerModel.refresh();
                 selectRandomRow(customerModel);
 
-                final String reportPath = EntityApplicationModel.getReportPath() + "/customer_report.jasper";
+                final String reportPath = ReportWrapper.getReportPath() + "/customer_report.jasper";
                 final Collection customerIDs =
                         Entities.getDistinctValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
                 final HashMap<String, Object> reportParameters = new HashMap<>();

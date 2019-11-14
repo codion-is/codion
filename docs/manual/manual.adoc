@@ -505,7 +505,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressEditM
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/Misc.java[lines=20..52]
+include::{dir-source}/org/jminor/framework/demos/manual/store/Misc.java[lines=20..53]
 ----
 
 === Event binding

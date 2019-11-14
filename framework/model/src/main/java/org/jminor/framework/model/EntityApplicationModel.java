@@ -13,8 +13,6 @@ import org.jminor.framework.domain.Domain;
 
 import java.util.List;
 
-import static org.jminor.common.Util.nullOrEmpty;
-
 /**
  * A central application model class.
  * @param <M> the type of {@link EntityModel} used by this application model
@@ -44,30 +42,11 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
   PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("jminor.client.saveDefaultUsername", true);
 
   /**
-   * The report path used for the default report generation,
-   * either file or http based
-   */
-  PropertyValue<String> REPORT_PATH = Configuration.stringValue("jminor.report.path", null);
-
-  /**
    * Specifies whether a periodic (30 sec) validity check of the underlying connection should be scheduled.
    * Value type: Boolean<br>
    * Default value: true
    */
   PropertyValue<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("jminor.client.scheduleConnectionValidation", true);
-
-  /**
-   * @return the value associated with {@link #REPORT_PATH}
-   * @throws IllegalArgumentException in case it is not specified
-   */
-  static String getReportPath() {
-    final String path = REPORT_PATH.get();
-    if (nullOrEmpty(path)) {
-      throw new IllegalArgumentException(REPORT_PATH + " property is not specified");
-    }
-
-    return path;
-  }
 
   /**
    * Log out from this application model

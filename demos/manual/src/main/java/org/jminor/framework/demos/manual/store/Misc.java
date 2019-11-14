@@ -17,7 +17,7 @@ import java.util.List;
 public class Misc {
 
   public static void main(String[] args) throws DatabaseException, ValidationException {
-    //Initialize a database provider object using
+    //Initialize a database connection provider using
     //the credentials scott/tiger and application identifier StoreMisc
     EntityConnectionProvider connectionProvider =
             EntityConnectionProviders.connectionProvider()
