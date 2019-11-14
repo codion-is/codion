@@ -177,14 +177,14 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void getBackgroundColor() {
+  public void getColor() {
     final String colorBlue = "blue";
     domain.define("entity",
             Properties.primaryKeyProperty("propertyId"))
-             .setBackgroundColorProvider((entity1, property) -> colorBlue);;
+             .setColorProvider((entity1, property) -> colorBlue);;
     final Entity entity = domain.entity("entity");
     final Entity.Definition definition = domain.getDefinition("entity");
-    assertEquals(colorBlue, definition.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
+    assertEquals(colorBlue, definition.getColor(entity, entity.getKey().getFirstProperty()));
   }
 
   @Test void testDefaultStringProvider() {

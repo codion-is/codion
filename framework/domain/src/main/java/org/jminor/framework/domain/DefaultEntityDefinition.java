@@ -92,9 +92,9 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private Entity.ToString stringProvider = new DefaultStringProvider();
 
   /**
-   * Provides the background color
+   * Provides the color
    */
-  private Entity.BackgroundColorProvider backgroundColorProvider;
+  private Entity.ColorProvider colorProvider;
 
   /**
    * The comparator
@@ -579,12 +579,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Object getBackgroundColor(final Entity entity, final Property property) {
-    if (backgroundColorProvider == null) {
+  public Object getColor(final Entity entity, final Property property) {
+    if (colorProvider == null) {
       return null;
     }
 
-    return backgroundColorProvider.getBackgroundColor(entity, property);
+    return colorProvider.getColor(entity, property);
   }
 
   /**
@@ -815,8 +815,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public Builder setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
-      definition.backgroundColorProvider = requireNonNull(colorProvider, "colorProvider");
+    public Builder setColorProvider(final Entity.ColorProvider colorProvider) {
+      definition.colorProvider = requireNonNull(colorProvider, "colorProvider");
       return this;
     }
 

@@ -35,7 +35,7 @@ Next we add the method defining the department entity. *Entity.Definition* insta
 include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=58..71]
 ----
 
-Next we define the employee entity. Here we set the *keyGenerator* to *Entities.incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID)* which, as the name suggests, simply increments the maximum column value by one (__N.B. this is a very simplistic implementation which is absolutely not transaction safe__). Here we also introduce the <<{dir-manual}/manual.adoc#_foreignkeyproperty, ForeignKeyProperty>>, the *orderBy*, as well as a *BackgroundColorProvider* which is responsible for providing a custom color for a entity instance.
+Next we define the employee entity. Here we set the *keyGenerator* to *Entities.incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID)* which, as the name suggests, simply increments the maximum column value by one (__N.B. this is a very simplistic implementation which is absolutely not transaction safe__). Here we also introduce the <<{dir-manual}/manual.adoc#_foreignkeyproperty, ForeignKeyProperty>>, the *orderBy*, as well as a *ColorProvider* which is responsible for providing a custom color for a entity instance.
 
 [source,java]
 ----

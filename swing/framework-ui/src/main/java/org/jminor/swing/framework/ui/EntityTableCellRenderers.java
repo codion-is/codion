@@ -55,8 +55,8 @@ public final class EntityTableCellRenderers {
    * @param tableModel the table model
    * @param property the property
    * @return the table cell renderer
-   * @see org.jminor.framework.domain.Entity.BackgroundColorProvider
-   * @see Entity.Definition.Builder#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
+   * @see Entity.ColorProvider
+   * @see Entity.Definition.Builder#setColorProvider(Entity.ColorProvider)
    */
   public static EntityTableCellRenderer getTableCellRenderer(final EntityTableModel tableModel, final Property property) {
     if (!Objects.equals(tableModel.getEntityId(), property.getEntityId())) {

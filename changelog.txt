@@ -5280,3 +5280,4 @@
   Gradle asciidoctor plugin added, some doc changes
   jersey-bundle dependency replaced in framework-servlet module, was causing javadoc errors
   REPORT_PATH configuration value moved from EntityApplicationModel to ReportWrapper
+  Entity.getBackgroundColor() renamed to getColor()
