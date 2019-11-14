@@ -8,6 +8,7 @@ import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 public class AddressEditModel extends SwingEntityEditModel {
+
   public AddressEditModel(EntityConnectionProvider connectionProvider) {
     super(Store.T_ADDRESS, connectionProvider);
   }

@@ -1,6 +1,5 @@
 = Manual
 :toclevels: 4
-:toc-title: Table of contents
 :dir-tutorials: ../tutorials
 :dir-source: ../../demos/manual/src/main/java
 :dir-source-world: ../../demos/world/src/main/java
@@ -469,7 +468,7 @@ The {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditMode
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressModel.java[lines=10..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressModel.java[lines=9..-1]
 ----
 
 === Detail models
@@ -517,7 +516,7 @@ The following example prints, to the standard output, all changes made to a give
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerModel.java[lines=21..29]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerModel.java[lines=18..29]
 ----
 
 === Examples
@@ -575,65 +574,15 @@ Adding a detail panel is done with a single method call, but note that the under
 === Custom actions
 The action mechanism used throughout the JMinor framework is based on the {url-javadoc}/org/jminor/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/org/jminor/swing/common/ui/control/ControlSet.html[ControlSet] class which, as the name suggests, represents a set of controls. There are two static utility classes for creating and presenting controls, {url-javadoc}/org/jminor/swing/common/ui/control/Controls.html[Controls] and {url-javadoc}/org/jminor/swing/common/ui/control/ControlProvider.html[ControlProvider] respectively.
 
-=== Controls
-
-Provides methods for initializing MethodControl objects as well as ToggleBeanValueLink objects.
-
-[source,java]
-----
-public class MethodControlTest {
-
-  public void printString() {
-    System.out.println("printing a string");
-  }
-
-  public static void main(String[] args) {
-    MethodControlTest testObj = new MethodControlTest();
-    MethodControl control = Controls.methodControl(testObj, "printString", "Print string");
-    //calls testObj.printString()
-    control.actionPerformed(new ActionEvent(testObj, 0, "actionPerformed"));
-  }
-}
-----
-
-=== ControlProvider ===
-
-The ControlProvider class provides static factory methods for creating UI components based on Control objects.
-
-[source,java]
-----
-public class MethodControlTest {
-
-  public void printString() {
-    System.out.println("printing a string");
-  }
-
-  public static void main(String[] args) {
-    MethodControlTest testObj = new MethodControlTest();
-    MethodControl control = Controlsy.methodControl(testObj, "printString", "Print string");
-    JButton printButton = ControlProvider.createButton(control);
-
-    //calls testObj.printString()
-    printButton.doClick();
-  }
-}
-----
-
 === Adding a print action ===
 
-The most common place to add a custom control is the table popup menu, f.ex. an action for printing reports. The table popup menu is based on the ControlSet returned by the //getTablePopupControlSet()// method in the EntityPanel class which in turn uses the ControlSet returned by the //getPrintControls()// method in the same class for constructing the print popup submenu. So, to add a custom print action you override the //getPrintControls()// method and return a ControlSet containing the action.
+The most common place to add a custom control is the table popup menu, f.ex. an action for printing reports. The table popup menu is based on the ControlSet returned by the **getTablePopupControlSet()** method in the EntityPanel class which in turn uses the ControlSet returned by the **getPrintControls()** method in the same class for constructing the print popup submenu. So, to add a custom print action you override the **getPrintControls()** method and return a ControlSet containing the action.
+
 [source,java]
 ----
-@Override
-public ControlSet getPrintControls() {
-  ControlSet printControls = new ControlSet("Print");
-  //creates a MethodControl which calls the viewReport method in this class on activation
-  printControls.add(Controls.methodControl(this, "viewReport", "Report"));
-  //add the default print table control as well
-  printControls.add(getControl(PRINT));
-
-  return printControls;
-}
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[lines=22..40]
+     //see below
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[lines=54..55]
 ----
 
 == EntityApplicationPanel
@@ -655,28 +604,17 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/ui/StoreAppPanel.j
 
 JMinor uses a plugin oriented approach to report viewing, and provides an implementation for JasperReports and NextReports.
 
-With the JMinor JasperReports plugin you can either design your report based on a SQL query in which case you use the JasperReportsWrapper class, which facilitates the report being filled using the active database connection or you can design your report around the JRDataSource implementation provided by the {url-javadoc}/org/jminor/framework/plugins/jasperreports/model/JasperReportsEntityDataSource.html[JasperReportsEntityDataSource] class, which is constructed around an iterator.
+With the JMinor JasperReports plugin you can either design your report based on a SQL query in which case you use the JasperReportsWrapper class, which facilitates the report being filled using the active database connection or you can design your report around the JRDataSource implementation provided by the {url-javadoc}/org/jminor/plugin/jasperreports/model/JasperReportsEntityDataSource.html[JasperReportsEntityDataSource] class, which is constructed around an iterator.
 
 The EntityPanel class provides straight forward methods for viewing reports using methods provided by the EntityModel class for filling them. Both these classes rely on static utility classes for doing the actual work so you are not bound by the EntityPanel and EntityModel classes for viewing reports, they simply provide the easiest way of doing so.
 
 === JDBC Reports
 
-Using a report based on a SQL query, {url-javadoc}/org/jminor/framework/plugins/jasperreports/model/JasperReportsWrapper.html[JasperReportsWrapper] and {url-javadoc}/org/jminor/framework/plugins/jasperreports/ui/JasperReportsUIWrapper.html[JasperReportsUIWrapper] is the simplest way of viewing a report using JMinor, just add a method similar to the one below to a EntityPanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<Adding a print action, adding a print action>> section.
+Using a report based on a SQL query, {url-javadoc}/org/jminor/plugin/jasperreports/model/JasperReportsWrapper.html[JasperReportsWrapper] and {url-javadoc}/org/jminor/plugin/jasperreports/ui/JasperReportsUIWrapper.html[JasperReportsUIWrapper] is the simplest way of viewing a report using JMinor, just add a method similar to the one below to a EntityPanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<Adding a print action, adding a print action>> section.
 
 [source,java]
 ----
-public void viewCustomerReport() throws Exception {
-  List<Entity> selectedCustomers = getModel().getTableModel().getSelectedItems();
-  if (selectedCustomers.getSize() == 0)
-    return;
-
-  String reportPath = System.getProperty(Configuration.REPORT_PATH) + "/customer_report.jasper";
-  Collection<Object> customerIds = Entities.getValues(selectedCustomers, Store.CUSTOMER_ID);
-  Map<String, Object> reportParameters = new HashMap<String, Object>();
-  reportParameters.put("CUSTOMER_IDS", customerIds);
-
-  viewJdbcReport(new JasperReportsWrapper(reportPath, reportParameters), new JasperReportsUIWrapper(),  "Customer Report");
-}
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[lines=40..55]
 ----
 
 === JRDataSource Reports

@@ -5,6 +5,7 @@ dependencies {
     implementation project(':jminor-swing-framework-tools')
     implementation project(':jminor-framework-domain-test')
     implementation project(':jminor-framework-db-remote')
+    implementation project(':jminor-plugin-jasperreports')
 
     runtimeOnly project(':jminor-plugin-logback-proxy')
 
