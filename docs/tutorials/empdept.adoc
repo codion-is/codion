@@ -175,7 +175,7 @@ We implement *initializeApplicationModel()* by returning an instance of the *Emp
 include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=74..77]
 ----
 
-We create a *main()* method for configuring and running the application. See [[documentation:technical:client#configuration|client configuration]] for what configuration is required for running the client.
+We create a *main()* method for configuring and running the application. See <<{dir-technical}/client-configuration.adoc#_configuration, client configuration>> for what configuration is required for running the client.
 
 [source,java]
 ----

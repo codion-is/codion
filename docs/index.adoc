@@ -1,7 +1,6 @@
 = JMinor Application Framework
 Björn Darri Sigurðsson <bjorndarri@gmail.com>
 :toclevels: 1
-:toc-title: Table of contents
 :dir-tutorials: tutorials
 :dir-manual: manual
 :dir-technical: technical
@@ -17,11 +16,7 @@ image::https://github.com/bjorndarri/jminor/workflows/Java%20CI/badge.svg[CI]
 
 == Technical
 
-* <<{dir-technical}/project.adoc#, Project>>
-* <<{dir-technical}/client-features.adoc#, Client>>
-** <<{dir-technical}/client-architecture.adoc#, Architecture>>
-** <<{dir-technical}/client-configuration.adoc#, Configuration>>
-* <<{dir-technical}/server.adoc#, Server>>
+* <<technical/technical.adoc#, Technical>>
 
 == Quickstart
 
@@ -37,11 +32,4 @@ image::https://github.com/bjorndarri/jminor/workflows/Java%20CI/badge.svg[CI]
 
 == Tutorials
 
-* Basics
-** <<{dir-tutorials}/chinook-entities.adoc#, Entities>>.
-** <<{dir-tutorials}/chinook-ui.adoc#, UI>>.
-* Clients
-** <<{dir-tutorials}/empdept.adoc#, EmpDept Tutorial>>.
-** <<{dir-tutorials}/chinook-minimal.adoc#, Chinook Minimal>>.
-** <<{dir-tutorials}/chinook.adoc#, Chinook Tutorial Full (just code)>>.
-** <<{dir-tutorials}/petstore.adoc#, Petstore Tutorial (just code)>>.
+* <<tutorials/tutorials.adoc#, Tutorials>>

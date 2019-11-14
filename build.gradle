@@ -201,13 +201,13 @@ asciidoctor {
     outputDir = file('build/docs/site')
     //so asciidoc include works in intellij, relative path
     baseDir = file('docs/noop')
-    attributes toc: 'left'
+    attributes toc: 'left', sectnums: 4, 'jminor-version': project.version
     asciidoctorj {
         modules {
             diagram.use()
             diagram.version '1.5.16'
         }
-        attributes 'source-highlighter': 'coderay'
+        attributes 'source-highlighter': 'prettify'
     }
 }
 

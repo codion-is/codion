@@ -1,0 +1,11 @@
+= Tutorials
+:dir-tutorials: ../tutorials
+
+* Basics
+** <<{dir-tutorials}/chinook-entities.adoc#, Entities>>.
+** <<{dir-tutorials}/chinook-ui.adoc#, UI>>.
+* Clients
+** <<{dir-tutorials}/empdept.adoc#, EmpDept Tutorial>>.
+** <<{dir-tutorials}/chinook-minimal.adoc#, Chinook Minimal>>.
+** <<{dir-tutorials}/chinook.adoc#, Chinook Tutorial Full (just code)>>.
+** <<{dir-tutorials}/petstore.adoc#, Petstore Tutorial (just code)>>.
