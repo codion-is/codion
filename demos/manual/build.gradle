@@ -7,6 +7,10 @@ dependencies {
     implementation project(':jminor-framework-db-remote')
     implementation project(':jminor-plugin-jasperreports')
 
+    implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
+        transitive = false
+    }
+
     runtimeOnly project(':jminor-plugin-logback-proxy')
 
     runtimeOnly project(':jminor-framework-db-local')
