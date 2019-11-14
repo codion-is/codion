@@ -6,6 +6,7 @@ module org.jminor.framework.demos.empdept {
   requires org.jminor.swing.framework.model;
   requires org.jminor.swing.framework.tools;
   requires org.jminor.swing.framework.ui;
+  requires org.jminor.plugin.jasperreports;
   requires org.jminor.framework.db.test;
   requires org.junit.jupiter.api;
 }
