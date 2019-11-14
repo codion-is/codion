@@ -96,7 +96,7 @@ public final class EmpDept extends Domain {
             .setSearchPropertyIds(EMPLOYEE_NAME)
             .setStringProvider(new StringProvider(EMPLOYEE_NAME))
             .setCaption("Employee")
-            .setBackgroundColorProvider((entity, property) -> {
+            .setColorProvider((entity, property) -> {
               if (property.is(EMPLOYEE_JOB) && "MANAGER".equals(entity.get(EMPLOYEE_JOB))) {
                 return Color.CYAN;
               }

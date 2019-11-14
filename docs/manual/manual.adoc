@@ -393,7 +393,7 @@ define("entityID",
 });
 ----
 
-{url-javadoc}/org/jminor/framework/domain/Entity.BackgroundColorProvider.html[Entity.BackgroundColorProvider]
+{url-javadoc}/org/jminor/framework/domain/Entity.ColorProvider.html[Entity.ColorProvider]
 
 Provides the background color for entity property cells when displayed in a table.
 
@@ -401,8 +401,8 @@ Provides the background color for entity property cells when displayed in a tabl
 ----
 define("entityId",
 ...
-).setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
-    public Object getBackgroundColor(Entity entity, Property property) {
+).setColorProvider(new Entity.ColorProvider() {
+    public Object getColor(Entity entity, Property property) {
         if (property.is("colorPropertyId") && entity.getString("colorPropertyId").equals("CYAN")) {
           return Color.CYAN;
         }
@@ -505,7 +505,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressEditM
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/Misc.java[lines=20..52]
+include::{dir-source}/org/jminor/framework/demos/manual/store/Misc.java[lines=20..53]
 ----
 
 === Event binding

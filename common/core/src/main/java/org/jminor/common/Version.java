@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 /**
- * A simple version class for semantic versioning (http://semver.org)
+ * A simple version class
  */
 public final class Version implements Comparable<Version>, Serializable {
 

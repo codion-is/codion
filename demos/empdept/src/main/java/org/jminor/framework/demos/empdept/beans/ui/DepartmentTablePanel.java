@@ -4,9 +4,9 @@
 package org.jminor.framework.demos.empdept.beans.ui;
 
 import org.jminor.common.StateObserver;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
 import org.jminor.plugin.jasperreports.ui.JasperReportsUIWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -25,7 +25,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
   }
 
   public void viewEmployeeReport() throws Exception {
-    final String reportPath = EntityApplicationModel.getReportPath() + "/empdept_employees.jasper";
+    final String reportPath = ReportWrapper.getReportPath() + "/empdept_employees.jasper";
     final Collection departmentNumbers =
             Entities.getDistinctValues(EmpDept.DEPARTMENT_ID,
                     getEntityTableModel().getSelectionModel().getSelectedItems());

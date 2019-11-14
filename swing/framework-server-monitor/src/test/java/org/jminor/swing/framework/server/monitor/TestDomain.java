@@ -78,7 +78,7 @@ public final class TestDomain extends Domain {
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setCaption("Employee")
-            .setBackgroundColorProvider((entity, property) -> {
+            .setColorProvider((entity, property) -> {
               if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
                 return Color.CYAN;
               }

@@ -289,10 +289,10 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   boolean isLoaded(final String foreignKeyPropertyId);
 
   /**
-   * @param property the property for which to retrieve the background color
-   * @return the background color to use when displaying this property in a table
+   * @param property the property for which to retrieve the color
+   * @return the color to use when displaying this property in a table
    */
-  Object getBackgroundColor(final Property property);
+  Object getColor(final Property property);
 
   /**
    * Reverts the value associated with the given property to its original value.
@@ -515,14 +515,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * Provides background colors for entities.
    */
-  interface BackgroundColorProvider extends Serializable {
+  interface ColorProvider extends Serializable {
 
     /**
      * @param entity the entity
      * @param property the property
-     * @return the background color to use for this entity and property
+     * @return the color to use for this entity and property
      */
-    Object getBackgroundColor(final Entity entity, final Property property);
+    Object getColor(final Entity entity, final Property property);
   }
 
   /**
@@ -967,7 +967,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param property the property
      * @return the background color to use for this entity and property, null if none is specified
      */
-    Object getBackgroundColor(final Entity entity, final Property property);
+    Object getColor(final Entity entity, final Property property);
 
     /**
      * Builds a Entity.Definition
@@ -994,7 +994,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
        * @param colorProvider the background color provider
        * @return this {@link Builder} instance
        */
-      Builder setBackgroundColorProvider(final BackgroundColorProvider colorProvider);
+      Builder setColorProvider(final ColorProvider colorProvider);
 
       /**
        * Sets the caption for this entity type

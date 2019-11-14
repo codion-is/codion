@@ -37,7 +37,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     return printControls;
   }
 
-  public void viewCustomerReport() throws Exception {
+  private void viewCustomerReport() throws Exception {
     List<Entity> selectedCustomers = getTableModel().getSelectionModel().getSelectedItems();
     if (selectedCustomers.isEmpty())
       return;

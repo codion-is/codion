@@ -299,7 +299,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final Color getPropertyBackgroundColor(final int row, final Property property) {
-    return (Color) get(row).getBackgroundColor(property);
+    return (Color) get(row).getColor(property);
   }
 
   /** {@inheritDoc} */

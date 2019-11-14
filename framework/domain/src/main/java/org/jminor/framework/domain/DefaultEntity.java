@@ -506,8 +506,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public Object getBackgroundColor(final Property property) {
-    return definition.getBackgroundColor(this, property);
+  public Object getColor(final Property property) {
+    return definition.getColor(this, property);
   }
 
   /**
