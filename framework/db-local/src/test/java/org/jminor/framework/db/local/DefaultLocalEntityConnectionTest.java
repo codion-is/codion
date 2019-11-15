@@ -396,7 +396,7 @@ public class DefaultLocalEntityConnectionTest {
         return emptyList();
       }
       @Override
-      public String getConditionString(final Domain domain, final String entityId) {
+      public String getConditionString(final Entity.Definition definition) {
         return "1 = 2";
       }
     }

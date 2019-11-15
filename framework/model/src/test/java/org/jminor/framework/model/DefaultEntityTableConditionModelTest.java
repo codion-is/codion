@@ -123,13 +123,14 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     final PropertyConditionModel nameConditionModel = conditionModel.getPropertyConditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setLikeValue("SCOTT");
+    final Entity.Definition definition = CONNECTION_PROVIDER.getDomain().getDefinition(TestDomain.T_EMP);
     assertEquals("(ename = ? and (deptno in (?, ?)))", entityCondition(TestDomain.T_EMP,
-            conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
+            conditionModel.getCondition()).getWhereClause(definition));
 
     conditionModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_ID));
     assertNotNull(conditionModel.getAdditionalConditionProvider());
     assertEquals("(ename = ? and (deptno in (?, ?)) and 1 = 1)",
-            entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(CONNECTION_PROVIDER.getDomain()));
+            entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(definition));
   }
 
   @Test

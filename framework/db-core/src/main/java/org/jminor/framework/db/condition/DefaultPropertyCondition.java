@@ -4,7 +4,6 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.db.ConditionType;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.SubqueryProperty;
@@ -123,8 +122,8 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
 
   /** {@inheritDoc} */
   @Override
-  public String getConditionString(final Domain domain, final String entityId) {
-    return createColumnPropertyConditionString(domain.getDefinition(entityId).getColumnProperty(getPropertyId()),
+  public String getConditionString(final Entity.Definition definition) {
+    return createColumnPropertyConditionString(definition.getColumnProperty(getPropertyId()),
             getConditionType(), getValues(), isNullCondition(), isCaseSensitive());
   }
 

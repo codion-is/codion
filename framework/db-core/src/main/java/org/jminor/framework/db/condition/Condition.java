@@ -5,7 +5,7 @@ package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.ConditionType;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.Property;
 
 import java.io.Serializable;
@@ -34,11 +34,10 @@ public interface Condition extends Serializable {
   /**
    * Returns a condition string which can be used in a WHERE clause,
    * containing the ? substitution character in place of any values
-   * @param domain the domain
-   * @param entityId the entityId
+   * @param definition the underlying entity definition
    * @return a where clause based on this condition
    */
-  String getConditionString(final Domain domain, final String entityId);
+  String getConditionString(final Entity.Definition definition);
 
   /**
    * A Condition based on a custom {@link org.jminor.framework.domain.Entity.ConditionProvider}
@@ -130,7 +129,7 @@ public interface Condition extends Serializable {
     }
 
     @Override
-    public String getConditionString(final Domain domain, final String entityId) {
+    public String getConditionString(final Entity.Definition definition) {
       return "";
     }
   }

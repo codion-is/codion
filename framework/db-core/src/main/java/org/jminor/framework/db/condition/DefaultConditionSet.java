@@ -4,7 +4,7 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entity;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -73,14 +73,14 @@ final class DefaultConditionSet implements Condition.Set {
 
   /** {@inheritDoc} */
   @Override
-  public String getConditionString(final Domain domain, final String entityId) {
+  public String getConditionString(final Entity.Definition definition) {
     if (conditions.isEmpty()) {
       return "";
     }
 
     final StringBuilder conditionString = new StringBuilder(conditions.size() > 1 ? "(" : "");
     for (int i = 0; i < conditions.size(); i++) {
-      conditionString.append(conditions.get(i).getConditionString(domain, entityId));
+      conditionString.append(conditions.get(i).getConditionString(definition));
       if (i < conditions.size() - 1) {
         conditionString.append(toString(getConjunction()));
       }

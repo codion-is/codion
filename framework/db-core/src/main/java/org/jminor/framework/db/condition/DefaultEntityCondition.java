@@ -4,7 +4,6 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.db.ConditionType;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -60,40 +59,40 @@ class DefaultEntityCondition implements EntityCondition {
 
   /** {@inheritDoc} */
   @Override
-  public final Condition getCondition(final Domain domain) {
-    expandForeignKeyConditions(requireNonNull(domain, "domain"));
+  public final Condition getCondition(final Entity.Definition definition) {
+    expandForeignKeyConditions(requireNonNull(definition, "definition"));
 
     return condition;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String getWhereClause(final Domain domain) {
+  public final String getWhereClause(final Entity.Definition definition) {
     if (cachedWhereClause == null) {
-      cachedWhereClause = getCondition(domain).getConditionString(domain, entityId);
+      cachedWhereClause = getCondition(definition).getConditionString(definition);
     }
 
     return cachedWhereClause;
   }
 
-  private void expandForeignKeyConditions(final Domain domain) {
+  private void expandForeignKeyConditions(final Entity.Definition definition) {
     if (expandRequired && !expanded) {
-      condition = expandForeignKeyConditions(condition, domain);
+      condition = expandForeignKeyConditions(condition, definition);
       expanded = true;
     }
   }
 
-  private Condition expandForeignKeyConditions(final Condition condition, final Domain domain) {
+  private Condition expandForeignKeyConditions(final Condition condition, final Entity.Definition definition) {
     if (condition instanceof Condition.Set) {
       final Condition.Set conditionSet = (Condition.Set) condition;
       final ListIterator<Condition> conditionsIterator = conditionSet.getConditions().listIterator();
       while (conditionsIterator.hasNext()) {
-        conditionsIterator.set(expandForeignKeyConditions(conditionsIterator.next(), domain));
+        conditionsIterator.set(expandForeignKeyConditions(conditionsIterator.next(), definition));
       }
     }
     else if (condition instanceof Condition.PropertyCondition) {
       final Condition.PropertyCondition propertyCondition = (Condition.PropertyCondition) condition;
-      final Property property = domain.getDefinition(entityId).getProperty(propertyCondition.getPropertyId());
+      final Property property = definition.getProperty(propertyCondition.getPropertyId());
       if (property instanceof ForeignKeyProperty) {
         return foreignKeyCondition((ForeignKeyProperty) property, propertyCondition.getConditionType(), condition.getValues());
       }
