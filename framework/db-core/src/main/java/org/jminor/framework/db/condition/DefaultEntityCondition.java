@@ -6,7 +6,6 @@ package org.jminor.framework.db.condition;
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -18,12 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.Conjunction.AND;
-import static org.jminor.common.Conjunction.OR;
-import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.common.db.ConditionType.LIKE;
 import static org.jminor.framework.domain.Entities.getValues;
 
 class DefaultEntityCondition implements EntityCondition {
@@ -37,23 +31,6 @@ class DefaultEntityCondition implements EntityCondition {
   private String cachedWhereClause;
   private boolean expandRequired = true;
   private transient boolean expanded;
-
-  /**
-   * Instantiates a new {@link DefaultEntityCondition}.
-   * @param key the key of the Entity to select
-   */
-  DefaultEntityCondition(final Entity.Key key) {
-    this(singletonList(requireNonNull(key, "key")));
-  }
-
-  /**
-   * Instantiates a new {@link DefaultEntityCondition}.
-   * @param keys the keys of the Entity to select
-   */
-  DefaultEntityCondition(final List<Entity.Key> keys) {
-    this(checkKeysParameter(keys).get(0).getEntityId(), createKeyCondition(keys));
-    this.expandRequired = false;
-  }
 
   /**
    * Instantiates a new empty {@link DefaultEntityCondition}.
@@ -129,7 +106,7 @@ class DefaultEntityCondition implements EntityCondition {
                                                final ConditionType conditionType, final Collection values) {
     final List<Entity.Key> keys = getKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
-      return createCompositeKeyCondition(foreignKeyProperty.getProperties(), conditionType, keys);
+      return Conditions.createCompositeKeyCondition(foreignKeyProperty.getProperties(), conditionType, keys);
     }
 
     if (keys.size() == 1) {
@@ -170,59 +147,6 @@ class DefaultEntityCondition implements EntityCondition {
     }
 
     throw new IllegalArgumentException("Foreign key condition uses only Entity or Entity.Key instances for values");
-  }
-
-  /** Assumes {@code keys} is not empty. */
-  protected static Condition createKeyCondition(final List<Entity.Key> keys) {
-    final Entity.Key firstKey = keys.get(0);
-    if (firstKey.isCompositeKey()) {
-      return createCompositeKeyCondition(firstKey.getProperties(), LIKE, keys);
-    }
-
-    return Conditions.propertyCondition(firstKey.getFirstProperty().getPropertyId(), LIKE, getValues(keys));
-  }
-
-  /** Assumes {@code keys} is not empty. */
-  private static Condition createCompositeKeyCondition(final List<ColumnProperty> properties,
-                                                       final ConditionType conditionType,
-                                                       final List<Entity.Key> keys) {
-    if (keys.size() == 1) {
-      return createSingleCompositeCondition(properties, conditionType, keys.get(0));
-    }
-
-    return createMultipleCompositeCondition(properties, conditionType, keys);
-  }
-
-  /** Assumes {@code keys} is not empty. */
-  private static Condition createMultipleCompositeCondition(final List<ColumnProperty> properties,
-                                                            final ConditionType conditionType,
-                                                            final List<Entity.Key> keys) {
-    final Condition.Set conditionSet = Conditions.conditionSet(OR);
-    for (int i = 0; i < keys.size(); i++) {
-      conditionSet.add(createSingleCompositeCondition(properties, conditionType, keys.get(i)));
-    }
-
-    return conditionSet;
-  }
-
-  private static Condition createSingleCompositeCondition(final List<ColumnProperty> properties,
-                                                          final ConditionType conditionType,
-                                                          final Entity.Key entityKey) {
-    final Condition.Set conditionSet = Conditions.conditionSet(AND);
-    for (int i = 0; i < properties.size(); i++) {
-      conditionSet.add(Conditions.propertyCondition(properties.get(i).getPropertyId(), conditionType,
-              entityKey == null ? null : entityKey.get(entityKey.getProperties().get(i))));
-    }
-
-    return conditionSet;
-  }
-
-  protected static List<Entity.Key> checkKeysParameter(final List<Entity.Key> keys) {
-    if (nullOrEmpty(keys)) {
-      throw new IllegalArgumentException("Entity key condition requires at least one key");
-    }
-
-    return keys;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

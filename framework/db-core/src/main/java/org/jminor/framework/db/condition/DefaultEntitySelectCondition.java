@@ -30,22 +30,6 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   private int offset;
 
   /**
-   * Instantiates a new {@link DefaultEntityCondition}.
-   * @param key the key of the Entity to select
-   */
-  DefaultEntitySelectCondition(final Entity.Key key) {
-    super(key);
-  }
-
-  /**
-   * Instantiates a new {@link DefaultEntityCondition}.
-   * @param keys the keys of the Entity to select
-   */
-  DefaultEntitySelectCondition(final List<Entity.Key> keys) {
-    super(keys);
-  }
-
-  /**
    * Instantiates a new {@link DefaultEntitySelectCondition}, which includes all the underlying entities
    * @param domain the domain model
    * @param entityId the ID of the entity to select
