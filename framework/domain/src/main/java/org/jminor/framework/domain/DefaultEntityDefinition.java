@@ -387,12 +387,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public List<ColumnProperty> getColumnProperties(final List<String> propertyIds) {
     requireNonNull(propertyIds, "propertyIds");
-    final List<ColumnProperty> properties = new ArrayList<>(propertyIds.size());
+    final List<ColumnProperty> theProperties = new ArrayList<>(propertyIds.size());
     for (int i = 0; i < propertyIds.size(); i++) {
-      properties.add(getColumnProperty(propertyIds.get(i)));
+      theProperties.add(getColumnProperty(propertyIds.get(i)));
     }
 
-    return properties;
+    return theProperties;
   }
 
   /** {@inheritDoc} */

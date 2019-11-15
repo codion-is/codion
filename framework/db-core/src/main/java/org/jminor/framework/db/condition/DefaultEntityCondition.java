@@ -82,7 +82,7 @@ class DefaultEntityCondition implements EntityCondition {
     }
   }
 
-  private Condition expandForeignKeyConditions(final Condition condition, final Entity.Definition definition) {
+  private static Condition expandForeignKeyConditions(final Condition condition, final Entity.Definition definition) {
     if (condition instanceof Condition.Set) {
       final Condition.Set conditionSet = (Condition.Set) condition;
       final ListIterator<Condition> conditionsIterator = conditionSet.getConditions().listIterator();

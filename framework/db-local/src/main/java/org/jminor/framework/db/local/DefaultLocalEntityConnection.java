@@ -1218,8 +1218,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private void addGroupHavingOrderByAndLimitClauses(final EntityCondition condition, final StringBuilder queryBuilder,
-                                                    final Entity.Definition definition) {
+  private static void addGroupHavingOrderByAndLimitClauses(final EntityCondition condition,
+                                                           final StringBuilder queryBuilder,
+                                                           final Entity.Definition definition) {
     final String groupByClause = definition.getGroupByClause();
     if (groupByClause != null) {
       queryBuilder.append(" group by ").append(groupByClause);
