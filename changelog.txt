@@ -5283,3 +5283,5 @@
   Entity.getBackgroundColor() renamed to getColor()
   Conditions refactoring
   DefaultLocalEntityConnection refactored
+  Further refactoring of DefaultLocalEntityConnection
+  Domain.getDefinedEntities() now returns Collection<Entity.Definition>, rename to getEntityDefinitions()
