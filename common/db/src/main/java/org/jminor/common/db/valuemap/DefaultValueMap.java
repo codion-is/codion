@@ -126,7 +126,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * Two DefaultValueMap objects are equal if they contain the
    * same number of values and all their values are equal.
    */
-  @SuppressWarnings({"unchecked"})
   @Override
   public boolean equals(final Object obj) {
     if (!(obj instanceof DefaultValueMap)) {
