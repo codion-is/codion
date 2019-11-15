@@ -5,7 +5,6 @@ package org.jminor.framework.demos.chinook.client.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.Version;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -21,10 +20,10 @@ import org.jminor.framework.demos.chinook.beans.ui.MediaTypeEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
+import org.jminor.framework.demos.chinook.client.ChinookApplicationModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
@@ -39,7 +38,7 @@ import java.util.Locale;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
-public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPanel.ChinookApplicationModel> {
+public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
 
   /* ARTIST
    *   ALBUM
@@ -154,41 +153,5 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.impl.ChinookImpl");
     new ChinookAppPanel().startApplication("Chinook", null, false,
             UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray()));
-  }
-
-  public static final class ChinookApplicationModel extends SwingEntityApplicationModel {
-
-    public ChinookApplicationModel(final EntityConnectionProvider connectionProvider) {
-      super(connectionProvider);
-      final SwingEntityModel artistModel = new SwingEntityModel(T_ARTIST, connectionProvider);
-      final SwingEntityModel albumModel = new SwingEntityModel(T_ALBUM, connectionProvider);
-      final SwingEntityModel trackModel = new SwingEntityModel(T_TRACK, connectionProvider);
-
-      albumModel.addDetailModel(trackModel);
-      artistModel.addDetailModel(albumModel);
-      addEntityModel(artistModel);
-
-      final SwingEntityModel playlistModel = new SwingEntityModel(T_PLAYLIST, connectionProvider);
-      final SwingEntityModel playlistTrackModel = new SwingEntityModel(T_PLAYLISTTRACK, connectionProvider);
-
-      playlistModel.addDetailModel(playlistTrackModel);
-      addEntityModel(playlistModel);
-
-      final SwingEntityModel customerModel = new SwingEntityModel(T_CUSTOMER, connectionProvider);
-      final SwingEntityModel invoiceModel = new SwingEntityModel(T_INVOICE, connectionProvider);
-      final SwingEntityModel invoiceLineModel = new SwingEntityModel(T_INVOICELINE, connectionProvider);
-      invoiceModel.addDetailModel(invoiceLineModel);
-      invoiceModel.addLinkedDetailModel(invoiceLineModel);
-      customerModel.addDetailModel(invoiceModel);
-      addEntityModel(customerModel);
-
-      artistModel.refresh();
-      playlistModel.refresh();
-      customerModel.refresh();
-    }
-
-    public void updateInvoiceTotals() throws DatabaseException {
-      getConnectionProvider().getConnection().executeProcedure(P_UPDATE_TOTALS);
-    }
   }
 }
