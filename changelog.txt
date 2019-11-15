@@ -5282,3 +5282,4 @@
   REPORT_PATH configuration value moved from EntityApplicationModel to ReportWrapper
   Entity.getBackgroundColor() renamed to getColor()
   Conditions refactoring
+  DefaultLocalEntityConnection refactored
