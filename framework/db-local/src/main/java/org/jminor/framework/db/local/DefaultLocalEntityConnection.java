@@ -294,8 +294,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             populateStatementPropertiesAndValues(false, entity, writableProperties, propertiesToUpdate, propertyValuesToSet);
 
             final EntityCondition updateCondition = entityCondition(entity.getOriginalKey());
-            final Condition updatePropertyCondition = updateCondition.getCondition(domain);
-            updateSQL = createUpdateSQL(tableName, propertiesToUpdate, updateCondition.getWhereClause(domain));
+            final Condition updatePropertyCondition = updateCondition.getCondition(entityDefinition);
+            updateSQL = createUpdateSQL(tableName, propertiesToUpdate, updateCondition.getWhereClause(entityDefinition));
             propertiesToUpdate.addAll(entityDefinition.getColumnProperties(updatePropertyCondition.getPropertyIds()));
             propertyValuesToSet.addAll(updatePropertyCondition.getValues());
             statement = prepareStatement(updateSQL);
@@ -349,13 +349,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     PreparedStatement statement = null;
     String deleteSQL = null;
     synchronized (connection) {
-      final Condition propertyCondition = condition.getCondition(domain);
+      final Entity.Definition entityDefinition = domain.getDefinition(condition.getEntityId());
+      final Condition propertyCondition = condition.getCondition(entityDefinition);
       final List conditionPropertyValues = propertyCondition.getValues();
-      final List<ColumnProperty> conditionProperties =
-              domain.getDefinition(condition.getEntityId()).getColumnProperties(propertyCondition.getPropertyIds());
+      final List<ColumnProperty> conditionProperties = entityDefinition.getColumnProperties(propertyCondition.getPropertyIds());
       try {
-        deleteSQL = createDeleteSQL(domain.getDefinition(condition.getEntityId()).getTableName(),
-                condition.getWhereClause(domain));
+        deleteSQL = createDeleteSQL(entityDefinition.getTableName(), condition.getWhereClause(entityDefinition));
         statement = prepareStatement(deleteSQL);
         executePreparedUpdate(statement, deleteSQL, conditionProperties, conditionPropertyValues);
         commitIfTransactionIsNotOpen();
@@ -388,12 +387,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
         for (final List<Entity.Key> keysForType : keysByType.values()) {
           final EntityCondition deleteByKeysCondition = entityCondition(keysForType);
-          final Condition deleteCondition = deleteByKeysCondition.getCondition(domain);
-          final List<ColumnProperty> deleteConditionProperties =
-                  domain.getDefinition(deleteByKeysCondition.getEntityId()).getColumnProperties(
-                          deleteCondition.getPropertyIds());
-          deleteSQL = createDeleteSQL(domain.getDefinition(deleteByKeysCondition.getEntityId()).getTableName(),
-                  deleteByKeysCondition.getWhereClause(domain));
+          final Entity.Definition entityDefinition = domain.getDefinition(deleteByKeysCondition.getEntityId());
+          final Condition deleteCondition = deleteByKeysCondition.getCondition(entityDefinition);
+          final List<ColumnProperty> deleteConditionProperties = entityDefinition.getColumnProperties(
+                  deleteCondition.getPropertyIds());
+          deleteSQL = createDeleteSQL(entityDefinition.getTableName(), deleteByKeysCondition.getWhereClause(entityDefinition));
           statement = prepareStatement(deleteSQL);
           executePreparedUpdate(statement, deleteSQL, deleteConditionProperties, deleteCondition.getValues());
           statement.close();
@@ -499,17 +497,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final ColumnProperty propertyToSelect = entityDefinition.getColumnProperty(propertyId);
     final String columnName = propertyToSelect.getColumnName();
     final EntityCondition combinedWithNotNullCondition = entityCondition(condition.getEntityId(),
-            conditionSet(Conjunction.AND, condition.getCondition(domain),
+            conditionSet(Conjunction.AND, condition.getCondition(entityDefinition),
                     Conditions.propertyCondition(propertyId, NOT_LIKE, null)));
     final String selectSQL = createSelectSQL(entityDefinition.getSelectTableName(),
-            "distinct " + columnName, combinedWithNotNullCondition.getWhereClause(domain), columnName);
+            "distinct " + columnName, combinedWithNotNullCondition.getWhereClause(entityDefinition), columnName);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     QUERY_COUNTER.count(selectSQL);
     synchronized (connection) {
       try {
         statement = prepareStatement(selectSQL);
-        resultSet = executePreparedSelect(statement, selectSQL, combinedWithNotNullCondition);
+        resultSet = executePreparedSelect(statement, selectSQL, combinedWithNotNullCondition, entityDefinition);
         final List<Object> result = propertyToSelect.getResultPacker().pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
 
@@ -531,7 +529,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
-    final String baseSQLQuery = createSelectSQL(condition, domain.getDefinition(condition.getEntityId()).getPrimaryKeyProperties());
+    final Entity.Definition entityDefinition = domain.getDefinition(condition.getEntityId());
+    final String baseSQLQuery = createSelectSQL(condition, entityDefinition.getPrimaryKeyProperties(), entityDefinition);
     final String rowCountSQLQuery = createSelectSQL("(" + baseSQLQuery + ")", "count(*)", null, null);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -539,7 +538,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         statement = prepareStatement(rowCountSQLQuery);
-        resultSet = executePreparedSelect(statement, rowCountSQLQuery, condition);
+        resultSet = executePreparedSelect(statement, rowCountSQLQuery, condition, entityDefinition);
         final List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
         if (result.isEmpty()) {
@@ -550,7 +549,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), rowCountSQLQuery, condition.getCondition(domain).getValues(), e, null));
+        LOG.error(createLogMessage(getUser(), rowCountSQLQuery, condition.getCondition(entityDefinition).getValues(), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -669,7 +668,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     final EntityCondition updateByKeyCondition = entityCondition(primaryKey);
     final String updateSQL = "update " + entityDefinition.getTableName() + " set " + blobProperty.getColumnName() + " = ?" +
-            WHERE_SPACE_PREFIX_POSTFIX + updateByKeyCondition.getWhereClause(domain);
+            WHERE_SPACE_PREFIX_POSTFIX + updateByKeyCondition.getWhereClause(entityDefinition);
     final List<Object> statementValues = new ArrayList<>();
     final List<ColumnProperty> statementProperties = new ArrayList<>();
     QUERY_COUNTER.count(updateSQL);
@@ -678,7 +677,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       PreparedStatement statement = null;
       try {
         logAccess("writeBlob", new Object[] {updateSQL});
-        final Condition updateCondition = updateByKeyCondition.getCondition(domain);
+        final Condition updateCondition = updateByKeyCondition.getCondition(entityDefinition);
         statementValues.add(null);//the blob value, set explicitly later
         statementValues.addAll(updateCondition.getValues());
         statementProperties.add(blobProperty);
@@ -720,10 +719,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     ResultSet resultSet = null;
     final EntityCondition selectByKeyCondition = entityCondition(primaryKey);
     final String sql = "select " + blobProperty.getColumnName() + " from " +
-            entityDefinition.getTableName() + WHERE_SPACE_PREFIX_POSTFIX + selectByKeyCondition.getWhereClause(domain);
+            entityDefinition.getTableName() + WHERE_SPACE_PREFIX_POSTFIX + selectByKeyCondition.getWhereClause(entityDefinition);
     QUERY_COUNTER.count(sql);
     synchronized (connection) {
-      final Condition whereCondition = selectByKeyCondition.getCondition(domain);
+      final Condition whereCondition = selectByKeyCondition.getCondition(entityDefinition);
       try {
         logAccess("readBlob", new Object[] {sql});
         statement = prepareStatement(sql);
@@ -922,9 +921,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.getSelectableColumnProperties() :
             entityDefinition.getSelectableColumnProperties(selectCondition.getSelectPropertyIds());
     try {
-      selectSQL = createSelectSQL(selectCondition, propertiesToSelect);
+      selectSQL = createSelectSQL(selectCondition, propertiesToSelect, entityDefinition);
       statement = prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, selectCondition);
+      resultSet = executePreparedSelect(statement, selectSQL, selectCondition, entityDefinition);
 
       return new EntityResultIterator(statement, resultSet, new EntityResultPacker(
               selectCondition.getEntityId(), propertiesToSelect,
@@ -933,7 +932,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     catch (final SQLException e) {
       closeSilently(resultSet);
       closeSilently(statement);
-      LOG.error(createLogMessage(getUser(), selectSQL, selectCondition.getCondition(domain).getValues(), e, null));
+      LOG.error(createLogMessage(getUser(), selectSQL, selectCondition.getCondition(entityDefinition).getValues(), e, null));
       throw e;
     }
   }
@@ -960,17 +959,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private ResultSet executePreparedSelect(final PreparedStatement statement, final String sqlStatement,
-                                          final EntityCondition condition) throws SQLException {
+                                          final EntityCondition condition, final Entity.Definition definition) throws SQLException {
     SQLException exception = null;
     QUERY_COUNTER.count(sqlStatement);
-    final Condition whereCondition = condition.getCondition(domain);
+    final Condition whereCondition = condition.getCondition(definition);
     final List statementValues = whereCondition.getValues();
     try {
       logAccess("executePreparedSelect", statementValues == null ?
               new Object[] {sqlStatement} :
               new Object[] {sqlStatement, statementValues});
-      setParameterValues(statement, domain.getDefinition(condition.getEntityId())
-              .getColumnProperties(whereCondition.getPropertyIds()), statementValues);
+      setParameterValues(statement, definition.getColumnProperties(whereCondition.getPropertyIds()), statementValues);
 
       return statement.executeQuery();
     }
@@ -1165,24 +1163,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return new ArrayList<>(keySet);
   }
 
-  private String createSelectSQL(final EntityCondition condition, final List<ColumnProperty> columnProperties) {
-    final String entityId = condition.getEntityId();
+  private String createSelectSQL(final EntityCondition condition, final List<ColumnProperty> columnProperties,
+                                 final Entity.Definition definition) {
     final boolean isForUpdate = condition instanceof EntitySelectCondition &&
             ((EntitySelectCondition) condition).isForUpdate();
     boolean containsWhereClause = false;
-    final Entity.Definition entityDefinition = domain.getDefinition(entityId);
-    String selectQuery = entityDefinition.getSelectQuery();
+    String selectQuery = definition.getSelectQuery();
     if (selectQuery == null) {
-      selectQuery = createSelectSQL(isForUpdate ?
-                      entityDefinition.getTableName() : entityDefinition.getSelectTableName(),
+      selectQuery = createSelectSQL(isForUpdate ? definition.getTableName() : definition.getSelectTableName(),
               initializeSelectColumnsString(columnProperties), null, null);
     }
     else {
-      containsWhereClause = entityDefinition.selectQueryContainsWhereClause();
+      containsWhereClause = definition.selectQueryContainsWhereClause();
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectQuery);
-    final String whereClause = condition.getWhereClause(domain);
+    final String whereClause = condition.getWhereClause(definition);
     if (whereClause.length() > 0) {
       queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
     }
@@ -1190,7 +1186,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       addForUpdate(connection.getDatabase(), queryBuilder);
     }
     else {
-      addGroupHavingOrderByAndLimitClauses(condition, queryBuilder);
+      addGroupHavingOrderByAndLimitClauses(condition, queryBuilder, definition);
     }
 
     return queryBuilder.toString();
@@ -1225,20 +1221,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private void addGroupHavingOrderByAndLimitClauses(final EntityCondition condition, final StringBuilder queryBuilder) {
-    final String entityId = condition.getEntityId();
-    final Entity.Definition entityDefinition = domain.getDefinition(entityId);
-    final String groupByClause = entityDefinition.getGroupByClause();
+  private void addGroupHavingOrderByAndLimitClauses(final EntityCondition condition, final StringBuilder queryBuilder,
+                                                    final Entity.Definition definition) {
+    final String groupByClause = definition.getGroupByClause();
     if (groupByClause != null) {
       queryBuilder.append(" group by ").append(groupByClause);
     }
-    final String havingClause = entityDefinition.getHavingClause();
+    final String havingClause = definition.getHavingClause();
     if (havingClause != null) {
       queryBuilder.append(" having ").append(havingClause);
     }
     if (condition instanceof EntitySelectCondition) {
       final EntitySelectCondition selectCondition = (EntitySelectCondition) condition;
-      final String orderByClause = getOrderByClause(selectCondition, entityDefinition);
+      final String orderByClause = getOrderByClause(selectCondition, definition);
       if (orderByClause != null) {
         queryBuilder.append(" order by ").append(orderByClause);
       }
@@ -1414,7 +1409,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
       final StringBuilder builder = new StringBuilder();
       if (argument instanceof EntityCondition) {
-        builder.append(getEntityConditionString((EntityCondition) argument));
+        builder.append(getEntityConditionString((EntityCondition) argument,
+                domain.getDefinition(((EntityCondition) argument).getEntityId())));
       }
       else if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
         builder.append("[").append(toString((Object[]) argument)).append("]");
@@ -1435,14 +1431,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       return builder.toString();
     }
 
-    private String getEntityConditionString(final EntityCondition condition) {
+    private String getEntityConditionString(final EntityCondition condition, final Entity.Definition definition) {
       final StringBuilder builder = new StringBuilder(condition.getEntityId());
-      final String whereClause = condition.getWhereClause(domain);
+      final String whereClause = condition.getWhereClause(definition);
       if (!nullOrEmpty(whereClause)) {
         builder.append(",").append(WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
       }
-      final List values = condition.getCondition(domain).getValues();
-      if (values != null) {
+      final List values = condition.getCondition(definition).getValues();
+      if (!values.isEmpty()) {
         builder.append(", ").append(toString(values));
       }
 

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entity;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -47,8 +47,8 @@ final class DefaultCustomCondition implements Condition.CustomCondition {
 
   /** {@inheritDoc} */
   @Override
-  public String getConditionString(final Domain domain, final String entityId) {
-    return domain.getDefinition(entityId).getConditionProvider(getConditionId()).getConditionString(getValues());
+  public String getConditionString(final Entity.Definition definition) {
+    return definition.getConditionProvider(getConditionId()).getConditionString(getValues());
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
