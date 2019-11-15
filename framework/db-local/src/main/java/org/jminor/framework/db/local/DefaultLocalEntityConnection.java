@@ -268,18 +268,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (nullOrEmpty(entities)) {
       return entities;
     }
-    checkReadOnly(entities);
+    final Map<String, List<Entity>> entitiesByType = mapToEntityId(entities);
+    for (final String entityId : entitiesByType.keySet()) {
+      checkReadOnly(entityId);
+    }
 
     final List<Object> propertyValuesToSet = new ArrayList<>();
     PreparedStatement statement = null;
     String updateSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, List<Entity>> entitiesByType = mapToEntityId(entities);
         if (optimisticLocking) {
           lockAndCheckForUpdate(entitiesByType);
         }
-
         final List<ColumnProperty> propertiesToUpdate = new ArrayList<>();
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
         for (final Map.Entry<String, List<Entity>> entitiesByTypeEntry : entitiesByType.entrySet()) {
@@ -661,6 +662,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException {
     final Entity.Definition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
+    checkReadOnly(entityDefinition.getEntityId());
     final ColumnProperty blobProperty = entityDefinition.getColumnProperty(blobPropertyId);
     if (blobProperty.getColumnType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + blobProperty.getPropertyId() + " in entity " +

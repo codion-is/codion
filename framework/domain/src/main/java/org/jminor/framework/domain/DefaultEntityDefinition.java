@@ -619,10 +619,10 @@ final class DefaultEntityDefinition implements Entity.Definition {
     final Map<String, Set<DerivedProperty>> derivedProperties = new HashMap<>();
     for (final Property property : properties) {
       if (property instanceof DerivedProperty) {
-        final Collection<String> derived = ((DerivedProperty) property).getSourcePropertyIds();
-        if (!nullOrEmpty(derived)) {
-          for (final String parentLinkPropertyId : derived) {
-            linkProperties(derivedProperties, parentLinkPropertyId, (DerivedProperty) property);
+        final Collection<String> sourcePropertyIds = ((DerivedProperty) property).getSourcePropertyIds();
+        if (!nullOrEmpty(sourcePropertyIds)) {
+          for (final String sourcePropertyId : sourcePropertyIds) {
+            linkProperties(derivedProperties, sourcePropertyId, (DerivedProperty) property);
           }
         }
       }
@@ -632,11 +632,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   private static void linkProperties(final Map<String, Set<DerivedProperty>> derivedProperties,
-                                     final String parentPropertyId, final DerivedProperty derivedProperty) {
-    if (!derivedProperties.containsKey(parentPropertyId)) {
-      derivedProperties.put(parentPropertyId, new HashSet<>());
+                                     final String sourcePropertyId, final DerivedProperty derivedProperty) {
+    if (!derivedProperties.containsKey(sourcePropertyId)) {
+      derivedProperties.put(sourcePropertyId, new HashSet<>());
     }
-    derivedProperties.get(parentPropertyId).add(derivedProperty);
+    derivedProperties.get(sourcePropertyId).add(derivedProperty);
   }
 
   private static List<ColumnProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
@@ -805,7 +805,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
           throw new IllegalArgumentException("Property with ID '" + propertyId + "' not found in entity '" +
                   definition.getEntityId() + "'");
         }
-        if (!definition.propertyMap.get(propertyId).isString()) {
+        if (!property.isString()) {
           throw new IllegalArgumentException("Entity search property must be of type String: " +
                   definition.propertyMap.get(propertyId));
         }

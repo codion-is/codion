@@ -1110,13 +1110,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         return null;
       }
       if (isCompositeKey()) {
-        return computeCompositeHashCode();
+        return computeMultipleValueHashCode();
       }
 
-      return computeSingleHashCode();
+      return computeSingleValueHashCode();
     }
 
-    private Integer computeCompositeHashCode() {
+    private Integer computeMultipleValueHashCode() {
       int hash = 0;
       final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
       for (int i = 0; i < primaryKeyProperties.size(); i++) {
@@ -1133,7 +1133,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       return hash;
     }
 
-    private Integer computeSingleHashCode() {
+    private Integer computeSingleValueHashCode() {
       final ColumnProperty property = getFirstProperty();
       final Object value = super.get(property);
       if (value == null) {

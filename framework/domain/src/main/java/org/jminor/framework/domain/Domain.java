@@ -703,8 +703,7 @@ public class Domain implements Serializable {
 
   private static List<TransientProperty> getTransientProperties(final Collection<Property> properties) {
     return properties.stream().filter(property -> property instanceof TransientProperty)
-            .map(property -> (TransientProperty) property)
-            .collect(toList());
+            .map(property -> (TransientProperty) property).collect(toList());
   }
 
   /**
@@ -837,8 +836,7 @@ public class Domain implements Serializable {
       private final String foreignKeyPropertyId;
       private final String propertyId;
 
-      private ForeignKeyValueProvider(final String foreignKeyPropertyId,
-                                      final String propertyId) {
+      private ForeignKeyValueProvider(final String foreignKeyPropertyId, final String propertyId) {
         this.foreignKeyPropertyId = foreignKeyPropertyId;
         this.propertyId = propertyId;
       }
@@ -956,6 +954,7 @@ public class Domain implements Serializable {
     @Override
     public void validate(final Entity entity, final Property property) throws ValidationException {
       requireNonNull(entity, ENTITY_PARAM);
+      requireNonNull(property, PROPERTY_PARAM);
       if (performNullValidation && !isForeignKeyProperty(property)) {
         performNullValidation(entity, property);
       }
