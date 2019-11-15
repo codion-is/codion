@@ -180,7 +180,7 @@ asciidoctor {
     sources {
         include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc'
     }
-    attributes toc: 'left', sectnums: 4, 'jminor-version': project.version
+    attributes toc: 'right', sectnums: 4, 'jminor-version': project.version, prewrap: false, experimental: true
     asciidoctorj {
         modules {
             diagram.use()
