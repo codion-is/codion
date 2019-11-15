@@ -345,10 +345,10 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @return the entityIds of all defined entities
+   * @return all {@link Entity.Definition}s found in this domain model
    */
-  public final Collection<String> getDefinedEntities() {
-    return new ArrayList<>(entityDefinitions.keySet());
+  public final Collection<Entity.Definition> getEntityDefinitions() {
+    return Collections.unmodifiableCollection(entityDefinitions.values());
   }
 
   /**

@@ -155,8 +155,9 @@ public final class ChinookImpl extends Domain implements Chinook {
             .setKeyGenerator(automaticKeyGenerator("chinook.customer"))
             .setOrderBy(orderBy().ascending(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME))
             .setStringProvider(customer -> {
-              final StringBuilder builder = new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
-                      .append(", ").append(customer.getString(CUSTOMER_FIRSTNAME));
+              final StringBuilder builder =
+                      new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
+                              .append(", ").append(customer.getString(CUSTOMER_FIRSTNAME));
               if (customer.isNotNull(CUSTOMER_EMAIL)) {
                 builder.append(" <").append(customer.getString(CUSTOMER_EMAIL)).append(">");
               }
@@ -234,8 +235,6 @@ public final class ChinookImpl extends Domain implements Chinook {
             .setCaption("Tracks");
   }
 
-  private static final String INVOICE_TOTAL_SUBQUERY = "select sum(unitprice * quantity) from chinook.invoiceline where invoiceid = invoice.invoiceid";
-
   void invoice() {
     define(T_INVOICE, "chinook.invoice",
             primaryKeyProperty(INVOICE_INVOICEID, Types.BIGINT, "Invoice no."),
@@ -260,7 +259,9 @@ public final class ChinookImpl extends Domain implements Chinook {
             columnProperty(INVOICE_TOTAL, Types.DECIMAL, "Total")
                     .setMaximumFractionDigits(2)
                     .setHidden(true),
-            subqueryProperty(INVOICE_TOTAL_SUB, Types.DECIMAL, "Calculated total", INVOICE_TOTAL_SUBQUERY)
+            subqueryProperty(INVOICE_TOTAL_SUB, Types.DECIMAL, "Calculated total",
+                    "select sum(unitprice * quantity) from chinook.invoiceline " +
+                            "where invoiceid = invoice.invoiceid")
                     .setMaximumFractionDigits(2))
             .setKeyGenerator(automaticKeyGenerator("chinook.invoice"))
             .setOrderBy(orderBy().ascending(INVOICE_CUSTOMERID).descending(INVOICE_INVOICEDATE))
@@ -341,7 +342,8 @@ public final class ChinookImpl extends Domain implements Chinook {
     }
 
     @Override
-    public void execute(final LocalEntityConnection entityConnection, final Object... arguments) throws DatabaseException {
+    public void execute(final LocalEntityConnection entityConnection,
+                        final Object... arguments) throws DatabaseException {
       try {
         entityConnection.beginTransaction();
         final EntitySelectCondition selectCondition = entitySelectCondition(Chinook.T_INVOICE);

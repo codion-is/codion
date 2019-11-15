@@ -9,6 +9,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.remote.LoginProxy;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.ServerException;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 
@@ -34,14 +35,13 @@ public final class ChinookLoginProxy implements LoginProxy {
   /**
    * Manages the database connection used to lookup users
    */
-  private final LocalEntityConnectionProvider connectionProvider;
+  private final EntityConnectionProvider connectionProvider;
 
   public ChinookLoginProxy() {
-    connectionProvider = (LocalEntityConnectionProvider)
-            new LocalEntityConnectionProvider(Databases.getInstance())
-                    .setClientTypeId(getClass().getName())
-                    .setUser(DATABASE_USER)
-                    .setDomainClassName(ChinookImpl.class.getName());
+    connectionProvider = new LocalEntityConnectionProvider(Databases.getInstance())
+            .setClientTypeId(getClass().getName())
+            .setUser(DATABASE_USER)
+            .setDomainClassName(ChinookImpl.class.getName());
   }
 
   /**

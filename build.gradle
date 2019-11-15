@@ -198,9 +198,11 @@ apply plugin: 'project-report'
 
 asciidoctor {
     sourceDir = file('docs')
-    outputDir = file('build/docs/site')
     //so asciidoc include works in intellij, relative path
     baseDir = file('docs/noop')
+    sources {
+        include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc'
+    }
     attributes toc: 'left', sectnums: 4, 'jminor-version': project.version
     asciidoctorj {
         modules {
@@ -209,6 +211,8 @@ asciidoctor {
         }
         attributes 'source-highlighter': 'prettify'
     }
+    //possible code changes
+    outputs.upToDateWhen { false }
 }
 
 htmlDependencyReport {

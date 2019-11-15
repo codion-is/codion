@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProviders;
+import org.jminor.framework.demos.chinook.client.ChinookApplicationModel;
 import org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -31,16 +32,16 @@ import java.util.Random;
 import static java.util.Arrays.asList;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
-public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.ChinookApplicationModel> {
+public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicationModel> {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
-  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> UPDATE_TOTALS =
-          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("updateTotals") {
+  private static final UsageScenario<ChinookApplicationModel> UPDATE_TOTALS =
+          new AbstractEntityUsageScenario<ChinookApplicationModel>("updateTotals") {
             @Override
-            protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
+            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 final SwingEntityModel customerModel = application.getEntityModel(T_CUSTOMER);
                 customerModel.getTableModel().refresh();
@@ -53,7 +54,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
 
                 invoiceLineTableModel.update(invoiceLines);
 
-                ((ChinookAppPanel.ChinookApplicationModel) application).updateInvoiceTotals();
+                ((ChinookApplicationModel) application).updateInvoiceTotals();
               }
               catch (final Exception e) {
                 throw new ScenarioException(e);
@@ -61,10 +62,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
             }
           };
 
-  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> VIEW_GENRE =
-          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("viewGenre") {
+  private static final UsageScenario<ChinookApplicationModel> VIEW_GENRE =
+          new AbstractEntityUsageScenario<ChinookApplicationModel>("viewGenre") {
             @Override
-            protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
+            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 final SwingEntityModel genreModel = application.getEntityModel(T_GENRE);
                 genreModel.getTableModel().refresh();
@@ -84,10 +85,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
             }
           };
 
-  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> VIEW_CUSTOMER_REPORT =
-          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("viewCustomerReport") {
+  private static final UsageScenario<ChinookApplicationModel> VIEW_CUSTOMER_REPORT =
+          new AbstractEntityUsageScenario<ChinookApplicationModel>("viewCustomerReport") {
             @Override
-            protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
+            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 final SwingEntityTableModel customerModel = application.getEntityModel(T_CUSTOMER).getTableModel();
                 customerModel.refresh();
@@ -112,10 +113,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
             }
           };
 
-  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> VIEW_INVOICE =
-          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("viewInvoice") {
+  private static final UsageScenario<ChinookApplicationModel> VIEW_INVOICE =
+          new AbstractEntityUsageScenario<ChinookApplicationModel>("viewInvoice") {
             @Override
-            protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
+            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 final SwingEntityModel customerModel = application.getEntityModel(T_CUSTOMER);
                 customerModel.getTableModel().refresh();
@@ -134,10 +135,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
             }
           };
 
-  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> VIEW_ALBUM =
-          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("viewAlbum") {
+  private static final UsageScenario<ChinookApplicationModel> VIEW_ALBUM =
+          new AbstractEntityUsageScenario<ChinookApplicationModel>("viewAlbum") {
             @Override
-            protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
+            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 final SwingEntityModel artistModel = application.getEntityModel(T_ARTIST);
                 artistModel.getTableModel().refresh();
@@ -156,10 +157,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
             }
           };
 
-  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> INSERT_DELETE_ALBUM =
-          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("insertDeleteAlbum") {
+  private static final UsageScenario<ChinookApplicationModel> INSERT_DELETE_ALBUM =
+          new AbstractEntityUsageScenario<ChinookApplicationModel>("insertDeleteAlbum") {
             @Override
-            protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
+            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
               final SwingEntityModel artistModel = application.getEntityModel(T_ARTIST);
               artistModel.getTableModel().refresh();
               selectRandomRow(artistModel.getTableModel());
@@ -206,11 +207,11 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
             }
           };
 
-  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> LOGOUT_LOGIN =
-          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("logoutLogin") {
+  private static final UsageScenario<ChinookApplicationModel> LOGOUT_LOGIN =
+          new AbstractEntityUsageScenario<ChinookApplicationModel>("logoutLogin") {
             final Random random = new Random();
             @Override
-            protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
+            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 application.getConnectionProvider().disconnect();
                 Thread.sleep(random.nextInt(1500));
@@ -231,8 +232,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
   }
 
   @Override
-  protected ChinookAppPanel.ChinookApplicationModel initializeApplication() throws CancelException {
-    final ChinookAppPanel.ChinookApplicationModel applicationModel = new ChinookAppPanel.ChinookApplicationModel(
+  protected ChinookApplicationModel initializeApplication() throws CancelException {
+    final ChinookApplicationModel applicationModel = new ChinookApplicationModel(
             EntityConnectionProviders.connectionProvider().setDomainClassName("org.jminor.framework.demos.chinook.domain.impl.ChinookImpl")
                     .setClientTypeId(ChinookAppPanel.class.getName()).setUser(getUser()));
     /* ARTIST

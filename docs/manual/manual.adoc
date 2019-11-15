@@ -22,7 +22,7 @@ Events are instantiated via the {url-javadoc}/org/jminor/common/Events.html[Even
 
 To listen to Events you use the {url-javadoc}/org/jminor/common/EventListener.html[EventListener] or {url-javadoc}/org/jminor/common/EventDataListener.html[EventDataListener] interfaces.
 
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=event]
 ----
@@ -33,14 +33,14 @@ The {url-javadoc}/org/jminor/common/State.html[State] class encapsulates a boole
 
 States are instantiated via the {url-javadoc}/org/jminor/common/States.html[States] factory class.
 
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=state]
 ----
 
 Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnabledState* method, where the action's *enabled* status is synchronized with the state.
 
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=action]
 ----
@@ -250,7 +250,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 === Domain
 
-Each entity type is defined by calling {url-javadoc}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.property.Property.Builder...-[Domain.define] for each entity. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
+Each entity type is defined by calling {url-javadoc}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.property.Property.Builder...-[Domain.define]. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
 
 [source,java,indent=0]
 ----
@@ -336,35 +336,25 @@ You can provide a custom key generator strategy by implementing a {url-javadoc}/
 
 The {url-javadoc}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations for entities. This value is f. ex. used when entties are displayed in a ComboBox or as a foreign key values in table views.
 
-[source,java]
+[source,java,indent=0]
 ----
-define(Store.T_CUSTOMER
-...
-).setStringProvider(
-    new StringProvider(Store.CUSTOMER_LAST_NAME)
-        .addText(", ")
-        .addValue(Store.CUSTOMER_FIRST_NAME)));
+include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[tags=address]
 ----
 
 For more complex toString() implementations you can implement a custom {url-javadoc}/org/jminor/framework/domain/Entity.ToString.html[Entity.ToString].
 
-[source,java]
+[source,java,indent=0]
 ----
-define(Store.T_CUSTOMER
-...
-).setStringProvider(customer -> {
-    StringBuilder builder =
-       new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
-    .append(", ").append(customer.getString(CUSTOMER_LASTNAME));
+include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[tags=customer]
+----
 
-    if (customer.isNotNull(CUSTOMER_EMAIL)) {
-        builder.append(" <")
-        .append(customer.getString(CUSTOMER_EMAIL))
-        .append(">");
-    }
+=== Entity.ColorProvider
 
-    return builder.toString();
-});
+{url-javadoc}/org/jminor/framework/domain/Entity.ColorProvider.html[Entity.ColorProvider] provides the background color for entity property cells when displayed in a table.
+
+[source,java,indent=0]
+----
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=colorProvider]
 ----
 
 === Validation
@@ -393,25 +383,6 @@ define("entityID",
 });
 ----
 
-{url-javadoc}/org/jminor/framework/domain/Entity.ColorProvider.html[Entity.ColorProvider]
-
-Provides the background color for entity property cells when displayed in a table.
-
-[source,java]
-----
-define("entityId",
-...
-).setColorProvider(new Entity.ColorProvider() {
-    public Object getColor(Entity entity, Property property) {
-        if (property.is("colorPropertyId") && entity.getString("colorPropertyId").equals("CYAN")) {
-          return Color.CYAN;
-        }
-
-        return null;
-    }
-});
-----
-
 ==== Examples
 
 * <<{dir-tutorials}/empdept.adoc#_domain_model, EmpDept domain model>>
@@ -420,7 +391,7 @@ define("entityId",
 
 Using the Entity class is rather straight forward.
 
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source-petstore}/org/jminor/framework/demos/petstore/manual/EntitiesInAction.java[tags=entitiesInAction]
 ----
@@ -503,7 +474,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerEdit
 include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressEditModel.java[lines=10..-1]
 ----
 
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/org/jminor/framework/demos/manual/store/Misc.java[lines=20..53]
 ----
@@ -514,9 +485,9 @@ The EntityModel, EntityEditModel and EntityTableModel classes expose a number of
 
 The following example prints, to the standard output, all changes made to a given property as well as a message indicating that a refresh has started.
 
-[source,java]
+[source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerModel.java[lines=18..29]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerModel.java[lines=18..27]
 ----
 
 === Examples
@@ -530,9 +501,9 @@ The EntityApplicationModel class serves as the base for the application. Its mai
 
 When implementing this class you must provide a constructor taking a single EntityConnectionProvider instance as argument, as seen below.
 
-[source,java]
+[source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/StoreAppModel.java[lines=10..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/StoreAppModel.java[lines=9..-1]
 ----
 
 == Application load testing
@@ -612,7 +583,7 @@ The EntityPanel class provides straight forward methods for viewing reports usin
 
 Using a report based on a SQL query, {url-javadoc}/org/jminor/plugin/jasperreports/model/JasperReportsWrapper.html[JasperReportsWrapper] and {url-javadoc}/org/jminor/plugin/jasperreports/ui/JasperReportsUIWrapper.html[JasperReportsUIWrapper] is the simplest way of viewing a report using JMinor, just add a method similar to the one below to a EntityPanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<Adding a print action, adding a print action>> section.
 
-[source,java]
+[source,java,indent=0]
 ----
 include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[lines=40..55]
 ----
