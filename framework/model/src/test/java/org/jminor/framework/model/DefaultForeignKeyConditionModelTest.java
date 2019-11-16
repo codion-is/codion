@@ -18,7 +18,6 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -41,8 +40,6 @@ public class DefaultForeignKeyConditionModelTest {
     Collection<Entity> searchEntities = conditionModel.getConditionEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
-    final Entity.Definition definition = CONNECTION_PROVIDER.getDomain().getDefinition(TestDomain.T_EMP);
-    assertEquals("deptno = ?", entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(definition));
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final List<Entity> salesAccounting = asList(sales, accounting);
     lookupModel.setSelectedEntities(salesAccounting);
@@ -52,7 +49,6 @@ public class DefaultForeignKeyConditionModelTest {
     assertEquals(2, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     assertTrue(searchEntities.contains(accounting));
-    assertEquals("(deptno in (?, ?))", entityCondition(TestDomain.T_EMP, conditionModel.getCondition()).getWhereClause(definition));
 
     assertEquals("dept_fkLIKEdeptno:30deptno:10null", conditionModel.toString());
 

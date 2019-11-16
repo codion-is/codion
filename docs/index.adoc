@@ -10,26 +10,16 @@ Björn Darri Sigurðsson <bjorndarri@gmail.com>
 image::jminor_logo_medium.png[Logo,200]
 image::https://github.com/bjorndarri/jminor/workflows/Java%20CI/badge.svg[CI]
 
-== Introduction
+== <<introduction.adoc#, Introduction>>
 
-* <<introduction.adoc#, Introduction>>.
+== <<technical/technical.adoc#, Technical>>
 
-== Technical
+== <<quickstart.adoc#, Quickstart>>
 
-* <<technical/technical.adoc#, Technical>>
+== <<{dir-manual}/manual.adoc#, Manual>>
 
-== Quickstart
-
-* <<quickstart.adoc#, Quickstart>>.
-
-== Manual
-
-* <<{dir-manual}/manual.adoc#, Manual>>.
+== <<tutorials/tutorials.adoc#, Tutorials>>
 
 == API Documentation
 
 * {url-javadoc}/index.html[Javadocs]
-
-== Tutorials
-
-* <<tutorials/tutorials.adoc#, Tutorials>>

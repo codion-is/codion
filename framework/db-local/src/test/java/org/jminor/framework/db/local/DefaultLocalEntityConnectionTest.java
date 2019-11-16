@@ -386,7 +386,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void customStringCondition() throws DatabaseException {
-    class StringCondition implements Condition {
+    class StringCondition implements Condition.CustomStringCondition {
       @Override
       public List getValues() {
         return emptyList();
@@ -396,7 +396,7 @@ public class DefaultLocalEntityConnectionTest {
         return emptyList();
       }
       @Override
-      public String getConditionString(final Entity.Definition definition) {
+      public String getConditionString() {
         return "1 = 2";
       }
     }

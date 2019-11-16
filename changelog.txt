@@ -5305,3 +5305,4 @@
   DefaultLocalEntityConnection refactored
   Further refactoring of DefaultLocalEntityConnection
   Domain.getDefinedEntities() now returns Collection<Entity.Definition>, rename to getEntityDefinitions()
+  Conditions refactoring continued, shuffling complexity around it seems
