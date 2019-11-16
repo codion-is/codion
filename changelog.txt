@@ -5286,3 +5286,5 @@
   Further refactoring of DefaultLocalEntityConnection
   Domain.getDefinedEntities() now returns Collection<Entity.Definition>, rename to getEntityDefinitions()
   Conditions refactoring continued, shuffling complexity around it seems
+  WhereCondition.getPropertyIds() removed, usage replace with getColumnProperties()
+  DefaultLocalEntityConnection.writeBlob() now throws exception if multiple rows were affected, refactoring
