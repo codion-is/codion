@@ -107,15 +107,14 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
 
   /** {@inheritDoc} */
   @Override
-  public String getConditionString(final Entity.Definition definition) {
-    return createColumnPropertyConditionString(definition.getColumnProperty(propertyId),
-            conditionType, getValues(), nullCondition, caseSensitive);
+  public String getConditionString(final ColumnProperty property) {
+    return createColumnPropertyConditionString(property, conditionType, getValues(),
+            nullCondition, caseSensitive);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Condition expand(final Entity.Definition definition) {
-    final Property property = definition.getProperty(propertyId);
+  public Condition expand(final Property property) {
     if (property instanceof ForeignKeyProperty) {
       return foreignKeyCondition((ForeignKeyProperty) property, conditionType, getValues());
     }

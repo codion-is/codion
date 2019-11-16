@@ -231,9 +231,9 @@ public final class Conditions {
   }
 
   /** Assumes {@code keys} is not empty. */
-  static Condition createCompositeKeyCondition(final List<ColumnProperty> properties,
-                                               final ConditionType conditionType,
-                                               final List<Entity.Key> keys) {
+  public static Condition createCompositeKeyCondition(final List<ColumnProperty> properties,
+                                                      final ConditionType conditionType,
+                                                      final List<Entity.Key> keys) {
     if (keys.size() == 1) {
       return createSingleCompositeCondition(properties, conditionType, keys.get(0));
     }

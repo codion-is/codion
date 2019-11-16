@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.framework.domain.Entity;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -19,8 +17,6 @@ class DefaultEntityCondition implements EntityCondition {
 
   private String entityId;
   private Condition condition;
-  private String cachedWhereClause;
-  private transient boolean expanded;
 
   /**
    * Instantiates a new empty {@link DefaultEntityCondition}.
@@ -49,27 +45,8 @@ class DefaultEntityCondition implements EntityCondition {
 
   /** {@inheritDoc} */
   @Override
-  public final Condition getCondition(final Entity.Definition definition) {
-    expandCondition(requireNonNull(definition, "definition"));
-
+  public final Condition getCondition() {
     return condition;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final String getWhereClause(final Entity.Definition definition) {
-    if (cachedWhereClause == null) {
-      cachedWhereClause = getCondition(definition).getConditionString(definition);
-    }
-
-    return cachedWhereClause;
-  }
-
-  private void expandCondition(final Entity.Definition definition) {
-    if (!expanded) {
-      condition = condition.expand(definition);
-      expanded = true;
-    }
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
