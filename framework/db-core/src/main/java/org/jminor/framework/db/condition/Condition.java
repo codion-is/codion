@@ -4,7 +4,6 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.db.ConditionType;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.Property;
 
@@ -40,6 +39,15 @@ public interface Condition extends Serializable {
   String getConditionString(final Entity.Definition definition);
 
   /**
+   * Expands this condition, if required
+   * @param definition the underlying entity definition
+   * @return an expanded Condition, or this condition if expansion is not required
+   */
+  default Condition expand(final Entity.Definition definition) {
+    return this;
+  }
+
+  /**
    * A Condition based on a custom {@link org.jminor.framework.domain.Entity.ConditionProvider}
    * associated with {@link CustomCondition#getConditionId()}
    */
@@ -60,21 +68,6 @@ public interface Condition extends Serializable {
      * @return the propertyId
      */
     String getPropertyId();
-
-    /**
-     * @return the condition type
-     */
-    ConditionType getConditionType();
-
-    /**
-     * @return true if this condition denotes a null condition, as in, where x is null
-     */
-    boolean isNullCondition();
-
-    /**
-     * @return true if this condition is case sensitive, only applicable to conditions based on string properties
-     */
-    boolean isCaseSensitive();
   }
 
   /**

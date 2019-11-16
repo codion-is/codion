@@ -4,8 +4,11 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.db.ConditionType;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.SubqueryProperty;
 
 import java.io.IOException;
@@ -21,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 import static org.jminor.common.db.ConditionType.LIKE;
 
 /**
- * A object for encapsulating a query condition based on a single property with one or more values.
+ * Encapsulates a query condition based on a single property with one or more values.
  */
 final class DefaultPropertyCondition implements Condition.PropertyCondition {
 
@@ -44,7 +47,7 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
   /**
    * True if this condition tests for null
    */
-  private boolean isNullCondition;
+  private boolean nullCondition;
 
   /**
    * The search type used in this condition
@@ -68,7 +71,7 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
     requireNonNull(conditionType, "conditionType");
     this.propertyId = propertyId;
     this.conditionType = conditionType;
-    this.isNullCondition = value == null;
+    this.nullCondition = value == null;
     this.caseSensitive = caseSensitive;
     this.values = initializeValues(value);
     if (this.values.isEmpty()) {
@@ -79,7 +82,7 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
   /** {@inheritDoc} */
   @Override
   public List getValues() {
-    if (isNullCondition) {
+    if (nullCondition) {
       return emptyList();
     }//null condition, uses 'x is null', not 'x = ?'
 
@@ -89,7 +92,7 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
   /** {@inheritDoc} */
   @Override
   public List<String> getPropertyIds() {
-    if (isNullCondition) {
+    if (nullCondition) {
       return emptyList();
     }//null condition, uses 'x is null', not 'x = ?'
 
@@ -104,33 +107,26 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
 
   /** {@inheritDoc} */
   @Override
-  public ConditionType getConditionType() {
-    return conditionType;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean isNullCondition() {
-    return isNullCondition;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean isCaseSensitive() {
-    return caseSensitive;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public String getConditionString(final Entity.Definition definition) {
-    return createColumnPropertyConditionString(definition.getColumnProperty(getPropertyId()),
-            getConditionType(), getValues(), isNullCondition(), isCaseSensitive());
+    return createColumnPropertyConditionString(definition.getColumnProperty(propertyId),
+            conditionType, getValues(), nullCondition, caseSensitive);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Condition expand(final Entity.Definition definition) {
+    final Property property = definition.getProperty(propertyId);
+    if (property instanceof ForeignKeyProperty) {
+      return foreignKeyCondition((ForeignKeyProperty) property, conditionType, getValues());
+    }
+
+    return this;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(propertyId);
     stream.writeObject(conditionType);
-    stream.writeBoolean(isNullCondition);
+    stream.writeBoolean(nullCondition);
     stream.writeBoolean(caseSensitive);
     stream.writeObject(values);
   }
@@ -138,7 +134,7 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
   private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
     propertyId = (String) stream.readObject();
     conditionType = (ConditionType) stream.readObject();
-    isNullCondition = stream.readBoolean();
+    nullCondition = stream.readBoolean();
     caseSensitive = stream.readBoolean();
     values = (ArrayList) stream.readObject();
   }
@@ -254,5 +250,53 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
 
   private static boolean containsWildcards(final String value) {
     return value.contains("%") || value.contains("_");
+  }
+
+  private static Condition foreignKeyCondition(final ForeignKeyProperty foreignKeyProperty,
+                                               final ConditionType conditionType, final Collection values) {
+    final List<Entity.Key> keys = getKeys(values);
+    if (foreignKeyProperty.isCompositeKey()) {
+      return Conditions.createCompositeKeyCondition(foreignKeyProperty.getProperties(), conditionType, keys);
+    }
+
+    if (keys.size() == 1) {
+      final Entity.Key entityKey = keys.get(0);
+
+      return Conditions.propertyCondition(foreignKeyProperty.getProperties().get(0).getPropertyId(), conditionType,
+              entityKey == null ? null : entityKey.getFirstValue());
+    }
+
+    return Conditions.propertyCondition(foreignKeyProperty.getProperties().get(0).getPropertyId(), conditionType,
+            Entities.getValues(keys));
+  }
+
+  private static List<Entity.Key> getKeys(final Object value) {
+    final List<Entity.Key> keys = new ArrayList<>();
+    if (value instanceof Collection) {
+      if (((Collection) value).isEmpty()) {
+        keys.add(null);
+      }
+      else {
+        for (final Object object : (Collection) value) {
+          keys.add(getKey(object));
+        }
+      }
+    }
+    else {
+      keys.add(getKey(value));
+    }
+
+    return keys;
+  }
+
+  private static Entity.Key getKey(final Object value) {
+    if (value == null || value instanceof Entity.Key) {
+      return (Entity.Key) value;
+    }
+    else if (value instanceof Entity) {
+      return ((Entity) value).getKey();
+    }
+
+    throw new IllegalArgumentException("Foreign key condition uses only Entity or Entity.Key instances for values");
   }
 }

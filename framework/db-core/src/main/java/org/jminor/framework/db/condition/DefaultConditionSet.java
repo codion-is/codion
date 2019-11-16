@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -87,6 +88,17 @@ final class DefaultConditionSet implements Condition.Set {
     }
 
     return conditionString.append(conditions.size() > 1 ? ")" : "").toString();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Condition expand(final Entity.Definition definition) {
+    final ListIterator<Condition> conditionsIterator = conditions.listIterator();
+    while (conditionsIterator.hasNext()) {
+      conditionsIterator.set(conditionsIterator.next().expand(definition));
+    }
+
+    return this;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
