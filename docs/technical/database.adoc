@@ -1,5 +1,5 @@
 = Database
-:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
 
 == Database layer
 

@@ -6,6 +6,8 @@
 
 include::{dir-technical}/project.adoc[]
 
+include::{dir-technical}/components.adoc[]
+
 include::{dir-technical}/client.adoc[]
 
 include::{dir-technical}/database.adoc[]

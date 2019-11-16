@@ -4,7 +4,7 @@
 :dir-source: ../../demos/manual/src/main/java
 :dir-source-world: ../../demos/world/src/main/java
 :dir-source-petstore: ../../demos/petstore/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
 
 NOTE: The code used throughout this manual is available in the 'manual' demo module included in the project.
 
@@ -529,7 +529,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/test/StoreLoadTest
 
 The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanel] is the base UI class for working with entity instances. It usually consists of an {url-javadoc}/org/jminor/swing/framework/ui/EntityTablePanel.html[EntityTablePanel], an {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], which contains the controls (text fields, combo boxes and such) for editing an entity instance and a set of detail panels representing the entities having a master/detail relationship with the underlying entity.
 
-==== EntityEditPanel
+=== EntityEditPanel
 
 When instantiating an EntityPanel you can supply an EntityEditPanel instance as a parameter. When implementing an EntityEditPanel you must implement the __initializeUI()__ method, in which you should initialize the edit panel UI. The EntityEditPanel class exposes methods for creating input components and binding them with the underlying EntityEditModel instance.
 

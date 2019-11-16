@@ -3,7 +3,7 @@
 :dir-test-source: ../../demos/empdept/src/test/java
 :dir-manual: ../manual
 :dir-technical: ../technical
-:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
 
 == Domain model
 

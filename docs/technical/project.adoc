@@ -56,3 +56,7 @@ gradlew :jminor-swing-framework-server-monitor:runServerMonitor
 ----
 
 NOTE: The client handles server restarts gracefully, you can try shutting down the server via the Server Monitor, play around in the client until you get a 'Connection refused' exception. After you restart the server the client simply reconnects and behaves as if nothing happened.
+
+== Code quality
+
+http://darri.myftp.org:9001/dashboard?id=org.jminor[Sonarqube]
