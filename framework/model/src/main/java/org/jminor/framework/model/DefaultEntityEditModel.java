@@ -389,12 +389,12 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final void setForeignKeyValues(final List<Entity> values) {
-    final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
-    for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
+    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(values);
+    for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition()
-              .getForeignKeyProperties(entry.getKey())) {
+              .getForeignKeyProperties(entityIdEntities.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
-        put(foreignKeyProperty, entry.getValue().iterator().next());
+        put(foreignKeyProperty, entityIdEntities.getValue().iterator().next());
       }
     }
   }

@@ -18,24 +18,18 @@ final class WhereCondition {
   private final EntityCondition entityCondition;
   private final Condition condition;
   private final List values;
-  private final List<String> propertyIds;
   private final List<ColumnProperty> columnProperties;
 
-  WhereCondition(final Entity.Definition entityDefinition, final EntityCondition entityCondition) {
+  WhereCondition(final EntityCondition entityCondition, final Entity.Definition entityDefinition) {
     this.entityDefinition = entityDefinition;
     this.entityCondition = entityCondition;
-    this.condition = expand(entityDefinition, entityCondition.getCondition());
-    this.propertyIds = condition.getPropertyIds();
+    this.condition = expand(entityCondition.getCondition(), entityDefinition);
     this.values = condition.getValues();
     this.columnProperties = entityDefinition.getColumnProperties(condition.getPropertyIds());
   }
 
   List getValues() {
     return values;
-  }
-
-  List<String> getPropertyIds() {
-    return propertyIds;
   }
 
   EntityCondition getEntityCondition() {
@@ -50,12 +44,12 @@ final class WhereCondition {
     return getWhereClause(condition);
   }
 
-  static Condition expand(final Entity.Definition definition, final Condition condition) {
+  static Condition expand(final Condition condition, final Entity.Definition definition) {
     if (condition instanceof Condition.Set) {
       final Condition.Set conditionSet = (Condition.Set) condition;
       final ListIterator<Condition> conditionsIterator = conditionSet.getConditions().listIterator();
       while (conditionsIterator.hasNext()) {
-        conditionsIterator.set(expand(definition, conditionsIterator.next()));
+        conditionsIterator.set(expand(conditionsIterator.next(), definition));
       }
 
       return condition;

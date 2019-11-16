@@ -79,8 +79,8 @@ public final class Entities {
    * @param includeReadOnlyProperties if true then readOnly properties are included in the comparison
    * @return the properties which values differ from the ones in the comparison entity
    */
-  public static final Collection<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison,
-                                                                             final boolean includeReadOnlyProperties) {
+  public static final List<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison,
+                                                                       final boolean includeReadOnlyProperties) {
     //BLOB property values are not loaded, so we can't compare those
     return comparison.keySet().stream().filter(property ->
             property instanceof ColumnProperty
@@ -180,7 +180,7 @@ public final class Entities {
    * @return a List containing the distinct property values
    */
   public static <T> List<T> getDistinctValues(final String propertyId, final Collection<Entity> entities,
-                                                    final boolean includeNullValue) {
+                                              final boolean includeNullValue) {
     return new ArrayList<>(collectValues(new HashSet<>(), propertyId, entities, includeNullValue));
   }
 

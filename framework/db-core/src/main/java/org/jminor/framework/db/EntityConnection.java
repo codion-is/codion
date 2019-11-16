@@ -234,6 +234,7 @@ public interface EntityConnection {
    * @param primaryKey the primary key of the entity for which to write the blob field
    * @param blobPropertyId the ID of the blob property
    * @param blobData the blob data
+   * @throws org.jminor.common.db.exception.UpdateException in case multiple rows were affected
    * @throws DatabaseException in case of a database exception
    */
   void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException;
