@@ -206,6 +206,25 @@ task combinedJavadoc(type: Javadoc) {
     classpath = files(frameworkModules.collect { it.sourceSets.main.compileClasspath })
 }
 
+task populateSite(dependsOn: [combinedJavadoc, asciidoctor]) {
+    group 'documentation'
+    doLast {
+        ant.delete(dir: "${sitePath}/docs")
+        ant.copy(todir: "${sitePath}/docs/api") {
+            fileset(dir: "${buildDir}/docs/javadoc")
+        }
+        ant.copy(todir: "${sitePath}") {
+            fileset(dir: "${buildDir}/docs/asciidoc")
+        }
+        ant.chgrp(group: 'www', type: 'both') {
+            fileset(dir: "${sitePath}", includes: '**/*')
+        }
+        ant.chmod(dir: "${sitePath}", perm: 'ugo+r', type: 'file', includes: '**/*')
+        ant.chmod(dir: "${sitePath}", perm: 'ugo+rx', type: 'dir', includes: '**/*')
+        ant.chmod(file: "${sitePath}", perm: 'ugo+rx', type: 'dir')
+    }
+}
+
 task populateWiki(dependsOn: [combinedJavadoc, htmlDependencyReport]) {
     group 'documentation'
     doLast {
