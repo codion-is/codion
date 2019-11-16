@@ -4,7 +4,7 @@
 :dir-source: ../../demos/manual/src/main/java
 :dir-source-world: ../../demos/world/src/main/java
 :dir-source-petstore: ../../demos/petstore/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
 
 NOTE: The code used throughout this manual is available in the 'manual' demo module included in the project.
 

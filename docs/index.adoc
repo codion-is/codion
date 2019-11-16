@@ -5,7 +5,7 @@ Björn Darri Sigurðsson <bjorndarri@gmail.com>
 :dir-manual: manual
 :dir-technical: technical
 :imagesdir: images
-:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
 
 image::jminor_logo_medium.png[Logo,200]
 image::https://github.com/bjorndarri/jminor/workflows/Java%20CI/badge.svg[CI]
