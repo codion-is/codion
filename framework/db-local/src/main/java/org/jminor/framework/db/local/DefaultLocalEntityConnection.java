@@ -90,26 +90,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<String, List<ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
   private final Map<String, String[]> writableColumnPropertyIds = new HashMap<>();
 
-  private boolean optimisticLocking;
-  private boolean limitForeignKeyFetchDepth;
+  private boolean optimisticLocking = true;
+  private boolean limitForeignKeyFetchDepth = true;
 
   /**
    * Constructs a new LocalEntityConnection instance
    * @param domain the domain model
    * @param database the Database instance
    * @param user the user used for connecting to the database
-   * @param optimisticLocking if true then optimistic locking is used during updates
-   * @param limitForeignKeyFetchDepth if false then there is no limiting of foreign key fetch depth
    * @param validityCheckTimeout specifies the timeout in seconds when validating this connection
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
-  DefaultLocalEntityConnection(final Domain domain, final Database database, final User user, final boolean optimisticLocking,
-                               final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
+  DefaultLocalEntityConnection(final Domain domain, final Database database, final User user,
+                               final int validityCheckTimeout) throws DatabaseException {
     this.domain = new Domain(requireNonNull(domain, "domain"));
     this.connection = createConnection(database, user, validityCheckTimeout);
-    this.optimisticLocking = optimisticLocking;
-    this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
   /**
@@ -117,27 +113,25 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param domain the domain model
    * @param database the Database instance
    * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
-   * @param optimisticLocking if true then optimistic locking is used during updates
-   * @param limitForeignKeyFetchDepth if false then there is no limiting of foreign key fetch depth
    * @param validityCheckTimeout specifies the timeout in seconds when validating this connection
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
-  DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection, final boolean optimisticLocking,
-                               final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
+  DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection,
+                               final int validityCheckTimeout) throws DatabaseException {
     this.domain = new Domain(requireNonNull(domain, "domain"));
     this.connection = createConnection(database, connection, validityCheckTimeout);
-    this.optimisticLocking = optimisticLocking;
-    this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setMethodLogger(final MethodLogger methodLogger) {
+  public LocalEntityConnection setMethodLogger(final MethodLogger methodLogger) {
     synchronized (connection) {
       connection.setMethodLogger(methodLogger);
     }
+
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -775,8 +769,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public void setOptimisticLocking(final boolean optimisticLocking) {
+  public LocalEntityConnection setOptimisticLocking(final boolean optimisticLocking) {
     this.optimisticLocking = optimisticLocking;
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -787,8 +782,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
+  public LocalEntityConnection setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
+    return this;
   }
 
   /**

@@ -58,7 +58,7 @@ public interface LocalEntityConnection extends EntityConnection {
   /**
    * @param methodLogger the MethodLogger to use
    */
-  void setMethodLogger(final MethodLogger methodLogger);
+  EntityConnection setMethodLogger(final MethodLogger methodLogger);
 
   /**
    * @return the MethodLogger being used
@@ -87,8 +87,9 @@ public interface LocalEntityConnection extends EntityConnection {
 
   /**
    * @param optimisticLocking true if optimistic locking should be enabled
+   * @return this LocalEntityConnection instance
    */
-  void setOptimisticLocking(final boolean optimisticLocking);
+  LocalEntityConnection setOptimisticLocking(final boolean optimisticLocking);
 
   /**
    * @return true if foreign key fetch depths are being limited
@@ -97,7 +98,8 @@ public interface LocalEntityConnection extends EntityConnection {
 
   /**
    * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by condition
+   * @return this LocalEntityConnection instance
    * @see org.jminor.framework.db.condition.EntitySelectCondition#setForeignKeyFetchDepthLimit(int)
    */
-  void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth);
+  LocalEntityConnection setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth);
 }

@@ -30,8 +30,10 @@ public final class LocalEntityConnections {
    */
   public static LocalEntityConnection createConnection(final Domain domain, final Database database, final User user)
           throws DatabaseException {
-    return new DefaultLocalEntityConnection(domain, database, user, LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get(),
-            LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
+    return new DefaultLocalEntityConnection(domain, database, user,
+            DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get())
+            .setOptimisticLocking(LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get())
+            .setLimitForeignKeyFetchDepth(LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
   }
 
   /**
@@ -46,8 +48,10 @@ public final class LocalEntityConnections {
    */
   public static LocalEntityConnection createConnection(final Domain domain, final Database database, final Connection connection)
           throws DatabaseException {
-    return new DefaultLocalEntityConnection(domain, database, connection, LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get(),
-            LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
+    return new DefaultLocalEntityConnection(domain, database, connection,
+            DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get())
+            .setOptimisticLocking(LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get())
+            .setLimitForeignKeyFetchDepth(LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
   }
 
   /**
