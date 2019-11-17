@@ -1,0 +1,46 @@
+= Reporting with JasperReports
+:dir-source: ../../demos/manual/src/main/java
+:dir-tutorials: ../tutorials
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+
+== Introduction
+
+JMinor uses a plugin oriented approach to report viewing, and provides an implementation for JasperReports and NextReports.
+
+With the JMinor JasperReports plugin you can either design your report based on a SQL query in which case you use the JasperReportsWrapper class, which facilitates the report being filled using the active database connection or you can design your report around the JRDataSource implementation provided by the {url-javadoc}/org/jminor/plugin/jasperreports/model/JasperReportsEntityDataSource.html[JasperReportsEntityDataSource] class, which is constructed around an iterator.
+
+The EntityPanel class provides straight forward methods for viewing reports using methods provided by the EntityModel class for filling them. Both these classes rely on static utility classes for doing the actual work so you are not bound by the EntityPanel and EntityModel classes for viewing reports, they simply provide the easiest way of doing so.
+
+== JDBC Reports
+
+Using a report based on a SQL query, {url-javadoc}/org/jminor/plugin/jasperreports/model/JasperReportsWrapper.html[JasperReportsWrapper] and {url-javadoc}/org/jminor/plugin/jasperreports/ui/JasperReportsUIWrapper.html[JasperReportsUIWrapper] is the simplest way of viewing a report using JMinor, just add a method similar to the one below to a EntityPanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<Adding a print action, adding a print action>> section.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[lines=40..55]
+----
+
+== JRDataSource Reports
+
+The JRDataSource implementation provided by the JasperReportsEntityDataSource simply iterates through the iterator received via the constructor and retrieves the field values from the underlying entities. For this to work you must design the report using field names that correspond to the property IDs, so using the Store domain example from above the fields in a report showing the available items would have to be named 'name', 'is_active', 'category_code' etc. If you need to use a field that does not correspond to a property in the underlying entity, f.ex. when combining two fields into one you must override the __getFieldValue()__ method and handle that special case there.
+
+[source,java]
+----
+@Override
+public Object getFieldValue(JRField jrField) {
+  if (jrField.getName().equals("name_category_code") {
+    Entity currentRecord = getCurrentEntity();
+
+    return currentRecord.getString(Store.ITEM_NAME) + " - "
+             + currentRecord.getAsString(Store.ITEM_CATEGORY_CODE);
+  }
+
+  return super.getFieldValue(jrField);
+}
+----
+
+The way you view the report is just like in the jdbc report example above except you use the __viewReport()__ method instead of __viewJdbcReport()__.
+
+== Examples
+
+* <<{dir-tutorials}/empdept.adoc#_application_ui_layer, EmpDept UI layer>>

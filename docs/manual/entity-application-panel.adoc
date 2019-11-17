@@ -1,0 +1,15 @@
+= EntityApplicationPanel
+:dir-source: ../../demos/manual/src/main/java
+:dir-tutorials: ../tutorials
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/StoreAppPanel.java[lines=17..-1]
+----
+
+== Examples
+
+* <<{dir-tutorials}/empdept.adoc#_main_application_panel, EmpDept application panel>>
+* <<{dir-tutorials}/chinook.adoc#_main_application_panel, Chinook application panel>>
+* <<{dir-tutorials}/petstore.adoc#_main_application_panel, Petstore application panel>>

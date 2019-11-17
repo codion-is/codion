@@ -1,0 +1,13 @@
+= EntityApplicationModel
+:dir-source: ../../demos/manual/src/main/java
+
+== Introduction
+
+The EntityApplicationModel class serves as the base for the application. Its main purpose is to hold references to the root EntityModel instances used by the application.
+
+When implementing this class you must provide a constructor taking a single EntityConnectionProvider instance as argument, as seen below.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/StoreAppModel.java[lines=9..-1]
+----
