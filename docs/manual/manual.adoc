@@ -396,6 +396,8 @@ Using the Entity class is rather straight forward.
 include::{dir-source-petstore}/org/jminor/framework/demos/petstore/manual/EntitiesInAction.java[tags=entitiesInAction]
 ----
 
+See also <<entity-connection.adoc#, EntityConnection>>.
+
 ==== Examples
 
 * <<{dir-tutorials}/empdept.adoc#_domain_model, EmpDept domain model>>
