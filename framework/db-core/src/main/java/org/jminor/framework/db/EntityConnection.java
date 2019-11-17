@@ -181,7 +181,7 @@ public interface EntityConnection {
    * @return entities according to {@code keys}
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException;
+  List<Entity> select(final List<Entity.Key> keys) throws DatabaseException;
 
   /**
    * Selects entities according to the specified condition
@@ -189,7 +189,7 @@ public interface EntityConnection {
    * @return entities according to the given condition
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException;
+  List<Entity> select(final EntitySelectCondition condition) throws DatabaseException;
 
   /**
    * Selects entities according to one property ({@code propertyId}), using {@code values} as a condition
@@ -199,7 +199,7 @@ public interface EntityConnection {
    * @return entities of the type {@code entityId} according to {@code propertyId} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws DatabaseException;
+  List<Entity> select(final String entityId, final String propertyId, final Object... values) throws DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityIds

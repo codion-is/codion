@@ -248,7 +248,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   @Override
   public final List<Entity> performQuery() {
     try {
-      final List<Entity> result = connectionProvider.getConnection().selectMany(getEntitySelectCondition());
+      final List<Entity> result = connectionProvider.getConnection().select(getEntitySelectCondition());
       if (resultSorter != null) {
         result.sort(resultSorter);
       }

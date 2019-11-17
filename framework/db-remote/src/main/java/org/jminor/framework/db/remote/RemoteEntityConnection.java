@@ -192,7 +192,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> selectMany(final List<Entity.Key> keys) throws RemoteException, DatabaseException;
+  List<Entity> select(final List<Entity.Key> keys) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities according to the specified condition
@@ -201,7 +201,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> selectMany(final EntitySelectCondition condition) throws RemoteException, DatabaseException;
+  List<Entity> select(final EntitySelectCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities according to one property ({@code propertyId}), using {@code values} as a condition
@@ -212,7 +212,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws RemoteException, DatabaseException;
+  List<Entity> select(final String entityId, final String propertyId, final Object... values) throws RemoteException, DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIds

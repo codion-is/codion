@@ -66,7 +66,7 @@ public class EntityConnectionsTest {
             DESTINATION_CONNECTION.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)));
 
     EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_EMP);
-    DESTINATION_CONNECTION.selectMany(entitySelectCondition(TestDomain.T_EMP));
+    DESTINATION_CONNECTION.select(entitySelectCondition(TestDomain.T_EMP));
 
     DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_EMP));
     DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_DEPARTMENT));
@@ -76,7 +76,7 @@ public class EntityConnectionsTest {
   public void batchInsert() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
 
-    final List<Entity> source = sourceConnection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT));
+    final List<Entity> source = sourceConnection.select(entitySelectCondition(TestDomain.T_DEPARTMENT));
     final List<Entity.Key> dest = new ArrayList<>();
     final EventDataListener<Integer> progressReporter = currentProgress -> {};
     EntityConnections.batchInsert(DESTINATION_CONNECTION, source, dest, 2, progressReporter);

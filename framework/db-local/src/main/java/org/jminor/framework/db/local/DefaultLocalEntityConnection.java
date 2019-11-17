@@ -299,7 +299,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             propertiesToUpdate.clear();
             propertyValuesToSet.clear();
           }
-          final List<Entity> selected = doSelectMany(entitySelectCondition(getKeys(entitiesToUpdate)));
+          final List<Entity> selected = doSelect(entitySelectCondition(getKeys(entitiesToUpdate)));
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + " entityId: " + entityIdEntities.getKey());
@@ -410,7 +410,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
-    final List<Entity> entities = selectMany(condition);
+    final List<Entity> entities = select(condition);
     if (entities.isEmpty()) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
@@ -423,7 +423,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
+  public List<Entity> select(final List<Entity.Key> keys) throws DatabaseException {
     final List<Entity> result = new ArrayList<>();
     if (nullOrEmpty(keys)) {
       return result;
@@ -432,7 +432,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         for (final List<Entity.Key> entityIdKeys : mapKeysToEntityId(keys).values()) {
-          result.addAll(doSelectMany(entitySelectCondition(entityIdKeys)));
+          result.addAll(doSelect(entitySelectCondition(entityIdKeys)));
         }
         if (!isTransactionOpen()) {
           commitQuietly();
@@ -449,17 +449,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
-    return selectMany(entitySelectCondition(entityId, propertyId, LIKE, values == null ? null : asList(values)));
+  public List<Entity> select(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
+    return select(entitySelectCondition(entityId, propertyId, LIKE, values == null ? null : asList(values)));
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException {
+  public List<Entity> select(final EntitySelectCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
     synchronized (connection) {
       try {
-        final List<Entity> result = doSelectMany(condition);
+        final List<Entity> result = doSelect(condition);
         if (!isTransactionOpen() && !condition.isForUpdate()) {
           commitQuietly();
         }
@@ -559,7 +559,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entities.iterator().next().getEntityId());
     for (final ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
-        final List<Entity> dependencies = selectMany(entitySelectCondition(foreignKeyReference.getEntityId(),
+        final List<Entity> dependencies = select(entitySelectCondition(foreignKeyReference.getEntityId(),
                 foreignKeyReference.getPropertyId(), LIKE, entities));
         if (!dependencies.isEmpty()) {
           dependencyMap.put(foreignKeyReference.getEntityId(), dependencies);
@@ -806,7 +806,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       final EntitySelectCondition selectForUpdateCondition = entitySelectCondition(originalKeys);
       selectForUpdateCondition.setSelectPropertyIds(getWritableColumnPropertyIds(entitiesByEntityIdEntry.getKey()));
       selectForUpdateCondition.setForUpdate(true);
-      final List<Entity> currentEntities = doSelectMany(selectForUpdateCondition);
+      final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
       final Map<Entity.Key, Entity> currentEntitiesByKey = mapToKey(currentEntities);
       for (final Entity entity : entitiesByEntityIdEntry.getValue()) {
         final Entity current = currentEntitiesByKey.get(entity.getOriginalKey());
@@ -822,11 +822,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private List<Entity> doSelectMany(final EntitySelectCondition condition) throws SQLException {
-    return doSelectMany(condition, 0);
+  private List<Entity> doSelect(final EntitySelectCondition condition) throws SQLException {
+    return doSelect(condition, 0);
   }
 
-  private List<Entity> doSelectMany(final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws SQLException {
+  private List<Entity> doSelect(final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws SQLException {
     final List<Entity> result;
     try (final ResultIterator<Entity> iterator = createIterator(condition)) {
       result = packResult(iterator);
@@ -874,7 +874,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           else {
             final EntitySelectCondition referencedEntitiesCondition = entitySelectCondition(referencedKeys);
             referencedEntitiesCondition.setForeignKeyFetchDepthLimit(conditionFetchDepthLimit);
-            final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCondition,
+            final List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
             final Map<Entity.Key, Entity> referencedEntitiesMappedByKey = mapToKey(referencedEntities);
             for (int j = 0; j < entities.size(); j++) {

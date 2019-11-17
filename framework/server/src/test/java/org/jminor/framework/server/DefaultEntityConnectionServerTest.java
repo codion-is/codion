@@ -81,7 +81,7 @@ public class DefaultEntityConnectionServerTest {
     final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_ID,
             singletonList(TestDomain.EMP_MGR), singletonList(4));
 
-    connection.selectMany(entitySelectCondition(TestDomain.T_EMP, condition));
+    connection.select(entitySelectCondition(TestDomain.T_EMP, condition));
 
     connection.disconnect();
   }
@@ -183,14 +183,14 @@ public class DefaultEntityConnectionServerTest {
 
     final EntitySelectCondition selectCondition = entitySelectCondition(TestDomain.T_EMP)
             .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_NAME));
-    remoteConnectionTwo.selectMany(selectCondition);
+    remoteConnectionTwo.select(selectCondition);
 
     admin.getDatabaseStatistics();
 
     final ClientLog log = admin.getClientLog(connectionRequestTwo.getClientId());
 
     final MethodLogger.Entry entry = log.getEntries().get(0);
-    assertEquals("selectMany", entry.getMethod());
+    assertEquals("select", entry.getMethod());
     assertTrue(entry.getDuration() >= 0);
 
     admin.removeConnections(true);

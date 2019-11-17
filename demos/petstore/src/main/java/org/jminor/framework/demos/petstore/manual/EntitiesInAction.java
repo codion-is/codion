@@ -47,7 +47,7 @@ public class EntitiesInAction {
     //see what products are available for the Cats category
     Entity categoryCats = connection.selectSingle(T_CATEGORY, CATEGORY_NAME, "Cats");
 
-    List<Entity> catProducts = connection.selectMany(T_PRODUCT, PRODUCT_CATEGORY_FK, categoryCats);
+    List<Entity> catProducts = connection.select(T_PRODUCT, PRODUCT_CATEGORY_FK, categoryCats);
 
     catProducts.forEach(System.out::println);
     // end::entitiesInAction[]

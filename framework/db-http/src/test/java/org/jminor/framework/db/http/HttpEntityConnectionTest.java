@@ -94,7 +94,7 @@ public final class HttpEntityConnectionTest {
   public void selectByKey() throws IOException, DatabaseException {
     final Entity.Key key = connection.getDomain().key(TestDomain.T_DEPARTMENT);
     key.put(TestDomain.DEPARTMENT_ID, 10);
-    final List<Entity> depts = connection.selectMany(singletonList(key));
+    final List<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
@@ -105,13 +105,13 @@ public final class HttpEntityConnectionTest {
     final Entity.Key empKey = connection.getDomain().key(TestDomain.T_EMP);
     empKey.put(TestDomain.EMP_ID, 8);
 
-    final List<Entity> selected = connection.selectMany(asList(deptKey, empKey));
+    final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
   }
 
   @Test
-  public void selectManyByValue() throws IOException, DatabaseException {
-    final List<Entity> department = connection.selectMany(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+  public void selectByValue() throws IOException, DatabaseException {
+    final List<Entity> department = connection.select(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     assertEquals(1, department.size());
   }
 
@@ -130,7 +130,7 @@ public final class HttpEntityConnectionTest {
     try {
       connection.beginTransaction();
       connection.delete(singletonList(employee.getKey()));
-      final List<Entity> selected = connection.selectMany(singletonList(employee.getKey()));
+      final List<Entity> selected = connection.select(singletonList(employee.getKey()));
       assertTrue(selected.isEmpty());
     }
     finally {
@@ -146,9 +146,9 @@ public final class HttpEntityConnectionTest {
     empKey.put(TestDomain.EMP_ID, 1);
     try {
       connection.beginTransaction();
-      assertEquals(2, connection.selectMany(asList(deptKey, empKey)).size());
+      assertEquals(2, connection.select(asList(deptKey, empKey)).size());
       connection.delete(asList(deptKey, empKey));
-      final List<Entity> selected = connection.selectMany(asList(deptKey, empKey));
+      final List<Entity> selected = connection.select(asList(deptKey, empKey));
       assertTrue(selected.isEmpty());
     }
     finally {

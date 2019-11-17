@@ -323,7 +323,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(entitySelectCondition(entityId,
+      return connectionProvider.getConnection().select(entitySelectCondition(entityId,
               selectConditionProvider == null ? null : selectConditionProvider.getCondition()));
     }
     catch (final DatabaseException e) {

@@ -23,7 +23,7 @@ import org.jminor.framework.domain.Entity;
  *
  * EntityConnection connection = LocalEntityConnections.createConnection(domain, database, user);
  *
- * List&lt;Entity&gt; entities = connection.selectMany(conditions.selectCondition(Domain.ENTITY_ID));
+ * List&lt;Entity&gt; entities = connection.select(conditions.selectCondition(Domain.ENTITY_ID));
  *
  * connection.disconnect();
  * </pre>

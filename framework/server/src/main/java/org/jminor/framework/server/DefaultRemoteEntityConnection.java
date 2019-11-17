@@ -237,26 +237,26 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
+  public List<Entity> select(final List<Entity.Key> keys) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectMany(keys);
+      return connectionProxy.select(keys);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException {
+  public List<Entity> select(final EntitySelectCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectMany(condition);
+      return connectionProxy.select(condition);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final String entityId, final String propertyId,
-                                 final Object... values) throws DatabaseException {
+  public List<Entity> select(final String entityId, final String propertyId,
+                             final Object... values) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectMany(entityId, propertyId, values);
+      return connectionProxy.select(entityId, propertyId, values);
     }
   }
 

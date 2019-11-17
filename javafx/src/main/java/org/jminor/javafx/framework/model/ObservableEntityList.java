@@ -286,7 +286,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(entitySelectCondition(entityId, selectCondition)
+      return connectionProvider.getConnection().select(entitySelectCondition(entityId, selectCondition)
               .setOrderBy(connectionProvider.getDomain().getDefinition(entityId).getOrderBy()));
     }
     catch (final DatabaseException e) {
