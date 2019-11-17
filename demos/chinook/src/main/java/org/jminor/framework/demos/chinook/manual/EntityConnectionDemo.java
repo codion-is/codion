@@ -191,6 +191,22 @@ public class EntityConnectionDemo {
     // end::deleteKey[]
   }
 
+  public static void transaction(EntityConnection connection) throws DatabaseException {
+    // tag::transaction[]
+    try {
+      connection.beginTransaction();
+
+      //perform insert/update/delete
+
+      connection.commitTransaction();
+    }
+    catch (Exception e) {
+      connection.rollbackTransaction();
+      throw e;
+    }
+    // end::transaction[]
+  }
+
   public static void main(String[] args) throws DatabaseException {
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
     Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
@@ -215,5 +231,6 @@ public class EntityConnectionDemo {
     update(connection);
     deleteCondition(connection);
     deleteKey(connection);
+    transaction(connection);
   }
 }
