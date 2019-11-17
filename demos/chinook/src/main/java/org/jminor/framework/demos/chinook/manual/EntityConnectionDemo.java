@@ -69,27 +69,22 @@ public final class EntityConnectionDemo {
 
   public static void selectValue(EntityConnection connection) throws DatabaseException {
     // tag::selectValue[]
-    List<Entity> aliceInChains = connection.select(
-            T_ARTIST, ARTIST_NAME, "Alice In Chains");
+    List<Entity> aliceInChains = connection.select(T_ARTIST, ARTIST_NAME, "Alice In Chains");
 
-    List<Entity> albums = connection.select(
-            T_ALBUM, ALBUM_ARTIST_FK, aliceInChains.toArray());
+    List<Entity> albums = connection.select(T_ALBUM, ALBUM_ARTIST_FK, aliceInChains.toArray());
     // end::selectValue[]
   }
   
   public static void selectSingleCondition(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleCondition[]
-    EntitySelectCondition condition = entitySelectCondition(
-            T_ARTIST, ARTIST_NAME, LIKE, "Iron Maiden");
+    Entity ironMaiden = connection.selectSingle(
+            entitySelectCondition(T_ARTIST, ARTIST_NAME, LIKE, "Iron Maiden"));
 
-    Entity ironMaiden = connection.selectSingle(condition);
-
-    condition = entitySelectCondition(T_ALBUM, conditionSet(AND,
-            propertyCondition(ALBUM_ARTIST_FK, LIKE, ironMaiden),
-            propertyCondition(ALBUM_TITLE, LIKE, "%live after%")
-                    .setCaseSensitive(false)));
-
-    Entity liveAlbum = connection.selectSingle(condition);
+    Entity liveAlbum = connection.selectSingle(
+            entitySelectCondition(T_ALBUM, conditionSet(AND,
+                    propertyCondition(ALBUM_ARTIST_FK, LIKE, ironMaiden),
+                    propertyCondition(ALBUM_TITLE, LIKE, "%live after%")
+                            .setCaseSensitive(false))));
     // end::selectSingleCondition[]
   }
 
@@ -104,13 +99,11 @@ public final class EntityConnectionDemo {
 
   public static void selectSingleValue(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleValue[]
-    Entity aliceInChains = connection.selectSingle(
-            T_ARTIST, ARTIST_NAME, "Alice In Chains");
+    Entity aliceInChains = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Alice In Chains");
 
     //we only have one album by Alice in Chains
     //otherwise this would throw an exception
-    Entity albumFacelift = connection.selectSingle(
-            T_ALBUM, ALBUM_ARTIST_FK, aliceInChains);
+    Entity albumFacelift = connection.selectSingle(T_ALBUM, ALBUM_ARTIST_FK, aliceInChains);
     // end::selectSingleValue[]
   }
 
@@ -123,8 +116,7 @@ public final class EntityConnectionDemo {
 
   public static void selectDependencies(EntityConnection connection) throws DatabaseException {
     // tag::selectDependencies[]
-    List<Entity> employees = connection.select(
-            entitySelectCondition(T_EMPLOYEE));
+    List<Entity> employees = connection.select(entitySelectCondition(T_EMPLOYEE));
 
     Map<String, Collection<Entity>> dependencies = connection.selectDependencies(employees);
 
@@ -168,8 +160,7 @@ public final class EntityConnectionDemo {
 
   public static void deleteCondition(EntityConnection connection) throws DatabaseException {
     // tag::deleteCondition[]
-    Entity myBand = connection.selectSingle(
-            T_ARTIST, ARTIST_NAME, "Proper Name");
+    Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Proper Name");
 
     connection.delete(entityCondition(T_ALBUM, ALBUM_ARTIST_FK, LIKE, myBand));
     // end::deleteCondition[]
@@ -177,8 +168,7 @@ public final class EntityConnectionDemo {
 
   public static void deleteKey(EntityConnection connection) throws DatabaseException {
     // tag::deleteKey[]
-    Entity myBand = connection.selectSingle(
-            T_ARTIST, ARTIST_NAME, "Proper Name");
+    Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Proper Name");
 
     connection.delete(singletonList(myBand.getKey()));
     // end::deleteKey[]
