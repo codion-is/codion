@@ -802,7 +802,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       return;
     }
     for (final Map.Entry<String, List<Entity>> entitiesByEntityIdEntry : entitiesByEntityId.entrySet()) {
-      final List<Entity.Key> originalKeys = getKeys(entitiesByEntityIdEntry.getValue(), true);
+      final List<Entity.Key> originalKeys = getOriginalKeys(entitiesByEntityIdEntry.getValue());
       final EntitySelectCondition selectForUpdateCondition = entitySelectCondition(originalKeys);
       selectForUpdateCondition.setSelectPropertyIds(getWritableColumnPropertyIds(entitiesByEntityIdEntry.getKey()));
       selectForUpdateCondition.setForUpdate(true);

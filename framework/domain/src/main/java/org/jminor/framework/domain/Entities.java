@@ -100,20 +100,12 @@ public final class Entities {
   }
 
   /**
-   * Returns the primary key values of the given entities, current or original.
+   * Returns the primary keys of the given entities with their original values.
    * @param entities the entities
-   * @param originalValue if true then the original value of the primary key is returned
-   * @return a List containing the primary keys of the given entities
+   * @return a List containing the primary keys of the given entities with their original values
    */
-  public static List<Entity.Key> getKeys(final List<Entity> entities, final boolean originalValue) {
-    requireNonNull(entities, ENTITIES_PARAM);
-    final List<Entity.Key> keys = new ArrayList<>(entities.size());
-    for (int i = 0; i < entities.size(); i++) {
-      final Entity entity = entities.get(i);
-      keys.add(originalValue ? entity.getOriginalKey() : entity.getKey());
-    }
-
-    return keys;
+  public static List<Entity.Key> getOriginalKeys(final List<Entity> entities) {
+    return getKeys(entities, true);
   }
 
   /**
@@ -384,5 +376,22 @@ public final class Entities {
     }
 
     return collection;
+  }
+
+  /**
+   * Returns the primary key values of the given entities, current or original.
+   * @param entities the entities
+   * @param originalValue if true then the original value of the primary key is returned
+   * @return a List containing the primary keys of the given entities
+   */
+  private static List<Entity.Key> getKeys(final List<Entity> entities, final boolean originalValue) {
+    requireNonNull(entities, ENTITIES_PARAM);
+    final List<Entity.Key> keys = new ArrayList<>(entities.size());
+    for (int i = 0; i < entities.size(); i++) {
+      final Entity entity = entities.get(i);
+      keys.add(originalValue ? entity.getOriginalKey() : entity.getKey());
+    }
+
+    return keys;
   }
 }

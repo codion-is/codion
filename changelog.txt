@@ -5292,3 +5292,4 @@
   PropertyCondition.setCaseSensitive() added
   Serializer removed
   DefaultLocalEntityConnection constructor simplified, LocalEntityConnection setters made fluent
+  Entities.getOriginalKeys() added, old getKeys() with originalValue boolean parameter now private
