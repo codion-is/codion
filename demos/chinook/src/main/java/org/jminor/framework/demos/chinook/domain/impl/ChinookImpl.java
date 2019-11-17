@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.domain.impl;
 
+import org.jminor.common.db.AbstractFunction;
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.condition.EntitySelectCondition;
@@ -11,8 +12,10 @@ import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 
+import java.math.BigDecimal;
 import java.sql.Types;
 import java.text.NumberFormat;
+import java.util.Collections;
 import java.util.List;
 
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
@@ -333,6 +336,7 @@ public final class ChinookImpl extends Domain implements Chinook {
 
   void dbOperations() {
     addOperation(new UpdateTotalsProcedure(P_UPDATE_TOTALS));
+    addOperation(new IncreasePriceFunction(F_INCREASE_PRICE));
   }
 
   private static final class UpdateTotalsProcedure extends AbstractProcedure<LocalEntityConnection> {
@@ -346,12 +350,12 @@ public final class ChinookImpl extends Domain implements Chinook {
                         final Object... arguments) throws DatabaseException {
       try {
         entityConnection.beginTransaction();
-        final EntitySelectCondition selectCondition = entitySelectCondition(Chinook.T_INVOICE);
+        final EntitySelectCondition selectCondition = entitySelectCondition(T_INVOICE);
         selectCondition.setForUpdate(true);
         selectCondition.setForeignKeyFetchDepthLimit(0);
         final List<Entity> invoices = entityConnection.selectMany(selectCondition);
         for (final Entity invoice : invoices) {
-          invoice.put(Chinook.INVOICE_TOTAL, invoice.get(Chinook.INVOICE_TOTAL_SUB));
+          invoice.put(INVOICE_TOTAL, invoice.get(INVOICE_TOTAL_SUB));
         }
         final List<Entity> modifiedInvoices = getModifiedEntities(invoices);
         if (!modifiedInvoices.isEmpty()) {
@@ -359,11 +363,37 @@ public final class ChinookImpl extends Domain implements Chinook {
         }
         entityConnection.commitTransaction();
       }
-      catch (final DatabaseException dbException) {
-        if (entityConnection.isTransactionOpen()) {
-          entityConnection.rollbackTransaction();
-        }
-        throw dbException;
+      catch (final DatabaseException exception) {
+        entityConnection.rollbackTransaction();
+        throw exception;
+      }
+    }
+  }
+
+  private static final class IncreasePriceFunction extends AbstractFunction<LocalEntityConnection> {
+
+    private IncreasePriceFunction(final String id) {
+      super(id, "Increase track prices");
+    }
+
+    @Override
+    public List execute(final LocalEntityConnection entityConnection,
+                        final Object... arguments) throws DatabaseException {
+      final BigDecimal priceIncrease = (BigDecimal) arguments[0];
+      try {
+        entityConnection.beginTransaction();
+        final List<Entity> allTracks = entityConnection.selectMany(entitySelectCondition(T_TRACK));
+        allTracks.forEach(track ->
+                track.put(TRACK_UNITPRICE,
+                        track.getBigDecimal(TRACK_UNITPRICE).add(priceIncrease)));
+        entityConnection.update(allTracks);
+        entityConnection.commitTransaction();
+
+        return Collections.singletonList(allTracks.size());
+      }
+      catch (final DatabaseException exception) {
+        entityConnection.rollbackTransaction();
+        throw exception;
       }
     }
   }

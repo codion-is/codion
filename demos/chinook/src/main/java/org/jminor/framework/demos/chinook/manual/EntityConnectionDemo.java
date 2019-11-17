@@ -9,6 +9,7 @@ import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.reports.ReportException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
@@ -18,8 +19,14 @@ import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.plugin.jasperreports.model.JasperReportsResult;
+import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
 
+import net.sf.jasperreports.engine.JasperPrint;
+
+import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +37,7 @@ import static java.util.Collections.singletonList;
  * When running this make sure the chinook demo module directory is the
  * working directory, due to a relative path to a db init script
  */
-public class EntityConnectionDemo {
+public final class EntityConnectionDemo {
 
   public static void selectManyCondition(EntityConnection connection) throws DatabaseException {
     // tag::selectManyCondition[]
@@ -191,6 +198,37 @@ public class EntityConnectionDemo {
     // end::deleteKey[]
   }
 
+  public static void procedure(EntityConnection connection) throws DatabaseException {
+    // tag::procedure[]
+    connection.executeProcedure(Chinook.P_UPDATE_TOTALS);
+    // end::procedure[]
+  }
+
+  public static void function(EntityConnection connection) throws DatabaseException {
+    // tag::function[]
+    BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
+
+    List result = connection.executeFunction(Chinook.F_INCREASE_PRICE, priceIncrease);
+
+    int modifiedTracks = (int) result.get(0);
+    // end::function[]
+  }
+
+  public static void report(EntityConnection connection) throws ReportException, DatabaseException {
+    // tag::report[]
+    Map<String, Object> reportParameters = new HashMap<>();
+    reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
+
+    JasperReportsWrapper reportsWrapper = new JasperReportsWrapper(
+            "build/classes/reports/customer_report.jasper", reportParameters);
+
+    JasperReportsResult reportResult =
+            (JasperReportsResult) connection.fillReport(reportsWrapper);
+
+    JasperPrint jasperPrint = reportResult.getResult();
+    //end::report[]
+  }
+
   public static void transaction(EntityConnection connection) throws DatabaseException {
     // tag::transaction[]
     try {
@@ -207,7 +245,7 @@ public class EntityConnectionDemo {
     // end::transaction[]
   }
 
-  public static void main(String[] args) throws DatabaseException {
+  public static void main(String[] args) throws DatabaseException, ReportException {
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
     Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
@@ -231,6 +269,9 @@ public class EntityConnectionDemo {
     update(connection);
     deleteCondition(connection);
     deleteKey(connection);
+    procedure(connection);
+    function(connection);
+    report(connection);
     transaction(connection);
   }
 }

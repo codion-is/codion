@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.demos.chinook.manual;
 
-import org.jminor.common.db.exception.DatabaseException;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -13,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public final class EntityConnectionDemoTest {
 
   @Test
-  public void test() throws DatabaseException {
+  public void test() throws Exception {
     EntityConnectionDemo.main(new String[0]);
   }
 }
