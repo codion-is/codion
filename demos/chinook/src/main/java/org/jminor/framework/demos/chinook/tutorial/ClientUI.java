@@ -144,7 +144,7 @@ public final class ClientUI {
   }
 
   public static void main(final String[] args) {
-    // Configure the datababase
+    // Configure the database
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
     Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
