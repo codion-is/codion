@@ -129,12 +129,6 @@ public class DomainTest {
   }
 
   @Test
-  public void getEntitySerializerUnconfigured() {
-    domain.ENTITY_SERIALIZER_CLASS.set(null);
-    assertThrows(RuntimeException.class, domain::getEntitySerializer);
-  }
-
-  @Test
   public void key() {
     final String entityId = "DomainTest.key";
     final String propertyId1 = "id1";

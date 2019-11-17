@@ -1,7 +1,6 @@
 /**
  * Package configuration values:<br>
  * {@link org.jminor.framework.domain.Domain#ALLOW_REDEFINE_ENTITY}<br>
- * {@link org.jminor.framework.domain.Domain#ENTITY_SERIALIZER_CLASS}<br>
  * {@link org.jminor.framework.domain.Entity.Definition#STRICT_FOREIGN_KEYS}<br>
  * {@link org.jminor.framework.domain.property.Property#MAXIMUM_FRACTION_DIGITS}<br>
  * {@link org.jminor.framework.domain.property.Property#TIME_FORMAT}<br>

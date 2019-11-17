@@ -3,7 +3,6 @@
  */
 package org.jminor.plugin.json;
 
-import org.jminor.common.Serializer;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 
@@ -183,7 +182,7 @@ public class EntityJSONParserTest {
   }
 
   @Test
-  public void emptyStringAndNull() throws Serializer.SerializeException, JSONException {
+  public void emptyStringAndNull() throws JSONException {
     final EntityJSONParser parser = new EntityJSONParser(DOMAIN);
     assertEquals(0, parser.deserialize("").size());
     assertEquals(0, parser.deserialize(null).size());

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.servlet;
 
-import org.jminor.common.Serializer;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
@@ -126,8 +125,7 @@ public class EntityServletServerTest {
   }
 
   @Test
-  public void test() throws URISyntaxException, IOException, InterruptedException,
-          Serializer.SerializeException, ClassNotFoundException {
+  public void test() throws URISyntaxException, IOException, InterruptedException, ClassNotFoundException {
     final RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
