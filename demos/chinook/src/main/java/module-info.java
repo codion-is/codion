@@ -6,6 +6,7 @@ module org.jminor.framework.demos.chinook {
   requires org.jminor.swing.framework.ui;
   requires org.jminor.javafx.framework;
   requires org.jminor.plugin.jasperreports;
+  requires jasperreports;
 
   exports org.jminor.framework.demos.chinook.beans.ui
           to org.jminor.swing.framework.ui;
