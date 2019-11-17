@@ -1,0 +1,34 @@
+= EntityPanel
+:dir-source: ../../demos/manual/src/main/java
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+
+== Introduction
+
+The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanel] is the base UI class for working with entity instances. It usually consists of an {url-javadoc}/org/jminor/swing/framework/ui/EntityTablePanel.html[EntityTablePanel], an {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], which contains the controls (text fields, combo boxes and such) for editing an entity instance and a set of detail panels representing the entities having a master/detail relationship with the underlying entity.
+
+== EntityEditPanel
+
+When instantiating an EntityPanel you can supply an EntityEditPanel instance as a parameter. When implementing an EntityEditPanel you must implement the __initializeUI()__ method, in which you should initialize the edit panel UI. The EntityEditPanel class exposes methods for creating input components and binding them with the underlying EntityEditModel instance.
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerEditPanel.java[lines=12..-1]
+----
+
+== Detail panels
+
+Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the correct detail model for the detail panel, in this case a *CustomerModel* instance, see <<Detail models, detail models>>. See link:#_entityapplicationpanel[EntityApplicationPanel].
+
+== Custom actions
+The action mechanism used throughout the JMinor framework is based on the {url-javadoc}/org/jminor/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/org/jminor/swing/common/ui/control/ControlSet.html[ControlSet] class which, as the name suggests, represents a set of controls. There are two static utility classes for creating and presenting controls, {url-javadoc}/org/jminor/swing/common/ui/control/Controls.html[Controls] and {url-javadoc}/org/jminor/swing/common/ui/control/ControlProvider.html[ControlProvider] respectively.
+
+== Adding a print action
+
+The most common place to add a custom control is the table popup menu, f.ex. an action for printing reports. The table popup menu is based on the ControlSet returned by the **getTablePopupControlSet()** method in the EntityPanel class which in turn uses the ControlSet returned by the **getPrintControls()** method in the same class for constructing the print popup submenu. So, to add a custom print action you override the **getPrintControls()** method and return a ControlSet containing the action.
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[lines=22..40]
+     //see below
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[lines=54..55]
+----

@@ -3,7 +3,6 @@
  */
 package org.jminor.plugin.json;
 
-import org.jminor.common.Serializer;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -12,7 +11,6 @@ import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
@@ -33,7 +31,7 @@ import static org.jminor.common.Util.nullOrEmpty;
  * A class responsible for serializing Entity related objects to and from the JSON format.
  * Note that this class is not thread safe.
  */
-public final class EntityJSONParser implements Serializer<Entity> {
+public final class EntityJSONParser {
 
   private static final String ENTITY_ID = "entityId";
   private static final String VALUES = "values";
@@ -130,41 +128,27 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * Serializes the given Entity instances into a JSON string array
    * @param entities the entities
    * @return a JSON string representation of the given entities
-   * @throws SerializeException in case of an exception
    */
-  @Override
-  public String serialize(final List<Entity> entities) throws SerializeException {
-    try {
-      if (nullOrEmpty(entities)) {
-        return "";
-      }
-
-      final JSONArray jsonArray = new JSONArray();
-      for (final Entity entity : entities) {
-        jsonArray.put(toJSONObject(entity));
-      }
-
-      return indentation < 0 ? jsonArray.toString() : jsonArray.toString(indentation);
+  public String serialize(final List<Entity> entities) {
+    if (nullOrEmpty(entities)) {
+      return "";
     }
-    catch (final JSONException e) {
-      throw new SerializeException(e.getMessage(), e);
+
+    final JSONArray jsonArray = new JSONArray();
+    for (final Entity entity : entities) {
+      jsonArray.put(toJSONObject(entity));
     }
+
+    return indentation < 0 ? jsonArray.toString() : jsonArray.toString(indentation);
   }
 
   /**
    * Deserializes the given JSON string into a list of Entity instances
    * @param jsonString the JSON string to parse
    * @return a List containing the Entity instances represented by the given JSON string
-   * @throws SerializeException in case of an exception
    */
-  @Override
-  public List<Entity> deserialize(final String jsonString) throws SerializeException {
-    try {
-      return deserializeEntities(jsonString);
-    }
-    catch (final Exception e) {
-      throw new SerializeException(e.getMessage(), e);
-    }
+  public List<Entity> deserialize(final String jsonString) {
+    return deserializeEntities(jsonString);
   }
 
   /**

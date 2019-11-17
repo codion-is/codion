@@ -8,7 +8,6 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
-import org.jminor.common.FileUtil;
 import org.jminor.common.PropertyValue;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
@@ -541,17 +540,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * @return a control for exporting the selected records to file
-   */
-  public final Control getExportControl() {
-    return Controls.control(this::exportSelected,
-            MESSAGES.getString("export_selected") + TRIPLEDOT,
-            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
-            MESSAGES.getString("export_selected_tip"), 0, null,
-            Images.loadImage(Images.IMG_SAVE_16));
-  }
-
-  /**
    * @return a control for printing the table
    */
   public final Control getPrintTableControl() {
@@ -663,23 +651,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       else {
         handleException(e);
       }
-    }
-    catch (final Exception e) {
-      handleException(e);
-    }
-  }
-
-  /**
-   * Exports the selected records as a text file using the available serializer
-   * @see org.jminor.framework.domain.Domain#getEntitySerializer()
-   * @see org.jminor.framework.domain.Domain#ENTITY_SERIALIZER_CLASS
-   */
-  public final void exportSelected() {
-    try {
-      final List<Entity> selected = getEntityTableModel().getSelectionModel().getSelectedItems();
-      FileUtil.writeFile(getEntityTableModel().getConnectionProvider().getDomain().getEntitySerializer()
-              .serialize(selected), UiUtil.selectFileToSave(this, null, null));
-      JOptionPane.showMessageDialog(this, MESSAGES.getString("export_selected_done"));
     }
     catch (final Exception e) {
       handleException(e);
@@ -1424,9 +1395,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     setControl(CLEAR, getClearControl());
     setControl(REFRESH, getRefreshControl());
     setControl(SELECT_COLUMNS, getSelectColumnsControl());
-    if (getEntityTableModel().getConnectionProvider().getDomain().entitySerializerAvailable()) {
-      setControl(EXPORT_JSON, getExportControl());
-    }
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
     setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
     if (includeConditionPanel && conditionPanel != null) {

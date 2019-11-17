@@ -1,0 +1,64 @@
+= EntityModel
+:dir-source: ../../demos/manual/src/main/java
+:dir-tutorials: ../tutorials
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+
+== Introduction
+
+The {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] interface defines the CRUD business logic used by the {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class when entities are being edited, and must be defined for each entity requiring a CRUD user interface. The EntityEditModel works with a single entity instance, called the active entity, which can be set via the {url-javadoc}/org/jminor/framework/model/EntityEditModel.html#setEntity-org.jminor.framework.domain.Entity-[setEntity(Entity entity)] method and retrieved via {url-javadoc}/org/jminor/framework/model/EntityEditModel.html#getEntityCopy--[getEntityCopy()]. The EntityEditModel interface exposes a number of methods for manipulating as well as querying the property values of the active entity, via the {url-javadoc}/org/jminor/common/model/valuemap/ValueMapEditModel.html[ValueMapEditModel] interface which it extends
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressModel.java[lines=9..-1]
+----
+
+== Detail models
+
+Directly adding a detail models is a trivial matter, the framework handles everything as long as the master/detail relationship is defined in the domain model. See link:#_entityapplicationmodel[EntityApplicationModel].
+
+== Table model
+
+Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] can contain a single {url-javadoc}/org/jminor/framework/model/EntityTableModel.html[EntityTableModel] instance. This table model can be created automatically by the **EntityModel** or supplied via a constructor argument in case of a specialized implementation.
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerTableModel.java[lines=10..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressTableModel.java[lines=10..-1]
+----
+
+== Edit model
+
+Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] contains a single {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] instance. This edit model can be created automatically by the __EntityModel__ or supplied via a constructor argument in case of a specialized implementation.
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerEditModel.java[lines=10..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressEditModel.java[lines=10..-1]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/Misc.java[lines=20..53]
+----
+
+== Event binding
+
+The EntityModel, EntityEditModel and EntityTableModel classes expose a number of *addListener* methods.
+
+The following example prints, to the standard output, all changes made to a given property as well as a message indicating that a refresh has started.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerModel.java[lines=18..27]
+----
+
+== Examples
+* <<{dir-tutorials}/empdept.adoc#_application_model_layer, EmpDept entity models>>

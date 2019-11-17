@@ -1,0 +1,38 @@
+= The basics
+:dir-source: ../../demos/manual/src/main/java
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+
+== Common classes
+
+Two common classes used throughout the framework are the {url-javadoc}/org/jminor/common/Event.html[Event] and {url-javadoc}/org/jminor/common/State.html[State] classes, their respective observers {url-javadoc}/org/jminor/common/EventObserver.html[EventObserver] and {url-javadoc}/org/jminor/common/StateObserver.html[StateObserver] and listeners {url-javadoc}/org/jminor/common/EventListener.html[EventListener] and {url-javadoc}/org/jminor/common/EventDataListener.html[EventDataListener].
+
+=== Event
+
+The {url-javadoc}/org/jminor/common/Event.html[Event] class is a simple event implementation used throughout the framework to signal object state changes or to indicate that an action is about to start or has ended. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *fire()* method, with or without a *data* parameter.
+
+Events are instantiated via the {url-javadoc}/org/jminor/common/Events.html[Events] factory class.
+
+To listen to Events you use the {url-javadoc}/org/jminor/common/EventListener.html[EventListener] or {url-javadoc}/org/jminor/common/EventDataListener.html[EventDataListener] interfaces.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=event]
+----
+
+=== State
+
+The {url-javadoc}/org/jminor/common/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}/org/jminor/common/StateObserver.html[StateObserver].
+
+States are instantiated via the {url-javadoc}/org/jminor/common/States.html[States] factory class.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=state]
+----
+
+Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnabledState* method, where the action's *enabled* status is synchronized with the state.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=action]
+----

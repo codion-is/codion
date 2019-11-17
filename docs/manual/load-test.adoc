@@ -1,0 +1,19 @@
+= Application load testing
+:dir-source: ../../demos/manual/src/main/java
+:dir-tutorials: ../tutorials
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+
+== Introduction
+
+The application load testing harness is used to see how your application, server and database handle multiple concurrent users. This is done by extending the abstract class {url-javadoc}/org/jminor/swing/framework/tools/EntityLoadTestModel.html[EntityLoadTestModel].
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/test/StoreLoadTest.java[lines=17..-1]
+----
+
+== Examples
+
+* <<{dir-tutorials}/empdept.adoc#_application_load_test, EmpDept application load test>>
+* <<{dir-tutorials}/chinook.adoc#_application_load_test, Chinook application load test>>
+* <<{dir-tutorials}/petstore.adoc#_application_load_test, Petstore application load test>>
