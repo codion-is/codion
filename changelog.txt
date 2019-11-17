@@ -5311,3 +5311,6 @@
   Condition.expand() removed, functionality moved to WhereCondition
   PropertyCondition.setCaseSensitive() added
   Serializer removed
+  DefaultLocalEntityConnection constructor simplified, LocalEntityConnection setters made fluent
+  Entities.getOriginalKeys() added, old getKeys() with originalValue boolean parameter now private
+  Entities.getValues() and getDistinctValues() streamlined, getDistinctValuesIncludingNull() added

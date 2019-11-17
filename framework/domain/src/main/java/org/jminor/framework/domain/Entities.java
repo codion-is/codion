@@ -11,7 +11,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -29,6 +28,7 @@ import static org.jminor.common.Util.nullOrEmpty;
 public final class Entities {
 
   private static final String ENTITIES_PARAM = "entities";
+  private static final String PROPERTY_ID_PARAM = "propertyId";
 
   private Entities() {}
 
@@ -100,20 +100,12 @@ public final class Entities {
   }
 
   /**
-   * Returns the primary key values of the given entities, current or original.
+   * Returns the primary keys of the given entities with their original values.
    * @param entities the entities
-   * @param originalValue if true then the original value of the primary key is returned
-   * @return a List containing the primary keys of the given entities
+   * @return a List containing the primary keys of the given entities with their original values
    */
-  public static List<Entity.Key> getKeys(final List<Entity> entities, final boolean originalValue) {
-    requireNonNull(entities, ENTITIES_PARAM);
-    final List<Entity.Key> keys = new ArrayList<>(entities.size());
-    for (int i = 0; i < entities.size(); i++) {
-      final Entity entity = entities.get(i);
-      keys.add(originalValue ? entity.getOriginalKey() : entity.getKey());
-    }
-
-    return keys;
+  public static List<Entity.Key> getOriginalKeys(final List<Entity> entities) {
+    return getKeys(entities, true);
   }
 
   /**
@@ -138,50 +130,38 @@ public final class Entities {
    * @param <T> the value type
    * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
-   * @return a List containing the values of the property with the given id from the given entities,
-   * null values are included
+   * @return a List containing the non-null values of the property with the given id from the given entities
    */
   public static <T> List<T> getValues(final String propertyId, final Collection<Entity> entities) {
-    return getValues(propertyId, entities, true);
+    requireNonNull(propertyId, PROPERTY_ID_PARAM);
+    requireNonNull(entities, ENTITIES_PARAM);
+    return entities.stream().map(entity -> (T) entity.get(propertyId)).collect(toList());
   }
 
   /**
-   * Returns the values associated with the given property from the given entities.
-   * @param <T> the value type
-   * @param propertyId the id of the property for which to retrieve the values
-   * @param entities the entities from which to retrieve the property value
-   * @param includeNullValues if true then null values are included
-   * @return a List containing the values of the property with the given id from the given entities
-   */
-  public static <T> List<T> getValues(final String propertyId, final Collection<Entity> entities,
-                                      final boolean includeNullValues) {
-    return (List<T>) collectValues(new ArrayList<T>(entities == null ? 0 : entities.size()), propertyId, entities, includeNullValues);
-  }
-
-  /**
-   * Returns a Collection containing the distinct values of {@code propertyId} from the given entities, excluding null values.
-   * If the {@code entities} list is null an empty Collection is returned.
+   * Returns a Collection containing the distinct non-null values of {@code propertyId} from the given entities.
    * @param <T> the value type
    * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
-   * @return a List containing the distinct property values, excluding null values
+   * @return a List containing the distinct non-null property values
    */
   public static <T> List<T> getDistinctValues(final String propertyId, final Collection<Entity> entities) {
-    return getDistinctValues(propertyId, entities, false);
+    requireNonNull(propertyId, PROPERTY_ID_PARAM);
+    requireNonNull(entities, ENTITIES_PARAM);
+    return entities.stream().map(entity -> (T) entity.get(propertyId)).distinct().filter(Objects::nonNull).collect(toList());
   }
 
   /**
    * Returns a Collection containing the distinct values of {@code propertyId} from the given entities.
-   * If the {@code entities} list is null an empty Collection is returned.
    * @param <T> the value type
    * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
-   * @param includeNullValue if true then null is considered a value
    * @return a List containing the distinct property values
    */
-  public static <T> List<T> getDistinctValues(final String propertyId, final Collection<Entity> entities,
-                                              final boolean includeNullValue) {
-    return new ArrayList<>(collectValues(new HashSet<>(), propertyId, entities, includeNullValue));
+  public static <T> List<T> getDistinctValuesIncludingNull(final String propertyId, final Collection<Entity> entities) {
+    requireNonNull(propertyId, PROPERTY_ID_PARAM);
+    requireNonNull(entities, ENTITIES_PARAM);
+    return entities.stream().map(entity -> (T) entity.get(propertyId)).distinct().collect(toList());
   }
 
   /**
@@ -370,19 +350,20 @@ public final class Entities {
     return null;
   }
 
-  private static <T> Collection<T> collectValues(final Collection<T> collection, final String propertyId,
-                                                 final Collection<Entity> entities, final boolean includeNullValues) {
-    requireNonNull(collection);
-    requireNonNull(propertyId);
-    if (!nullOrEmpty(entities)) {
-      for (final Entity entity : entities) {
-        final Object value = entity.get(propertyId);
-        if (value != null || includeNullValues) {
-          collection.add((T) value);
-        }
-      }
+  /**
+   * Returns the primary key values of the given entities, current or original.
+   * @param entities the entities
+   * @param originalValue if true then the original value of the primary key is returned
+   * @return a List containing the primary keys of the given entities
+   */
+  private static List<Entity.Key> getKeys(final List<Entity> entities, final boolean originalValue) {
+    requireNonNull(entities, ENTITIES_PARAM);
+    final List<Entity.Key> keys = new ArrayList<>(entities.size());
+    for (int i = 0; i < entities.size(); i++) {
+      final Entity entity = entities.get(i);
+      keys.add(originalValue ? entity.getOriginalKey() : entity.getKey());
     }
 
-    return collection;
+    return keys;
   }
 }
