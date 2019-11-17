@@ -193,7 +193,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = connection.selectMany(entitySelectCondition(TestDomain.T_EMP,
+    final List<Entity> salesEmployees = connection.select(entitySelectCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department));
     assertFalse(salesEmployees.isEmpty());
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);

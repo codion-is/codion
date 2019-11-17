@@ -353,7 +353,7 @@ public final class ChinookImpl extends Domain implements Chinook {
         final EntitySelectCondition selectCondition = entitySelectCondition(T_INVOICE);
         selectCondition.setForUpdate(true);
         selectCondition.setForeignKeyFetchDepthLimit(0);
-        final List<Entity> invoices = entityConnection.selectMany(selectCondition);
+        final List<Entity> invoices = entityConnection.select(selectCondition);
         for (final Entity invoice : invoices) {
           invoice.put(INVOICE_TOTAL, invoice.get(INVOICE_TOTAL_SUB));
         }
@@ -382,7 +382,7 @@ public final class ChinookImpl extends Domain implements Chinook {
       final BigDecimal priceIncrease = (BigDecimal) arguments[0];
       try {
         entityConnection.beginTransaction();
-        final List<Entity> allTracks = entityConnection.selectMany(entitySelectCondition(T_TRACK));
+        final List<Entity> allTracks = entityConnection.select(entitySelectCondition(T_TRACK));
         allTracks.forEach(track ->
                 track.put(TRACK_UNITPRICE,
                         track.getBigDecimal(TRACK_UNITPRICE).add(priceIncrease)));

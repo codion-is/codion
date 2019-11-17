@@ -40,41 +40,41 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
  */
 public final class EntityConnectionDemo {
 
-  public static void selectManyCondition(EntityConnection connection) throws DatabaseException {
-    // tag::selectManyCondition[]
+  public static void selectCondition(EntityConnection connection) throws DatabaseException {
+    // tag::selectCondition[]
     EntitySelectCondition condition =
             entitySelectCondition(T_ARTIST, ARTIST_NAME, LIKE, "The %");
 
-    List<Entity> artists = connection.selectMany(condition);
+    List<Entity> artists = connection.select(condition);
 
     condition = entitySelectCondition(T_ALBUM, conditionSet(AND,
             propertyCondition(ALBUM_ARTIST_FK, LIKE, artists),
             propertyCondition(ALBUM_TITLE, NOT_LIKE, "%live%")
                     .setCaseSensitive(false)));
 
-    List<Entity> nonLiveAlbums = connection.selectMany(condition);
-    // end::selectManyCondition[]
+    List<Entity> nonLiveAlbums = connection.select(condition);
+    // end::selectCondition[]
   }
 
-  public static void selectManyKeys(EntityConnection connection) throws DatabaseException {
-    // tag::selectManyKeys[]
+  public static void selectKeys(EntityConnection connection) throws DatabaseException {
+    // tag::selectKeys[]
     Entity.Key key42 = connection.getDomain().key(T_ARTIST);
     key42.put(ARTIST_ARTISTID, 42L);
     Entity.Key key43 = connection.getDomain().key(T_ARTIST);
     key43.put(ARTIST_ARTISTID, 43L);
 
-    List<Entity> artists = connection.selectMany(asList(key42, key43));
-    // end::selectManyKeys[]
+    List<Entity> artists = connection.select(asList(key42, key43));
+    // end::selectKeys[]
   }
 
-  public static void selectManyValue(EntityConnection connection) throws DatabaseException {
-    // tag::selectManyValue[]
-    List<Entity> aliceInChains = connection.selectMany(
+  public static void selectValue(EntityConnection connection) throws DatabaseException {
+    // tag::selectValue[]
+    List<Entity> aliceInChains = connection.select(
             T_ARTIST, ARTIST_NAME, "Alice In Chains");
 
-    List<Entity> albums = connection.selectMany(
+    List<Entity> albums = connection.select(
             T_ALBUM, ALBUM_ARTIST_FK, aliceInChains.toArray());
-    // end::selectManyValue[]
+    // end::selectValue[]
   }
   
   public static void selectSingleCondition(EntityConnection connection) throws DatabaseException {
@@ -123,7 +123,7 @@ public final class EntityConnectionDemo {
 
   public static void selectDependencies(EntityConnection connection) throws DatabaseException {
     // tag::selectDependencies[]
-    List<Entity> employees = connection.selectMany(
+    List<Entity> employees = connection.select(
             entitySelectCondition(T_EMPLOYEE));
 
     Map<String, Collection<Entity>> dependencies = connection.selectDependencies(employees);
@@ -242,9 +242,9 @@ public final class EntityConnectionDemo {
                     .setUser(new User("scott", "tiger".toCharArray()));
 
     EntityConnection connection = connectionProvider.getConnection();
-    selectManyCondition(connection);
-    selectManyKeys(connection);
-    selectManyValue(connection);
+    selectCondition(connection);
+    selectKeys(connection);
+    selectValue(connection);
     selectSingleCondition(connection);
     selectSingleKeys(connection);
     selectSingleValue(connection);

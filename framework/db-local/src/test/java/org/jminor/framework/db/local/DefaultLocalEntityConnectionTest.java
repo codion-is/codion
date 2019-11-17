@@ -204,7 +204,7 @@ public class DefaultLocalEntityConnectionTest {
   public void selectDependencies() throws Exception {
     final Map<String, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
     assertTrue(empty.isEmpty());
-    final List<Entity> accounting = connection.selectMany(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    final List<Entity> accounting = connection.select(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final Map<String, Collection<Entity>> emps = connection.selectDependencies(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(TestDomain.T_EMP));
@@ -216,14 +216,14 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void selectManyLimitOffset() throws Exception {
+  public void selectLimitOffset() throws Exception {
     final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP)
             .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_NAME)).setLimit(2);
-    List<Entity> result = connection.selectMany(condition);
+    List<Entity> result = connection.select(condition);
     assertEquals(2, result.size());
     condition.setLimit(3);
     condition.setOffset(3);
-    result = connection.selectMany(condition);
+    result = connection.select(condition);
     assertEquals(3, result.size());
     assertEquals("BLAKE", result.get(0).get(TestDomain.EMP_NAME));
     assertEquals("CLARK", result.get(1).get(TestDomain.EMP_NAME));
@@ -231,49 +231,49 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void selectManyWhereNull() throws Exception {
-    connection.selectMany(TestDomain.T_EMP, TestDomain.EMP_MGR_FK, (Object[]) null);
-    connection.selectMany(TestDomain.T_EMP, TestDomain.EMP_DATA, (Object) null);
+  public void selectWhereNull() throws Exception {
+    connection.select(TestDomain.T_EMP, TestDomain.EMP_MGR_FK, (Object[]) null);
+    connection.select(TestDomain.T_EMP, TestDomain.EMP_DATA, (Object) null);
   }
 
   @Test
-  public void selectMany() throws Exception {
-    List<Entity> result = connection.selectMany(new ArrayList<>());
+  public void select() throws Exception {
+    List<Entity> result = connection.select(new ArrayList<>());
     assertTrue(result.isEmpty());
-    result = connection.selectMany(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, 10, 20);
+    result = connection.select(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, 10, 20);
     assertEquals(2, result.size());
-    result = connection.selectMany(getKeys(result));
+    result = connection.select(getKeys(result));
     assertEquals(2, result.size());
-    result = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT,
+    result = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT,
             Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID,
                     asList(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_ID), asList(10, 20))));
     assertEquals(2, result.size());
-    result = connection.selectMany(entitySelectCondition(JOINED_QUERY_ENTITY_ID,
+    result = connection.select(entitySelectCondition(JOINED_QUERY_ENTITY_ID,
             Conditions.customCondition(JOINED_QUERY_CONDITION_ID)));
     assertEquals(7, result.size());
 
     final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP,
             Conditions.customCondition(TestDomain.EMP_NAME_IS_BLAKE_CONDITION_ID));
-    result = connection.selectMany(condition);
+    result = connection.select(condition);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
     emp = emp.getForeignKey(TestDomain.EMP_MGR_FK);
     assertFalse(emp.isLoaded(TestDomain.EMP_MGR_FK));
 
-    result = connection.selectMany(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_DEPARTMENT_FK, 0));
+    result = connection.select(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_DEPARTMENT_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
 
-    result = connection.selectMany(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, 0));
+    result = connection.select(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(emp.isLoaded(TestDomain.EMP_MGR_FK));
 
-    result = connection.selectMany(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, 2));
+    result = connection.select(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, 2));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
@@ -281,7 +281,7 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.getForeignKey(TestDomain.EMP_MGR_FK);
     assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
 
-    result = connection.selectMany(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, -1));
+    result = connection.select(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, -1));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
@@ -291,33 +291,33 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void selectManyFetchCount() throws DatabaseException {
-    List<Entity> departments = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT));
+  public void selectFetchCount() throws DatabaseException {
+    List<Entity> departments = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT));
     assertEquals(4, departments.size());
-    departments = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(0));
+    departments = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(0));
     assertTrue(departments.isEmpty());
-    departments = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(2));
+    departments = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(2));
     assertEquals(2, departments.size());
-    departments = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(3));
+    departments = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(3));
     assertEquals(3, departments.size());
-    departments = connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(-1));
+    departments = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(-1));
     assertEquals(4, departments.size());
   }
 
   @Test
-  public void selectManyByKey() throws DatabaseException {
+  public void selectByKey() throws DatabaseException {
     final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
     deptKey.put(TestDomain.DEPARTMENT_ID, 10);
     final Entity.Key empKey = DOMAIN.key(TestDomain.T_EMP);
     empKey.put(TestDomain.EMP_ID, 8);
 
-    final List<Entity> selected = connection.selectMany(asList(deptKey, empKey));
+    final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
   }
 
   @Test
-  public void selectManyPropertyIds() throws Exception {
-    final List<Entity> emps = connection.selectMany(entitySelectCondition(TestDomain.T_EMP)
+  public void selectPropertyIds() throws Exception {
+    final List<Entity> emps = connection.select(entitySelectCondition(TestDomain.T_EMP)
             .setSelectPropertyIds(TestDomain.EMP_ID, TestDomain.EMP_JOB, TestDomain.EMP_DEPARTMENT));
     for (final Entity emp : emps) {
       assertTrue(emp.containsKey(TestDomain.EMP_ID));
@@ -331,15 +331,15 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void selectManyInvalidPropertyIds() throws Exception {
+  public void selectInvalidPropertyIds() throws Exception {
     assertThrows(IllegalArgumentException.class, () ->
-            connection.selectMany(entitySelectCondition(TestDomain.T_EMP)
+            connection.select(entitySelectCondition(TestDomain.T_EMP)
                     .setSelectPropertyIds(TestDomain.EMP_ID, TestDomain.EMP_JOB, TestDomain.EMP_DEPARTMENT_FK)));
   }
 
   @Test
-  public void selectManyInvalidColumn() throws Exception {
-    assertThrows(DatabaseException.class, () -> connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT,
+  public void selectInvalidColumn() throws Exception {
+    assertThrows(DatabaseException.class, () -> connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT,
             Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_INVALID_COLUMN_ID))));
   }
 
@@ -381,7 +381,7 @@ public class DefaultLocalEntityConnectionTest {
     final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_GREATER_THAN_CONDITION_ID,
             singletonList(TestDomain.EMP_MGR), singletonList(5));
 
-    assertEquals(4, connection.selectMany(entitySelectCondition(TestDomain.T_EMP, condition)).size());
+    assertEquals(4, connection.select(entitySelectCondition(TestDomain.T_EMP, condition)).size());
   }
 
   @Test
@@ -401,7 +401,7 @@ public class DefaultLocalEntityConnectionTest {
       }
     }
 
-    assertEquals(0, connection.selectMany(entitySelectCondition(TestDomain.T_EMP, new StringCondition())).size());
+    assertEquals(0, connection.select(entitySelectCondition(TestDomain.T_EMP, new StringCondition())).size());
   }
 
   @Test
@@ -586,7 +586,7 @@ public class DefaultLocalEntityConnectionTest {
         connection2.getDatabaseConnection().rollback();
       }
 
-      connection.selectMany(entitySelectCondition(TestDomain.T_DEPARTMENT));//any query will do
+      connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT));//any query will do
 
       try {
         sales = connection2.update(singletonList(sales)).get(0);

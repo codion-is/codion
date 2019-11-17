@@ -904,7 +904,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     fireBeforeInsertEvent(new DefaultInsertEvent(entities));
     validate(entities);
 
-    return connectionProvider.getConnection().selectMany(doInsert(entities));
+    return connectionProvider.getConnection().select(doInsert(entities));
   }
 
   private boolean isSetEntityAllowed() {

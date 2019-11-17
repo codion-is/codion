@@ -421,7 +421,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final void refreshEntities(final List<Entity.Key> keys) {
     try {
-      replaceEntities(getConnectionProvider().getConnection().selectMany(keys));
+      replaceEntities(getConnectionProvider().getConnection().select(keys));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -597,7 +597,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
 
     try {
-      return connectionProvider.getConnection().selectMany(entitySelectCondition(entityId,
+      return connectionProvider.getConnection().select(entitySelectCondition(entityId,
               getConditionModel().getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {

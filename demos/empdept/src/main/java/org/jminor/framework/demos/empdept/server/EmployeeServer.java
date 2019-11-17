@@ -55,7 +55,7 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
     @Override
     public List<Entity> getEmployees() throws DatabaseException {
       synchronized (connectionProxy) {
-        return connectionProxy.selectMany(entitySelectCondition(EmpDept.T_EMPLOYEE));
+        return connectionProxy.select(entitySelectCondition(EmpDept.T_EMPLOYEE));
       }
     }
   }

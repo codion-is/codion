@@ -350,7 +350,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Entity.Key> keys = deserialize(request);
 
-      return Response.ok(Util.serialize(connection.selectMany(keys))).build();
+      return Response.ok(Util.serialize(connection.select(keys))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -373,7 +373,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final EntitySelectCondition selectCondition = deserialize(request);
 
-      return Response.ok(Util.serialize(connection.selectMany(selectCondition))).build();
+      return Response.ok(Util.serialize(connection.select(selectCondition))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

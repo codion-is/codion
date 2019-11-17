@@ -338,7 +338,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
-    final List<Entity> selected = selectMany(condition);
+    final List<Entity> selected = select(condition);
     if (Util.nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
@@ -351,7 +351,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
+  public List<Entity> select(final List<Entity.Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
       return handleResponse(execute(createHttpPost("selectByKey", keys)));
@@ -367,7 +367,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException {
+  public List<Entity> select(final EntitySelectCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
       return handleResponse(execute(createHttpPost("select", condition)));
@@ -383,9 +383,9 @@ final class HttpEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values)
+  public List<Entity> select(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return selectMany(entitySelectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
+    return select(entitySelectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
   }
 
   /** {@inheritDoc} */

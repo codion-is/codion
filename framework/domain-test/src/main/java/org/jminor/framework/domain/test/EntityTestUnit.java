@@ -284,7 +284,7 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
     }
     else {
-      connection.selectMany(entitySelectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
+      connection.select(entitySelectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
     }
   }
 
@@ -346,7 +346,7 @@ public class EntityTestUnit {
    */
   private Entity insertOrSelect(final Entity entity) throws DatabaseException {
     if (!entity.isKeyNull()) {
-      final List<Entity> selected = connection.selectMany(singletonList(entity.getKey()));
+      final List<Entity> selected = connection.select(singletonList(entity.getKey()));
       if (!selected.isEmpty()) {
         return selected.get(0);
       }

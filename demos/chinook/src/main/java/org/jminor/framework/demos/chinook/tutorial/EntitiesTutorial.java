@@ -100,12 +100,12 @@ public final class EntitiesTutorial {
     Entity metallica =
             connection.selectSingle(T_ARTIST, ARTIST_NAME, "Metallica");
 
-    //select all albums by Metallica, by using selectMany() with the
+    //select all albums by Metallica, by using select() with the
     //Metallica Entity as condition value, basically asking for the
     //records where the given foreign key references that specific Entity
-    //selectMany() returns an empty list if none are found
+    //select() returns an empty list if none are found
     List<Entity> albums =
-            connection.selectMany(T_ALBUM, ALBUM_ARTIST_FK, metallica);
+            connection.select(T_ALBUM, ALBUM_ARTIST_FK, metallica);
 
     albums.forEach(System.out::println);
 
@@ -122,7 +122,7 @@ public final class EntitiesTutorial {
             Domain.orderBy().ascending(ARTIST_NAME));
 
     List<Entity> artistsStartingWithAn =
-            connection.selectMany(artistsCondition);
+            connection.select(artistsCondition);
 
     artistsStartingWithAn.forEach(System.out::println);
 
@@ -134,7 +134,7 @@ public final class EntitiesTutorial {
             .ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));
 
     List<Entity> albumsByArtistsStartingWithAn =
-            connection.selectMany(albumsCondition);
+            connection.select(albumsCondition);
 
     albumsByArtistsStartingWithAn.forEach(System.out::println);
   }

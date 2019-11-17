@@ -32,7 +32,7 @@ public final class EntityConnections {
   public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
                                   final boolean includePrimaryKeys, final String... entityIds) throws DatabaseException {
     for (final String entityId : entityIds) {
-      final List<Entity> entities = source.selectMany(entitySelectCondition(entityId).setForeignKeyFetchDepthLimit(0));
+      final List<Entity> entities = source.select(entitySelectCondition(entityId).setForeignKeyFetchDepthLimit(0));
       if (!includePrimaryKeys) {
         entities.forEach(Entity::clearKeyValues);
       }

@@ -56,10 +56,10 @@ public class DefaultRemoteEntityConnectionTest {
     final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.delete(condition);
-    assertTrue(connection.selectMany(condition).isEmpty());
+    assertTrue(connection.select(condition).isEmpty());
     connection.disconnect();
     connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238, true);
-    assertTrue(connection.selectMany(condition).size() > 0);
+    assertTrue(connection.select(condition).size() > 0);
     connection.disconnect();
   }
 
@@ -92,11 +92,11 @@ public class DefaultRemoteEntityConnectionTest {
 
       final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP);
       proxy.beginTransaction();
-      proxy.selectMany(condition);
+      proxy.select(condition);
       proxy.delete(condition);
-      proxy.selectMany(condition);
+      proxy.select(condition);
       proxy.rollbackTransaction();
-      proxy.selectMany(condition);
+      proxy.select(condition);
     }
     finally {
       if (registry != null) {
