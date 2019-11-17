@@ -336,7 +336,7 @@ public final class ChinookImpl extends Domain implements Chinook {
 
   void dbOperations() {
     addOperation(new UpdateTotalsProcedure(P_UPDATE_TOTALS));
-    addOperation(new IncreasePriceFunction(F_INCREASE_PRICE));
+    addOperation(new RaisePriceFunction(F_RAISE_PRICE));
   }
 
   private static final class UpdateTotalsProcedure extends AbstractProcedure<LocalEntityConnection> {
@@ -370,10 +370,10 @@ public final class ChinookImpl extends Domain implements Chinook {
     }
   }
 
-  private static final class IncreasePriceFunction extends AbstractFunction<LocalEntityConnection> {
+  private static final class RaisePriceFunction extends AbstractFunction<LocalEntityConnection> {
 
-    private IncreasePriceFunction(final String id) {
-      super(id, "Increase track prices");
+    private RaisePriceFunction(final String id) {
+      super(id, "Raise track prices");
     }
 
     @Override
