@@ -544,6 +544,37 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteKey]
 ----
 
+=== Procedures & Functions
+
+==== executeProcedure
+
+** {url-entity-connection}#executeProcedure-java.lang.String-java.lang.Object...-[executeProcedure(String procedureId, Object... arguments)]
+
+[source,java,indent=0]
+----
+include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=procedure]
+----
+
+==== executeFunction
+
+** {url-entity-connection}#executeFunction-java.lang.String-java.lang.Object...-[executeFunction(String functionId, Object... arguments)]
+
+[source,java,indent=0]
+----
+include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=function]
+----
+
+=== Reporting
+
+==== fillReport
+
+** {url-entity-connection}#fillReport-org.jminor.common.db.reports.ReportWrapper-[fillReport(ReportWrapper reportWrapper)]
+
+[source,java,indent=0]
+----
+include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
+----
+
 === Transaction control
 
 [source,java,indent=0]
