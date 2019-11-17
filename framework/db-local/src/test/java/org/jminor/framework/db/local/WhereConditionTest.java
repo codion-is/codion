@@ -35,7 +35,7 @@ public final class WhereConditionTest {
     final Condition.Set set2 = Conditions.conditionSet(
             Conjunction.AND,
             Conditions.propertyCondition(TestDomain.DETAIL_DOUBLE, ConditionType.LIKE, 666.666),
-            Conditions.propertyCondition(TestDomain.DETAIL_STRING, ConditionType.LIKE, "valu%e2", false)
+            Conditions.propertyCondition(TestDomain.DETAIL_STRING, ConditionType.LIKE, "valu%e2").setCaseSensitive(false)
     );
     final Condition.Set set3 = Conditions.conditionSet(Conjunction.OR, set1, set2);
     assertEquals("((string = ? and int = ?) or (double = ? and upper(string) like upper(?)))",
@@ -45,7 +45,7 @@ public final class WhereConditionTest {
   @Test
   public void propertyConditionTest() {
     final WhereCondition critOne = new WhereCondition(entityCondition(TestDomain.T_DEPARTMENT,
-            Conditions.propertyCondition(TestDomain.DEPARTMENT_LOCATION, ConditionType.LIKE, "New York", true)), DOMAIN.getDefinition(TestDomain.T_DEPARTMENT));
+            Conditions.propertyCondition(TestDomain.DEPARTMENT_LOCATION, ConditionType.LIKE, "New York")), DOMAIN.getDefinition(TestDomain.T_DEPARTMENT));
     assertEquals("loc = ?", critOne.getWhereClause());
     assertNotNull(critOne);
   }

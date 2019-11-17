@@ -47,13 +47,13 @@ public final class EntityConnectionDemo {
 
     List<Entity> artists = connection.selectMany(condition);
 
-    boolean caseSensitive = false;
     condition = Conditions.entitySelectCondition(Chinook.T_ALBUM,
             Conditions.conditionSet(Conjunction.AND,
                     Conditions.propertyCondition(Chinook.ALBUM_ARTIST_FK,
                             ConditionType.LIKE, artists),
                     Conditions.propertyCondition(Chinook.ALBUM_TITLE,
-                            ConditionType.NOT_LIKE, "%live%", caseSensitive)));
+                            ConditionType.NOT_LIKE, "%live%")
+                            .setCaseSensitive(false)));
 
     List<Entity> nonLiveAlbums = connection.selectMany(condition);
     // end::selectManyCondition[]
@@ -90,13 +90,13 @@ public final class EntityConnectionDemo {
 
     Entity ironMaiden = connection.selectSingle(condition);
 
-    boolean caseSensitive = false;
     condition = Conditions.entitySelectCondition(Chinook.T_ALBUM,
             Conditions.conditionSet(Conjunction.AND,
                     Conditions.propertyCondition(Chinook.ALBUM_ARTIST_FK,
                             ConditionType.LIKE, ironMaiden),
                     Conditions.propertyCondition(Chinook.ALBUM_TITLE,
-                            ConditionType.LIKE, "%live after%", caseSensitive)));
+                            ConditionType.LIKE, "%live after%")
+                            .setCaseSensitive(false)));
 
     Entity liveAlbum = connection.selectSingle(condition);
     // end::selectSingleCondition[]
