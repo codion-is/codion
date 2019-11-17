@@ -308,7 +308,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
         final boolean caseSensitive = propertyLookupSettings.get(lookupProperty).getCaseSensitiveValue().get();
         final String lookupText = rawLookupText.trim();
         final String modifiedLookupText = searchStringValue.get().equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
-        baseCondition.add(Conditions.propertyCondition(lookupProperty.getPropertyId(), ConditionType.LIKE, modifiedLookupText, caseSensitive));
+        final Condition.PropertyCondition condition = Conditions.propertyCondition(lookupProperty.getPropertyId(),
+                ConditionType.LIKE, modifiedLookupText).setCaseSensitive(caseSensitive);
+        baseCondition.add(condition);
       }
     }
 

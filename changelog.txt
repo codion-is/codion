@@ -5289,3 +5289,4 @@
   WhereCondition.getPropertyIds() removed, usage replace with getColumnProperties()
   DefaultLocalEntityConnection.writeBlob() now throws exception if multiple rows were affected, refactoring
   Condition.expand() removed, functionality moved to WhereCondition
+  PropertyCondition.setCaseSensitive() added

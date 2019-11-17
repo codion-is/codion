@@ -203,21 +203,7 @@ public final class Conditions {
    */
   public static Condition.PropertyCondition propertyCondition(final String propertyId, final ConditionType conditionType,
                                                               final Object value) {
-    return propertyCondition(propertyId, conditionType, value, true);
-  }
-
-  /**
-   * Creates a {@link Condition} for the given property, with the operator specified by the {@code conditionType}
-   * and {@code value}. Note that {@code value} may be a single value, a Collection of values or null.
-   * @param propertyId the property
-   * @param conditionType the search type
-   * @param value the condition value, can be a Collection of values
-   * @param caseSensitive true if the condition should be case sensitive, only applicable to string properties
-   * @return a property condition based on the given value
-   */
-  public static Condition.PropertyCondition propertyCondition(final String propertyId, final ConditionType conditionType,
-                                                              final Object value, final boolean caseSensitive) {
-    return new DefaultPropertyCondition(propertyId, conditionType, value, caseSensitive);
+    return new DefaultPropertyCondition(propertyId, conditionType, value);
   }
 
   /** Assumes {@code keys} is not empty. */

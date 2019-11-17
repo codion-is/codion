@@ -74,6 +74,12 @@ public interface Condition extends Serializable {
      * @return the condition string
      */
     String getConditionString(final ColumnProperty property);
+
+    /**
+     * @param caseSensitive false if this condition should not be case-sensitive
+     * @return this condition
+     */
+    PropertyCondition setCaseSensitive(final boolean caseSensitive);
   }
 
   /**

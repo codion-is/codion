@@ -54,7 +54,7 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
   /**
    * True if this condition should be case sensitive, only applies to condition based on string properties
    */
-  private boolean caseSensitive;
+  private boolean caseSensitive = true;
 
   /**
    * Instantiates a new PropertyCondition instance
@@ -62,14 +62,12 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
    * @param conditionType the condition type
    * @param value the value, can be a Collection
    */
-  DefaultPropertyCondition(final String propertyId, final ConditionType conditionType, final Object value,
-                           final boolean caseSensitive) {
+  DefaultPropertyCondition(final String propertyId, final ConditionType conditionType, final Object value) {
     requireNonNull(propertyId, "propertyId");
     requireNonNull(conditionType, "conditionType");
     this.propertyId = propertyId;
     this.conditionType = conditionType;
     this.nullCondition = value == null;
-    this.caseSensitive = caseSensitive;
     this.values = initializeValues(value);
     if (this.values.isEmpty()) {
       throw new IllegalArgumentException("No values specified for PropertyCondition: " + propertyId);
@@ -113,6 +111,13 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
   public String getConditionString(final ColumnProperty property) {
     return createColumnPropertyConditionString(property, conditionType, getValues(),
             nullCondition, caseSensitive);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public PropertyCondition setCaseSensitive(final boolean caseSensitive) {
+    this.caseSensitive = caseSensitive;
+    return this;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
