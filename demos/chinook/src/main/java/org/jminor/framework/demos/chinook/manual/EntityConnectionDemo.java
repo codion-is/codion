@@ -184,7 +184,7 @@ public final class EntityConnectionDemo {
     // tag::function[]
     BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
-    List result = connection.executeFunction(F_INCREASE_PRICE, priceIncrease);
+    List result = connection.executeFunction(F_RAISE_PRICE, priceIncrease);
 
     int modifiedTracks = (int) result.get(0);
     // end::function[]

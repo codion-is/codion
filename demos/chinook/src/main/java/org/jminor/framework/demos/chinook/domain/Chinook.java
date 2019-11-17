@@ -143,5 +143,5 @@ public interface Chinook {
   String PLAYLISTTRACK_ARTIST_DENORM = "artist_denorm";
 
   String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
-  String F_INCREASE_PRICE = "chinook.increase_price_function";
+  String F_RAISE_PRICE = "chinook.raise_price_function";
 }
