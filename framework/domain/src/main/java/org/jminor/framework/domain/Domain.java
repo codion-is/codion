@@ -5,7 +5,6 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.PropertyValue;
-import org.jminor.common.Serializer;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
@@ -63,13 +62,6 @@ public class Domain implements Serializable {
    * Default value: false
    */
   public static final PropertyValue<Boolean> ALLOW_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.allowRedefineEntity", false);
-
-  /**
-   * Specifies the class used for serializing and deserializing entity instances.<br>
-   * Value type: String, the name of the class implementing org.jminor.common.Serializer&#60;Entity&#62;<br>
-   * Default value: none
-   */
-  public static final PropertyValue<String> ENTITY_SERIALIZER_CLASS = Configuration.stringValue("jminor.domain.entitySerializerClass", null);
 
   private static final String ENTITY_PARAM = "entity";
   private static final String ENTITY_ID_PARAM = "entityId";
@@ -375,33 +367,6 @@ public class Domain implements Serializable {
 
       return method.invoke(entity, args);
     });
-  }
-
-  /**
-   * @return a Serializer, if one is available on the classpath
-   */
-  @SuppressWarnings({"unchecked"})
-  public final Serializer<Entity> getEntitySerializer() {
-    if (!entitySerializerAvailable()) {
-      throw new IllegalArgumentException("Required configuration property is missing: " + Domain.ENTITY_SERIALIZER_CLASS);
-    }
-
-    try {
-      final String serializerClass = Domain.ENTITY_SERIALIZER_CLASS.get();
-
-      return (Serializer<Entity>) Class.forName(serializerClass).getConstructor().newInstance();
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * @return true if a entity serializer is specified and available on the classpath
-   */
-  public final boolean entitySerializerAvailable() {
-    final String serializerClass = ENTITY_SERIALIZER_CLASS.get();
-    return serializerClass != null && Util.onClasspath(serializerClass);
   }
 
   /**
