@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.servlet;
 
-import org.jminor.common.Serializer;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.ConditionType;
@@ -96,7 +95,7 @@ public class EntityServletServerTest {
 
   @Test
   public void test() throws URISyntaxException, IOException, InterruptedException,
-          Serializer.SerializeException, ClassNotFoundException {
+          ClassNotFoundException {
     //test with missing authentication info
     HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
