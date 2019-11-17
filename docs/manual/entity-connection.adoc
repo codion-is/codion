@@ -5,6 +5,8 @@
 
 The {url-entity-connection}[EntityConnection] interface defines the database layer accessible to JMinor applications. It provides methods for selecting, inserting, updating and deleting entities, executing procedures and functions, filling reports as well as providing transaction control.
 
+NOTE: Static imports are used extensively in the examples below.
+
 == Selecting
 
 === selectMany
