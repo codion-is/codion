@@ -4,6 +4,7 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
+import org.jminor.common.db.ConditionType;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -64,10 +65,9 @@ public interface Condition extends Serializable {
     String getPropertyId();
 
     /**
-     * @param property the underlying property
-     * @return the expanded condition
+     * @return the condition type
      */
-    Condition expand(final Property property);
+    ConditionType getConditionType();
 
     /**
      * @param property the underlying property

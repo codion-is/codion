@@ -4,11 +4,8 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.db.ConditionType;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.SubqueryProperty;
 
 import java.io.IOException;
@@ -107,19 +104,15 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
 
   /** {@inheritDoc} */
   @Override
-  public String getConditionString(final ColumnProperty property) {
-    return createColumnPropertyConditionString(property, conditionType, getValues(),
-            nullCondition, caseSensitive);
+  public ConditionType getConditionType() {
+    return conditionType;
   }
 
   /** {@inheritDoc} */
   @Override
-  public Condition expand(final Property property) {
-    if (property instanceof ForeignKeyProperty) {
-      return foreignKeyCondition((ForeignKeyProperty) property, conditionType, getValues());
-    }
-
-    return this;
+  public String getConditionString(final ColumnProperty property) {
+    return createColumnPropertyConditionString(property, conditionType, getValues(),
+            nullCondition, caseSensitive);
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -249,53 +242,5 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
 
   private static boolean containsWildcards(final String value) {
     return value.contains("%") || value.contains("_");
-  }
-
-  private static Condition foreignKeyCondition(final ForeignKeyProperty foreignKeyProperty,
-                                               final ConditionType conditionType, final Collection values) {
-    final List<Entity.Key> keys = getKeys(values);
-    if (foreignKeyProperty.isCompositeKey()) {
-      return Conditions.createCompositeKeyCondition(foreignKeyProperty.getProperties(), conditionType, keys);
-    }
-
-    if (keys.size() == 1) {
-      final Entity.Key entityKey = keys.get(0);
-
-      return Conditions.propertyCondition(foreignKeyProperty.getProperties().get(0).getPropertyId(), conditionType,
-              entityKey == null ? null : entityKey.getFirstValue());
-    }
-
-    return Conditions.propertyCondition(foreignKeyProperty.getProperties().get(0).getPropertyId(), conditionType,
-            Entities.getValues(keys));
-  }
-
-  private static List<Entity.Key> getKeys(final Object value) {
-    final List<Entity.Key> keys = new ArrayList<>();
-    if (value instanceof Collection) {
-      if (((Collection) value).isEmpty()) {
-        keys.add(null);
-      }
-      else {
-        for (final Object object : (Collection) value) {
-          keys.add(getKey(object));
-        }
-      }
-    }
-    else {
-      keys.add(getKey(value));
-    }
-
-    return keys;
-  }
-
-  private static Entity.Key getKey(final Object value) {
-    if (value == null || value instanceof Entity.Key) {
-      return (Entity.Key) value;
-    }
-    else if (value instanceof Entity) {
-      return ((Entity) value).getKey();
-    }
-
-    throw new IllegalArgumentException("Foreign key condition uses only Entity or Entity.Key instances for values");
   }
 }
