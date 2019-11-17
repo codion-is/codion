@@ -136,7 +136,6 @@ public final class EntitiesTest {
     assertTrue(propertyValues.containsAll(values));
     propertyValues = Entities.getValues(property.getPropertyId(), entityList);
     assertTrue(propertyValues.containsAll(values));
-    assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, null).isEmpty());
     assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, emptyList()).isEmpty());
   }
 
@@ -182,13 +181,12 @@ public final class EntitiesTest {
     assertEquals(4, propertyValues.size());
     assertTrue(propertyValues.containsAll(values));
 
-    propertyValues = Entities.getDistinctValues(TestDomain.DEPARTMENT_ID, entityList, true);
+    propertyValues = Entities.getDistinctValuesIncludingNull(TestDomain.DEPARTMENT_ID, entityList);
     assertEquals(5, propertyValues.size());
     values.add(null);
     assertTrue(propertyValues.containsAll(values));
 
-    assertEquals(0, Entities.getDistinctValues(TestDomain.DEPARTMENT_ID, null, true).size());
-    assertEquals(0, Entities.getDistinctValues(TestDomain.DEPARTMENT_ID, new ArrayList<>(), true).size());
+    assertEquals(0, Entities.getDistinctValuesIncludingNull(TestDomain.DEPARTMENT_ID, new ArrayList<>()).size());
   }
 
   @Test
