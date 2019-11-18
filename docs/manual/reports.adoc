@@ -13,7 +13,7 @@ The EntityPanel class provides straight forward methods for viewing reports usin
 
 == JDBC Reports
 
-Using a report based on a SQL query, {url-javadoc}/org/jminor/plugin/jasperreports/model/JasperReportsWrapper.html[JasperReportsWrapper] and {url-javadoc}/org/jminor/plugin/jasperreports/ui/JasperReportsUIWrapper.html[JasperReportsUIWrapper] is the simplest way of viewing a report using JMinor, just add a method similar to the one below to a EntityPanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<Adding a print action, adding a print action>> section.
+Using a report based on a SQL query, {url-javadoc}/org/jminor/plugin/jasperreports/model/JasperReportsWrapper.html[JasperReportsWrapper] and {url-javadoc}/org/jminor/plugin/jasperreports/ui/JasperReportsUIWrapper.html[JasperReportsUIWrapper] is the simplest way of viewing a report using JMinor, just add a method similar to the one below to a EntityPanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<entity-panel.adoc#_adding_a_print_action, adding a print action>> section.
 
 [source,java,indent=0]
 ----

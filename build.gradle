@@ -182,6 +182,7 @@ asciidoctor {
     }
     attributes toc: 'right', sectnums: 4, 'jminor-version': project.version, prewrap: false, experimental: true
     asciidoctorj {
+        version = '2.1.0'
         modules {
             diagram.use()
             diagram.version '1.5.16'

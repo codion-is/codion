@@ -34,13 +34,15 @@ import static org.jminor.common.db.ConditionType.NOT_LIKE;
 import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
+// tag::staticImports[]
+// end::staticImports[]
 /**
  * When running this make sure the chinook demo module directory is the
  * working directory, due to a relative path to a db init script
  */
 public final class EntityConnectionDemo {
 
-  public static void selectCondition(EntityConnection connection) throws DatabaseException {
+  static void selectCondition(EntityConnection connection) throws DatabaseException {
     // tag::selectCondition[]
     EntitySelectCondition condition =
             entitySelectCondition(T_ARTIST, ARTIST_NAME, LIKE, "The %");
@@ -56,24 +58,25 @@ public final class EntityConnectionDemo {
     // end::selectCondition[]
   }
 
-  public static void selectKeys(EntityConnection connection) throws DatabaseException {
+  static void selectKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectKeys[]
-    Entity.Key key42 = connection.getDomain().key(T_ARTIST, 42L);
-    Entity.Key key43 = connection.getDomain().key(T_ARTIST, 43L);
+    final Domain domain = connection.getDomain();
+    Entity.Key key42 = domain.key(T_ARTIST, 42L);
+    Entity.Key key43 = domain.key(T_ARTIST, 43L);
 
     List<Entity> artists = connection.select(asList(key42, key43));
     // end::selectKeys[]
   }
 
-  public static void selectValue(EntityConnection connection) throws DatabaseException {
+  static void selectValue(EntityConnection connection) throws DatabaseException {
     // tag::selectValue[]
     List<Entity> aliceInChains = connection.select(T_ARTIST, ARTIST_NAME, "Alice In Chains");
 
     List<Entity> albums = connection.select(T_ALBUM, ALBUM_ARTIST_FK, aliceInChains.toArray());
     // end::selectValue[]
   }
-  
-  public static void selectSingleCondition(EntityConnection connection) throws DatabaseException {
+
+  static void selectSingleCondition(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleCondition[]
     Entity ironMaiden = connection.selectSingle(
             entitySelectCondition(T_ARTIST, ARTIST_NAME, LIKE, "Iron Maiden"));
@@ -86,7 +89,7 @@ public final class EntityConnectionDemo {
     // end::selectSingleCondition[]
   }
 
-  public static void selectSingleKeys(EntityConnection connection) throws DatabaseException {
+  static void selectSingleKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleKeys[]
     Entity.Key key42 = connection.getDomain().key(T_ARTIST, 42L);
 
@@ -94,7 +97,7 @@ public final class EntityConnectionDemo {
     // end::selectSingleKeys[]
   }
 
-  public static void selectSingleValue(EntityConnection connection) throws DatabaseException {
+  static void selectSingleValue(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleValue[]
     Entity aliceInChains = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Alice In Chains");
 
@@ -104,14 +107,14 @@ public final class EntityConnectionDemo {
     // end::selectSingleValue[]
   }
 
-  public static void selectValues(EntityConnection connection) throws DatabaseException {
+  static void selectValues(EntityConnection connection) throws DatabaseException {
     // tag::selectValues[]
     List customerUsStates = connection.selectValues(CUSTOMER_STATE,
             entityCondition(T_CUSTOMER, CUSTOMER_COUNTRY, LIKE, "USA"));
     // end::selectValues[]
   }
 
-  public static void selectDependencies(EntityConnection connection) throws DatabaseException {
+  static void selectDependencies(EntityConnection connection) throws DatabaseException {
     // tag::selectDependencies[]
     List<Entity> employees = connection.select(entitySelectCondition(T_EMPLOYEE));
 
@@ -121,14 +124,14 @@ public final class EntityConnectionDemo {
     // end::selectDependencies[]
   }
 
-  public static void selectRowCount(EntityConnection connection) throws DatabaseException {
+  static void selectRowCount(EntityConnection connection) throws DatabaseException {
     // tag::selectRowCount[]
     int numberOfItStaff = connection.selectRowCount(
             entityCondition(T_EMPLOYEE, EMPLOYEE_TITLE, LIKE, "IT Staff"));
     // end::selectRowCount[]
   }
 
-  public static void insert(EntityConnection connection) throws DatabaseException {
+  static void insert(EntityConnection connection) throws DatabaseException {
     // tag::insert[]
     Domain domain = connection.getDomain();
 
@@ -145,7 +148,7 @@ public final class EntityConnectionDemo {
     // end::insert[]
   }
 
-  public static void update(EntityConnection connection) throws DatabaseException {
+  static void update(EntityConnection connection) throws DatabaseException {
     // tag::update[]
     Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "My Band");
 
@@ -155,7 +158,7 @@ public final class EntityConnectionDemo {
     // end::update[]
   }
 
-  public static void deleteCondition(EntityConnection connection) throws DatabaseException {
+  static void deleteCondition(EntityConnection connection) throws DatabaseException {
     // tag::deleteCondition[]
     Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Proper Name");
 
@@ -163,7 +166,7 @@ public final class EntityConnectionDemo {
     // end::deleteCondition[]
   }
 
-  public static void deleteKey(EntityConnection connection) throws DatabaseException {
+  static void deleteKey(EntityConnection connection) throws DatabaseException {
     // tag::deleteKey[]
     Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Proper Name");
 
@@ -171,13 +174,13 @@ public final class EntityConnectionDemo {
     // end::deleteKey[]
   }
 
-  public static void procedure(EntityConnection connection) throws DatabaseException {
+  static void procedure(EntityConnection connection) throws DatabaseException {
     // tag::procedure[]
     connection.executeProcedure(P_UPDATE_TOTALS);
     // end::procedure[]
   }
 
-  public static void function(EntityConnection connection) throws DatabaseException {
+  static void function(EntityConnection connection) throws DatabaseException {
     // tag::function[]
     BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
@@ -187,7 +190,7 @@ public final class EntityConnectionDemo {
     // end::function[]
   }
 
-  public static void report(EntityConnection connection) throws ReportException, DatabaseException {
+  static void report(EntityConnection connection) throws ReportException, DatabaseException {
     // tag::report[]
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
@@ -202,7 +205,7 @@ public final class EntityConnectionDemo {
     //end::report[]
   }
 
-  public static void transaction(EntityConnection connection) throws DatabaseException {
+  static void transaction(EntityConnection connection) throws DatabaseException {
     // tag::transaction[]
     try {
       connection.beginTransaction();
@@ -218,7 +221,7 @@ public final class EntityConnectionDemo {
     // end::transaction[]
   }
 
-  public static void main(String[] args) throws DatabaseException, ReportException {
+  static void main(String[] args) throws DatabaseException, ReportException {
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
     Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
