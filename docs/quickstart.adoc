@@ -62,7 +62,7 @@ JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 ----
 dependencies {
     //Swing client UI module
-    compile 'org.jminor.jdk11:jminor-swing-framework-ui:0.12.5-SNAPSHOT'
+    implementation 'org.jminor.jdk11:jminor-swing-framework-ui:0.12.5-SNAPSHOT'
 
     //JSON for persisting client preferences
     runtime 'org.jminor.jdk11:jminor-plugin-json:0.12.5-SNAPSHOT'
@@ -76,7 +76,7 @@ dependencies {
     runtime 'org.jminor.jdk11:jminor-plugin-logback-proxy:0.12.5-SNAPSHOT'
 
     //Domain model unit testing module
-    testCompile 'org.jminor.jdk11:jminor-framework-domain-test:0.12.5-SNAPSHOT'
+    testImplementation 'org.jminor.jdk11:jminor-framework-domain-test:0.12.5-SNAPSHOT'
     //JUnit
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.5.1'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
