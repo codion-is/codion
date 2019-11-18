@@ -104,8 +104,7 @@ public final class SwingEntityModelTest
     final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(
             DOMAIN.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK));
     departmentsComboBoxModel.refresh();
-    final Entity.Key primaryKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
-    primaryKey.put(TestDomain.DEPARTMENT_ID, 40);//operations, no employees
+    final Entity.Key primaryKey = DOMAIN.key(TestDomain.T_DEPARTMENT, 40);//operations, no employees
     final List<Entity.Key> keys = new ArrayList<>();
     keys.add(primaryKey);
     departmentModel.getTableModel().setSelectedByKey(keys);

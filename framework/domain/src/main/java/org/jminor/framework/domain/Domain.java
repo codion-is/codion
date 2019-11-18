@@ -293,6 +293,30 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
+   * @param entityId the entity id
+   * @param value the key value, assumes a single integer key
+   * @return a new {@link Entity.Key} instance
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or value is null
+   */
+  public final Entity.Key key(final String entityId, final Integer value) {
+    return new DefaultEntity.DefaultKey(getDefinition(entityId), value);
+  }
+
+  /**
+   * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
+   * @param entityId the entity id
+   * @param value the key value, assumes a single long key
+   * @return a new {@link Entity.Key} instance
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or value is null
+   */
+  public final Entity.Key key(final String entityId, final Long value) {
+    return new DefaultEntity.DefaultKey(getDefinition(entityId), value);
+  }
+
+  /**
    * Adds a new {@link Entity.Definition} to this domain model, using the {@code entityId} as table name.
    * Returns the {@link Entity.Definition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type

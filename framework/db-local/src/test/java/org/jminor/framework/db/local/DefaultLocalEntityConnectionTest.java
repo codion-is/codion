@@ -97,8 +97,7 @@ public class DefaultLocalEntityConnectionTest {
   public void delete() throws Exception {
     try {
       connection.beginTransaction();
-      final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT);
-      key.put(TestDomain.DEPARTMENT_ID, 40);
+      final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT, 40);
       connection.delete(new ArrayList<>());
       connection.delete(singletonList(key));
       try {
@@ -112,8 +111,7 @@ public class DefaultLocalEntityConnectionTest {
     }
     try {
       connection.beginTransaction();
-      final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT);
-      key.put(TestDomain.DEPARTMENT_ID, 40);
+      final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT, 40);
       connection.delete(entityCondition(key));
       try {
         connection.selectSingle(key);
@@ -128,8 +126,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void deleteReferentialIntegrity() {
-    final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT);
-    key.put(TestDomain.DEPARTMENT_ID, 10);
+    final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT, 10);
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(singletonList(key)));
   }
 
@@ -306,10 +303,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectByKey() throws DatabaseException {
-    final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
-    deptKey.put(TestDomain.DEPARTMENT_ID, 10);
-    final Entity.Key empKey = DOMAIN.key(TestDomain.T_EMP);
-    empKey.put(TestDomain.EMP_ID, 8);
+    final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT, 10);
+    final Entity.Key empKey = DOMAIN.key(TestDomain.T_EMP, 8);
 
     final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());

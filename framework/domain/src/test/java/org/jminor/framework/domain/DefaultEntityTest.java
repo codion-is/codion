@@ -586,31 +586,26 @@ public class DefaultEntityTest {
 
   @Test
   public void keyGetCopy() {
-    final Entity.Key empKey1 = DOMAIN.key(TestDomain.T_EMP);
-    empKey1.put(TestDomain.EMP_ID, 1);
+    final Entity.Key empKey1 = DOMAIN.key(TestDomain.T_EMP, 1);
     final Entity.Key copy = (Entity.Key) empKey1.getCopy();
     assertEquals(empKey1, copy);
 
     empKey1.put(TestDomain.EMP_ID, 2);
     final Entity.Key originalCopy = (Entity.Key) empKey1.getOriginalCopy();
-    final Entity.Key originalCreated = DOMAIN.key(TestDomain.T_EMP);
-    originalCreated.put(TestDomain.EMP_ID, 1);
+    final Entity.Key originalCreated = DOMAIN.key(TestDomain.T_EMP, 1);
     assertEquals(originalCopy, originalCreated);
   }
 
   @Test
   public void keyEquality() {
-    final Entity.Key empKey1 = DOMAIN.key(TestDomain.T_EMP);
-    empKey1.put(TestDomain.EMP_ID, 1);
-    final Entity.Key empKey2 = DOMAIN.key(TestDomain.T_EMP);
-    empKey2.put(TestDomain.EMP_ID, 2);
+    final Entity.Key empKey1 = DOMAIN.key(TestDomain.T_EMP, 1);
+    final Entity.Key empKey2 = DOMAIN.key(TestDomain.T_EMP, 2);
     assertNotEquals(empKey1, empKey2);
 
     empKey2.put(TestDomain.EMP_ID, 1);
     assertEquals(empKey1, empKey2);
 
-    final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
-    deptKey.put(TestDomain.DEPARTMENT_ID, 1);
+    final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT, 1);
     assertNotEquals(empKey1, deptKey);
 
     final Entity.Key compMasterKey = DOMAIN.key(TestDomain.T_COMPOSITE_MASTER);
@@ -627,10 +622,8 @@ public class DefaultEntityTest {
     compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
     assertEquals(compMasterKey, compMasterKey2);
 
-    final Entity.Key detailKey = DOMAIN.key(TestDomain.T_DETAIL);
-    detailKey.put(TestDomain.DETAIL_ID, 1L);
-    final Entity.Key detailKey2 = DOMAIN.key(TestDomain.T_DETAIL);
-    detailKey2.put(TestDomain.DETAIL_ID, 2L);
+    final Entity.Key detailKey = DOMAIN.key(TestDomain.T_DETAIL, 1L);
+    final Entity.Key detailKey2 = DOMAIN.key(TestDomain.T_DETAIL, 2L);
     assertNotEquals(detailKey, detailKey2);
 
     detailKey2.put(TestDomain.DETAIL_ID, 1L);
@@ -640,8 +633,7 @@ public class DefaultEntityTest {
   @Test
   public void nullKeyEquals() {
     final Entity.Key nullKey = DOMAIN.key(TestDomain.T_EMP);
-    final Entity.Key zeroKey = DOMAIN.key(TestDomain.T_EMP);
-    zeroKey.put(TestDomain.EMP_ID, 0);
+    final Entity.Key zeroKey = DOMAIN.key(TestDomain.T_EMP, 0);
     assertNotEquals(nullKey, zeroKey);
   }
 

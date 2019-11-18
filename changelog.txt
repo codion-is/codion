@@ -5297,3 +5297,4 @@
   EntityConnection.selectMany() renamed to select()
   Entity.ConditionProvider.getConditionString(), propertyIds parameter added
   WhereCondition moved from db-local to db.condition in db-core, now an interface, Conditions.whereCondition() added
+  Domain.key() overloaded with integer and long value parameter

@@ -188,8 +188,7 @@ public class DomainTest {
 
   @Test
   public void entity() {
-    final Entity.Key key = domain.key(TestDomain.T_MASTER);
-    key.put(TestDomain.MASTER_ID, 10L);
+    final Entity.Key key = domain.key(TestDomain.T_MASTER, 10L);
 
     final Entity master = domain.entity(key);
     assertEquals(TestDomain.T_MASTER, master.getEntityId());
@@ -309,10 +308,10 @@ public class DomainTest {
     final String entityId = "entityId2";
     domain.define(entityId, Properties.primaryKeyProperty("id"));
     assertEquals("id", domain.getDefinition(entityId).getPrimaryKeyProperties().get(0).getPropertyId());
-    domain.ALLOW_REDEFINE_ENTITY.set(true);
+    Domain.ALLOW_REDEFINE_ENTITY.set(true);
     domain.define(entityId, Properties.primaryKeyProperty("id2"));
     assertEquals("id2", domain.getDefinition(entityId).getPrimaryKeyProperties().get(0).getPropertyId());
-    domain.ALLOW_REDEFINE_ENTITY.set(false);
+    Domain.ALLOW_REDEFINE_ENTITY.set(false);
   }
 
   @Test
