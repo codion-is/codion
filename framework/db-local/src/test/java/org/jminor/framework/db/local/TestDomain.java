@@ -16,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,102 +27,12 @@ public final class TestDomain extends Domain {
   public static final String FUNCTION_ID = "functionId";
 
   public TestDomain() {
-    superEntity();
-    master();
-    detail();
     department();
     employee();
     uuidTestDefaultValue();
     uuidTestNoDefaultValue();
     operations();
     registerDomain();
-  }
-
-  public static final String T_SUPER = "db.super_entity";
-  public static final String SUPER_ID = "id";
-
-  void superEntity() {
-    define(T_SUPER,
-            Properties.primaryKeyProperty(SUPER_ID));
-  }
-
-  public static final String T_MASTER = "db.master_entity";
-  public static final String MASTER_ID_1 = "id";
-  public static final String MASTER_ID_2 = "id2";
-  public static final String MASTER_SUPER_ID = "super_id";
-  public static final String MASTER_SUPER_FK = "super_fk";
-  public static final String MASTER_NAME = "name";
-  public static final String MASTER_CODE = "code";
-
-  void master() {
-    define(T_MASTER,
-            Properties.columnProperty(MASTER_ID_1).setPrimaryKeyIndex(0),
-            Properties.columnProperty(MASTER_ID_2).setPrimaryKeyIndex(1),
-            Properties.foreignKeyProperty(MASTER_SUPER_FK, "Super", T_SUPER,
-                    Properties.columnProperty(MASTER_SUPER_ID)),
-            Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
-            Properties.columnProperty(MASTER_CODE, Types.INTEGER))
-            .setComparator(Comparator.comparing(o -> o.getInteger(MASTER_CODE)))
-            .setStringProvider(new StringProvider(MASTER_NAME));
-  }
-
-  public static final String DETAIL_ID = "id";
-  public static final String DETAIL_INT = "int";
-  public static final String DETAIL_DOUBLE = "double";
-  public static final String DETAIL_STRING = "string";
-  public static final String DETAIL_DATE = "date";
-  public static final String DETAIL_TIMESTAMP = "timestamp";
-  public static final String DETAIL_BOOLEAN = "boolean";
-  public static final String DETAIL_BOOLEAN_NULLABLE = "boolean_nullable";
-  public static final String DETAIL_MASTER_ID_1 = "master_id";
-  public static final String DETAIL_MASTER_ID_2 = "master_id_2";
-  public static final String DETAIL_MASTER_FK = "master_fk";
-  public static final String DETAIL_MASTER_NAME = "master_name";
-  public static final String DETAIL_MASTER_CODE = "master_code";
-  public static final String DETAIL_INT_VALUE_LIST = "int_value_list";
-  public static final String DETAIL_INT_DERIVED = "int_derived";
-
-  public static final String DETAIL_SELECT_TABLE_NAME = "db.entity_test_select";
-
-  public static final String T_DETAIL = "db.detail_entity";
-
-  private static final List<Item> ITEMS = asList(new Item(0, "0"), new Item(1, "1"),
-          new Item(2, "2"), new Item(3, "3"));
-
-  void detail() {
-    define(T_DETAIL,
-            Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
-            Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
-            Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
-            Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string"),
-            Properties.columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE),
-            Properties.columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP),
-            Properties.columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN)
-                    .setNullable(false)
-                    .setDefaultValue(true)
-                    .setDescription("A boolean property"),
-            Properties.columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
-                    .setDefaultValue(true),
-            Properties.foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK, T_MASTER,
-                    asList(Properties.columnProperty(DETAIL_MASTER_ID_1),
-                            Properties.columnProperty(DETAIL_MASTER_ID_2))),
-            Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
-                    getDefinition(T_MASTER).getProperty(MASTER_NAME), DETAIL_MASTER_NAME),
-            Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK,
-                    getDefinition(T_MASTER).getProperty(MASTER_CODE), DETAIL_MASTER_CODE),
-            Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS),
-            Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, linkedValues -> {
-              final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
-              if (intValue == null) {
-                return null;
-              }
-
-              return intValue * 10;
-            }, DETAIL_INT))
-            .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
-            .setOrderBy(orderBy().ascending(DETAIL_STRING))
-            .setSmallDataset(true)
-            .setStringProvider(new StringProvider(DETAIL_STRING));
   }
 
   public static final String DEPARTMENT_ID = "deptno";

@@ -5296,3 +5296,4 @@
   Entities.getValues() and getDistinctValues() streamlined, getDistinctValuesIncludingNull() added
   EntityConnection.selectMany() renamed to select()
   Entity.ConditionProvider.getConditionString(), propertyIds parameter added
+  WhereCondition moved from db-local to db.condition in db-core, now an interface, Conditions.whereCondition() added
