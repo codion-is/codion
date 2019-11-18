@@ -8,7 +8,16 @@ The {url-entity-connection}[EntityConnection] interface defines the database lay
 
 The domain model used in the examples below can be found here <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>>
 
-NOTE: Static imports are used extensively in the examples.
+NOTE: Static imports are used extensively in the examples, click below to view.
+
+.View static imports
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=staticImports]
+----
+====
 
 == Selecting
 
@@ -151,6 +160,17 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 ----
 include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
 ----
+
+== Full example
+
+.Show code
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report,lines=4..-1]
+----
+====
 
 == Transaction control
 

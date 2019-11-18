@@ -17,7 +17,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerEditPan
 
 == Detail panels
 
-Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the correct detail model for the detail panel, in this case a *CustomerModel* instance, see <<Detail models, detail models>>. See link:#_entityapplicationpanel[EntityApplicationPanel].
+Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the correct detail model for the detail panel, in this case a *CustomerModel* instance, see <<entity-model.adoc#_detail_models, detail models>>. See link:#_entityapplicationpanel[EntityApplicationPanel].
 
 == Custom actions
 The action mechanism used throughout the JMinor framework is based on the {url-javadoc}/org/jminor/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/org/jminor/swing/common/ui/control/ControlSet.html[ControlSet] class which, as the name suggests, represents a set of controls. There are two static utility classes for creating and presenting controls, {url-javadoc}/org/jminor/swing/common/ui/control/Controls.html[Controls] and {url-javadoc}/org/jminor/swing/common/ui/control/ControlProvider.html[ControlProvider] respectively.
