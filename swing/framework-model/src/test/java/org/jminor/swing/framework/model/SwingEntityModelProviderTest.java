@@ -33,7 +33,7 @@ public final class SwingEntityModelProviderTest {
     assertEquals(DepartmentEditModel.class, departmentModelProvider.getEditModelClass());
     assertEquals(DepartmentTableModel.class, departmentModelProvider.getTableModelClass());
 
-    final SwingEntityModel departmentModel = departmentModelProvider.createModel(CONNECTION_PROVIDER, false);
+    final SwingEntityModel departmentModel = departmentModelProvider.createModel(CONNECTION_PROVIDER);
     assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));

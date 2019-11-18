@@ -21,10 +21,9 @@ public interface EntityModelProvider<M extends EntityModel<M, E, T>, E extends E
   /**
    * Creates a {@link EntityModel} instance, based on the given connection provider
    * @param connectionProvider the connection provider
-   * @param detailModel if true the model should be configured as a detail model
    * @return the entity model instance
    */
-  M createModel(final EntityConnectionProvider connectionProvider, final boolean detailModel);
+  M createModel(final EntityConnectionProvider connectionProvider);
 
   /**
    * Creates a {@link EntityEditModel} instance, based on the given connection provider
@@ -36,10 +35,9 @@ public interface EntityModelProvider<M extends EntityModel<M, E, T>, E extends E
   /**
    * Creates a {@link EntityTableModel} instance, based on the given connection provider
    * @param connectionProvider the connection provider
-   * @param detailModel if true the model should be configured as a detail model
    * @return the table model instance
    */
-  T createTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel);
+  T createTableModel(final EntityConnectionProvider connectionProvider);
 
   /**
    * Sets the model class

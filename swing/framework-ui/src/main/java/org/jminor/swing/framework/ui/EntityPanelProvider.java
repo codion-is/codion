@@ -62,12 +62,8 @@ public class EntityPanelProvider {
    */
   public EntityPanelProvider(final String entityId, final String caption, final Class<? extends SwingEntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
-    requireNonNull(entityId, "entityId");
-    requireNonNull(entityModelClass, "entityModelClass");
-    requireNonNull(entityPanelClass, "entityPanelClass");
-    this.caption = caption;
-    this.panelClass = entityPanelClass;
-    this.modelProvider = new SwingEntityModelProvider(entityId, entityModelClass);
+    this(new SwingEntityModelProvider(entityId, entityModelClass), caption);
+    setPanelClass(entityPanelClass);
   }
 
   /**
@@ -84,8 +80,7 @@ public class EntityPanelProvider {
    * @param caption the panel caption to use
    */
   public EntityPanelProvider(final SwingEntityModelProvider modelProvider, final String caption) {
-    requireNonNull(modelProvider, "modelProvider");
-    this.modelProvider = modelProvider;
+    this.modelProvider = requireNonNull(modelProvider, "modelProvider");
     this.caption = caption;
   }
 
@@ -206,6 +201,7 @@ public class EntityPanelProvider {
    * @return this EntityPanelProvider instance
    */
   public final EntityPanelProvider setPanelClass(final Class<? extends EntityPanel> panelClass) {
+    requireNonNull(panelClass, "panelClass");
     this.panelClass = panelClass;
     return this;
   }
@@ -269,19 +265,9 @@ public class EntityPanelProvider {
    * @return an EntityPanel based on this provider configuration
    */
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider) {
-    return createPanel(connectionProvider, false);
-  }
-
-  /**
-   * Creates an EntityPanel based on this provider configuration
-   * @param connectionProvider the connection provider
-   * @param detailPanel if true then this panel is a detail panel
-   * @return an EntityPanel based on this provider configuration
-   */
-  public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
     requireNonNull(connectionProvider, "connectionProvider");
     try {
-      final SwingEntityModel entityModel = modelProvider.createModel(connectionProvider, detailPanel);
+      final SwingEntityModel entityModel = modelProvider.createModel(connectionProvider);
 
       return createPanel(entityModel);
     }
@@ -299,9 +285,7 @@ public class EntityPanelProvider {
    * @return an EntityPanel based on this provider configuration
    */
   public final EntityPanel createPanel(final SwingEntityModel model) {
-    if (model == null) {
-      throw new IllegalArgumentException("Can not create EntityPanel without an SwingEntityModel");
-    }
+    requireNonNull(model, "model");
     try {
       final EntityPanel entityPanel = initializePanel(model);
       if (entityPanel.getTablePanel() != null && tableConditionPanelVisible) {
@@ -343,11 +327,10 @@ public class EntityPanelProvider {
   /**
    * Creates an EntityTablePanel
    * @param connectionProvider the connection provider
-   * @param detailPanel if true then the table model is configured as a detail model
    * @return an EntityTablePanel based on this provider
    */
-  public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
-    return initializeTablePanel(modelProvider.createTableModel(connectionProvider, detailPanel));
+  public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider) {
+    return initializeTablePanel(modelProvider.createTableModel(connectionProvider));
   }
 
   /**
