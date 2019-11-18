@@ -164,9 +164,9 @@ public final class TestDomain extends Domain {
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
-            .addConditionProvider(EMP_CONDITION_1_ID, values -> "1 = 2")
-            .addConditionProvider(EMP_CONDITION_2_ID, values -> "1 = 1")
-            .addConditionProvider(EMP_CONDITION_3_ID, values -> " ename = 'CLARK'")
+            .addConditionProvider(EMP_CONDITION_1_ID, (propetyIds, values) -> "1 = 2")
+            .addConditionProvider(EMP_CONDITION_2_ID, (propetyIds, values) -> "1 = 1")
+            .addConditionProvider(EMP_CONDITION_3_ID, (propetyIds, values) -> " ename = 'CLARK'")
             .setCaption("Employee")
             .setColorProvider((entity, property) -> {
               if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {

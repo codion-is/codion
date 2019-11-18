@@ -74,7 +74,7 @@ public class DefaultLocalEntityConnectionTest {
             Properties.primaryKeyProperty("e.empno"),
             Properties.columnProperty("d.deptno", Types.INTEGER))
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
-            .addConditionProvider(JOINED_QUERY_CONDITION_ID, values -> "d.deptno = 10");
+            .addConditionProvider(JOINED_QUERY_CONDITION_ID, (propetyIds, values) -> "d.deptno = 10");
 
     DOMAIN.define(GROUP_BY_QUERY_ENTITY_ID, "scott.emp",
             Properties.columnProperty("job", Types.VARCHAR)

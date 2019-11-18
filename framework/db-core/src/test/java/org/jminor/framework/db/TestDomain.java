@@ -39,7 +39,7 @@ public final class TestDomain extends Domain {
             .setSearchPropertyIds(DEPARTMENT_NAME)
             .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
             .setStringProvider(new StringProvider(DEPARTMENT_NAME))
-            .addConditionProvider(DEPARTMENT_NAME_NOT_NULL_CONDITION_ID, values -> "department name is not null")
+            .addConditionProvider(DEPARTMENT_NAME_NOT_NULL_CONDITION_ID, (propetyIds, values) -> "department name is not null")
             .setCaption("Department");
   }
 

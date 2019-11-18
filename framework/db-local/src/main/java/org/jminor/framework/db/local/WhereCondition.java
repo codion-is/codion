@@ -96,7 +96,8 @@ final class WhereCondition {
     if (condition instanceof Condition.CustomCondition) {
       final Condition.CustomCondition customCondition = (Condition.CustomCondition) condition;
 
-      return entityDefinition.getConditionProvider(customCondition.getConditionId()).getConditionString(customCondition.getValues());
+      return entityDefinition.getConditionProvider(customCondition.getConditionId())
+              .getConditionString(customCondition.getPropertyIds(), customCondition.getValues());
     }
     if (condition instanceof Condition.CustomStringCondition) {
       final Condition.CustomStringCondition customCondition = (Condition.CustomStringCondition) condition;

@@ -57,6 +57,7 @@ public interface LocalEntityConnection extends EntityConnection {
 
   /**
    * @param methodLogger the MethodLogger to use
+   * @return this LocalEntityConnection instance
    */
   EntityConnection setMethodLogger(final MethodLogger methodLogger);
 

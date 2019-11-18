@@ -5295,3 +5295,4 @@
   Entities.getOriginalKeys() added, old getKeys() with originalValue boolean parameter now private
   Entities.getValues() and getDistinctValues() streamlined, getDistinctValuesIncludingNull() added
   EntityConnection.selectMany() renamed to select()
+  Entity.ConditionProvider.getConditionString(), propertyIds parameter added
