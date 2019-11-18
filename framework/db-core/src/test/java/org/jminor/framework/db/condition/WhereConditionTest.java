@@ -156,8 +156,7 @@ public final class WhereConditionTest {
     assertEquals("(master_id is null and master_id_2 = ?)",
             condition.getWhereClause());
 
-    final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
-    deptKey.put(TestDomain.DEPARTMENT_ID, 42);
+    final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT, 42);
 
     condition = whereCondition(entitySelectCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, deptKey), empDefinition);

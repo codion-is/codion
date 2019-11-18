@@ -25,8 +25,7 @@ public class EntityJSONParserTest {
 
   @Test
   public void key() throws Exception {
-    final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT);
-    key.put(TestDomain.DEPARTMENT_ID, 42);
+    final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT, 42);
 
     final EntityJSONParser parser = new EntityJSONParser(DOMAIN);
 

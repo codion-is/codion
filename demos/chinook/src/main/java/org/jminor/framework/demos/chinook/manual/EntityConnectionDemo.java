@@ -58,10 +58,8 @@ public final class EntityConnectionDemo {
 
   public static void selectKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectKeys[]
-    Entity.Key key42 = connection.getDomain().key(T_ARTIST);
-    key42.put(ARTIST_ARTISTID, 42L);
-    Entity.Key key43 = connection.getDomain().key(T_ARTIST);
-    key43.put(ARTIST_ARTISTID, 43L);
+    Entity.Key key42 = connection.getDomain().key(T_ARTIST, 42L);
+    Entity.Key key43 = connection.getDomain().key(T_ARTIST, 43L);
 
     List<Entity> artists = connection.select(asList(key42, key43));
     // end::selectKeys[]
@@ -90,8 +88,7 @@ public final class EntityConnectionDemo {
 
   public static void selectSingleKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleKeys[]
-    Entity.Key key42 = connection.getDomain().key(T_ARTIST);
-    key42.put(ARTIST_ARTISTID, 42L);
+    Entity.Key key42 = connection.getDomain().key(T_ARTIST, 42L);
 
     Entity artists = connection.selectSingle(key42);
     // end::selectSingleKeys[]

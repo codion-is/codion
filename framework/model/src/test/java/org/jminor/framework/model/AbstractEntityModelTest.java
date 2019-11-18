@@ -56,8 +56,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.refresh();
     final EntityEditModel deptEditModel = departmentModel.getEditModel();
     final TableModel deptTableModel = departmentModel.getTableModel();
-    final Entity.Key operationsKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
-    operationsKey.put(TestDomain.DEPARTMENT_ID, 40);//operations
+    final Entity.Key operationsKey = DOMAIN.key(TestDomain.T_DEPARTMENT, 40);//operations
     deptTableModel.setSelectedByKey(singletonList(operationsKey));
 
     assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());

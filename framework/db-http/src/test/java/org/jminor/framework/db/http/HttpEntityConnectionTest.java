@@ -92,18 +92,15 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectByKey() throws IOException, DatabaseException {
-    final Entity.Key key = connection.getDomain().key(TestDomain.T_DEPARTMENT);
-    key.put(TestDomain.DEPARTMENT_ID, 10);
+    final Entity.Key key = connection.getDomain().key(TestDomain.T_DEPARTMENT, 10);
     final List<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
   @Test
   public void selectByKeyDifferentEntityIds() throws IOException, DatabaseException {
-    final Entity.Key deptKey = connection.getDomain().key(TestDomain.T_DEPARTMENT);
-    deptKey.put(TestDomain.DEPARTMENT_ID, 10);
-    final Entity.Key empKey = connection.getDomain().key(TestDomain.T_EMP);
-    empKey.put(TestDomain.EMP_ID, 8);
+    final Entity.Key deptKey = connection.getDomain().key(TestDomain.T_DEPARTMENT, 10);
+    final Entity.Key empKey = connection.getDomain().key(TestDomain.T_EMP, 8);
 
     final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -140,10 +137,8 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void deleteByKeyDifferentEntityIds() throws IOException, DatabaseException {
-    final Entity.Key deptKey = connection.getDomain().key(TestDomain.T_DEPARTMENT);
-    deptKey.put(TestDomain.DEPARTMENT_ID, 40);
-    final Entity.Key empKey = connection.getDomain().key(TestDomain.T_EMP);
-    empKey.put(TestDomain.EMP_ID, 1);
+    final Entity.Key deptKey = connection.getDomain().key(TestDomain.T_DEPARTMENT, 40);
+    final Entity.Key empKey = connection.getDomain().key(TestDomain.T_EMP, 1);
     try {
       connection.beginTransaction();
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());

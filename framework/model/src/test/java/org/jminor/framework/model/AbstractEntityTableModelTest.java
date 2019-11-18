@@ -50,10 +50,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
-    final Entity.Key pk1 = DOMAIN.key(TestDomain.T_EMP);
-    pk1.put(TestDomain.EMP_ID, 1);
-    final Entity.Key pk2 = DOMAIN.key(TestDomain.T_EMP);
-    pk2.put(TestDomain.EMP_ID, 2);
+    final Entity.Key pk1 = DOMAIN.key(TestDomain.T_EMP, 1);
+    final Entity.Key pk2 = DOMAIN.key(TestDomain.T_EMP, 2);
 
     tableModel.setSelectedByKey(singletonList(pk1));
     final Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
@@ -143,10 +141,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
-    final Entity.Key pk1 = DOMAIN.key(TestDomain.T_EMP);
-    pk1.put(TestDomain.EMP_ID, 1);
-    final Entity.Key pk2 = DOMAIN.key(TestDomain.T_EMP);
-    pk2.put(TestDomain.EMP_ID, 2);
+    final Entity.Key pk1 = DOMAIN.key(TestDomain.T_EMP, 1);
+    final Entity.Key pk2 = DOMAIN.key(TestDomain.T_EMP, 2);
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
       tableModel.setSelectedByKey(singletonList(pk1));
@@ -174,12 +170,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
-    final Entity.Key pk1 = DOMAIN.key(TestDomain.T_EMP);
-    pk1.put(TestDomain.EMP_ID, 1);
+    final Entity.Key pk1 = DOMAIN.key(TestDomain.T_EMP, 1);
     assertNotNull(tableModel.getEntityByKey(pk1));
 
-    final Entity.Key pk2 = DOMAIN.key(TestDomain.T_EMP);
-    pk2.put(TestDomain.EMP_ID, -66);
+    final Entity.Key pk2 = DOMAIN.key(TestDomain.T_EMP, -66);
     assertNull(tableModel.getEntityByKey(pk2));
   }
 
