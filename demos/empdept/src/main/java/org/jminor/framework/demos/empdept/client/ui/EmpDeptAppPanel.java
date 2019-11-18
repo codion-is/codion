@@ -34,8 +34,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   @Override
   protected void setupEntityPanelProviders() {
     final EmployeeModelProvider employeeModelProvider = new EmployeeModelProvider();
-    final EmployeePanelProvider employeePanelProvider = new EmployeePanelProvider(employeeModelProvider,
-            getModel().getDomain().getDefinition(EmpDept.T_EMPLOYEE).getCaption());
+    final EmployeePanelProvider employeePanelProvider =
+            new EmployeePanelProvider(employeeModelProvider);
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
     final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(EmpDept.T_DEPARTMENT) {
@@ -47,8 +47,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     //This relies on the foreign key association between employee and department
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);
 
-    final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(departmentModelProvider,
-            getModel().getDomain().getDefinition(EmpDept.T_DEPARTMENT).getCaption());
+    final EntityPanelProvider departmentPanelProvider =
+            new EntityPanelProvider(departmentModelProvider);
     departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
     departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
     departmentPanelProvider.addDetailPanelProvider(employeePanelProvider);
@@ -104,8 +104,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
 
   private static final class EmployeePanelProvider extends EntityPanelProvider {
-    private EmployeePanelProvider(final EmployeeModelProvider modelProvider, final String caption) {
-      super(modelProvider, caption);
+    private EmployeePanelProvider(final EmployeeModelProvider modelProvider) {
+      super(modelProvider);
     }
 
     @Override

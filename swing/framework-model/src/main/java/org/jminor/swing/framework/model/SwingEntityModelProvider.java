@@ -35,7 +35,7 @@ public class SwingEntityModelProvider
    * @param entityId the entity ID
    */
   public SwingEntityModelProvider(final String entityId) {
-    this.entityId = entityId;
+    this.entityId = requireNonNull(entityId, "entityId");
   }
 
   /**
@@ -44,8 +44,8 @@ public class SwingEntityModelProvider
    * @param entityModelClass the entity model class
    */
   public SwingEntityModelProvider(final String entityId, final Class<? extends SwingEntityModel> entityModelClass) {
-    this.entityId = entityId;
-    this.modelClass = entityModelClass;
+    this.entityId = requireNonNull(entityId, "entityId");
+    this.modelClass = requireNonNull(entityModelClass, "entityModelClass");
   }
 
   /** {@inheritDoc} */
@@ -57,24 +57,21 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelProvider setModelClass(final Class<? extends SwingEntityModel> modelClass) {
-    requireNonNull(modelClass, "modelClass");
-    this.modelClass = modelClass;
+    this.modelClass = requireNonNull(modelClass, "modelClass");
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelProvider setEditModelClass(final Class<? extends SwingEntityEditModel> editModelClass) {
-    requireNonNull(editModelClass, "editModelClass");
-    this.editModelClass = editModelClass;
+    this.editModelClass = requireNonNull(editModelClass, "editModelClass");
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelProvider setTableModelClass(final Class<? extends SwingEntityTableModel> tableModelClass) {
-    requireNonNull(tableModelClass, "tableModelClass");
-    this.tableModelClass = tableModelClass;
+    this.tableModelClass = requireNonNull(tableModelClass, "tableModelClass");
     return this;
   }
 
@@ -100,6 +97,7 @@ public class SwingEntityModelProvider
   @Override
   public final SwingEntityModelProvider addDetailModelProvider(final EntityModelProvider<SwingEntityModel,
           SwingEntityEditModel, SwingEntityTableModel> detailModelProvider) {
+    requireNonNull(detailModelProvider, "detailModelProvider");
     if (!detailModelProviders.contains(detailModelProvider)) {
       detailModelProviders.add(detailModelProvider);
     }
@@ -129,6 +127,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModel createModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
+    requireNonNull(connectionProvider, "connectionProvider");
     try {
       final SwingEntityModel model;
       if (modelClass.equals(SwingEntityModel.class)) {
@@ -157,6 +156,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityEditModel createEditModel(final EntityConnectionProvider connectionProvider) {
+    requireNonNull(connectionProvider, "connectionProvider");
     try {
       final SwingEntityEditModel editModel;
       if (editModelClass.equals(SwingEntityEditModel.class)) {
@@ -182,6 +182,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityTableModel createTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
+    requireNonNull(connectionProvider, "connectionProvider");
     try {
       final SwingEntityTableModel tableModel;
       if (tableModelClass.equals(SwingEntityTableModel.class)) {
