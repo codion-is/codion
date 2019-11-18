@@ -357,7 +357,6 @@ public final class LoadTestPanel extends JPanel {
     return thinkTimePanel;
   }
 
-  @SuppressWarnings({"unchecked"})
   private void handleScenarioSelected() {
     scenarioBase.removeAll();
     for (final Object selectedItem : scenarioPanel.getSelectedItems()) {
