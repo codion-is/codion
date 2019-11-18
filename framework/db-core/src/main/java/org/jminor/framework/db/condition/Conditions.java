@@ -206,25 +206,30 @@ public final class Conditions {
     return new DefaultPropertyCondition(propertyId, conditionType, value);
   }
 
-  /** Assumes {@code keys} is not empty. */
-  private static Condition createKeyCondition(final List<Entity.Key> keys) {
-    final Entity.Key firstKey = keys.get(0);
-    if (firstKey.isCompositeKey()) {
-      return createCompositeKeyCondition(firstKey.getProperties(), LIKE, keys);
-    }
-
-    return propertyCondition(firstKey.getFirstProperty().getPropertyId(), LIKE, getValues(keys));
-  }
-
-  /** Assumes {@code keys} is not empty. */
-  public static Condition createCompositeKeyCondition(final List<ColumnProperty> properties,
-                                                      final ConditionType conditionType,
-                                                      final List<Entity.Key> keys) {
+  /**
+   * Creates a composite condition from the given keys, referencing the given properties
+   * @param keys the keys
+   * @param properties the key properties
+   * @param conditionType the condition type
+   * @return a Condition referencing the given keys
+   */
+  public static Condition createCompositeKeyCondition(final List<Entity.Key> keys, final List<ColumnProperty> properties,
+                                                      final ConditionType conditionType) {
     if (keys.size() == 1) {
       return createSingleCompositeCondition(properties, conditionType, keys.get(0));
     }
 
     return createMultipleCompositeCondition(properties, conditionType, keys);
+  }
+
+  /** Assumes {@code keys} is not empty. */
+  private static Condition createKeyCondition(final List<Entity.Key> keys) {
+    final Entity.Key firstKey = keys.get(0);
+    if (firstKey.isCompositeKey()) {
+      return createCompositeKeyCondition(keys, firstKey.getProperties(), LIKE);
+    }
+
+    return propertyCondition(firstKey.getFirstProperty().getPropertyId(), LIKE, getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */

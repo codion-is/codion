@@ -113,11 +113,13 @@ final class WhereCondition {
       case OR: return " or ";
       default: throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
     }
-  }private static Condition foreignKeyCondition(final ForeignKeyProperty foreignKeyProperty,
+  }
+
+  private static Condition foreignKeyCondition(final ForeignKeyProperty foreignKeyProperty,
                                                 final ConditionType conditionType, final Collection values) {
     final List<Entity.Key> keys = getKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
-      return Conditions.createCompositeKeyCondition(foreignKeyProperty.getProperties(), conditionType, keys);
+      return Conditions.createCompositeKeyCondition(keys, foreignKeyProperty.getProperties(), conditionType);
     }
 
     if (keys.size() == 1) {
