@@ -24,7 +24,8 @@ public class SwingEntityModelProvider
 
   private final String entityId;
 
-  private final List<EntityModelProvider<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel>> detailModelProviders = new ArrayList<>();
+  private final List<EntityModelProvider<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel>>
+          detailModelProviders = new ArrayList<>();
 
   private Class<? extends SwingEntityModel> modelClass = SwingEntityModel.class;
   private Class<? extends SwingEntityEditModel> editModelClass = SwingEntityEditModel.class;
@@ -126,20 +127,20 @@ public class SwingEntityModelProvider
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityModel createModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
+  public final SwingEntityModel createModel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, "connectionProvider");
     try {
       final SwingEntityModel model;
       if (modelClass.equals(SwingEntityModel.class)) {
         LOG.debug("{} initializing a default entity model", this);
-        model = initializeDefaultModel(connectionProvider, detailModel);
+        model = initializeDefaultModel(connectionProvider);
       }
       else {
         LOG.debug("{} initializing a custom entity model: {}", this, modelClass);
         model = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       for (final EntityModelProvider<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> detailProvider : detailModelProviders) {
-        model.addDetailModel(detailProvider.createModel(connectionProvider, true));
+        model.addDetailModel(detailProvider.createModel(connectionProvider));
       }
       configureModel(model);
 
@@ -181,7 +182,7 @@ public class SwingEntityModelProvider
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityTableModel createTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
+  public final SwingEntityTableModel createTableModel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, "connectionProvider");
     try {
       final SwingEntityTableModel tableModel;
@@ -192,9 +193,6 @@ public class SwingEntityModelProvider
       else {
         LOG.debug("{} initializing a custom table model: {}", this, tableModelClass);
         tableModel = tableModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
-      }
-      if (detailModel) {
-        tableModel.getQueryConditionRequiredState().set(true);
       }
       configureTableModel(tableModel);
 
@@ -229,14 +227,12 @@ public class SwingEntityModelProvider
    */
   protected void configureTableModel(final SwingEntityTableModel tableModel) {/*Provided for subclasses*/}
 
-  private SwingEntityModel initializeDefaultModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
-    final SwingEntityTableModel tableModel = createTableModel(connectionProvider, detailModel);
-    if (!tableModel.hasEditModel()) {
-      final SwingEntityEditModel editModel = createEditModel(connectionProvider);
-      tableModel.setEditModel(editModel);
-    }
+  private SwingEntityModel initializeDefaultModel(final EntityConnectionProvider connectionProvider) {
+    final SwingEntityTableModel tableModel = createTableModel(connectionProvider);
+    final SwingEntityEditModel editModel = tableModel.hasEditModel() ?
+            tableModel.getEditModel() : createEditModel(connectionProvider);
 
-    return new SwingEntityModel(tableModel.getEditModel(), tableModel);
+    return new SwingEntityModel(editModel, tableModel);
   }
 
   private SwingEntityEditModel initializeDefaultEditModel(final EntityConnectionProvider connectionProvider) {

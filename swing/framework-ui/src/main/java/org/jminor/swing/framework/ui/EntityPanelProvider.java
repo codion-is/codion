@@ -265,19 +265,9 @@ public class EntityPanelProvider {
    * @return an EntityPanel based on this provider configuration
    */
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider) {
-    return createPanel(connectionProvider, false);
-  }
-
-  /**
-   * Creates an EntityPanel based on this provider configuration
-   * @param connectionProvider the connection provider
-   * @param detailPanel if true then this panel is a detail panel
-   * @return an EntityPanel based on this provider configuration
-   */
-  public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
     requireNonNull(connectionProvider, "connectionProvider");
     try {
-      final SwingEntityModel entityModel = modelProvider.createModel(connectionProvider, detailPanel);
+      final SwingEntityModel entityModel = modelProvider.createModel(connectionProvider);
 
       return createPanel(entityModel);
     }
@@ -337,11 +327,10 @@ public class EntityPanelProvider {
   /**
    * Creates an EntityTablePanel
    * @param connectionProvider the connection provider
-   * @param detailPanel if true then the table model is configured as a detail model
    * @return an EntityTablePanel based on this provider
    */
-  public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
-    return initializeTablePanel(modelProvider.createTableModel(connectionProvider, detailPanel));
+  public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider) {
+    return initializeTablePanel(modelProvider.createTableModel(connectionProvider));
   }
 
   /**
