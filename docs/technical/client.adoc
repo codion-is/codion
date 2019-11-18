@@ -146,6 +146,7 @@ include::{dir-source}/chinook/src/main/config/h2db.config[]
 * kbd:[Alt + A] Add (when available)
 * kbd:[Alt + U] Update
 * kbd:[Alt + D] Delete
+* kbd:[Alt + C] Clear
 * kbd:[Alt + R] Refresh
 
 ==== Table panel
