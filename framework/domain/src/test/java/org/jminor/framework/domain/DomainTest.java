@@ -540,13 +540,13 @@ public class DomainTest {
   @Test
   public void conditionProvider() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("nullConditionProvider1",
-            Properties.primaryKeyProperty("id")).addConditionProvider(null, values -> null));
+            Properties.primaryKeyProperty("id")).addConditionProvider(null, (propetyIds, values) -> null));
     assertThrows(NullPointerException.class, () -> domain.define("nullConditionProvider2",
             Properties.primaryKeyProperty("id")).addConditionProvider("id", null));
     assertThrows(IllegalStateException.class, () -> domain.define("nullConditionProvider3",
             Properties.primaryKeyProperty("id"))
-            .addConditionProvider("id", values -> null)
-            .addConditionProvider("id", values -> null));
+            .addConditionProvider("id", (propetyIds, values) -> null)
+            .addConditionProvider("id", (propetyIds, values) -> null));
   }
 
   @Test

@@ -587,10 +587,11 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
     /**
      * Creates a query condition string for the given values
+     * @param propertyIds the condition propertyIds
      * @param values the values
      * @return a query condition string
      */
-    String getConditionString(final List values);
+    String getConditionString(final List<String> propertyIds, final List values);
   }
 
   /**

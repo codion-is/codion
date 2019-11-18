@@ -147,15 +147,15 @@ public final class TestDomain extends Domain {
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
             .setStringProvider(new StringProvider(DEPARTMENT_NAME))
-            .addConditionProvider(DEPARTMENT_CONDITION_ID, values -> {
+            .addConditionProvider(DEPARTMENT_CONDITION_ID, (propetyIds, values) -> {
               final StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .addConditionProvider(DEPARTMENT_CONDITION_SALES_ID, values -> "dname = 'SALES'")
-            .addConditionProvider(DEPARTMENT_CONDITION_INVALID_COLUMN_ID, values -> "no_column is null")
+            .addConditionProvider(DEPARTMENT_CONDITION_SALES_ID, (propetyIds, values) -> "dname = 'SALES'")
+            .addConditionProvider(DEPARTMENT_CONDITION_INVALID_COLUMN_ID, (propetyIds, values) -> "no_column is null")
             .setCaption("Department");
   }
 
@@ -205,8 +205,8 @@ public final class TestDomain extends Domain {
             .setStringProvider(new StringProvider(EMP_NAME))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
-            .addConditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, values -> "ename = 'BLAKE'")
-            .addConditionProvider(EMP_MGR_GREATER_THAN_CONDITION_ID, values -> "mgr > ?")
+            .addConditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, (propetyIds, values) -> "ename = 'BLAKE'")
+            .addConditionProvider(EMP_MGR_GREATER_THAN_CONDITION_ID, (propetyIds, values) -> "mgr > ?")
             .setCaption("Employee");
   }
 
