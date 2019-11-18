@@ -216,6 +216,9 @@ task populateSite(dependsOn: [combinedJavadoc, asciidoctor]) {
         ant.copy(todir: "${sitePath}") {
             fileset(dir: "${buildDir}/docs/asciidoc")
         }
+        ant.copy(todir: "${sitePath}") {
+            fileset(dir: 'docs', includes: 'favicon.ico')
+        }
         ant.chgrp(group: 'www', type: 'both') {
             fileset(dir: "${sitePath}", includes: '**/*')
         }

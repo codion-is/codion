@@ -1,5 +1,6 @@
 = JMinor Application Framework
 Björn Darri Sigurðsson <bjorndarri@gmail.com>
+:favicon: favicon.ico
 :toclevels: 1
 :dir-tutorials: tutorials
 :dir-manual: manual
@@ -7,19 +8,13 @@ Björn Darri Sigurðsson <bjorndarri@gmail.com>
 :imagesdir: images
 :url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
 
-image::jminor_logo_medium.png[Logo,200]
+image::jminor_logo_medium.png[JMinor Logo,200]
+As simple as possible, but no simpler.
+
 image::https://github.com/bjorndarri/jminor/workflows/Java%20CI/badge.svg[CI]
 
-== <<introduction.adoc#, Introduction>>
-
-== <<technical/technical.adoc#, Technical>>
-
-== <<quickstart.adoc#, Quickstart>>
-
-== <<{dir-manual}/manual.adoc#, Manual>>
-
-== <<tutorials/tutorials.adoc#, Tutorials>>
-
-== API Documentation
-
-* {url-javadoc}/index.html[Javadocs]
+[stripes=none]
+|===
+|<<introduction.adoc#, Introduction>>|<<technical/technical.adoc#, Technical>>|<<quickstart.adoc#, Quickstart>>
+|<<{dir-manual}/manual.adoc#, Manual>>|<<tutorials/tutorials.adoc#, Tutorials>>|{url-javadoc}/index.html[Javadocs]
+|===
