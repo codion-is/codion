@@ -87,7 +87,6 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked"})
   public final void setColumnVisible(final C columnIdentifier, final boolean visible) {
     if (visible) {
       final TableColumn column = hiddenColumns.get(columnIdentifier);
@@ -173,7 +172,6 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked"})
   public final C getColumnIdentifier(final int columnModelIndex) {
     return (C) getColumn(convertColumnIndexToView(columnModelIndex)).getIdentifier();
   }

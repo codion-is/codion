@@ -400,7 +400,6 @@ public class FilteredTablePanel<R, C> extends JPanel {
   /**
    * Shows a dialog for selecting which columns to show/hide
    */
-  @SuppressWarnings({"unchecked"})
   public final void selectTableColumns() {
     final List<TableColumn> allColumns = new ArrayList<>(tableModel.getColumnModel().getAllColumns());
     allColumns.sort(new Comparator<TableColumn>() {
@@ -527,7 +526,6 @@ public class FilteredTablePanel<R, C> extends JPanel {
     return popupMenu;
   }
 
-  @SuppressWarnings({"unchecked"})
   private JPanel initializeSelectColumnsPanel(final List<TableColumn> allColumns, final List<JCheckBox> checkBoxes) {
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
     allColumns.forEach(column -> {
@@ -561,7 +559,6 @@ public class FilteredTablePanel<R, C> extends JPanel {
     });
   }
 
-  @SuppressWarnings({"unchecked"})
   private void bindEvents() {
     tableModel.addSortingListener(table.getTableHeader()::repaint);
     tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
@@ -651,7 +648,6 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   private final class MouseSortHandler extends MouseAdapter {
-    @SuppressWarnings({"unchecked"})
     @Override
     public void mouseClicked(final MouseEvent e) {
       if (!sortingEnabled || e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
@@ -695,7 +691,6 @@ public class FilteredTablePanel<R, C> extends JPanel {
     }
 
     @Override
-    @SuppressWarnings({"unchecked"})
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
       final Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);

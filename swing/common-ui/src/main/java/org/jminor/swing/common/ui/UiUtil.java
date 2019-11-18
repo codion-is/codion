@@ -1429,7 +1429,6 @@ public final class UiUtil {
    * @return the files described by the given transfer support object
    * @throws RuntimeException in case of an exception
    */
-  @SuppressWarnings({"unchecked"})
   public static List<File> getTransferFiles(final TransferHandler.TransferSupport support) {
     try {
       for (final DataFlavor flavor : support.getDataFlavors()) {

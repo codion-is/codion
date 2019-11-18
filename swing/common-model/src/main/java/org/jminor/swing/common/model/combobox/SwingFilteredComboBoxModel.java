@@ -455,7 +455,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     }
 
     @Override
-    @SuppressWarnings({"unchecked"})
     public int compare(final T o1, final T o2) {
       if (o1 == null && o2 == null) {
         return 0;

@@ -263,7 +263,6 @@ public final class Util {
    * @param <T> the type
    * @return a proxy for the given class
    */
-  @SuppressWarnings({"unchecked"})
   public static <T> T initializeProxy(final Class<T> clazz, final InvocationHandler invocationHandler) {
     return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, invocationHandler);
   }

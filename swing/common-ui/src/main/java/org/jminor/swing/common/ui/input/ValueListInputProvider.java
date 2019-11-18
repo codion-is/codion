@@ -28,7 +28,6 @@ public final class ValueListInputProvider<T> extends AbstractInputProvider<T, JC
   }
 
   /** {@inheritDoc} */
-  @SuppressWarnings({"unchecked"})
   @Override
   public T getValue() {
     return ((ItemComboBoxModel<T>) getInputComponent().getModel()).getSelectedValue().getValue();
