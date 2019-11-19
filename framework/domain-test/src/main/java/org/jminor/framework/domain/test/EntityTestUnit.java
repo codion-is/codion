@@ -23,6 +23,8 @@ import org.jminor.framework.domain.property.ValueListProperty;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.Types;
@@ -46,6 +48,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * A class for unit testing a domain model.
  */
 public class EntityTestUnit {
+
+  private static final Logger LOG = LoggerFactory.getLogger(EntityTestUnit.class);
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -345,14 +349,20 @@ public class EntityTestUnit {
    * @throws DatabaseException in case of an exception
    */
   private Entity insertOrSelect(final Entity entity) throws DatabaseException {
-    if (!entity.isKeyNull()) {
-      final List<Entity> selected = connection.select(singletonList(entity.getKey()));
-      if (!selected.isEmpty()) {
-        return selected.get(0);
+    try {
+      if (!entity.isKeyNull()) {
+        final List<Entity> selected = connection.select(singletonList(entity.getKey()));
+        if (!selected.isEmpty()) {
+          return selected.get(0);
+        }
       }
-    }
 
-    return connection.selectSingle(connection.insert(singletonList(entity)).get(0));
+      return connection.selectSingle(connection.insert(singletonList(entity)).get(0));
+    }
+    catch (final DatabaseException e) {
+      LOG.error("EntityTestUnit.insertOrSelect()", e);
+      throw e;
+    }
   }
 
   /**
