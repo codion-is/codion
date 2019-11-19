@@ -170,6 +170,16 @@ public class DomainTest {
     assertThrows(NullPointerException.class, () -> domain.key((String) null));
   }
 
+   @Test
+   public void keys() {
+    final List<Entity.Key> intKeys = domain.keys(TestDomain.T_EMP, 1, 2, 3, 4);
+    assertEquals(4, intKeys.size());
+    assertEquals(3, intKeys.get(2).getFirstValue());
+    final List<Entity.Key> longKeys = domain.keys(TestDomain.T_DETAIL, 1L, 2L, 3L, 4L);
+    assertEquals(4, longKeys.size());
+    assertEquals(3L, longKeys.get(2).getFirstValue());
+   }
+
   @Test
   public void keyWithSameIndex() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("keyWithSameIndex",

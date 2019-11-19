@@ -28,6 +28,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.text.Format;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -314,6 +315,32 @@ public class Domain implements Serializable {
    */
   public final Entity.Key key(final String entityId, final Long value) {
     return new DefaultEntity.DefaultKey(getDefinition(entityId), value);
+  }
+
+  /**
+   * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
+   * @param entityId the entity id
+   * @param values the key values, assumes a single integer key
+   * @return new {@link Entity.Key} instances
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or values is null
+   */
+  public final List<Entity.Key> keys(final String entityId, final Integer... values) {
+    requireNonNull(values, "values");
+    return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
+  }
+
+  /**
+   * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
+   * @param entityId the entity id
+   * @param values the key values, assumes a single integer key
+   * @return new {@link Entity.Key} instances
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or values is null
+   */
+  public final List<Entity.Key> keys(final String entityId, final Long... values) {
+    requireNonNull(values, "values");
+    return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
   }
 
   /**
