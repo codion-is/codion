@@ -50,8 +50,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
-    final Entity.Key pk1 = DOMAIN.key(TestDomain.T_EMP, 1);
-    final Entity.Key pk2 = DOMAIN.key(TestDomain.T_EMP, 2);
+    final List<Entity.Key> keys = DOMAIN.keys(TestDomain.T_EMP, 1, 2);
+    final Entity.Key pk1 = keys.get(0);
+    final Entity.Key pk2 = keys.get(1);
 
     tableModel.setSelectedByKey(singletonList(pk1));
     final Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
@@ -63,7 +64,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(pk2, selectedPK2.getKey());
     assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
 
-    final List<Entity.Key> keys = asList(pk1, pk2);
     tableModel.setSelectedByKey(keys);
     final List<Entity> selectedItems = tableModel.getSelectionModel().getSelectedItems();
     for (final Entity selected : selectedItems) {

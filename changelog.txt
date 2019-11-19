@@ -5321,3 +5321,6 @@
   SwingEntityModelProvider, EntityPanelProvider, some refactoring, and more refactoring
   EntityTestUnit.initializeReferenceEntity() can now return null without crashing the test
   Using built-in javadoc and sources jar Gradle functionality
+  Domain.keys() added, overloaded for Integer and Long
+  Domain.StringProvider moved up
+  Domain.Validator moved up to DefaultValidator

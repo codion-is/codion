@@ -598,8 +598,9 @@ public class DefaultEntityTest {
 
   @Test
   public void keyEquality() {
-    final Entity.Key empKey1 = DOMAIN.key(TestDomain.T_EMP, 1);
-    final Entity.Key empKey2 = DOMAIN.key(TestDomain.T_EMP, 2);
+    final List<Entity.Key> keys = DOMAIN.keys(TestDomain.T_EMP, 1, 2);
+    final Entity.Key empKey1 = keys.get(0);
+    final Entity.Key empKey2 = keys.get(1);
     assertNotEquals(empKey1, empKey2);
 
     empKey2.put(TestDomain.EMP_ID, 1);

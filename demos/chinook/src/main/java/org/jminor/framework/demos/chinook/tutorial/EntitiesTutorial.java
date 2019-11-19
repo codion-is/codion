@@ -14,6 +14,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.StringProvider;
 import org.jminor.framework.domain.property.Property;
 
 import java.sql.Types;
@@ -79,7 +80,9 @@ public final class EntitiesTutorial {
       define(T_ALBUM, albumId, albumTitle, albumArtist)
               .setKeyGenerator(automaticKeyGenerator("chinook.album"))
               .setStringProvider(new StringProvider()
-                      .addValue(ALBUM_ARTIST_FK).addText(" - ").addValue(ALBUM_TITLE))
+                      .addValue(ALBUM_ARTIST_FK)
+                      .addText(" - ")
+                      .addValue(ALBUM_TITLE))
               .setCaption("Album");
     }
   }

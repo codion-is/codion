@@ -5,6 +5,7 @@ package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.Item;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.StringProvider;
 
 import java.awt.Color;
 import java.sql.Types;

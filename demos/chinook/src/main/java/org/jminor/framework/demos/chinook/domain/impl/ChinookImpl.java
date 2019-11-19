@@ -11,6 +11,7 @@ import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.StringProvider;
 
 import java.math.BigDecimal;
 import java.sql.Types;

@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.petstore.domain;
 
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.StringProvider;
 
 import java.sql.Types;
 

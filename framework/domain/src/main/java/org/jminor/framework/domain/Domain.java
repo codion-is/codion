@@ -8,12 +8,7 @@ import org.jminor.common.PropertyValue;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.ValueProvider;
-import org.jminor.common.db.valuemap.exception.LengthValidationException;
-import org.jminor.common.db.valuemap.exception.NullValidationException;
-import org.jminor.common.db.valuemap.exception.RangeValidationException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -26,23 +21,20 @@ import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.text.Format;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -53,8 +45,6 @@ public class Domain implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Domain.class.getName(), Locale.getDefault());
-
   /**
    * Specifies whether or not to allow entities to be re-defined, that is,
    * allow a new definition to replace an old one.
@@ -63,11 +53,7 @@ public class Domain implements Serializable {
    */
   public static final PropertyValue<Boolean> ALLOW_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.allowRedefineEntity", false);
 
-  private static final String ENTITY_PARAM = "entity";
   private static final String ENTITY_ID_PARAM = "entityId";
-  private static final String PROPERTY_ID_PARAM = "propertyId";
-  private static final String PROPERTY_PARAM = "property";
-  private static final String VALUE_REQUIRED_KEY = "property_value_is_required";
 
   private static final Map<String, Domain> REGISTERED_DOMAINS = new HashMap<>();
 
@@ -188,6 +174,8 @@ public class Domain implements Serializable {
    * Transforms the given entities into beans according to the information found in this Domain model
    * @param entities the entities to transform
    * @return a List containing the beans derived from the given entities, an empty List if {@code entities} is null or empty
+   * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see Property.Builder#setBeanProperty(String)
    */
   public final List<Object> toBeans(final List<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
@@ -206,9 +194,11 @@ public class Domain implements Serializable {
    * @param <V> the bean type
    * @param entity the entity to transform
    * @return a bean derived from the given entity
+   * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see Property.Builder#setBeanProperty(String)
    */
   public <V> V toBean(final Entity entity) {
-    requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(entity, "entity");
     final Entity.Definition definition = getDefinition(entity.getEntityId());
     final Class<V> beanClass = definition.getBeanClass();
     if (beanClass == null) {
@@ -224,7 +214,7 @@ public class Domain implements Serializable {
           value = toBean((Entity) value);
         }
 
-        propertyEntry.getValue().getSetter().invoke(bean, value);
+        propertyEntry.getValue().setter.invoke(bean, value);
       }
 
       return bean;
@@ -238,7 +228,9 @@ public class Domain implements Serializable {
    * Transforms the given beans into a entities according to the information found in this Domain model
    * @param beans the beans to transform
    * @return a List containing the entities derived from the given beans, an empty List if {@code beans} is null or empty
-   */
+   * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see Property.Builder#setBeanProperty(String)
+   * */
   public final List<Entity> fromBeans(final List beans) {
     if (Util.nullOrEmpty(beans)) {
       return emptyList();
@@ -252,11 +244,12 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Creates a Entity from the given bean object.
+   * Creates an Entity from the given bean object.
    * @param bean the bean to convert to an Entity
    * @param <V> the bean type
    * @return a Entity based on the given bean
    * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see Property.Builder#setBeanProperty(String)
    */
   public <V> Entity fromBean(final V bean) {
     requireNonNull(bean, "bean");
@@ -268,7 +261,7 @@ public class Domain implements Serializable {
               getBeanProperties(definition.getEntityId());
       for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = definition.getProperty(propertyEntry.getKey());
-        Object value = propertyEntry.getValue().getGetter().invoke(bean);
+        Object value = propertyEntry.getValue().getter.invoke(bean);
         if (property instanceof ForeignKeyProperty && value != null) {
           value = fromBean(value);
         }
@@ -317,6 +310,32 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
+   * @param entityId the entity id
+   * @param values the key values, assumes a single integer key
+   * @return new {@link Entity.Key} instances
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or values is null
+   */
+  public final List<Entity.Key> keys(final String entityId, final Integer... values) {
+    requireNonNull(values, "values");
+    return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
+  }
+
+  /**
+   * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
+   * @param entityId the entity id
+   * @param values the key values, assumes a single integer key
+   * @return new {@link Entity.Key} instances
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or values is null
+   */
+  public final List<Entity.Key> keys(final String entityId, final Long... values) {
+    requireNonNull(values, "values");
+    return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
+  }
+
+  /**
    * Adds a new {@link Entity.Definition} to this domain model, using the {@code entityId} as table name.
    * Returns the {@link Entity.Definition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
@@ -354,7 +373,7 @@ public class Domain implements Serializable {
     final List<TransientProperty> transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
 
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(domainId, entityId,
-            tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties, new Validator());
+            tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties, new DefaultValidator());
     entityDefinitions.put(entityId, entityDefinition);
 
     return entityDefinition.builder();
@@ -695,342 +714,6 @@ public class Domain implements Serializable {
             .map(property -> (TransientProperty) property).collect(toList());
   }
 
-  /**
-   * Provides String representations of {@link Entity} instances.<br>
-   * Given a {@link Entity} instance named entity containing the following mappings:
-   * <pre>
-   * "key1" -&#62; value1
-   * "key2" -&#62; value2
-   * "key3" -&#62; value3
-   * "key4" -&#62; {Entity instance with a single mapping "refKey" -&#62; refValue}
-   * </pre>
-   * {@code
-   * Domain.StringProvider provider = new Domain.StringProvider();
-   * provider.addText("key1=").addValue("key1").addText(", key3='").addValue("key3")
-   *         .addText("' foreign key value=").addForeignKeyValue("key4", "refKey");
-   * System.out.println(provider.toString(entity));
-   * }
-   * <br>
-   * outputs the following String:<br><br>
-   * {@code key1=value1, key3='value3' foreign key value=refValue}
-   */
-  public static final class StringProvider implements Entity.ToString {
-
-    private static final long serialVersionUID = 1;
-
-    /**
-     * Holds the ValueProviders used when constructing the String representation
-     */
-    private final List<ValueProvider> valueProviders = new ArrayList<>();
-
-    /**
-     * Instantiates a new {@link StringProvider} instance
-     */
-    public StringProvider() {}
-
-    /**
-     * Instantiates a new {@link StringProvider} instance
-     * @param propertyId the id of the property which value should be used for a string representation
-     */
-    public StringProvider(final String propertyId) {
-      addValue(propertyId);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString(final Entity entity) {
-      requireNonNull(entity, ENTITY_PARAM);
-
-      return valueProviders.stream().map(valueProvider -> valueProvider.toString(entity)).collect(joining());
-    }
-
-    /**
-     * Adds the value mapped to the given key to this {@link StringProvider}
-     * @param propertyId the id of the property which value should be added to the string representation
-     * @return this {@link StringProvider} instance
-     */
-    public StringProvider addValue(final String propertyId) {
-      requireNonNull(propertyId, PROPERTY_ID_PARAM);
-      valueProviders.add(new StringValueProvider(propertyId));
-      return this;
-    }
-
-    /**
-     * Adds the value mapped to the given key to this StringProvider
-     * @param propertyId the id of the property which value should be added to the string representation
-     * @param format the Format to use when appending the value
-     * @return this {@link StringProvider} instance
-     */
-    public StringProvider addFormattedValue(final String propertyId, final Format format) {
-      requireNonNull(propertyId, PROPERTY_ID_PARAM);
-      requireNonNull(format, "format");
-      valueProviders.add(new FormattedValueProvider(propertyId, format));
-      return this;
-    }
-
-    /**
-     * Adds the value mapped to the given property in the {@link Entity} instance mapped to the given foreignKeyProperty
-     * to this {@link StringProvider}
-     * @param foreignKeyPropertyId the if of the foreign key property
-     * @param propertyId the id of the property in the referenced entity to use
-     * @return this {@link StringProvider} instance
-     */
-    public StringProvider addForeignKeyValue(final String foreignKeyPropertyId, final String propertyId) {
-      requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
-      requireNonNull(propertyId, PROPERTY_ID_PARAM);
-      valueProviders.add(new ForeignKeyValueProvider(foreignKeyPropertyId, propertyId));
-      return this;
-    }
-
-    /**
-     * Adds the given static text to this {@link StringProvider}
-     * @param text the text to add
-     * @return this {@link StringProvider} instance
-     */
-    public StringProvider addText(final String text) {
-      valueProviders.add(new StaticTextProvider(text));
-      return this;
-    }
-
-    private interface ValueProvider extends Serializable {
-      /**
-       * @param entity the entity
-       * @return a String representation of a property value from the given entity
-       */
-      String toString(final Entity entity);
-    }
-
-    private static final class FormattedValueProvider implements StringProvider.ValueProvider {
-      private static final long serialVersionUID = 1;
-      private final String propertyId;
-      private final Format format;
-
-      private FormattedValueProvider(final String propertyId, final Format format) {
-        this.propertyId = propertyId;
-        this.format = format;
-      }
-
-      @Override
-      public String toString(final Entity entity) {
-        if (entity.isNull(propertyId)) {
-          return "";
-        }
-
-        return format.format(entity.get(propertyId));
-      }
-    }
-
-    private static final class ForeignKeyValueProvider implements StringProvider.ValueProvider {
-      private static final long serialVersionUID = 1;
-      private final String foreignKeyPropertyId;
-      private final String propertyId;
-
-      private ForeignKeyValueProvider(final String foreignKeyPropertyId, final String propertyId) {
-        this.foreignKeyPropertyId = foreignKeyPropertyId;
-        this.propertyId = propertyId;
-      }
-
-      @Override
-      public String toString(final Entity entity) {
-        if (entity.isNull(foreignKeyPropertyId)) {
-          return "";
-        }
-
-        return entity.getForeignKey(foreignKeyPropertyId).getAsString(propertyId);
-      }
-    }
-
-    private static final class StringValueProvider implements StringProvider.ValueProvider {
-      private static final long serialVersionUID = 1;
-      private final String propertyId;
-
-      private StringValueProvider(final String propertyId) {
-        this.propertyId = propertyId;
-      }
-
-      @Override
-      public String toString(final Entity entity) {
-        return entity.getAsString(propertyId);
-      }
-    }
-
-    private static final class StaticTextProvider implements StringProvider.ValueProvider {
-      private static final long serialVersionUID = 1;
-      private final String text;
-
-      private StaticTextProvider(final String text) {
-        this.text = text;
-      }
-
-      @Override
-      public String toString(final Entity entity) {
-        return text;
-      }
-    }
-  }
-
-  /**
-   * A default {@link Entity.Validator} implementation providing null validation for properties marked as not null,
-   * range validation for numerical properties with max and/or min values specified and string length validation
-   * based on the specified max length.
-   * This Validator can be extended to provide further validation.
-   * @see Property.Builder#setNullable(boolean)
-   * @see Property.Builder#setMin(double)
-   * @see Property.Builder#setMax(double)
-   * @see Property.Builder#setMaxLength(int)
-   */
-  public static class Validator extends DefaultValueMap.DefaultValidator<Property, Entity> implements Entity.Validator {
-
-    private static final long serialVersionUID = 1;
-
-    private final boolean performNullValidation;
-
-    /**
-     * Instantiates a new {@link Entity.Validator}
-     */
-    public Validator() {
-      this(true);
-    }
-
-    /**
-     * Instantiates a new {@link Entity.Validator}
-     * @param performNullValidation if true then automatic null validation is performed
-     */
-    public Validator(final boolean performNullValidation) {
-      this.performNullValidation = performNullValidation;
-    }
-
-    /**
-     * Returns true if the given property accepts a null value for the given entity,
-     * by default this method simply returns {@code property.isNullable()}
-     * @param entity the entity being validated
-     * @param property the property
-     * @return true if the property accepts a null value
-     */
-    @Override
-    public boolean isNullable(final Entity entity, final Property property) {
-      return property.isNullable();
-    }
-
-    /**
-     * Validates all writable properties in the given entities
-     * @param entities the entities to validate
-     * @throws ValidationException in case validation fails
-     */
-    @Override
-    public final void validate(final Collection<Entity> entities) throws ValidationException {
-      for (final Entity entity : entities) {
-        validate(entity);
-      }
-    }
-
-    /**
-     * Validates all writable properties in the given entity
-     * @param entity the entity to validate
-     * @throws ValidationException in case validation fails
-     */
-    @Override
-    public void validate(final Entity entity) throws ValidationException {
-      requireNonNull(entity, ENTITY_PARAM);
-      for (final Property property : entity.getProperties()) {
-        if (!property.isReadOnly()) {
-          validate(entity, property);
-        }
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void validate(final Entity entity, final Property property) throws ValidationException {
-      requireNonNull(entity, ENTITY_PARAM);
-      requireNonNull(property, PROPERTY_PARAM);
-      if (performNullValidation && !isForeignKeyProperty(property)) {
-        performNullValidation(entity, property);
-      }
-      if (property.isNumerical()) {
-        performRangeValidation(entity, property);
-      }
-      else if (property.isString()) {
-        performLengthValidation(entity, property);
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
-      requireNonNull(entity, ENTITY_PARAM);
-      requireNonNull(property, PROPERTY_PARAM);
-      if (entity.isNull(property)) {
-        return;
-      }
-
-      final Number value = (Number) entity.get(property);
-      if (value.doubleValue() < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
-        throw new RangeValidationException(property.getPropertyId(), value, "'" + property + "' " +
-                MESSAGES.getString("property_value_too_small") + " " + property.getMin());
-      }
-      if (value.doubleValue() > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax())) {
-        throw new RangeValidationException(property.getPropertyId(), value, "'" + property + "' " +
-                MESSAGES.getString("property_value_too_large") + " " + property.getMax());
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final void performNullValidation(final Entity entity, final Property property) throws NullValidationException {
-      requireNonNull(entity, ENTITY_PARAM);
-      requireNonNull(property, PROPERTY_PARAM);
-      if (!isNullable(entity, property) && entity.isNull(property)) {
-        if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
-          //a new entity being inserted, allow null for columns with default values and auto generated primary key values
-          final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
-          final boolean primaryKeyPropertyWithoutAutoGenerate = isPrimaryKeyPropertyWithoutAutoGenerate(entity, property);
-          if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
-            throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
-          }
-        }
-        else {
-          throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
-        }
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException {
-      requireNonNull(entity, ENTITY_PARAM);
-      requireNonNull(property, PROPERTY_PARAM);
-      if (entity.isNull(property)) {
-        return;
-      }
-
-      final int maxLength = property.getMaxLength();
-      final String value = (String) entity.get(property);
-      if (maxLength != -1 && value.length() > maxLength) {
-        throw new LengthValidationException(property.getPropertyId(), value, "'" + property + "' " +
-                MESSAGES.getString("property_value_too_long") + " " + maxLength);
-      }
-    }
-
-    private static boolean isPrimaryKeyPropertyWithoutAutoGenerate(final Entity entity, final Property property) {
-      return (property instanceof ColumnProperty
-              && ((ColumnProperty) property).isPrimaryKeyProperty()) && entity.getKeyGeneratorType().isManual();
-    }
-
-    /**
-     * @param property the property
-     * @return true if the property is a part of a foreign key
-     */
-    private static boolean isForeignKeyProperty(final Property property) {
-      return property instanceof ColumnProperty && ((ColumnProperty) property).isForeignKeyProperty();
-    }
-
-    private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property property) {
-      return property instanceof ColumnProperty && !((ColumnProperty) property).isPrimaryKeyProperty()
-              && !((ColumnProperty) property).columnHasDefaultValue();
-    }
-  }
-
   private abstract class AbstractQueriedKeyGenerator implements Entity.KeyGenerator {
 
     @Override
@@ -1181,7 +864,7 @@ public class Domain implements Serializable {
       private final boolean descending;
 
       private DefaultOrderByProperty(final String propertyId, final boolean descending) {
-        this.propertyId = requireNonNull(propertyId, PROPERTY_ID_PARAM);
+        this.propertyId = requireNonNull(propertyId, "propertyId");
         this.descending = descending;
       }
 
@@ -1221,17 +904,9 @@ public class Domain implements Serializable {
     private final Method getter;
     private final Method setter;
 
-    public BeanProperty(final Method getter, final Method setter) {
-      this.getter = getter;
-      this.setter = setter;
-    }
-
-    public Method getGetter() {
-      return getter;
-    }
-
-    public Method getSetter() {
-      return setter;
+    private BeanProperty(final Method getter, final Method setter) {
+      this.getter = requireNonNull(getter, "getter");
+      this.setter = requireNonNull(setter, "setter");
     }
   }
 }

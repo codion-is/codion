@@ -170,6 +170,16 @@ public class DomainTest {
     assertThrows(NullPointerException.class, () -> domain.key((String) null));
   }
 
+   @Test
+   public void keys() {
+    final List<Entity.Key> intKeys = domain.keys(TestDomain.T_EMP, 1, 2, 3, 4);
+    assertEquals(4, intKeys.size());
+    assertEquals(3, intKeys.get(2).getFirstValue());
+    final List<Entity.Key> longKeys = domain.keys(TestDomain.T_DETAIL, 1L, 2L, 3L, 4L);
+    assertEquals(4, longKeys.size());
+    assertEquals(3L, longKeys.get(2).getFirstValue());
+   }
+
   @Test
   public void keyWithSameIndex() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("keyWithSameIndex",
@@ -321,7 +331,7 @@ public class DomainTest {
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
 
-    final Domain.Validator validator = new Domain.Validator();
+    final DefaultValidator validator = new DefaultValidator();
     try {
       validator.validate(emp);
       fail();
@@ -355,7 +365,7 @@ public class DomainTest {
     emp.put(TestDomain.EMP_NAME, "Name");
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
-    final Domain.Validator validator = new Domain.Validator();
+    final DefaultValidator validator = new DefaultValidator();
     assertDoesNotThrow(() -> validator.validate(singletonList(emp)));
     emp.put(TestDomain.EMP_NAME, "LooooongName");
     assertThrows(LengthValidationException.class, () -> validator.validate(emp));
@@ -369,7 +379,7 @@ public class DomainTest {
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200d);
     emp.put(TestDomain.EMP_COMMISSION, 300d);
-    final Domain.Validator validator = new Domain.Validator();
+    final DefaultValidator validator = new DefaultValidator();
     assertDoesNotThrow(() -> validator.validate(singletonList(emp)));
     emp.put(TestDomain.EMP_COMMISSION, 10d);
     assertThrows(RangeValidationException.class, () -> validator.validate(emp));
@@ -411,7 +421,7 @@ public class DomainTest {
 
     final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
 
-    Domain.StringProvider employeeToString = new Domain.StringProvider(TestDomain.EMP_NAME)
+    StringProvider employeeToString = new StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
             .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
@@ -425,7 +435,7 @@ public class DomainTest {
     employee.put(TestDomain.EMP_NAME, null);
     employee.put(TestDomain.EMP_HIREDATE, null);
 
-    employeeToString = new Domain.StringProvider(TestDomain.EMP_NAME)
+    employeeToString = new StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
             .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
