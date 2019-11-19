@@ -10,6 +10,7 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.StringProvider;
 import org.jminor.framework.domain.property.Properties;
 
 import java.sql.ResultSet;

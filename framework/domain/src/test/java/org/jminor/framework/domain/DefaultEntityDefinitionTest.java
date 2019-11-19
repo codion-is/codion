@@ -20,7 +20,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void test() {
-    final Domain.StringProvider stringProvider = new Domain.StringProvider("name");
+    final StringProvider stringProvider = new StringProvider("name");
     final Comparator<Entity> comparator = (o1, o2) -> 0;
     domain.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),

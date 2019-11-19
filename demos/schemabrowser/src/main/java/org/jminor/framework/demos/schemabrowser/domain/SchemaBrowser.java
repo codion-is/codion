@@ -5,6 +5,7 @@ package org.jminor.framework.demos.schemabrowser.domain;
 
 import org.jminor.common.db.Database;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.StringProvider;
 
 import java.sql.Types;
 import java.util.Locale;

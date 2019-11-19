@@ -10,6 +10,7 @@ import org.jminor.common.remote.Server;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.StringProvider;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.model.EntityComboBoxModel;

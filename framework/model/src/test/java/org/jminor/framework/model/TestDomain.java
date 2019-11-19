@@ -5,6 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Item;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.StringProvider;
 import org.jminor.framework.domain.property.Properties;
 
 import java.sql.Types;

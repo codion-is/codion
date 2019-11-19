@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.StringProvider;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;

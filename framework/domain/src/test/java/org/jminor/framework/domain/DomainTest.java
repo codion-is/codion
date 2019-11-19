@@ -421,7 +421,7 @@ public class DomainTest {
 
     final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
 
-    Domain.StringProvider employeeToString = new Domain.StringProvider(TestDomain.EMP_NAME)
+    StringProvider employeeToString = new StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
             .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
@@ -435,7 +435,7 @@ public class DomainTest {
     employee.put(TestDomain.EMP_NAME, null);
     employee.put(TestDomain.EMP_HIREDATE, null);
 
-    employeeToString = new Domain.StringProvider(TestDomain.EMP_NAME)
+    employeeToString = new StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
             .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
