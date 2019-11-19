@@ -251,7 +251,10 @@ public class EntityTestUnit {
           foreignKeyEntities.put(foreignEntityId, null);//short circuit recursion, value replaced below
           initializeReferencedEntities(foreignEntityId, foreignKeyEntities);
         }
-        foreignKeyEntities.put(foreignEntityId, insertOrSelect(initializeReferenceEntity(foreignEntityId, foreignKeyEntities)));
+        final Entity referencedEntity = initializeReferenceEntity(foreignEntityId, foreignKeyEntities);
+        if (referencedEntity != null) {
+          foreignKeyEntities.put(foreignEntityId, insertOrSelect(referencedEntity));
+        }
       }
     }
 
