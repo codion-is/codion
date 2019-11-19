@@ -174,6 +174,8 @@ public class Domain implements Serializable {
    * Transforms the given entities into beans according to the information found in this Domain model
    * @param entities the entities to transform
    * @return a List containing the beans derived from the given entities, an empty List if {@code entities} is null or empty
+   * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see Property.Builder#setBeanProperty(String)
    */
   public final List<Object> toBeans(final List<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
@@ -192,6 +194,8 @@ public class Domain implements Serializable {
    * @param <V> the bean type
    * @param entity the entity to transform
    * @return a bean derived from the given entity
+   * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see Property.Builder#setBeanProperty(String)
    */
   public <V> V toBean(final Entity entity) {
     requireNonNull(entity, "entity");
@@ -210,7 +214,7 @@ public class Domain implements Serializable {
           value = toBean((Entity) value);
         }
 
-        propertyEntry.getValue().getSetter().invoke(bean, value);
+        propertyEntry.getValue().setter.invoke(bean, value);
       }
 
       return bean;
@@ -224,7 +228,9 @@ public class Domain implements Serializable {
    * Transforms the given beans into a entities according to the information found in this Domain model
    * @param beans the beans to transform
    * @return a List containing the entities derived from the given beans, an empty List if {@code beans} is null or empty
-   */
+   * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see Property.Builder#setBeanProperty(String)
+   * */
   public final List<Entity> fromBeans(final List beans) {
     if (Util.nullOrEmpty(beans)) {
       return emptyList();
@@ -238,11 +244,12 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Creates a Entity from the given bean object.
+   * Creates an Entity from the given bean object.
    * @param bean the bean to convert to an Entity
    * @param <V> the bean type
    * @return a Entity based on the given bean
    * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see Property.Builder#setBeanProperty(String)
    */
   public <V> Entity fromBean(final V bean) {
     requireNonNull(bean, "bean");
@@ -254,7 +261,7 @@ public class Domain implements Serializable {
               getBeanProperties(definition.getEntityId());
       for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = definition.getProperty(propertyEntry.getKey());
-        Object value = propertyEntry.getValue().getGetter().invoke(bean);
+        Object value = propertyEntry.getValue().getter.invoke(bean);
         if (property instanceof ForeignKeyProperty && value != null) {
           value = fromBean(value);
         }
@@ -897,17 +904,9 @@ public class Domain implements Serializable {
     private final Method getter;
     private final Method setter;
 
-    public BeanProperty(final Method getter, final Method setter) {
-      this.getter = getter;
-      this.setter = setter;
-    }
-
-    public Method getGetter() {
-      return getter;
-    }
-
-    public Method getSetter() {
-      return setter;
+    private BeanProperty(final Method getter, final Method setter) {
+      this.getter = requireNonNull(getter, "getter");
+      this.setter = requireNonNull(setter, "setter");
     }
   }
 }
