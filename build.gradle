@@ -69,6 +69,11 @@ configure(project.frameworkModules) {
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     }
 
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
     javadoc {
         failOnError = false
     }
@@ -96,30 +101,11 @@ configure(project.frameworkModules) {
         }
     }
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        group 'build'
-        archiveClassifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        group 'build'
-        archiveClassifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
-    }
-
     publishing {
         publications {
             mavenJava(MavenPublication) {
                 groupId 'org.jminor.jdk11'
                 from components.java
-                artifact sourcesJar
-                artifact javadocJar
             }
         }
         repositories {
