@@ -6,18 +6,9 @@
 
 The {url-entity-connection}[EntityConnection] interface defines the database layer accessible to JMinor applications. It provides methods for selecting, inserting, updating and deleting entities, executing procedures and functions, filling reports as well as providing transaction control.
 
-The domain model used in the examples below can be found here <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>>
+The <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>> is used in the examples below.
 
-NOTE: Static imports are used extensively in the examples, click below to view.
-
-.View static imports
-[%collapsible]
-====
-[source,java,indent=0]
-----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=staticImports]
-----
-====
+NOTE: Static imports are used extensively in the examples, see <<#_full_example, full example code>>.
 
 == Selecting
 

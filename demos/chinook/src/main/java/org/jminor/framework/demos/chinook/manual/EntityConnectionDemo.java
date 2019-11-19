@@ -34,8 +34,6 @@ import static org.jminor.common.db.ConditionType.NOT_LIKE;
 import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
-// tag::staticImports[]
-// end::staticImports[]
 /**
  * When running this make sure the chinook demo module directory is the
  * working directory, due to a relative path to a db init script
