@@ -5300,3 +5300,4 @@
   Domain.key() overloaded with integer and long value parameter
   SwingEntityModelProvider, EntityPanelProvider, some refactoring, and more refactoring
   EntityTestUnit.initializeReferenceEntity() can now return null without crashing the test
+  Using built-in javadoc and sources jar Gradle functionality
