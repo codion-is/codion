@@ -331,7 +331,7 @@ public class DomainTest {
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
 
-    final Domain.Validator validator = new Domain.Validator();
+    final DefaultValidator validator = new DefaultValidator();
     try {
       validator.validate(emp);
       fail();
@@ -365,7 +365,7 @@ public class DomainTest {
     emp.put(TestDomain.EMP_NAME, "Name");
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
-    final Domain.Validator validator = new Domain.Validator();
+    final DefaultValidator validator = new DefaultValidator();
     assertDoesNotThrow(() -> validator.validate(singletonList(emp)));
     emp.put(TestDomain.EMP_NAME, "LooooongName");
     assertThrows(LengthValidationException.class, () -> validator.validate(emp));
@@ -379,7 +379,7 @@ public class DomainTest {
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200d);
     emp.put(TestDomain.EMP_COMMISSION, 300d);
-    final Domain.Validator validator = new Domain.Validator();
+    final DefaultValidator validator = new DefaultValidator();
     assertDoesNotThrow(() -> validator.validate(singletonList(emp)));
     emp.put(TestDomain.EMP_COMMISSION, 10d);
     assertThrows(RangeValidationException.class, () -> validator.validate(emp));
