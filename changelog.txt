@@ -5319,3 +5319,4 @@
   WhereCondition moved from db-local to db.condition in db-core, now an interface, Conditions.whereCondition() added
   Domain.key() overloaded with integer and long value parameter
   SwingEntityModelProvider, EntityPanelProvider, some refactoring, and more refactoring
+  EntityTestUnit.initializeReferenceEntity() can now return null without crashing the test
