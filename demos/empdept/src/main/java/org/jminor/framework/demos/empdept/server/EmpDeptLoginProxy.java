@@ -6,8 +6,9 @@ package org.jminor.framework.demos.empdept.server;
 import org.jminor.common.User;
 import org.jminor.common.remote.LoginProxy;
 import org.jminor.common.remote.RemoteClient;
-import org.jminor.common.remote.ServerException;
 import org.jminor.common.remote.Servers;
+import org.jminor.common.remote.exception.LoginException;
+import org.jminor.common.remote.exception.ServerAuthenticationException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,7 @@ public final class EmpDeptLoginProxy implements LoginProxy {
   }
 
   @Override
-  public RemoteClient doLogin(final RemoteClient remoteClient) throws ServerException.LoginException {
+  public RemoteClient doLogin(final RemoteClient remoteClient) throws LoginException {
     authenticateUser(remoteClient.getUser());
 
     return Servers.remoteClient(remoteClient, databaseUser);
@@ -43,10 +44,10 @@ public final class EmpDeptLoginProxy implements LoginProxy {
     users.clear();
   }
 
-  private void authenticateUser(final User user) throws ServerException.LoginException {
+  private void authenticateUser(final User user) throws LoginException {
     final String password = users.get(user.getUsername());
     if (password == null || !password.equals(String.valueOf(user.getPassword()))) {
-      throw ServerException.loginException("Wrong username or password");
+      throw new ServerAuthenticationException("Wrong username or password");
     }
   }
 }

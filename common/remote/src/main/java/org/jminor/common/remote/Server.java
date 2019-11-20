@@ -7,6 +7,10 @@ import org.jminor.common.Configuration;
 import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
 import org.jminor.common.Version;
+import org.jminor.common.remote.exception.ConnectionNotAvailableException;
+import org.jminor.common.remote.exception.ConnectionValidationException;
+import org.jminor.common.remote.exception.LoginException;
+import org.jminor.common.remote.exception.ServerAuthenticationException;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -162,21 +166,21 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * @param connectionRequest the information required for establishing a connection
    * @return a remote connection instance
    * @throws RemoteException in case of a communitation error
-   * @throws ServerException.ServerFullException in case the server isn't accepting more connections
-   * @throws ServerException.LoginException in case the login fails
-   * @throws ServerException.ConnectionValidationException in case connection validation fails
+   * @throws ConnectionNotAvailableException in case the server isn't accepting more connections
+   * @throws LoginException in case the login fails
+   * @throws ConnectionValidationException in case connection validation fails
    */
   T connect(final ConnectionRequest connectionRequest) throws RemoteException,
-          ServerException.ServerFullException, ServerException.LoginException, ServerException.ConnectionValidationException;
+          ConnectionNotAvailableException, LoginException, ConnectionValidationException;
 
   /**
    * Returns the admin intarface used to administer this server
    * @param user the admin user credentials
    * @return the admin interface
    * @throws RemoteException in case of a communitation error
-   * @throws ServerException.AuthenticationException in case authentication fails
+   * @throws ServerAuthenticationException in case authentication fails
    */
-  A getServerAdmin(final User user) throws RemoteException, ServerException.AuthenticationException;
+  A getServerAdmin(final User user) throws RemoteException, ServerAuthenticationException;
 
   /**
    * Disconnects the connection identified by the given key.

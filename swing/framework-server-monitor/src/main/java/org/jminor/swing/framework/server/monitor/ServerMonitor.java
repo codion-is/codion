@@ -12,7 +12,7 @@ import org.jminor.common.LoggerProxy;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 import org.jminor.common.remote.Server;
-import org.jminor.common.remote.ServerException;
+import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.jfree.data.xy.XYSeries;
@@ -103,11 +103,11 @@ public final class ServerMonitor {
    * @param registryPort the registry port
    * @param serverAdminUser the admin user
    * @throws RemoteException in case of an exception
-   * @throws ServerException.AuthenticationException in case the admin user credentials are incorrect
+   * @throws ServerAuthenticationException in case the admin user credentials are incorrect
    */
   public ServerMonitor(final String hostName, final Server.ServerInfo serverInfo, final int registryPort,
                        final User serverAdminUser)
-          throws RemoteException, ServerException.AuthenticationException {
+          throws RemoteException, ServerAuthenticationException {
     this.hostName = hostName;
     this.serverInfo = serverInfo;
     this.registryPort = registryPort;
@@ -389,7 +389,7 @@ public final class ServerMonitor {
     return loggingLevelChangedEvent.getObserver();
   }
 
-  private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException, ServerException.AuthenticationException {
+  private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException, ServerAuthenticationException {
     final long time = System.currentTimeMillis();
     try {
       final Server<?, EntityConnectionServerAdmin> theServer = (Server) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);

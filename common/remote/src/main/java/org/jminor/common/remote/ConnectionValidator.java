@@ -3,6 +3,8 @@
  */
 package org.jminor.common.remote;
 
+import org.jminor.common.remote.exception.ConnectionValidationException;
+
 /**
  * Responsible for validating connections to a remote server, for example a required client version
  */
@@ -16,7 +18,7 @@ public interface ConnectionValidator {
   /**
    * Validates the given connection, throwing an exception in case the validation fails
    * @param connectionRequest the connection to validate
-   * @throws ServerException.ConnectionValidationException in case the validation fails
+   * @throws ConnectionValidationException in case the validation fails
    */
-  void validate(final ConnectionRequest connectionRequest) throws ServerException.ConnectionValidationException;
+  void validate(final ConnectionRequest connectionRequest) throws ConnectionValidationException;
 }

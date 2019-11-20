@@ -3,6 +3,8 @@
  */
 package org.jminor.common.remote;
 
+import org.jminor.common.remote.exception.LoginException;
+
 /**
  * A login proxy.
  */
@@ -19,10 +21,10 @@ public interface LoginProxy {
    * a different databaseUser to propagate to further login procedures
    * @param remoteClient the client
    * @return a new client with the same clientId but not necessarily the same user or databaseUser
-   * @throws ServerException.LoginException in case the login fails
+   * @throws LoginException in case the login fails
    * @see RemoteClient#getDatabaseUser()
    */
-  RemoteClient doLogin(final RemoteClient remoteClient) throws ServerException.LoginException;
+  RemoteClient doLogin(final RemoteClient remoteClient) throws LoginException;
 
   /**
    * Called after the given client has been disconnected

@@ -9,8 +9,10 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.remote.Clients;
 import org.jminor.common.remote.Server;
-import org.jminor.common.remote.ServerException;
 import org.jminor.common.remote.Servers;
+import org.jminor.common.remote.exception.ConnectionNotAvailableException;
+import org.jminor.common.remote.exception.ConnectionValidationException;
+import org.jminor.common.remote.exception.LoginException;
 import org.jminor.framework.domain.Entity;
 
 import org.junit.jupiter.api.Test;
@@ -29,8 +31,8 @@ public final class EmployeeServerTest {
   public static final int SERVER_PORT = 2223;
 
   @Test
-  public void test() throws RemoteException, NotBoundException, ServerException.LoginException,
-          ServerException.ServerFullException, ServerException.ConnectionValidationException, DatabaseException {
+  public void test() throws RemoteException, NotBoundException, LoginException,
+          ConnectionNotAvailableException, ConnectionValidationException, DatabaseException {
     Server.RMI_SERVER_HOSTNAME.set("localhost");
 
     final Database database = Databases.getInstance();

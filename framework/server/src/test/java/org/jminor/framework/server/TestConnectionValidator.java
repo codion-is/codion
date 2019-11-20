@@ -5,7 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.remote.ConnectionRequest;
 import org.jminor.common.remote.ConnectionValidator;
-import org.jminor.common.remote.ServerException;
+import org.jminor.common.remote.exception.ConnectionValidationException;
 
 public class TestConnectionValidator implements ConnectionValidator {
 
@@ -15,5 +15,5 @@ public class TestConnectionValidator implements ConnectionValidator {
   }
 
   @Override
-  public void validate(final ConnectionRequest connectionRequest) throws ServerException.ConnectionValidationException {}
+  public void validate(final ConnectionRequest connectionRequest) throws ConnectionValidationException {}
 }
