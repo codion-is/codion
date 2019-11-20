@@ -17,10 +17,11 @@ final class DefaultWhereCondition implements WhereCondition {
   private final List values;
   private final List<ColumnProperty> columnProperties;
 
-  DefaultWhereCondition(final EntityCondition entityCondition, final Entity.Definition entityDefinition) {
+  DefaultWhereCondition(final EntityCondition entityCondition, final Condition expandedCondition,
+                        final Entity.Definition entityDefinition) {
     this.entityDefinition = entityDefinition;
     this.entityCondition = entityCondition;
-    this.condition = Conditions.expand(entityCondition.getCondition(), entityDefinition);
+    this.condition = expandedCondition;
     this.values = condition.getValues();
     this.columnProperties = entityDefinition.getColumnProperties(condition.getPropertyIds());
   }
