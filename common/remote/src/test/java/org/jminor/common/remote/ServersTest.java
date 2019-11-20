@@ -4,6 +4,7 @@
 package org.jminor.common.remote;
 
 import org.jminor.common.User;
+import org.jminor.common.remote.exception.ServerAuthenticationException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +30,7 @@ public class ServersTest {
       @Override
       protected Remote doConnect(final RemoteClient remoteClient) {return null;}
       @Override
-      public Remote getServerAdmin(final User user) throws RemoteException, ServerException.AuthenticationException {return null;}
+      public Remote getServerAdmin(final User user) throws RemoteException, ServerAuthenticationException {return null;}
       @Override
       protected void doDisconnect(final Remote connection) {}
       @Override

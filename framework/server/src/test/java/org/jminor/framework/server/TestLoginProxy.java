@@ -6,8 +6,8 @@ package org.jminor.framework.server;
 import org.jminor.common.User;
 import org.jminor.common.remote.LoginProxy;
 import org.jminor.common.remote.RemoteClient;
-import org.jminor.common.remote.ServerException;
 import org.jminor.common.remote.Servers;
+import org.jminor.common.remote.exception.ServerAuthenticationException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public final class TestLoginProxy implements LoginProxy {
   }
 
   @Override
-  public RemoteClient doLogin(final RemoteClient remoteClient) throws ServerException.AuthenticationException {
+  public RemoteClient doLogin(final RemoteClient remoteClient) throws ServerAuthenticationException {
     authenticateUser(remoteClient.getUser());
 
     final RemoteClient authenticatedClient = Servers.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
@@ -47,10 +47,10 @@ public final class TestLoginProxy implements LoginProxy {
     users.clear();
   }
 
-  private void authenticateUser(final User user) throws ServerException.AuthenticationException {
+  private void authenticateUser(final User user) throws ServerAuthenticationException {
     final String password = users.get(user.getUsername());
     if (password == null || !Arrays.equals(password.toCharArray(), user.getPassword())) {
-      throw ServerException.authenticationException("Wrong username or password");
+      throw new ServerAuthenticationException("Wrong username or password");
     }
   }
 }

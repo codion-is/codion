@@ -5,6 +5,10 @@ package org.jminor.common.remote;
 
 import org.jminor.common.User;
 import org.jminor.common.Version;
+import org.jminor.common.remote.exception.ConnectionNotAvailableException;
+import org.jminor.common.remote.exception.ConnectionValidationException;
+import org.jminor.common.remote.exception.LoginException;
+import org.jminor.common.remote.exception.ServerAuthenticationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,10 +143,10 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   /** {@inheritDoc} */
   @Override
-  public final T connect(final ConnectionRequest connectionRequest) throws RemoteException, ServerException.ServerFullException,
-          ServerException.LoginException, ServerException.ConnectionValidationException {
+  public final T connect(final ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException,
+          LoginException, ConnectionValidationException {
     if (shuttingDown) {
-      throw ServerException.loginException("Server is shutting down");
+      throw new LoginException("Server is shutting down");
     }
     requireNonNull(connectionRequest, "connectionRequest");
     requireNonNull(connectionRequest.getUser(), "user");
@@ -159,7 +163,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       }
 
       if (maximumNumberOfConnectionsReached()) {
-        throw ServerException.serverFullException();
+        throw new ConnectionNotAvailableException();
       }
 
       LOG.debug("No active connection found for client {}, establishing a new connection", connectionRequest);
@@ -309,11 +313,11 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    * @param remoteClient the client connection info
    * @return a connection servicing the given client
    * @throws RemoteException in case of an exception
-   * @throws ServerException.LoginException in case of an error during the login
-   * @throws ServerException.ServerFullException in case the server is not accepting new connections
+   * @throws LoginException in case of an error during the login
+   * @throws ConnectionNotAvailableException in case the server is not accepting new connections
    */
   protected abstract T doConnect(final RemoteClient remoteClient)
-          throws RemoteException, ServerException.LoginException, ServerException.ServerFullException;
+          throws RemoteException, LoginException, ConnectionNotAvailableException;
 
   /**
    * Disconnects the given connection.
@@ -326,13 +330,13 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    * Validates the given user credentials
    * @param userToCheck the credentials to check
    * @param requiredUser the required credentials
-   * @throws ServerException.AuthenticationException in case either User instance is null or if the username or password does not match
+   * @throws ServerAuthenticationException in case either User instance is null or if the username or password does not match
    */
-  protected static final void validateUserCredentials(final User userToCheck, final User requiredUser) throws ServerException.AuthenticationException {
+  protected static final void validateUserCredentials(final User userToCheck, final User requiredUser) throws ServerAuthenticationException {
     if (userToCheck == null || requiredUser == null
             || !Objects.equals(userToCheck.getUsername(), requiredUser.getUsername())
             || !Arrays.equals(userToCheck.getPassword(), requiredUser.getPassword())) {
-      throw ServerException.authenticationException("Wrong username or password");
+      throw new ServerAuthenticationException("Wrong username or password");
     }
   }
 
@@ -450,6 +454,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
 
     @Override
-    public void validate(final ConnectionRequest connectionRequest) throws ServerException.ConnectionValidationException {/*No validation*/}
+    public void validate(final ConnectionRequest connectionRequest) throws ConnectionValidationException {/*No validation*/}
   }
 }

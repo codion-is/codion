@@ -7,7 +7,8 @@ import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.remote.Clients;
 import org.jminor.common.remote.Server;
-import org.jminor.common.remote.ServerException;
+import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.remote.exception.ServerException;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
@@ -550,7 +551,7 @@ public final class EntityService extends Application {
 
   private static Response getExceptionResponse(final Exception exeption) {
     try {
-      if (exeption instanceof ServerException.AuthenticationException) {
+      if (exeption instanceof ServerAuthenticationException) {
         return Response.status(Response.Status.UNAUTHORIZED).entity(Util.serialize(exeption)).build();
       }
 
@@ -562,16 +563,16 @@ public final class EntityService extends Application {
     }
   }
 
-  private static String getDomainId(final MultivaluedMap<String, String> headers) throws ServerException.AuthenticationException {
+  private static String getDomainId(final MultivaluedMap<String, String> headers) throws ServerAuthenticationException {
     return checkHeaderParameter(headers.get(DOMAIN_ID), DOMAIN_ID);
   }
 
-  private static String getClientTypeId(final MultivaluedMap<String, String> headers) throws ServerException.AuthenticationException {
+  private static String getClientTypeId(final MultivaluedMap<String, String> headers) throws ServerAuthenticationException {
     return checkHeaderParameter(headers.get(CLIENT_TYPE_ID), CLIENT_TYPE_ID);
   }
 
   private static UUID getClientId(final MultivaluedMap<String, String> headers, final HttpSession session)
-          throws ServerException.AuthenticationException {
+          throws ServerAuthenticationException {
     final UUID headerClientId = UUID.fromString(checkHeaderParameter(headers.get(CLIENT_ID), CLIENT_ID));
     if (session.isNew()) {
       session.setAttribute(CLIENT_ID, headerClientId);
@@ -581,17 +582,17 @@ public final class EntityService extends Application {
       if (sessionClientId == null || !sessionClientId.equals(headerClientId)) {
         session.invalidate();
 
-        throw new ServerException.AuthenticationException("Invalid client id");
+        throw new ServerAuthenticationException("Invalid client id");
       }
     }
 
     return headerClientId;
   }
 
-  private static User getUser(final MultivaluedMap<String, String> headers) throws ServerException.AuthenticationException {
+  private static User getUser(final MultivaluedMap<String, String> headers) throws ServerAuthenticationException {
     final List<String> basic = headers.get(AUTHORIZATION);
     if (Util.nullOrEmpty(basic)) {
-      throw new ServerException.AuthenticationException("Authorization information missing");
+      throw new ServerAuthenticationException("Authorization information missing");
     }
 
     final String basicAuth = basic.get(0);
@@ -599,7 +600,7 @@ public final class EntityService extends Application {
       return User.parseUser(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH))));
     }
 
-    throw new ServerException.AuthenticationException("Invalid authorization format");
+    throw new ServerAuthenticationException("Invalid authorization format");
   }
 
   private static <T> T deserialize(final HttpServletRequest request) throws IOException, ClassNotFoundException {
@@ -607,9 +608,9 @@ public final class EntityService extends Application {
   }
 
   private static String checkHeaderParameter(final List<String> headers, final String headerParameter)
-          throws ServerException.AuthenticationException {
+          throws ServerAuthenticationException {
     if (Util.nullOrEmpty(headers)) {
-      throw new ServerException.AuthenticationException(headerParameter + " header parameter is missing");
+      throw new ServerAuthenticationException(headerParameter + " header parameter is missing");
     }
 
     return headers.get(0);

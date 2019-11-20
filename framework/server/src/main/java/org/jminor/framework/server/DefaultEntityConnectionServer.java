@@ -26,8 +26,10 @@ import org.jminor.common.remote.LoginProxy;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.SerializationWhitelist;
 import org.jminor.common.remote.Server;
-import org.jminor.common.remote.ServerException;
 import org.jminor.common.remote.Servers;
+import org.jminor.common.remote.exception.ConnectionNotAvailableException;
+import org.jminor.common.remote.exception.LoginException;
+import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -229,10 +231,10 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   /**
    * @param user the server admin user
    * @return the administration interface for this server
-   * @throws ServerException.AuthenticationException in case authentication fails
+   * @throws ServerAuthenticationException in case authentication fails
    */
   @Override
-  public final EntityConnectionServerAdmin getServerAdmin(final User user) throws ServerException.AuthenticationException {
+  public final EntityConnectionServerAdmin getServerAdmin(final User user) throws ServerAuthenticationException {
     validateUserCredentials(user, adminUser);
 
     return serverAdmin;
@@ -254,7 +256,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   /** {@inheritDoc} */
   @Override
   protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient)
-          throws RemoteException, ServerException.LoginException, ServerException.ServerFullException {
+          throws RemoteException, LoginException, ConnectionNotAvailableException {
     try {
       final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(remoteClient.getDatabaseUser());
       if (connectionPool != null) {
@@ -274,11 +276,14 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       throw e;
     }
     catch (final AuthenticationException ae) {
-      throw ServerException.authenticationException(ae.getMessage());
+      throw new ServerAuthenticationException(ae.getMessage());
+    }
+    catch (final ServerAuthenticationException e) {
+      throw e;
     }
     catch (final Exception e) {
       LOG.debug(remoteClient + " unable to connect", e);
-      throw ServerException.loginException(e.getMessage());
+      throw new LoginException(e.getMessage());
     }
   }
 
@@ -639,11 +644,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * found in the connection pool user, assuming the user names match
    * @param connectionPoolUser the connection pool user credentials
    * @param user the user credentials to check
-   * @throws AuthenticationException in case the password does not match the one in the connection pool user
+   * @throws ServerAuthenticationException in case the password does not match the one in the connection pool user
    */
-  private static void checkConnectionPoolCredentials(final User connectionPoolUser, final User user) throws AuthenticationException {
+  private static void checkConnectionPoolCredentials(final User connectionPoolUser, final User user) throws ServerAuthenticationException {
     if (!Arrays.equals(connectionPoolUser.getPassword(), user.getPassword())) {
-      throw new AuthenticationException("Wrong username or password");
+      throw new ServerAuthenticationException("Wrong username or password");
     }
   }
 
@@ -788,14 +793,14 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   /**
    * Connects to the server and shuts it down
    */
-  static synchronized void shutdownServer() throws ServerException.AuthenticationException {
+  static synchronized void shutdownServer() throws ServerAuthenticationException {
     final int registryPort = Server.REGISTRY_PORT.get();
     final String sid = Database.DATABASE_SID.get();
     final String host = Database.DATABASE_HOST.get();
     final String serverName = initializeServerName(host, sid);
     final String adminUserString = Server.SERVER_ADMIN_USER.get();
     if (nullOrEmpty(adminUserString)) {
-      throw ServerException.authenticationException("No admin user specified");
+      throw new ServerAuthenticationException("No admin user specified");
     }
     final User adminUser = User.parseUser(adminUserString);
     Servers.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
@@ -815,7 +820,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     catch (final NotBoundException e) {
       System.out.println(serverName + " not bound to registry on port: " + registryPort);
     }
-    catch (final ServerException.AuthenticationException e) {
+    catch (final ServerAuthenticationException e) {
       LOG.error("Admin user info not provided or incorrect", e);
       throw e;
     }
@@ -825,9 +830,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * If no arguments are supplied a new DefaultEntityConnectionServer is started.
    * @param arguments 'start' (or no argument) starts the server, 'stop' or 'shutdown' causes a running server to be shut down and 'restart' restarts the server
    * @throws RemoteException in case of a remote exception during service export
-   * @throws ServerException.AuthenticationException in case of missing or incorrect admin user information
+   * @throws ServerAuthenticationException in case of missing or incorrect admin user information
    */
-  public static void main(final String[] arguments) throws RemoteException, ServerException.AuthenticationException {
+  public static void main(final String[] arguments) throws RemoteException, ServerAuthenticationException {
     final String argument = arguments.length == 0 ? START : arguments[0];
     switch (argument) {
       case START:

@@ -8,7 +8,7 @@ import org.jminor.common.EventDataListener;
 import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.remote.Server;
-import org.jminor.common.remote.ServerException;
+import org.jminor.common.remote.exception.ServerAuthenticationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +82,7 @@ public final class HostMonitor {
         }
       }
     }
-    catch (final ServerException.AuthenticationException e) {
+    catch (final ServerAuthenticationException e) {
       throw new RuntimeException(e);
     }
   }

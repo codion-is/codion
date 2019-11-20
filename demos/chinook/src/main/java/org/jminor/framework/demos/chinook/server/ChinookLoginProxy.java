@@ -8,7 +8,8 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.remote.LoginProxy;
 import org.jminor.common.remote.RemoteClient;
-import org.jminor.common.remote.ServerException;
+import org.jminor.common.remote.exception.LoginException;
+import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
@@ -54,7 +55,7 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   @Override
   public RemoteClient doLogin(final RemoteClient remoteClient)
-          throws ServerException.LoginException {
+          throws LoginException {
     authenticateUser(remoteClient.getUser());
 
     //Create a new RemoteClient based on the one received
@@ -71,7 +72,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   }
 
   private void authenticateUser(final User user)
-          throws ServerException.LoginException {
+          throws LoginException {
     synchronized (connectionProvider) {
       try {
         final int rows = connectionProvider.getConnection().selectRowCount(
@@ -81,7 +82,7 @@ public final class ChinookLoginProxy implements LoginProxy {
                         propertyCondition(USER_PASSWORD_HASH,
                                 LIKE, valueOf(user.getPassword()).hashCode()))));
         if (rows == 0) {
-          throw ServerException.loginException("Wrong username or password");
+          throw new ServerAuthenticationException("Wrong username or password");
         }
       }
       catch (final DatabaseException e) {
