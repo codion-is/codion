@@ -971,6 +971,19 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     Object getColor(final Entity entity, final Property property);
 
     /**
+     * Provides {@link Entity.Definition}s
+     */
+    interface Provider {
+
+      /**
+       * Returns the {@link Entity.Definition} for the given entityId
+       * @param entityId the entityId
+       * @return the entity definition
+       */
+      Entity.Definition getDefinition(final String entityId);
+    }
+
+    /**
      * Builds a Entity.Definition
      */
     interface Builder {

@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.toList;
  * A repository specifying the {@link Entity.Definition}s for a given domain.
  * Used to instantiate {@link Entity} and {@link Entity.Key} instances.
  */
-public class Domain implements Serializable {
+public class Domain implements Entity.Definition.Provider, Serializable {
 
   private static final long serialVersionUID = 1;
 

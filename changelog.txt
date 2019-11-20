@@ -5310,3 +5310,4 @@
   Removed unnecessary writeObject() and readObject() implementations
   Event, State and Value moved to common.event, common.state and common.value packages respectively
   Inner classes in common.event, common.state and common.value packages moved up a level
+  Entity.Definition.Provider added, implemented by Domain, DefaultEntity now uses the former instead of the latter
