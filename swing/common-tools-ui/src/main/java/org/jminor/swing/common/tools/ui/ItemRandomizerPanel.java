@@ -7,6 +7,8 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
+import org.jminor.common.value.AbstractObservableValue;
+import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.ItemRandomizerModel;
@@ -156,7 +158,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     return spinnerModel;
   }
 
-  private final class EnabledModelValue extends Values.AbstractObservableValue<Boolean> {
+  private final class EnabledModelValue extends AbstractObservableValue<Boolean> {
     private final T item;
 
     private EnabledModelValue(final T item) {
@@ -184,7 +186,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
   }
 
-  private static final class EnabledUIValue extends Values.AbstractValue<Boolean> {
+  private static final class EnabledUIValue extends AbstractValue<Boolean> {
     private final ButtonModel buttonModel;
 
     private EnabledUIValue(final ButtonModel buttonModel) {
@@ -208,7 +210,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
   }
 
-  private final class WeightModelValue extends Values.AbstractObservableValue<Integer> {
+  private final class WeightModelValue extends AbstractObservableValue<Integer> {
     private final T item;
 
     private WeightModelValue(final T item) {
@@ -236,7 +238,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
   }
 
-  private static final class WeightUIValue extends Values.AbstractValue<Integer> {
+  private static final class WeightUIValue extends AbstractValue<Integer> {
     private final SpinnerNumberModel spinnerModel;
 
     private WeightUIValue(final SpinnerNumberModel spinnerModel) {

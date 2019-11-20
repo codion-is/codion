@@ -7,8 +7,8 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.Formats;
 import org.jminor.common.Item;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
+import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
@@ -256,7 +256,7 @@ public final class UiValues {
     return new SelectedItemUIValue<>(comboBox);
   }
 
-  private abstract static class UIValue<V> extends Values.AbstractValue<V> {
+  private abstract static class UIValue<V> extends AbstractValue<V> {
 
     @Override
     public final void set(final V value) {
