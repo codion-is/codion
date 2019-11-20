@@ -5,24 +5,19 @@ package org.jminor.common.db.valuemap;
 
 import org.jminor.common.Event;
 import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
-import org.jminor.common.db.valuemap.exception.NullValidationException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
@@ -34,8 +29,6 @@ import static java.util.Objects.requireNonNull;
  * @param <V> the value type
  */
 public class DefaultValueMap<K, V> implements ValueMap<K, V> {
-
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultValueMap.class.getName(), Locale.getDefault());
 
   /**
    * Holds the values contained in this value map.
@@ -417,69 +410,5 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     }
 
     return valueChangedEvent;
-  }
-
-  /**
-   * A default value map validator implementation, which performs basic null validation.
-   * @param <K> the type identifying the keys in the value map
-   * @param <V> the value map type
-   */
-  public static class DefaultValidator<K, V extends ValueMap<K, ?>> implements Validator<K, V> {
-
-    private final Event revalidateEvent = Events.event();
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isNullable(final V valueMap, final K key) {
-      return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isValid(final V valueMap) {
-      try {
-        validate(valueMap);
-        return true;
-      }
-      catch (final ValidationException e) {
-        return false;
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void validate(final V valueMap) throws ValidationException {
-      requireNonNull(valueMap, "valueMap");
-      for (final K key : valueMap.keySet()) {
-        validate(valueMap, key);
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void validate(final V valueMap, final K key) throws ValidationException {
-      requireNonNull(valueMap, "valueMap");
-      if (valueMap.isNull(key) && !isNullable(valueMap, key)) {
-        throw new NullValidationException(key, MESSAGES.getString("value_missing") + ": " + key);
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final void revalidate() {
-      revalidateEvent.fire();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final void addRevalidationListener(final EventListener listener) {
-      revalidateEvent.addListener(listener);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final void removeRevalidationListener(final EventListener listener) {
-      revalidateEvent.removeListener(listener);
-    }
   }
 }
