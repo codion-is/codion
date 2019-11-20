@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.valuemap.DefaultValueMap;
+import org.jminor.common.db.valuemap.DefaultValueMapValidator;
 import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
@@ -27,11 +27,11 @@ import java.util.ResourceBundle;
  * @see Property.Builder#setMax(double)
  * @see Property.Builder#setMaxLength(int)
  */
-public class DefaultValidator extends DefaultValueMap.DefaultValidator<Property, Entity> implements Entity.Validator {
+public class DefaultEntityValidator extends DefaultValueMapValidator<Property, Entity> implements Entity.Validator {
 
   private static final long serialVersionUID = 1;
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultValidator.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultEntityValidator.class.getName(), Locale.getDefault());
 
   private static final String ENTITY_PARAM = "entity";
   private static final String PROPERTY_PARAM = "property";
@@ -42,7 +42,7 @@ public class DefaultValidator extends DefaultValueMap.DefaultValidator<Property,
   /**
    * Instantiates a new {@link Entity.Validator}
    */
-  public DefaultValidator() {
+  public DefaultEntityValidator() {
     this(true);
   }
 
@@ -50,7 +50,7 @@ public class DefaultValidator extends DefaultValueMap.DefaultValidator<Property,
    * Instantiates a new {@link Entity.Validator}
    * @param performNullValidation if true then automatic null validation is performed
    */
-  public DefaultValidator(final boolean performNullValidation) {
+  public DefaultEntityValidator(final boolean performNullValidation) {
     this.performNullValidation = performNullValidation;
   }
 

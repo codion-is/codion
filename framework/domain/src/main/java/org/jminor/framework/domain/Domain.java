@@ -373,7 +373,7 @@ public class Domain implements Serializable {
     final List<TransientProperty> transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
 
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(domainId, entityId,
-            tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties, new DefaultValidator());
+            tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties, new DefaultEntityValidator());
     entityDefinitions.put(entityId, entityDefinition);
 
     return entityDefinition.builder();

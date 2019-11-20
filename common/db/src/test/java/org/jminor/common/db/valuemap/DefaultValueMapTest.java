@@ -256,7 +256,7 @@ public class DefaultValueMapTest {
   public void nullValidation() throws ValidationException {
     final String testAttribute = "test";
     final ValueMap.Validator<String, ValueMap<String, Integer>> validator =
-            new DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>>() {
+            new DefaultValueMapValidator<String, ValueMap<String, Integer>>() {
               @Override
               public boolean isNullable(final ValueMap<String, Integer> valueMap, final String key) {
                 return super.isNullable(valueMap, key) && !key.equals(testAttribute);
@@ -274,8 +274,8 @@ public class DefaultValueMapTest {
   @Test
   public void isValid() {
     final String testAttribute = "test";
-    final DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>> validator =
-            new DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>>() {
+    final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator =
+            new DefaultValueMapValidator<String, ValueMap<String, Integer>>() {
               @Override
               public void validate(final ValueMap<String, Integer> valueMap, final String key) throws ValidationException {
                 final Integer value = valueMap.get(testAttribute);
@@ -294,8 +294,8 @@ public class DefaultValueMapTest {
   @Test
   public void validate() throws ValidationException {
     final String testAttribute = "test";
-    final DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>> validator =
-            new DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>>() {
+    final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator =
+            new DefaultValueMapValidator<String, ValueMap<String, Integer>>() {
               @Override
               public void validate(final ValueMap<String, Integer> valueMap, final String key) throws ValidationException {
                 super.validate(valueMap, key);
@@ -311,7 +311,7 @@ public class DefaultValueMapTest {
   @Test
   public void revalidate() {
     final AtomicInteger counter = new AtomicInteger();
-    final DefaultValueMap.DefaultValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMap.DefaultValidator<>();
+    final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMapValidator<>();
     final EventListener listener = counter::incrementAndGet;
     validator.addRevalidationListener(listener);
     validator.revalidate();

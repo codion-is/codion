@@ -5,6 +5,7 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.EventDataListener;
 import org.jminor.common.db.valuemap.DefaultValueMap;
+import org.jminor.common.db.valuemap.DefaultValueMapValidator;
 import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -29,7 +30,8 @@ public class DefaultValueMapEditModelTest {
 
     final String testAttribute = "test";
 
-    final ValueMapEditModel model = new DefaultValueMapEditModel<>(new DefaultValueMap<>(), new DefaultValueMap.DefaultValidator<String, ValueMap<String, ?>>() {
+    final ValueMapEditModel model = new DefaultValueMapEditModel<>(new DefaultValueMap<>(),
+            new DefaultValueMapValidator<String, ValueMap<String, ?>>() {
       @Override
       public boolean isNullable(final ValueMap valueMap, final String key) {
         return !key.equals(testAttribute);

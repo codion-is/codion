@@ -5324,3 +5324,5 @@
   Domain.keys() added, overloaded for Integer and Long
   Domain.StringProvider moved up
   Domain.Validator moved up to DefaultValidator
+  DefaultValueMap.DefaultValidator moved up and renamed DefaultValueMapValidator
+  domain.DefaultValidator renamed to DefaultEntityValidator
