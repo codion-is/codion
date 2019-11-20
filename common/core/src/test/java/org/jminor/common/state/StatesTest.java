@@ -1,7 +1,10 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package org.jminor.common.state;
+
+import org.jminor.common.Conjunction;
+import org.jminor.common.event.EventListener;
 
 import org.junit.jupiter.api.Test;
 

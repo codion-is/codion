@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.StateObserver;
+import org.jminor.common.state.StateObserver;
 import org.jminor.swing.common.ui.control.Controls;
 
 import javax.swing.JButton;

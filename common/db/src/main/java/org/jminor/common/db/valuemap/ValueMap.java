@@ -3,11 +3,11 @@
  */
 package org.jminor.common.db.valuemap;
 
-import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
-import org.jminor.common.EventObserver;
-import org.jminor.common.StateObserver;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.state.StateObserver;
 
 import java.util.Set;
 

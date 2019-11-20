@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.EventDataListener;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.framework.domain.Entity;
 
 import java.util.List;

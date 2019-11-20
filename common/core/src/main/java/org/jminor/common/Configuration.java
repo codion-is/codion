@@ -3,6 +3,8 @@
  */
 package org.jminor.common;
 
+import org.jminor.common.value.PropertyValue;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

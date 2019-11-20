@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.model.combobox;
 
-import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

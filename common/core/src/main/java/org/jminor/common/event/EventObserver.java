@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package org.jminor.common.event;
 
 /**
  * Specifies an Event observer, managing listeners for an Event.

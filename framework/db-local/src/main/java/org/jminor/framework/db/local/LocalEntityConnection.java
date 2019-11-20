@@ -5,10 +5,10 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entity;

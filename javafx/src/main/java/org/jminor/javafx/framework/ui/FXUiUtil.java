@@ -4,15 +4,15 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.Item;
-import org.jminor.common.State;
-import org.jminor.common.StateObserver;
-import org.jminor.common.States;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
-import org.jminor.common.Values;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.state.State;
+import org.jminor.common.state.StateObserver;
+import org.jminor.common.state.States;
+import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;

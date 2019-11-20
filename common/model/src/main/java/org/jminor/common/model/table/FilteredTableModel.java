@@ -3,8 +3,8 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;

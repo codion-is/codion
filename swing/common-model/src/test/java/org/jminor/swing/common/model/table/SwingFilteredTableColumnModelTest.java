@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.model.table;
 
-import org.jminor.common.EventDataListener;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 

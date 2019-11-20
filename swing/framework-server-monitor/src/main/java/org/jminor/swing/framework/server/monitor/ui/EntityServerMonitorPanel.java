@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.common.Event;
-import org.jminor.common.Events;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.Events;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.remote.Server;

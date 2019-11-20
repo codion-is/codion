@@ -1,7 +1,14 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package org.jminor.common.value;
+
+import org.jminor.common.Util;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.Events;
+import org.jminor.common.state.State;
+import org.jminor.common.state.States;
 
 import java.lang.reflect.Method;
 import java.util.Objects;

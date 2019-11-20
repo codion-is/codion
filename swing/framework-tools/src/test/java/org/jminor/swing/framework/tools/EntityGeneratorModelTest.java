@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.framework.tools;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.model.table.SortingDirective;
 
 import org.junit.jupiter.api.AfterEach;

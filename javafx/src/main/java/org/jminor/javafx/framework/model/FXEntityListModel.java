@@ -3,13 +3,13 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.common.State;
-import org.jminor.common.States;
 import org.jminor.common.TextUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
+import org.jminor.common.state.State;
+import org.jminor.common.state.States;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;

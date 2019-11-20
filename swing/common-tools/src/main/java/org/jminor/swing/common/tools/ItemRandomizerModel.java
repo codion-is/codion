@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.tools;
 
-import org.jminor.common.Event;
-import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.Events;
 
 import java.util.ArrayList;
 import java.util.List;

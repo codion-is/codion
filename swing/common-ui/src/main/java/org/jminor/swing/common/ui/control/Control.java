@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.StateObserver;
-import org.jminor.common.States;
+import org.jminor.common.state.StateObserver;
+import org.jminor.common.state.States;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

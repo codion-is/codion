@@ -3,11 +3,11 @@
  */
 package org.jminor.swing.common.tools.ui;
 
-import org.jminor.common.Event;
-import org.jminor.common.EventListener;
-import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
-import org.jminor.common.Values;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.Events;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.ItemRandomizerModel;
 import org.jminor.swing.common.ui.UiUtil;

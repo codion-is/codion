@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.worker;
 
-import org.jminor.common.EventDataListener;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.control.ControlSet;

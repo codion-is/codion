@@ -3,6 +3,8 @@
  */
 package org.jminor.common;
 
+import org.jminor.common.value.PropertyValue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

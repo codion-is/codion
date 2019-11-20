@@ -4,11 +4,11 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.Util;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.model.Refreshable;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 

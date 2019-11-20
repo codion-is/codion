@@ -4,10 +4,10 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.PropertyValue;
-import org.jminor.common.StateObserver;
 import org.jminor.common.User;
 import org.jminor.common.model.Refreshable;
+import org.jminor.common.state.StateObserver;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 

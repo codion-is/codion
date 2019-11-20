@@ -4,13 +4,13 @@
 package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.DateFormats;
-import org.jminor.common.Event;
-import org.jminor.common.EventListener;
-import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
 import org.jminor.common.LoggerProxy;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.Events;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.framework.server.EntityConnectionServerAdmin;

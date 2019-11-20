@@ -3,11 +3,10 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
-import org.jminor.common.State;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.FilteredTableColumnModel;
@@ -15,6 +14,7 @@ import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.model.table.TableSortModel;
+import org.jminor.common.state.State;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;

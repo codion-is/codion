@@ -4,10 +4,10 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.EventListener;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
 import org.jminor.common.Version;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.Domain;
 
 import java.util.UUID;

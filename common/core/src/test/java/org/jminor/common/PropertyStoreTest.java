@@ -3,6 +3,8 @@
  */
 package org.jminor.common;
 
+import org.jminor.common.value.PropertyValue;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

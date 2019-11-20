@@ -3,9 +3,9 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
-import org.jminor.common.StateObserver;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.List;

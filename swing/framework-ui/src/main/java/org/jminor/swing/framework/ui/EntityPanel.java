@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.PropertyValue;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.MasterDetailPanel;
 import org.jminor.swing.common.ui.UiUtil;

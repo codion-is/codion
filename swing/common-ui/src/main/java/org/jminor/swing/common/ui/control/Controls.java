@@ -3,13 +3,13 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.Event;
-import org.jminor.common.EventObserver;
-import org.jminor.common.State;
-import org.jminor.common.StateObserver;
-import org.jminor.common.Value;
-import org.jminor.common.Values;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventObserver;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.state.State;
+import org.jminor.common.state.StateObserver;
+import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 import org.jminor.swing.common.ui.UiValues;
 

@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.State;
-import org.jminor.common.StateObserver;
+import org.jminor.common.state.State;
+import org.jminor.common.state.StateObserver;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;

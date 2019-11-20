@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.EventDataListener;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.dbms.h2database.H2Database;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;

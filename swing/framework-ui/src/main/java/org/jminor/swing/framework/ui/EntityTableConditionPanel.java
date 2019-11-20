@@ -3,11 +3,11 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.Event;
-import org.jminor.common.EventDataListener;
-import org.jminor.common.Events;
-import org.jminor.common.Values;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.value.Values;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;

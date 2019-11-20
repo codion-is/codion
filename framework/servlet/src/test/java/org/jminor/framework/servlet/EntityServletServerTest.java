@@ -5,12 +5,12 @@ package org.jminor.framework.servlet;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
-import org.jminor.common.Values;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
+import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;

@@ -3,12 +3,12 @@
  */
 package org.jminor.javafx.framework.ui.values;
 
-import org.jminor.common.Value;
+import org.jminor.common.value.Value;
 
 import javafx.util.StringConverter;
 
 /**
- * A {@link org.jminor.common.Value} based on a String
+ * A {@link Value} based on a String
  * @param <V> the type of the actual value
  */
 public interface StringValue<V> extends Value<V> {

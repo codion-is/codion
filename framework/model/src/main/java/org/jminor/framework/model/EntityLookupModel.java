@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.EventDataListener;
-import org.jminor.common.StateObserver;
-import org.jminor.common.Value;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.state.StateObserver;
+import org.jminor.common.value.Value;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.EventListener;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.condition.Condition;

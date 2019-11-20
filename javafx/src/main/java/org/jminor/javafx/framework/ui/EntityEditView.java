@@ -5,11 +5,11 @@ package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.Item;
-import org.jminor.common.State;
-import org.jminor.common.States;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.state.State;
+import org.jminor.common.state.States;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;

@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.Events;
+import org.jminor.common.event.Events;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

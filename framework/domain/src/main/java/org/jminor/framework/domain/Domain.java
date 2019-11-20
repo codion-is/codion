@@ -4,11 +4,11 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.valuemap.ValueProvider;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;

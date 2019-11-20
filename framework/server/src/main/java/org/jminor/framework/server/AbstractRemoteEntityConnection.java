@@ -4,9 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.DaemonThreadFactory;
-import org.jminor.common.Event;
-import org.jminor.common.EventDataListener;
-import org.jminor.common.Events;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
@@ -14,6 +11,9 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolException;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.Events;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.db.EntityConnection;

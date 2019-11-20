@@ -4,11 +4,11 @@
 package org.jminor.plugin.jasperreports.model;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.common.value.PropertyValue;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;

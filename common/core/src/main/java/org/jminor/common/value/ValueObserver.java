@@ -1,7 +1,11 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package org.jminor.common.value;
+
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.EventObserver;
 
 /**
  * A read only value observer

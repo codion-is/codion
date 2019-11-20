@@ -4,13 +4,13 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;

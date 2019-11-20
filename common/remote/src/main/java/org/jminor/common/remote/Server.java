@@ -4,13 +4,13 @@
 package org.jminor.common.remote;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.remote.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.exception.ConnectionValidationException;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.value.PropertyValue;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

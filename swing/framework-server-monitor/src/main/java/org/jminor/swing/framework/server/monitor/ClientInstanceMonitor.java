@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
-import org.jminor.common.Event;
-import org.jminor.common.Events;
 import org.jminor.common.MethodLogger;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.Events;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.server.EntityConnectionServerAdmin;

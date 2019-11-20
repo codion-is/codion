@@ -3,15 +3,15 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
-import org.jminor.common.State;
-import org.jminor.common.StateObserver;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.state.State;
+import org.jminor.common.state.StateObserver;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
