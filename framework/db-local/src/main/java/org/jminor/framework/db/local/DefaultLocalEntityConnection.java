@@ -1210,8 +1210,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (int i = 0; i < columnProperties.size(); i++) {
       final ColumnProperty property = columnProperties.get(i);
       if (property instanceof SubqueryProperty) {
-        stringBuilder.append("(").append(((SubqueryProperty) property).getSubQuery()).append(
-                ") as ").append(property.getColumnName());
+        stringBuilder.append("(").append(((SubqueryProperty) property).getSubQuery())
+                .append(") as ").append(property.getColumnName());
       }
       else {
         stringBuilder.append(property.getColumnName());
