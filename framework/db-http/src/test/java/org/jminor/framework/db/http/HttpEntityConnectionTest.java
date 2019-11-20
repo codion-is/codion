@@ -16,13 +16,20 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.servlet.EntityServletServer;
 
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.registry.Registry;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +55,8 @@ public final class HttpEntityConnectionTest {
           HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
           HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
           HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get(),
-          UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID());
+          UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID(),
+          createConnectionManager());
 
   @BeforeAll
   public static void setUp() throws Exception {
@@ -213,7 +221,6 @@ public final class HttpEntityConnectionTest {
   }
 
   private static void configure() {
-    System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
     Server.REGISTRY_PORT.set(2221);
     Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
     Server.SERVER_PORT.set(2223);
@@ -233,7 +240,6 @@ public final class HttpEntityConnectionTest {
   }
 
   private static void deconfigure() {
-    System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.FALSE.toString());
     Server.REGISTRY_PORT.set(Registry.REGISTRY_PORT);
     Server.SERVER_CONNECTION_SSL_ENABLED.set(true);
     Server.SERVER_PORT.set(null);
@@ -275,6 +281,19 @@ public final class HttpEntityConnectionTest {
     @Override
     public Object getResult() {
       return "ReportResult";
+    }
+  }
+
+  private static BasicHttpClientConnectionManager createConnectionManager() {
+    try {
+      final SSLContext sslContext = SSLContext.getDefault();
+
+      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
+              new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
+              .build());
+    }
+    catch (final NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
     }
   }
 }

@@ -4,6 +4,8 @@
  */
 module org.jminor.framework.db.http {
   requires java.net.http;
+  requires org.apache.httpcomponents.httpcore;
+  requires org.apache.httpcomponents.httpclient;
   requires org.jminor.framework.db.core;
 
   exports org.jminor.framework.db.http;

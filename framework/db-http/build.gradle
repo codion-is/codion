@@ -5,6 +5,8 @@ dependencies {
     api project(':jminor-framework-domain')
     api project(':jminor-framework-db-core')
 
+    implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
+
     testImplementation project(':jminor-common-remote')
     testImplementation project(':jminor-common-remote-http')
     testImplementation project(':jminor-framework-server')
