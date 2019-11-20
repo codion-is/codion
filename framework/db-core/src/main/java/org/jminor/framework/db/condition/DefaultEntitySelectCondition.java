@@ -5,9 +5,6 @@ package org.jminor.framework.db.condition;
 
 import org.jminor.framework.domain.Entity;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -153,27 +150,5 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   public EntitySelectCondition setForUpdate(final boolean forUpdate) {
     this.forUpdate = forUpdate;
     return this;
-  }
-
-  private void writeObject(final ObjectOutputStream stream) throws IOException {
-    stream.writeObject(orderBy);
-    stream.writeInt(fetchCount);
-    stream.writeBoolean(forUpdate);
-    stream.writeObject(foreignKeyFetchDepthLimit);
-    stream.writeObject(foreignKeyFetchDepthLimits);
-    stream.writeObject(selectPropertyIds);
-    stream.writeInt(limit);
-    stream.writeInt(offset);
-  }
-
-  private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-    orderBy = (Entity.OrderBy) stream.readObject();
-    fetchCount = stream.readInt();
-    forUpdate = stream.readBoolean();
-    foreignKeyFetchDepthLimit = (Integer) stream.readObject();
-    foreignKeyFetchDepthLimits = (HashMap) stream.readObject();
-    selectPropertyIds = (ArrayList) stream.readObject();
-    limit = stream.readInt();
-    offset = stream.readInt();
   }
 }

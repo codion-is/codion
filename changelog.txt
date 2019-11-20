@@ -5329,3 +5329,4 @@
   HttpEntityConnection reverted back to apache httpcomponents, Jdk HttpClient unusable due to Thread leakage during load testing
   HttpEntityConnectionJdk added to hold on to Jdk implementation, unused
   ServerException moved to common.remote.exception, inner classes moved up
+  Removed unnecessary writeObject() and readObject() implementations

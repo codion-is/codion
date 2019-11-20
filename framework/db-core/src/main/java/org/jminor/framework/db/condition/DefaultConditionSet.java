@@ -5,9 +5,6 @@ package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,8 +15,8 @@ final class DefaultConditionSet implements Condition.Set {
 
   private static final long serialVersionUID = 1;
 
-  private ArrayList<Condition> conditions = new ArrayList<>();
-  private Conjunction conjunction;
+  private final ArrayList<Condition> conditions = new ArrayList<>();
+  private final Conjunction conjunction;
 
   DefaultConditionSet(final Conjunction conjunction, final Collection<Condition> conditions) {
     this.conjunction = requireNonNull(conjunction, "conjunction");
@@ -68,15 +65,5 @@ final class DefaultConditionSet implements Condition.Set {
     }
 
     return propertyIds;
-  }
-
-  private void writeObject(final ObjectOutputStream stream) throws IOException {
-    stream.writeObject(conjunction);
-    stream.writeObject(conditions);
-  }
-
-  private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-    conjunction = (Conjunction) stream.readObject();
-    conditions = (ArrayList) stream.readObject();
   }
 }

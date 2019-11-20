@@ -104,7 +104,6 @@ public final class User implements Serializable {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     this.username = (String) stream.readObject();
-    final char[] pass = (char[]) stream.readObject();
-    this.password = pass == null ? new char[0] : pass;
+    setPassword((char[]) stream.readObject());
   }
 }
