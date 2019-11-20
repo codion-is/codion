@@ -21,10 +21,10 @@ public final class SerializationWhitelistTest {
             "org.jminor.common.i18n.*"
     );
     final SerializationWhitelist.SerializationFilter filter = new SerializationWhitelist.SerializationFilter(whitelistItems);
-    assertEquals(filter.checkInput("org.jminor.common.value.Value"), sun.misc.ObjectInputFilter.Status.ALLOWED);
-    assertEquals(filter.checkInput("org.jminor.common.state.State"), sun.misc.ObjectInputFilter.Status.ALLOWED);
-    assertEquals(filter.checkInput("org.jminor.common.state.States"), sun.misc.ObjectInputFilter.Status.ALLOWED);
-    assertEquals(filter.checkInput("org.jminor.common.state.StateObserver"), sun.misc.ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("org.jminor.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("org.jminor.common.state.State"), ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("org.jminor.common.state.States"), ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("org.jminor.common.state.StateObserver"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("org.jminor.common.event.Event"), ObjectInputFilter.Status.REJECTED);
     assertEquals(filter.checkInput("org.jminor.common.i18n.Messages"), ObjectInputFilter.Status.ALLOWED);
   }
