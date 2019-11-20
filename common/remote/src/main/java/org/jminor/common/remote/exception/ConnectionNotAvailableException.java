@@ -15,7 +15,6 @@ public final class ConnectionNotAvailableException extends ServerException {
 
   /**
    * Instantiates a new {@link ConnectionNotAvailableException}
-   * @param message the exception message
    */
   public ConnectionNotAvailableException() {
     super(MESSAGES.getString("connection_not_available"));
