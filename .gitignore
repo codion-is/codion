@@ -3,3 +3,5 @@
 #ignore build and logs folders everywhere
 build/
 logs/
+#ignore all intellij build folders
+out/

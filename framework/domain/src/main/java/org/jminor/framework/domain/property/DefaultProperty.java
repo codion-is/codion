@@ -287,7 +287,7 @@ abstract class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isReadOnly() {
+  public final boolean isReadOnly() {
     return this.readOnly;
   }
 

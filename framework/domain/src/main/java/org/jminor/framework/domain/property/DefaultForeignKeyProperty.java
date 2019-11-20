@@ -52,7 +52,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     requireNonNull(foreignEntityId, "foreignEntityId");
     validateParameters(propertyId, foreignEntityId, columnPropertyBuilders);
     this.columnPropertyBuilders = columnPropertyBuilders;
-    this.columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyProperty(this));
+    this.columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyProperty(true));
     this.compositeReference = columnPropertyBuilders.size() > 1;
     this.foreignEntityId = foreignEntityId;
     this.columnProperties = unmodifiableList(columnPropertyBuilders.stream()
@@ -146,6 +146,13 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     @Override
     public List<ColumnProperty.Builder> getColmnPropertyBuilders() {
       return foreignKeyProperty.columnPropertyBuilders;
+    }
+
+    @Override
+    public ForeignKeyProperty.Builder setReadOnly(final boolean readOnly) {
+      super.setReadOnly(readOnly);
+      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.setReadOnly(readOnly));
+      return this;
     }
 
     @Override

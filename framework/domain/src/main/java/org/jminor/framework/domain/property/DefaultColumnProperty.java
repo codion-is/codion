@@ -33,7 +33,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   private int primaryKeyIndex = -1;
   private boolean columnHasDefaultValue = false;
   private boolean updatable = true;
-  private ForeignKeyProperty foreignKeyProperty = null;
+  private boolean foreignKeyProperty = false;
 
   private final transient ValueFetcher<Object> valueFetcher;
   private final transient ResultPacker<Object> resultPacker;
@@ -124,41 +124,14 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
 
   /** {@inheritDoc} */
   @Override
-  public final ForeignKeyProperty getForeignKeyProperty() {
-    return foreignKeyProperty;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final boolean isForeignKeyProperty() {
-    return foreignKeyProperty != null;
+    return foreignKeyProperty;
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean isPrimaryKeyProperty() {
     return primaryKeyIndex >= 0;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isReadOnly() {
-    if (foreignKeyProperty != null) {
-      return foreignKeyProperty.isReadOnly();
-    }
-
-    return super.isReadOnly();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final String getCaption() {
-    final String superCaption = super.getCaption();
-    if (superCaption == null && isForeignKeyProperty()) {
-      return foreignKeyProperty.getCaption();
-    }
-
-    return superCaption;
   }
 
   /** {@inheritDoc} */
@@ -393,15 +366,6 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public Property.Builder setReadOnly(final boolean readOnly) {
-      if (columnProperty.isForeignKeyProperty()) {
-        throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");
-      }
-      super.setReadOnly(readOnly);
-      return this;
-    }
-
-    @Override
     public final ColumnProperty.Builder setColumnName(final String columnName) {
       columnProperty.columnName = requireNonNull(columnName, "columnName");
       return this;
@@ -462,7 +426,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
+    public final void setForeignKeyProperty(final boolean foreignKeyProperty) {
       columnProperty.foreignKeyProperty = foreignKeyProperty;
     }
   }

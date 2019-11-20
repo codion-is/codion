@@ -17,7 +17,7 @@ public abstract class AbstractObservableValue<V> implements Value<V> {
   public final ValueObserver<V> getObserver() {
     synchronized (lock) {
       if (observer == null) {
-        observer = Values.valueObserver(this);
+        observer = new DefaultValueObserver<>(this);
       }
 
       return observer;

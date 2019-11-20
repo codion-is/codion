@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.domain.property;
 
-import java.sql.Types;
-
 /**
  * A property representing an audit column
  */
@@ -32,21 +30,4 @@ public interface AuditProperty extends ColumnProperty {
    */
   interface AuditUserProperty extends AuditProperty {}
 
-  final class DefaultAuditTimeProperty extends DefaultAuditProperty implements AuditTimeProperty {
-
-    private static final long serialVersionUID = 1;
-
-    DefaultAuditTimeProperty(final String propertyId, final AuditAction auditAction, final String caption) {
-      super(propertyId, Types.TIMESTAMP, auditAction, caption);
-    }
-  }
-
-  final class DefaultAuditUserProperty extends DefaultAuditProperty implements AuditUserProperty {
-
-    private static final long serialVersionUID = 1;
-
-    DefaultAuditUserProperty(final String propertyId, final AuditAction auditAction, final String caption) {
-      super(propertyId, Types.VARCHAR, auditAction, caption);
-    }
-  }
 }

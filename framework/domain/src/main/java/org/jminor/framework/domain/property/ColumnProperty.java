@@ -84,11 +84,6 @@ public interface ColumnProperty extends Property {
   boolean isForeignKeyProperty();
 
   /**
-   * @return the ForeignKeyProperty this property is part of, if any
-   */
-  ForeignKeyProperty getForeignKeyProperty();
-
-  /**
    * @return true if the underlying column has a default value
    */
   boolean columnHasDefaultValue();
@@ -176,8 +171,8 @@ public interface ColumnProperty extends Property {
     ColumnProperty.Builder setValueConverter(final ValueConverter<?, ?> valueConverter);
 
     /**
-     * @param foreignKeyProperty the ForeignKeyProperty this property is part of
+     * @param foreignKeyProperty true if this property is part of a foreign key
      */
-    void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty);
+    void setForeignKeyProperty(final boolean foreignKeyProperty);
   }
 }
