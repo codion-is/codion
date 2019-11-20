@@ -19,8 +19,8 @@ import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
+import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
@@ -961,7 +961,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     }
   }
 
-  private static final class EditModelValue<V> extends Values.AbstractValue<V> {
+  private static final class EditModelValue<V> extends AbstractValue<V> {
 
     private final EntityEditModel editModel;
     private final String propertyId;

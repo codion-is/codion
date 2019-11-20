@@ -10,6 +10,7 @@ import org.jminor.common.TextUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.state.StateObserver;
+import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -1118,7 +1119,7 @@ public final class EntityUiUtil {
     }
   }
 
-  private static final class LookupUIValue extends Values.AbstractValue<Entity> {
+  private static final class LookupUIValue extends AbstractValue<Entity> {
     private final EntityLookupModel lookupModel;
 
     private LookupUIValue(final EntityLookupModel lookupModel) {
@@ -1143,7 +1144,7 @@ public final class EntityUiUtil {
     }
   }
 
-  private static final class ForeignKeyModelValue extends Values.AbstractValue<String> {
+  private static final class ForeignKeyModelValue extends AbstractValue<String> {
 
     private final EntityEditModel editModel;
     private final String foreignKeyPropertyId;
