@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.Event;
-import org.jminor.common.Events;
-import org.jminor.common.Value;
-import org.jminor.common.Values;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.Events;
+import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 

@@ -4,13 +4,13 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.EventListener;
-import org.jminor.common.EventObserver;
-import org.jminor.common.StateObserver;
 import org.jminor.common.db.ConditionType;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.EventObserver;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.state.StateObserver;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.Property;

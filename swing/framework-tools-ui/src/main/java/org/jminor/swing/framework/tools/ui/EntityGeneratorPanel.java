@@ -4,8 +4,8 @@
 package org.jminor.swing.framework.tools.ui;
 
 import org.jminor.common.User;
-import org.jminor.common.Values;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.UiValues;

@@ -4,12 +4,12 @@
 package org.jminor.framework.demos.chinook.tutorial;
 
 import org.jminor.common.User;
-import org.jminor.common.Value;
-import org.jminor.common.Values;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;

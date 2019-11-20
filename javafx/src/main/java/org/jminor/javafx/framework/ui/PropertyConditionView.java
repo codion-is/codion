@@ -4,11 +4,11 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.Item;
-import org.jminor.common.State;
-import org.jminor.common.States;
-import org.jminor.common.Values;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.state.State;
+import org.jminor.common.state.States;
+import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;

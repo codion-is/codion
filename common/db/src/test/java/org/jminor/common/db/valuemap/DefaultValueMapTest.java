@@ -3,10 +3,10 @@
  */
 package org.jminor.common.db.valuemap;
 
-import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 
 import org.junit.jupiter.api.Test;
 

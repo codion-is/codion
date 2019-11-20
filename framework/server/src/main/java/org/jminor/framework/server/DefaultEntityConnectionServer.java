@@ -5,7 +5,6 @@ package org.jminor.framework.server;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.DaemonThreadFactory;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
@@ -30,6 +29,7 @@ import org.jminor.common.remote.Servers;
 import org.jminor.common.remote.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;

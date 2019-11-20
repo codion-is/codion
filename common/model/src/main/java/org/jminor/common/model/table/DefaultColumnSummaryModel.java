@@ -3,10 +3,10 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.Event;
-import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
-import org.jminor.common.Events;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.Events;
 
 import java.util.List;
 

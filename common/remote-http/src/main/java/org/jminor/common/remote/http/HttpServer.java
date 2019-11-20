@@ -4,8 +4,8 @@
 package org.jminor.common.remote.http;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.remote.Server;
+import org.jminor.common.value.PropertyValue;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;

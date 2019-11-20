@@ -4,13 +4,13 @@
 package org.jminor.common.model.table;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
-import org.jminor.common.EventObserver;
-import org.jminor.common.PropertyValue;
-import org.jminor.common.StateObserver;
-import org.jminor.common.Value;
 import org.jminor.common.db.ConditionType;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.state.StateObserver;
+import org.jminor.common.value.PropertyValue;
+import org.jminor.common.value.Value;
 
 import java.text.Format;
 

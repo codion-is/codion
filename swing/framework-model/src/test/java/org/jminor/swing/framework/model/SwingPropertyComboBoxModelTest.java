@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.Event;
-import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.Events;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;

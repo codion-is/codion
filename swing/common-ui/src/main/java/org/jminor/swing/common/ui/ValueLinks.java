@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.EventObserver;
-import org.jminor.common.Value;
-import org.jminor.common.Values;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;

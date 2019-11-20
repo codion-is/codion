@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.common.ui.table;
 
-import org.jminor.common.Event;
-import org.jminor.common.EventListener;
-import org.jminor.common.Events;
 import org.jminor.common.TextUtil;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.FilteredTableModel;

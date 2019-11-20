@@ -4,8 +4,8 @@
 package org.jminor.framework.db.http;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 
 import org.slf4j.Logger;

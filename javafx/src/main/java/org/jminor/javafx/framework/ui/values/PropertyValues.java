@@ -5,8 +5,8 @@ package org.jminor.javafx.framework.ui.values;
 
 import org.jminor.common.DateFormats;
 import org.jminor.common.Item;
-import org.jminor.common.Value;
-import org.jminor.common.Values;
+import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityLookupModel;
 

@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.common.StateObserver;
 import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.common.state.StateObserver;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;

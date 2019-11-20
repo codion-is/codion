@@ -3,11 +3,11 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.User;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.event.EventListener;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;

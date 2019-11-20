@@ -5,9 +5,9 @@ package org.jminor.common.db;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.value.PropertyValue;
 
 import java.sql.Connection;
 import java.sql.SQLException;

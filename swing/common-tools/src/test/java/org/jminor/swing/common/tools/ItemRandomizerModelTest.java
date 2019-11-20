@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.tools;
 
-import org.jminor.common.EventListener;
+import org.jminor.common.event.EventListener;
 
 import org.junit.jupiter.api.Test;
 

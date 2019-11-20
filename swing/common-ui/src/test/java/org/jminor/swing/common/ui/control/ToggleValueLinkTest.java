@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.Event;
-import org.jminor.common.Events;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.Events;
 import org.jminor.swing.common.ui.ValueLinks;
 
 import org.junit.jupiter.api.Test;

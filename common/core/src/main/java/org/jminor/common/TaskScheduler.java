@@ -3,6 +3,10 @@
  */
 package org.jminor.common;
 
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.Events;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;

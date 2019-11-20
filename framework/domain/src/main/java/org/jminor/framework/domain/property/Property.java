@@ -4,7 +4,7 @@
 package org.jminor.framework.domain.property;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.PropertyValue;
+import org.jminor.common.value.PropertyValue;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

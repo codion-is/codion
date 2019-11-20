@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.demos.manual.basics;
 
-import org.jminor.common.Event;
-import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
-import org.jminor.common.State;
-import org.jminor.common.StateObserver;
-import org.jminor.common.States;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.Events;
+import org.jminor.common.state.State;
+import org.jminor.common.state.StateObserver;
+import org.jminor.common.state.States;
 import org.jminor.swing.common.ui.UiUtil;
 
 import javax.swing.AbstractAction;

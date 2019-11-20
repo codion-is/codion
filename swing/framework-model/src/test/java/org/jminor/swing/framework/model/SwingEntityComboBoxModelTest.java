@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;

@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.State;
-import org.jminor.common.States;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.state.State;
+import org.jminor.common.state.States;
 
 import org.junit.jupiter.api.Test;
 

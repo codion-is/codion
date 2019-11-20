@@ -4,11 +4,11 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.EventListener;
 import org.jminor.common.User;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;

@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.server.monitor.ui;
 
 import org.jminor.common.TaskScheduler;
-import org.jminor.common.Values;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Controls;

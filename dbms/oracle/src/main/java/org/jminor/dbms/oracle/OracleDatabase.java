@@ -4,8 +4,8 @@
 package org.jminor.dbms.oracle;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.db.AbstractDatabase;
+import org.jminor.common.value.PropertyValue;
 
 import java.sql.SQLException;
 import java.util.HashMap;

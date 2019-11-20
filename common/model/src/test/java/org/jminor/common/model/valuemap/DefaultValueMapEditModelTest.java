@@ -3,12 +3,12 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.EventDataListener;
 import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.DefaultValueMapValidator;
 import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.event.EventDataListener;
 
 import org.junit.jupiter.api.Test;
 

@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.Event;
-import org.jminor.common.EventListener;
-import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.Version;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.Events;
 import org.jminor.framework.domain.Domain;
 
 import org.slf4j.Logger;

@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.tools;
 
-import org.jminor.common.EventObserver;
+import org.jminor.common.event.EventObserver;
 
 import java.util.Collection;
 

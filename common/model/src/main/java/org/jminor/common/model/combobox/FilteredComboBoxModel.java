@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.combobox;
 
-import org.jminor.common.EventDataListener;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;

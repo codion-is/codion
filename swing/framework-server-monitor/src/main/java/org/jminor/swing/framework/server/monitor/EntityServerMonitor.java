@@ -4,11 +4,11 @@
 package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.Event;
-import org.jminor.common.Events;
-import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.Events;
 import org.jminor.common.remote.Server;
+import org.jminor.common.value.PropertyValue;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
