@@ -8,9 +8,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.SubqueryProperty;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,22 +31,22 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
   /**
    * The property used in this condition
    */
-  private String propertyId;
+  private final String propertyId;
 
   /**
    * The values used in this condition
    */
-  private ArrayList values;
+  private final ArrayList values;
 
   /**
    * True if this condition tests for null
    */
-  private boolean nullCondition;
+  private final boolean nullCondition;
 
   /**
    * The search type used in this condition
    */
-  private ConditionType conditionType;
+  private final ConditionType conditionType;
 
   /**
    * True if this condition should be case sensitive, only applies to condition based on string properties
@@ -118,22 +115,6 @@ final class DefaultPropertyCondition implements Condition.PropertyCondition {
   public PropertyCondition setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
     return this;
-  }
-
-  private void writeObject(final ObjectOutputStream stream) throws IOException {
-    stream.writeObject(propertyId);
-    stream.writeObject(conditionType);
-    stream.writeBoolean(nullCondition);
-    stream.writeBoolean(caseSensitive);
-    stream.writeObject(values);
-  }
-
-  private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-    propertyId = (String) stream.readObject();
-    conditionType = (ConditionType) stream.readObject();
-    nullCondition = stream.readBoolean();
-    caseSensitive = stream.readBoolean();
-    values = (ArrayList) stream.readObject();
   }
 
   private static ArrayList initializeValues(final Object value) {

@@ -3,9 +3,6 @@
  */
 package org.jminor.common;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -233,11 +230,11 @@ public final class MethodLogger {
     private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private static final NumberFormat MICROSECONDS_FORMAT = NumberFormat.getIntegerInstance();
 
-    private LinkedList<Entry> subEntries = new LinkedList<>();
-    private String method;
-    private String accessMessage;
-    private long accessTime;
-    private long accessTimeNano;
+    private final LinkedList<Entry> subEntries = new LinkedList<>();
+    private final String method;
+    private final String accessMessage;
+    private final long accessTime;
+    private final long accessTimeNano;
     private String exitMessage;
     private long exitTime;
     private long exitTimeNano;
@@ -397,37 +394,6 @@ public final class MethodLogger {
      */
     private void setExitMessage(final String exitMessage) {
       this.exitMessage = exitMessage;
-    }
-
-    private void writeObject(final ObjectOutputStream stream) throws IOException {
-      stream.writeObject(method);
-      stream.writeObject(accessMessage);
-      stream.writeObject(exitMessage);
-      stream.writeLong(accessTime);
-      stream.writeLong(exitTime);
-      stream.writeLong(accessTimeNano);
-      stream.writeLong(exitTimeNano);
-      stream.writeObject(stackTrace);
-      stream.writeInt(subEntries.size());
-      for (final Entry subEntry : subEntries) {
-        stream.writeObject(subEntry);
-      }
-    }
-
-    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-      this.method = (String) stream.readObject();
-      this.accessMessage = (String) stream.readObject();
-      this.exitMessage = (String) stream.readObject();
-      this.accessTime = stream.readLong();
-      this.exitTime = stream.readLong();
-      this.accessTimeNano = stream.readLong();
-      this.exitTimeNano = stream.readLong();
-      this.stackTrace = (String) stream.readObject();
-      final int subLogSize = stream.readInt();
-      this.subEntries = new LinkedList<>();
-      for (int i = 0; i < subLogSize; i++) {
-        this.subEntries.addLast((Entry) stream.readObject());
-      }
     }
 
     private static String getStackTrace(final Throwable exception) {

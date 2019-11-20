@@ -3,9 +3,6 @@
  */
 package org.jminor.framework.db.condition;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +12,9 @@ final class DefaultCustomCondition implements Condition.CustomCondition {
 
   private static final long serialVersionUID = 1;
 
-  private String conditionId;
-  private ArrayList<String> propertyIds;
-  private ArrayList values;
+  private final String conditionId;
+  private final ArrayList<String> propertyIds;
+  private final ArrayList values;
 
   DefaultCustomCondition(final String conditionId, final List<String> propertyIds, final List values) {
     this.conditionId = requireNonNull(conditionId, "conditionId");
@@ -41,17 +38,5 @@ final class DefaultCustomCondition implements Condition.CustomCondition {
   @Override
   public List getValues() {
     return values;
-  }
-
-  private void writeObject(final ObjectOutputStream stream) throws IOException {
-    stream.writeObject(conditionId);
-    stream.writeObject(propertyIds);
-    stream.writeObject(values);
-  }
-
-  private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-    conditionId = (String) stream.readObject();
-    propertyIds = (ArrayList) stream.readObject();
-    values = (ArrayList) stream.readObject();
   }
 }
