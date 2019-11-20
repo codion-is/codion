@@ -265,7 +265,7 @@ public final class Properties {
    * @return a new audit insert time property
    */
   public static ColumnProperty.Builder auditInsertTimeProperty(final String propertyId, final String caption) {
-    return new AuditProperty.DefaultAuditTimeProperty(propertyId, INSERT, caption).builder();
+    return new DefaultAuditTimeProperty(propertyId, INSERT, caption).builder();
   }
 
   /**
@@ -282,7 +282,7 @@ public final class Properties {
    * @return a new audit update time property
    */
   public static ColumnProperty.Builder auditUpdateTimeProperty(final String propertyId, final String caption) {
-    return new AuditProperty.DefaultAuditTimeProperty(propertyId, UPDATE, caption).builder();
+    return new DefaultAuditTimeProperty(propertyId, UPDATE, caption).builder();
   }
 
   /**
@@ -299,7 +299,7 @@ public final class Properties {
    * @return a new audit insert user property
    */
   public static ColumnProperty.Builder auditInsertUserProperty(final String propertyId, final String caption) {
-    return new AuditProperty.DefaultAuditUserProperty(propertyId, INSERT, caption).builder();
+    return new DefaultAuditUserProperty(propertyId, INSERT, caption).builder();
   }
 
   /**
@@ -316,7 +316,7 @@ public final class Properties {
    * @return a new audit update user property
    */
   public static ColumnProperty.Builder auditUpdateUserProperty(final String propertyId, final String caption) {
-    return new AuditProperty.DefaultAuditUserProperty(propertyId, UPDATE, caption).builder();
+    return new DefaultAuditUserProperty(propertyId, UPDATE, caption).builder();
   }
 
   /**
