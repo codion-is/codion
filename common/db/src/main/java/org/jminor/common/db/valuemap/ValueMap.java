@@ -144,21 +144,6 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   void saveAll();
 
   /**
-   * @return a deep copy of this value map in its original state
-   */
-  ValueMap<K, V> getOriginalCopy();
-
-  /**
-   * @return a new ValueMap instance compatible with this instance
-   */
-  ValueMap<K, V> newInstance();
-
-  /**
-   * @return a deep copy of this value map
-   */
-  ValueMap<K, V> getCopy();
-
-  /**
    * @return a StateObserver indicating if one or more values in this value map have been modified.
    */
   StateObserver getModifiedObserver();

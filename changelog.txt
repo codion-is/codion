@@ -5314,3 +5314,5 @@
   ColumnProperty and DefaultColumnProperty no longer use ForeignKeyProperty, plus some further refactoring reducing cyclic dependencies
   DefaultWhereCondition no longer depends on Conditions
   DefaultForeignKeyProperty checks readOnly status before propagating
+  ValueMap.copy(), getOriginalCopy() and getInstance() removed
+  Domain.copyEntity(), deepCopyEntity() and copyKey() added

@@ -120,7 +120,6 @@ public class DefaultValueMapTest {
     assertTrue(valueMap.isModified());
     assertTrue(valueMap.isModified(attr1));
     assertEquals(Integer.valueOf(0), valueMap.getOriginal(attr1));
-    assertEquals(Integer.valueOf(0), valueMap.getOriginalCopy().get(attr1));
     valueMap.saveAll();
     assertFalse(valueMap.isModified());
     assertFalse(valueMap.isModified(attr1));
@@ -166,7 +165,7 @@ public class DefaultValueMapTest {
   @Test
   public void equals() {
     final ValueMap<String, Integer> mapOne = new DefaultValueMap<>();
-    final ValueMap<String, Integer> mapTwo = mapOne.newInstance();
+    final ValueMap<String, Integer> mapTwo = new DefaultValueMap<>();
     mapOne.getValueObserver();
     mapTwo.getValueObserver();
 

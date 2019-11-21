@@ -691,4 +691,35 @@ public class DomainTest {
   public void testNullBean() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
     assertThrows(NullPointerException.class, () -> domain.fromBean(null));
   }
+
+  @Test
+  public void copyEntities() {
+    final Entity dept1 = domain.entity(TestDomain.T_DEPARTMENT);
+    dept1.put(TestDomain.DEPARTMENT_ID, 1);
+    dept1.put(TestDomain.DEPARTMENT_LOCATION, "location");
+    dept1.put(TestDomain.DEPARTMENT_NAME, "name");
+    final Entity dept2 = domain.entity(TestDomain.T_DEPARTMENT);
+    dept2.put(TestDomain.DEPARTMENT_ID, 2);
+    dept2.put(TestDomain.DEPARTMENT_LOCATION, "location2");
+    dept2.put(TestDomain.DEPARTMENT_NAME, "name2");
+
+    final List<Entity> copies = domain.deepCopyEntities(asList(dept1, dept2));
+    assertNotSame(copies.get(0), dept1);
+    assertTrue(copies.get(0).valuesEqual(dept1));
+    assertNotSame(copies.get(1), dept2);
+    assertTrue(copies.get(1).valuesEqual(dept2));
+
+    final Entity emp1 = domain.entity(TestDomain.T_EMP);
+    emp1.put(TestDomain.EMP_DEPARTMENT_FK, dept1);
+    emp1.put(TestDomain.EMP_NAME, "name");
+    emp1.put(TestDomain.EMP_COMMISSION, 130.5);
+
+    Entity copy = domain.copyEntity(emp1);
+    assertTrue(emp1.valuesEqual(copy));
+    assertSame(emp1.get(TestDomain.EMP_DEPARTMENT_FK), copy.get(TestDomain.EMP_DEPARTMENT_FK));
+
+    copy = domain.deepCopyEntity(emp1);
+    assertTrue(emp1.valuesEqual(copy));
+    assertNotSame(emp1.get(TestDomain.EMP_DEPARTMENT_FK), copy.get(TestDomain.EMP_DEPARTMENT_FK));
+  }
 }

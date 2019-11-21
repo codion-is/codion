@@ -277,7 +277,7 @@ public class DefaultEntityTest {
     testEntity.getReferencedKey(DOMAIN.getDefinition(TestDomain.T_DETAIL).getForeignKeyProperty(TestDomain.DETAIL_MASTER_FK));
 
     //test copy()
-    final Entity test2 = (Entity) testEntity.getCopy();
+    final Entity test2 = DOMAIN.deepCopyEntity(testEntity);
     assertNotSame(test2, testEntity, "Entity copy should not be == the original");
     assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
     assertTrue(test2.valuesEqual(testEntity), "Entity property values should be equal after .getCopy()");
@@ -285,7 +285,8 @@ public class DefaultEntityTest {
 
     test2.put(TestDomain.DETAIL_DOUBLE, 2.1);
     assertTrue(test2.isModified());
-    assertTrue(test2.getCopy().isModified());
+    final Entity test2Copy = DOMAIN.copyEntity(test2);
+    assertTrue(test2Copy.isModified());
 
     //test propagate entity reference/denormalized values
     testEntity.put(TestDomain.DETAIL_MASTER_FK, null);
@@ -587,11 +588,12 @@ public class DefaultEntityTest {
   @Test
   public void keyGetCopy() {
     final Entity.Key empKey1 = DOMAIN.key(TestDomain.T_EMP, 1);
-    final Entity.Key copy = (Entity.Key) empKey1.getCopy();
+    final Entity.Key copy = DOMAIN.copyKey(empKey1);
     assertEquals(empKey1, copy);
 
     empKey1.put(TestDomain.EMP_ID, 2);
-    final Entity.Key originalCopy = (Entity.Key) empKey1.getOriginalCopy();
+    final Entity.Key originalCopy = DOMAIN.copyKey(empKey1);
+    originalCopy.revertAll();
     final Entity.Key originalCreated = DOMAIN.key(TestDomain.T_EMP, 1);
     assertEquals(originalCopy, originalCreated);
   }

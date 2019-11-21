@@ -812,8 +812,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       for (final Entity entity : entitiesByEntityIdEntry.getValue()) {
         final Entity current = currentEntitiesByKey.get(entity.getOriginalKey());
         if (current == null) {
+          final Entity original = domain.copyEntity(entity);
+          original.revertAll();
+
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
-                  + ", " + entity.getOriginalCopy() + " " + MESSAGES.getString("has_been_deleted"));
+                  + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
         }
         final List<ColumnProperty> modified = getModifiedColumnProperties(entity, current, false);
         if (!modified.isEmpty()) {

@@ -218,21 +218,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public ValueMap<K, V> newInstance() {
-    return new DefaultValueMap<>();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final ValueMap<K, V> getCopy() {
-    final ValueMap<K, V> copy = newInstance();
-    copy.setAs(this);
-
-    return copy;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final void setAs(final ValueMap<K, V> sourceMap) {
     if (sourceMap == this) {
       return;
@@ -243,14 +228,14 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
       final Collection<K> sourceValueKeys = sourceMap.keySet();
       affectedKeys.addAll(sourceValueKeys);
       for (final K key : sourceValueKeys) {
-        final V value = copy(sourceMap.get(key));
+        final V value = sourceMap.get(key);
         values.put(key, value);
         handlePut(key, value, null, true);
       }
       if (sourceMap.isModified()) {
         originalValues = new HashMap<>();
         for (final K key : sourceMap.originalKeySet()) {
-          originalValues.put(key, copy(sourceMap.getOriginal(key)));
+          originalValues.put(key, sourceMap.getOriginal(key));
         }
       }
     }
@@ -289,15 +274,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   @Override
   public final void saveAll() {
     originalValues = null;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final ValueMap<K, V> getOriginalCopy() {
-    final ValueMap<K, V> copy = getCopy();
-    copy.revertAll();
-
-    return copy;
   }
 
   /** {@inheritDoc} */
@@ -347,15 +323,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
         originalValues = null;
       }
     }
-  }
-
-  /**
-   * Returns a deep copy of the given value, immutable values are simply returned.
-   * @param value the value to copy
-   * @return a deep copy of the given value, or the same instance in case the value is immutable
-   */
-  protected V copy(final V value) {
-    return value;
   }
 
   /**

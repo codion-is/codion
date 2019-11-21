@@ -354,7 +354,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final Entity getEntityCopy(final boolean includePrimaryKeyValues) {
-    final Entity copy = (Entity) getEntity().getCopy();
+    final Entity copy = getDomain().deepCopyEntity(getEntity());
     if (!includePrimaryKeyValues) {
       copy.clearKeyValues();
     }
@@ -501,7 +501,10 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final List<Entity> delete() throws DatabaseException {
-    return delete(singletonList((Entity) getEntity().getOriginalCopy()));
+    final Entity originalEntity = getEntityCopy();
+    originalEntity.revertAll();
+
+    return delete(singletonList(originalEntity));
   }
 
   /** {@inheritDoc} */
