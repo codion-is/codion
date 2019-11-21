@@ -872,7 +872,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final List<Entity.Key> referencedKeys = getReferencedKeys(entities, foreignKeyProperty);
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
-              entities.get(j).put(foreignKeyProperty, null, false);
+              entities.get(j).put(foreignKeyProperty, null);
             }
           }
           else {
@@ -884,7 +884,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             for (int j = 0; j < entities.size(); j++) {
               final Entity entity = entities.get(j);
               final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyProperty);
-              entity.put(foreignKeyProperty, getReferencedEntity(referencedKey, referencedEntitiesMappedByKey), false);
+              entity.put(foreignKeyProperty, getReferencedEntity(referencedKey, referencedEntitiesMappedByKey));
             }
           }
         }
