@@ -5317,3 +5317,4 @@
   ValueMap.copy(), getOriginalCopy() and getInstance() removed
   Domain.copyEntity(), deepCopyEntity() and copyKey() added
   DefaultValueMap and DefaultEntity refactored a bit, put() now final, DefaultValueMap.validateAndPrepare() added, minor performance penalty
+  DaemonThreadFactory removed
