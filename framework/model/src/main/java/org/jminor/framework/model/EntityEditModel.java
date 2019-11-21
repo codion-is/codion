@@ -77,14 +77,14 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
 
   /**
    * @return a deep copy of the active entity
-   * @see org.jminor.framework.domain.Entity#getCopy()
+   * @see org.jminor.framework.domain.Domain#copyEntity(Entity)
    */
   Entity getEntityCopy();
 
   /**
    * @param includePrimaryKeyValues if false then the primary key values are excluded
    * @return a deep copy of the active entity
-   * @see org.jminor.framework.domain.Entity#getCopy()
+   * @see org.jminor.framework.domain.Domain#copyEntity(Entity)
    */
   Entity getEntityCopy(final boolean includePrimaryKeyValues);
 
