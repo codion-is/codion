@@ -184,31 +184,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return put(getProperty(propertyId), value);
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public Object put(final Property property, final Object value) {
-    return put(property, value, true);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Object put(final Property property, final Object value, final boolean validateType) {
-    requireNonNull(property, PROPERTY_PARAM);
-    validateValue(property, value);
-    if (validateType && value != null) {
-      property.validateType(value);
-    }
-    if (property instanceof ColumnProperty && ((ColumnProperty) property).isPrimaryKeyProperty()) {
-      key = null;
-    }
-    toString = null;
-    if (property instanceof ForeignKeyProperty) {
-      propagateForeignKeyValues((ForeignKeyProperty) property, (Entity) value);
-    }
-
-    return super.put(property, prepareValue(property, value));
-  }
-
   /**
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId}
@@ -594,6 +569,35 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
   }
 
+  /** {@inheritDoc} */
+  @Override
+  protected void handlePut(final Property property, final Object value, final Object previousValue,
+                           final boolean initialization) {
+    if (property instanceof ColumnProperty && ((ColumnProperty) property).isPrimaryKeyProperty()) {
+      key = null;
+    }
+    toString = null;
+    if (property instanceof ForeignKeyProperty) {
+      propagateForeignKeyValues((ForeignKeyProperty) property, (Entity) value);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected Object validateAndPrepare(final Property property, final Object value) {
+    if (property instanceof DerivedProperty) {
+      throw new IllegalArgumentException("Can not set the value of a derived property");
+    }
+    if (property instanceof ValueListProperty && value != null && !((ValueListProperty) property).isValid(value)) {
+      throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyId());
+    }
+    if (value != null) {
+      property.validateType(value);
+    }
+
+    return prepareValue(property, value);
+  }
+
   private void propagateForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
     setForeignKeyValues(foreignKeyProperty, newValue);
     if (definition.hasDenormalizedProperties()) {
@@ -635,7 +639,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
                                         final ColumnProperty referenceProperty,
                                         final ColumnProperty foreignColumnProperty) {
     if (!(referenceProperty instanceof MirrorProperty)) {
-      put(referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnProperty), false);
+      put(referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnProperty));
     }
   }
 
@@ -651,7 +655,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       for (int i = 0; i < denormalizedProperties.size(); i++) {
         final DenormalizedProperty denormalizedProperty = denormalizedProperties.get(i);
         put(denormalizedProperty, referencedEntity == null ? null : referencedEntity.get(denormalizedProperty
-                .getDenormalizedProperty()), false);
+                .getDenormalizedProperty()));
       }
     }
   }
@@ -837,15 +841,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return value;
   }
 
-  private static void validateValue(final Property property, final Object value) {
-    if (property instanceof DerivedProperty) {
-      throw new IllegalArgumentException("Can not set the value of a derived property");
-    }
-    if (property instanceof ValueListProperty && value != null && !((ValueListProperty) property).isValid(value)) {
-      throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyId());
-    }
-  }
-
   private static Map<Property, Object> createValueMap(final Key key) {
     final List<ColumnProperty> properties = key.getProperties();
     final Map<Property, Object> values = new HashMap<>(properties.size());
@@ -937,13 +932,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     @Override
     public Object put(final String propertyId, final Object value) {
       return put(getPrimaryKeyProperty(propertyId), value);
-    }
-
-    @Override
-    public Object put(final ColumnProperty property, final Object value) {
-      property.validateType(value);
-
-      return super.put(property, value);
     }
 
     @Override

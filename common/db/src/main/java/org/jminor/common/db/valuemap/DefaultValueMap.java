@@ -74,26 +74,27 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isNotNull(final K key) {
+  public final boolean isNotNull(final K key) {
     return !isNull(key);
   }
 
   /** {@inheritDoc} */
   @Override
-  public V put(final K key, final V value) {
+  public final V put(final K key, final V value) {
     requireNonNull(key, "key");
+    final V newValue = validateAndPrepare(key, value);
     final boolean initialization = !values.containsKey(key);
-    final V previousValue = values.put(key, value);
-    if (!initialization && Objects.equals(previousValue, value)) {
-      return value;
+    final V previousValue = values.put(key, newValue);
+    if (!initialization && Objects.equals(previousValue, newValue)) {
+      return newValue;
     }
     if (!initialization) {
-      updateOriginalValue(key, value, previousValue);
+      updateOriginalValue(key, newValue, previousValue);
     }
+    handlePut(key, newValue, previousValue, initialization);
     if (valueChangedEvent != null) {
-      notifyValueChange(key, value, previousValue, initialization);
+      notifyValueChange(key, newValue, previousValue, initialization);
     }
-    handlePut(key, value, previousValue, initialization);
 
     return previousValue;
   }
@@ -303,6 +304,17 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   @Override
   public final EventObserver<ValueChange<K, V>> getValueObserver() {
     return getValueChangedEvent().getObserver();
+  }
+
+  /**
+   * Validates the value for the given key
+   * @param key the key
+   * @param value the value to validate
+   * @return the value
+   * @throws IllegalArgumentException in case the value is invalid
+   */
+  protected V validateAndPrepare(final K key, final V value) {
+    return value;
   }
 
   protected final void notifyValueChange(final K key, final V currentValue, final V previousValue, final boolean initialization) {

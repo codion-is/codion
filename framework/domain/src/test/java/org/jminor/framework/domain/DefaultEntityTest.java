@@ -152,9 +152,11 @@ public class DefaultEntityTest {
             DOMAIN.getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
     assertEquals(master.getKey(), detail.getReferencedKey(foreignKeyProperty));
 
-    master.put(TestDomain.COMPOSITE_MASTER_ID, 1);
-    master.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
-    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
+    //otherwise the values are equal and put() returns before propagating foreign key values
+    final Entity masterCopy = DOMAIN.deepCopyEntity(master);
+    masterCopy.put(TestDomain.COMPOSITE_MASTER_ID, 1);
+    masterCopy.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
+    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
 
     assertNull(detail.getReferencedKey(foreignKeyProperty));
   }

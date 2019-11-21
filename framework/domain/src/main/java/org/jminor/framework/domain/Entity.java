@@ -243,16 +243,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Object put(final String propertyId, final Object value);
 
   /**
-   * Sets the value of the given property
-   * @param property the property
-   * @param value the value
-   * @param validateType if true then the type of the value is validated
-   * @return the previous value
-   * @throws IllegalArgumentException in case type validation is enabled, and the value type does not fit the property
-   */
-  Object put(final Property property, final Object value, final boolean validateType);
-
-  /**
    * @return true if the this entity instance has a null primary key
    */
   boolean isKeyNull();
