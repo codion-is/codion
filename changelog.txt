@@ -5318,3 +5318,4 @@
   Domain.copyEntity(), deepCopyEntity() and copyKey() added
   DefaultValueMap and DefaultEntity refactored a bit, put() now final, DefaultValueMap.validateAndPrepare() added, minor performance penalty
   DaemonThreadFactory removed
+  LoggerProxy.LOGGER_PROXY_IMPLEMENTATION configuration value removed

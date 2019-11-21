@@ -3,11 +3,10 @@
  */
 package org.jminor.common;
 
-import org.jminor.common.value.PropertyValue;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -17,14 +16,6 @@ import java.util.ServiceLoader;
 public interface LoggerProxy {
 
   Logger LOG = LoggerFactory.getLogger(LoggerProxy.class);
-
-  /**
-   * Specifies the logger proxy implementation.<br>
-   * Value type: String<br>
-   * Default value: org.jminor.plugin.logback.LogbackProxy.
-   * @see LoggerProxy
-   */
-  PropertyValue<String> LOGGER_PROXY_IMPLEMENTATION = Configuration.stringValue("jminor.logger.proxy", "org.jminor.plugin.logback.LogbackProxy");
 
   /**
    * @return the current log level
@@ -43,19 +34,16 @@ public interface LoggerProxy {
   List getLogLevels();
 
   /**
-   * @return the LoggerProxy implementation, null if none is found
-   * @see LoggerProxy#LOGGER_PROXY_IMPLEMENTATION
+   * @return the first available LoggerProxy implementation found, null if none is available
    */
   static LoggerProxy createLoggerProxy() {
-    final String loggingProxyImpl = LoggerProxy.LOGGER_PROXY_IMPLEMENTATION.get();
     final ServiceLoader<LoggerProxy> loader = ServiceLoader.load(LoggerProxy.class);
-    for (final LoggerProxy provider : loader) {
-      if (provider.getClass().getName().equals(loggingProxyImpl)) {
-        return provider;
-      }
+    final Iterator<LoggerProxy> proxyIterator = loader.iterator();
+    if (proxyIterator.hasNext()) {
+      return proxyIterator.next();
     }
 
-    LOG.warn("No LoggerProxy service implementation of type: " + loggingProxyImpl + " found");
+    LOG.warn("No LoggerProxy service implementation found");
     return null;
   }
 }
