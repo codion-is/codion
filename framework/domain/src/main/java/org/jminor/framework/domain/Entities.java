@@ -269,17 +269,6 @@ public final class Entities {
   }
 
   /**
-   * Copies the given entities, with new copied instances of all foreign key value entities.
-   * @param entities the entities to copy
-   * @return deep copies of the entities, in the same order as they are received
-   */
-  public static List<Entity> copyEntities(final List<Entity> entities) {
-    requireNonNull(entities, ENTITIES_PARAM);
-
-    return entities.stream().map(entity -> (Entity) entity.getCopy()).collect(toList());
-  }
-
-  /**
    * Finds entities according to the values of values
    * @param entities the entities to search
    * @param values the property values to use as condition mapped to their respective propertyIds

@@ -818,7 +818,9 @@ public final class EntityUiUtil {
                                     final EntityConnectionProvider connectionProvider) {
     if (entity != null) {
       final JPopupMenu popupMenu = new JPopupMenu();
-      populateEntityMenu(popupMenu, (Entity) entity.getCopy(), connectionProvider);
+      //we copy it because foreign key values get populated along the way
+      final Entity copy = connectionProvider.getDomain().deepCopyEntity(entity);
+      populateEntityMenu(popupMenu, copy, connectionProvider);
       popupMenu.show(component, location.x, location.y);
     }
   }

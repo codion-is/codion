@@ -336,6 +336,62 @@ public class Domain implements Entity.Definition.Provider, Serializable {
   }
 
   /**
+   * Copies the given entities, with new copied instances of all foreign key value entities.
+   * @param entities the entities to copy
+   * @return deep copies of the entities, in the same order as they are received
+   */
+  public final List<Entity> deepCopyEntities(final List<Entity> entities) {
+    Objects.requireNonNull(entities, "entities");
+
+    return entities.stream().map(this::deepCopyEntity).collect(toList());
+  }
+
+  /**
+   * Copies the given entity.
+   * @param entity the entity to copy
+   * @return copy of the given entity
+   */
+  public final Entity copyEntity(final Entity entity) {
+    Objects.requireNonNull(entity, "entity");
+    final Entity copy = entity(entity.getEntityId());
+    copy.setAs(entity);
+
+    return copy;
+  }
+
+  /**
+   * Copies the given entity, with new copied instances of all foreign key value entities.
+   * @param entity the entity to copy
+   * @return a deep copy of the given entity
+   */
+  public final Entity deepCopyEntity(final Entity entity) {
+    Objects.requireNonNull(entity, "entity");
+    final Entity copy = entity(entity.getEntityId());
+    copy.setAs(entity);
+    for (final ForeignKeyProperty foreignKeyProperty : getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
+      final Entity foreignKeyValue = (Entity) entity.get(foreignKeyProperty);
+      if (foreignKeyValue != null) {
+        entity.put(foreignKeyProperty, deepCopyEntity(foreignKeyValue));
+      }
+    }
+
+    return copy;
+  }
+
+  /**
+   * Copies the given entity.
+   * @param entity the entity to copy
+   * @return a copy of the given entity
+   */
+  public final Entity.Key copyKey(final Entity.Key key) {
+    Objects.requireNonNull(key, "key");
+    final Entity.Key copy = key(key.getEntityId());
+    copy.setAs(key);
+
+    return copy;
+  }
+
+  /**
    * Adds a new {@link Entity.Definition} to this domain model, using the {@code entityId} as table name.
    * Returns the {@link Entity.Definition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type

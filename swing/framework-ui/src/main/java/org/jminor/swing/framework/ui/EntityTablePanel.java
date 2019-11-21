@@ -577,7 +577,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       return;
     }
 
-    final List<Entity> selectedEntities = Entities.copyEntities(getEntityTableModel().getSelectionModel().getSelectedItems());
+    final List<Entity> selectedEntities = getEntityTableModel().getDomain().deepCopyEntities(getEntityTableModel().getSelectionModel().getSelectedItems());
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,

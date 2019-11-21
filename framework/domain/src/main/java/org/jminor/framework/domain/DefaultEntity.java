@@ -510,14 +510,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return definition.getColor(this, property);
   }
 
-  /**
-   * @return a new Entity instance with the same entityId as this entity
-   */
-  @Override
-  public Entity newInstance() {
-    return new DefaultEntity(definitionProvider, definition.getEntityId());
-  }
-
   /** {@inheritDoc} */
   @Override
   public Key getReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
@@ -567,16 +559,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     return false;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected Object copy(final Object value) {
-    if (value instanceof Entity) {
-      return ((Entity) value).getCopy();
-    }
-
-    return super.copy(value);
   }
 
   /** {@inheritDoc} */
@@ -982,11 +964,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       }
 
       return stringBuilder.toString();
-    }
-
-    @Override
-    public Entity.Key newInstance() {
-      return new DefaultKey(definition, (Map<ColumnProperty, Object>) null);
     }
 
     @Override
