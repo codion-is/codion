@@ -151,7 +151,11 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     @Override
     public ForeignKeyProperty.Builder setReadOnly(final boolean readOnly) {
       super.setReadOnly(readOnly);
-      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.setReadOnly(readOnly));
+      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> {
+        if (builder.get().isReadOnly() != readOnly) {
+          builder.setReadOnly(readOnly);
+        }
+      });
       return this;
     }
 

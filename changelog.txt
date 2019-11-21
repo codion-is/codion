@@ -5313,3 +5313,4 @@
   Entity.Definition.Provider added, implemented by Domain, DefaultEntity now uses the former instead of the latter
   ColumnProperty and DefaultColumnProperty no longer use ForeignKeyProperty, plus some further refactoring reducing cyclic dependencies
   DefaultWhereCondition no longer depends on Conditions
+  DefaultForeignKeyProperty checks readOnly status before propagating
