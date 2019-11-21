@@ -161,10 +161,10 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
 
     @Override
     public ForeignKeyProperty.Builder setNullable(final boolean nullable) {
+      super.setNullable(nullable);
       for (final ColumnProperty.Builder propertyBuilder : foreignKeyProperty.columnPropertyBuilders) {
         propertyBuilder.setNullable(nullable);
       }
-      super.setNullable(nullable);
       return this;
     }
 
