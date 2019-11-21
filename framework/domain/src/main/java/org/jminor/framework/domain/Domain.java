@@ -379,9 +379,9 @@ public class Domain implements Entity.Definition.Provider, Serializable {
   }
 
   /**
-   * Copies the given entity.
-   * @param entity the entity to copy
-   * @return a copy of the given entity
+   * Copies the given key.
+   * @param key the key to copy
+   * @return a copy of the given key
    */
   public final Entity.Key copyKey(final Entity.Key key) {
     Objects.requireNonNull(key, "key");
