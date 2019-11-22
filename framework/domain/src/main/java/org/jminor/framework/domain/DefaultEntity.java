@@ -493,18 +493,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       throw new IllegalArgumentException("Foreign key property " + foreignKeyProperty
               + " is not part of entity: " + getEntityId());
     }
-    final String propertyId = foreignKeyProperty.getPropertyId();
-    Key referencedPrimaryKey = getCachedReferencedKey(propertyId);
-    if (referencedPrimaryKey != null) {
-      return referencedPrimaryKey;
+    final Key cachedReferencedKey = getCachedReferencedKey(foreignKeyProperty.getPropertyId());
+    if (cachedReferencedKey != null) {
+      return cachedReferencedKey;
     }
 
-    referencedPrimaryKey = initializeReferencedKey(foreignKeyProperty);
-    if (referencedPrimaryKey != null) {
-      cacheReferencedKey(propertyId, referencedPrimaryKey);
-    }
-
-    return referencedPrimaryKey;
+    return initializeAndCacheReferencedKey(foreignKeyProperty);
   }
 
   /** {@inheritDoc} */
@@ -615,7 +609,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param entityDefinitions a global entity definition map
    */
   private void setForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
-    referencedKeyCache = null;
+    removeCachedReferencedKey(foreignKeyProperty.getPropertyId());
     final List<ColumnProperty> properties = foreignKeyProperty.getProperties();
     final List<ColumnProperty> foreignProperties =
             definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId()).getPrimaryKeyProperties();
@@ -661,11 +655,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   /**
-   * Creates the primary key referenced by the given foreign key
+   * Creates and caches the primary key referenced by the given foreign key
    * @param foreignKeyProperty the foreign key
    * @return the referenced primary key or null if a valid key can not be created (null values for non-nullable properties)
    */
-  private Key initializeReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
+  private Key initializeAndCacheReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
     final List<ColumnProperty> properties = foreignKeyProperty.getProperties();
     final Definition entityDefinition = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
     if (foreignKeyProperty.isCompositeKey()) {
@@ -682,7 +676,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         }
       }
 
-      return new DefaultKey(entityDefinition, values);
+      return cacheReferencedKey(foreignKeyProperty.getPropertyId(), new DefaultKey(entityDefinition, values));
     }
     else {
       final Object value = super.get(properties.get(0));
@@ -690,15 +684,17 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         return null;
       }
 
-      return new DefaultKey(entityDefinition, value);
+      return cacheReferencedKey(foreignKeyProperty.getPropertyId(), new DefaultKey(entityDefinition, value));
     }
   }
 
-  private void cacheReferencedKey(final String fkPropertyId, final Key referencedPrimaryKey) {
+  private Key cacheReferencedKey(final String fkPropertyId, final Key referencedPrimaryKey) {
     if (referencedKeyCache == null) {
       referencedKeyCache = new HashMap<>();
     }
     referencedKeyCache.put(fkPropertyId, referencedPrimaryKey);
+
+    return referencedPrimaryKey;
   }
 
   private Key getCachedReferencedKey(final String fkPropertyId) {
@@ -707,6 +703,15 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     return referencedKeyCache.get(fkPropertyId);
+  }
+
+  private void removeCachedReferencedKey(final String fkPropertyId) {
+    if (referencedKeyCache != null) {
+      referencedKeyCache.remove(fkPropertyId);
+      if (referencedKeyCache.isEmpty()) {
+        referencedKeyCache = null;
+      }
+    }
   }
 
   /**

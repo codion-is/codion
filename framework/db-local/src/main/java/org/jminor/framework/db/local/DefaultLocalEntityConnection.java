@@ -90,6 +90,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<String, List<ColumnProperty>> updateProperties = new HashMap<>();
   private final Map<String, List<ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
   private final Map<String, String[]> writableColumnPropertyIds = new HashMap<>();
+  private final Map<String, String> selectAllColumnsStrings = new HashMap<>();
 
   private boolean optimisticLocking = true;
   private boolean limitForeignKeyFetchDepth = true;
@@ -519,7 +520,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(condition, CONDITION_PARAM_NAME);
     final Entity.Definition entityDefinition = getEntityDefinition(condition.getEntityId());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
-    final String baseSQLQuery = createSelectSQL(whereCondition, entityDefinition.getPrimaryKeyProperties(), entityDefinition);
+    final String baseSQLQuery = createSelectSQL(initializeSelectColumnsString(entityDefinition.getPrimaryKeyProperties()),
+            whereCondition, entityDefinition);
     final String rowCountSQLQuery = createSelectSQL("(" + baseSQLQuery + ")", "count(*)", null, null);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -920,7 +922,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.getSelectableColumnProperties() :
             entityDefinition.getSelectableColumnProperties(selectCondition.getSelectPropertyIds());
     try {
-      selectSQL = createSelectSQL(whereCondition, propertiesToSelect, entityDefinition);
+      selectSQL = createSelectSQL(getSelectColumnsString(entityDefinition.getEntityId(),
+              selectCondition.getSelectPropertyIds(), propertiesToSelect), whereCondition, entityDefinition);
       statement = prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, whereCondition);
 
@@ -1066,6 +1069,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                     .stream().map(Property::getPropertyId).toArray(String[]::new));
   }
 
+  private String getSelectColumnsString(final String entityId, final List<String> selectPropertyIds,
+                                        final List<ColumnProperty> propertiesToSelect) {
+    if (selectPropertyIds.isEmpty()) {
+      return selectAllColumnsStrings.computeIfAbsent(entityId, eId ->
+              initializeSelectColumnsString(propertiesToSelect));
+    }
+
+    return initializeSelectColumnsString(propertiesToSelect);
+  }
+
   private DatabaseException translateInsertUpdateSQLException(final SQLException exception) {
     final Database database = connection.getDatabase();
     if (database.isUniqueConstraintException(exception)) {
@@ -1178,7 +1191,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return new ArrayList<>(keySet);
   }
 
-  private String createSelectSQL(final WhereCondition whereCondition, final List<ColumnProperty> columnProperties,
+  private String createSelectSQL(final String selectColumnsString, final WhereCondition whereCondition,
                                  final Entity.Definition entityDefinition) {
     final EntityCondition entityCondition = whereCondition.getEntityCondition();
     final boolean isForUpdate = entityCondition instanceof EntitySelectCondition &&
@@ -1187,7 +1200,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String selectQuery = entityDefinition.getSelectQuery();
     if (selectQuery == null) {
       selectQuery = createSelectSQL(isForUpdate ? entityDefinition.getTableName() : entityDefinition.getSelectTableName(),
-              initializeSelectColumnsString(columnProperties), null, null);
+              selectColumnsString, null, null);
     }
     else {
       containsWhereClause = entityDefinition.selectQueryContainsWhereClause();

@@ -5344,3 +5344,6 @@
   ControlProvider.createCheckBox() bug fixed, did not create a TristateCheckBox when button model was TristateButtonModel
   PropertyStore.propertyValue(), nullValue parameter added, false by default for Boolean values
   DefaultValueMap constructor now copies the maps received as parameters instead of using them internally
+  PropertyStore now loads all properties into System properties on construction
+  DefaultEntity, referencedKeyCache functionality refactored, keys cached when created
+  DefaultLocalEntityConnection, now caches query column strings containing all entity columns, which is used most of the time
