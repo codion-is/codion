@@ -113,6 +113,6 @@ public final class Configuration {
    * @return the configuration value
    */
   public static <T> PropertyValue<T> value(final String key, final T defaultValue, final Function<String, T> parser) {
-    return STORE.propertyValue(key, defaultValue, parser, Objects::toString);
+    return STORE.propertyValue(key, defaultValue, null, parser, Objects::toString);
   }
 }
