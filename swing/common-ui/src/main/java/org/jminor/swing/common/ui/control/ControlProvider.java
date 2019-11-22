@@ -4,8 +4,11 @@
 package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.state.StateObserver;
+import org.jminor.swing.common.model.checkbox.TristateButtonModel;
+import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
 
 import javax.swing.Action;
+import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -320,8 +323,15 @@ public final class ControlProvider {
    * @return a check box
    */
   public static JCheckBox createCheckBox(final Controls.ToggleControl toggleControl) {
-    final JCheckBox checkBox = new JCheckBox(toggleControl);
-    checkBox.setModel(toggleControl.getButtonModel());
+    final ButtonModel buttonModel = toggleControl.getButtonModel();
+    final JCheckBox checkBox;
+    if (buttonModel instanceof TristateButtonModel) {
+      checkBox = new TristateCheckBox(toggleControl.getName());
+    }
+    else {
+      checkBox = new JCheckBox(toggleControl);
+    }
+    checkBox.setModel(buttonModel);
 
     return checkBox;
   }
