@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.DaemonThreadFactory;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
@@ -42,6 +41,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -479,6 +479,17 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
     private int getRequestsPerSecond() {
       return requestsPerSecond;
+    }
+  }
+
+  private static final class DaemonThreadFactory implements ThreadFactory {
+
+    @Override
+    public Thread newThread(final Runnable runnable) {
+      final Thread thread = new Thread(runnable);
+      thread.setDaemon(true);
+
+      return thread;
     }
   }
 }

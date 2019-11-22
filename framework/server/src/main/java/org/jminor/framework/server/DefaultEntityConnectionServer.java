@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.DaemonThreadFactory;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
@@ -57,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
@@ -739,6 +739,17 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
+    }
+  }
+
+  private static final class DaemonThreadFactory implements ThreadFactory {
+
+    @Override
+    public Thread newThread(final Runnable runnable) {
+      final Thread thread = new Thread(runnable);
+      thread.setDaemon(true);
+
+      return thread;
     }
   }
 

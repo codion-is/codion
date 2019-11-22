@@ -156,4 +156,15 @@ public final class TaskScheduler {
       return executorService != null && !executorService.isShutdown();
     }
   }
+
+  private static final class DaemonThreadFactory implements ThreadFactory {
+
+    @Override
+    public Thread newThread(final Runnable runnable) {
+      final Thread thread = new Thread(runnable);
+      thread.setDaemon(true);
+
+      return thread;
+    }
+  }
 }
