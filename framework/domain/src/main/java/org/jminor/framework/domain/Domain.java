@@ -121,9 +121,8 @@ public class Domain implements Entity.Definition.Provider, Serializable {
   }
 
   /**
-   * Instantiates a new {@link Entity} instance using the given maps for the values and original values respectively.
-   * Note that the given map instances are used internally, modifying the contents of those maps outside the
-   * {@link Entity} instance will definitely result in some unexpected and unpleasant behaviour.
+   * Instantiates a new {@link Entity} instance with the given values and original values.
+   * Note that no validation is performed on the properties or map values is performed.
    * @param entityId the entity id
    * @param values the values
    * @param originalValues the original values

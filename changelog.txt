@@ -5319,3 +5319,6 @@
   DefaultValueMap and DefaultEntity refactored a bit, put() now final, DefaultValueMap.validateAndPrepare() added, minor performance penalty
   DaemonThreadFactory removed
   LoggerProxy.LOGGER_PROXY_IMPLEMENTATION configuration value removed
+  ControlProvider.createCheckBox() bug fixed, did not create a TristateCheckBox when button model was TristateButtonModel
+  PropertyStore.propertyValue(), nullValue parameter added, false by default for Boolean values
+  DefaultValueMap constructor now copies the maps received as parameters instead of using them internally
