@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.http;
 
-import org.jminor.common.DaemonThreadFactory;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.ConditionType;
@@ -40,6 +39,7 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -501,5 +501,16 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     }
 
     return Util.deserialize((byte[]) response.body());
+  }
+
+  private static final class DaemonThreadFactory implements ThreadFactory {
+
+    @Override
+    public Thread newThread(final Runnable runnable) {
+      final Thread thread = new Thread(runnable);
+      thread.setDaemon(true);
+
+      return thread;
+    }
   }
 }
