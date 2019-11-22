@@ -89,6 +89,8 @@ public final class PropertyStore {
    */
   public PropertyStore(final Properties properties) {
     this.properties.putAll(requireNonNull(properties, "properties"));
+    this.properties.stringPropertyNames().forEach(property ->
+            System.setProperty(property, this.properties.getProperty(property)));
   }
 
   /**

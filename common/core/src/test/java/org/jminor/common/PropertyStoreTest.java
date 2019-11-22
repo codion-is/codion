@@ -22,7 +22,7 @@ public final class PropertyStoreTest {
 
   @Test
   public void test() throws IOException {
-    final File configFile = File.createTempFile("config_store", "properties");
+    final File configFile = File.createTempFile("PropertyStoreTest.test", "properties");
     configFile.deleteOnExit();
     final StringBuilder configBuilder = new StringBuilder()
             .append("stringlist.property=value1;value2;value3").append(Util.LINE_SEPARATOR)
@@ -95,7 +95,7 @@ public final class PropertyStoreTest {
     integerListValue.set(null);
     intValue1.set(24);
     intValue2.set(25);
-    intValue3.set(26);
+    intValue3.set(null);
     doubleValue.set(4.22);
     booleanValue.set(null);
 
@@ -106,9 +106,9 @@ public final class PropertyStoreTest {
     assertTrue(propertyValues.contains("stringlist.property=value4;value5;value6"));
     assertTrue(propertyValues.contains("int.property1=24"));
     assertTrue(propertyValues.contains("int.property2=25"));
-    assertTrue(propertyValues.contains("int.property3=26"));
+    assertFalse(propertyValues.contains("int.property3=26"));
     assertTrue(propertyValues.contains("double.property=4.22"));
-    assertFalse(propertyValues.contains("boolean.property=false"));
+    assertTrue(propertyValues.contains("boolean.property=false"));
     assertFalse(propertyValues.contains("intlist.property=1;2;3"));
 
     configFile.delete();
@@ -116,7 +116,7 @@ public final class PropertyStoreTest {
 
   @Test
   public void testDefaultValues() throws IOException {
-    final File configFile = File.createTempFile("config_store", "properties");
+    final File configFile = File.createTempFile("PropertyStoreTest.testDefaultValues", "properties");
     configFile.deleteOnExit();
     final PropertyStore store = new PropertyStore(configFile);
     final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
@@ -128,7 +128,7 @@ public final class PropertyStoreTest {
     booleanValue1.set(false);
     assertFalse(booleanValue1.get());
     booleanValue1.set(null);
-    assertNull(booleanValue1.get());
+    assertFalse(booleanValue1.get());
     final PropertyValue<Integer> integerValue = store.propertyValue("integer.property", 42);
     assertEquals(42, integerValue.get());
     integerValue.set(null);
@@ -163,11 +163,10 @@ public final class PropertyStoreTest {
   public void initialValue() {
     final Properties properties = new Properties();
     properties.put("property", "properties");
-    System.setProperty("property", "system");
 
     PropertyStore store = new PropertyStore(properties);
     PropertyValue<String> value = store.propertyValue("property", "def");
-    assertEquals("system", value.get());
+    assertEquals("properties", value.get());
 
     System.clearProperty("property");
     store = new PropertyStore(properties);
