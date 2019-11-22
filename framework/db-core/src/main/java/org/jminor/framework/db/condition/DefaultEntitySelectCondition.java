@@ -17,7 +17,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   private static final long serialVersionUID = 1;
 
   private HashMap<String, Integer> foreignKeyFetchDepthLimits;
-  private ArrayList<String> selectPropertyIds;
+  private List<String> selectPropertyIds = emptyList();
 
   private Entity.OrderBy orderBy;
   private Integer foreignKeyFetchDepthLimit;
@@ -136,7 +136,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   /** {@inheritDoc} */
   @Override
   public List<String> getSelectPropertyIds() {
-    return selectPropertyIds == null ? emptyList() : selectPropertyIds;
+    return selectPropertyIds;
   }
 
   /** {@inheritDoc} */
