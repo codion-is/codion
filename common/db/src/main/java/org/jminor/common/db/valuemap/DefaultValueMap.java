@@ -51,19 +51,18 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * Instantiates a new empty instance
    */
   public DefaultValueMap() {
-    this(new HashMap<>(), null);
+    this(null, null);
   }
 
   /**
-   * Instantiates a new instance using the given maps for the values and original values respectively.
-   * Note that the given map instances are used internally, modifying the contents of those maps outside this
-   * DefaultValueMap instance will result in undefined behaviour, to put things politely.
+   * Instantiates a new instance with the given values and original values.
+   * Note that no validation is performed.
    * @param values the values
    * @param originalValues the originalValues
    */
   protected DefaultValueMap(final Map<K, V> values, final Map<K, V> originalValues) {
-    this.values = values == null ? new HashMap<>() : values;
-    this.originalValues = originalValues;
+    this.values = values == null ? new HashMap<>() : new HashMap<>(values);
+    this.originalValues = originalValues == null ? null : new HashMap<>(originalValues);
   }
 
   /** {@inheritDoc} */
