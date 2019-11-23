@@ -3,7 +3,6 @@
  * <br>
  * Configuration values:<br>
  * {@link org.jminor.common.TextUtil#DEFAULT_COLLATOR_LANGUAGE}<br>
- * {@link org.jminor.common.LoggerProxy#LOGGER_PROXY_IMPLEMENTATION}
  * @uses org.jminor.common.LoggerProxy
  * @uses org.jminor.common.CredentialsProvider
  */
