@@ -489,6 +489,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @throws IllegalArgumentException in case the procedure is not found
    */
   public final <C> DatabaseConnection.Procedure<C> getProcedure(final String procedureId) {
+    requireNonNull(procedureId, "procedureId");
     checkIfDeserialized();
     final DatabaseConnection.Operation operation = databaseOperations.get(procedureId);
     if (operation == null) {
@@ -505,6 +506,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @throws IllegalArgumentException in case the function is not found
    */
   public final <C> DatabaseConnection.Function<C> getFunction(final String functionId) {
+    requireNonNull(functionId, "functionId");
     checkIfDeserialized();
     final DatabaseConnection.Operation operation = databaseOperations.get(functionId);
     if (operation == null) {
