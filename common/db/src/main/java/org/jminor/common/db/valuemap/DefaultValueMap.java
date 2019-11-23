@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
+import static org.jminor.common.db.valuemap.ValueChanges.valueChange;
 
 /**
  * A default ValueMap implementation.
@@ -92,7 +93,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     }
     handlePut(key, newValue, previousValue, initialization);
     if (valueChangedEvent != null) {
-      notifyValueChange(key, newValue, previousValue, initialization);
+      notifyValueChange(key, newValue, previousValue);
     }
 
     return previousValue;
@@ -153,7 +154,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
       removeOriginalValue(key);
       handleRemove(key, value);
       if (valueChangedEvent != null) {
-        notifyValueChange(key, null, value, false);
+        notifyValueChange(key, null, value);
       }
 
       return value;
@@ -316,8 +317,8 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     return value;
   }
 
-  protected final void notifyValueChange(final K key, final V currentValue, final V previousValue, final boolean initialization) {
-    valueChangedEvent.fire(ValueChanges.valueChange(key, currentValue, previousValue, initialization));
+  protected final void notifyValueChange(final K key, final V currentValue, final V previousValue) {
+    valueChangedEvent.fire(valueChange(key, currentValue, previousValue));
   }
 
   protected final void setOriginalValue(final K key, final V previousValue) {
@@ -376,7 +377,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (valueChangedEvent != null) {
       for (final K key : valueKeys) {
         final V value = values.get(key);
-        valueChangedEvent.fire(ValueChanges.valueChange(key, value, null, true));
+        valueChangedEvent.fire(valueChange(key, value, null));
       }
     }
   }

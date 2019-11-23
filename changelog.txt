@@ -5331,3 +5331,4 @@
   ValueFetcher and ValueConverter moved to ColumnProperty
   Databases.INTEGER_RESULT_PACKER and LONG_RESULT_PACKER removed
   DatabaseConnectionProvider removed
+  ValueChange.isInitialization() removed, unused

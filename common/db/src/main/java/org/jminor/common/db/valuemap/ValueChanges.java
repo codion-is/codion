@@ -19,11 +19,10 @@ public final class ValueChanges {
    * @param key the key associated with the value
    * @param currentValue the current value
    * @param previousValue the previous value
-   * @param initialization true if the value was being initialized
    * @return a new {@link ValueChange} instance
    */
-  public static <K, V> ValueChange<K, V> valueChange(final K key, final V currentValue, final V previousValue, final boolean initialization) {
-    return new DefaultValueChange<>(key, currentValue, previousValue, initialization);
+  public static <K, V> ValueChange<K, V> valueChange(final K key, final V currentValue, final V previousValue) {
+    return new DefaultValueChange<>(key, currentValue, previousValue);
   }
 
   private static final class DefaultValueChange<K, V> implements ValueChange<K, V> {
@@ -44,23 +43,16 @@ public final class ValueChanges {
     private final V previousValue;
 
     /**
-     * True if this value change indicates an initialization, that is, a value was not present before this value change
-     */
-    private final boolean initialization;
-
-    /**
      * Instantiates a new DefaultValueChange
      * @param source the source of the value change
      * @param key the key associated with the value
      * @param currentValue the current value
      * @param previousValue the previous value
-     * @param initialization true if the value was being initialized, as in, no previous value existed
      */
-    private DefaultValueChange(final K key, final V currentValue, final V previousValue, final boolean initialization) {
+    private DefaultValueChange(final K key, final V currentValue, final V previousValue) {
       this.key = requireNonNull(key, "key");
       this.currentValue = currentValue;
       this.previousValue = previousValue;
-      this.initialization = initialization;
     }
 
     @Override
@@ -79,18 +71,8 @@ public final class ValueChanges {
     }
 
     @Override
-    public boolean isInitialization() {
-      return initialization;
-    }
-
-    @Override
     public String toString() {
-      if (initialization) {
-        return key + ": " + currentValue;
-      }
-      else {
-        return key + ": " + previousValue + " -> " + currentValue;
-      }
+      return key + ": " + previousValue + " -> " + currentValue;
     }
   }
 }

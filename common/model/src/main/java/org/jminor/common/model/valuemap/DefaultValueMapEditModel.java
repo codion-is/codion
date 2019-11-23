@@ -4,7 +4,6 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.db.valuemap.ValueChange;
-import org.jminor.common.db.valuemap.ValueChanges;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.Event;
@@ -22,6 +21,7 @@ import java.util.Objects;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.common.db.valuemap.ValueChanges.valueChange;
 
 /**
  * A default ValueMapEditModel implementation, handling value change events and validation
@@ -77,10 +77,9 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   @Override
   public final void put(final K key, final V value) {
     requireNonNull(key, KEY);
-    final boolean initialization = !valueMap.containsKey(key);
     final V previousValue = valueMap.put(key, value);
     if (!Objects.equals(value, previousValue)) {
-      notifyValueChange(key, ValueChanges.valueChange(key, value, previousValue, initialization));
+      notifyValueChange(key, valueChange(key, value, previousValue));
     }
   }
 
@@ -91,7 +90,7 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
     V value = null;
     if (valueMap.containsKey(key)) {
       value = valueMap.remove(key);
-      notifyValueChange(key, ValueChanges.valueChange(key, null, value, false));
+      notifyValueChange(key, valueChange(key, null, value));
     }
 
     return value;
