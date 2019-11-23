@@ -8,7 +8,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Domain;
@@ -24,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -75,7 +75,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private boolean strictForeignKeyFiltering = true;
 
-  private final FilterCondition<Entity> foreignKeyFilterCondition = item -> {
+  private final Predicate<Entity> foreignKeyFilterCondition = item -> {
     for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
       final Entity foreignKeyValue = item.getForeignKey(entry.getKey());
       if (foreignKeyValue == null) {
@@ -182,7 +182,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /** {@inheritDoc} */
   @Override
-  public final FilterCondition<Entity> getForeignKeyFilterCondition() {
+  public final Predicate<Entity> getForeignKeyFilterCondition() {
     return foreignKeyFilterCondition;
   }
 
@@ -246,7 +246,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     if (!Util.nullOrEmpty(filterEntities)) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
-    final FilterCondition.RejectAllCondition rejectAllCondition = new FilterCondition.RejectAllCondition();
+    final Predicate rejectAllCondition = item -> false;
     if (isStrictForeignKeyFiltering()) {
       setFilterCondition(rejectAllCondition);
     }

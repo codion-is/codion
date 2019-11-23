@@ -7,7 +7,6 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.StateObserver;
@@ -22,7 +21,7 @@ import java.util.Collection;
  * in a table model and searching functionality, which refers to configuring the underlying query,
  * which then needs to be re-run.<br>
  */
-public interface EntityTableConditionModel extends FilterCondition<Entity>, Refreshable {
+public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * @return the id of the entity this table condition model is based on
@@ -60,18 +59,6 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
    * @return this EntityTableConditionModel instance
    */
   EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider conditionProvider);
-
-  /**
-   * @return any additional filter condition, not based on any individual property condition
-   */
-  FilterCondition<Entity> getAdditionalFilterCondition();
-
-  /**
-   * Sets the additional filter condition, one not based on any individual property condition
-   * @param filterCondition the condition
-   * @return this EntityTableConditionModel instance
-   */
-  EntityTableConditionModel setAdditionalFilterCondition(final FilterCondition<Entity> filterCondition);
 
   /**
    * @return true if any of the underlying PropertyConditionModels is enabled

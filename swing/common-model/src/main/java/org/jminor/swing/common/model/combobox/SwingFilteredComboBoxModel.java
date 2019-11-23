@@ -8,7 +8,6 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -46,7 +46,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private Comparator<T> sortComparator;
   private T selectedItem = null;
   private T nullValue;
-  private FilterCondition<T> filterCondition;
+  private Predicate<T> filterCondition;
   private boolean filterSelectedItem = true;
 
   /**
@@ -126,7 +126,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
       if (filterCondition != null) {
         for (final ListIterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
           final T item = iterator.next();
-          if (item != null && !filterCondition.include(item)) {
+          if (item != null && !filterCondition.test(item)) {
             filteredItems.add(item);
             iterator.remove();
           }
@@ -178,14 +178,14 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   /** {@inheritDoc} */
   @Override
-  public final void setFilterCondition(final FilterCondition<T> filterCondition) {
+  public final void setFilterCondition(final Predicate<T> filterCondition) {
     this.filterCondition = filterCondition;
     filterContents();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final FilterCondition<T> getFilterCondition() {
+  public final Predicate<T> getFilterCondition() {
     return filterCondition;
   }
 
@@ -220,7 +220,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   /** {@inheritDoc} */
   @Override
   public final void addItem(final T item) {
-    if (filterCondition == null || filterCondition.include(item)) {
+    if (filterCondition == null || filterCondition.test(item)) {
       visibleItems.add(item);
       sortVisibleItems();
     }

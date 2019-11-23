@@ -7,7 +7,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.SelectionModel;
@@ -27,6 +26,7 @@ import javafx.scene.control.SelectionMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -52,7 +52,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   private FXEntityListSelectionModel selectionModel;
 
   private Condition selectCondition;
-  private FilterCondition<Entity> filterCondition;
+  private Predicate<Entity> filterCondition;
 
   /**
    * Instantiates a new {@link ObservableEntityList}
@@ -97,7 +97,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   /**
    * @return a filtered view of this list
-   * @see #setFilterCondition(FilterCondition)
+   * @see #setFilterCondition(Predicate)
    */
   public final FilteredList<Entity> getFilteredList() {
     return filteredList;
@@ -193,7 +193,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   /** {@inheritDoc} */
   @Override
   public final boolean isFiltered(final Entity item) {
-    return filterCondition != null && filterCondition.include(item);
+    return filterCondition != null && filterCondition.test(item);
   }
 
   /** {@inheritDoc} */
@@ -235,13 +235,13 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   /** {@inheritDoc} */
   @Override
-  public final FilterCondition<Entity> getFilterCondition() {
+  public final Predicate<Entity> getFilterCondition() {
     return filterCondition;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setFilterCondition(final FilterCondition<Entity> filterCondition) {
+  public final void setFilterCondition(final Predicate<Entity> filterCondition) {
     this.filterCondition = filterCondition;
     filterContents();
   }
@@ -249,7 +249,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   /** {@inheritDoc} */
   @Override
   public final void filterContents() {
-    filteredList.setPredicate(entity -> filterCondition == null || filterCondition.include(entity));
+    filteredList.setPredicate(entity -> filterCondition == null || filterCondition.test(entity));
     filteringDoneEvent.fire();
   }
 

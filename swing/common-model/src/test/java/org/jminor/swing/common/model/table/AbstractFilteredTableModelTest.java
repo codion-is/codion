@@ -6,7 +6,6 @@ package org.jminor.swing.common.model.table;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.common.model.table.RowColumn;
@@ -21,6 +20,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -282,7 +282,7 @@ public final class AbstractFilteredTableModelTest {
     point = testModel.findNextItemCoordinate(0, true, "(?i)B");
     assertEquals(RowColumn.rowColumn(3, 1), point);
 
-    FilterCondition<Object> condition = item -> item.equals("b") || item.equals("e");
+    Predicate<Object> condition = item -> item.equals("b") || item.equals("e");
 
     point = testModel.findNextItemCoordinate(4, false, condition);
     assertEquals(RowColumn.rowColumn(3, 1), point);

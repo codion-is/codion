@@ -6,6 +6,7 @@ package org.jminor.common.model;
 import org.jminor.common.event.EventListener;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Specifies a data model that can be filtered to hide some or all of the items it contains.
@@ -28,7 +29,7 @@ public interface FilteredModel<T> {
    * If no filter condition is specified this method does nothing.
    * This method does not interfere with the internal ordering of the visible items.
    * @see #getFilterCondition()
-   * @see #setFilterCondition(FilterCondition)
+   * @see #setFilterCondition(Predicate)
    * @see #addFilteringListener(EventListener)
    */
   void filterContents();
@@ -37,13 +38,13 @@ public interface FilteredModel<T> {
    * Returns the filter condition defined by this model, null if no filter condition has been set.
    * @return the filter condition
    */
-  FilterCondition<T> getFilterCondition();
+  Predicate<T> getFilterCondition();
 
   /**
    * Sets the filter condition and filters the model
-   * @param filterCondition the FilterCondition to use, null if no filtering should be performed
+   * @param filterCondition the Predicate to use, null if no filtering should be performed
    */
-  void setFilterCondition(final FilterCondition<T> filterCondition);
+  void setFilterCondition(final Predicate<T> filterCondition);
 
   /**
    * @return an unmodifiable view of the visible items
