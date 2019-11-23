@@ -5328,3 +5328,4 @@
   Condition, moved a couple of interfaces up to package level
   CustomStringCondition removed, perhaps even finally
   DatabaseConnection, poolTime and retryCount fields removed, some refactoring
+  ValueFetcher and ValueConverter moved to ColumnProperty

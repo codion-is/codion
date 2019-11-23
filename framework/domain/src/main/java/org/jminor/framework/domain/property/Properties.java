@@ -4,7 +4,6 @@
 package org.jminor.framework.domain.property;
 
 import org.jminor.common.Item;
-import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.valuemap.ValueMap;
 
 import java.sql.Types;
@@ -334,8 +333,8 @@ public final class Properties {
    * @return a value converter which converts an underlying database representation
    * of a boolean value into an actual Boolean
    */
-  public static <T> ValueConverter<Boolean, T> booleanValueConverter(final T trueValue, final T falseValue) {
-    return new DefaultProperty.BooleanValueConverter(trueValue, falseValue);
+  public static <T> ColumnProperty.ValueConverter<Boolean, T> booleanValueConverter(final T trueValue, final T falseValue) {
+    return new DefaultColumnProperty.BooleanValueConverter<>(trueValue, falseValue);
   }
 
   /**
