@@ -5357,3 +5357,4 @@
   FilterCondition removed, replaced with Predicate
   EntityConnectionServerAdmin.removeConnections() renamed to disconnectClients()
   AbstractRemoteEntityConnection refactoring
+  DefaultEntityConnectionServer.MaintenanceTask now logs errors instead of rethrowing

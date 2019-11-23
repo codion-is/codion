@@ -1,0 +1,25 @@
+= Conditions
+:dir-tutorials: ../tutorials
+:dir-source-chinook: ../../demos/chinook/src/main/java
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:url-conditions: {url-javadoc}/org/jminor/framework/db/condition/Conditions.html
+
+The {url-conditions}[Conditions] class is a factory for conditions, used when querying entities.
+
+The <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>> is used in the examples below.
+
+== Condition
+
+{url-javadoc}/org/jminor/framework/db/condition/Condition.html[Condition] represents a where clause element.
+
+== Condition.Set
+
+{url-javadoc}/org/jminor/framework/db/condition/Condition.Set.html[Condition.Set] represents a set of Conditions, which are either AND'ed or OR'ed together.
+
+== EntityCondition
+
+{url-javadoc}/org/jminor/framework/db/condition/EntityCondition.html[EntityCondition] represents a where clause for a entity type.
+
+== EntitySelectCondition
+
+{url-javadoc}/org/jminor/framework/db/condition/EntitySelectCondition.html[EntitySelectCondition] represents a where clause for a entity type specifically for selecting.

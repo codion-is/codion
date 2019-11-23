@@ -12,6 +12,8 @@ include::{dir-manual}/domain-model.adoc[]
 
 include::{dir-manual}/entity-connection.adoc[]
 
+include::{dir-manual}/conditions.adoc[]
+
 include::{dir-manual}/entity-model.adoc[]
 
 include::{dir-manual}/entity-application-model.adoc[]
