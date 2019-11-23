@@ -22,6 +22,8 @@ public class SwingEntityModelProvider
 
   protected static final Logger LOG = LoggerFactory.getLogger(SwingEntityModelProvider.class);
 
+  private static final String CONNECTION_PROVIDER_PARAMETER = "connectionProvider";
+
   private final String entityId;
 
   private final List<EntityModelProvider<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel>>
@@ -128,7 +130,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModel createModel(final EntityConnectionProvider connectionProvider) {
-    requireNonNull(connectionProvider, "connectionProvider");
+    requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
       final SwingEntityModel model;
       if (modelClass.equals(SwingEntityModel.class)) {
@@ -157,7 +159,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityEditModel createEditModel(final EntityConnectionProvider connectionProvider) {
-    requireNonNull(connectionProvider, "connectionProvider");
+    requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
       final SwingEntityEditModel editModel;
       if (editModelClass.equals(SwingEntityEditModel.class)) {
@@ -183,7 +185,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityTableModel createTableModel(final EntityConnectionProvider connectionProvider) {
-    requireNonNull(connectionProvider, "connectionProvider");
+    requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
       final SwingEntityTableModel tableModel;
       if (tableModelClass.equals(SwingEntityTableModel.class)) {

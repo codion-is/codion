@@ -5347,3 +5347,5 @@
   PropertyStore now loads all properties into System properties on construction
   DefaultEntity, referencedKeyCache functionality refactored, keys cached when created
   DefaultLocalEntityConnection, now caches query column strings containing all entity columns, which is used most of the time
+  Condition, moved a couple of interfaces up to package level
+  CustomStringCondition removed, perhaps even finally

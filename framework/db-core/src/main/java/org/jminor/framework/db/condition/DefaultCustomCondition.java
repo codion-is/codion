@@ -8,7 +8,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultCustomCondition implements Condition.CustomCondition {
+final class DefaultCustomCondition implements CustomCondition {
 
   private static final long serialVersionUID = 1;
 

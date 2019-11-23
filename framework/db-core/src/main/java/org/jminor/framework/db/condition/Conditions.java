@@ -174,18 +174,18 @@ public final class Conditions {
   }
 
   /**
-   * Creates a new {@link Condition.CustomCondition} based on the condition with the given id
+   * Creates a new {@link CustomCondition} based on the condition with the given id
    * @param conditionId the id of the condition
    * @return a new Condition instance
    * @throws NullPointerException in case the condition id
    * @see Entity.Definition.Builder#addConditionProvider(String, Entity.ConditionProvider)
    */
-  public static Condition.CustomCondition customCondition(final String conditionId) {
+  public static CustomCondition customCondition(final String conditionId) {
     return customCondition(conditionId, emptyList(), emptyList());
   }
 
   /**
-   * Creates a new {@link Condition.CustomCondition} based on the condition with the given id
+   * Creates a new {@link CustomCondition} based on the condition with the given id
    * @param conditionId the id of the condition
    * @param propertyIds the properties representing the values used by this condition, in the same order as their respective values
    * @param values the values used by this condition string
@@ -193,7 +193,7 @@ public final class Conditions {
    * @throws NullPointerException in case any of the parameters are null
    * @see Entity.Definition.Builder#addConditionProvider(String, Entity.ConditionProvider)
    */
-  public static Condition.CustomCondition customCondition(final String conditionId, final List<String> propertyIds, final List values) {
+  public static CustomCondition customCondition(final String conditionId, final List<String> propertyIds, final List values) {
     return new DefaultCustomCondition(conditionId, propertyIds, values);
   }
 
@@ -205,8 +205,8 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return a property condition based on the given value
    */
-  public static Condition.PropertyCondition propertyCondition(final String propertyId, final ConditionType conditionType,
-                                                              final Object value) {
+  public static PropertyCondition propertyCondition(final String propertyId, final ConditionType conditionType,
+                                                    final Object value) {
     return new DefaultPropertyCondition(propertyId, conditionType, value);
   }
 
@@ -239,8 +239,8 @@ public final class Conditions {
 
       return condition;
     }
-    if (condition instanceof Condition.PropertyCondition) {
-      final Condition.PropertyCondition propertyCondition = (Condition.PropertyCondition) condition;
+    if (condition instanceof PropertyCondition) {
+      final PropertyCondition propertyCondition = (PropertyCondition) condition;
       final Property property = definition.getProperty(propertyCondition.getPropertyId());
       if (property instanceof ForeignKeyProperty) {
         return foreignKeyCondition((ForeignKeyProperty) property, propertyCondition.getConditionType(),
