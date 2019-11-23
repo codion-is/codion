@@ -26,6 +26,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultDatabaseConnection.class);
 
+  private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
+  private static final ResultPacker<Long> LONG_RESULT_PACKER = resultSet -> resultSet.getLong(1);
+
   /**
    * The default timoeout in seconds when checking if this connection is valid
    */
@@ -168,7 +171,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public int queryInteger(final String sql) throws SQLException {
-    final List<Integer> integers = query(sql, Databases.INTEGER_RESULT_PACKER, -1);
+    final List<Integer> integers = query(sql, INTEGER_RESULT_PACKER, -1);
     if (!integers.isEmpty()) {
       return integers.get(0);
     }
@@ -179,7 +182,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public long queryLong(final String sql) throws SQLException {
-    final List<Long> longs = query(sql, Databases.LONG_RESULT_PACKER, -1);
+    final List<Long> longs = query(sql, LONG_RESULT_PACKER, -1);
     if (!longs.isEmpty()) {
       return longs.get(0);
     }
