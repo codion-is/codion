@@ -50,7 +50,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @param user the user to base this database connection on
    * @throws DatabaseException in case there is a problem connecting to the database
    */
-  public DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
+  DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
     this(database, user, DEFAULT_VALIDITY_CHECK_TIMEOUT);
   }
 
@@ -62,8 +62,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
-  public DefaultDatabaseConnection(final Database database, final User user,
-                                   final int validityCheckTimeout) throws DatabaseException {
+  DefaultDatabaseConnection(final Database database, final User user,
+                            final int validityCheckTimeout) throws DatabaseException {
     this.database = requireNonNull(database, "database");
     this.user = requireNonNull(user, "user");
     this.validityCheckTimeout = validityCheckTimeout;
@@ -78,7 +78,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws IllegalArgumentException in case the given connection is invalid
    * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
    */
-  public DefaultDatabaseConnection(final Database database, final Connection connection) throws DatabaseException {
+  DefaultDatabaseConnection(final Database database, final Connection connection) throws DatabaseException {
     this(database, connection, 0);
   }
 
@@ -91,8 +91,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws IllegalArgumentException in case the given connection is invalid
    * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
    */
-  public DefaultDatabaseConnection(final Database database, final Connection connection,
-                                   final int validityCheckTimeout) throws DatabaseException {
+  DefaultDatabaseConnection(final Database database, final Connection connection,
+                            final int validityCheckTimeout) throws DatabaseException {
     this.database = requireNonNull(database, "database");
     this.validityCheckTimeout = validityCheckTimeout;
     initialize(requireNonNull(connection, "connection"));
