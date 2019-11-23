@@ -5327,3 +5327,4 @@
   DefaultLocalEntityConnection, now caches query column strings containing all entity columns, which is used most of the time
   Condition, moved a couple of interfaces up to package level
   CustomStringCondition removed, perhaps even finally
+  DatabaseConnection, poolTime and retryCount fields removed, some refactoring

@@ -341,12 +341,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       }
       finally {
         if (methodLogger.isEnabled()) {
-          String message = null;
-          final int retryCount = poolEntityConnection == null ? 0 : poolEntityConnection.getDatabaseConnection().getRetryCount();
-          if (retryCount > 0) {
-            message = "retries: " + retryCount;
-          }
-          methodLogger.logExit(GET_CONNECTION, exception, message);
+          methodLogger.logExit(GET_CONNECTION, exception);
         }
       }
     }

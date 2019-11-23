@@ -38,9 +38,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   private Connection connection;
   private boolean transactionOpen = false;
 
-  private long poolTime = -1;
-  private int poolRetryCount = 0;
-
   private MethodLogger methodLogger;
 
   /**
@@ -103,30 +100,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   @Override
   public void close() throws Exception {
     disconnect();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setPoolTime(final long time) {
-    this.poolTime = time;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public long getPoolTime() {
-    return poolTime;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setRetryCount(final int retryCount) {
-    this.poolRetryCount = retryCount;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public int getRetryCount() {
-    return poolRetryCount;
   }
 
   /** {@inheritDoc} */
@@ -224,7 +197,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     LOG.debug("{}: begin transaction;", user.getUsername());
     logAccess("beginTransaction", new Object[0]);
     transactionOpen = true;
-    logExit("beginTransaction", null, null);
+    logExit("beginTransaction", null);
   }
 
   /** {@inheritDoc} */
@@ -245,7 +218,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
     finally {
       transactionOpen = false;
-      logExit("rollbackTransaction", exception, null);
+      logExit("rollbackTransaction", exception);
     }
   }
 
@@ -267,7 +240,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
     finally {
       transactionOpen = false;
-      logExit("commitTransaction", exception, null);
+      logExit("commitTransaction", exception);
     }
   }
 
@@ -296,7 +269,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw e;
     }
     finally {
-      logExit("commit", exception, null);
+      logExit("commit", exception);
     }
   }
 
@@ -319,7 +292,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw e;
     }
     finally {
-      logExit("rollback", exception, null);
+      logExit("rollback", exception);
     }
   }
 
@@ -333,7 +306,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   private <T> List<T> query(final String sql, final ResultPacker<T> resultPacker, final int fetchCount) throws SQLException {
-    Databases.QUERY_COUNTER.count(sql);
+    requireNonNull(resultPacker, "resultPacker");
+    Databases.QUERY_COUNTER.count(requireNonNull(sql, "sql"));
     Statement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
@@ -351,7 +325,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     finally {
       Databases.closeSilently(statement);
       Databases.closeSilently(resultSet);
-      final MethodLogger.Entry logEntry = logExit("query", exception, null);
+      final MethodLogger.Entry logEntry = logExit("query", exception);
       if (LOG.isDebugEnabled()) {
         LOG.debug(Databases.createLogMessage(getUser(), sql, null, exception, logEntry));
       }
@@ -364,9 +338,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  private MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+  private MethodLogger.Entry logExit(final String method, final Throwable exception) {
     if (methodLogger != null && methodLogger.isEnabled()) {
-      return methodLogger.logExit(method, exception, exitMessage);
+      return methodLogger.logExit(method, exception);
     }
 
     return null;
