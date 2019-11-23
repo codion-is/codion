@@ -35,14 +35,11 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A base class for remote connections served by a {@link DefaultEntityConnectionServer}.
@@ -162,22 +159,11 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @return true during a remote method call
    */
   final boolean isActive() {
-    return RemoteEntityConnectionHandler.ACTIVE_CONNECTIONS.contains(connectionHandler.remoteClient.getClientId());
+    return connectionHandler.active.get();
   }
 
   final void addDisconnectListener(final EventDataListener<AbstractRemoteEntityConnection> listener) {
     disconnectedEvent.addDataListener(listener);
-  }
-
-  final void removeDisconnectListener(final EventDataListener listener) {
-    disconnectedEvent.removeDataListener(listener);
-  }
-
-  /**
-   * @return the number of connections that are active at this moment
-   */
-  static int getActiveCount() {
-    return RemoteEntityConnectionHandler.ACTIVE_CONNECTIONS.size();
   }
 
   static int getRequestsPerSecond() {
@@ -191,11 +177,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     private static final String RETURN_CONNECTION = "returnConnection";
 
     private static final RequestCounter REQUEST_COUNTER = new RequestCounter();
-
-    /**
-     * Contains the clientIds of active remote connections, that is, those connections that are in the process of serving a request
-     */
-    private static final Set<UUID> ACTIVE_CONNECTIONS = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * The domain model
@@ -231,6 +212,11 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
      * The date and time when this remote connection was established
      */
     private final long creationDate = System.currentTimeMillis();
+
+    /**
+     * True while working
+     */
+    private final AtomicBoolean active = new AtomicBoolean(false);
 
     /**
      * A local connection used in case no connection pool is provided, managed by getConnection()/returnConnection()
@@ -280,12 +266,12 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
     @Override
     public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+      active.set(true);
       lastAccessTime = System.currentTimeMillis();
       final String methodName = method.getName();
       Exception exception = null;
       try {
         MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
-        ACTIVE_CONNECTIONS.add(remoteClient.getClientId());
         REQUEST_COUNTER.incrementRequestsPerSecondCounter();
         if (methodLogger.isEnabled()) {
           methodLogger.logAccess(methodName, args);
@@ -309,7 +295,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
         throw exception;
       }
       finally {
-        ACTIVE_CONNECTIONS.remove(remoteClient.getClientId());
         returnConnection();
         if (methodLogger.isEnabled()) {
           final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
@@ -318,6 +303,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
           LOG.info(messageBuilder.toString());
         }
         MDC.remove(LOG_IDENTIFIER_PROPERTY);
+        active.set(false);
       }
     }
 

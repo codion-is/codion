@@ -187,12 +187,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public int getActiveConnectionCount() {
-    return AbstractRemoteEntityConnection.getActiveCount();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public int getMaintenanceInterval() {
     return server.getMaintenanceInterval();
   }
