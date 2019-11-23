@@ -494,7 +494,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @throws RemoteException in case of an exception
    * @see #hasConnectionTimedOut(String, AbstractRemoteEntityConnection)
    */
-  final void removeConnections(final boolean timedOutOnly) throws RemoteException {
+  final void disconnectClients(final boolean timedOutOnly) throws RemoteException {
     final List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
     for (final RemoteClient client : clients) {
       final AbstractRemoteEntityConnection connection = getConnection(client.getClientId());

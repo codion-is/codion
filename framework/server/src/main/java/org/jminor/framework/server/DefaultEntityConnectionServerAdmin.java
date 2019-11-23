@@ -206,9 +206,9 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public void removeConnections(final boolean timedOutOnly) throws RemoteException {
+  public void disconnectClients(final boolean timedOutOnly) throws RemoteException {
     LOG.info("removeConnections({})", timedOutOnly);
-    server.removeConnections(timedOutOnly);
+    server.disconnectClients(timedOutOnly);
   }
 
   /** {@inheritDoc} */

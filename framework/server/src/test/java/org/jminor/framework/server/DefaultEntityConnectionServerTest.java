@@ -195,7 +195,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals("select", entry.getMethod());
     assertTrue(entry.getDuration() >= 0);
 
-    admin.removeConnections(true);
+    admin.disconnectClients(true);
 
     server.disconnect(connectionRequestOne.getClientId());
     assertEquals(1, admin.getConnectionCount());
