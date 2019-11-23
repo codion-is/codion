@@ -47,7 +47,6 @@ import java.util.Random;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
@@ -377,26 +376,6 @@ public class DefaultLocalEntityConnectionTest {
             singletonList(TestDomain.EMP_MGR), singletonList(5));
 
     assertEquals(4, connection.select(entitySelectCondition(TestDomain.T_EMP, condition)).size());
-  }
-
-  @Test
-  public void customStringCondition() throws DatabaseException {
-    class StringCondition implements Condition.CustomStringCondition {
-      @Override
-      public List getValues() {
-        return emptyList();
-      }
-      @Override
-      public List<String> getPropertyIds() {
-        return emptyList();
-      }
-      @Override
-      public String getConditionString() {
-        return "1 = 2";
-      }
-    }
-
-    assertEquals(0, connection.select(entitySelectCondition(TestDomain.T_EMP, new StringCondition())).size());
   }
 
   @Test

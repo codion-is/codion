@@ -61,21 +61,16 @@ final class DefaultWhereCondition implements WhereCondition {
 
       return conditionString.append(conditions.size() > 1 ? ")" : "").toString();
     }
-    if (condition instanceof Condition.PropertyCondition) {
-      final Condition.PropertyCondition propertyCondition = (Condition.PropertyCondition) condition;
+    if (condition instanceof PropertyCondition) {
+      final PropertyCondition propertyCondition = (PropertyCondition) condition;
 
       return propertyCondition.getConditionString(entityDefinition.getColumnProperty(propertyCondition.getPropertyId()));
     }
-    if (condition instanceof Condition.CustomCondition) {
-      final Condition.CustomCondition customCondition = (Condition.CustomCondition) condition;
+    if (condition instanceof CustomCondition) {
+      final CustomCondition customCondition = (CustomCondition) condition;
 
       return entityDefinition.getConditionProvider(customCondition.getConditionId())
               .getConditionString(customCondition.getPropertyIds(), customCondition.getValues());
-    }
-    if (condition instanceof Condition.CustomStringCondition) {
-      final Condition.CustomStringCondition customCondition = (Condition.CustomStringCondition) condition;
-
-      return customCondition.getConditionString();
     }
 
     return "";

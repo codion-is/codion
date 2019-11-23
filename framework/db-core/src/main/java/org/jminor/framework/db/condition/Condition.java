@@ -4,9 +4,6 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.db.ConditionType;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.util.List;
@@ -30,57 +27,6 @@ public interface Condition extends Serializable {
    * An empty list is returned in case no values are specified.
    */
   List<String> getPropertyIds();
-
-  /**
-   * A Condition based on a custom {@link org.jminor.framework.domain.Entity.ConditionProvider}
-   * associated with {@link CustomCondition#getConditionId()}
-   */
-  interface CustomCondition extends Condition {
-
-    /**
-     * @return the condition id
-     */
-    String getConditionId();
-  }
-
-  /**
-   * A custom condition string
-   */
-  interface CustomStringCondition extends Condition {
-
-    /**
-     * @return the condition string
-     */
-    String getConditionString();
-  }
-
-  /**
-   * A Condition based on a {@link Property}
-   */
-  interface PropertyCondition extends Condition {
-
-    /**
-     * @return the propertyId
-     */
-    String getPropertyId();
-
-    /**
-     * @return the condition type
-     */
-    ConditionType getConditionType();
-
-    /**
-     * @param property the underlying property
-     * @return the condition string
-     */
-    String getConditionString(final ColumnProperty property);
-
-    /**
-     * @param caseSensitive false if this condition should not be case-sensitive
-     * @return this condition
-     */
-    PropertyCondition setCaseSensitive(final boolean caseSensitive);
-  }
 
   /**
    * An interface encapsulating a set of PropertyCondition objects,

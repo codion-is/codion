@@ -20,7 +20,7 @@ import static org.jminor.common.db.ConditionType.LIKE;
 /**
  * Encapsulates a query condition based on a single property with one or more values.
  */
-final class DefaultPropertyCondition implements Condition.PropertyCondition {
+final class DefaultPropertyCondition implements PropertyCondition {
 
   private static final long serialVersionUID = 1;
 
