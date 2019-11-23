@@ -4,7 +4,6 @@
 package org.jminor.common.model.combobox;
 
 import org.jminor.common.event.EventDataListener;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 
@@ -12,10 +11,10 @@ import java.util.Collection;
 import java.util.Comparator;
 
 /**
- * A ComboBoxModel that allows filtering via FilterCondition objects.
+ * A ComboBoxModel that allows filtering via Predicate objects.
  * @param <T> the type of the combo box model elements
- * @see FilterCondition
- * @see #setFilterCondition(FilterCondition)
+ * @see Predicate
+ * @see #setFilterCondition(Predicate)
  */
 public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable {
 

@@ -5,12 +5,12 @@ package org.jminor.common.model.table;
 
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Specifies a table model supporting selection as well as filtering
@@ -150,7 +150,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param searchText the text to search by
    * @return the search result coordinate, null if nothing was found
    * @see #isRegularExpressionSearch()
-   * @see FilterCondition#include(Object)
+   * @see Predicate#include(Object)
    */
   RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText);
 
@@ -162,9 +162,9 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param forward if true then the search is forward (towards higher row indexes), backwards otherwise
    * @param condition the search condition
    * @return the search result coordinate, null if nothing was found
-   * @see FilterCondition#include(Object)
+   * @see Predicate#include(Object)
    */
-  RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCondition<Object> condition);
+  RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final Predicate<Object> condition);
 
   /**
    * @return true if regular expressions should be used when searching this table model

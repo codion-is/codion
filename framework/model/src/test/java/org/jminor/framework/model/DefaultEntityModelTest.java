@@ -7,7 +7,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.FilteredTableColumnModel;
 import org.jminor.common.model.table.FilteredTableModel;
@@ -24,6 +23,7 @@ import org.jminor.framework.domain.property.Property;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntityModelTest.TestEntityModel,
         DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {
@@ -130,7 +130,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText) {return null;}
     @Override
-    public RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCondition<Object> condition) {return null;}
+    public RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final Predicate<Object> condition) {return null;}
     @Override
     public boolean isRegularExpressionSearch() {return false;}
     @Override
@@ -238,9 +238,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void filterContents() {}
     @Override
-    public FilterCondition<Entity> getFilterCondition() {return null;}
+    public Predicate<Entity> getFilterCondition() {return null;}
     @Override
-    public void setFilterCondition(final FilterCondition<Entity> filterCondition) {}
+    public void setFilterCondition(final Predicate<Entity> filterCondition) {}
     @Override
     public List<Entity> getVisibleItems() {return null;}
     @Override

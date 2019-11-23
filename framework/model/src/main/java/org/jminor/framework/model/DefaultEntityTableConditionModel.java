@@ -10,7 +10,6 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.State;
@@ -18,7 +17,6 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -48,7 +46,6 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   private final Map<String, ColumnConditionModel<Property>> propertyFilterModels = new LinkedHashMap<>();
   private final Map<String, PropertyConditionModel<? extends Property>> propertyConditionModels = new HashMap<>();
   private Condition.Provider additionalConditionProvider;
-  private FilterCondition<Entity> additionalFilterCondition;
   private Conjunction conjunction = Conjunction.AND;
   private String rememberedConditionState = "";
   private String simpleConditionString = "";
@@ -108,21 +105,6 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   @Override
   public final Collection<ColumnConditionModel<Property>> getPropertyFilterModels() {
     return Collections.unmodifiableCollection(propertyFilterModels.values());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean include(final Entity item) {
-    for (final ColumnConditionModel<Property> columnFilter : propertyFilterModels.values()) {
-      if (!columnFilter.include(item)) {
-        return false;
-      }
-    }
-    if (additionalFilterCondition != null) {
-      return additionalFilterCondition.include(item);
-    }
-
-    return true;
   }
 
   /** {@inheritDoc} */
@@ -243,20 +225,6 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   @Override
   public final EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider conditionProvider) {
     this.additionalConditionProvider = conditionProvider;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final FilterCondition<Entity> getAdditionalFilterCondition() {
-    return this.additionalFilterCondition;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EntityTableConditionModel setAdditionalFilterCondition(final FilterCondition<Entity> filterCondition) {
-    this.additionalFilterCondition = filterCondition;
-
     return this;
   }
 

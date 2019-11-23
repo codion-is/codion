@@ -4,12 +4,12 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.event.EventListener;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 
 /**
  * A ComboBoxModel based on {@link Entity} instances.
@@ -24,19 +24,19 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
 
   /**
    * Use this method to retrieve the default foreign key filter condition model if you
-   * want to add a custom {@link FilterCondition} to this model via {@link #setFilterCondition(FilterCondition)}.
+   * want to add a custom {@link Predicate} to this model via {@link #setFilterCondition(Predicate)}.
    * <pre>
-   *   FilterCondition fkCondition = model.getForeignKeyFilterCondition();
-   *   model.setFilterCondition(new FilterCondition() {
-   *     public boolean include(Entity item) {
+   *   Predicate fkCondition = model.getForeignKeyFilterCondition();
+   *   model.setFilterCondition(new Predicate() {
+   *     public boolean test(Entity item) {
    *       return fkCondition.include(item) &amp;&amp; ...;
    *     }
    *   });
    * </pre>
-   * @return the {@link FilterCondition} based on the foreign key filter entities
+   * @return the {@link Predicate} based on the foreign key filter entities
    * @see #setForeignKeyFilterEntities(String, Collection)
    */
-  FilterCondition<Entity> getForeignKeyFilterCondition();
+  Predicate<Entity> getForeignKeyFilterCondition();
 
   /**
    * @param foreignKeyPropertyId the ID of the foreign key property

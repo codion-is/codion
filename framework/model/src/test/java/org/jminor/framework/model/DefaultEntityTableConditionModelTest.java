@@ -18,7 +18,6 @@ import org.jminor.framework.domain.property.Property;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
@@ -174,18 +173,5 @@ public class DefaultEntityTableConditionModelTest {
         assertFalse(model.isEnabled());
       }
     }
-  }
-
-  @Test
-  public void testAdditionalFilterCondition() {
-    conditionModel.setAdditionalFilterCondition(entity -> !Objects.equals(entity.get(TestDomain.EMP_ID), 1));
-    assertNotNull(conditionModel.getAdditionalFilterCondition());
-
-    final Entity emp = CONNECTION_PROVIDER.getDomain().entity(TestDomain.T_EMP);
-    emp.put(TestDomain.EMP_ID, 1);
-    assertFalse(conditionModel.include(emp));
-
-    emp.put(TestDomain.EMP_ID, 2);
-    assertTrue(conditionModel.include(emp));
   }
 }
