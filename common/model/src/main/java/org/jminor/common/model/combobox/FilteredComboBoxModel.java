@@ -13,7 +13,6 @@ import java.util.Comparator;
 /**
  * A ComboBoxModel that allows filtering via Predicate objects.
  * @param <T> the type of the combo box model elements
- * @see Predicate
  * @see #setFilterCondition(Predicate)
  */
 public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable {
