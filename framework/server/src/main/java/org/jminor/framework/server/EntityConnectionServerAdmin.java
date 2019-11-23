@@ -80,12 +80,6 @@ public interface EntityConnectionServerAdmin extends Remote {
   ClientLog getClientLog(final UUID clientId) throws RemoteException;
 
   /**
-   * @return the number of active connections
-   * @throws RemoteException in case of a communication error
-   */
-  int getActiveConnectionCount() throws RemoteException;
-
-  /**
    * Returns true if logging is enabled for the given connection
    * @param clientId the ID of the client
    * @return true if logging is on for the given connection

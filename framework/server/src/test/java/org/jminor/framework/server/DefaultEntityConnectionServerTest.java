@@ -296,7 +296,6 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void coverAdmin() throws RemoteException {
-    admin.getActiveConnectionCount();
     admin.getAllocatedMemory();
     admin.setConnectionTimeout(30);
     try {

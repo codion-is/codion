@@ -5356,3 +5356,4 @@
   ValueChange.isInitialization() removed, unused
   FilterCondition removed, replaced with Predicate
   EntityConnectionServerAdmin.removeConnections() renamed to disconnectClients()
+  AbstractRemoteEntityConnection refactoring
