@@ -740,8 +740,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
           maintainConnections();
         }
       }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
+      catch (final Exception e) {
+        LOG.error("Exception while maintaining connections", e);
       }
     }
   }
