@@ -181,7 +181,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public Object put(final String propertyId, final Object value) {
-    return put(getProperty(propertyId), value);
+    return super.put(getProperty(propertyId), value);
   }
 
   /**
@@ -633,7 +633,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
                                         final ColumnProperty referenceProperty,
                                         final ColumnProperty foreignColumnProperty) {
     if (!(referenceProperty instanceof MirrorProperty)) {
-      put(referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnProperty));
+      super.put(referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnProperty));
     }
   }
 
@@ -648,7 +648,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (denormalizedProperties != null) {
       for (int i = 0; i < denormalizedProperties.size(); i++) {
         final DenormalizedProperty denormalizedProperty = denormalizedProperties.get(i);
-        put(denormalizedProperty, referencedEntity == null ? null : referencedEntity.get(denormalizedProperty
+        super.put(denormalizedProperty, referencedEntity == null ? null : referencedEntity.get(denormalizedProperty
                 .getDenormalizedProperty()));
       }
     }
@@ -936,7 +936,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public Object put(final String propertyId, final Object value) {
-      return put(getPrimaryKeyProperty(propertyId), value);
+      return super.put(getPrimaryKeyProperty(propertyId), value);
     }
 
     @Override
@@ -1136,7 +1136,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       compositeKey = properties.size() > 1;
       singleIntegerKey = !compositeKey && properties.get(0).isInteger();
       for (int i = 0; i < properties.size(); i++) {
-        put(properties.get(i), stream.readObject());
+        super.put(properties.get(i), stream.readObject());
       }
     }
 

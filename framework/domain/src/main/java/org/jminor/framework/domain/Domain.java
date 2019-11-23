@@ -54,6 +54,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
   public static final PropertyValue<Boolean> ALLOW_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.allowRedefineEntity", false);
 
   private static final String ENTITY_ID_PARAM = "entityId";
+  private static final String ENTITY_PARAM = "entity";
 
   private static final Map<String, Domain> REGISTERED_DOMAINS = new HashMap<>();
 
@@ -197,7 +198,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @see Property.Builder#setBeanProperty(String)
    */
   public <V> V toBean(final Entity entity) {
-    requireNonNull(entity, "entity");
+    requireNonNull(entity, ENTITY_PARAM);
     final Entity.Definition definition = getDefinition(entity.getEntityId());
     final Class<V> beanClass = definition.getBeanClass();
     if (beanClass == null) {
@@ -351,7 +352,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @return copy of the given entity
    */
   public final Entity copyEntity(final Entity entity) {
-    Objects.requireNonNull(entity, "entity");
+    Objects.requireNonNull(entity, ENTITY_PARAM);
     final Entity copy = entity(entity.getEntityId());
     copy.setAs(entity);
 
@@ -364,7 +365,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @return a deep copy of the given entity
    */
   public final Entity deepCopyEntity(final Entity entity) {
-    Objects.requireNonNull(entity, "entity");
+    Objects.requireNonNull(entity, ENTITY_PARAM);
     final Entity copy = entity(entity.getEntityId());
     copy.setAs(entity);
     for (final ForeignKeyProperty foreignKeyProperty : getDefinition(entity.getEntityId()).getForeignKeyProperties()) {

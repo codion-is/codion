@@ -277,13 +277,10 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
       return connection;
     }
-    catch (final RemoteException e) {
-      throw e;
+    catch (final AuthenticationException e) {
+      throw new ServerAuthenticationException(e.getMessage());
     }
-    catch (final AuthenticationException ae) {
-      throw new ServerAuthenticationException(ae.getMessage());
-    }
-    catch (final ServerAuthenticationException e) {
+    catch (final RemoteException | ServerAuthenticationException e) {
       throw e;
     }
     catch (final Exception e) {
