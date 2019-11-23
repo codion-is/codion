@@ -231,7 +231,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @param timedOutOnly if true only connections that have timed out are culled
    * @throws RemoteException in case of an exception
    */
-  void removeConnections(final boolean timedOutOnly) throws RemoteException;
+  void disconnectClients(final boolean timedOutOnly) throws RemoteException;
 
   /**
    * Resets the statistics that have been collected so far

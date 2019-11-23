@@ -187,9 +187,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {
 
     private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
-
     private static final String GET_CONNECTION = "getConnection";
-
     private static final String RETURN_CONNECTION = "returnConnection";
 
     private static final RequestCounter REQUEST_COUNTER = new RequestCounter();
