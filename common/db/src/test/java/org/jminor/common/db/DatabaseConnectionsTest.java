@@ -21,27 +21,6 @@ public class DatabaseConnectionsTest {
 
   private static final Database DATABASE = Databases.getInstance();
 
-  public static DatabaseConnectionProvider createTestDatabaseConnectionProvider() {
-    return new DatabaseConnectionProvider() {
-      @Override
-      public Database getDatabase() {
-        return DATABASE;
-      }
-      @Override
-      public DatabaseConnection createConnection() throws DatabaseException {
-        return DatabaseConnections.createConnection(DATABASE, getUser());
-      }
-      @Override
-      public void destroyConnection(final DatabaseConnection connection) {
-        connection.disconnect();
-      }
-      @Override
-      public User getUser() {
-        return UNIT_TEST_USER;
-      }
-    };
-  }
-
   @Test
   public void createConnection() throws Exception {
     Connection connection = null;

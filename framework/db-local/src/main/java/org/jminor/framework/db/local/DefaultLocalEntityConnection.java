@@ -82,6 +82,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * A result packer for fetching blobs from a result set containing a single blob column
    */
   private static final ResultPacker<Blob> BLOB_RESULT_PACKER = new BlobPacker();
+  private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
 
   private final Domain domain;
   private final DatabaseConnection connection;

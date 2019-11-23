@@ -67,15 +67,6 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  public void test() throws Exception {
-    dbConnection.toString();
-    dbConnection.setPoolTime(10);
-    assertEquals(10, dbConnection.getPoolTime());
-    dbConnection.setRetryCount(2);
-    assertEquals(2, dbConnection.getRetryCount());
-  }
-
-  @Test
   public void queryInteger() throws Exception {
     try (final DatabaseConnection connection = new DefaultDatabaseConnection(Databases.getInstance(), UNIT_TEST_USER)) {
       final int qInt = connection.queryInteger("select empno from scott.emp where ename = 'ADAMS'");

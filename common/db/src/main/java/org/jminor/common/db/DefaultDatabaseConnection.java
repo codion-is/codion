@@ -26,6 +26,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultDatabaseConnection.class);
 
+  private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
+  private static final ResultPacker<Long> LONG_RESULT_PACKER = resultSet -> resultSet.getLong(1);
+
   /**
    * The default timoeout in seconds when checking if this connection is valid
    */
@@ -38,9 +41,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   private Connection connection;
   private boolean transactionOpen = false;
 
-  private long poolTime = -1;
-  private int poolRetryCount = 0;
-
   private MethodLogger methodLogger;
 
   /**
@@ -50,7 +50,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @param user the user to base this database connection on
    * @throws DatabaseException in case there is a problem connecting to the database
    */
-  public DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
+  DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
     this(database, user, DEFAULT_VALIDITY_CHECK_TIMEOUT);
   }
 
@@ -62,8 +62,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
-  public DefaultDatabaseConnection(final Database database, final User user,
-                                   final int validityCheckTimeout) throws DatabaseException {
+  DefaultDatabaseConnection(final Database database, final User user,
+                            final int validityCheckTimeout) throws DatabaseException {
     this.database = requireNonNull(database, "database");
     this.user = requireNonNull(user, "user");
     this.validityCheckTimeout = validityCheckTimeout;
@@ -78,7 +78,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws IllegalArgumentException in case the given connection is invalid
    * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
    */
-  public DefaultDatabaseConnection(final Database database, final Connection connection) throws DatabaseException {
+  DefaultDatabaseConnection(final Database database, final Connection connection) throws DatabaseException {
     this(database, connection, 0);
   }
 
@@ -91,8 +91,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws IllegalArgumentException in case the given connection is invalid
    * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
    */
-  public DefaultDatabaseConnection(final Database database, final Connection connection,
-                                   final int validityCheckTimeout) throws DatabaseException {
+  DefaultDatabaseConnection(final Database database, final Connection connection,
+                            final int validityCheckTimeout) throws DatabaseException {
     this.database = requireNonNull(database, "database");
     this.validityCheckTimeout = validityCheckTimeout;
     initialize(requireNonNull(connection, "connection"));
@@ -103,30 +103,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   @Override
   public void close() throws Exception {
     disconnect();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setPoolTime(final long time) {
-    this.poolTime = time;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public long getPoolTime() {
-    return poolTime;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setRetryCount(final int retryCount) {
-    this.poolRetryCount = retryCount;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public int getRetryCount() {
-    return poolRetryCount;
   }
 
   /** {@inheritDoc} */
@@ -195,7 +171,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public int queryInteger(final String sql) throws SQLException {
-    final List<Integer> integers = query(sql, Databases.INTEGER_RESULT_PACKER, -1);
+    final List<Integer> integers = query(sql, INTEGER_RESULT_PACKER, -1);
     if (!integers.isEmpty()) {
       return integers.get(0);
     }
@@ -206,7 +182,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public long queryLong(final String sql) throws SQLException {
-    final List<Long> longs = query(sql, Databases.LONG_RESULT_PACKER, -1);
+    final List<Long> longs = query(sql, LONG_RESULT_PACKER, -1);
     if (!longs.isEmpty()) {
       return longs.get(0);
     }
@@ -224,7 +200,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     LOG.debug("{}: begin transaction;", user.getUsername());
     logAccess("beginTransaction", new Object[0]);
     transactionOpen = true;
-    logExit("beginTransaction", null, null);
+    logExit("beginTransaction", null);
   }
 
   /** {@inheritDoc} */
@@ -245,7 +221,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
     finally {
       transactionOpen = false;
-      logExit("rollbackTransaction", exception, null);
+      logExit("rollbackTransaction", exception);
     }
   }
 
@@ -267,7 +243,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
     finally {
       transactionOpen = false;
-      logExit("commitTransaction", exception, null);
+      logExit("commitTransaction", exception);
     }
   }
 
@@ -296,7 +272,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw e;
     }
     finally {
-      logExit("commit", exception, null);
+      logExit("commit", exception);
     }
   }
 
@@ -319,7 +295,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw e;
     }
     finally {
-      logExit("rollback", exception, null);
+      logExit("rollback", exception);
     }
   }
 
@@ -333,7 +309,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   private <T> List<T> query(final String sql, final ResultPacker<T> resultPacker, final int fetchCount) throws SQLException {
-    Databases.QUERY_COUNTER.count(sql);
+    requireNonNull(resultPacker, "resultPacker");
+    Databases.QUERY_COUNTER.count(requireNonNull(sql, "sql"));
     Statement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
@@ -351,7 +328,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     finally {
       Databases.closeSilently(statement);
       Databases.closeSilently(resultSet);
-      final MethodLogger.Entry logEntry = logExit("query", exception, null);
+      final MethodLogger.Entry logEntry = logExit("query", exception);
       if (LOG.isDebugEnabled()) {
         LOG.debug(Databases.createLogMessage(getUser(), sql, null, exception, logEntry));
       }
@@ -364,9 +341,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  private MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+  private MethodLogger.Entry logExit(final String method, final Throwable exception) {
     if (methodLogger != null && methodLogger.isEnabled()) {
-      return methodLogger.logExit(method, exception, exitMessage);
+      return methodLogger.logExit(method, exception);
     }
 
     return null;

@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Specifies a database connection, providing basic transaction control and pooling info
+ * Manages a {@link Connection}, providing basic transaction control.
  */
 public interface DatabaseConnection extends AutoCloseable {
 
@@ -43,27 +43,6 @@ public interface DatabaseConnection extends AutoCloseable {
    * @param connection the JDBC connection
    */
   void setConnection(final Connection connection);
-
-  /**
-   * @return the time at which this connection was pooled
-   */
-  long getPoolTime();
-
-  /**
-   * Sets the time this connection was checked into a connection pool
-   * @param time the time this connection was pooled
-   */
-  void setPoolTime(final long time);
-
-  /**
-   * @param retryCount the number of retries used to retrieve this connection from the pool
-   */
-  void setRetryCount(final int retryCount);
-
-  /**
-   * @return the number of retries required to retrieve this connection from the pool
-   */
-  int getRetryCount();
 
   /**
    * Performs the given query and returns the result as an integer

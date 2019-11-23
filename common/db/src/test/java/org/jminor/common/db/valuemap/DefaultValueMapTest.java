@@ -57,7 +57,6 @@ public class DefaultValueMapTest {
       valueChange.toString();
       valueChange.getPreviousValue();
       valueChange.getCurrentValue();
-      valueChange.isInitialization();
     };
     valueMap.addValueListener(valueListener);
 

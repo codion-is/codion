@@ -28,16 +28,6 @@ public final class Databases {
    */
   public static final QueryCounter QUERY_COUNTER = new QueryCounter();
 
-  /**
-   * A result packer for fetching integers from a result set containing a single integer column
-   */
-  public static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
-
-  /**
-   * A result packer for fetching longs from a result set containing a single long column
-   */
-  public static final ResultPacker<Long> LONG_RESULT_PACKER = resultSet -> resultSet.getLong(1);
-
   private static Database instance;
 
   private Databases() {}

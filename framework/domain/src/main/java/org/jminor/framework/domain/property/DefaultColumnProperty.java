@@ -4,8 +4,6 @@
 package org.jminor.framework.domain.property;
 
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.ValueConverter;
-import org.jminor.common.db.ValueFetcher;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -16,6 +14,7 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
@@ -276,6 +275,42 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
     else {
       return null;
+    }
+  }
+
+  static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {
+
+    private final T trueValue;
+    private final T falseValue;
+
+    BooleanValueConverter(final T trueValue, final T falseValue) {
+      this.trueValue = requireNonNull(trueValue);
+      this.falseValue = requireNonNull(falseValue);
+    }
+
+    @Override
+    public Boolean fromColumnValue(final T columnValue) {
+      if (Objects.equals(trueValue, columnValue)) {
+        return true;
+      }
+      else if (Objects.equals(falseValue, columnValue)) {
+        return false;
+      }
+
+      return null;
+    }
+
+    @Override
+    public T toColumnValue(final Boolean value) {
+      if (value == null) {
+        return null;
+      }
+
+      if ((Boolean) value) {
+        return trueValue;
+      }
+
+      return falseValue;
     }
   }
 
