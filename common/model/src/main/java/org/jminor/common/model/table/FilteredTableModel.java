@@ -150,7 +150,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param searchText the text to search by
    * @return the search result coordinate, null if nothing was found
    * @see #isRegularExpressionSearch()
-   * @see Predicate#include(Object)
+   * @see Predicate#test(Object)
    */
   RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText);
 
@@ -162,7 +162,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param forward if true then the search is forward (towards higher row indexes), backwards otherwise
    * @param condition the search condition
    * @return the search result coordinate, null if nothing was found
-   * @see Predicate#include(Object)
+   * @see Predicate#test(Object)
    */
   RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final Predicate<Object> condition);
 
