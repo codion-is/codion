@@ -108,6 +108,9 @@ project(':jminor-plugin-hikari-pool').projectDir = file('plugins/hikari-pool')
 include 'jminor-plugin-imagepanel'
 project(':jminor-plugin-imagepanel').projectDir = file('plugins/imagepanel')
 
+include 'jminor-plugin-jackson-json'
+project(':jminor-plugin-jackson-json').projectDir = file('plugins/jackson-json')
+
 include 'jminor-plugin-jasperreports'
 project(':jminor-plugin-jasperreports').projectDir = file('plugins/jasperreports')
 
