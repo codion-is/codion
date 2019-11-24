@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -340,6 +341,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
+  public byte[] getBlob(final String propertyId) {
+    return (byte[]) get(propertyId);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public String getAsString(final Property property) {
     if (property instanceof ValueListProperty) {
       return ((ValueListProperty) property).getCaption(get(property));
@@ -435,7 +442,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   public boolean valuesEqual(final Entity entity) {
     requireNonNull(entity, "entity");
 
-    return definition.getColumnProperties().stream().allMatch(property -> Objects.equals(get(property), entity.get(property)));
+    return definition.getColumnProperties().stream().allMatch(property -> {
+      if (property.isBlob()) {
+        return Arrays.equals((byte[]) get(property), (byte[]) entity.get(property));
+      }
+
+      return Objects.equals(get(property), entity.get(property));
+    });
   }
 
   /**

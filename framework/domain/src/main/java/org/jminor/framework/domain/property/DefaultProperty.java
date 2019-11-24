@@ -249,6 +249,12 @@ abstract class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
+  public boolean isBlob() {
+    return isType(Types.BLOB);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final String getPropertyId() {
     return propertyId;
   }
