@@ -5338,3 +5338,4 @@
   DefaultEntityConnectionServer.MaintenanceTask now logs errors instead of rethrowing
   DefaultLocalEntityConnection.EntityArgumentStringProvider moved to LocalEntityConnections
   Entity.OrderBy moved up to package level, now a concrete final class instead of interface
+  DefaultLocalEntityConnection, EntityResultPacker and EntityResultIterator moved up to package level

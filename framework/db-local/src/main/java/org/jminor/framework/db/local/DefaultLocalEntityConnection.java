@@ -28,11 +28,9 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.SubqueryProperty;
-import org.jminor.framework.domain.property.TransientProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +41,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -933,7 +930,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       resultSet = executePreparedSelect(statement, selectSQL, whereCondition);
 
       return new EntityResultIterator(statement, resultSet, new EntityResultPacker(
-              selectCondition.getEntityId(), propertiesToSelect,
+              domain, selectCondition.getEntityId(), propertiesToSelect,
               entityDefinition.getTransientProperties()), selectCondition.getFetchCount());
     }
     catch (final SQLException e) {
@@ -1418,98 +1415,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     @Override
     public Blob fetch(final ResultSet resultSet) throws SQLException {
       return resultSet.getBlob(1);
-    }
-  }
-
-  private static final class EntityResultIterator implements ResultIterator<Entity> {
-
-    private final Statement statement;
-    private final ResultSet resultSet;
-    private final ResultPacker<Entity> resultPacker;
-    private final int fetchCount;
-    private int counter = 0;
-
-    private EntityResultIterator(final Statement statement, final ResultSet resultSet,
-                                 final ResultPacker<Entity> resultPacker, final int fetchCount) {
-      this.statement = statement;
-      this.resultSet = resultSet;
-      this.resultPacker = resultPacker;
-      this.fetchCount = fetchCount;
-    }
-
-    @Override
-    public boolean hasNext() throws SQLException {
-      try {
-        if ((fetchCount < 0 || counter < fetchCount) && resultSet.next()) {
-          return true;
-        }
-        close();
-
-        return false;
-      }
-      catch (final SQLException e) {
-        close();
-        throw e;
-      }
-    }
-
-    @Override
-    public Entity next() throws SQLException {
-      counter++;
-      try {
-        return resultPacker.fetch(resultSet);
-      }
-      catch (final SQLException e) {
-        close();
-        throw e;
-      }
-    }
-
-    @Override
-    public void close() {
-      closeSilently(resultSet);
-      closeSilently(statement);
-    }
-  }
-
-  /**
-   * Handles packing Entity query results.
-   */
-  private final class EntityResultPacker implements ResultPacker<Entity> {
-
-    private final String entityId;
-    private final List<ColumnProperty> columnProperties;
-    private final List<TransientProperty> transientProperties;
-
-    private EntityResultPacker(final String entityId,
-                               final List<ColumnProperty> columnProperties,
-                               final List<TransientProperty> transientProperties) {
-      this.entityId = entityId;
-      this.columnProperties = columnProperties;
-      this.transientProperties = transientProperties;
-    }
-
-    @Override
-    public Entity fetch(final ResultSet resultSet) throws SQLException {
-      final Map<Property, Object> values = new HashMap<>(
-              columnProperties.size() + transientProperties.size());
-      for (int i = 0; i < transientProperties.size(); i++) {
-        final TransientProperty transientProperty = transientProperties.get(i);
-        if (!(transientProperty instanceof DerivedProperty)) {
-          values.put(transientProperty, null);
-        }
-      }
-      for (int i = 0; i < columnProperties.size(); i++) {
-        final ColumnProperty property = columnProperties.get(i);
-        try {
-          values.put(property, property.fetchValue(resultSet, i + 1));
-        }
-        catch (final Exception e) {
-          throw new SQLException("Exception fetching: " + property + ", entity: " + entityId + " [" + e.getMessage() + "]", e);
-        }
-      }
-
-      return domain.entity(entityId, values, null);
     }
   }
 }
