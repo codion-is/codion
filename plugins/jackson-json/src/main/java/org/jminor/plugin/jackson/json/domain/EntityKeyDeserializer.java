@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jackson.json;
+package org.jminor.plugin.jackson.json.domain;
 
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;

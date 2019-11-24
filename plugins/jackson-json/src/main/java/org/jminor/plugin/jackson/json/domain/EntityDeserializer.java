@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jackson.json;
+package org.jminor.plugin.jackson.json.domain;
 
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -57,6 +57,7 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
       final Property property = definition.getProperty(field.getKey());
       valueMap.put(property, parseValue(property, field.getValue()));
     }
+
     return valueMap;
   }
 
