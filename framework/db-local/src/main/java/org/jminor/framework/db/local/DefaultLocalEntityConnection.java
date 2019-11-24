@@ -45,12 +45,10 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -521,7 +519,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final Entity.Definition entityDefinition = getEntityDefinition(condition.getEntityId());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
     final String baseSQLQuery = createSelectSQL(initializeSelectColumnsString(entityDefinition.getPrimaryKeyProperties()),
-            whereCondition, entityDefinition);
+            whereCondition, entityDefinition, connection.getDatabase());
     final String rowCountSQLQuery = createSelectSQL("(" + baseSQLQuery + ")", "count(*)", null, null);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -873,7 +871,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       if (!limitForeignKeyFetchDepth || conditionFetchDepthLimit == -1 || currentForeignKeyFetchDepth < conditionFetchDepthLimit) {
         try {
           logAccess("setForeignKeys", new Object[] {foreignKeyProperty});
-          final List<Entity.Key> referencedKeys = getReferencedKeys(entities, foreignKeyProperty);
+          final List<Entity.Key> referencedKeys = new ArrayList<>(getReferencedKeys(entities, foreignKeyProperty));
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
               entities.get(j).put(foreignKeyProperty, null);
@@ -925,7 +923,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.getSelectableColumnProperties(selectCondition.getSelectPropertyIds());
     try {
       selectSQL = createSelectSQL(getSelectColumnsString(entityDefinition.getEntityId(),
-              selectCondition.getSelectPropertyIds(), propertiesToSelect), whereCondition, entityDefinition);
+              selectCondition.getSelectPropertyIds(), propertiesToSelect), whereCondition,
+              entityDefinition, connection.getDatabase());
       statement = prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, whereCondition);
 
@@ -1180,21 +1179,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private static List<Entity.Key> getReferencedKeys(final List<Entity> entities,
-                                                    final ForeignKeyProperty foreignKeyProperty) {
-    final Set<Entity.Key> keySet = new HashSet<>(entities.size());
-    for (int i = 0; i < entities.size(); i++) {
-      final Entity.Key key = entities.get(i).getReferencedKey(foreignKeyProperty);
-      if (key != null) {
-        keySet.add(key);
-      }
-    }
-
-    return new ArrayList<>(keySet);
-  }
-
-  private String createSelectSQL(final String selectColumnsString, final WhereCondition whereCondition,
-                                 final Entity.Definition entityDefinition) {
+  private static String createSelectSQL(final String selectColumnsString, final WhereCondition whereCondition,
+                                        final Entity.Definition entityDefinition, final Database database) {
     final EntityCondition entityCondition = whereCondition.getEntityCondition();
     final boolean isForUpdate = entityCondition instanceof EntitySelectCondition &&
             ((EntitySelectCondition) entityCondition).isForUpdate();
@@ -1214,7 +1200,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
     }
     if (isForUpdate) {
-      addForUpdate(queryBuilder, connection.getDatabase());
+      addForUpdate(queryBuilder, database);
     }
     else {
       addGroupHavingOrderByAndLimitClauses(queryBuilder, entityCondition, entityDefinition);
