@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -529,8 +528,8 @@ public class Domain implements Entity.Definition.Provider, Serializable {
   /**
    * @return a new OrderBy instance
    */
-  public static final Entity.OrderBy orderBy() {
-    return new DefaultOrderBy();
+  public static final OrderBy orderBy() {
+    return new OrderBy();
   }
 
   /**
@@ -877,81 +876,6 @@ public class Domain implements Entity.Definition.Provider, Serializable {
     @Override
     protected String getQuery(final Database database) {
       return database.getAutoIncrementQuery(valueSource);
-    }
-  }
-
-  private static final class DefaultOrderBy implements Entity.OrderBy {
-
-    private static final long serialVersionUID = 1;
-
-    private final List<OrderByProperty> orderByProperties = new LinkedList<>();
-
-    @Override
-    public Entity.OrderBy ascending(final String... propertyIds) {
-      add(false, propertyIds);
-      return this;
-    }
-
-    @Override
-    public Entity.OrderBy descending(final String... propertyIds) {
-      add(true, propertyIds);
-      return this;
-    }
-
-    @Override
-    public List<OrderByProperty> getOrderByProperties() {
-      return unmodifiableList(orderByProperties);
-    }
-
-    private void add(final boolean descending, final String... propertyIds) {
-      requireNonNull(propertyIds, "propertyIds");
-      for (final String propertyId : propertyIds) {
-        final OrderByProperty property = new DefaultOrderByProperty(propertyId, descending);
-        if (orderByProperties.contains(property)) {
-          throw new IllegalArgumentException("Order by already contains property: " + propertyId);
-        }
-        orderByProperties.add(property);
-      }
-    }
-
-    private static final class DefaultOrderByProperty implements OrderByProperty {
-
-      private static final long serialVersionUID = 1;
-
-      private final String propertyId;
-      private final boolean descending;
-
-      private DefaultOrderByProperty(final String propertyId, final boolean descending) {
-        this.propertyId = requireNonNull(propertyId, "propertyId");
-        this.descending = descending;
-      }
-
-      @Override
-      public String getPropertyId() {
-        return propertyId;
-      }
-
-      @Override
-      public boolean isDescending() {
-        return descending;
-      }
-
-      @Override
-      public boolean equals(final Object object) {
-        if (this == object) {
-          return true;
-        }
-        if (object == null || getClass() != object.getClass()) {
-          return false;
-        }
-
-        return propertyId.equals(((DefaultOrderByProperty) object).propertyId);
-      }
-
-      @Override
-      public int hashCode() {
-        return propertyId.hashCode();
-      }
     }
   }
 

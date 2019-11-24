@@ -26,12 +26,11 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.WhereCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.SubqueryProperty;
-import org.jminor.framework.domain.property.TransientProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,18 +41,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -524,7 +519,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final Entity.Definition entityDefinition = getEntityDefinition(condition.getEntityId());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
     final String baseSQLQuery = createSelectSQL(initializeSelectColumnsString(entityDefinition.getPrimaryKeyProperties()),
-            whereCondition, entityDefinition);
+            whereCondition, entityDefinition, connection.getDatabase());
     final String rowCountSQLQuery = createSelectSQL("(" + baseSQLQuery + ")", "count(*)", null, null);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -876,7 +871,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       if (!limitForeignKeyFetchDepth || conditionFetchDepthLimit == -1 || currentForeignKeyFetchDepth < conditionFetchDepthLimit) {
         try {
           logAccess("setForeignKeys", new Object[] {foreignKeyProperty});
-          final List<Entity.Key> referencedKeys = getReferencedKeys(entities, foreignKeyProperty);
+          final List<Entity.Key> referencedKeys = new ArrayList<>(getReferencedKeys(entities, foreignKeyProperty));
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
               entities.get(j).put(foreignKeyProperty, null);
@@ -928,12 +923,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.getSelectableColumnProperties(selectCondition.getSelectPropertyIds());
     try {
       selectSQL = createSelectSQL(getSelectColumnsString(entityDefinition.getEntityId(),
-              selectCondition.getSelectPropertyIds(), propertiesToSelect), whereCondition, entityDefinition);
+              selectCondition.getSelectPropertyIds(), propertiesToSelect), whereCondition,
+              entityDefinition, connection.getDatabase());
       statement = prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, whereCondition);
 
       return new EntityResultIterator(statement, resultSet, new EntityResultPacker(
-              selectCondition.getEntityId(), propertiesToSelect,
+              domain, selectCondition.getEntityId(), propertiesToSelect,
               entityDefinition.getTransientProperties()), selectCondition.getFetchCount());
     }
     catch (final SQLException e) {
@@ -1183,21 +1179,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private static List<Entity.Key> getReferencedKeys(final List<Entity> entities,
-                                                    final ForeignKeyProperty foreignKeyProperty) {
-    final Set<Entity.Key> keySet = new HashSet<>(entities.size());
-    for (int i = 0; i < entities.size(); i++) {
-      final Entity.Key key = entities.get(i).getReferencedKey(foreignKeyProperty);
-      if (key != null) {
-        keySet.add(key);
-      }
-    }
-
-    return new ArrayList<>(keySet);
-  }
-
-  private String createSelectSQL(final String selectColumnsString, final WhereCondition whereCondition,
-                                 final Entity.Definition entityDefinition) {
+  private static String createSelectSQL(final String selectColumnsString, final WhereCondition whereCondition,
+                                        final Entity.Definition entityDefinition, final Database database) {
     final EntityCondition entityCondition = whereCondition.getEntityCondition();
     final boolean isForUpdate = entityCondition instanceof EntitySelectCondition &&
             ((EntitySelectCondition) entityCondition).isForUpdate();
@@ -1217,7 +1200,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
     }
     if (isForUpdate) {
-      addForUpdate(queryBuilder, connection.getDatabase());
+      addForUpdate(queryBuilder, database);
     }
     else {
       addGroupHavingOrderByAndLimitClauses(queryBuilder, entityCondition, entityDefinition);
@@ -1268,9 +1251,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     if (condition instanceof EntitySelectCondition) {
       final EntitySelectCondition selectCondition = (EntitySelectCondition) condition;
-      final String orderByClause = getOrderByClause(selectCondition, entityDefinition);
-      if (orderByClause != null) {
-        queryBuilder.append(" order by ").append(orderByClause);
+      final OrderBy orderBy = selectCondition.getOrderBy();
+      if (orderBy != null) {
+        queryBuilder.append(" order by ").append(orderBy.getOrderByString(entityDefinition));
       }
       if (selectCondition.getLimit() > 0) {
         queryBuilder.append(" limit ").append(selectCondition.getLimit());
@@ -1279,23 +1262,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
       }
     }
-  }
-
-  private static String getOrderByClause(final EntitySelectCondition selectCondition,
-                                         final Entity.Definition entityDefinition) {
-    if (selectCondition.getOrderBy() == null) {
-      return null;
-    }
-
-    final List<String> orderBys = new LinkedList<>();
-    final List<Entity.OrderBy.OrderByProperty> orderByProperties = selectCondition.getOrderBy().getOrderByProperties();
-    for (int i = 0; i < orderByProperties.size(); i++) {
-      final Entity.OrderBy.OrderByProperty property = orderByProperties.get(i);
-      orderBys.add(entityDefinition.getColumnProperty(property.getPropertyId()).getColumnName() +
-              (property.isDescending() ? " desc" : ""));
-    }
-
-    return String.join(", ", orderBys);
   }
 
   /**
@@ -1399,9 +1365,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static String createModifiedExceptionMessage(final Entity entity, final Entity modified,
                                                        final Collection<ColumnProperty> modifiedProperties) {
-    final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)).append(", ").append(entity.getEntityId());
+    final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION))
+            .append(", ").append(entity.getEntityId());
     for (final ColumnProperty property : modifiedProperties) {
-      builder.append(" \n").append(property).append(": ").append(entity.getOriginal(property)).append(" -> ").append(modified.get(property));
+      builder.append(" \n").append(property).append(": ").append(entity.getOriginal(property))
+              .append(" -> ").append(modified.get(property));
     }
 
     return builder.toString();
@@ -1433,160 +1401,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     @Override
     public Blob fetch(final ResultSet resultSet) throws SQLException {
       return resultSet.getBlob(1);
-    }
-  }
-
-  /**
-   * A {@link MethodLogger.ArgumentStringProvider} implementation tailored for EntityConnections
-   */
-  static final class EntityArgumentStringProvider extends MethodLogger.DefaultArgumentStringProvider {
-
-    private final Domain domain;
-
-    EntityArgumentStringProvider(final Domain domain) {
-      this.domain = domain;
-    }
-
-    @Override
-    public String toString(final Object argument) {
-      if (argument == null) {
-        return "";
-      }
-
-      final StringBuilder builder = new StringBuilder();
-      if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
-        builder.append("[").append(toString((Object[]) argument)).append("]");
-      }
-      else if (argument instanceof Collection && !((Collection) argument).isEmpty()) {
-        builder.append("[").append(toString(((Collection) argument).toArray())).append("]");
-      }
-      else if (argument instanceof Entity) {
-        builder.append(getEntityParameterString((Entity) argument));
-      }
-      else if (argument instanceof Entity.Key) {
-        builder.append(getEntityKeyParameterString((Entity.Key) argument));
-      }
-      else {
-        builder.append(argument.toString());
-      }
-
-      return builder.toString();
-    }
-
-    private String getEntityParameterString(final Entity entity) {
-      final StringBuilder builder = new StringBuilder(entity.getEntityId()).append(" {");
-      final List<ColumnProperty> columnProperties = domain.getDefinition(entity.getEntityId()).getColumnProperties();
-      for (int i = 0; i < columnProperties.size(); i++) {
-        final ColumnProperty property = columnProperties.get(i);
-        final boolean modified = entity.isModified(property);
-        if (property.isPrimaryKeyProperty() || modified) {
-          final StringBuilder valueString = new StringBuilder();
-          if (modified) {
-            valueString.append(entity.getOriginal(property)).append("->");
-          }
-          valueString.append(entity.get(property.getPropertyId()));
-          builder.append(property.getPropertyId()).append(":").append(valueString).append(",");
-        }
-      }
-      builder.deleteCharAt(builder.length() - 1);
-
-      return builder.append("}").toString();
-    }
-
-    private static String getEntityKeyParameterString(final Entity.Key argument) {
-      return argument.getEntityId() + ", " + argument.toString();
-    }
-  }
-
-  private static final class EntityResultIterator implements ResultIterator<Entity> {
-
-    private final Statement statement;
-    private final ResultSet resultSet;
-    private final ResultPacker<Entity> resultPacker;
-    private final int fetchCount;
-    private int counter = 0;
-
-    private EntityResultIterator(final Statement statement, final ResultSet resultSet,
-                                 final ResultPacker<Entity> resultPacker, final int fetchCount) {
-      this.statement = statement;
-      this.resultSet = resultSet;
-      this.resultPacker = resultPacker;
-      this.fetchCount = fetchCount;
-    }
-
-    @Override
-    public boolean hasNext() throws SQLException {
-      try {
-        if ((fetchCount < 0 || counter < fetchCount) && resultSet.next()) {
-          return true;
-        }
-        close();
-
-        return false;
-      }
-      catch (final SQLException e) {
-        close();
-        throw e;
-      }
-    }
-
-    @Override
-    public Entity next() throws SQLException {
-      counter++;
-      try {
-        return resultPacker.fetch(resultSet);
-      }
-      catch (final SQLException e) {
-        close();
-        throw e;
-      }
-    }
-
-    @Override
-    public void close() {
-      closeSilently(resultSet);
-      closeSilently(statement);
-    }
-  }
-
-  /**
-   * Handles packing Entity query results.
-   */
-  private final class EntityResultPacker implements ResultPacker<Entity> {
-
-    private final String entityId;
-    private final List<ColumnProperty> columnProperties;
-    private final List<TransientProperty> transientProperties;
-
-    private EntityResultPacker(final String entityId,
-                               final List<ColumnProperty> columnProperties,
-                               final List<TransientProperty> transientProperties) {
-      this.entityId = entityId;
-      this.columnProperties = columnProperties;
-      this.transientProperties = transientProperties;
-    }
-
-    @Override
-    public Entity fetch(final ResultSet resultSet) throws SQLException {
-      final Map<Property, Object> values = new HashMap<>(
-              columnProperties.size() + transientProperties.size());
-      for (int i = 0; i < transientProperties.size(); i++) {
-        final TransientProperty transientProperty = transientProperties.get(i);
-        if (!(transientProperty instanceof DerivedProperty)) {
-          values.put(transientProperty, null);
-        }
-      }
-      for (int i = 0; i < columnProperties.size(); i++) {
-        final ColumnProperty property = columnProperties.get(i);
-        try {
-          values.put(property, property.fetchValue(resultSet, i + 1));
-        }
-        catch (final Exception e) {
-          throw new SQLException("Exception fetching: " + property + ", entity: " + entityId + " [" + e.getMessage() + "]", e);
-        }
-      }
-
-      return domain.entity(entityId, values, null);
     }
   }
 }

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.OrderBy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   private HashMap<String, Integer> foreignKeyFetchDepthLimits;
   private List<String> selectPropertyIds = emptyList();
 
-  private Entity.OrderBy orderBy;
+  private OrderBy orderBy;
   private Integer foreignKeyFetchDepthLimit;
   private int fetchCount = -1;
   private boolean forUpdate;
@@ -62,13 +62,13 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
 
   /** {@inheritDoc} */
   @Override
-  public Entity.OrderBy getOrderBy() {
+  public OrderBy getOrderBy() {
     return orderBy;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntitySelectCondition setOrderBy(final Entity.OrderBy orderBy) {
+  public EntitySelectCondition setOrderBy(final OrderBy orderBy) {
     this.orderBy = orderBy;
     return this;
   }

@@ -44,4 +44,10 @@ class DefaultEntityCondition implements EntityCondition {
   public final Condition getCondition() {
     return condition;
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return getClass().getSimpleName() + " [" + entityId + "]";
+  }
 }

@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -330,5 +331,30 @@ public final class EntitiesTest {
     assertEquals(2, Entities.getEntitiesByValue(entities, values).size());
     values.put(TestDomain.DETAIL_ID, 3L);
     assertEquals(1, Entities.getEntitiesByValue(entities, values).size());
+  }
+
+  @Test
+  public void getReferencedKeys() {
+    final Entity dept1 = domain.entity(TestDomain.T_DEPARTMENT);
+    dept1.put(TestDomain.DEPARTMENT_ID, 1);
+    final Entity dept2 = domain.entity(TestDomain.T_DEPARTMENT);
+    dept2.put(TestDomain.DEPARTMENT_ID, 2);
+
+    final Entity emp1 = domain.entity(TestDomain.T_EMP);
+    emp1.put(TestDomain.EMP_DEPARTMENT_FK, dept1);
+    final Entity emp2 = domain.entity(TestDomain.T_EMP);
+    emp2.put(TestDomain.EMP_DEPARTMENT_FK, dept1);
+    final Entity emp3 = domain.entity(TestDomain.T_EMP);
+    emp3.put(TestDomain.EMP_DEPARTMENT_FK, dept2);
+    final Entity emp4 = domain.entity(TestDomain.T_EMP);
+
+    final Set<Entity.Key> referencedKeys = Entities.getReferencedKeys(asList(emp1, emp2, emp3, emp4),
+            domain.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK));
+    assertEquals(2, referencedKeys.size());
+    referencedKeys.forEach(key -> assertEquals(TestDomain.T_DEPARTMENT, key.getEntityId()));
+    final List<Integer> values = Entities.getValues(new ArrayList<>(referencedKeys));
+    assertTrue(values.contains(1));
+    assertTrue(values.contains(2));
+    assertFalse(values.contains(3));
   }
 }

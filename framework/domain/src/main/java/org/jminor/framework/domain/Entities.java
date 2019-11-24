@@ -5,17 +5,20 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.framework.domain.property.ColumnProperty;
+import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -97,6 +100,24 @@ public final class Entities {
    */
   public static List<Entity.Key> getKeys(final List<Entity> entities) {
     return getKeys(entities, false);
+  }
+
+  /**
+   * Returns the primary keys of the entities referenced by the given entities via the given foreign key
+   * @param entities the entities
+   * @param foreignKeyProperty the foreign key
+   * @return the primary keys of the referenced entities
+   */
+  public static Set<Entity.Key> getReferencedKeys(final List<Entity> entities, final ForeignKeyProperty foreignKeyProperty) {
+    final Set<Entity.Key> keySet = new HashSet<>();
+    for (int i = 0; i < entities.size(); i++) {
+      final Entity.Key key = entities.get(i).getReferencedKey(foreignKeyProperty);
+      if (key != null) {
+        keySet.add(key);
+      }
+    }
+
+    return keySet;
   }
 
   /**

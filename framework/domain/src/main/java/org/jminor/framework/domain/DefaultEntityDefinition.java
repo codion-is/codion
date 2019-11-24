@@ -67,7 +67,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * Holds the order by clause
    */
-  private Entity.OrderBy orderBy;
+  private OrderBy orderBy;
 
   /**
    * If true then it should not be possible to insert, update or delete entities of this type
@@ -280,7 +280,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.OrderBy getOrderBy() {
+  public OrderBy getOrderBy() {
     return orderBy;
   }
 
@@ -742,7 +742,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public Builder setOrderBy(final Entity.OrderBy orderBy) {
+    public Builder setOrderBy(final OrderBy orderBy) {
       requireNonNull(orderBy, "orderBy");
       if (definition.orderBy != null) {
         throw new IllegalStateException("Order by has already been set: " + definition.orderBy);
