@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityObjectMapperTest {
 
+  private static final TypeReference<List<Entity>> ENTITY_LIST_TYPE_REF = new TypeReference<List<Entity>>() {};
+
   private final TestDomain domain = new TestDomain();
 
   @Test
@@ -37,8 +39,6 @@ public final class EntityObjectMapperTest {
     dept.put(TestDomain.DEPARTMENT_LOGO, logoBytes);
 
     final String jsonString = mapper.writeValueAsString(dept);
-    System.out.println(jsonString);
-
     final Entity readDept = mapper.readValue(jsonString, Entity.class);
     assertTrue(dept.valuesEqual(readDept));
   }
@@ -61,8 +61,6 @@ public final class EntityObjectMapperTest {
     emp.put(TestDomain.EMP_HIREDATE, LocalDate.now());
 
     final String jsonString = mapper.writeValueAsString(emp);
-    System.out.println(jsonString);
-
     final Entity readEmp = mapper.readValue(jsonString, Entity.class);
     assertTrue(emp.valuesEqual(readEmp));
 
@@ -111,7 +109,7 @@ public final class EntityObjectMapperTest {
     dept10.put(TestDomain.DEPARTMENT_LOCATION, "LOCATION");
 
     String jsonString = mapper.writeValueAsString(singletonList(dept10));
-    assertTrue(dept10.valuesEqual(mapper.readValue(jsonString, new TypeReference<List<Entity>>(){}).get(0)));
+    assertTrue(dept10.valuesEqual(mapper.readValue(jsonString, ENTITY_LIST_TYPE_REF).get(0)));
 
     final Entity dept20 = domain.entity(TestDomain.T_DEPARTMENT);
     dept20.put(TestDomain.DEPARTMENT_ID, -20);
@@ -119,10 +117,10 @@ public final class EntityObjectMapperTest {
     dept20.put(TestDomain.DEPARTMENT_LOCATION, "ALOC");
 
     jsonString = mapper.writeValueAsString(singletonList(dept20));
-    assertTrue(dept20.valuesEqual(mapper.readValue(jsonString, new TypeReference<List<Entity>>(){}).get(0)));
+    assertTrue(dept20.valuesEqual(mapper.readValue(jsonString, ENTITY_LIST_TYPE_REF).get(0)));
 
     final String twoDepts = mapper.writeValueAsString(asList(dept10, dept20));
-    mapper.readValue(twoDepts, new TypeReference<List<Entity>>(){});
+    mapper.readValue(twoDepts, ENTITY_LIST_TYPE_REF);
 
     final Entity mgr30 = domain.entity(TestDomain.T_EMP);
     mgr30.put(TestDomain.EMP_COMMISSION, 500.5);
@@ -153,12 +151,12 @@ public final class EntityObjectMapperTest {
     emp1.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.55));
 
     jsonString = mapper.writeValueAsString(singletonList(emp1));
-    assertTrue(emp1.valuesEqual(mapper.readValue(jsonString, new TypeReference<List<Entity>>(){}).get(0)));
+    assertTrue(emp1.valuesEqual(mapper.readValue(jsonString, ENTITY_LIST_TYPE_REF).get(0)));
 
     mapper.setIncludeForeignKeyValues(true);
 
     jsonString = mapper.writeValueAsString(singletonList(emp1));
-    Entity emp1Deserialized = mapper.readValue(jsonString, new TypeReference<List<Entity>>(){}).get(0);
+    Entity emp1Deserialized = mapper.readValue(jsonString, ENTITY_LIST_TYPE_REF).get(0);
     assertTrue(emp1.valuesEqual(emp1Deserialized));
     assertTrue(emp1.getForeignKey(TestDomain.EMP_DEPARTMENT_FK).valuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_DEPARTMENT_FK)));
     assertTrue(emp1.getForeignKey(TestDomain.EMP_MGR_FK).valuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_MGR_FK)));
@@ -173,7 +171,7 @@ public final class EntityObjectMapperTest {
     emp1.put(TestDomain.EMP_HIREDATE, newHiredate);
 
     jsonString = mapper.writeValueAsString(singletonList(emp1));
-    emp1Deserialized = mapper.readValue(jsonString, new TypeReference<List<Entity>>(){}).get(0);
+    emp1Deserialized = mapper.readValue(jsonString, ENTITY_LIST_TYPE_REF).get(0);
     assertTrue(emp1.valuesEqual(emp1Deserialized));
 
     assertEquals(500.5, emp1Deserialized.getOriginal(TestDomain.EMP_COMMISSION));
@@ -201,13 +199,13 @@ public final class EntityObjectMapperTest {
 
     final List<Entity> entityList = asList(emp1, emp2);
     jsonString = mapper.writeValueAsString(entityList);
-    final List<Entity> parsedEntities = mapper.readValue(jsonString, new TypeReference<List<Entity>>(){});
+    final List<Entity> parsedEntities = mapper.readValue(jsonString, ENTITY_LIST_TYPE_REF);
     for (final Entity entity : entityList) {
       final Entity parsed = parsedEntities.get(parsedEntities.indexOf(entity));
       assertTrue(parsed.valuesEqual(entity));
     }
 
-    final List<Entity> entities = mapper.readValue(mapper.writeValueAsString(singletonList(emp1)), new TypeReference<List<Entity>>(){});
+    final List<Entity> entities = mapper.readValue(mapper.writeValueAsString(singletonList(emp1)), ENTITY_LIST_TYPE_REF);
     assertEquals(1, entities.size());
     final Entity parsedEntity = entities.iterator().next();
     assertTrue(emp1.valuesEqual(parsedEntity));
@@ -234,7 +232,7 @@ public final class EntityObjectMapperTest {
     mapper.setIncludeForeignKeyValues(false);
     mapper.setIncludeNullValues(false);
 
-    final Entity emp3Parsed = mapper.readValue(mapper.writeValueAsString(singletonList(emp3)), new TypeReference<List<Entity>>(){}).get(0);
+    final Entity emp3Parsed = mapper.readValue(mapper.writeValueAsString(singletonList(emp3)), ENTITY_LIST_TYPE_REF).get(0);
     assertFalse(emp3Parsed.containsKey(TestDomain.EMP_HIREDATE));
     assertFalse(emp3Parsed.containsKey(TestDomain.EMP_SALARY));
   }
