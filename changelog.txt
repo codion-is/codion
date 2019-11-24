@@ -5363,3 +5363,4 @@
   DefaultLocalEntityConnection, EntityResultPacker and EntityResultIterator moved up to package level
   DefaultLocalEntityConnection.getReferencedKeys() moved to Entities
   jminor-plugin-jackson-json module added
+  Jackson json improvements

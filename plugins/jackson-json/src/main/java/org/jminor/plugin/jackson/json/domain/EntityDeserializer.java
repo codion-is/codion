@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jackson.json;
+package org.jminor.plugin.jackson.json.domain;
 
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -10,7 +10,6 @@ import org.jminor.framework.domain.property.Property;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -37,13 +36,19 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
   }
 
   @Override
-  public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException, JsonProcessingException {
-    final ObjectCodec codec = parser.getCodec();
-    final JsonNode node = codec.readTree(parser);
+  public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt)
+          throws IOException, JsonProcessingException {
+    final JsonNode entityNode = parser.getCodec().readTree(parser);
 
-    final String entityId = node.get("entityId").asText();
+    final String entityId = entityNode.get("entityId").asText();
     final Entity.Definition definition = domain.getDefinition(entityId);
 
+    return domain.entity(entityId, getValueMap(entityNode, definition),
+            getOriginalValueMap(entityNode, definition));
+  }
+
+  private Map<Property, Object> getValueMap(final JsonNode node, final Entity.Definition definition)
+          throws JsonProcessingException {
     final JsonNode values = node.get("values");
     final Map<Property, Object> valueMap = new HashMap<>();
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
@@ -52,31 +57,35 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
       final Property property = definition.getProperty(field.getKey());
       valueMap.put(property, parseValue(property, field.getValue()));
     }
+
+    return valueMap;
+  }
+
+  private Map<Property, Object> getOriginalValueMap(final JsonNode node, final Entity.Definition definition)
+          throws JsonProcessingException {
     final JsonNode originalValues = node.get("originalValues");
-    final Map<Property, Object> originalValueMap;
     if (originalValues != null) {
-      originalValueMap = new HashMap<>();
+      final Map<Property, Object> originalValueMap = new HashMap<>();
       final Iterator<Map.Entry<String, JsonNode>> originalFields = originalValues.fields();
       while (originalFields.hasNext()) {
         final Map.Entry<String, JsonNode> field = originalFields.next();
         final Property property = definition.getProperty(field.getKey());
         originalValueMap.put(property, parseValue(property, field.getValue()));
       }
-    }
-    else {
-      originalValueMap = null;
+
+      return originalValueMap;
     }
 
-    return domain.entity(entityId, valueMap, originalValueMap);
+    return null;
   }
 
   /**
-   * Fetches the value of the given property from the given JSONObject
+   * Fetches the value of the given property from the given JsonNode
    * @param property the property
-   * @param propertyValues the JSONObject containing the value
+   * @param jsonNode the node containing the value
    * @return the value for the given property
    */
-  public Object parseValue(final Property property, final JsonNode jsonNode) throws JsonProcessingException {
+  private Object parseValue(final Property property, final JsonNode jsonNode) throws JsonProcessingException {
     if (jsonNode.isNull()) {
       return null;
     }
@@ -90,10 +99,10 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
       return LocalTime.parse(jsonNode.asText());
     }
     else if (property.isDate()) {
-      return LocalDate.parse(jsonNode.asText(property.getPropertyId()));
+      return LocalDate.parse(jsonNode.asText());
     }
     else if (property.isTimestamp()) {
-      return LocalDateTime.parse(jsonNode.asText(property.getPropertyId()));
+      return LocalDateTime.parse(jsonNode.asText());
     }
     else if (property.isDouble()) {
       return jsonNode.asDouble();
@@ -108,8 +117,7 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
       return Base64.getDecoder().decode((String) jsonNode.asText());
     }
     else if (property instanceof ForeignKeyProperty) {
-      final String content = jsonNode.toString();
-      return mapper.readValue(content, Entity.class);
+      return mapper.readValue(jsonNode.toString(), Entity.class);
     }
 
     return jsonNode.asText();

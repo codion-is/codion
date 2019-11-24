@@ -1,4 +1,4 @@
-package org.jminor.plugin.jackson.json;
+package org.jminor.plugin.jackson.json.domain;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
