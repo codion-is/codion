@@ -9,8 +9,12 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.sql.Connection;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * A factory class providing a LocalEntityConnection instances.
@@ -55,11 +59,73 @@ public final class LocalEntityConnections {
   }
 
   /**
-   * @param domain the domain model
+   * @param definitionProvider the Entity.Definition provider
    * @return A {@link MethodLogger} implementation tailored for LocalEntityConnections
    */
-  public static MethodLogger createLogger(final Domain domain) {
+  public static MethodLogger createLogger(final Entity.Definition.Provider definitionProvider) {
     return new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(),
-            false, new DefaultLocalEntityConnection.EntityArgumentStringProvider(domain));
+            false, new EntityArgumentStringProvider(definitionProvider));
+  }
+
+  /**
+   * A {@link MethodLogger.ArgumentStringProvider} implementation tailored for EntityConnections
+   */
+  private static final class EntityArgumentStringProvider extends MethodLogger.DefaultArgumentStringProvider {
+
+    private final Entity.Definition.Provider definitionProvider;
+
+    private EntityArgumentStringProvider(final Entity.Definition.Provider definitionProvider) {
+      this.definitionProvider = definitionProvider;
+    }
+
+    @Override
+    public String toString(final Object argument) {
+      if (argument == null) {
+        return "";
+      }
+
+      final StringBuilder builder = new StringBuilder();
+      if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
+        builder.append("[").append(toString((Object[]) argument)).append("]");
+      }
+      else if (argument instanceof Collection && !((Collection) argument).isEmpty()) {
+        builder.append("[").append(toString(((Collection) argument).toArray())).append("]");
+      }
+      else if (argument instanceof Entity) {
+        builder.append(getEntityParameterString((Entity) argument));
+      }
+      else if (argument instanceof Entity.Key) {
+        builder.append(getEntityKeyParameterString((Entity.Key) argument));
+      }
+      else {
+        builder.append(argument.toString());
+      }
+
+      return builder.toString();
+    }
+
+    private String getEntityParameterString(final Entity entity) {
+      final StringBuilder builder = new StringBuilder(entity.getEntityId()).append(" {");
+      final List<ColumnProperty> columnProperties = definitionProvider.getDefinition(entity.getEntityId()).getColumnProperties();
+      for (int i = 0; i < columnProperties.size(); i++) {
+        final ColumnProperty property = columnProperties.get(i);
+        final boolean modified = entity.isModified(property);
+        if (property.isPrimaryKeyProperty() || modified) {
+          final StringBuilder valueString = new StringBuilder();
+          if (modified) {
+            valueString.append(entity.getOriginal(property)).append("->");
+          }
+          valueString.append(entity.get(property.getPropertyId()));
+          builder.append(property.getPropertyId()).append(":").append(valueString).append(",");
+        }
+      }
+      builder.deleteCharAt(builder.length() - 1);
+
+      return builder.append("}").toString();
+    }
+
+    private static String getEntityKeyParameterString(final Entity.Key argument) {
+      return argument.getEntityId() + " {" + argument.toString() + "}";
+    }
   }
 }

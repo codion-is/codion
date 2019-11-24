@@ -14,6 +14,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
@@ -480,7 +481,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @return the order by clause
    * @see Entity.Definition#getOrderBy()
    */
-  protected Entity.OrderBy getOrderBy() {
+  protected OrderBy getOrderBy() {
     return getEntityDefinition().getOrderBy();
   }
 

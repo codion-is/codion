@@ -6,7 +6,6 @@ package org.jminor.framework.db.condition;
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.db.TestDomain;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,21 +39,6 @@ public final class ConditionsTest {
             .setOrderBy(Domain.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getCondition().getValues().isEmpty());
     assertTrue(condition.getCondition().getPropertyIds().isEmpty());
-    final Entity.OrderBy.OrderByProperty deptNameOrder = condition.getOrderBy().getOrderByProperties().get(0);
-    assertEquals(deptNameOrder.getPropertyId(), TestDomain.DEPARTMENT_NAME);
-    assertFalse(deptNameOrder.isDescending());
-  }
-
-  @Test
-  public void selectConditionOrderBy() {
-    final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP)
-            .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_ID));
-    final Entity.OrderBy.OrderByProperty deptOrder = condition.getOrderBy().getOrderByProperties().get(0);
-    assertEquals(deptOrder.getPropertyId(), TestDomain.EMP_DEPARTMENT);
-    assertFalse(deptOrder.isDescending());
-    final Entity.OrderBy.OrderByProperty empOrder = condition.getOrderBy().getOrderByProperties().get(1);
-    assertEquals(empOrder.getPropertyId(), TestDomain.EMP_ID);
-    assertTrue(empOrder.isDescending());
   }
 
   @Test

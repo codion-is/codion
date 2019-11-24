@@ -36,8 +36,6 @@ public class DefaultEntityDefinitionTest {
     assertNotNull(definition.getKeyGenerator());
     assertEquals("select * from dual", definition.getSelectQuery());
     assertFalse(definition.isSmallDataset());
-    assertEquals("name", definition.getOrderBy().getOrderByProperties().get(0).getPropertyId());
-    assertTrue(definition.getOrderBy().getOrderByProperties().get(0).isDescending());
     assertTrue(definition.isReadOnly());
     assertEquals("selectTableName", definition.getSelectTableName());
     assertEquals("name", definition.getGroupByClause());

@@ -26,6 +26,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.WhereCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -48,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1268,9 +1268,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     if (condition instanceof EntitySelectCondition) {
       final EntitySelectCondition selectCondition = (EntitySelectCondition) condition;
-      final String orderByClause = getOrderByClause(selectCondition, entityDefinition);
-      if (orderByClause != null) {
-        queryBuilder.append(" order by ").append(orderByClause);
+      final OrderBy orderBy = selectCondition.getOrderBy();
+      if (orderBy != null) {
+        queryBuilder.append(" order by ").append(orderBy.getOrderByString(entityDefinition));
       }
       if (selectCondition.getLimit() > 0) {
         queryBuilder.append(" limit ").append(selectCondition.getLimit());
@@ -1279,23 +1279,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
       }
     }
-  }
-
-  private static String getOrderByClause(final EntitySelectCondition selectCondition,
-                                         final Entity.Definition entityDefinition) {
-    if (selectCondition.getOrderBy() == null) {
-      return null;
-    }
-
-    final List<String> orderBys = new LinkedList<>();
-    final List<Entity.OrderBy.OrderByProperty> orderByProperties = selectCondition.getOrderBy().getOrderByProperties();
-    for (int i = 0; i < orderByProperties.size(); i++) {
-      final Entity.OrderBy.OrderByProperty property = orderByProperties.get(i);
-      orderBys.add(entityDefinition.getColumnProperty(property.getPropertyId()).getColumnName() +
-              (property.isDescending() ? " desc" : ""));
-    }
-
-    return String.join(", ", orderBys);
   }
 
   /**
@@ -1399,9 +1382,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static String createModifiedExceptionMessage(final Entity entity, final Entity modified,
                                                        final Collection<ColumnProperty> modifiedProperties) {
-    final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)).append(", ").append(entity.getEntityId());
+    final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION))
+            .append(", ").append(entity.getEntityId());
     for (final ColumnProperty property : modifiedProperties) {
-      builder.append(" \n").append(property).append(": ").append(entity.getOriginal(property)).append(" -> ").append(modified.get(property));
+      builder.append(" \n").append(property).append(": ").append(entity.getOriginal(property))
+              .append(" -> ").append(modified.get(property));
     }
 
     return builder.toString();
@@ -1433,68 +1418,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     @Override
     public Blob fetch(final ResultSet resultSet) throws SQLException {
       return resultSet.getBlob(1);
-    }
-  }
-
-  /**
-   * A {@link MethodLogger.ArgumentStringProvider} implementation tailored for EntityConnections
-   */
-  static final class EntityArgumentStringProvider extends MethodLogger.DefaultArgumentStringProvider {
-
-    private final Domain domain;
-
-    EntityArgumentStringProvider(final Domain domain) {
-      this.domain = domain;
-    }
-
-    @Override
-    public String toString(final Object argument) {
-      if (argument == null) {
-        return "";
-      }
-
-      final StringBuilder builder = new StringBuilder();
-      if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
-        builder.append("[").append(toString((Object[]) argument)).append("]");
-      }
-      else if (argument instanceof Collection && !((Collection) argument).isEmpty()) {
-        builder.append("[").append(toString(((Collection) argument).toArray())).append("]");
-      }
-      else if (argument instanceof Entity) {
-        builder.append(getEntityParameterString((Entity) argument));
-      }
-      else if (argument instanceof Entity.Key) {
-        builder.append(getEntityKeyParameterString((Entity.Key) argument));
-      }
-      else {
-        builder.append(argument.toString());
-      }
-
-      return builder.toString();
-    }
-
-    private String getEntityParameterString(final Entity entity) {
-      final StringBuilder builder = new StringBuilder(entity.getEntityId()).append(" {");
-      final List<ColumnProperty> columnProperties = domain.getDefinition(entity.getEntityId()).getColumnProperties();
-      for (int i = 0; i < columnProperties.size(); i++) {
-        final ColumnProperty property = columnProperties.get(i);
-        final boolean modified = entity.isModified(property);
-        if (property.isPrimaryKeyProperty() || modified) {
-          final StringBuilder valueString = new StringBuilder();
-          if (modified) {
-            valueString.append(entity.getOriginal(property)).append("->");
-          }
-          valueString.append(entity.get(property.getPropertyId()));
-          builder.append(property.getPropertyId()).append(":").append(valueString).append(",");
-        }
-      }
-      builder.deleteCharAt(builder.length() - 1);
-
-      return builder.append("}").toString();
-    }
-
-    private static String getEntityKeyParameterString(final Entity.Key argument) {
-      return argument.getEntityId() + ", " + argument.toString();
     }
   }
 

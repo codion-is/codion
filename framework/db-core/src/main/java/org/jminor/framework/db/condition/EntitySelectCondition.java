@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.OrderBy;
 
 import java.util.List;
 
@@ -15,14 +15,14 @@ public interface EntitySelectCondition extends EntityCondition {
   /**
    * @return the OrderBy for this condition, null if none is specified
    */
-  Entity.OrderBy getOrderBy();
+  OrderBy getOrderBy();
 
   /**
    * Sets the OrderBy for this condition
    * @param orderBy the OrderBy to use when applying this condition
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setOrderBy(final Entity.OrderBy orderBy);
+  EntitySelectCondition setOrderBy(final OrderBy orderBy);
 
   /**
    * @return the limit to use for the given condition

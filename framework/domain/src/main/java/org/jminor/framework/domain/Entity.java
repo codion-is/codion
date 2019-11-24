@@ -585,47 +585,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   }
 
   /**
-   * Specifies a order by clause
-   */
-  interface OrderBy extends Serializable {
-
-    /**
-     * Adds an 'ascending' order by for the given properties
-     * @param propertyIds the property ids
-     * @return this OrderBy instance
-     */
-    OrderBy ascending(final String... propertyIds);
-
-    /**
-     * Adds a 'descending' order by for the given properties
-     * @param propertyIds the property ids
-     * @return this OrderBy instance
-     */
-    OrderBy descending(final String... propertyIds);
-
-    /**
-     * @return an unmodifiable List containing the propertyIds and their respective order
-     */
-    List<OrderByProperty> getOrderByProperties();
-
-    /**
-     * Specifies a propertyId and the order
-     */
-    interface OrderByProperty extends Serializable {
-
-      /**
-       * @return the id of the property to order by
-       */
-      String getPropertyId();
-
-      /**
-       * @return true if this property should be ordered in 'descending' order
-       */
-      boolean isDescending();
-    }
-  }
-
-  /**
    * Specifies a entity definition.
    */
   interface Definition extends Serializable {
