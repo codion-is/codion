@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-final class EntityDeserializer extends StdDeserializer<Entity> {
+public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   private final Domain domain;
   private final EntityObjectMapper mapper;
@@ -85,7 +85,7 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
    * @param jsonNode the node containing the value
    * @return the value for the given property
    */
-  private Object parseValue(final Property property, final JsonNode jsonNode) throws JsonProcessingException {
+  public Object parseValue(final Property property, final JsonNode jsonNode) throws JsonProcessingException {
     if (jsonNode.isNull()) {
       return null;
     }

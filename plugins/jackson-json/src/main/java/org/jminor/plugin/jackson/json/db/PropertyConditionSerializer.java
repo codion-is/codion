@@ -8,24 +8,22 @@ import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 
-final class PropertyConditionSerializer extends StdSerializer<PropertyCondition> {
+final class PropertyConditionSerializer {
 
   private final EntityObjectMapper entityObjectMapper;
 
   public PropertyConditionSerializer(final EntityObjectMapper entityObjectMapper) {
-    super(PropertyCondition.class);
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  @Override
   public void serialize(final PropertyCondition condition, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
     generator.writeStartObject();
+    generator.writeObjectField("type", "property");
     generator.writeObjectField("propertyId", condition.getPropertyId());
-    generator.writeObjectField("conditionType", condition.getConditionType());
+    generator.writeObjectField("conditionType", condition.getConditionType().toString());
     generator.writeFieldName("values");
     entityObjectMapper.writeValue(generator, condition.getValues());
     generator.writeEndObject();

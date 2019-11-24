@@ -3,7 +3,8 @@
  */
 package org.jminor.plugin.jackson.json.db;
 
-import org.jminor.framework.db.condition.PropertyCondition;
+import org.jminor.framework.db.condition.EntityCondition;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,8 +14,10 @@ public final class ConditionObjectMapper extends ObjectMapper {
 
   public ConditionObjectMapper(final EntityObjectMapper entityObjectMapper) {
     final SimpleModule module = new SimpleModule();
-    module.addSerializer(PropertyCondition.class, new PropertyConditionSerializer(entityObjectMapper));
-    module.addDeserializer(PropertyCondition.class, new PropertyConditionDeserializer(entityObjectMapper));
+    module.addSerializer(EntityCondition.class, new EntityConditionSerializer(entityObjectMapper));
+    module.addDeserializer(EntityCondition.class, new EntityConditionDeserializer(entityObjectMapper));
+    module.addSerializer(EntitySelectCondition.class, new EntitySelectConditionSerializer());
+    module.addDeserializer(EntitySelectCondition.class, new EntitySelectConditionDeserializer());
     registerModule(module);
   }
 }
