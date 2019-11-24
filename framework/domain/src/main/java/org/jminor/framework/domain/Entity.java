@@ -169,6 +169,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Boolean getBoolean(final String propertyId);
 
   /**
+   * @param propertyId the ID of the property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
+   * assuming it is a byte array
+   * @throws ClassCastException if the value is not a byte array instance
+   */
+  byte[] getBlob(final String propertyId);
+
+  /**
    * @param propertyId the ID of the property for which to retrieve the formatted value
    * @param format the format object
    * @return the value of the property identified by {@code propertyId}, formatted with {@code format}

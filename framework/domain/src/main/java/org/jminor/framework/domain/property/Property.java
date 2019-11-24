@@ -197,6 +197,11 @@ public interface Property extends Serializable {
   boolean isBoolean();
 
   /**
+   * @return true if this is a blob property
+   */
+  boolean isBlob();
+
+  /**
    * @return true if a default value has been set for this property
    */
   boolean hasDefaultValue();

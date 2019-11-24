@@ -1,5 +1,5 @@
 dependencies {
     api project(':jminor-framework-domain')
 
-    api "org.json:json:${jsonVersion}"
+    api 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
 }
