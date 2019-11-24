@@ -5342,3 +5342,4 @@
   DefaultLocalEntityConnection.getReferencedKeys() moved to Entities
   jminor-plugin-jackson-json module added
   Jackson json improvements
+  Jackson json, domain related moved to .domain and .db package created, ConditionObjectMapper added

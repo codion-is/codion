@@ -211,13 +211,13 @@ public final class Conditions {
   }
 
   /**
-   * Creates a {@link DefaultWhereCondition} for the given EntityCondition.
+   * Creates a {@link WhereCondition} for the given EntityCondition.
    * @param entityCondition the condition
    * @param entityDefinition the definition
    * @return a WhereCondition
    */
-  public static DefaultWhereCondition whereCondition(final EntityCondition entityCondition,
-                                                     final Entity.Definition entityDefinition) {
+  public static WhereCondition whereCondition(final EntityCondition entityCondition,
+                                               final Entity.Definition entityDefinition) {
     return new DefaultWhereCondition(entityCondition,
             expand(entityCondition.getCondition(), entityDefinition), entityDefinition);
   }

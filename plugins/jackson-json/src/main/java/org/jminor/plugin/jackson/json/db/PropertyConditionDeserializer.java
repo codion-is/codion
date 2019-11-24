@@ -6,32 +6,42 @@ package org.jminor.plugin.jackson.json.db;
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.PropertyCondition;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-final class PropertyConditionDeserializer extends StdDeserializer<PropertyCondition> {
+final class PropertyConditionDeserializer {
 
   private final EntityObjectMapper entityObjectMapper;
 
   public PropertyConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
-    super(PropertyCondition.class);
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  @Override
-  public PropertyCondition deserialize(final JsonParser parser, final DeserializationContext ctxt)
-          throws IOException, JsonProcessingException {
-    final JsonNode conditionNode = parser.getCodec().readTree(parser);
-    final JsonNode valueNode = conditionNode.get("values");
-    final List values = entityObjectMapper.readValue(valueNode.toString(), List.class);
+  public PropertyCondition deserialize(final Entity.Definition definition, final JsonNode conditionNode,
+                                       final DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    final Property property = definition.getProperty(conditionNode.get("propertyId").asText());
+    final JsonNode valuesNode = conditionNode.get("values");
+    final List values = new ArrayList();
+    for (final JsonNode valueNode : valuesNode) {
+      if (valueNode.isNull()) {
+        values.add(null);
+      }
+      else if (valueNode.has("entityId")) {
+        values.add(entityObjectMapper.readValue(valueNode.toString(), Entity.Key.class));
+      }
+      else {
+        values.add(entityObjectMapper.getEntityDeserializer().parseValue(property, valueNode));
+      }
+    }
 
     return Conditions.propertyCondition(conditionNode.get("propertyId").asText(),
             ConditionType.valueOf(conditionNode.get("conditionType").asText()), values);

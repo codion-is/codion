@@ -20,12 +20,16 @@ import java.time.LocalTime;
 public final class EntityObjectMapper extends ObjectMapper {
 
   private final EntitySerializer entitySerializer;
+  private final EntityDeserializer entityDeserializer;
+  private final Domain domain;
 
   public EntityObjectMapper(final Domain domain) {
+    this.domain = domain;
     final SimpleModule module = new SimpleModule();
     entitySerializer = new EntitySerializer(this);
+    entityDeserializer = new EntityDeserializer(domain, this);
     module.addSerializer(Entity.class, entitySerializer);
-    module.addDeserializer(Entity.class, new EntityDeserializer(domain, this));
+    module.addDeserializer(Entity.class, entityDeserializer);
     module.addSerializer(Entity.Key.class, new EntityKeySerializer());
     module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(domain));
     module.addSerializer(LocalTime.class, new LocalTimeSerializer());
@@ -33,6 +37,14 @@ public final class EntityObjectMapper extends ObjectMapper {
     module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
     module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
     registerModule(module);
+  }
+
+  public Domain getDomain() {
+    return domain;
+  }
+
+  public EntityDeserializer getEntityDeserializer() {
+    return entityDeserializer;
   }
 
   /**
