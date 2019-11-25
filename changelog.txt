@@ -5344,3 +5344,4 @@
   Jackson json improvements
   Jackson json, domain related moved to .domain and .db package created, ConditionObjectMapper added
   Jackson json, CustomCondition implemented
+  ValueChange.isInitialization() reintroduced, used after all

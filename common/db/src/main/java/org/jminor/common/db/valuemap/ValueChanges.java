@@ -22,7 +22,22 @@ public final class ValueChanges {
    * @return a new {@link ValueChange} instance
    */
   public static <K, V> ValueChange<K, V> valueChange(final K key, final V currentValue, final V previousValue) {
-    return new DefaultValueChange<>(key, currentValue, previousValue);
+    return valueChange(key, currentValue, previousValue, false);
+  }
+
+  /**
+   * Returns a new {@link ValueChange} instance
+   * @param <K> the type of the value key
+   * @param <V> the type of the value
+   * @param key the key associated with the value
+   * @param currentValue the current value
+   * @param previousValue the previous value
+   * @param initialization true if the value was being initialized
+   * @return a new {@link ValueChange} instance
+   */
+  public static <K, V> ValueChange<K, V> valueChange(final K key, final V currentValue, final V previousValue,
+                                                     final boolean initialization) {
+    return new DefaultValueChange<>(key, currentValue, previousValue, initialization);
   }
 
   private static final class DefaultValueChange<K, V> implements ValueChange<K, V> {
@@ -43,16 +58,23 @@ public final class ValueChanges {
     private final V previousValue;
 
     /**
+     * True if this value change indicates an initialization, that is, a value was not present before this value change
+     */
+    private final boolean initialization;
+
+    /**
      * Instantiates a new DefaultValueChange
      * @param source the source of the value change
      * @param key the key associated with the value
      * @param currentValue the current value
      * @param previousValue the previous value
+     * @param initialization true if the value is being initialized
      */
-    private DefaultValueChange(final K key, final V currentValue, final V previousValue) {
+    private DefaultValueChange(final K key, final V currentValue, final V previousValue, final boolean initialization) {
       this.key = requireNonNull(key, "key");
       this.currentValue = currentValue;
       this.previousValue = previousValue;
+      this.initialization = initialization;
     }
 
     @Override
@@ -71,8 +93,18 @@ public final class ValueChanges {
     }
 
     @Override
+    public boolean isInitialization() {
+      return initialization;
+    }
+
+    @Override
     public String toString() {
-      return key + ": " + previousValue + " -> " + currentValue;
+      if (initialization) {
+        return key + ": " + currentValue;
+      }
+      else {
+        return key + ": " + previousValue + " -> " + currentValue;
+      }
     }
   }
 }
