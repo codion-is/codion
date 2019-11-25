@@ -47,6 +47,44 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
             getOriginalValueMap(entityNode, definition));
   }
 
+  public static Object parseValue(final EntityObjectMapper mapper, final Property property, final JsonNode jsonNode) throws JsonProcessingException {
+    if (jsonNode.isNull()) {
+      return null;
+    }
+    if (property.isString()) {
+      return jsonNode.asText();
+    }
+    else if (property.isBoolean()) {
+      return jsonNode.asBoolean();
+    }
+    else if (property.isTime()) {
+      return LocalTime.parse(jsonNode.asText());
+    }
+    else if (property.isDate()) {
+      return LocalDate.parse(jsonNode.asText());
+    }
+    else if (property.isTimestamp()) {
+      return LocalDateTime.parse(jsonNode.asText());
+    }
+    else if (property.isDouble()) {
+      return jsonNode.asDouble();
+    }
+    else if (property.isInteger()) {
+      return jsonNode.asInt();
+    }
+    else if (property.isBigDecimal()) {
+      return new BigDecimal(jsonNode.asText());
+    }
+    else if (property.isBlob()) {
+      return Base64.getDecoder().decode((String) jsonNode.asText());
+    }
+    else if (property instanceof ForeignKeyProperty) {
+      return mapper.readValue(jsonNode.toString(), Entity.class);
+    }
+
+    return jsonNode.asText();
+  }
+
   private Map<Property, Object> getValueMap(final JsonNode node, final Entity.Definition definition)
           throws JsonProcessingException {
     final JsonNode values = node.get("values");
@@ -84,46 +122,9 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
    * @param property the property
    * @param jsonNode the node containing the value
    * @return the value for the given property
+   * @throws JsonProcessingException in case of an error
    */
-  public Object parseValue(final Property property, final JsonNode jsonNode) throws JsonProcessingException {
+  private Object parseValue(final Property property, final JsonNode jsonNode) throws JsonProcessingException {
     return parseValue(mapper, property, jsonNode);
-  }
-
-  public static Object parseValue(final EntityObjectMapper mapper, final Property property, final JsonNode jsonNode) throws JsonProcessingException {
-    if (jsonNode.isNull()) {
-      return null;
-    }
-    if (property.isString()) {
-      return jsonNode.asText();
-    }
-    else if (property.isBoolean()) {
-      return jsonNode.asBoolean();
-    }
-    else if (property.isTime()) {
-      return LocalTime.parse(jsonNode.asText());
-    }
-    else if (property.isDate()) {
-      return LocalDate.parse(jsonNode.asText());
-    }
-    else if (property.isTimestamp()) {
-      return LocalDateTime.parse(jsonNode.asText());
-    }
-    else if (property.isDouble()) {
-      return jsonNode.asDouble();
-    }
-    else if (property.isInteger()) {
-      return jsonNode.asInt();
-    }
-    else if (property.isBigDecimal()) {
-      return new BigDecimal(jsonNode.asText());
-    }
-    else if (property.isBlob()) {
-      return Base64.getDecoder().decode((String) jsonNode.asText());
-    }
-    else if (property instanceof ForeignKeyProperty) {
-      return mapper.readValue(jsonNode.toString(), Entity.class);
-    }
-
-    return jsonNode.asText();
   }
 }
