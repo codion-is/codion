@@ -77,9 +77,10 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   @Override
   public final void put(final K key, final V value) {
     requireNonNull(key, KEY);
+    final boolean initialization = !valueMap.containsKey(key);
     final V previousValue = valueMap.put(key, value);
     if (!Objects.equals(value, previousValue)) {
-      notifyValueChange(key, valueChange(key, value, previousValue));
+      notifyValueChange(key, valueChange(key, value, previousValue, initialization));
     }
   }
 

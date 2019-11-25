@@ -24,4 +24,9 @@ public interface ValueChange<K, V> {
    * @return the current value
    */
   V getCurrentValue();
+
+  /**
+   * @return true if this key had no associated value prior to this value change
+   */
+  boolean isInitialization();
 }

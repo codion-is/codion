@@ -11,6 +11,7 @@ import org.jminor.common.event.EventListener;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,6 +58,7 @@ public class DefaultValueMapTest {
       valueChange.toString();
       valueChange.getPreviousValue();
       valueChange.getCurrentValue();
+      valueChange.isInitialization();
     };
     valueMap.addValueListener(valueListener);
 
@@ -125,6 +127,24 @@ public class DefaultValueMapTest {
 
     valueMap.removeValueListener(valueListener);
     valueMap.removeValueListener(null);
+  }
+
+  @Test
+  public void valueChangeInitialization() {
+    ValueMap<String, String> valueMap = new DefaultValueMap<>();
+
+    valueMap.addValueListener(valueChange -> assertTrue(valueChange.isInitialization()));
+    valueMap.put("one", "one");
+    valueMap.put("two", "two");
+
+    final Map<String, String> values = new HashMap<>();
+    values.put("one", "one");
+    values.put("two", "two");
+
+    valueMap = new DefaultValueMap<>(values, null);
+    valueMap.addValueListener(valueChange -> assertFalse(valueChange.isInitialization()));
+    valueMap.put("one", "two");
+    valueMap.put("two", "three");
   }
 
   @Test
