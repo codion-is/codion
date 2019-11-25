@@ -6,18 +6,32 @@ package org.jminor.plugin.jackson.json;
 import org.jminor.common.Item;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.StringProvider;
-import org.jminor.framework.domain.property.Properties;
 
 import java.sql.Types;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {
 
   public TestDomain() {
+    testEntity();
     department();
     employee();
-    registerDomain();
+  }
+
+  public static final String T_ENTITY = "test.entity";
+  public static final String ENTITY_DECIMAL = "id";
+  public static final String ENTITY_DATE_TIME = "date_time";
+  public static final String ENTITY_BLOB = "blob";
+  public static final String ENTITY_CONDITION_ID = "entityConditionId";
+
+  void testEntity() {
+    define(T_ENTITY,
+            columnProperty(ENTITY_DECIMAL, Types.DECIMAL).setPrimaryKeyIndex(0),
+            columnProperty(ENTITY_DATE_TIME, Types.TIMESTAMP).setPrimaryKeyIndex(1),
+            columnProperty(ENTITY_BLOB, Types.BLOB))
+            .addConditionProvider(ENTITY_CONDITION_ID, (propertyIds, values) -> "1 = 2");
   }
 
   public static final String DEPARTMENT_ID = "deptno";
@@ -29,13 +43,13 @@ public final class TestDomain extends Domain {
 
   void department() {
     define(T_DEPARTMENT,
-            Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
+            primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
+            columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
+            columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
                     .setPreferredColumnWidth(150).setMaxLength(13),
-            Properties.columnProperty(DEPARTMENT_LOGO, Types.BLOB))
+            columnProperty(DEPARTMENT_LOGO, Types.BLOB))
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
             .setStringProvider(new StringProvider(DEPARTMENT_NAME))
@@ -57,23 +71,23 @@ public final class TestDomain extends Domain {
 
   void employee() {
     define(T_EMP,
-            Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
-            Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
+            primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
+            columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
                     .setMaxLength(10).setNullable(false),
-            Properties.foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
-                    Properties.columnProperty(EMP_DEPARTMENT))
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
+                    columnProperty(EMP_DEPARTMENT))
                     .setNullable(false),
-            Properties.valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
+            valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
-            Properties.columnProperty(EMP_SALARY, Types.DECIMAL, EMP_SALARY)
+            columnProperty(EMP_SALARY, Types.DECIMAL, EMP_SALARY)
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
-            Properties.columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
+            columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2),
-            Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    Properties.columnProperty(EMP_MGR)),
-            Properties.columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
+            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
+                    columnProperty(EMP_MGR)),
+            columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
                     .setNullable(false),
-            Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
+            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
             .setStringProvider(new StringProvider(EMP_NAME))

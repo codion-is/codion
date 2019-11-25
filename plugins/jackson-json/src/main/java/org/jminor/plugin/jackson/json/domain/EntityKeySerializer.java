@@ -18,8 +18,11 @@ import static java.util.Objects.requireNonNull;
 
 final class EntityKeySerializer extends StdSerializer<Entity.Key> {
 
-  EntityKeySerializer() {
+  private final EntityObjectMapper entityObjectMapper;
+
+  EntityKeySerializer(final EntityObjectMapper entityObjectMapper) {
     super(Entity.Key.class);
+    this.entityObjectMapper = entityObjectMapper;
   }
 
   @Override
@@ -27,7 +30,8 @@ final class EntityKeySerializer extends StdSerializer<Entity.Key> {
     requireNonNull(key, "key");
     generator.writeStartObject();
     generator.writeStringField("entityId", key.getEntityId());
-    generator.writeObjectField("values", getValueMap(key));
+    generator.writeFieldName("values");
+    entityObjectMapper.writeValue(generator, getValueMap(key));
     generator.writeEndObject();
   }
 

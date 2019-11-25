@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
@@ -39,9 +40,20 @@ public final class EntityObjectMapperTest {
     new Random().nextBytes(logoBytes);
     dept.put(TestDomain.DEPARTMENT_LOGO, logoBytes);
 
-    final String jsonString = mapper.writeValueAsString(dept);
+    String jsonString = mapper.writeValueAsString(dept);
     final Entity readDept = mapper.readValue(jsonString, Entity.class);
     assertTrue(dept.valuesEqual(readDept));
+
+    final Entity entity = domain.entity(TestDomain.T_ENTITY);
+    entity.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
+    entity.put(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
+    entity.put(TestDomain.ENTITY_BLOB, logoBytes);
+
+    jsonString = mapper.writeValueAsString(entity);
+
+    final Entity readEntity = mapper.readValue(jsonString, Entity.class);
+
+    assertTrue(entity.valuesEqual(readEntity));
   }
 
   @Test
@@ -76,11 +88,21 @@ public final class EntityObjectMapperTest {
     final Entity.Key deptKey = domain.key(TestDomain.T_DEPARTMENT);
     deptKey.put(TestDomain.DEPARTMENT_ID, 1);
 
-    final String jsonString = mapper.writeValueAsString(deptKey);
+    String jsonString = mapper.writeValueAsString(deptKey);
 
     final Entity.Key key = mapper.readValue(jsonString, Entity.Key.class);
     assertEquals(TestDomain.T_DEPARTMENT, key.getEntityId());
     assertEquals(1, key.getFirstValue());
+
+    final Entity.Key entityKey = domain.key(TestDomain.T_ENTITY);
+    entityKey.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
+    entityKey.put(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
+
+    jsonString = mapper.writeValueAsString(entityKey);
+
+    final Entity.Key readKey = mapper.readValue(jsonString, Entity.Key.class);
+
+    assertEquals(entityKey, readKey);
   }
 
   @Test

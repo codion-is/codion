@@ -86,6 +86,10 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
    * @return the value for the given property
    */
   public Object parseValue(final Property property, final JsonNode jsonNode) throws JsonProcessingException {
+    return parseValue(mapper, property, jsonNode);
+  }
+
+  public static Object parseValue(final EntityObjectMapper mapper, final Property property, final JsonNode jsonNode) throws JsonProcessingException {
     if (jsonNode.isNull()) {
       return null;
     }

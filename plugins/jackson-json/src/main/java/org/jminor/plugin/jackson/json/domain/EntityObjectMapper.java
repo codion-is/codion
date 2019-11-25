@@ -30,8 +30,8 @@ public final class EntityObjectMapper extends ObjectMapper {
     entityDeserializer = new EntityDeserializer(domain, this);
     module.addSerializer(Entity.class, entitySerializer);
     module.addDeserializer(Entity.class, entityDeserializer);
-    module.addSerializer(Entity.Key.class, new EntityKeySerializer());
-    module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(domain));
+    module.addSerializer(Entity.Key.class, new EntityKeySerializer(this));
+    module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(domain, this));
     module.addSerializer(LocalTime.class, new LocalTimeSerializer());
     module.addSerializer(LocalDate.class, new LocalDateSerializer());
     module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
