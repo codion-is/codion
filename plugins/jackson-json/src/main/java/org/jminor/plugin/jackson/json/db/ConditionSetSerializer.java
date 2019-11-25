@@ -7,7 +7,6 @@ import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.PropertyCondition;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,8 +19,7 @@ final class ConditionSetSerializer {
     this.propertyConditionSerializer = propertyConditionSerializer;
   }
 
-  public void serialize(final Condition.Set set, final JsonGenerator generator, final SerializerProvider provider)
-          throws IOException {
+  public void serialize(final Condition.Set set, final JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeObjectField("type", "set");
     generator.writeObjectField("conjunction", set.getConjunction().toString());
@@ -29,10 +27,10 @@ final class ConditionSetSerializer {
     final List<Condition> conditions = set.getConditions();
     for (final Condition condition : conditions) {
       if (condition instanceof Condition.Set) {
-        serialize((Condition.Set) condition, generator, provider);
+        serialize((Condition.Set) condition, generator);
       }
       else if (condition instanceof PropertyCondition) {
-        propertyConditionSerializer.serialize((PropertyCondition) condition, generator, provider);
+        propertyConditionSerializer.serialize((PropertyCondition) condition, generator);
       }
     }
     generator.writeEndArray();

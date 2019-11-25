@@ -4,7 +4,9 @@
 package org.jminor.plugin.jackson.json.db;
 
 import org.jminor.framework.db.condition.Condition;
+import org.jminor.framework.db.condition.CustomCondition;
 import org.jminor.framework.db.condition.PropertyCondition;
+import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -15,20 +17,27 @@ final class ConditionSerializer {
 
   private final PropertyConditionSerializer propertyConditionSerializer;
   private final ConditionSetSerializer conditionSetSerializer;
+  private final CustomConditionSerializer customConditionSerializer;
 
-  public ConditionSerializer(final PropertyConditionSerializer propertyConditionSerializer) {
+  public ConditionSerializer(final PropertyConditionSerializer propertyConditionSerializer,
+                             final EntityObjectMapper entityObjectMapper) {
     this.propertyConditionSerializer = propertyConditionSerializer;
     this.conditionSetSerializer = new ConditionSetSerializer(propertyConditionSerializer);
+    this.customConditionSerializer = new CustomConditionSerializer(entityObjectMapper);
   }
 
   public void serialize(final Condition condition, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
     if (condition instanceof Condition.Set) {
       final Condition.Set set = (Condition.Set) condition;
-      conditionSetSerializer.serialize(set, generator, provider);
+      conditionSetSerializer.serialize(set, generator);
     }
     else if (condition instanceof PropertyCondition) {
       final PropertyCondition propertyCondition = (PropertyCondition) condition;
-      propertyConditionSerializer.serialize(propertyCondition, generator, provider);
+      propertyConditionSerializer.serialize(propertyCondition, generator);
+    }
+    else if (condition instanceof CustomCondition) {
+      final CustomCondition customCondition = (CustomCondition) condition;
+      customConditionSerializer.serialize(customCondition, generator);
     }
     else {
       throw new IllegalArgumentException("Unknown Condition type: " + condition.getClass());

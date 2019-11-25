@@ -36,7 +36,7 @@ final class EntityConditionDeserializer extends StdDeserializer<EntityCondition>
     final JsonNode conditionNode = entityConditionNode.get("condition");
 
     final Condition condition = conditionDeserializer.deserialize(
-            definitionProvider.getDefinition(entityId), conditionNode, ctxt);
+            definitionProvider.getDefinition(entityId), conditionNode);
 
     return Conditions.entityCondition(entityId, condition);
   }
