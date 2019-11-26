@@ -323,7 +323,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         }
       }
       sortModel.sort(visibleItems);
-      fireTableRowsUpdated(0, visibleItems.size());
+      fireTableDataChanged();
       selectionModel.setSelectedItems(selectedItems);
     }
     finally {
