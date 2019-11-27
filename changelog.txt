@@ -5354,3 +5354,4 @@
   DefaultKey.hashCodeDirty initialized to true instead of false, which then relied on handlePut()
   DefaultLocalEntityConnection.lockAndCheckIfModified() bug fixed, only selected writable properties, which could then exclude primary key properties
   DefaultEntity.initializeAndCacheReferencedKey() refactored
+  DefaultEntity.DefaultKey moved up to package level and renamed DefaultEntityKey
