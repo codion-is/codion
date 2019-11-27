@@ -25,7 +25,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
-  final transient List<ColumnProperty.Builder> columnPropertyBuilders;
+  private final transient List<ColumnProperty.Builder> columnPropertyBuilders;
 
   /**
    * @param propertyId the property ID
