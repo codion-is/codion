@@ -192,7 +192,7 @@ public class DefaultEntityTest {
 
   @Test
   public void compositeKeySingleValueConstructor() {
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity.DefaultKey(DOMAIN.getDefinition(TestDomain.T_COMPOSITE_MASTER), 1));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityKey(DOMAIN.getDefinition(TestDomain.T_COMPOSITE_MASTER), 1));
   }
 
   @Test

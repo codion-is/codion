@@ -97,7 +97,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
 
   /** {@inheritDoc} */
   @Override
-  public void validateType(final Object value) {
+  public Entity validateType(final Object value) {
     super.validateType(value);
     if (value != null) {
       final Entity entity = (Entity) value;
@@ -106,6 +106,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
                 " expected for property " + this + ", got: " + entity.getEntityId());
       }
     }
+
+    return (Entity) value;
   }
 
   /**

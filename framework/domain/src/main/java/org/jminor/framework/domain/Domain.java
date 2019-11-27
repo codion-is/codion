@@ -281,7 +281,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @return a new {@link Entity.Key} instance
    */
   public final Entity.Key key(final String entityId) {
-    return new DefaultEntity.DefaultKey(getDefinition(entityId), null);
+    return new DefaultEntityKey(getDefinition(entityId), null);
   }
 
   /**
@@ -293,7 +293,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @throws NullPointerException in case entityId or value is null
    */
   public final Entity.Key key(final String entityId, final Integer value) {
-    return new DefaultEntity.DefaultKey(getDefinition(entityId), value);
+    return new DefaultEntityKey(getDefinition(entityId), value);
   }
 
   /**
@@ -305,7 +305,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @throws NullPointerException in case entityId or value is null
    */
   public final Entity.Key key(final String entityId, final Long value) {
-    return new DefaultEntity.DefaultKey(getDefinition(entityId), value);
+    return new DefaultEntityKey(getDefinition(entityId), value);
   }
 
   /**

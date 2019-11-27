@@ -411,11 +411,13 @@ abstract class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public void validateType(final Object value) {
+  public Object validateType(final Object value) {
     if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + typeClass +
               " expected for property " + this + " in entity " + entityId + ", got: " + value.getClass());
     }
+
+    return value;
   }
 
   protected void setReadOnly(final boolean readOnly) {
