@@ -56,7 +56,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private Map<String, Key> referencedKeyCache;
 
   /**
-   * The provides access to domain entity definitions
+   * Provides access to domain entity definitions
    */
   private Entity.Definition.Provider definitionProvider;
 
@@ -684,32 +684,39 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @return the referenced primary key or null if a valid key can not be created (null values for non-nullable properties)
    */
   private Key initializeAndCacheReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
-    final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
-    final Definition entityDefinition = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
     if (foreignKeyProperty.isCompositeKey()) {
-      final List<ColumnProperty> foreignProperties = entityDefinition.getPrimaryKeyProperties();
-      final Map<ColumnProperty, Object> values = new HashMap<>(properties.size());
-      for (int i = 0; i < properties.size(); i++) {
-        final ColumnProperty foreignProperty = foreignProperties.get(i);
-        final Object value = super.get(properties.get(i));
-        if (!foreignProperty.isNullable() && value == null) {
-          return null;
-        }
-        else {
-          values.put(foreignProperty, value);
-        }
-      }
-
-      return cacheReferencedKey(foreignKeyProperty.getPropertyId(), new DefaultKey(entityDefinition, values));
+      return initializeAndCacheCompositeReferenceKey(foreignKeyProperty);
     }
-    else {
-      final Object value = super.get(properties.get(0));
-      if (value == null) {
+
+    return initializeAndCacheSingleReferenceKey(foreignKeyProperty);
+  }
+
+  private Key initializeAndCacheCompositeReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
+    final Definition foreignEntityDefinition = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
+    final List<ColumnProperty> foreignProperties = foreignEntityDefinition.getPrimaryKeyProperties();
+    final List<ColumnProperty> columnProperties = foreignKeyProperty.getColumnProperties();
+    final Map<ColumnProperty, Object> values = new HashMap<>(columnProperties.size());
+    for (int i = 0; i < columnProperties.size(); i++) {
+      final ColumnProperty foreignColumnProperty = foreignProperties.get(i);
+      final Object value = super.get(columnProperties.get(i));
+      if (value == null && !foreignColumnProperty.isNullable()) {
         return null;
       }
-
-      return cacheReferencedKey(foreignKeyProperty.getPropertyId(), new DefaultKey(entityDefinition, value));
+      values.put(foreignColumnProperty, value);
     }
+
+    return cacheReferencedKey(foreignKeyProperty.getPropertyId(), new DefaultKey(foreignEntityDefinition, values));
+  }
+
+  private Key initializeAndCacheSingleReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
+    final List<ColumnProperty> columnProperties = foreignKeyProperty.getColumnProperties();
+    final Object value = super.get(columnProperties.get(0));
+    if (value == null) {
+      return null;
+    }
+
+    return cacheReferencedKey(foreignKeyProperty.getPropertyId(),
+            new DefaultKey(definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId()), value));
   }
 
   private Key cacheReferencedKey(final String fkPropertyId, final Key referencedPrimaryKey) {
