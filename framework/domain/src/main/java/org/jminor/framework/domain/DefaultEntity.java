@@ -593,11 +593,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (property instanceof ValueListProperty && value != null && !((ValueListProperty) property).isValid(value)) {
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyId());
     }
-    if (value != null) {
-      property.validateType(value);
-    }
 
-    return prepareValue(property, value);
+    return prepareValue(property, property.validateType(value));
   }
 
   private void propagateForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
@@ -847,11 +844,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       if (!(property instanceof DerivedProperty)) {
         final boolean containsValue = stream.readBoolean();
         if (containsValue) {
-          final Object value = stream.readObject();
-          property.validateType(value);
-          super.put(property, value);
+          super.put(property, property.validateType(stream.readObject()));
           if (isModified && stream.readBoolean()) {
-            setOriginalValue(property, stream.readObject());
+            setOriginalValue(property, property.validateType(stream.readObject()));
           }
         }
       }

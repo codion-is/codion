@@ -192,14 +192,17 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   @Override
   protected void handlePut(final ColumnProperty property, final Object value, final Object previousValue,
                            final boolean initialization) {
-    hashCodeDirty = true;
     if (singleIntegerKey) {
-      if (!(value == null || value instanceof Integer)) {
-        throw new IllegalArgumentException("Expecting a Integer value for Key: "
-                + definition.getEntityId() + ", " + property + ", got " + value + "; " + value.getClass());
-      }
       setHashCode((Integer) value);
     }
+    else {
+      hashCodeDirty = true;
+    }
+  }
+
+  @Override
+  protected Object validateAndPrepare(final ColumnProperty property, final Object value) {
+    return property.validateType(value);
   }
 
   @Override
@@ -292,7 +295,8 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
     compositeKey = properties.size() > 1;
     singleIntegerKey = !compositeKey && properties.get(0).isInteger();
     for (int i = 0; i < properties.size(); i++) {
-      super.put(properties.get(i), stream.readObject());
+      final ColumnProperty property = properties.get(i);
+      super.put(property, property.validateType(stream.readObject()));
     }
   }
 

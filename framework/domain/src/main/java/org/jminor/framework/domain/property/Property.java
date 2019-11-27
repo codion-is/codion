@@ -104,9 +104,10 @@ public interface Property extends Serializable {
 
   /**
    * @param value the value to validate
-   * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
+   * @return the value
+   * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this property
    */
-  void validateType(final Object value);
+  Object validateType(final Object value);
 
   /**
    * @param propertyId the property ID
