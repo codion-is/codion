@@ -73,7 +73,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
 
   /** {@inheritDoc} */
   @Override
-  public List<ColumnProperty> getProperties() {
+  public List<ColumnProperty> getColumnProperties() {
     return columnProperties;
   }
 

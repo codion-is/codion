@@ -331,7 +331,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   @Override
   public void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
-            .getForeignKeyProperties(foreignKeyEntityId);
+            .getForeignKeyReferences(foreignKeyEntityId);
     for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       final Entity currentForeignKeyValue = getForeignKey(foreignKeyProperty.getPropertyId());
       if (currentForeignKeyValue != null) {
@@ -392,7 +392,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(values);
     for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition()
-              .getForeignKeyProperties(entityIdEntities.getKey())) {
+              .getForeignKeyReferences(entityIdEntities.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
         put(foreignKeyProperty, entityIdEntities.getValue().iterator().next());
       }

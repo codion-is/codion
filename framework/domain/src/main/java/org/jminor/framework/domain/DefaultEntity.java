@@ -528,7 +528,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public boolean isForeignKeyNull(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    final List<ColumnProperty> properties = foreignKeyProperty.getProperties();
+    final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
     if (properties.size() == 1) {
       return isNull(properties.get(0));
     }
@@ -555,7 +555,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   protected void handleRemove(final Property property, final Object value) {
     if (property instanceof ForeignKeyProperty) {
-      final List<ColumnProperty> properties = ((ForeignKeyProperty) property).getProperties();
+      final List<ColumnProperty> properties = ((ForeignKeyProperty) property).getColumnProperties();
       for (int i = 0; i < properties.size(); i++) {
         remove(properties.get(i));
       }
@@ -623,7 +623,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   private void setForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     removeCachedReferencedKey(foreignKeyProperty.getPropertyId());
-    final List<ColumnProperty> properties = foreignKeyProperty.getProperties();
+    final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
     final List<ColumnProperty> foreignProperties =
             definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId()).getPrimaryKeyProperties();
     if (properties.size() > 1) {
@@ -673,7 +673,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @return the referenced primary key or null if a valid key can not be created (null values for non-nullable properties)
    */
   private Key initializeAndCacheReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
-    final List<ColumnProperty> properties = foreignKeyProperty.getProperties();
+    final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
     final Definition entityDefinition = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
     if (foreignKeyProperty.isCompositeKey()) {
       final List<ColumnProperty> foreignProperties = entityDefinition.getPrimaryKeyProperties();

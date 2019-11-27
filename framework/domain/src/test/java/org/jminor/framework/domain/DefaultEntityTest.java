@@ -9,6 +9,7 @@ import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.TransientProperty;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -663,6 +664,21 @@ public class DefaultEntityTest {
 
     final Entity deserialized = Util.deserialize(Util.serialize(entity));
     assertTrue(deserialized.isModified("trans"));
+  }
+
+  @Test
+  @Disabled
+  public void foreignKeyModification() {
+    final Entity emp = DOMAIN.entity(TestDomain.T_EMP);
+    final Entity dept = DOMAIN.entity(TestDomain.T_DEPARTMENT);
+    dept.put(TestDomain.DEPARTMENT_ID, 1);
+    emp.put(TestDomain.EMP_DEPARTMENT_FK, dept);
+    assertEquals(1, emp.getInteger(TestDomain.EMP_DEPARTMENT));
+    emp.put(TestDomain.EMP_DEPARTMENT, 2);
+    assertNull(emp.get(TestDomain.EMP_DEPARTMENT_FK));
+    assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
+    final Entity empDept = emp.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
+    assertEquals(2, empDept.getKey().getFirstValue());
   }
 
   private Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,

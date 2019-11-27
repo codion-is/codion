@@ -313,17 +313,17 @@ public final class Conditions {
                                                final ConditionType conditionType, final Collection values) {
     final List<Entity.Key> keys = getKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
-      return createCompositeKeyCondition(keys, foreignKeyProperty.getProperties(), conditionType);
+      return createCompositeKeyCondition(keys, foreignKeyProperty.getColumnProperties(), conditionType);
     }
 
     if (keys.size() == 1) {
       final Entity.Key entityKey = keys.get(0);
 
-      return propertyCondition(foreignKeyProperty.getProperties().get(0).getPropertyId(), conditionType,
+      return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getPropertyId(), conditionType,
               entityKey == null ? null : entityKey.getFirstValue());
     }
 
-    return propertyCondition(foreignKeyProperty.getProperties().get(0).getPropertyId(), conditionType,
+    return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getPropertyId(), conditionType,
             getValues(keys));
   }
 

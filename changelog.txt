@@ -5346,3 +5346,4 @@
   Jackson json, CustomCondition implemented
   ValueChange.isInitialization() reintroduced, used after all
   AbstractFilteredTableModel.filterContents() now calls fireTableDataChanged() after filtering, otherwise table did not repaint correctly
+  Entity.Definition.getForeignKeyProperties(entityId) renamed to getForeignKeyReferences(), getForeignKeyProperties(columnPropertyId) added
