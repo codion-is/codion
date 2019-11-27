@@ -895,9 +895,9 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * Returns the foreign key properties referencing entities of the given type
      * @param foreignEntityId the id of the referenced entity
-     * @return a List containing the properties, an empty list is returned in case no properties fit the condition
+     * @return a List containing the properties, an empty list is returned in case no foreign key references are found
      */
-    List<ForeignKeyProperty> getForeignKeyProperties(String foreignEntityId);
+    List<ForeignKeyProperty> getForeignKeyReferences(String foreignEntityId);
 
     /**
      * @param propertyId the property id
@@ -905,6 +905,12 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @throws IllegalArgumentException in case no such property exists
      */
     ForeignKeyProperty getForeignKeyProperty(String propertyId);
+
+    /**
+     * @param columnPropertyId the column property id
+     * @return the ForeignKeyProperties based on the given column property
+     */
+    List<ForeignKeyProperty> getForeignKeyProperties(final String columnPropertyId);
 
     /**
      * Compares the given entities.

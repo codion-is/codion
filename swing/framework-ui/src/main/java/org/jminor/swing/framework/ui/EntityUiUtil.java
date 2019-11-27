@@ -1029,7 +1029,7 @@ public final class EntityUiUtil {
 
   private static String getForeignKeyColumnNames(final ForeignKeyProperty foreignKeyProperty) {
     final List<String> columnNames = new LinkedList<>();
-    foreignKeyProperty.getProperties().forEach(property -> columnNames.add(property.getColumnName()));
+    foreignKeyProperty.getColumnProperties().forEach(property -> columnNames.add(property.getColumnName()));
 
     return String.join(", ", columnNames);
   }

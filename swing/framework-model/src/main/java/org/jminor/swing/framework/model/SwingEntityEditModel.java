@@ -58,7 +58,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     super.replaceForeignKeyValues(foreignKeyEntityId, foreignKeyValues);
     final List<ForeignKeyProperty> foreignKeyProperties =
-            getEntityDefinition().getForeignKeyProperties(foreignKeyEntityId);
+            getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
     for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       if (containsComboBoxModel(foreignKeyProperty.getPropertyId())) {
         getForeignKeyComboBoxModel(foreignKeyProperty.getPropertyId()).refresh();
@@ -199,7 +199,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty :
-              getEntityDefinition().getForeignKeyProperties(entry.getKey())) {
+              getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getPropertyId())) {
           final EntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty);
           for (final Entity inserted : entry.getValue()) {
@@ -216,7 +216,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty :
-              getEntityDefinition().getForeignKeyProperties(entry.getKey())) {
+              getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getPropertyId())) {
           final EntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty);
           final Entity selectedEntity = comboBoxModel.getSelectedValue();

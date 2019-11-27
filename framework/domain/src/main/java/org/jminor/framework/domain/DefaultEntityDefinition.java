@@ -13,6 +13,7 @@ import org.jminor.framework.domain.property.TransientProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,6 +54,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * A list view of the properties
    */
   private final List<Property> properties;
+
+  /**
+   * A map mapping column property ids to the foreign key properties they are a part of
+   */
+  private final Map<String, List<ForeignKeyProperty>> foreignKeyPropertyMap;
 
   /**
    * The caption to use for the entity type
@@ -186,6 +192,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.columnProperties = columnProperties;
     this.foreignKeyProperties = foreignKeyProperties;
     this.transientProperties = transientProperties;
+    this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap(foreignKeyProperties);
     this.selectableColumnProperties = unmodifiableList(getSelectableProperties(columnProperties));
     this.properties = unmodifiableList(new ArrayList<>(this.propertyMap.values()));
     this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties(this.propertyMap.values()));
@@ -442,14 +449,14 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public List<ForeignKeyProperty> getForeignKeyProperties(final String foreignEntityId) {
+  public List<ForeignKeyProperty> getForeignKeyReferences(final String foreignEntityId) {
     return getForeignKeyProperties().stream().filter(foreignKeyProperty ->
             foreignKeyProperty.getForeignEntityId().equals(foreignEntityId)).collect(toList());
   }
 
   /** {@inheritDoc} */
   @Override
-  public final ForeignKeyProperty getForeignKeyProperty(final String propertyId) {
+  public ForeignKeyProperty getForeignKeyProperty(final String propertyId) {
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       if (foreignKeyProperty.is(propertyId)) {
@@ -458,6 +465,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     throw new IllegalArgumentException("Foreign key property with id: " + propertyId + " not found in entity of type: " + entityId);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<ForeignKeyProperty> getForeignKeyProperties(final String columnPropertyId) {
+    return foreignKeyPropertyMap.computeIfAbsent(columnPropertyId, propertyId -> Collections.emptyList());
   }
 
   /** {@inheritDoc} */
@@ -680,6 +693,16 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     return stringBuilder.toString();
+  }
+
+  private static Map<String, List<ForeignKeyProperty>> initializeForeignKeyPropertyMap(final List<ForeignKeyProperty> foreignKeyProperties) {
+    final Map<String, List<ForeignKeyProperty>> foreignKeyMap = new HashMap<>();
+    foreignKeyProperties.forEach(foreignKeyProperty ->
+            foreignKeyProperty.getColumnProperties().forEach(columnProperty ->
+                    foreignKeyMap.computeIfAbsent(columnProperty.getPropertyId(),
+                            columnPropertyId -> new ArrayList<>()).add(foreignKeyProperty)));
+
+    return foreignKeyMap;
   }
 
   private static final class DefaultBuilder implements Builder {

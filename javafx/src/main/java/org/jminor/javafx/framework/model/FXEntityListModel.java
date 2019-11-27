@@ -208,7 +208,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
-            getEntityDefinition().getForeignKeyProperties(foreignKeyEntityId);
+            getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
     for (final Entity entity : getAllItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {

@@ -238,11 +238,11 @@ public class DomainTest {
   }
 
   @Test
-  public void getForeignKeyProperties() {
+  public void getForeignKeyReferences() {
     final Entity.Definition definition = domain.getDefinition(TestDomain.T_DETAIL);
-    List<ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyProperties(TestDomain.T_EMP);
+    List<ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyReferences(TestDomain.T_EMP);
     assertEquals(0, foreignKeyProperties.size());
-    foreignKeyProperties = definition.getForeignKeyProperties(TestDomain.T_MASTER);
+    foreignKeyProperties = definition.getForeignKeyReferences(TestDomain.T_MASTER);
     assertEquals(1, foreignKeyProperties.size());
     assertTrue(foreignKeyProperties.contains(definition.getProperty(TestDomain.DETAIL_MASTER_FK)));
   }

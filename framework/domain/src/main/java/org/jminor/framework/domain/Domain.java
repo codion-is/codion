@@ -640,7 +640,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
                 + "' referenced by entity '" + entityId + "' via foreign key property '"
                 + foreignKeyProperty.getPropertyId() + "' has not been defined");
       }
-      if (foreignKeyProperty.getProperties().size() != foreignEntity.getPrimaryKeyProperties().size()) {
+      if (foreignKeyProperty.getColumnProperties().size() != foreignEntity.getPrimaryKeyProperties().size()) {
         throw new IllegalArgumentException("Number of column properties in '" + entityId + "." + foreignKeyProperty.getPropertyId() +
                 "' does not match the number of foreign properties in the referenced entity '" + foreignKeyProperty.getForeignEntityId() + "'");
       }

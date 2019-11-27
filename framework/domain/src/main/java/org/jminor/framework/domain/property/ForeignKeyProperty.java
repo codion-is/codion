@@ -28,7 +28,7 @@ public interface ForeignKeyProperty extends Property {
    * Returns an unmodifiable list containing the properties that comprise this foreign key
    * @return the reference properties
    */
-  List<ColumnProperty> getProperties();
+  List<ColumnProperty> getColumnProperties();
 
   /**
    * @return true if this foreign key is based on multiple columns

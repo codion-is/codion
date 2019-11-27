@@ -528,7 +528,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public boolean isForeignKeyNull(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    final List<ColumnProperty> properties = foreignKeyProperty.getProperties();
+    final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
     if (properties.size() == 1) {
       return isNull(properties.get(0));
     }
@@ -553,17 +553,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  protected void handleRemove(final Property property, final Object value) {
-    if (property instanceof ForeignKeyProperty) {
-      final List<ColumnProperty> properties = ((ForeignKeyProperty) property).getProperties();
-      for (int i = 0; i < properties.size(); i++) {
-        remove(properties.get(i));
-      }
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
   protected void handleValueChangedEventInitialized() {
     if (definition.hasDerivedProperties()) {
       addValueListener(valueChange -> {
@@ -580,8 +569,14 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   protected void handlePut(final Property property, final Object value, final Object previousValue,
                            final boolean initialization) {
-    if (property instanceof ColumnProperty && ((ColumnProperty) property).isPrimaryKeyProperty()) {
-      key = null;
+    if (property instanceof ColumnProperty) {
+      final ColumnProperty columnProperty = (ColumnProperty) property;
+      if (columnProperty.isPrimaryKeyProperty()) {
+        key = null;
+      }
+      if (columnProperty.isForeignKeyProperty()) {
+        removeInvalidForeignKeyValues(columnProperty, value);
+      }
     }
     toString = null;
     if (property instanceof ForeignKeyProperty) {
@@ -612,6 +607,22 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
   }
 
+  private void removeInvalidForeignKeyValues(final ColumnProperty columnProperty, final Object value) {
+    final List<ForeignKeyProperty> propertyForeignKeyProperties = definition.getForeignKeyProperties(columnProperty.getPropertyId());
+    for (final ForeignKeyProperty foreignKeyProperty : propertyForeignKeyProperties) {
+      final Entity foreignKeyValue = (Entity) get(foreignKeyProperty);
+      if (foreignKeyValue != null) {
+        final Entity.Key referencedKey = foreignKeyValue.getKey();
+        final ColumnProperty keyProperty = referencedKey.getProperties().get(foreignKeyProperty.getColumnProperties().indexOf(columnProperty));
+        //if the value isn't equal to the value in the foreign key, that foreign key reference is invalid and is removed
+        if (!Objects.equals(value, referencedKey.get(keyProperty))) {
+          remove(foreignKeyProperty);
+          removeCachedReferencedKey(foreignKeyProperty.getPropertyId());
+        }
+      }
+    }
+  }
+
   /**
    * Sets the values of the properties used in the reference to the corresponding values found in {@code referencedEntity}.
    * Example: EntityOne references EntityTwo via entityTwoId, after a call to this method the EntityOne.entityTwoId
@@ -623,7 +634,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   private void setForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     removeCachedReferencedKey(foreignKeyProperty.getPropertyId());
-    final List<ColumnProperty> properties = foreignKeyProperty.getProperties();
+    final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
     final List<ColumnProperty> foreignProperties =
             definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId()).getPrimaryKeyProperties();
     if (properties.size() > 1) {
@@ -673,7 +684,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @return the referenced primary key or null if a valid key can not be created (null values for non-nullable properties)
    */
   private Key initializeAndCacheReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
-    final List<ColumnProperty> properties = foreignKeyProperty.getProperties();
+    final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
     final Definition entityDefinition = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
     if (foreignKeyProperty.isCompositeKey()) {
       final List<ColumnProperty> foreignProperties = entityDefinition.getPrimaryKeyProperties();
@@ -1061,7 +1072,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     @Override
     protected void handleClear() {
       cachedHashCode = null;
-      hashCodeDirty = false;
+      hashCodeDirty = true;
     }
 
     private ColumnProperty getPrimaryKeyProperty(final String propertyId) {
@@ -1117,8 +1128,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     private Integer computeSingleValueHashCode() {
-      final ColumnProperty property = getFirstProperty();
-      final Object value = super.get(property);
+      final Object value = getFirstValue();
       if (value == null) {
         return null;
       }
