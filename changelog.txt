@@ -5345,10 +5345,11 @@
   Jackson json, domain related moved to .domain and .db package created, ConditionObjectMapper added
   Jackson json, CustomCondition implemented
   ValueChange.isInitialization() reintroduced, used after all
-  AbstractFilteredTableModel.filterContents() now calls fireTableDataChanged() after filtering, otherwise table did not repaint correctly
+  AbstractFilteredTableModel.filterContents() bug fixed, now calls fireTableDataChanged() after filtering, otherwise table did not repaint correctly
   Entity.Definition.getForeignKeyProperties(entityId) renamed to getForeignKeyReferences(), getForeignKeyProperties(columnPropertyId) added
   DefaultValueMap.handleRemove() removed
   DefaultEntity no longer removes column property values when removing the associated foreign key value
   DefaultEntity.removeInvalidForeignKeyValues() added, called in handlePut(), removes foreign key values that don't fit the value being put
   DefaultValueMap no longer calls handlePut() during setAs()
   DefaultKey.hashCodeDirty initialized to true instead of false, which then relied on handlePut()
+  DefaultLocalEntityConnection.lockAndCheckIfModified() bug fixed, only selected writable properties, which could then exclude primary key properties
