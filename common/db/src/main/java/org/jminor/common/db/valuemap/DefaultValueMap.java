@@ -152,7 +152,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (values.containsKey(key)) {
       final V value = values.remove(key);
       removeOriginalValue(key);
-      handleRemove(key, value);
       if (valueChangedEvent != null) {
         notifyValueChange(key, null, value, false);
       }
@@ -229,9 +228,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
       final Collection<K> sourceValueKeys = sourceMap.keySet();
       affectedKeys.addAll(sourceValueKeys);
       for (final K key : sourceValueKeys) {
-        final V value = sourceMap.get(key);
-        values.put(key, value);
-        handlePut(key, value, null, true);
+        values.put(key, sourceMap.get(key));
       }
       if (sourceMap.isModified()) {
         originalValues = new HashMap<>();
@@ -346,13 +343,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * @param initialization true if the value was being initialized
    */
   protected void handlePut(final K key, final V value, final V previousValue, final boolean initialization) {/*Provided for subclasses*/}
-
-  /**
-   * Called after a value has been removed from this map. This base implementation does nothing.
-   * @param key the key
-   * @param value the value that was removed
-   */
-  protected void handleRemove(final K key, final V value) {/*Provided for subclasses*/}
 
   /**
    * Called after the value map has been cleared. This base implementation does nothing.

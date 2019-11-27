@@ -9,7 +9,6 @@ import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.TransientProperty;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -557,10 +556,14 @@ public class DefaultEntityTest {
     assertEquals(Integer.valueOf(-10), employee.getInteger(TestDomain.EMP_DEPARTMENT));
 
     employee.remove(TestDomain.EMP_DEPARTMENT_FK);
-    assertNull(employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK));
-    assertNull(employee.get(TestDomain.EMP_DEPARTMENT));
+    assertNull(employee.get(TestDomain.EMP_DEPARTMENT_FK));
+    final Entity empDepartment = employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
+    assertNotNull(empDepartment);
+    //non loaded entity, created from foreign key
+    assertFalse(empDepartment.containsKey(TestDomain.DEPARTMENT_NAME));
+    assertNotNull(employee.get(TestDomain.EMP_DEPARTMENT));
     assertFalse(employee.containsKey(TestDomain.EMP_DEPARTMENT_FK));
-    assertFalse(employee.containsKey(DOMAIN.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_DEPARTMENT)));
+    assertTrue(employee.containsKey(TestDomain.EMP_DEPARTMENT));
   }
 
   @Test
@@ -667,11 +670,11 @@ public class DefaultEntityTest {
   }
 
   @Test
-  @Disabled
   public void foreignKeyModification() {
     final Entity emp = DOMAIN.entity(TestDomain.T_EMP);
     final Entity dept = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     dept.put(TestDomain.DEPARTMENT_ID, 1);
+    dept.put(TestDomain.DEPARTMENT_NAME, "Name1");
     emp.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     assertEquals(1, emp.getInteger(TestDomain.EMP_DEPARTMENT));
     emp.put(TestDomain.EMP_DEPARTMENT, 2);
@@ -679,6 +682,35 @@ public class DefaultEntityTest {
     assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     final Entity empDept = emp.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
     assertEquals(2, empDept.getKey().getFirstValue());
+
+    final Entity dept2 = DOMAIN.entity(TestDomain.T_DEPARTMENT);
+    dept2.put(TestDomain.DEPARTMENT_ID, 3);
+    dept2.put(TestDomain.DEPARTMENT_NAME, "Name2");
+    emp.put(TestDomain.EMP_DEPARTMENT_FK, dept2);
+    emp.put(TestDomain.EMP_DEPARTMENT, 3);
+    assertNotNull(emp.get(TestDomain.EMP_DEPARTMENT_FK));
+    emp.put(TestDomain.EMP_DEPARTMENT, 4);
+    assertNull(emp.get(TestDomain.EMP_DEPARTMENT_FK));
+    emp.put(TestDomain.EMP_DEPARTMENT_FK, dept2);
+    assertNotNull(emp.get(TestDomain.EMP_DEPARTMENT_FK));
+    emp.put(TestDomain.EMP_DEPARTMENT, null);
+    assertNull(emp.get(TestDomain.EMP_DEPARTMENT_FK));
+
+    final Entity manager = DOMAIN.entity(TestDomain.T_EMP);
+    manager.put(TestDomain.EMP_ID, 10);
+    manager.put(TestDomain.EMP_DEPARTMENT_FK, dept);
+    emp.put(TestDomain.EMP_MGR_FK, manager);
+    emp.put(TestDomain.EMP_DEPARTMENT_FK, dept2);
+
+    final Entity copy = DOMAIN.deepCopyEntity(emp);
+    assertNotSame(emp, copy);
+    assertTrue(emp.valuesEqual(copy));
+    assertNotSame(emp.get(TestDomain.EMP_MGR_FK), copy.get(TestDomain.EMP_MGR_FK));
+    assertTrue(emp.getForeignKey(TestDomain.EMP_MGR_FK).valuesEqual(copy.getForeignKey(TestDomain.EMP_MGR_FK)));
+    assertNotSame(emp.getForeignKey(TestDomain.EMP_MGR_FK).getForeignKey(TestDomain.EMP_DEPARTMENT_FK),
+            copy.getForeignKey(TestDomain.EMP_MGR_FK).getForeignKey(TestDomain.EMP_DEPARTMENT_FK));
+    assertTrue(emp.getForeignKey(TestDomain.EMP_MGR_FK).getForeignKey(TestDomain.EMP_DEPARTMENT_FK)
+            .valuesEqual(copy.getForeignKey(TestDomain.EMP_MGR_FK).getForeignKey(TestDomain.EMP_DEPARTMENT_FK)));
   }
 
   private Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,

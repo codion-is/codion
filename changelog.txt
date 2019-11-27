@@ -5347,3 +5347,8 @@
   ValueChange.isInitialization() reintroduced, used after all
   AbstractFilteredTableModel.filterContents() now calls fireTableDataChanged() after filtering, otherwise table did not repaint correctly
   Entity.Definition.getForeignKeyProperties(entityId) renamed to getForeignKeyReferences(), getForeignKeyProperties(columnPropertyId) added
+  DefaultValueMap.handleRemove() removed
+  DefaultEntity no longer removes column property values when removing the associated foreign key value
+  DefaultEntity.removeInvalidForeignKeyValues() added, called in handlePut(), removes foreign key values that don't fit the value being put
+  DefaultValueMap no longer calls handlePut() during setAs()
+  DefaultKey.hashCodeDirty initialized to true instead of false, which then relied on handlePut()
