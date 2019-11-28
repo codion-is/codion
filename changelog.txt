@@ -5359,3 +5359,4 @@
   DefaultProperty.validateType() now returns the value
   DefaultEntity and DefaultEntityKey now validate types on deserialization
   DefaultLocalEntityConnection.lockAndCheckIfModified() new bug fixed, now only selects writable along with primary key properties
+  DefaultEntityDefinition.getSelectableColumnProperties() now uses old school for loop instead of stream

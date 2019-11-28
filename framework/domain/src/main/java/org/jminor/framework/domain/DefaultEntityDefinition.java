@@ -443,8 +443,13 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public List<ColumnProperty> getSelectableColumnProperties(final Collection<String> propertyIds) {
-    return propertyIds.stream().map(this::getSelectableColumnProperty).collect(toList());
+  public List<ColumnProperty> getSelectableColumnProperties(final List<String> propertyIds) {
+    final List<ColumnProperty> properties = new ArrayList<>(propertyIds.size());
+    for (int i = 0; i < propertyIds.size(); i++) {
+      properties.add(getSelectableColumnProperty(propertyIds.get(i)));
+    }
+
+    return properties;
   }
 
   /** {@inheritDoc} */
