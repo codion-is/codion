@@ -5,6 +5,7 @@ package org.jminor.framework.demos.chinook.domain.impl;
 
 import org.jminor.common.db.AbstractFunction;
 import org.jminor.common.db.AbstractProcedure;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnection;
@@ -16,7 +17,6 @@ import org.jminor.framework.domain.StringProvider;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.text.NumberFormat;
-import java.util.Collections;
 import java.util.List;
 
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
@@ -336,14 +336,14 @@ public final class ChinookImpl extends Domain implements Chinook {
   }
 
   void dbOperations() {
-    addOperation(new UpdateTotalsProcedure(P_UPDATE_TOTALS));
-    addOperation(new RaisePriceFunction(F_RAISE_PRICE));
+    addOperation(new UpdateTotalsProcedure());
+    addOperation(new RaisePriceFunction());
   }
 
   private static final class UpdateTotalsProcedure extends AbstractProcedure<LocalEntityConnection> {
 
-    private UpdateTotalsProcedure(final String id) {
-      super(id, "Update invoice totals");
+    private UpdateTotalsProcedure() {
+      super(P_UPDATE_TOTALS, "Update invoice totals");
     }
 
     @Override
@@ -373,24 +373,31 @@ public final class ChinookImpl extends Domain implements Chinook {
 
   private static final class RaisePriceFunction extends AbstractFunction<LocalEntityConnection> {
 
-    private RaisePriceFunction(final String id) {
-      super(id, "Raise track prices");
+    private RaisePriceFunction() {
+      super(F_RAISE_PRICE, "Raise track prices");
     }
 
     @Override
     public List execute(final LocalEntityConnection entityConnection,
                         final Object... arguments) throws DatabaseException {
-      final BigDecimal priceIncrease = (BigDecimal) arguments[0];
+      final List<Long> trackIds = (List<Long>) arguments[0];
+      final BigDecimal priceIncrease = (BigDecimal) arguments[1];
       try {
         entityConnection.beginTransaction();
-        final List<Entity> allTracks = entityConnection.select(entitySelectCondition(T_TRACK));
-        allTracks.forEach(track ->
+
+        final EntitySelectCondition selectCondition = entitySelectCondition(T_TRACK,
+                TRACK_TRACKID, ConditionType.LIKE, trackIds);
+        selectCondition.setForUpdate(true);
+
+        final List<Entity> tracks = entityConnection.select(selectCondition);
+        tracks.forEach(track ->
                 track.put(TRACK_UNITPRICE,
                         track.getBigDecimal(TRACK_UNITPRICE).add(priceIncrease)));
-        entityConnection.update(allTracks);
+        final List<Entity> updatedTracks = entityConnection.update(tracks);
+
         entityConnection.commitTransaction();
 
-        return Collections.singletonList(allTracks.size());
+        return updatedTracks;
       }
       catch (final DatabaseException exception) {
         entityConnection.rollbackTransaction();

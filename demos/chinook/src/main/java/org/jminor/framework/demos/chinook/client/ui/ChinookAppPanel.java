@@ -20,6 +20,7 @@ import org.jminor.framework.demos.chinook.beans.ui.MediaTypeEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
+import org.jminor.framework.demos.chinook.beans.ui.TrackTablePanel;
 import org.jminor.framework.demos.chinook.client.ChinookApplicationModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -52,7 +53,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   @Override
   protected void setupEntityPanelProviders() {
     final EntityPanelProvider trackProvider = new EntityPanelProvider(T_TRACK);
-    trackProvider.setEditPanelClass(TrackEditPanel.class);
+    trackProvider.setEditPanelClass(TrackEditPanel.class).setTablePanelClass(TrackTablePanel.class);
 
     final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER);
     customerProvider.setEditPanelClass(CustomerEditPanel.class);
@@ -82,7 +83,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
     final EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.getEditModel()));
     final SwingEntityModel trackModel = albumModel.getDetailModel(T_TRACK);
-    final EntityPanel trackPanel = new EntityPanel(trackModel, new TrackEditPanel(trackModel.getEditModel()));
+    final EntityPanel trackPanel = new EntityPanel(trackModel,
+            new TrackEditPanel(trackModel.getEditModel()), new TrackTablePanel(trackModel.getTableModel()));
 
     albumPanel.addDetailPanel(trackPanel);
     artistPanel.addDetailPanel(albumPanel);
