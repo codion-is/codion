@@ -869,8 +869,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return a list containing the writable column properties (properties that map to database columns) comprising
      * the entity identified by {@code entityId}
      */
-    List<ColumnProperty> getWritableColumnProperties(boolean includePrimaryKeyProperties,
-                                                     boolean includeNonUpdatable);
+    List<ColumnProperty> getWritableColumnProperties(final boolean includePrimaryKeyProperties,
+                                                     final boolean includeNonUpdatable);
     /**
      * @return a list containing all updatable properties associated with the given entity id
      */
@@ -881,7 +881,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param includeHidden true if hidden properties should be included in the result
      * @return a list containing the properties found in the entity identified by {@code entityId}
      */
-    List<Property> getProperties(boolean includeHidden);
+    List<Property> getProperties(final boolean includeHidden);
 
     /**
      * Returns the selectable {@link ColumnProperty}s identified
@@ -897,14 +897,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param foreignEntityId the id of the referenced entity
      * @return a List containing the properties, an empty list is returned in case no foreign key references are found
      */
-    List<ForeignKeyProperty> getForeignKeyReferences(String foreignEntityId);
+    List<ForeignKeyProperty> getForeignKeyReferences(final String foreignEntityId);
 
     /**
      * @param propertyId the property id
      * @return the Property.ForeignKeyProperty with the given propertyId
      * @throws IllegalArgumentException in case no such property exists
      */
-    ForeignKeyProperty getForeignKeyProperty(String propertyId);
+    ForeignKeyProperty getForeignKeyProperty(final String propertyId);
 
     /**
      * @param columnPropertyId the column property id
