@@ -180,11 +180,10 @@ public final class EntityConnectionDemo {
 
   static void function(EntityConnection connection) throws DatabaseException {
     // tag::function[]
+    List<Long> trackIds = asList(123L, 1234L);
     BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
-    List result = connection.executeFunction(F_RAISE_PRICE, priceIncrease);
-
-    int modifiedTracks = (int) result.get(0);
+    List<Entity> modifiedTracks = connection.executeFunction(F_RAISE_PRICE, trackIds, priceIncrease);
     // end::function[]
   }
 
