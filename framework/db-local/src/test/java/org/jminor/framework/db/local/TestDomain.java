@@ -33,6 +33,8 @@ public final class TestDomain extends Domain {
     uuidTestDefaultValue();
     uuidTestNoDefaultValue();
     operations();
+    joinedQuery();
+    groupByQuery();
     registerDomain();
   }
 
@@ -180,5 +182,27 @@ public final class TestDomain extends Domain {
         return null;
       }
     });
+  }
+
+  public static final String GROUP_BY_QUERY_ENTITY_ID = "groupByQueryEntityID";
+  public static final String JOINED_QUERY_CONDITION_ID = "conditionId";
+
+  private void groupByQuery() {
+    define(GROUP_BY_QUERY_ENTITY_ID, "scott.emp",
+            Properties.columnProperty("job", Types.VARCHAR)
+                    .setPrimaryKeyIndex(0)
+                    .setGroupingColumn(true))
+            .setHavingClause("job <> 'PRESIDENT'");
+  }
+
+
+  public static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
+
+  private void joinedQuery() {
+    define(JOINED_QUERY_ENTITY_ID,
+            Properties.primaryKeyProperty("e.empno"),
+            Properties.columnProperty("d.deptno", Types.INTEGER))
+            .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
+            .addConditionProvider(JOINED_QUERY_CONDITION_ID, (propetyIds, values) -> "d.deptno = 10");
   }
 }
