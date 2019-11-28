@@ -8,7 +8,6 @@ import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Entity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
@@ -19,12 +18,11 @@ final class ConditionSetDeserializer {
 
   private final ConditionDeserializer conditionDeserializer;
 
-  public ConditionSetDeserializer(final ConditionDeserializer conditionDeserializer) {
+  ConditionSetDeserializer(final ConditionDeserializer conditionDeserializer) {
     this.conditionDeserializer = conditionDeserializer;
   }
 
-  public Condition.Set deserialize(final Entity.Definition definition, final JsonNode jsonNode)
-          throws IOException, JsonProcessingException {
+  Condition.Set deserialize(final Entity.Definition definition, final JsonNode jsonNode) throws IOException {
     final Conjunction conjunction = Conjunction.valueOf(jsonNode.get("conjunction").asText());
     final JsonNode conditionsNode = jsonNode.get("conditions");
     final List<Condition> conditions = new ArrayList<>(conditionsNode.size());

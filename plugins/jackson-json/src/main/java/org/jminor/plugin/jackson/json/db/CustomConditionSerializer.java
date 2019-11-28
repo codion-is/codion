@@ -9,16 +9,19 @@ import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-final class CustomConditionSerializer {
+final class CustomConditionSerializer implements Serializable {
+
+  private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
 
-  public CustomConditionSerializer(final EntityObjectMapper entityObjectMapper) {
+  CustomConditionSerializer(final EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  public void serialize(final CustomCondition condition, final JsonGenerator generator) throws IOException {
+  void serialize(final CustomCondition condition, final JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeObjectField("type", "custom");
     generator.writeObjectField("conditionId", condition.getConditionId());

@@ -42,7 +42,9 @@ public final class ConditionObjectMapperTest {
                     Conditions.propertyCondition(TestDomain.EMP_NAME,
                             ConditionType.LIKE, "Loc"),
                     Conditions.propertyCondition(TestDomain.EMP_ID,
-                            ConditionType.WITHIN_RANGE, asList(10, 40))));
+                            ConditionType.WITHIN_RANGE, asList(10, 40)),
+                    Conditions.propertyCondition(TestDomain.EMP_COMMISSION,
+                            ConditionType.NOT_LIKE, null)));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);
@@ -53,8 +55,25 @@ public final class ConditionObjectMapperTest {
     assertEquals(condition.getPropertyIds(), readCondition.getPropertyIds());
     assertEquals(condition.getValues(), readCondition.getValues());
 
-    assertEquals("((deptno not in (?, ?)) and ename = ? and (empno >= ? and empno <= ?))",
+    assertEquals("((deptno not in (?, ?)) and ename = ? and (empno >= ? and empno <= ?) and comm is not null)",
             Conditions.whereCondition(entityCondition, domain.getDefinition(TestDomain.T_EMP)).getWhereClause());
+  }
+
+  @Test
+  public void nullCondition() throws JsonProcessingException {
+    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(domain));
+    final EntityCondition entityCondition = Conditions.entityCondition(TestDomain.T_EMP,
+            Conditions.propertyCondition(TestDomain.EMP_COMMISSION, ConditionType.NOT_LIKE, null));
+
+    final String jsonString = mapper.writeValueAsString(entityCondition);
+    final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);
+
+    final Condition condition = entityCondition.getCondition();
+    final Condition readCondition = readEntityCondition.getCondition();
+
+    assertEquals(entityCondition.getEntityId(), readEntityCondition.getEntityId());
+    assertEquals(condition.getPropertyIds(), readCondition.getPropertyIds());
+    assertEquals(condition.getValues(), readCondition.getValues());
   }
 
   @Test

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
@@ -48,12 +49,21 @@ public final class EntityObjectMapperTest {
     entity.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
     entity.put(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
     entity.put(TestDomain.ENTITY_BLOB, logoBytes);
+    entity.put(TestDomain.ENTITY_READ_ONLY, "readOnly");
+    entity.put(TestDomain.ENTITY_BOOLEAN, true);
+    entity.put(TestDomain.ENTITY_TIME, LocalTime.now());
 
     jsonString = mapper.writeValueAsString(entity);
 
-    final Entity readEntity = mapper.readValue(jsonString, Entity.class);
-
+    Entity readEntity = mapper.readValue(jsonString, Entity.class);
     assertTrue(entity.valuesEqual(readEntity));
+
+    mapper.setIncludeReadOnlyValues(false);
+    jsonString = mapper.writeValueAsString(entity);
+
+    readEntity = mapper.readValue(jsonString, Entity.class);
+    assertFalse(entity.valuesEqual(readEntity));
+    assertFalse(readEntity.containsKey(TestDomain.ENTITY_READ_ONLY));
   }
 
   @Test

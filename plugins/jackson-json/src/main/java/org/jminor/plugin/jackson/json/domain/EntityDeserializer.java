@@ -26,6 +26,8 @@ import java.util.Map;
 
 public final class EntityDeserializer extends StdDeserializer<Entity> {
 
+  private static final long serialVersionUID = 1;
+
   private final Domain domain;
   private final EntityObjectMapper mapper;
 
@@ -36,8 +38,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   }
 
   @Override
-  public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt)
-          throws IOException, JsonProcessingException {
+  public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
 
     final String entityId = entityNode.get("entityId").asText();
@@ -47,7 +48,8 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
             getOriginalValueMap(entityNode, definition));
   }
 
-  public static Object parseValue(final EntityObjectMapper mapper, final Property property, final JsonNode jsonNode) throws JsonProcessingException {
+  public static Object parseValue(final EntityObjectMapper mapper, final Property property, final JsonNode jsonNode)
+          throws JsonProcessingException {
     if (jsonNode.isNull()) {
       return null;
     }

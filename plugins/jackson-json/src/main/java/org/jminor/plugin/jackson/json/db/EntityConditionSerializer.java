@@ -14,6 +14,8 @@ import java.io.IOException;
 
 final class EntityConditionSerializer extends StdSerializer<EntityCondition> {
 
+  private static final long serialVersionUID = 1;
+
   private final ConditionSerializer conditionSerializer;
 
   public EntityConditionSerializer(final EntityObjectMapper entityObjectMapper) {
@@ -27,7 +29,7 @@ final class EntityConditionSerializer extends StdSerializer<EntityCondition> {
     generator.writeStartObject();
     generator.writeStringField("entityId", condition.getEntityId());
     generator.writeFieldName("condition");
-    conditionSerializer.serialize(condition.getCondition(), generator, provider);
+    conditionSerializer.serialize(condition.getCondition(), generator);
     generator.writeEndObject();
   }
 }

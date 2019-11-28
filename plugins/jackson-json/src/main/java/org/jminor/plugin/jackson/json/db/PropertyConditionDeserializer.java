@@ -11,23 +11,24 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.plugin.jackson.json.domain.EntityDeserializer;
 import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-final class PropertyConditionDeserializer {
+final class PropertyConditionDeserializer implements Serializable {
+
+  private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
 
-  public PropertyConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
+  PropertyConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  public PropertyCondition deserialize(final Entity.Definition definition, final JsonNode conditionNode)
-          throws IOException, JsonProcessingException {
+  PropertyCondition deserialize(final Entity.Definition definition, final JsonNode conditionNode) throws IOException {
     final Property property = definition.getProperty(conditionNode.get("propertyId").asText());
     final JsonNode valuesNode = conditionNode.get("values");
     final List values = new ArrayList();
@@ -42,8 +43,9 @@ final class PropertyConditionDeserializer {
         values.add(EntityDeserializer.parseValue(entityObjectMapper, property, valueNode));
       }
     }
+    final boolean nullCondition = values.isEmpty();
 
     return Conditions.propertyCondition(conditionNode.get("propertyId").asText(),
-            ConditionType.valueOf(conditionNode.get("conditionType").asText()), values);
+            ConditionType.valueOf(conditionNode.get("conditionType").asText()), nullCondition ? null : values);
   }
 }

@@ -19,10 +19,16 @@ import java.time.LocalTime;
  */
 public final class EntityObjectMapper extends ObjectMapper {
 
+  private static final long serialVersionUID = 1;
+
   private final EntitySerializer entitySerializer;
   private final EntityDeserializer entityDeserializer;
   private final Domain domain;
 
+  /**
+   * Instantiates a new EntityObjectMapper for the given domain
+   * @param domain the Domain model
+   */
   public EntityObjectMapper(final Domain domain) {
     this.domain = domain;
     final SimpleModule module = new SimpleModule();
@@ -39,12 +45,11 @@ public final class EntityObjectMapper extends ObjectMapper {
     registerModule(module);
   }
 
+  /**
+   * @return the underlying domain model
+   */
   public Domain getDomain() {
     return domain;
-  }
-
-  public EntityDeserializer getEntityDeserializer() {
-    return entityDeserializer;
   }
 
   /**
