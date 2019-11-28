@@ -26,15 +26,12 @@ import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.property.Properties;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -50,6 +47,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.local.TestDomain.*;
 import static org.jminor.framework.domain.Entities.getKeys;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,28 +57,9 @@ public class DefaultLocalEntityConnectionTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
-  private static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
-  private static final String GROUP_BY_QUERY_ENTITY_ID = "groupByQueryEntityID";
-  private static final String JOINED_QUERY_CONDITION_ID = "conditionId";
-
   private DefaultLocalEntityConnection connection;
 
   private static final TestDomain DOMAIN = new TestDomain();
-
-  @BeforeAll
-  public static void beforeClass() {
-    DOMAIN.define(JOINED_QUERY_ENTITY_ID,
-            Properties.primaryKeyProperty("e.empno"),
-            Properties.columnProperty("d.deptno", Types.INTEGER))
-            .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
-            .addConditionProvider(JOINED_QUERY_CONDITION_ID, (propetyIds, values) -> "d.deptno = 10");
-
-    DOMAIN.define(GROUP_BY_QUERY_ENTITY_ID, "scott.emp",
-            Properties.columnProperty("job", Types.VARCHAR)
-                    .setPrimaryKeyIndex(0)
-                    .setGroupingColumn(true))
-            .setHavingClause("job <> 'PRESIDENT'");
-  }
 
   @BeforeEach
   public void setup() throws ClassNotFoundException, DatabaseException {
