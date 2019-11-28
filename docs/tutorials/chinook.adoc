@@ -86,6 +86,11 @@ include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/PlaylistTrackE
 include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/TrackEditPanel.java[lines=4..-1]
 ----
 
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/TrackTablePanel.java[lines=4..-1]
+----
+
 == Main application panel
 
 [source,java]
