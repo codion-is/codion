@@ -23,6 +23,7 @@ public interface Chinook {
   String ALBUM_TITLE = "title";
   String ALBUM_ARTISTID = "artistid";
   String ALBUM_ARTIST_FK = "artist_fk";
+  String ALBUM_COVERART = "coverart";
 
   String T_EMPLOYEE = "employee@chinook";
   String EMPLOYEE_EMPLOYEEID = "employeeid";

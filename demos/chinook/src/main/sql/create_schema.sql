@@ -40,6 +40,7 @@ create table chinook.album
     albumid identity not null,
     title varchar(160) not null,
     artistid integer not null,
+    coverart blob,
     constraint pk_productitem primary key (albumid)
 );
 
