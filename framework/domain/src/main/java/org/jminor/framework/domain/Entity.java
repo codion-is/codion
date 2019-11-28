@@ -890,7 +890,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return a list containing all column properties found in the entity identified by {@code entityId},
      * that is, properties that map to database columns, an empty list if none exist
      */
-    List<ColumnProperty> getSelectableColumnProperties(Collection<String> propertyIds);
+    List<ColumnProperty> getSelectableColumnProperties(final List<String> propertyIds);
 
     /**
      * Returns the foreign key properties referencing entities of the given type
