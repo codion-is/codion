@@ -214,21 +214,24 @@ public class DomainTest {
     final Property id = definition.getProperty(TestDomain.DEPARTMENT_ID);
     final Property location = definition.getProperty(TestDomain.DEPARTMENT_LOCATION);
     final Property name = definition.getProperty(TestDomain.DEPARTMENT_NAME);
-    final List<Property> properties = definition.getProperties(asList(TestDomain.DEPARTMENT_LOCATION, TestDomain.DEPARTMENT_NAME));
+    final Property active = definition.getProperty(TestDomain.DEPARTMENT_ACTIVE);
+    List<Property> properties = definition.getProperties(asList(TestDomain.DEPARTMENT_LOCATION, TestDomain.DEPARTMENT_NAME));
     assertEquals(2, properties.size());
     assertFalse(properties.contains(id));
     assertTrue(properties.contains(location));
     assertTrue(properties.contains(name));
 
-    final Collection<Property> visibleProperties = definition.getProperties(false);
-    assertEquals(3, visibleProperties.size());
-    assertTrue(visibleProperties.contains(id));
-    assertTrue(visibleProperties.contains(location));
-    assertTrue(visibleProperties.contains(name));
+    properties = definition.getVisibleProperties();
+    assertTrue(properties.contains(id));
+    assertTrue(properties.contains(location));
+    assertTrue(properties.contains(name));
+    assertFalse(properties.contains(active));
 
-    final Collection<Property> allProperties = definition.getProperties(true);
-    assertTrue(allProperties.containsAll(visibleProperties));
-    assertEquals(allProperties.size(), visibleProperties.size() + 1);
+    final Collection<Property> allProperties = definition.getProperties();
+    assertTrue(allProperties.contains(id));
+    assertTrue(allProperties.contains(location));
+    assertTrue(allProperties.contains(name));
+    assertTrue(allProperties.contains(active));
   }
 
   @Test

@@ -877,13 +877,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     List<Property> getUpdatableProperties();
 
     /**
-     * Returns all {@link Property}s for the given entity
-     * @param includeHidden true if hidden properties should be included in the result
-     * @return a list containing the properties found in the entity identified by {@code entityId}
-     */
-    List<Property> getProperties(final boolean includeHidden);
-
-    /**
      * Returns the selectable {@link ColumnProperty}s identified
      * by the propertyIds in {@code propertyIds}
      * @param propertyIds the ids of the properties to retrieve
