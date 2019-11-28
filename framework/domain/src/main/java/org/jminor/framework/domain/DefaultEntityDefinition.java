@@ -412,7 +412,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public List<ColumnProperty> getWritableColumnProperties(final boolean includePrimaryKeyProperties,
                                                           final boolean includeNonUpdatable) {
-    return getColumnProperties().stream()
+    return columnProperties.stream()
             .filter(property -> !property.isReadOnly() &&
                     (includeNonUpdatable || property.isUpdatable()) &&
                     (includePrimaryKeyProperties || !property.isPrimaryKeyProperty()))
@@ -433,12 +433,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     return updatable;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<Property> getProperties(final boolean includeHidden) {
-    return includeHidden ? getProperties() : getVisibleProperties();
   }
 
   /** {@inheritDoc} */

@@ -959,7 +959,7 @@ public final class EntityUiUtil {
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(domain.getDefinition(entity.getEntityId()).getPrimaryKeyProperties()));
     populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(domain.getDefinition(entity.getEntityId())
             .getForeignKeyProperties()));
-    populateValueMenu(rootMenu, entity, new ArrayList<>(domain.getDefinition(entity.getEntityId()).getProperties(true)), domain);
+    populateValueMenu(rootMenu, entity, new ArrayList<>(domain.getDefinition(entity.getEntityId()).getProperties()), domain);
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<ColumnProperty> primaryKeyProperties) {
