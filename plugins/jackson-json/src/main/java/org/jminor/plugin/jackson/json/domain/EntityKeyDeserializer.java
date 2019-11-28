@@ -8,7 +8,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,6 +19,8 @@ import java.util.Map;
 
 final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
 
+  private static final long serialVersionUID = 1;
+
   private final Domain domain;
   private final EntityObjectMapper entityObjectMapper;
 
@@ -30,7 +31,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
   }
 
   @Override
-  public Entity.Key deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException, JsonProcessingException {
+  public Entity.Key deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final ObjectCodec codec = parser.getCodec();
     final JsonNode node = codec.readTree(parser);
     final String entityId = node.get("entityId").asText();

@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 
 final class BigDecimalSerializer extends StdSerializer<BigDecimal> {
 
+  private static final long serialVersionUID = 1;
+
   BigDecimalSerializer() {
     super(BigDecimal.class);
   }

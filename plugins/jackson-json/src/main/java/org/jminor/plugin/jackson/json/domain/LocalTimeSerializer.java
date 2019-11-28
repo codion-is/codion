@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 
 final class LocalTimeSerializer extends StdSerializer<LocalTime> {
 
+  private static final long serialVersionUID = 1;
+
   LocalTimeSerializer() {
     super(LocalTime.class);
   }

@@ -10,26 +10,25 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.plugin.jackson.json.domain.EntityDeserializer;
 import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-final class CustomConditionDeserializer {
+final class CustomConditionDeserializer implements Serializable {
 
-  private static final TypeReference<List<String>> STRING_LIST_TYPE_REF = new TypeReference<List<String>>() {};
+  private static final long serialVersionUID = 1;
+
   private final EntityObjectMapper entityObjectMapper;
 
-  public CustomConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
+  CustomConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  public CustomCondition deserialize(final Entity.Definition definition, final JsonNode conditionNode)
-          throws IOException, JsonProcessingException {
+  CustomCondition deserialize(final Entity.Definition definition, final JsonNode conditionNode) throws IOException {
     final String conditionId = conditionNode.get("conditionId").asText();
     final JsonNode propertyIdsNode = conditionNode.get("propertyIds");
     final List<String> propertyIds = Arrays.asList(entityObjectMapper.readValue(propertyIdsNode.toString(), String[].class));

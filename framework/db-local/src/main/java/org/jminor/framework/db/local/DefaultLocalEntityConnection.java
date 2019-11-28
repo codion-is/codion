@@ -70,6 +70,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
   private static final String CONDITION_PARAM_NAME = "condition";
+  private static final String ENTITIES_PARAM_NAME = "entities";
   private static final String WHERE_SPACE_PREFIX_POSTFIX = " where ";
 
   /**
@@ -200,7 +201,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
-    requireNonNull(entities, "entities");
+    requireNonNull(entities, ENTITIES_PARAM_NAME);
     if (entities.isEmpty()) {
       return emptyList();
     }
@@ -255,7 +256,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
-    requireNonNull(entities, "entities");
+    requireNonNull(entities, ENTITIES_PARAM_NAME);
     if (entities.isEmpty()) {
       return emptyList();
     }
@@ -549,7 +550,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
-    requireNonNull(entities, "entities");
+    requireNonNull(entities, ENTITIES_PARAM_NAME);
     if (entities.isEmpty()) {
       return emptyMap();
     }

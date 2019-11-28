@@ -7,34 +7,35 @@ import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
 import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-final class ConditionDeserializer {
+final class ConditionDeserializer implements Serializable {
+
+  private static final long serialVersionUID = 1;
 
   private final PropertyConditionDeserializer propertyConditionDeserializer;
   private final ConditionSetDeserializer conditionSetDeserializer;
   private final CustomConditionDeserializer customConditionDeserializer;
 
-  public ConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
+  ConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
     this.propertyConditionDeserializer = new PropertyConditionDeserializer(entityObjectMapper);
     this.conditionSetDeserializer = new ConditionSetDeserializer(this);
     this.customConditionDeserializer = new CustomConditionDeserializer(entityObjectMapper);
   }
 
-  public Condition deserialize(final Entity.Definition definition, final JsonNode conditionNode)
-          throws IOException, JsonProcessingException {
+  Condition deserialize(final Entity.Definition definition, final JsonNode conditionNode) throws IOException {
     final JsonNode type = conditionNode.get("type");
     final String typeString = type.asText();
-    if (typeString.equals("set")) {
+    if ("set".equals(typeString)) {
       return conditionSetDeserializer.deserialize(definition, conditionNode);
     }
-    else if (typeString.equals("property")) {
+    else if ("property".equals(typeString)) {
       return propertyConditionDeserializer.deserialize(definition, conditionNode);
     }
-    else if (typeString.equalsIgnoreCase("custom")) {
+    else if ("custom".equals(typeString)) {
       return customConditionDeserializer.deserialize(definition, conditionNode);
     }
 

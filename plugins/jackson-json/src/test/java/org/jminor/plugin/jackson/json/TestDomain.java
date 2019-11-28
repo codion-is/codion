@@ -24,13 +24,20 @@ public final class TestDomain extends Domain {
   public static final String ENTITY_DECIMAL = "id";
   public static final String ENTITY_DATE_TIME = "date_time";
   public static final String ENTITY_BLOB = "blob";
+  public static final String ENTITY_READ_ONLY = "read_only";
   public static final String ENTITY_CONDITION_ID = "entityConditionId";
+  public static final String ENTITY_BOOLEAN = "boolean";
+  public static final String ENTITY_TIME = "time";
 
   void testEntity() {
     define(T_ENTITY,
             columnProperty(ENTITY_DECIMAL, Types.DECIMAL).setPrimaryKeyIndex(0),
             columnProperty(ENTITY_DATE_TIME, Types.TIMESTAMP).setPrimaryKeyIndex(1),
-            columnProperty(ENTITY_BLOB, Types.BLOB))
+            columnProperty(ENTITY_BLOB, Types.BLOB),
+            columnProperty(ENTITY_READ_ONLY, Types.VARCHAR)
+                    .setReadOnly(true),
+            columnProperty(ENTITY_BOOLEAN, Types.BOOLEAN),
+            columnProperty(ENTITY_TIME, Types.TIME))
             .addConditionProvider(ENTITY_CONDITION_ID, (propertyIds, values) -> "1 = 2");
   }
 

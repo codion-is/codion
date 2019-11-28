@@ -4,7 +4,6 @@
 package org.jminor.plugin.jackson.json.domain;
 
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -20,6 +19,8 @@ import static java.util.Objects.requireNonNull;
 
 final class EntitySerializer extends StdSerializer<Entity> {
 
+  private static final long serialVersionUID = 1;
+
   private boolean includeForeignKeyValues = false;
   private boolean includeNullValues = true;
   private boolean includeReadOnlyValues = true;
@@ -32,7 +33,8 @@ final class EntitySerializer extends StdSerializer<Entity> {
   }
 
   @Override
-  public void serialize(final Entity entity, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
+  public void serialize(final Entity entity, final JsonGenerator generator, final SerializerProvider provider)
+          throws IOException {
     requireNonNull(entity, "entity");
     generator.writeStartObject();
     generator.writeFieldName("entityId");
@@ -81,9 +83,6 @@ final class EntitySerializer extends StdSerializer<Entity> {
   }
 
   private boolean include(final Property property, final Entity entity) {
-    if (property instanceof DerivedProperty) {
-      return false;
-    }
     if (!includeForeignKeyValues && property instanceof ForeignKeyProperty) {
       return false;
     }

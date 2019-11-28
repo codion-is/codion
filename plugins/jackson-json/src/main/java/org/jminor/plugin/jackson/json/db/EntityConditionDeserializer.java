@@ -10,7 +10,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -19,18 +18,19 @@ import java.io.IOException;
 
 final class EntityConditionDeserializer extends StdDeserializer<EntityCondition> {
 
+  private static final long serialVersionUID = 1;
+
   private final ConditionDeserializer conditionDeserializer;
   private final Entity.Definition.Provider definitionProvider;
 
-  public EntityConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
+  EntityConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
     super(EntityCondition.class);
     this.conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
     this.definitionProvider = entityObjectMapper.getDomain();
   }
 
   @Override
-  public EntityCondition deserialize(final JsonParser parser, final DeserializationContext ctxt)
-          throws IOException, JsonProcessingException {
+  public EntityCondition deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityConditionNode = parser.getCodec().readTree(parser);
     final String entityId = entityConditionNode.get("entityId").asText();
     final JsonNode conditionNode = entityConditionNode.get("condition");

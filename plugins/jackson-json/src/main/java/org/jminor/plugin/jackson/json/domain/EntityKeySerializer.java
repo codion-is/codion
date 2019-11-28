@@ -18,6 +18,8 @@ import static java.util.Objects.requireNonNull;
 
 final class EntityKeySerializer extends StdSerializer<Entity.Key> {
 
+  private static final long serialVersionUID = 1;
+
   private final EntityObjectMapper entityObjectMapper;
 
   EntityKeySerializer(final EntityObjectMapper entityObjectMapper) {
@@ -35,7 +37,7 @@ final class EntityKeySerializer extends StdSerializer<Entity.Key> {
     generator.writeEndObject();
   }
 
-  private Map<String, Object> getValueMap(final Entity.Key key) {
+  private static Map<String, Object> getValueMap(final Entity.Key key) {
     final Map<String, Object> valueMap = new HashMap<>();
     for (final ColumnProperty property : key.keySet()) {
       valueMap.put(property.getPropertyId(), key.get(property));

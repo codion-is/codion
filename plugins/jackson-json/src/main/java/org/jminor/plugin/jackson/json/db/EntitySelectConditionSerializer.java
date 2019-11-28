@@ -13,7 +13,9 @@ import java.io.IOException;
 
 final class EntitySelectConditionSerializer extends StdSerializer<EntitySelectCondition> {
 
-  public EntitySelectConditionSerializer() {
+  private static final long serialVersionUID = 1;
+
+  EntitySelectConditionSerializer() {
     super(EntitySelectCondition.class);
   }
 

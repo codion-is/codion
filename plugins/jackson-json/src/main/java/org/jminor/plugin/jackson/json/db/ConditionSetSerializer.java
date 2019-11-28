@@ -9,17 +9,20 @@ import org.jminor.framework.db.condition.PropertyCondition;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
-final class ConditionSetSerializer {
+final class ConditionSetSerializer implements Serializable {
+
+  private static final long serialVersionUID = 1;
 
   private final PropertyConditionSerializer propertyConditionSerializer;
 
-  public ConditionSetSerializer(final PropertyConditionSerializer propertyConditionSerializer) {
+  ConditionSetSerializer(final PropertyConditionSerializer propertyConditionSerializer) {
     this.propertyConditionSerializer = propertyConditionSerializer;
   }
 
-  public void serialize(final Condition.Set set, final JsonGenerator generator) throws IOException {
+  void serialize(final Condition.Set set, final JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeObjectField("type", "set");
     generator.writeObjectField("conjunction", set.getConjunction().toString());
