@@ -4,6 +4,7 @@
 package org.jminor.plugin.jackson.json.db;
 
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -15,8 +16,11 @@ final class EntitySelectConditionDeserializer extends StdDeserializer<EntitySele
 
   private static final long serialVersionUID = 1;
 
-  EntitySelectConditionDeserializer() {
+  private final ConditionSerializer conditionSerializer;
+
+  EntitySelectConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
     super(EntitySelectCondition.class);
+    this.conditionSerializer = new ConditionSerializer(new PropertyConditionSerializer(entityObjectMapper), entityObjectMapper);
   }
 
   @Override

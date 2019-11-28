@@ -25,8 +25,8 @@ public final class ConditionObjectMapper extends ObjectMapper {
     final SimpleModule module = new SimpleModule();
     module.addSerializer(EntityCondition.class, new EntityConditionSerializer(entityObjectMapper));
     module.addDeserializer(EntityCondition.class, new EntityConditionDeserializer(entityObjectMapper));
-    module.addSerializer(EntitySelectCondition.class, new EntitySelectConditionSerializer());
-    module.addDeserializer(EntitySelectCondition.class, new EntitySelectConditionDeserializer());
+    module.addSerializer(EntitySelectCondition.class, new EntitySelectConditionSerializer(entityObjectMapper));
+    module.addDeserializer(EntitySelectCondition.class, new EntitySelectConditionDeserializer(entityObjectMapper));
     registerModule(module);
   }
 }

@@ -5380,3 +5380,4 @@
   DefaultEntityKey now overrides validateAndPrepare(), validation moved from handlePut()
   DefaultProperty.validateType() now returns the value
   DefaultEntity and DefaultEntityKey now validate types on deserialization
+  DefaultLocalEntityConnection.lockAndCheckIfModified() new bug fixed, now only selects writable along with primary key properties
