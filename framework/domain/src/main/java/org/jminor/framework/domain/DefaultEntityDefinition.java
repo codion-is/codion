@@ -444,12 +444,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getSelectableColumnProperties(final List<String> propertyIds) {
-    final List<ColumnProperty> properties = new ArrayList<>(propertyIds.size());
+    final List<ColumnProperty> theProperties = new ArrayList<>(propertyIds.size());
     for (int i = 0; i < propertyIds.size(); i++) {
-      properties.add(getSelectableColumnProperty(propertyIds.get(i)));
+      theProperties.add(getSelectableColumnProperty(propertyIds.get(i)));
     }
 
-    return properties;
+    return theProperties;
   }
 
   /** {@inheritDoc} */
