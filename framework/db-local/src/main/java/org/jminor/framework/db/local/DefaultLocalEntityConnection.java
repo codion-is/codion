@@ -29,6 +29,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.SubqueryProperty;
 
 import org.slf4j.Logger;
@@ -84,6 +85,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<String, List<ColumnProperty>> insertProperties = new HashMap<>();
   private final Map<String, List<ColumnProperty>> updateProperties = new HashMap<>();
   private final Map<String, List<ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
+  private final Map<String, String[]> primaryKeyAndWritableColumnPropertyIds = new HashMap<>();
   private final Map<String, String> selectAllColumnsStrings = new HashMap<>();
 
   private boolean optimisticLocking = true;
@@ -806,6 +808,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (final Map.Entry<String, List<Entity>> entitiesByEntityIdEntry : entitiesByEntityId.entrySet()) {
       final List<Entity.Key> originalKeys = getOriginalKeys(entitiesByEntityIdEntry.getValue());
       final EntitySelectCondition selectForUpdateCondition = entitySelectCondition(originalKeys);
+      selectForUpdateCondition.setSelectPropertyIds(getPrimaryKeyAndWritableColumnPropertyIds(entitiesByEntityIdEntry.getKey()));
       selectForUpdateCondition.setForUpdate(true);
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
       final Map<Entity.Key, Entity> currentEntitiesByKey = mapToKey(currentEntities);
@@ -1060,6 +1063,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<ColumnProperty> getUpdatableProperties(final Entity.Definition entityDefinition) {
     return updateProperties.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
             entityDefinition.getWritableColumnProperties(true, false));
+  }
+
+  private String[] getPrimaryKeyAndWritableColumnPropertyIds(final String entityId) {
+    return primaryKeyAndWritableColumnPropertyIds.computeIfAbsent(entityId, e -> {
+      final Entity.Definition entityDefinition = getEntityDefinition(entityId);
+      final List<ColumnProperty> writableAndPrimaryKeyProperties =
+              new ArrayList<>(entityDefinition.getWritableColumnProperties(true, true));
+      entityDefinition.getPrimaryKeyProperties().forEach(primaryKeyProperty -> {
+        if (!writableAndPrimaryKeyProperties.contains(primaryKeyProperty)) {
+          writableAndPrimaryKeyProperties.add(primaryKeyProperty);
+        }
+      });
+
+      return writableAndPrimaryKeyProperties.stream().map(Property::getPropertyId).toArray(String[]::new);
+    });
   }
 
   private String getSelectColumnsString(final String entityId, final List<String> selectPropertyIds,
