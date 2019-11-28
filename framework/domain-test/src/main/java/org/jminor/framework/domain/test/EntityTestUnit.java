@@ -113,8 +113,8 @@ public class EntityTestUnit {
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
   public final void testEntity(final String entityId) throws DatabaseException {
-    connection.beginTransaction();
     try {
+      connection.beginTransaction();
       final Map<String, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());
       Entity testEntity = null;
       final Entity.Definition entityDefinition = getDomain().getDefinition(entityId);

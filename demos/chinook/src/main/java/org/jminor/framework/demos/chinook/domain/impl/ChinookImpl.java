@@ -79,7 +79,8 @@ public final class ChinookImpl extends Domain implements Chinook {
             columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
                     .setNullable(false)
                     .setMaxLength(160)
-                    .setPreferredColumnWidth(160))
+                    .setPreferredColumnWidth(160),
+            columnProperty(ALBUM_COVERART, Types.BLOB))
             .setKeyGenerator(automaticKeyGenerator("chinook.album"))
             .setOrderBy(orderBy().ascending(ALBUM_ARTISTID, ALBUM_TITLE))
             .setStringProvider(new StringProvider(ALBUM_TITLE))
