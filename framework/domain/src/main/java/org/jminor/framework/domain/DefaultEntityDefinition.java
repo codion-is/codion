@@ -4,6 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.TextUtil;
+import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -166,6 +167,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final List<ColumnProperty> primaryKeyProperties;
   private final Map<String, ColumnProperty> primaryKeyPropertyMap;
   private final List<ForeignKeyProperty> foreignKeyProperties;
+  private final List<BlobProperty> lazyLoadedBlobProperties;
   private final List<TransientProperty> transientProperties;
   private final List<Property> visibleProperties;
   private final List<ColumnProperty> columnProperties;
@@ -192,8 +194,9 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.columnProperties = columnProperties;
     this.foreignKeyProperties = foreignKeyProperties;
     this.transientProperties = transientProperties;
+    this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties(columnProperties);
     this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap(foreignKeyProperties);
-    this.selectableColumnProperties = unmodifiableList(getSelectableProperties(columnProperties));
+    this.selectableColumnProperties = unmodifiableList(getSelectableProperties(columnProperties, lazyLoadedBlobProperties));
     this.properties = unmodifiableList(new ArrayList<>(this.propertyMap.values()));
     this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties(this.propertyMap.values()));
     this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
@@ -535,6 +538,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
+  public List<BlobProperty> getLazyLoadedBlobProperties() {
+    return lazyLoadedBlobProperties;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public List<TransientProperty> getTransientProperties() {
     return transientProperties;
   }
@@ -613,6 +622,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return unmodifiableMap(map);
   }
 
+  private List<BlobProperty> initializeLazyLoadedBlobProperties(final List<ColumnProperty> columnProperties) {
+    return columnProperties.stream().filter(property ->
+            property instanceof BlobProperty && ((BlobProperty) property).isLazyLoaded())
+            .map(property -> (BlobProperty) property).collect(toList());
+  }
+
   private static Map<String, List<DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
     final Map<String, List<DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
     for (final Property property : properties) {
@@ -662,8 +677,10 @@ final class DefaultEntityDefinition implements Entity.Definition {
             }).collect(toList());
   }
 
-  private static List<ColumnProperty> getSelectableProperties(final List<ColumnProperty> columnProperties) {
-    return columnProperties.stream().filter(ColumnProperty::isSelectable).collect(toList());
+  private static List<ColumnProperty> getSelectableProperties(final List<ColumnProperty> columnProperties,
+                                                              final List<BlobProperty> lazyLoadedBlobProperties) {
+    return columnProperties.stream().filter(property ->
+            !lazyLoadedBlobProperties.contains(property)).filter(ColumnProperty::isSelectable).collect(toList());
   }
 
   private static List<Property> getVisibleProperties(final Collection<Property> properties) {

@@ -11,6 +11,7 @@ import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.value.PropertyValue;
+import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -776,9 +777,17 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     List<ColumnProperty> getColumnProperties();
 
     /**
+     * Returns the default select column properties used when selecting this entity type,
+     * this does not include properties where {@link ColumnProperty#isSelectable()} returns false
+     * and {@link BlobProperty}s with {@link BlobProperty#isLazyLoaded()} returning false.
      * @return a list containing the column properties to include in select queries
      */
     List<ColumnProperty> getSelectableColumnProperties();
+
+    /**
+     * @return a list containing all lazy loaded blob properties for this entity type
+     */
+    List<BlobProperty> getLazyLoadedBlobProperties();
 
     /**
      * @return a list containing the non-column-based properties for this entity type

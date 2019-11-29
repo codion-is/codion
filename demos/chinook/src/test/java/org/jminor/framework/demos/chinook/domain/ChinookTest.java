@@ -5,20 +5,12 @@ package org.jminor.framework.demos.chinook.domain;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
-import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Random;
-
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class ChinookTest extends EntityTestUnit {
 
@@ -33,29 +25,6 @@ public class ChinookTest extends EntityTestUnit {
   @Test
   public void album() throws Exception {
     testEntity(T_ALBUM);
-  }
-
-  @Test
-  public void albumCoverArt() throws Exception {
-    final Entity artist = initializeReferenceEntity(T_ARTIST, emptyMap());
-    final HashMap<String, Entity> foreignKeyReferences = new HashMap<>();
-    final EntityConnection connection = getConnection();
-
-    foreignKeyReferences.put(T_ARTIST, connection.selectSingle(
-            connection.insert(singletonList(artist)).get(0)));
-
-    final Entity album = connection.selectSingle(
-            connection.insert(singletonList(
-                    initializeTestEntity(T_ALBUM, foreignKeyReferences))).get(0));
-
-    final byte[] coverart = new byte[1024];
-    new Random().nextBytes(coverart);
-
-    connection.writeBlob(album.getKey(), ALBUM_COVERART, coverart);
-
-    final byte[] bytes = connection.readBlob(album.getKey(), ALBUM_COVERART);
-
-    assertArrayEquals(coverart, bytes);
   }
 
   @Test

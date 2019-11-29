@@ -120,7 +120,7 @@ public class EntityTestUnit {
       final Entity.Definition entityDefinition = getDomain().getDefinition(entityId);
       if (!entityDefinition.isReadOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityId, foreignKeyEntities), "test entity"));
-        assertNotNull(testEntity.toString());
+        assertFalse(testEntity.getKey().isNull());
         testUpdate(testEntity, initializeReferencedEntities(entityId, foreignKeyEntities));
       }
       testSelect(entityId, testEntity);
@@ -169,6 +169,47 @@ public class EntityTestUnit {
     populateEntity(domain, entity,
             domain.getDefinition(entity.getEntityId()).getWritableColumnProperties(false, true),
             property -> getRandomValue(property, foreignKeyEntities));
+  }
+
+  /**
+   * @param property the property
+   * @param referenceEntities entities referenced by the given property
+   * @return a random value
+   */
+  public static Object getRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
+    requireNonNull(property, "property");
+    if (property instanceof ForeignKeyProperty) {
+      return getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
+    }
+    if (property instanceof ValueListProperty) {
+      return getRandomListValue((ValueListProperty) property);
+    }
+    switch (property.getType()) {
+      case Types.BOOLEAN:
+        return RANDOM.nextBoolean();
+      case Types.CHAR:
+        return (char) RANDOM.nextInt();
+      case Types.DATE:
+        return LocalDate.now();
+      case Types.TIMESTAMP:
+        return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      case Types.TIME:
+        return LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
+      case Types.DOUBLE:
+        return getRandomDouble(property);
+      case Types.DECIMAL:
+        return BigDecimal.valueOf(getRandomDouble(property));
+      case Types.INTEGER:
+        return getRandomInteger(property);
+      case Types.BIGINT:
+        return (long) getRandomInteger(property);
+      case Types.VARCHAR:
+        return getRandomString(property);
+      case Types.BLOB:
+        return getRandomBlob(1024);
+      default:
+        return null;
+    }
   }
 
   /**
@@ -320,6 +361,9 @@ public class EntityTestUnit {
           assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
                   && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
         }
+        else if (property.isBlob()) {
+          assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
+        }
         else {
           assertEquals(beforeUpdate, afterUpdate, message);
         }
@@ -368,45 +412,6 @@ public class EntityTestUnit {
     }
   }
 
-  /**
-   * @param property the property
-   * @param referenceEntities entities referenced by the given property
-   * @return a random value
-   */
-  private static Object getRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
-    requireNonNull(property, "property");
-    if (property instanceof ForeignKeyProperty) {
-      return getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
-    }
-    if (property instanceof ValueListProperty) {
-      return getRandomListValue((ValueListProperty) property);
-    }
-    switch (property.getType()) {
-      case Types.BOOLEAN:
-        return RANDOM.nextBoolean();
-      case Types.CHAR:
-        return (char) RANDOM.nextInt();
-      case Types.DATE:
-        return LocalDate.now();
-      case Types.TIMESTAMP:
-        return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-      case Types.TIME:
-        return LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
-      case Types.DOUBLE:
-        return getRandomDouble(property);
-      case Types.DECIMAL:
-        return BigDecimal.valueOf(getRandomDouble(property));
-      case Types.INTEGER:
-        return getRandomInteger(property);
-      case Types.BIGINT:
-        return (long) getRandomInteger(property);
-      case Types.VARCHAR:
-        return getRandomString(property);
-      default:
-        return null;
-    }
-  }
-
   private static void populateEntity(final Domain domain, final Entity entity, final Collection<ColumnProperty> properties,
                                      final ValueProvider<Property, Object> valueProvider) {
     for (final ColumnProperty property : properties) {
@@ -426,6 +431,13 @@ public class EntityTestUnit {
     final int length = property.getMaxLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaxLength();
 
     return TextUtil.createRandomString(length, length);
+  }
+
+  private static byte[] getRandomBlob(final int numberOfBytes) {
+    final byte[] bytes = new byte[numberOfBytes];
+    RANDOM.nextBytes(bytes);
+
+    return bytes;
   }
 
   private static Object getReferenceEntity(final ForeignKeyProperty property, final Map<String, Entity> referenceEntities) {

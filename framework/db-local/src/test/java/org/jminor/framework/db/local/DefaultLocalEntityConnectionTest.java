@@ -700,8 +700,13 @@ public class DefaultLocalEntityConnectionTest {
     connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA, bytes);
     assertArrayEquals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA));
 
-    final Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
+    Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
     assertNotNull(blobRecordFromDb);
+    //lazy loaded
+    assertNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
+
+    //overrides lazy loading
+    blobRecordFromDb = connection.selectSingle(entitySelectCondition(scott.getKey()).setSelectPropertyIds(EMP_DATA));
     assertNotNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
   }
 
@@ -719,7 +724,8 @@ public class DefaultLocalEntityConnectionTest {
 
     final Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
     assertNotNull(blobRecordFromDb);
-    assertNotNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
+    //lazy loaded
+    assertNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
 
     final byte[] newBytes = new byte[2048];
     new Random().nextBytes(newBytes);

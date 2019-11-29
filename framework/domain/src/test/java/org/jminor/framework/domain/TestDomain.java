@@ -170,6 +170,7 @@ public final class TestDomain extends Domain {
   public static final String EMP_MGR_FK = "mgr_fk";
   public static final String EMP_DEPARTMENT_LOCATION = "location";
   public static final String EMP_NAME_DEPARTMENT = "name_department";
+  public static final String EMP_DATA = "data";
 
   void employee() {
     define(T_EMP, "scott.emp",
@@ -214,7 +215,9 @@ public final class TestDomain extends Domain {
               }
 
               return name + " - " + department.getString(DEPARTMENT_NAME);
-            }, EMP_NAME, EMP_DEPARTMENT_FK))
+            }, EMP_NAME, EMP_DEPARTMENT_FK),
+            Properties.blobProperty(EMP_DATA, "Data")
+                    .setLazyLoaded(true))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .setStringProvider(new StringProvider(EMP_NAME))

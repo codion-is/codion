@@ -6,6 +6,7 @@ package org.jminor.framework.db.local;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.Property;
@@ -25,20 +26,24 @@ final class EntityResultPacker implements ResultPacker<Entity> {
   private final Domain domain;
   private final String entityId;
   private final List<ColumnProperty> columnProperties;
+  private final List<BlobProperty> lazyLoadedBlobProperties;
   private final List<TransientProperty> transientProperties;
 
   /**
    * @param domain the Domain model
    * @param entityId the entityId of the entity to pack
    * @param columnProperties the column properties in the same order as they appear in the ResultSet
+   * @param lazyLoadedBlobProperties any lazy loaded blob properties
    * @param transientProperties the transient properties in the given entity type, if any
    */
   EntityResultPacker(final Domain domain, final String entityId,
                      final List<ColumnProperty> columnProperties,
+                     final List<BlobProperty> lazyLoadedBlobProperties,
                      final List<TransientProperty> transientProperties) {
     this.domain = domain;
     this.entityId = entityId;
     this.columnProperties = columnProperties;
+    this.lazyLoadedBlobProperties = lazyLoadedBlobProperties;
     this.transientProperties = transientProperties;
   }
 
@@ -59,6 +64,12 @@ final class EntityResultPacker implements ResultPacker<Entity> {
       }
       catch (final Exception e) {
         throw new SQLException("Exception fetching: " + property + ", entity: " + entityId + " [" + e.getMessage() + "]", e);
+      }
+    }
+    for (int i = 0; i < lazyLoadedBlobProperties.size(); i++) {
+      final BlobProperty blobProperty = lazyLoadedBlobProperties.get(i);
+      if (!values.containsKey(blobProperty)) {
+        values.put(blobProperty, null);
       }
     }
 
