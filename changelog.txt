@@ -5368,3 +5368,4 @@
   EntityTestUnit now includes blob properties
   Blob unit tests improved
   BlobInputProvider added
+  BlobProperty is now hidden by default
