@@ -24,6 +24,7 @@ public interface Chinook {
   String ALBUM_ARTISTID = "artistid";
   String ALBUM_ARTIST_FK = "artist_fk";
   String ALBUM_COVERART = "coverart";
+  String ALBUM_COVERART_IMAGE = "coverart_image";
 
   String T_EMPLOYEE = "employee@chinook";
   String EMPLOYEE_EMPLOYEEID = "employeeid";

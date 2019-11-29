@@ -3,13 +3,25 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
+import org.jminor.plugin.imagepanel.NavigableImagePanel;
+import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_ARTIST_FK;
-import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_TITLE;
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class AlbumEditPanel extends EntityEditPanel {
 
@@ -24,8 +36,39 @@ public class AlbumEditPanel extends EntityEditPanel {
     createForeignKeyLookupField(ALBUM_ARTIST_FK).setColumns(18);
     createTextField(ALBUM_TITLE).setColumns(18);
 
-    setLayout(new GridLayout(2, 1, 5, 5));
-    addPropertyPanel(ALBUM_ARTIST_FK);
-    addPropertyPanel(ALBUM_TITLE);
+    final JPanel inputPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+    inputPanel.add(createPropertyPanel(ALBUM_ARTIST_FK));
+    inputPanel.add(createPropertyPanel(ALBUM_TITLE));
+
+    setLayout(new BorderLayout(5, 5));
+
+    final NavigableImagePanel coverArtPanel = new NavigableImagePanel();
+    coverArtPanel.setZoomDevice(NavigableImagePanel.ZoomDevice.NONE);
+    coverArtPanel.setNavigationImageEnabled(false);
+    coverArtPanel.setBorder(BorderFactory.createTitledBorder("Cover Art"));
+    coverArtPanel.setPreferredSize(new Dimension(200, 200));
+
+    final JPanel coverArtBasePanel = new JPanel(new BorderLayout(5, 5));
+    coverArtBasePanel.add(coverArtPanel, BorderLayout.CENTER);
+    final JPanel coverButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    coverButtonPanel.add(new JButton(Controls.control(this::setCoverArt, "Select cover...",
+            getEditModel().getEntityNewObserver().getReversedObserver())));
+    coverArtBasePanel.add(coverButtonPanel, BorderLayout.SOUTH);
+
+    final SwingEntityEditModel editModel = getEditModel();
+    editModel.addEntitySetListener(album ->
+            coverArtPanel.setImage(album == null ? null : (BufferedImage) album.get(ALBUM_COVERART_IMAGE)));
+    editModel.addValueSetListener(ALBUM_COVERART, valueChange ->
+            coverArtPanel.setImage(valueChange.getCurrentValue() == null ? null : (BufferedImage) editModel.get(ALBUM_COVERART_IMAGE)));
+    final JPanel inputBasePanel = new JPanel(new BorderLayout(5, 5));
+    inputBasePanel.add(inputPanel, BorderLayout.NORTH);
+
+    add(inputBasePanel, BorderLayout.WEST);
+    add(coverArtBasePanel, BorderLayout.CENTER);
+  }
+
+  private void setCoverArt() throws IOException {
+    final File coverFile = UiUtil.selectFile(this, null, "Select image");
+    getEditModel().put(ALBUM_COVERART, Files.readAllBytes(coverFile.toPath()));
   }
 }
