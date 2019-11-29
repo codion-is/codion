@@ -274,9 +274,8 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     if (!nullOrEmpty(val)) {
       return val.charAt(0);
     }
-    else {
-      return null;
-    }
+
+    return null;
   }
 
   private static byte[] getBlob(final ResultSet resultSet, final int columnIndex) throws SQLException {
