@@ -75,7 +75,7 @@ public class DefaultLocalEntityConnectionTest {
   public void delete() throws Exception {
     try {
       connection.beginTransaction();
-      final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT, 40);
+      final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 40);
       connection.delete(new ArrayList<>());
       connection.delete(singletonList(key));
       try {
@@ -89,7 +89,7 @@ public class DefaultLocalEntityConnectionTest {
     }
     try {
       connection.beginTransaction();
-      final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT, 40);
+      final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 40);
       connection.delete(entityCondition(key));
       try {
         connection.selectSingle(key);
@@ -104,52 +104,52 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void deleteReferentialIntegrity() {
-    final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT, 10);
+    final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 10);
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(singletonList(key)));
   }
 
   @Test
   public void insertUniqueConstraint() {
-    final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
-    department.put(TestDomain.DEPARTMENT_ID, 1000);
-    department.put(TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity department = DOMAIN.entity(T_DEPARTMENT);
+    department.put(DEPARTMENT_ID, 1000);
+    department.put(DEPARTMENT_NAME, "SALES");
     assertThrows(UniqueConstraintException.class, () -> connection.insert(singletonList(department)));
   }
 
   @Test
   public void updateUniqueConstraint() throws DatabaseException {
-    final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, 20);
-    department.put(TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity department = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_ID, 20);
+    department.put(DEPARTMENT_NAME, "SALES");
     assertThrows(UniqueConstraintException.class, () -> connection.update(singletonList(department)));
   }
 
   @Test
   public void insertNoParentKey() {
-    final Entity emp = DOMAIN.entity(TestDomain.T_EMP);
-    emp.put(TestDomain.EMP_ID, -100);
-    emp.put(TestDomain.EMP_NAME, "Testing");
-    emp.put(TestDomain.EMP_DEPARTMENT, -1010);//not available
-    emp.put(TestDomain.EMP_SALARY, 2000d);
+    final Entity emp = DOMAIN.entity(T_EMP);
+    emp.put(EMP_ID, -100);
+    emp.put(EMP_NAME, "Testing");
+    emp.put(EMP_DEPARTMENT, -1010);//not available
+    emp.put(EMP_SALARY, 2000d);
     assertThrows(ReferentialIntegrityException.class, () -> connection.insert(singletonList(emp)));
   }
 
   @Test
   public void updateNoParentKey() throws DatabaseException {
-    final Entity emp = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 3);
-    emp.put(TestDomain.EMP_DEPARTMENT, -1010);//not available
+    final Entity emp = connection.selectSingle(T_EMP, EMP_ID, 3);
+    emp.put(EMP_DEPARTMENT, -1010);//not available
     assertThrows(ReferentialIntegrityException.class, () -> connection.update(singletonList(emp)));
   }
 
   @Test
   public void deleteByKeyWithForeignKeys() throws DatabaseException {
-    final Entity accounting = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    final Entity accounting = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "ACCOUNTING");
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(singletonList(accounting.getKey())));
   }
 
   @Test
   public void deleteByConditionWithForeignKeys() throws DatabaseException {
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(entityCondition(TestDomain.T_DEPARTMENT,
-            Conditions.propertyCondition(TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "ACCOUNTING"))));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(entityCondition(T_DEPARTMENT,
+            Conditions.propertyCondition(DEPARTMENT_NAME, ConditionType.LIKE, "ACCOUNTING"))));
   }
 
   @Test
@@ -179,110 +179,110 @@ public class DefaultLocalEntityConnectionTest {
   public void selectDependencies() throws Exception {
     final Map<String, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
     assertTrue(empty.isEmpty());
-    final List<Entity> accounting = connection.select(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    final List<Entity> accounting = connection.select(T_DEPARTMENT, DEPARTMENT_NAME, "ACCOUNTING");
     final Map<String, Collection<Entity>> emps = connection.selectDependencies(accounting);
     assertEquals(1, emps.size());
-    assertTrue(emps.containsKey(TestDomain.T_EMP));
-    assertEquals(7, emps.get(TestDomain.T_EMP).size());
+    assertTrue(emps.containsKey(T_EMP));
+    assertEquals(7, emps.get(T_EMP).size());
 
-    final Entity emp = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
+    final Entity emp = connection.selectSingle(T_EMP, EMP_NAME, "KING");
     final Map<String, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
     assertTrue(deps.isEmpty());//soft foreign key reference
   }
 
   @Test
   public void selectLimitOffset() throws Exception {
-    final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP)
-            .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_NAME)).setLimit(2);
+    final EntitySelectCondition condition = entitySelectCondition(T_EMP)
+            .setOrderBy(Domain.orderBy().ascending(EMP_NAME)).setLimit(2);
     List<Entity> result = connection.select(condition);
     assertEquals(2, result.size());
     condition.setLimit(3);
     condition.setOffset(3);
     result = connection.select(condition);
     assertEquals(3, result.size());
-    assertEquals("BLAKE", result.get(0).get(TestDomain.EMP_NAME));
-    assertEquals("CLARK", result.get(1).get(TestDomain.EMP_NAME));
-    assertEquals("FORD", result.get(2).get(TestDomain.EMP_NAME));
+    assertEquals("BLAKE", result.get(0).get(EMP_NAME));
+    assertEquals("CLARK", result.get(1).get(EMP_NAME));
+    assertEquals("FORD", result.get(2).get(EMP_NAME));
   }
 
   @Test
   public void selectWhereNull() throws Exception {
-    connection.select(TestDomain.T_EMP, TestDomain.EMP_MGR_FK, (Object[]) null);
-    connection.select(TestDomain.T_EMP, TestDomain.EMP_DATA_LAZY, (Object) null);
+    connection.select(T_EMP, EMP_MGR_FK, (Object[]) null);
+    connection.select(T_EMP, EMP_DATA_LAZY, (Object) null);
   }
 
   @Test
   public void select() throws Exception {
     List<Entity> result = connection.select(new ArrayList<>());
     assertTrue(result.isEmpty());
-    result = connection.select(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, 10, 20);
+    result = connection.select(T_DEPARTMENT, DEPARTMENT_ID, 10, 20);
     assertEquals(2, result.size());
     result = connection.select(getKeys(result));
     assertEquals(2, result.size());
-    result = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT,
-            Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID,
-                    asList(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_ID), asList(10, 20))));
+    result = connection.select(entitySelectCondition(T_DEPARTMENT,
+            Conditions.customCondition(DEPARTMENT_CONDITION_ID,
+                    asList(DEPARTMENT_ID, DEPARTMENT_ID), asList(10, 20))));
     assertEquals(2, result.size());
     result = connection.select(entitySelectCondition(JOINED_QUERY_ENTITY_ID,
             Conditions.customCondition(JOINED_QUERY_CONDITION_ID)));
     assertEquals(7, result.size());
 
-    final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP,
-            Conditions.customCondition(TestDomain.EMP_NAME_IS_BLAKE_CONDITION_ID));
+    final EntitySelectCondition condition = entitySelectCondition(T_EMP,
+            Conditions.customCondition(EMP_NAME_IS_BLAKE_CONDITION_ID));
     result = connection.select(condition);
     Entity emp = result.get(0);
-    assertTrue(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
-    emp = emp.getForeignKey(TestDomain.EMP_MGR_FK);
-    assertFalse(emp.isLoaded(TestDomain.EMP_MGR_FK));
+    assertTrue(emp.isLoaded(EMP_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(EMP_MGR_FK));
+    emp = emp.getForeignKey(EMP_MGR_FK);
+    assertFalse(emp.isLoaded(EMP_MGR_FK));
 
-    result = connection.select(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_DEPARTMENT_FK, 0));
+    result = connection.select(condition.setForeignKeyFetchDepthLimit(EMP_DEPARTMENT_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
-    assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
+    assertFalse(emp.isLoaded(EMP_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(EMP_MGR_FK));
 
-    result = connection.select(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, 0));
+    result = connection.select(condition.setForeignKeyFetchDepthLimit(EMP_MGR_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
-    assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
-    assertFalse(emp.isLoaded(TestDomain.EMP_MGR_FK));
+    assertFalse(emp.isLoaded(EMP_DEPARTMENT_FK));
+    assertFalse(emp.isLoaded(EMP_MGR_FK));
 
-    result = connection.select(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, 2));
+    result = connection.select(condition.setForeignKeyFetchDepthLimit(EMP_MGR_FK, 2));
     assertEquals(1, result.size());
     emp = result.get(0);
-    assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
-    emp = emp.getForeignKey(TestDomain.EMP_MGR_FK);
-    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
+    assertFalse(emp.isLoaded(EMP_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(EMP_MGR_FK));
+    emp = emp.getForeignKey(EMP_MGR_FK);
+    assertTrue(emp.isLoaded(EMP_MGR_FK));
 
-    result = connection.select(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, -1));
+    result = connection.select(condition.setForeignKeyFetchDepthLimit(EMP_MGR_FK, -1));
     assertEquals(1, result.size());
     emp = result.get(0);
-    assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
-    emp = emp.getForeignKey(TestDomain.EMP_MGR_FK);
-    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
+    assertFalse(emp.isLoaded(EMP_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(EMP_MGR_FK));
+    emp = emp.getForeignKey(EMP_MGR_FK);
+    assertTrue(emp.isLoaded(EMP_MGR_FK));
   }
 
   @Test
   public void selectFetchCount() throws DatabaseException {
-    List<Entity> departments = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT));
+    List<Entity> departments = connection.select(entitySelectCondition(T_DEPARTMENT));
     assertEquals(4, departments.size());
-    departments = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(0));
+    departments = connection.select(entitySelectCondition(T_DEPARTMENT).setFetchCount(0));
     assertTrue(departments.isEmpty());
-    departments = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(2));
+    departments = connection.select(entitySelectCondition(T_DEPARTMENT).setFetchCount(2));
     assertEquals(2, departments.size());
-    departments = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(3));
+    departments = connection.select(entitySelectCondition(T_DEPARTMENT).setFetchCount(3));
     assertEquals(3, departments.size());
-    departments = connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT).setFetchCount(-1));
+    departments = connection.select(entitySelectCondition(T_DEPARTMENT).setFetchCount(-1));
     assertEquals(4, departments.size());
   }
 
   @Test
   public void selectByKey() throws DatabaseException {
-    final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT, 10);
-    final Entity.Key empKey = DOMAIN.key(TestDomain.T_EMP, 8);
+    final Entity.Key deptKey = DOMAIN.key(T_DEPARTMENT, 10);
+    final Entity.Key empKey = DOMAIN.key(T_EMP, 8);
 
     final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -290,38 +290,38 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectPropertyIds() throws Exception {
-    final List<Entity> emps = connection.select(entitySelectCondition(TestDomain.T_EMP)
-            .setSelectPropertyIds(TestDomain.EMP_ID, TestDomain.EMP_JOB, TestDomain.EMP_DEPARTMENT));
+    final List<Entity> emps = connection.select(entitySelectCondition(T_EMP)
+            .setSelectPropertyIds(EMP_ID, EMP_JOB, EMP_DEPARTMENT));
     for (final Entity emp : emps) {
-      assertTrue(emp.containsKey(TestDomain.EMP_ID));
-      assertTrue(emp.containsKey(TestDomain.EMP_JOB));
-      assertTrue(emp.containsKey(TestDomain.EMP_DEPARTMENT_FK));
-      assertFalse(emp.containsKey(TestDomain.EMP_COMMISSION));
-      assertFalse(emp.containsKey(TestDomain.EMP_HIREDATE));
-      assertFalse(emp.containsKey(TestDomain.EMP_NAME));
-      assertFalse(emp.containsKey(TestDomain.EMP_SALARY));
+      assertTrue(emp.containsKey(EMP_ID));
+      assertTrue(emp.containsKey(EMP_JOB));
+      assertTrue(emp.containsKey(EMP_DEPARTMENT_FK));
+      assertFalse(emp.containsKey(EMP_COMMISSION));
+      assertFalse(emp.containsKey(EMP_HIREDATE));
+      assertFalse(emp.containsKey(EMP_NAME));
+      assertFalse(emp.containsKey(EMP_SALARY));
     }
   }
 
   @Test
   public void selectInvalidPropertyIds() throws Exception {
     assertThrows(IllegalArgumentException.class, () ->
-            connection.select(entitySelectCondition(TestDomain.T_EMP)
-                    .setSelectPropertyIds(TestDomain.EMP_ID, TestDomain.EMP_JOB, TestDomain.EMP_DEPARTMENT_FK)));
+            connection.select(entitySelectCondition(T_EMP)
+                    .setSelectPropertyIds(EMP_ID, EMP_JOB, EMP_DEPARTMENT_FK)));
   }
 
   @Test
   public void selectInvalidColumn() throws Exception {
-    assertThrows(DatabaseException.class, () -> connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT,
-            Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_INVALID_COLUMN_ID))));
+    assertThrows(DatabaseException.class, () -> connection.select(entitySelectCondition(T_DEPARTMENT,
+            Conditions.customCondition(DEPARTMENT_CONDITION_INVALID_COLUMN_ID))));
   }
 
   @Test
   public void selectRowCount() throws Exception {
-    int rowCount = connection.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT));
+    int rowCount = connection.selectRowCount(entityCondition(T_DEPARTMENT));
     assertEquals(4, rowCount);
-    Condition deptNoCondition = Conditions.propertyCondition(TestDomain.DEPARTMENT_ID, ConditionType.GREATER_THAN, 30);
-    rowCount = connection.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT, deptNoCondition));
+    Condition deptNoCondition = Conditions.propertyCondition(DEPARTMENT_ID, ConditionType.GREATER_THAN, 30);
+    rowCount = connection.selectRowCount(entityCondition(T_DEPARTMENT, deptNoCondition));
     assertEquals(2, rowCount);
 
     rowCount = connection.selectRowCount(entityCondition(JOINED_QUERY_ENTITY_ID));
@@ -336,52 +336,52 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectSingle() throws Exception {
-    Entity sales = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
+    Entity sales = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "SALES");
+    assertEquals(sales.getString(DEPARTMENT_NAME), "SALES");
     sales = connection.selectSingle(sales.getKey());
-    assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
-    sales = connection.selectSingle(entitySelectCondition(TestDomain.T_DEPARTMENT,
-            Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_SALES_ID)));
-    assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
+    assertEquals(sales.getString(DEPARTMENT_NAME), "SALES");
+    sales = connection.selectSingle(entitySelectCondition(T_DEPARTMENT,
+            Conditions.customCondition(DEPARTMENT_CONDITION_SALES_ID)));
+    assertEquals(sales.getString(DEPARTMENT_NAME), "SALES");
 
-    final Entity king = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
-    assertTrue(king.containsKey(TestDomain.EMP_MGR_FK));
-    assertNull(king.get(TestDomain.EMP_MGR_FK));
+    final Entity king = connection.selectSingle(T_EMP, EMP_NAME, "KING");
+    assertTrue(king.containsKey(EMP_MGR_FK));
+    assertNull(king.get(EMP_MGR_FK));
   }
 
   @Test
   public void customCondition() throws DatabaseException {
-    final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_GREATER_THAN_CONDITION_ID,
-            singletonList(TestDomain.EMP_MGR), singletonList(5));
+    final Condition condition = Conditions.customCondition(EMP_MGR_GREATER_THAN_CONDITION_ID,
+            singletonList(EMP_MGR), singletonList(5));
 
-    assertEquals(4, connection.select(entitySelectCondition(TestDomain.T_EMP, condition)).size());
+    assertEquals(4, connection.select(entitySelectCondition(T_EMP, condition)).size());
   }
 
   @Test
   public void executeFunction() throws DatabaseException {
-    connection.executeFunction(TestDomain.FUNCTION_ID);
+    connection.executeFunction(FUNCTION_ID);
   }
 
   @Test
   public void executeProcedure() throws DatabaseException {
-    connection.executeProcedure(TestDomain.PROCEDURE_ID);
+    connection.executeProcedure(PROCEDURE_ID);
   }
 
   @Test
   public void selectSingleNotFound() throws Exception {
-    assertThrows(RecordNotFoundException.class, () -> connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "NO_NAME"));
+    assertThrows(RecordNotFoundException.class, () -> connection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "NO_NAME"));
   }
 
   @Test
   public void selectSingleManyFound() throws Exception {
-    assertThrows(MultipleRecordsFoundException.class, () -> connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_JOB, "MANAGER"));
+    assertThrows(MultipleRecordsFoundException.class, () -> connection.selectSingle(T_EMP, EMP_JOB, "MANAGER"));
   }
 
   @Test
   public void insertOnlyNullValues() throws DatabaseException {
     try {
       connection.beginTransaction();
-      final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
+      final Entity department = DOMAIN.entity(T_DEPARTMENT);
       assertThrows(DatabaseException.class, () -> connection.insert(singletonList(department)));
     }
     finally {
@@ -393,7 +393,7 @@ public class DefaultLocalEntityConnectionTest {
   public void updateNoModifiedValues() throws DatabaseException {
     try {
       connection.beginTransaction();
-      final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, 10);
+      final Entity department = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_ID, 10);
       assertThrows(DatabaseException.class, () -> connection.update(singletonList(department)));
     }
     finally {
@@ -403,57 +403,57 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void dateTime() throws DatabaseException {
-    final Entity sales = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity sales = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "SALES");
     final double salary = 1500;
 
-    Entity emp = DOMAIN.entity(TestDomain.T_EMP);
-    emp.put(TestDomain.EMP_DEPARTMENT_FK, sales);
-    emp.put(TestDomain.EMP_NAME, "Nobody");
-    emp.put(TestDomain.EMP_SALARY, salary);
+    Entity emp = DOMAIN.entity(T_EMP);
+    emp.put(EMP_DEPARTMENT_FK, sales);
+    emp.put(EMP_NAME, "Nobody");
+    emp.put(EMP_SALARY, salary);
     final LocalDate hiredate = LocalDate.parse("03-10-1975", DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH));
-    emp.put(TestDomain.EMP_HIREDATE, hiredate);
+    emp.put(EMP_HIREDATE, hiredate);
     final LocalDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP));
-    emp.put(TestDomain.EMP_HIRETIME, hiretime);
+    emp.put(EMP_HIRETIME, hiretime);
 
     emp = connection.selectSingle(connection.insert(singletonList(emp)).get(0));
 
-    assertEquals(hiredate, emp.getDate(TestDomain.EMP_HIREDATE));
-    assertEquals(hiretime, emp.getTimestamp(TestDomain.EMP_HIRETIME));
+    assertEquals(hiredate, emp.getDate(EMP_HIREDATE));
+    assertEquals(hiretime, emp.getTimestamp(EMP_HIRETIME));
   }
 
   @Test
   public void insertWithNullValues() throws DatabaseException {
-    final Entity sales = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity sales = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "SALES");
     final String name = "Nobody";
     final double salary = 1500;
     final double defaultCommission = 200;
 
-    Entity emp = DOMAIN.entity(TestDomain.T_EMP);
-    emp.put(TestDomain.EMP_DEPARTMENT_FK, sales);
-    emp.put(TestDomain.EMP_NAME, name);
-    emp.put(TestDomain.EMP_SALARY, salary);
+    Entity emp = DOMAIN.entity(T_EMP);
+    emp.put(EMP_DEPARTMENT_FK, sales);
+    emp.put(EMP_NAME, name);
+    emp.put(EMP_SALARY, salary);
 
     emp = connection.selectSingle(connection.insert(singletonList(emp)).get(0));
-    assertEquals(sales, emp.get(TestDomain.EMP_DEPARTMENT_FK));
-    assertEquals(name, emp.get(TestDomain.EMP_NAME));
-    assertEquals(salary, emp.get(TestDomain.EMP_SALARY));
-    assertEquals(defaultCommission, emp.get(TestDomain.EMP_COMMISSION));
+    assertEquals(sales, emp.get(EMP_DEPARTMENT_FK));
+    assertEquals(name, emp.get(EMP_NAME));
+    assertEquals(salary, emp.get(EMP_SALARY));
+    assertEquals(defaultCommission, emp.get(EMP_COMMISSION));
     connection.delete(singletonList(emp.getKey()));
 
-    emp.put(TestDomain.EMP_COMMISSION, null);//default value should not kick in
+    emp.put(EMP_COMMISSION, null);//default value should not kick in
     emp = connection.selectSingle(connection.insert(singletonList(emp)).get(0));
-    assertEquals(sales, emp.get(TestDomain.EMP_DEPARTMENT_FK));
-    assertEquals(name, emp.get(TestDomain.EMP_NAME));
-    assertEquals(salary, emp.get(TestDomain.EMP_SALARY));
-    assertNull(emp.get(TestDomain.EMP_COMMISSION));
+    assertEquals(sales, emp.get(EMP_DEPARTMENT_FK));
+    assertEquals(name, emp.get(EMP_NAME));
+    assertEquals(salary, emp.get(EMP_SALARY));
+    assertNull(emp.get(EMP_COMMISSION));
     connection.delete(singletonList(emp.getKey()));
 
-    emp.remove(TestDomain.EMP_COMMISSION);//default value should kick in
+    emp.remove(EMP_COMMISSION);//default value should kick in
     emp = connection.selectSingle(connection.insert(singletonList(emp)).get(0));
-    assertEquals(sales, emp.get(TestDomain.EMP_DEPARTMENT_FK));
-    assertEquals(name, emp.get(TestDomain.EMP_NAME));
-    assertEquals(salary, emp.get(TestDomain.EMP_SALARY));
-    assertEquals(defaultCommission, emp.get(TestDomain.EMP_COMMISSION));
+    assertEquals(sales, emp.get(EMP_DEPARTMENT_FK));
+    assertEquals(name, emp.get(EMP_NAME));
+    assertEquals(salary, emp.get(EMP_SALARY));
+    assertEquals(defaultCommission, emp.get(EMP_COMMISSION));
     connection.delete(singletonList(emp.getKey()));
   }
 
@@ -467,15 +467,15 @@ public class DefaultLocalEntityConnectionTest {
   public void updateDifferentEntities() throws DatabaseException {
     try {
       connection.beginTransaction();
-      final Entity sales = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-      final Entity king = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
+      final Entity sales = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "SALES");
+      final Entity king = connection.selectSingle(T_EMP, EMP_NAME, "KING");
       final String newName = "New name";
-      sales.put(TestDomain.DEPARTMENT_NAME, newName);
-      king.put(TestDomain.EMP_NAME, newName);
+      sales.put(DEPARTMENT_NAME, newName);
+      king.put(EMP_NAME, newName);
       final List<Entity> updated = connection.update(asList(sales, king));
       assertTrue(updated.containsAll(asList(sales, king)));
-      assertEquals(newName, updated.get(updated.indexOf(sales)).getString(TestDomain.DEPARTMENT_NAME));
-      assertEquals(newName, updated.get(updated.indexOf(king)).getString(TestDomain.EMP_NAME));
+      assertEquals(newName, updated.get(updated.indexOf(sales)).getString(DEPARTMENT_NAME));
+      assertEquals(newName, updated.get(updated.indexOf(king)).getString(EMP_NAME));
     }
     finally {
       connection.rollbackTransaction();
@@ -486,10 +486,10 @@ public class DefaultLocalEntityConnectionTest {
   public void updateNonExisting() throws DatabaseException {
     //otherwise the optimistic locking triggers an error
     connection.setOptimisticLocking(false);
-    final Entity employee = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 4);
-    employee.put(TestDomain.EMP_ID, -888);//non existing
+    final Entity employee = connection.selectSingle(T_EMP, EMP_ID, 4);
+    employee.put(EMP_ID, -888);//non existing
     employee.saveAll();
-    employee.put(TestDomain.EMP_NAME, "New name");
+    employee.put(EMP_NAME, "New name");
     assertThrows(UpdateException.class, () -> connection.update(singletonList(employee)));
   }
 
@@ -501,19 +501,19 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectValuesNonColumnProperty() throws Exception {
-    assertThrows(IllegalArgumentException.class, () -> connection.selectValues(TestDomain.EMP_DEPARTMENT_LOCATION, entityCondition(TestDomain.T_EMP)));
+    assertThrows(IllegalArgumentException.class, () -> connection.selectValues(EMP_DEPARTMENT_LOCATION, entityCondition(T_EMP)));
   }
 
   @Test
   public void selectValues() throws Exception {
-    List<Object> result = connection.selectValues(TestDomain.DEPARTMENT_NAME, entityCondition(TestDomain.T_DEPARTMENT));
+    List<Object> result = connection.selectValues(DEPARTMENT_NAME, entityCondition(T_DEPARTMENT));
     assertEquals("ACCOUNTING", result.get(0));
     assertEquals("OPERATIONS", result.get(1));
     assertEquals("RESEARCH", result.get(2));
     assertEquals("SALES", result.get(3));
 
-    result = connection.selectValues(TestDomain.DEPARTMENT_NAME, entityCondition(TestDomain.T_DEPARTMENT,
-            Conditions.propertyCondition(TestDomain.DEPARTMENT_ID, ConditionType.LIKE, 10)));
+    result = connection.selectValues(DEPARTMENT_NAME, entityCondition(T_DEPARTMENT,
+            Conditions.propertyCondition(DEPARTMENT_ID, ConditionType.LIKE, 10)));
     assertTrue(result.contains("ACCOUNTING"));
     assertFalse(result.contains("SALES"));
   }
@@ -524,13 +524,13 @@ public class DefaultLocalEntityConnectionTest {
     final DefaultLocalEntityConnection connection2 = initializeConnection();
     final String originalLocation;
     try {
-      final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "SALES");
+      final EntitySelectCondition condition = entitySelectCondition(T_DEPARTMENT, DEPARTMENT_NAME, ConditionType.LIKE, "SALES");
       condition.setForUpdate(true);
 
       Entity sales = connection.selectSingle(condition);
-      originalLocation = sales.getString(TestDomain.DEPARTMENT_LOCATION);
+      originalLocation = sales.getString(DEPARTMENT_LOCATION);
 
-      sales.put(TestDomain.DEPARTMENT_LOCATION, "Syracuse");
+      sales.put(DEPARTMENT_LOCATION, "Syracuse");
       try {
         connection2.update(singletonList(sales));
         fail("Should not be able to update record selected for update by another connection");
@@ -539,11 +539,11 @@ public class DefaultLocalEntityConnectionTest {
         connection2.getDatabaseConnection().rollback();
       }
 
-      connection.select(entitySelectCondition(TestDomain.T_DEPARTMENT));//any query will do
+      connection.select(entitySelectCondition(T_DEPARTMENT));//any query will do
 
       try {
         sales = connection2.update(singletonList(sales)).get(0);
-        sales.put(TestDomain.DEPARTMENT_LOCATION, originalLocation);
+        sales.put(DEPARTMENT_LOCATION, originalLocation);
         connection2.update(singletonList(sales));//revert changes to data
       }
       catch (final DatabaseException ignored) {
@@ -563,13 +563,13 @@ public class DefaultLocalEntityConnectionTest {
     connection.setOptimisticLocking(true);
     final Entity allen;
     try {
-      final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP, TestDomain.EMP_NAME, ConditionType.LIKE, "ALLEN");
+      final EntitySelectCondition condition = entitySelectCondition(T_EMP, EMP_NAME, ConditionType.LIKE, "ALLEN");
 
       allen = connection.selectSingle(condition);
 
       connection2.delete(singletonList(allen.getKey()));
 
-      allen.put(TestDomain.EMP_JOB, "CLERK");
+      allen.put(EMP_JOB, "CLERK");
       try {
         connection.update(singletonList(allen));
         fail("Should not be able to update record deleted by another connection");
@@ -601,8 +601,8 @@ public class DefaultLocalEntityConnectionTest {
     String oldLocation = null;
     Entity updatedDepartment = null;
     try {
-      final Entity department = baseConnection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-      oldLocation = (String) department.put(TestDomain.DEPARTMENT_LOCATION, "NEWLOC");
+      final Entity department = baseConnection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "SALES");
+      oldLocation = (String) department.put(DEPARTMENT_LOCATION, "NEWLOC");
       updatedDepartment = baseConnection.update(singletonList(department)).get(0);
       try {
         optimisticConnection.update(singletonList(department));
@@ -616,7 +616,7 @@ public class DefaultLocalEntityConnectionTest {
     finally {
       try {
         if (updatedDepartment != null && oldLocation != null) {
-          updatedDepartment.put(TestDomain.DEPARTMENT_LOCATION, oldLocation);
+          updatedDepartment.put(DEPARTMENT_LOCATION, oldLocation);
           baseConnection.update(singletonList(updatedDepartment));
         }
       }
@@ -631,10 +631,10 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void dualIterator() throws Exception {
     final DefaultLocalEntityConnection connection = initializeConnection();
-    final ResultIterator<Entity> deptIterator = connection.iterator(entitySelectCondition(TestDomain.T_DEPARTMENT));
+    final ResultIterator<Entity> deptIterator = connection.iterator(entitySelectCondition(T_DEPARTMENT));
     while (deptIterator.hasNext()) {
-      final ResultIterator<Entity> empIterator = connection.iterator(entitySelectCondition(TestDomain.T_EMP,
-              TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, deptIterator.next()));
+      final ResultIterator<Entity> empIterator = connection.iterator(entitySelectCondition(T_EMP,
+              EMP_DEPARTMENT_FK, ConditionType.LIKE, deptIterator.next()));
       while (empIterator.hasNext()) {
         empIterator.next();
       }
@@ -683,12 +683,12 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void writeBlobIncorrectType() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> connection.writeBlob(DOMAIN.key(TestDomain.T_DEPARTMENT), TestDomain.DEPARTMENT_NAME, new byte[0]));
+    assertThrows(IllegalArgumentException.class, () -> connection.writeBlob(DOMAIN.key(T_DEPARTMENT), DEPARTMENT_NAME, new byte[0]));
   }
 
   @Test
   public void readBlobIncorrectType() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> connection.readBlob(DOMAIN.key(TestDomain.T_DEPARTMENT), TestDomain.DEPARTMENT_NAME));
+    assertThrows(IllegalArgumentException.class, () -> connection.readBlob(DOMAIN.key(T_DEPARTMENT), DEPARTMENT_NAME));
   }
 
   @Test
@@ -699,20 +699,20 @@ public class DefaultLocalEntityConnectionTest {
     random.nextBytes(lazyBytes);
     random.nextBytes(bytes);
 
-    final Entity scott = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 7);
-    connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA_LAZY, lazyBytes);
-    connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA, bytes);
-    assertArrayEquals(lazyBytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA_LAZY));
-    assertArrayEquals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA));
+    final Entity scott = connection.selectSingle(T_EMP, EMP_ID, 7);
+    connection.writeBlob(scott.getKey(), EMP_DATA_LAZY, lazyBytes);
+    connection.writeBlob(scott.getKey(), EMP_DATA, bytes);
+    assertArrayEquals(lazyBytes, connection.readBlob(scott.getKey(), EMP_DATA_LAZY));
+    assertArrayEquals(bytes, connection.readBlob(scott.getKey(), EMP_DATA));
 
     Entity scottFromDb = connection.selectSingle(scott.getKey());
     //lazy loaded
-    assertNull(scottFromDb.get(TestDomain.EMP_DATA_LAZY));
-    assertNotNull(scottFromDb.get(TestDomain.EMP_DATA));
+    assertNull(scottFromDb.get(EMP_DATA_LAZY));
+    assertNotNull(scottFromDb.get(EMP_DATA));
 
     //overrides lazy loading
     scottFromDb = connection.selectSingle(entitySelectCondition(scott.getKey()).setSelectPropertyIds(EMP_DATA_LAZY));
-    assertNotNull(scottFromDb.get(TestDomain.EMP_DATA_LAZY));
+    assertNotNull(scottFromDb.get(EMP_DATA_LAZY));
   }
 
   @Test
@@ -723,55 +723,55 @@ public class DefaultLocalEntityConnectionTest {
     random.nextBytes(lazyBytes);
     random.nextBytes(bytes);
 
-    final Entity scott = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 7);
-    scott.put(TestDomain.EMP_DATA_LAZY, lazyBytes);
-    scott.put(TestDomain.EMP_DATA, bytes);
+    final Entity scott = connection.selectSingle(T_EMP, EMP_ID, 7);
+    scott.put(EMP_DATA_LAZY, lazyBytes);
+    scott.put(EMP_DATA, bytes);
     connection.update(singletonList(scott));
 
-    byte[] lazyFromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA_LAZY);
-    byte[] fromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA);
+    byte[] lazyFromDb = connection.readBlob(scott.getKey(), EMP_DATA_LAZY);
+    byte[] fromDb = connection.readBlob(scott.getKey(), EMP_DATA);
     assertArrayEquals(lazyBytes, lazyFromDb);
     assertArrayEquals(bytes, fromDb);
 
     Entity scottFromDb = connection.selectSingle(scott.getKey());
     //lazy loaded
-    assertNull(scottFromDb.get(TestDomain.EMP_DATA_LAZY));
-    assertNotNull(scottFromDb.get(TestDomain.EMP_DATA));
-    assertArrayEquals(bytes, scottFromDb.getBlob(TestDomain.EMP_DATA));
+    assertNull(scottFromDb.get(EMP_DATA_LAZY));
+    assertNotNull(scottFromDb.get(EMP_DATA));
+    assertArrayEquals(bytes, scottFromDb.getBlob(EMP_DATA));
 
     final byte[] newLazyBytes = new byte[2048];
     final byte[] newBytes = new byte[2048];
     random.nextBytes(newLazyBytes);
     random.nextBytes(newBytes);
 
-    scott.put(TestDomain.EMP_DATA_LAZY, newLazyBytes);
-    scott.put(TestDomain.EMP_DATA, newBytes);
+    scott.put(EMP_DATA_LAZY, newLazyBytes);
+    scott.put(EMP_DATA, newBytes);
 
     connection.update(singletonList(scott)).get(0);
 
-    lazyFromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA_LAZY);
+    lazyFromDb = connection.readBlob(scott.getKey(), EMP_DATA_LAZY);
     assertArrayEquals(newLazyBytes, lazyFromDb);
 
     scottFromDb = connection.selectSingle(scott.getKey());
-    assertArrayEquals(newBytes, scottFromDb.getBlob(TestDomain.EMP_DATA));
+    assertArrayEquals(newBytes, scottFromDb.getBlob(EMP_DATA));
   }
 
   @Test
   public void testUUIDPrimaryKeyColumnWithDefaultValue() throws DatabaseException {
-    final Entity entity = DOMAIN.entity(TestDomain.T_UUID_TEST_DEFAULT);
-    entity.put(TestDomain.UUID_TEST_DEFAULT_DATA, "test");
+    final Entity entity = DOMAIN.entity(T_UUID_TEST_DEFAULT);
+    entity.put(UUID_TEST_DEFAULT_DATA, "test");
     connection.insert(singletonList(entity));
-    assertNotNull((UUID) entity.get(TestDomain.UUID_TEST_DEFAULT_ID));
-    assertEquals("test", entity.getString(TestDomain.UUID_TEST_DEFAULT_DATA));
+    assertNotNull((UUID) entity.get(UUID_TEST_DEFAULT_ID));
+    assertEquals("test", entity.getString(UUID_TEST_DEFAULT_DATA));
   }
 
   @Test
   public void testUUIDPrimaryKeyColumnWithoutDefaultValue() throws DatabaseException {
-    final Entity entity = DOMAIN.entity(TestDomain.T_UUID_TEST_NO_DEFAULT);
-    entity.put(TestDomain.UUID_TEST_NO_DEFAULT_DATA, "test");
+    final Entity entity = DOMAIN.entity(T_UUID_TEST_NO_DEFAULT);
+    entity.put(UUID_TEST_NO_DEFAULT_DATA, "test");
     connection.insert(singletonList(entity));
-    assertNotNull((UUID) entity.get(TestDomain.UUID_TEST_NO_DEFAULT_ID));
-    assertEquals("test", entity.getString(TestDomain.UUID_TEST_NO_DEFAULT_DATA));
+    assertNotNull((UUID) entity.get(UUID_TEST_NO_DEFAULT_ID));
+    assertEquals("test", entity.getString(UUID_TEST_NO_DEFAULT_DATA));
   }
 
   private static DefaultLocalEntityConnection initializeConnection() throws DatabaseException {
