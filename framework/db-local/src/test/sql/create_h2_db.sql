@@ -18,6 +18,7 @@ CREATE TABLE scott.emp (
   sal DECIMAL(7, 2) NOT NULL,
   comm DECIMAL(7, 2) DEFAULT 200,
   deptno INT NOT NULL,
+  data_lazy blob,
   data blob,
   constraint emp_pk primary key (empno),
   constraint emp_dept_fk foreign key (deptno) references scott.dept(deptno),

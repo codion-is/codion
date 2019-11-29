@@ -208,7 +208,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectWhereNull() throws Exception {
     connection.select(TestDomain.T_EMP, TestDomain.EMP_MGR_FK, (Object[]) null);
-    connection.select(TestDomain.T_EMP, TestDomain.EMP_DATA, (Object) null);
+    connection.select(TestDomain.T_EMP, TestDomain.EMP_DATA_LAZY, (Object) null);
   }
 
   @Test
@@ -693,49 +693,67 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void readWriteBlob() throws DatabaseException {
+    final byte[] lazyBytes = new byte[1024];
     final byte[] bytes = new byte[1024];
-    new Random().nextBytes(bytes);
+    final Random random = new Random();
+    random.nextBytes(lazyBytes);
+    random.nextBytes(bytes);
 
     final Entity scott = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 7);
+    connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA_LAZY, lazyBytes);
     connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA, bytes);
+    assertArrayEquals(lazyBytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA_LAZY));
     assertArrayEquals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA));
 
-    Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
-    assertNotNull(blobRecordFromDb);
+    Entity scottFromDb = connection.selectSingle(scott.getKey());
     //lazy loaded
-    assertNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
+    assertNull(scottFromDb.get(TestDomain.EMP_DATA_LAZY));
+    assertNotNull(scottFromDb.get(TestDomain.EMP_DATA));
 
     //overrides lazy loading
-    blobRecordFromDb = connection.selectSingle(entitySelectCondition(scott.getKey()).setSelectPropertyIds(EMP_DATA));
-    assertNotNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
+    scottFromDb = connection.selectSingle(entitySelectCondition(scott.getKey()).setSelectPropertyIds(EMP_DATA_LAZY));
+    assertNotNull(scottFromDb.get(TestDomain.EMP_DATA_LAZY));
   }
 
   @Test
   public void readWriteBlobViaEntity() throws DatabaseException {
+    final byte[] lazyBytes = new byte[1024];
     final byte[] bytes = new byte[1024];
-    new Random().nextBytes(bytes);
+    final Random random = new Random();
+    random.nextBytes(lazyBytes);
+    random.nextBytes(bytes);
 
     final Entity scott = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 7);
+    scott.put(TestDomain.EMP_DATA_LAZY, lazyBytes);
     scott.put(TestDomain.EMP_DATA, bytes);
     connection.update(singletonList(scott));
 
+    byte[] lazyFromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA_LAZY);
     byte[] fromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA);
+    assertArrayEquals(lazyBytes, lazyFromDb);
     assertArrayEquals(bytes, fromDb);
 
-    final Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
-    assertNotNull(blobRecordFromDb);
+    Entity scottFromDb = connection.selectSingle(scott.getKey());
     //lazy loaded
-    assertNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
+    assertNull(scottFromDb.get(TestDomain.EMP_DATA_LAZY));
+    assertNotNull(scottFromDb.get(TestDomain.EMP_DATA));
+    assertArrayEquals(bytes, scottFromDb.getBlob(TestDomain.EMP_DATA));
 
+    final byte[] newLazyBytes = new byte[2048];
     final byte[] newBytes = new byte[2048];
-    new Random().nextBytes(newBytes);
+    random.nextBytes(newLazyBytes);
+    random.nextBytes(newBytes);
 
+    scott.put(TestDomain.EMP_DATA_LAZY, newLazyBytes);
     scott.put(TestDomain.EMP_DATA, newBytes);
 
     connection.update(singletonList(scott)).get(0);
 
-    fromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA);
-    assertArrayEquals(newBytes, fromDb);
+    lazyFromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA_LAZY);
+    assertArrayEquals(newLazyBytes, lazyFromDb);
+
+    scottFromDb = connection.selectSingle(scott.getKey());
+    assertArrayEquals(newBytes, scottFromDb.getBlob(TestDomain.EMP_DATA));
   }
 
   @Test

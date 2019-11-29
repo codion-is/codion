@@ -83,6 +83,7 @@ public final class TestDomain extends Domain {
   public static final String EMP_DEPARTMENT_FK = "dept_fk";
   public static final String EMP_MGR_FK = "mgr_fk";
   public static final String EMP_DEPARTMENT_LOCATION = "location";
+  public static final String EMP_DATA_LAZY = "data_lazy";
   public static final String EMP_DATA = "data";
   public static final String T_EMP = "scott.emp";
 
@@ -113,8 +114,9 @@ public final class TestDomain extends Domain {
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100),
-            Properties.blobProperty(EMP_DATA)
-                    .setLazyLoaded(true))
+            Properties.blobProperty(EMP_DATA_LAZY)
+                    .setLazyLoaded(true),
+            Properties.blobProperty(EMP_DATA))
             .setStringProvider(new StringProvider(EMP_NAME))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
