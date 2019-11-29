@@ -42,24 +42,27 @@ public class AlbumEditPanel extends EntityEditPanel {
 
     setLayout(new BorderLayout(5, 5));
 
-    final NavigableImagePanel coverArtPanel = new NavigableImagePanel();
-    coverArtPanel.setZoomDevice(NavigableImagePanel.ZoomDevice.NONE);
-    coverArtPanel.setNavigationImageEnabled(false);
-    coverArtPanel.setBorder(BorderFactory.createTitledBorder("Cover Art"));
-    coverArtPanel.setPreferredSize(new Dimension(200, 200));
+    final NavigableImagePanel coverArtImagePanel = new NavigableImagePanel();
+    coverArtImagePanel.setZoomDevice(NavigableImagePanel.ZoomDevice.NONE);
+    coverArtImagePanel.setNavigationImageEnabled(false);
+    coverArtImagePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    coverArtImagePanel.setPreferredSize(new Dimension(200, 200));
+    final JPanel coverArtPanel = new JPanel(new BorderLayout());
+    coverArtPanel.setBorder(BorderFactory.createTitledBorder("Cover"));
+    coverArtPanel.add(coverArtImagePanel, BorderLayout.CENTER);
 
     final JPanel coverArtBasePanel = new JPanel(new BorderLayout(5, 5));
     coverArtBasePanel.add(coverArtPanel, BorderLayout.CENTER);
-    final JPanel coverButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    final JPanel coverButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     coverButtonPanel.add(new JButton(Controls.control(this::setCoverArt, "Select cover...",
             getEditModel().getEntityNewObserver().getReversedObserver())));
     coverArtBasePanel.add(coverButtonPanel, BorderLayout.SOUTH);
 
     final SwingEntityEditModel editModel = getEditModel();
     editModel.addEntitySetListener(album ->
-            coverArtPanel.setImage(album == null ? null : (BufferedImage) album.get(ALBUM_COVERART_IMAGE)));
+            coverArtImagePanel.setImage(album == null ? null : (BufferedImage) album.get(ALBUM_COVERART_IMAGE)));
     editModel.addValueSetListener(ALBUM_COVERART, valueChange ->
-            coverArtPanel.setImage(valueChange.getCurrentValue() == null ? null : (BufferedImage) editModel.get(ALBUM_COVERART_IMAGE)));
+            coverArtImagePanel.setImage(valueChange.getCurrentValue() == null ? null : (BufferedImage) editModel.get(ALBUM_COVERART_IMAGE)));
     final JPanel inputBasePanel = new JPanel(new BorderLayout(5, 5));
     inputBasePanel.add(inputPanel, BorderLayout.NORTH);
 

@@ -5388,3 +5388,4 @@
   Chinook demo, added blob image example
   BlobProperty added, with lazyLoading option
   EntityTestUnit now includes blob properties
+  Blob unit tests improved
