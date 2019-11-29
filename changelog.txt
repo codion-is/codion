@@ -5369,3 +5369,4 @@
   Blob unit tests improved
   BlobInputProvider added
   BlobProperty is now hidden by default
+  NavigableImagePanel.setMoveImageEnabled() added

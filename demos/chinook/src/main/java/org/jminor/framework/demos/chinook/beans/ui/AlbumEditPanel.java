@@ -54,6 +54,7 @@ public class AlbumEditPanel extends EntityEditPanel {
     final NavigableImagePanel imagePanel = new NavigableImagePanel();
     imagePanel.setZoomDevice(NavigableImagePanel.ZoomDevice.NONE);
     imagePanel.setNavigationImageEnabled(false);
+    imagePanel.setMoveImageEnabled(false);
     imagePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     imagePanel.setPreferredSize(new Dimension(200, 200));
 
