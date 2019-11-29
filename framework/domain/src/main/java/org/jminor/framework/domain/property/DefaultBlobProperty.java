@@ -11,6 +11,7 @@ final class DefaultBlobProperty extends DefaultColumnProperty implements BlobPro
 
   DefaultBlobProperty(final String propertyId, final String caption) {
     super(propertyId, Types.BLOB, caption);
+    builder().setHidden(true);
   }
 
   @Override

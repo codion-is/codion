@@ -39,6 +39,7 @@ import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.input.BigDecimalInputProvider;
+import org.jminor.swing.common.ui.input.BlobInputProvider;
 import org.jminor.swing.common.ui.input.BooleanInputProvider;
 import org.jminor.swing.common.ui.input.DoubleInputProvider;
 import org.jminor.swing.common.ui.input.InputProvider;
@@ -1268,8 +1269,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       case Types.VARCHAR:
         return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property),
                 (String) currentValue, property.getMaxLength());
+      case Types.BLOB:
+        return new BlobInputProvider();
       default:
-        throw new IllegalArgumentException("Unsupported property type: " + property.getType());
+        throw new IllegalArgumentException("No InputProvider implementation available for property: " + property + " (type: " + property.getType() + ")");
     }
   }
 
