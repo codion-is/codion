@@ -7,6 +7,8 @@ import java.sql.Types;
 
 final class DefaultBlobProperty extends DefaultColumnProperty implements BlobProperty {
 
+  private static final long serialVersionUID = 1;
+
   private boolean lazyLoaded = false;
 
   DefaultBlobProperty(final String propertyId, final String caption) {

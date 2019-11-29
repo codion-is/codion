@@ -622,7 +622,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return unmodifiableMap(map);
   }
 
-  private List<BlobProperty> initializeLazyLoadedBlobProperties(final List<ColumnProperty> columnProperties) {
+  private static List<BlobProperty> initializeLazyLoadedBlobProperties(final List<ColumnProperty> columnProperties) {
     return columnProperties.stream().filter(property ->
             property instanceof BlobProperty && ((BlobProperty) property).isLazyLoaded())
             .map(property -> (BlobProperty) property).collect(toList());
