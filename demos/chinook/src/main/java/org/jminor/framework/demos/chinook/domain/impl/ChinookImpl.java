@@ -13,11 +13,16 @@ import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.property.DerivedProperty;
 
+import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Map;
 
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.domain.Entities.getModifiedEntities;
@@ -80,7 +85,9 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setMaxLength(160)
                     .setPreferredColumnWidth(160),
-            columnProperty(ALBUM_COVERART, Types.BLOB))
+            columnProperty(ALBUM_COVERART, Types.BLOB),
+            derivedProperty(ALBUM_COVERART_IMAGE, Types.JAVA_OBJECT, null,
+                    new CoverArtImageProvider(), ALBUM_COVERART))
             .setKeyGenerator(automaticKeyGenerator("chinook.album"))
             .setOrderBy(orderBy().ascending(ALBUM_ARTISTID, ALBUM_TITLE))
             .setStringProvider(new StringProvider(ALBUM_TITLE))
@@ -403,6 +410,24 @@ public final class ChinookImpl extends Domain implements Chinook {
       catch (final DatabaseException exception) {
         entityConnection.rollbackTransaction();
         throw exception;
+      }
+    }
+  }
+
+  private static final class CoverArtImageProvider implements DerivedProperty.Provider {
+
+    @Override
+    public Object getValue(final Map<String, Object> sourceValues) {
+      final byte[] bytes = (byte[]) sourceValues.get(ALBUM_COVERART);
+      if (bytes == null) {
+        return null;
+      }
+
+      try {
+        return ImageIO.read(new ByteArrayInputStream(bytes));
+      }
+      catch (final IOException e) {
+        throw new RuntimeException(e);
       }
     }
   }

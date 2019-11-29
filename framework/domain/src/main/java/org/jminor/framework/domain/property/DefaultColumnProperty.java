@@ -6,6 +6,7 @@ package org.jminor.framework.domain.property;
 import org.jminor.common.db.ResultPacker;
 
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -196,7 +197,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
       case Types.CHAR:
         return (resultSet, index) -> property.fromColumnValue(getCharacter(resultSet, index));
       case Types.BLOB:
-        return (resultSet, index) -> null;
+        return (resultSet, index) -> property.fromColumnValue(getBlob(resultSet, index));
       case Types.JAVA_OBJECT:
         return ResultSet::getObject;
       default:
@@ -276,6 +277,15 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     else {
       return null;
     }
+  }
+
+  private static byte[] getBlob(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    final Blob blob = resultSet.getBlob(columnIndex);
+    if (blob == null) {
+      return null;
+    }
+
+    return blob.getBytes(1, (int) blob.length());
   }
 
   static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {

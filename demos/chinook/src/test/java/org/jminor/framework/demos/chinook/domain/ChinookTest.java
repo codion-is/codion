@@ -33,7 +33,10 @@ public class ChinookTest extends EntityTestUnit {
   @Test
   public void album() throws Exception {
     testEntity(T_ALBUM);
+  }
 
+  @Test
+  public void albumCoverArt() throws Exception {
     final Entity artist = initializeReferenceEntity(T_ARTIST, emptyMap());
     final HashMap<String, Entity> foreignKeyReferences = new HashMap<>();
     final EntityConnection connection = getConnection();

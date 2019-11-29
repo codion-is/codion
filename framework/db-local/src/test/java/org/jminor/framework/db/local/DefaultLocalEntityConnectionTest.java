@@ -702,7 +702,7 @@ public class DefaultLocalEntityConnectionTest {
 
     final Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
     assertNotNull(blobRecordFromDb);
-    assertNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
+    assertNotNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
   }
 
   @Test
@@ -719,7 +719,7 @@ public class DefaultLocalEntityConnectionTest {
 
     final Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
     assertNotNull(blobRecordFromDb);
-    assertNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
+    assertNotNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
 
     final byte[] newBytes = new byte[2048];
     new Random().nextBytes(newBytes);

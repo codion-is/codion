@@ -19,6 +19,7 @@ dependencies {
 
     implementation project(':jminor-javafx-framework')
 
+    implementation project(':jminor-plugin-imagepanel')
     implementation project(':jminor-plugin-jasperreports')
 
     runtimeOnly project(':jminor-plugin-logback-proxy')

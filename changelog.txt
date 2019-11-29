@@ -5384,3 +5384,5 @@
   DefaultEntityDefinition.getSelectableColumnProperties() now uses old school for loop instead of stream
   Entity.Definition.getProperties(includeHidden) removed
   Domain.define() now protected
+  DefaultEntityLocalConnection, blob handling improved, blob property values are now fetched by default
+  Chinook demo, added blob image example
