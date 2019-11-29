@@ -16,6 +16,7 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -362,7 +363,13 @@ public class EntityTestUnit {
                   && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
         }
         else if (property.isBlob()) {
-          assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
+          final BlobProperty blobProperty = (BlobProperty) property;
+          if (blobProperty.isLazyLoaded()) {
+            assertArrayEquals((byte[]) beforeUpdate, connection.readBlob(testEntity.getKey(), blobProperty.getPropertyId()), message);
+          }
+          else {
+            assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
+          }
         }
         else {
           assertEquals(beforeUpdate, afterUpdate, message);
