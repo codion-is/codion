@@ -76,6 +76,15 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=columnProperty]
 ----
 
+=== BlobProperty
+
+{url-javadoc}/org/jminor/framework/domain/property/BlobProperty.html[BlobProperty] is a specific ColumnProperty for the Types.BLOB type which provides lazy loading for BLOB values. Using a standard ColumnProperty with a Types.BLOB works fine, but for lazy loading you have to use BlobProperty.
+
+[source,java,indent=0]
+----
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=blobProperty]
+----
+
 === ForeignKeyProperty
 
 {url-javadoc}/org/jminor/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.

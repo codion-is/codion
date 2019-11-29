@@ -4,7 +4,7 @@
 package org.jminor.framework.domain.property;
 
 /**
- * A {@link java.sql.Types.BLOB} based column property
+ * A {@link java.sql.Types#BLOB} based column property
  */
 public interface BlobProperty extends ColumnProperty {
 

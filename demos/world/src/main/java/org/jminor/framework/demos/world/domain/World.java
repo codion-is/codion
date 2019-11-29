@@ -44,6 +44,7 @@ public final class World extends Domain {
   public static final String COUNTRY_CAPITAL_FK = "capital_fk";
   public static final String COUNTRY_CODE2 = "code2";
   public static final String COUNTRY_CAPITAL_POPULATION = "capital_population";
+  public static final String COUNTRY_FLAG = "flag";
 
   public static final String T_COUNTRYLANGUAGE = "world.countrylanguage";
   public static final String COUNTRYLANGUAGE_COUNTRYCODE = "countrycode";
@@ -148,6 +149,10 @@ public final class World extends Domain {
                     getDefinition(T_CITY).getProperty(CITY_POPULATION), "Capital pop.")
                     .setFormat(getIntegerInstance()),
             // end::denormalizedViewProperty[]
+            // tag::blobProperty[]
+            blobProperty(COUNTRY_FLAG)
+                    .setLazyLoaded(true),
+            // end::blobProperty[]
             columnProperty(COUNTRY_CODE2, Types.VARCHAR, "Code2")
                     .setNullable(false)
                     .setMaxLength(2))
