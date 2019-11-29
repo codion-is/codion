@@ -240,10 +240,11 @@ public interface EntityConnection {
   void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException;
 
   /**
-   * Reads the blob specified by the property identified by {@code propertyId} from the given entity
+   * Reads the blob specified by the property identified by {@code propertyId} from the given entity,
+   * returns null if no blob data is found.
    * @param primaryKey the primary key of the entity
    * @param blobPropertyId the ID of the blob property
-   * @return a byte array containing the blob data
+   * @return a byte array containing the blob data or null if no blob data is found
    * @throws DatabaseException in case of a database exception
    */
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException;

@@ -723,6 +723,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
         resultSet = statement.executeQuery();
         final List<Blob> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
+        if (result.isEmpty()) {
+          return null;
+        }
         final Blob blob = result.get(0);
         final byte[] byteResult = blob.getBytes(1, (int) blob.length());
         commitIfTransactionIsNotOpen();
