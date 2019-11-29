@@ -150,7 +150,7 @@ public final class World extends Domain {
                     .setFormat(getIntegerInstance()),
             // end::denormalizedViewProperty[]
             // tag::blobProperty[]
-            blobProperty(COUNTRY_FLAG)
+            blobProperty(COUNTRY_FLAG, "Flag")
                     .setLazyLoaded(true),
             // end::blobProperty[]
             columnProperty(COUNTRY_CODE2, Types.VARCHAR, "Code2")

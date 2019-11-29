@@ -85,9 +85,9 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setMaxLength(160)
                     .setPreferredColumnWidth(160),
-            blobProperty(ALBUM_COVERART),
-            derivedProperty(ALBUM_COVERART_IMAGE, Types.JAVA_OBJECT, null,
-                    new CoverArtImageProvider(), ALBUM_COVERART))
+            blobProperty(ALBUM_COVER, "Cover"),
+            derivedProperty(ALBUM_COVER_IMAGE, Types.JAVA_OBJECT, null,
+                    new CoverArtImageProvider(), ALBUM_COVER))
             .setKeyGenerator(automaticKeyGenerator("chinook.album"))
             .setOrderBy(orderBy().ascending(ALBUM_ARTISTID, ALBUM_TITLE))
             .setStringProvider(new StringProvider(ALBUM_TITLE))
@@ -418,7 +418,7 @@ public final class ChinookImpl extends Domain implements Chinook {
 
     @Override
     public Object getValue(final Map<String, Object> sourceValues) {
-      final byte[] bytes = (byte[]) sourceValues.get(ALBUM_COVERART);
+      final byte[] bytes = (byte[]) sourceValues.get(ALBUM_COVER);
       if (bytes == null) {
         return null;
       }
