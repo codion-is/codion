@@ -85,7 +85,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setMaxLength(160)
                     .setPreferredColumnWidth(160),
-            columnProperty(ALBUM_COVERART, Types.BLOB),
+            blobProperty(ALBUM_COVERART),
             derivedProperty(ALBUM_COVERART_IMAGE, Types.JAVA_OBJECT, null,
                     new CoverArtImageProvider(), ALBUM_COVERART))
             .setKeyGenerator(automaticKeyGenerator("chinook.album"))
