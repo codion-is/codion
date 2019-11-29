@@ -5364,3 +5364,4 @@
   Domain.define() now protected
   DefaultEntityLocalConnection, blob handling improved, blob property values are now fetched by default
   Chinook demo, added blob image example
+  BlobProperty added, with lazyLoading option

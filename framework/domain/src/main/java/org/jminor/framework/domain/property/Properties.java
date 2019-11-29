@@ -251,6 +251,23 @@ public final class Properties {
   }
 
   /**
+   * @param propertyId the property id
+   * @return a new blob property
+   */
+  public static BlobProperty.Builder blobProperty(final String propertyId) {
+    return blobProperty(propertyId, null);
+  }
+
+  /**
+   * @param propertyId the property id
+   * @param caption the caption
+   * @return a new blob property
+   */
+  public static BlobProperty.Builder blobProperty(final String propertyId, final String caption) {
+    return new DefaultBlobProperty(propertyId, caption).builder();
+  }
+
+  /**
    * @param propertyId the property ID
    * @return a new audit insert time property
    */
