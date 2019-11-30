@@ -30,7 +30,7 @@ States are instantiated via the {url-javadoc}/org/jminor/common/state/States.htm
 include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=state]
 ----
 
-Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnabledState* method, where the action's *enabled* status is synchronized with the state.
+Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
 
 [source,java,indent=0]
 ----
