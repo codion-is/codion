@@ -102,7 +102,6 @@ applicationDefaultJvmArgs = [
 task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
     group = 'run'
     classpath = configurations.serverRuntime
-    main = 'org.jminor.framework.server.DefaultEntityConnectionServer'
     main = mainClassName
     maxHeapSize = '256m'
     jvmArgs = ['--add-modules', 'org.jminor.framework.servlet,org.jminor.plugin.jasperreports,java.xml.bind']
