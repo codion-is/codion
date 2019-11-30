@@ -283,10 +283,6 @@ public final class EntityJSONParser {
    */
   public Entity.Key parseKey(final JSONObject keyObject) {
     final String entityId = keyObject.getString(ENTITY_ID);
-    if (!domain.isDefined(entityId)) {
-      throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityId + "'");
-    }
-
     final Entity.Key key = domain.key(entityId);
     final Entity.Definition definition = domain.getDefinition(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
@@ -415,9 +411,6 @@ public final class EntityJSONParser {
    */
   private Entity parseEntity(final JSONObject entityObject) {
     final String entityId = entityObject.getString(ENTITY_ID);
-    if (!domain.isDefined(entityId)) {
-      throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityId + "'");
-    }
 
     return domain.entity(entityId, parseValues(entityObject, entityId, VALUES),
             entityObject.isNull(ORIGINAL_VALUES) ? null : parseValues(entityObject, entityId, ORIGINAL_VALUES));
