@@ -93,12 +93,12 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
 
   @Override
   public Object put(final String propertyId, final Object value) {
-    return super.put(getPrimaryKeyProperty(propertyId), value);
+    return super.put(definition.getPrimaryKeyProperty(propertyId), value);
   }
 
   @Override
   public Object get(final String propertyId) {
-    return super.get(getPrimaryKeyProperty(propertyId));
+    return super.get(definition.getPrimaryKeyProperty(propertyId));
   }
 
   @Override
@@ -172,7 +172,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
 
   @Override
   public boolean isNull(final String propertyId) {
-    return super.isNull(definition.getPrimaryKeyPropertyMap().get(propertyId));
+    return super.isNull(definition.getPrimaryKeyProperty(propertyId));
   }
 
   @Override
@@ -200,15 +200,6 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   protected void handleClear() {
     cachedHashCode = null;
     hashCodeDirty = true;
-  }
-
-  private ColumnProperty getPrimaryKeyProperty(final String propertyId) {
-    final ColumnProperty property = definition.getPrimaryKeyPropertyMap().get(propertyId);
-    if (property == null) {
-      throw new IllegalArgumentException("Primary key property " + propertyId + " not found in entity: " + definition.getEntityId());
-    }
-
-    return property;
   }
 
   private void setHashCode(final Integer value) {

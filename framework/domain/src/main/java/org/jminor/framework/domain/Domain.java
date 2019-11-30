@@ -267,8 +267,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
     final Entity.Definition definition = getBeanEntity(beanClass);
     final Entity entity = entity(definition.getEntityId());
     try {
-      final Map<String, BeanProperty> beanPropertyMap =
-              getBeanProperties(definition.getEntityId());
+      final Map<String, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityId());
       for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = definition.getProperty(propertyEntry.getKey());
         Object value = propertyEntry.getValue().getter.invoke(bean);
