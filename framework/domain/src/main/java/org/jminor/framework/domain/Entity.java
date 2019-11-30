@@ -30,7 +30,6 @@ import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -715,11 +714,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     Collection<String> getSearchPropertyIds();
 
     /**
-     * @return the properties for this entity type mapped to propertyIds
-     */
-    Map<String, Property> getPropertyMap();
-
-    /**
      * @return a Set containing all the properties in this entity
      */
     Set<Property> getPropertySet();
@@ -753,11 +747,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return the primary key properties of this entity type, sorted by primary key column index
      */
     List<ColumnProperty> getPrimaryKeyProperties();
-
-    /**
-     * @return a map containing the primary key properties mapped to their respective propertyIds
-     */
-    Map<String, ColumnProperty> getPrimaryKeyPropertyMap();
 
     /**
      * @return a list containing the visible properties for this entity type
@@ -831,6 +820,13 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @throws IllegalArgumentException in case no such property exists
      */
     Property getProperty(final String propertyId);
+
+    /**
+     * @param propertyId the property id
+     * @return the primary key property identified by {@code propertyId} in the entity identified by {@code entityId}
+     * @throws IllegalArgumentException in case no such property exists
+     */
+    ColumnProperty getPrimaryKeyProperty(String propertyId);
 
     /**
      * Returns the {@link Property}s identified by the propertyIds in {@code propertyIds}

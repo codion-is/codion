@@ -88,10 +88,10 @@ public class DefaultEntityDefinitionTest {
                     ((String) linkedValues.get("name")) + linkedValues.get("info"), "name", "info"));
     final Entity.Definition definition = domain.getDefinition("entityId");
     Collection<DerivedProperty> linked = definition.getDerivedProperties("name");
-    assertTrue(linked.contains(definition.getPropertyMap().get("derived")));
+    assertTrue(linked.contains(definition.getProperty("derived")));
     assertEquals(1, linked.size());
     linked = definition.getDerivedProperties("info");
-    assertTrue(linked.contains(definition.getPropertyMap().get("derived")));
+    assertTrue(linked.contains(definition.getProperty("derived")));
     assertEquals(1, linked.size());
   }
 

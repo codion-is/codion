@@ -49,26 +49,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final String entityId;
 
   /**
-   * The properties mapped to their respective ids
-   */
-  private final Map<String, Property> propertyMap;
-
-  /**
-   * All properties
-   */
-  private final Set<Property> propertySet;
-
-  /**
-   * A list view of the properties
-   */
-  private final List<Property> properties;
-
-  /**
-   * A map mapping column property ids to the foreign key properties they are a part of
-   */
-  private final Map<String, List<ForeignKeyProperty>> columpPropertyForeignKeyProperties;
-
-  /**
    * The caption to use for the entity type
    */
   private String caption;
@@ -167,19 +147,20 @@ final class DefaultEntityDefinition implements Entity.Definition {
    */
   private transient Map<String, Entity.ConditionProvider> conditionProviders;
 
-  /**
-   * Links a set of derived property ids to a parent property id
-   */
-  private final Map<String, Set<DerivedProperty>> derivedProperties;
-  private final List<ColumnProperty> primaryKeyProperties;
-  private final Map<String, ColumnProperty> primaryKeyPropertyMap;
-  private final Map<String, ForeignKeyProperty> foreignKeyPropertyMap;
-  private final List<ForeignKeyProperty> foreignKeyProperties;
-  private final List<BlobProperty> lazyLoadedBlobProperties;
-  private final List<TransientProperty> transientProperties;
+  private final Map<String, Property> propertyMap;
+  private final List<Property> properties;
+  private final Set<Property> propertySet;
   private final List<Property> visibleProperties;
   private final List<ColumnProperty> columnProperties;
+  private final List<BlobProperty> lazyLoadedBlobProperties;
   private final List<ColumnProperty> selectableColumnProperties;
+  private final List<ColumnProperty> primaryKeyProperties;
+  private final Map<String, ColumnProperty> primaryKeyPropertyMap;
+  private final List<ForeignKeyProperty> foreignKeyProperties;
+  private final Map<String, ForeignKeyProperty> foreignKeyPropertyMap;
+  private final Map<String, List<ForeignKeyProperty>> columpPropertyForeignKeyProperties;
+  private final Map<String, Set<DerivedProperty>> derivedProperties;
+  private final List<TransientProperty> transientProperties;
   private final Map<String, List<DenormalizedProperty>> denormalizedProperties;
   private final boolean hasDenormalizedProperties;
   private Entity.KeyGenerator.Type keyGeneratorType = keyGenerator.getType();
@@ -196,22 +177,22 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.caption = entityId;
     this.propertyMap = initializePropertyMap(definitionProvider, entityId, propertyBuilders);
-    this.columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
-    this.foreignKeyProperties = unmodifiableList(getForeignKeyProperties(propertyMap.values()));
-    this.transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
+    this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
     this.propertySet = new HashSet<>(propertyMap.values());
+    this.visibleProperties = unmodifiableList(getVisibleProperties(propertyMap.values()));
+    this.columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
     this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties(columnProperties);
-    this.columpPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties(foreignKeyProperties);
     this.selectableColumnProperties = unmodifiableList(getSelectableProperties(columnProperties, lazyLoadedBlobProperties));
-    this.properties = unmodifiableList(new ArrayList<>(this.propertyMap.values()));
-    this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties(this.propertyMap.values()));
+    this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties(propertyMap.values()));
     this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
+    this.foreignKeyProperties = unmodifiableList(getForeignKeyProperties(propertyMap.values()));
     this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap(foreignKeyProperties);
-    this.visibleProperties = unmodifiableList(getVisibleProperties(this.propertyMap.values()));
-    this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties(this.propertyMap.values()));
-    this.derivedProperties = initializeDerivedProperties(this.propertyMap.values());
+    this.columpPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties(foreignKeyProperties);
+    this.derivedProperties = initializeDerivedProperties(propertyMap.values());
+    this.transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
+    this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties(propertyMap.values()));
     this.groupByClause = initializeGroupByClause(columnProperties);
-    this.hasDenormalizedProperties = !this.denormalizedProperties.isEmpty();
+    this.hasDenormalizedProperties = !denormalizedProperties.isEmpty();
     this.validator = validator;
   }
 
@@ -381,6 +362,16 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return property;
   }
 
+  @Override
+  public ColumnProperty getPrimaryKeyProperty(final String propertyId) {
+    final ColumnProperty property = primaryKeyPropertyMap.get(propertyId);
+    if (property == null) {
+      throw new IllegalArgumentException("Primary key property " + propertyId + " not found in entity: " + entityId);
+    }
+
+    return property;
+  }
+
   /** {@inheritDoc} */
   @Override
   public List<Property> getProperties(final Collection<String> propertyIds) {
@@ -482,12 +473,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Map<String, Property> getPropertyMap() {
-    return propertyMap;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Set<Property> getPropertySet() {
     return propertySet;
   }
@@ -522,11 +507,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public List<ColumnProperty> getPrimaryKeyProperties() {
     return primaryKeyProperties;
-  }
-
-  @Override
-  public Map<String, ColumnProperty> getPrimaryKeyPropertyMap() {
-    return primaryKeyPropertyMap;
   }
 
   /** {@inheritDoc} */
