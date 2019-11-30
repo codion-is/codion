@@ -9,6 +9,7 @@ import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.MirrorProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.TransientProperty;
 
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -186,20 +188,17 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * Defines a new entity type with the entityId serving as the initial entity caption.
    * @throws IllegalArgumentException if no primary key property is specified
    */
-  DefaultEntityDefinition(final String domainId, final String entityId, final String tableName,
-                          final Map<String, Property> propertyMap,
-                          final List<ColumnProperty> columnProperties,
-                          final List<ForeignKeyProperty> foreignKeyProperties,
-                          final List<TransientProperty> transientProperties,
-                          final Entity.Validator validator) {
+  DefaultEntityDefinition(final Entity.Definition.Provider definitionProvider,
+                          final String domainId, final String entityId, final String tableName,
+                          final Entity.Validator validator, final Property.Builder... propertyBuilders) {
     this.domainId = rejectNullOrEmpty(domainId, "domainId");
     this.entityId = rejectNullOrEmpty(entityId, "entityId");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.caption = entityId;
-    this.propertyMap = propertyMap;
-    this.columnProperties = columnProperties;
-    this.foreignKeyProperties = foreignKeyProperties;
-    this.transientProperties = transientProperties;
+    this.propertyMap = initializePropertyMap(definitionProvider, entityId, propertyBuilders);
+    this.columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
+    this.foreignKeyProperties = unmodifiableList(getForeignKeyProperties(propertyMap.values()));
+    this.transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
     this.propertySet = new HashSet<>(propertyMap.values());
     this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties(columnProperties);
     this.columpPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties(foreignKeyProperties);
@@ -632,6 +631,98 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.primaryKeyProperties.forEach(property -> map.put(property.getPropertyId(), property));
 
     return unmodifiableMap(map);
+  }
+
+  private static Map<String, Property> initializePropertyMap(final Entity.Definition.Provider definitionProvider,
+                                                             final String entityId,
+                                                             final Property.Builder... propertyBuilders) {
+    final Map<String, Property> propertyMap = new LinkedHashMap<>(propertyBuilders.length);
+    for (final Property.Builder propertyBuilder : propertyBuilders) {
+      validateAndAddProperty(propertyBuilder, entityId, propertyMap);
+      if (propertyBuilder instanceof ForeignKeyProperty.Builder) {
+        initializeForeignKeyProperty(definitionProvider, entityId, propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
+      }
+    }
+    checkIfPrimaryKeyIsSpecified(entityId, propertyMap);
+
+    return unmodifiableMap(propertyMap);
+  }
+
+  private static void initializeForeignKeyProperty(final Entity.Definition.Provider definitionProvider,
+                                                   final String entityId, final Map<String, Property> propertyMap,
+                                                   final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
+    final ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyBuilder.get();
+    if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
+      final Entity.Definition foreignEntity = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
+      if (foreignEntity == null) {
+        throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityId()
+                + "' referenced by entity '" + entityId + "' via foreign key property '"
+                + foreignKeyProperty.getPropertyId() + "' has not been defined");
+      }
+      if (foreignKeyProperty.getColumnProperties().size() != foreignEntity.getPrimaryKeyProperties().size()) {
+        throw new IllegalArgumentException("Number of column properties in '" +
+                entityId + "." + foreignKeyProperty.getPropertyId() +
+                "' does not match the number of foreign properties in the referenced entity '" +
+                foreignKeyProperty.getForeignEntityId() + "'");
+      }
+    }
+    for (final ColumnProperty.Builder propertyBuilder : foreignKeyPropertyBuilder.getColmnPropertyBuilders()) {
+      if (!(propertyBuilder.get() instanceof MirrorProperty)) {
+        validateAndAddProperty(propertyBuilder, entityId, propertyMap);
+      }
+    }
+  }
+
+  private static void validateAndAddProperty(final Property.Builder propertyBuilder, final String entityId,
+                                             final Map<String, Property> propertyMap) {
+    final Property property = propertyBuilder.get();
+    checkIfUniquePropertyId(property, entityId, propertyMap);
+    propertyBuilder.setEntityId(entityId);
+    propertyMap.put(property.getPropertyId(), property);
+  }
+
+  private static void checkIfUniquePropertyId(final Property property, final String entityId,
+                                              final Map<String, Property> propertyMap) {
+    if (propertyMap.containsKey(property.getPropertyId())) {
+      throw new IllegalArgumentException("Property with id " + property.getPropertyId()
+              + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
+              + " has already been defined as: " + propertyMap.get(property.getPropertyId()) + " in entity: " + entityId);
+    }
+  }
+
+  private static void checkIfPrimaryKeyIsSpecified(final String entityId, final Map<String, Property> propertyMap) {
+    final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
+    boolean primaryKeyPropertyFound = false;
+    for (final Property property : propertyMap.values()) {
+      if (property instanceof ColumnProperty && ((ColumnProperty) property).isPrimaryKeyProperty()) {
+        final Integer index = ((ColumnProperty) property).getPrimaryKeyIndex();
+        if (usedPrimaryKeyIndexes.contains(index)) {
+          throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
+        }
+        usedPrimaryKeyIndexes.add(index);
+        primaryKeyPropertyFound = true;
+      }
+    }
+    if (primaryKeyPropertyFound) {
+      return;
+    }
+
+    throw new IllegalArgumentException("Entity is missing a primary key: " + entityId);
+  }
+
+  private static List<ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
+    return properties.stream().filter(property -> property instanceof ForeignKeyProperty)
+            .map(property -> (ForeignKeyProperty) property).collect(toList());
+  }
+
+  private static List<ColumnProperty> getColumnProperties(final Collection<Property> properties) {
+    return properties.stream().filter(property -> property instanceof ColumnProperty)
+            .map(property -> (ColumnProperty) property).collect(toList());
+  }
+
+  private static List<TransientProperty> getTransientProperties(final Collection<Property> properties) {
+    return properties.stream().filter(property -> property instanceof TransientProperty)
+            .map(property -> (TransientProperty) property).collect(toList());
   }
 
   private static List<BlobProperty> initializeLazyLoadedBlobProperties(final List<ColumnProperty> columnProperties) {
