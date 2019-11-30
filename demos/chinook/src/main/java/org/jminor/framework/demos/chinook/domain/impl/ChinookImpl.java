@@ -26,6 +26,7 @@ import java.util.Map;
 
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.domain.Entities.getModifiedEntities;
+import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class ChinookImpl extends Domain implements Chinook {
@@ -53,7 +54,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setMaxLength(20),
             columnProperty(USER_PASSWORD_HASH, Types.INTEGER, "Password hash"))
-            .setKeyGenerator(automaticKeyGenerator("chinook.user"))
+            .setKeyGenerator(automatic("chinook.user"))
             .setOrderBy(orderBy().ascending(USER_USERNAME))
             .setStringProvider(new StringProvider(USER_USERNAME))
             .setSearchPropertyIds(USER_USERNAME)
@@ -67,7 +68,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
-            .setKeyGenerator(automaticKeyGenerator("chinook.artist"))
+            .setKeyGenerator(automatic("chinook.artist"))
             .setOrderBy(orderBy().ascending(ARTIST_NAME))
             .setStringProvider(new StringProvider(ARTIST_NAME))
             .setSearchPropertyIds(ARTIST_NAME)
@@ -88,7 +89,7 @@ public final class ChinookImpl extends Domain implements Chinook {
             blobProperty(ALBUM_COVER, "Cover"),
             derivedProperty(ALBUM_COVER_IMAGE, Types.JAVA_OBJECT, null,
                     new CoverArtImageProvider(), ALBUM_COVER))
-            .setKeyGenerator(automaticKeyGenerator("chinook.album"))
+            .setKeyGenerator(automatic("chinook.album"))
             .setOrderBy(orderBy().ascending(ALBUM_ARTISTID, ALBUM_TITLE))
             .setStringProvider(new StringProvider(ALBUM_TITLE))
             .setSearchPropertyIds(ALBUM_TITLE)
@@ -126,7 +127,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setMaxLength(24),
             columnProperty(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
                     .setMaxLength(60))
-            .setKeyGenerator(automaticKeyGenerator("chinook.employee"))
+            .setKeyGenerator(automatic("chinook.employee"))
             .setOrderBy(orderBy().ascending(EMPLOYEE_LASTNAME, EMPLOYEE_FIRSTNAME))
             .setStringProvider(new StringProvider(EMPLOYEE_LASTNAME)
                     .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
@@ -164,7 +165,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setMaxLength(60),
             foreignKeyProperty(CUSTOMER_SUPPORTREP_FK, "Support rep", T_EMPLOYEE,
                     columnProperty(CUSTOMER_SUPPORTREPID, Types.BIGINT)))
-            .setKeyGenerator(automaticKeyGenerator("chinook.customer"))
+            .setKeyGenerator(automatic("chinook.customer"))
             .setOrderBy(orderBy().ascending(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME))
             .setStringProvider(customer -> {
               final StringBuilder builder =
@@ -187,7 +188,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
-            .setKeyGenerator(automaticKeyGenerator("chinook.genre"))
+            .setKeyGenerator(automatic("chinook.genre"))
             .setOrderBy(orderBy().ascending(GENRE_NAME))
             .setStringProvider(new StringProvider(GENRE_NAME))
             .setSearchPropertyIds(GENRE_NAME)
@@ -202,7 +203,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
-            .setKeyGenerator(automaticKeyGenerator("chinook.mediatype"))
+            .setKeyGenerator(automatic("chinook.mediatype"))
             .setStringProvider(new StringProvider(MEDIATYPE_NAME))
             .setSmallDataset(true)
             .setCaption("Media types");
@@ -240,7 +241,7 @@ public final class ChinookImpl extends Domain implements Chinook {
             columnProperty(TRACK_UNITPRICE, Types.DECIMAL, "Price")
                     .setNullable(false)
                     .setMaximumFractionDigits(2))
-            .setKeyGenerator(automaticKeyGenerator("chinook.track"))
+            .setKeyGenerator(automatic("chinook.track"))
             .setOrderBy(orderBy().ascending(TRACK_NAME))
             .setStringProvider(new StringProvider(TRACK_NAME))
             .setSearchPropertyIds(TRACK_NAME)
@@ -275,7 +276,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     "select sum(unitprice * quantity) from chinook.invoiceline " +
                             "where invoiceid = invoice.invoiceid")
                     .setMaximumFractionDigits(2))
-            .setKeyGenerator(automaticKeyGenerator("chinook.invoice"))
+            .setKeyGenerator(automatic("chinook.invoice"))
             .setOrderBy(orderBy().ascending(INVOICE_CUSTOMERID).descending(INVOICE_INVOICEDATE))
             .setStringProvider(new StringProvider(INVOICE_INVOICEID))
             .setSearchPropertyIds(INVOICE_INVOICEID_AS_STRING)
@@ -300,7 +301,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false),
             derivedProperty(INVOICELINE_TOTAL, Types.DOUBLE, "Total", INVOICELINE_TOTAL_PROVIDER,
                     INVOICELINE_QUANTITY, INVOICELINE_UNITPRICE))
-            .setKeyGenerator(automaticKeyGenerator("chinook.invoiceline"))
+            .setKeyGenerator(automatic("chinook.invoiceline"))
             .setCaption("Invoice lines");
   }
 
@@ -311,7 +312,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
-            .setKeyGenerator(automaticKeyGenerator("chinook.playlist"))
+            .setKeyGenerator(automatic("chinook.playlist"))
             .setOrderBy(orderBy().ascending(PLAYLIST_NAME))
             .setStringProvider(new StringProvider(PLAYLIST_NAME))
             .setSearchPropertyIds(PLAYLIST_NAME)

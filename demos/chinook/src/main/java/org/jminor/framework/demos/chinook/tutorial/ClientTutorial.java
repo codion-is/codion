@@ -21,6 +21,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
+import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 import static org.jminor.swing.common.ui.UiUtil.getScreenSizeRatio;
 import static org.jminor.swing.common.ui.UiUtil.setPreferredWidth;
@@ -48,7 +49,7 @@ public final class ClientTutorial {
               primaryKeyProperty(ARTIST_ID),
               columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
                       .setNullable(false).setMaxLength(120))
-              .setKeyGenerator(automaticKeyGenerator(T_ARTIST))
+              .setKeyGenerator(automatic(T_ARTIST))
               .setStringProvider(new StringProvider(ARTIST_NAME))
               .setSmallDataset(true)
               .setCaption("Artists");
@@ -60,7 +61,7 @@ public final class ClientTutorial {
                       .setNullable(false),
               columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
                       .setNullable(false).setMaxLength(160))
-              .setKeyGenerator(automaticKeyGenerator(T_ALBUM))
+              .setKeyGenerator(automatic(T_ALBUM))
               .setStringProvider(new StringProvider()
                       .addValue(ALBUM_ARTIST_FK).addText(" - ").addValue(ALBUM_TITLE))
               .setCaption("Albums");

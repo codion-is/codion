@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.domain.KeyGenerators.increment;
 
 public final class TestDomain extends Domain {
 
@@ -118,7 +119,7 @@ public final class TestDomain extends Domain {
                     .setLazyLoaded(true),
             Properties.blobProperty(EMP_DATA))
             .setStringProvider(new StringProvider(EMP_NAME))
-            .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
+            .setKeyGenerator(increment("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .addConditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, (propetyIds, values) -> "ename = 'BLAKE'")
             .addConditionProvider(EMP_MGR_GREATER_THAN_CONDITION_ID, (propetyIds, values) -> "mgr > ?")

@@ -17,6 +17,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.jminor.framework.domain.KeyGenerators.increment;
 
 public final class TestDomain extends Domain {
 
@@ -82,7 +83,7 @@ public final class TestDomain extends Domain {
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
             .setStringProvider(new StringProvider(EMP_NAME))
-            .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
+            .setKeyGenerator(increment("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setCaption("Employee");
   }

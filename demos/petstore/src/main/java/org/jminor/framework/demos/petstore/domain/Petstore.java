@@ -8,6 +8,7 @@ import org.jminor.framework.domain.StringProvider;
 
 import java.sql.Types;
 
+import static org.jminor.framework.domain.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class Petstore extends Domain {
@@ -50,7 +51,7 @@ public final class Petstore extends Domain {
                     .setColumnName("latitude").setNullable(false).setMaximumFractionDigits(2),
             columnProperty(ADDRESS_LONGITUDE, Types.DOUBLE, ADDRESS_LONGITUDE)
                     .setColumnName("longitude").setNullable(false).setMaximumFractionDigits(2))
-            .setKeyGenerator(incrementKeyGenerator("petstore.address", "addressid"))
+            .setKeyGenerator(increment("petstore.address", "addressid"))
             .setOrderBy(orderBy().ascending(ADDRESS_CITY, ADDRESS_STREET_1, ADDRESS_STREET_2))
             .setStringProvider(new StringProvider(ADDRESS_STREET_1).addText(" ")
                     .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
@@ -74,7 +75,7 @@ public final class Petstore extends Domain {
                     .setColumnName("description").setMaxLength(255).setNullable(false),
             columnProperty(CATEGORY_IMAGE_URL, Types.VARCHAR, CATEGORY_IMAGE_URL)
                     .setColumnName("imageurl").setHidden(true))
-            .setKeyGenerator(incrementKeyGenerator("petstore.category", "categoryid"))
+            .setKeyGenerator(increment("petstore.category", "categoryid"))
             .setOrderBy(orderBy().ascending(CATEGORY_NAME))
             .setStringProvider(new StringProvider(CATEGORY_NAME))
             .setCaption("Categories");
@@ -101,7 +102,7 @@ public final class Petstore extends Domain {
                     .setColumnName("description").setMaxLength(255).setNullable(false),
             columnProperty(PRODUCT_IMAGE_URL, Types.VARCHAR, PRODUCT_IMAGE_URL)
                     .setColumnName("imageurl").setMaxLength(55).setHidden(true))
-            .setKeyGenerator(incrementKeyGenerator("petstore.product", "productid"))
+            .setKeyGenerator(increment("petstore.product", "productid"))
             .setOrderBy(orderBy().ascending(PRODUCT_NAME))
             .setStringProvider(new StringProvider(PRODUCT_CATEGORY_FK)
                     .addText(" - ").addValue(PRODUCT_NAME))
@@ -124,7 +125,7 @@ public final class Petstore extends Domain {
                     .setColumnName("lastname").setMaxLength(24).setNullable(false),
             columnProperty(SELLER_CONTACT_INFO_EMAIL, Types.VARCHAR, SELLER_CONTACT_INFO_EMAIL)
                     .setColumnName("email").setMaxLength(24).setNullable(false))
-            .setKeyGenerator(incrementKeyGenerator("petstore.sellercontactinfo", "contactinfoid"))
+            .setKeyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
             .setOrderBy(orderBy()
                     .ascending(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME))
             .setStringProvider(new StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
@@ -173,7 +174,7 @@ public final class Petstore extends Domain {
                     .setNullable(false),
             booleanProperty(ITEM_DISABLED, Types.INTEGER, ITEM_DISABLED, 1, 0)
                     .setColumnName("disabled").setDefaultValue(false))
-            .setKeyGenerator(incrementKeyGenerator("petstore.item", "itemid"))
+            .setKeyGenerator(increment("petstore.item", "itemid"))
             .setOrderBy(orderBy().ascending(ITEM_NAME))
             .setStringProvider(new StringProvider(ITEM_PRODUCT_FK)
                     .addText(" - ").addValue(ITEM_NAME))
@@ -194,7 +195,7 @@ public final class Petstore extends Domain {
             subqueryProperty(TAG_REFCOUNT, Types.INTEGER, TAG_REFCOUNT,
                     "select count(*) from petstore.tag_item where tagid = tag.tagid")
                     .setColumnName("refcount"))
-            .setKeyGenerator(incrementKeyGenerator("petstore.tag", "tagid"))
+            .setKeyGenerator(increment("petstore.tag", "tagid"))
             .setOrderBy(orderBy().ascending(TAG_TAG))
             .setSelectTableName("petstore.tag tag")
             .setStringProvider(new StringProvider(TAG_TAG))

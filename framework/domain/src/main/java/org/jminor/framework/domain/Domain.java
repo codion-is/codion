@@ -5,7 +5,6 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Util;
-import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.value.PropertyValue;
@@ -17,9 +16,6 @@ import org.jminor.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -350,7 +346,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @return deep copies of the entities, in the same order as they are received
    */
   public final List<Entity> deepCopyEntities(final List<Entity> entities) {
-    Objects.requireNonNull(entities, "entities");
+    requireNonNull(entities, "entities");
 
     return entities.stream().map(this::deepCopyEntity).collect(toList());
   }
@@ -361,7 +357,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @return copy of the given entity
    */
   public final Entity copyEntity(final Entity entity) {
-    Objects.requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(entity, ENTITY_PARAM);
     final Entity copy = entity(entity.getEntityId());
     copy.setAs(entity);
 
@@ -374,7 +370,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @return a deep copy of the given entity
    */
   public final Entity deepCopyEntity(final Entity entity) {
-    Objects.requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(entity, ENTITY_PARAM);
     final Entity copy = entity(entity.getEntityId());
     copy.setAs(entity);
     for (final ForeignKeyProperty foreignKeyProperty : getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
@@ -393,11 +389,17 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @return a copy of the given key
    */
   public final Entity.Key copyKey(final Entity.Key key) {
-    Objects.requireNonNull(key, "key");
+    requireNonNull(key, "key");
     final Entity.Key copy = key(key.getEntityId());
     copy.setAs(key);
 
     return copy;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Entity.Definition getDefinition(final String entityId) {
+    return definitionProvider.getDefinition(entityId);
   }
 
   /**
@@ -488,61 +490,6 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    */
   public static final OrderBy orderBy() {
     return new OrderBy();
-  }
-
-  /**
-   * Instantiates a primary key generator which fetches the current maximum primary key value and increments
-   * it by one prior to insert.
-   * Note that if the primary key value of the entity being inserted is already populated this key
-   * generator does nothing, that is, it does not overwrite a manually set primary key value.
-   * @param tableName the table name
-   * @param columnName the primary key column name
-   * @return a incrementing primary key generator
-   */
-  public final Entity.KeyGenerator incrementKeyGenerator(final String tableName, final String columnName) {
-    return new IncrementKeyGenerator(tableName, columnName);
-  }
-
-  /**
-   * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert.
-   * Note that if the primary key value of the entity being inserted is already populated this key
-   * generator does nothing, that is, it does not overwrite a manually set primary key value.
-   * @param sequenceName the sequence name
-   * @return a sequence based primary key generator
-   */
-  public final Entity.KeyGenerator sequenceKeyGenerator(final String sequenceName) {
-    return new SequenceKeyGenerator(sequenceName);
-  }
-
-  /**
-   * Instantiates a primary key generator which fetches primary key values using the given query prior to insert.
-   * Note that if the primary key value of the entity being inserted is already populated this key
-   * generator does nothing, that is, it does not overwrite a manually set primary key value.
-   * @param query a query for retrieving the primary key value
-   * @return a query based primary key generator
-   */
-  public final Entity.KeyGenerator queriedKeyGenerator(final String query) {
-    return new AbstractQueriedKeyGenerator() {
-      @Override
-      protected String getQuery(final Database database) {
-        return query;
-      }
-    };
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Entity.Definition getDefinition(final String entityId) {
-    return definitionProvider.getDefinition(entityId);
-  }
-
-  /**
-   * Instantiates a primary key generator which fetches automatically incremented primary key values after insert.
-   * @param valueSource the value source, whether a sequence or a table name
-   * @return a auto-increment based primary key generator
-   */
-  public final Entity.KeyGenerator automaticKeyGenerator(final String valueSource) {
-    return new AutomaticKeyGenerator(valueSource);
   }
 
   /**
@@ -669,114 +616,6 @@ public class Domain implements Entity.Definition.Provider, Serializable {
     REGISTERED_DOMAINS.put(domainId, domain);
 
     return domain;
-  }
-
-  private abstract class AbstractQueriedKeyGenerator implements Entity.KeyGenerator {
-
-    @Override
-    public Type getType() {
-      return Type.QUERY;
-    }
-
-    protected final ColumnProperty getPrimaryKeyProperty(final String entityId) {
-      return getDefinition(entityId).getPrimaryKeyProperties().get(0);
-    }
-
-    protected final void queryAndSet(final Entity entity, final ColumnProperty keyProperty,
-                                     final DatabaseConnection connection) throws SQLException {
-      final Object value;
-      switch (keyProperty.getColumnType()) {
-        case Types.INTEGER:
-          value = connection.queryInteger(getQuery(connection.getDatabase()));
-          break;
-        case Types.BIGINT:
-          value = connection.queryLong(getQuery(connection.getDatabase()));
-          break;
-        default:
-          throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);
-      }
-      entity.put(keyProperty, value);
-    }
-
-    protected abstract String getQuery(final Database database);
-  }
-
-  private final class IncrementKeyGenerator extends AbstractQueriedKeyGenerator {
-
-    private final String query;
-
-    private IncrementKeyGenerator(final String tableName, final String columnName) {
-      this.query = "select max(" + columnName + ") + 1 from " + tableName;
-    }
-
-    @Override
-    public Type getType() {
-      return Type.INCREMENT;
-    }
-
-    @Override
-    public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
-      final ColumnProperty primaryKeyProperty = getPrimaryKeyProperty(entity.getEntityId());
-      if (entity.isNull(primaryKeyProperty)) {
-        queryAndSet(entity, primaryKeyProperty, connection);
-      }
-    }
-
-    @Override
-    protected String getQuery(final Database database) {
-      return query;
-    }
-  }
-
-  private final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
-
-    private final String sequenceName;
-
-    private SequenceKeyGenerator(final String sequenceName) {
-      this.sequenceName = sequenceName;
-    }
-
-    @Override
-    public Type getType() {
-      return Type.SEQUENCE;
-    }
-
-    @Override
-    public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
-      final ColumnProperty primaryKeyProperty = getPrimaryKeyProperty(entity.getEntityId());
-      if (entity.isNull(primaryKeyProperty)) {
-        queryAndSet(entity, primaryKeyProperty, connection);
-      }
-    }
-
-    @Override
-    protected String getQuery(final Database database) {
-      return database.getSequenceQuery(sequenceName);
-    }
-  }
-
-  private final class AutomaticKeyGenerator extends AbstractQueriedKeyGenerator {
-
-    private final String valueSource;
-
-    private AutomaticKeyGenerator(final String valueSource) {
-      this.valueSource = valueSource;
-    }
-
-    @Override
-    public Type getType() {
-      return Type.AUTOMATIC;
-    }
-
-    @Override
-    public void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
-      queryAndSet(entity, getPrimaryKeyProperty(entity.getEntityId()), connection);
-    }
-
-    @Override
-    protected String getQuery(final Database database) {
-      return database.getAutoIncrementQuery(valueSource);
-    }
   }
 
   private static final class BeanProperty implements Serializable {

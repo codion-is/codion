@@ -12,6 +12,7 @@ import java.sql.Types;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.domain.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 
 /**
@@ -92,7 +93,7 @@ public final class EmpDept extends Domain {
             denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION), "Location")
                     .setPreferredColumnWidth(100))
-            .setKeyGenerator(incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID))
+            .setKeyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID))
             .setOrderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
             .setSearchPropertyIds(EMPLOYEE_NAME)
             .setStringProvider(new StringProvider(EMPLOYEE_NAME))

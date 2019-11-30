@@ -230,9 +230,9 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 * <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>>
 * <<{dir-tutorials}/petstore.adoc#_domain_model, Petstore domain model>>
 
-== Entity.KeyProvider
+== KeyGenerator
 
-The framework provides implementations for most common primary key generation strategies, sequence (with or without trigger) and auto-increment columns.
+The framework provides implementations for most common primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/org/jminor/framework/domain/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/org/jminor/framework/domain/Entity.KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
 
 === Auto-increment
 
@@ -251,7 +251,7 @@ define(Store.T_CUSTOMER
 define(Store.T_CUSTOMER
     primaryKeyProperty(Store.CUSTOMER_ID)
     ...
-).setKeyGenerator(automaticKeyGenerator("store.customer_seq"));
+).setKeyGenerator(automatic("store.customer_seq"));
 ----
 
 === Sequence
@@ -264,7 +264,7 @@ When sequences are used without triggers the framework can fetch the value from 
 define(Store.T_CUSTOMER
     primaryKeyProperty(Store.CUSTOMER_ID)
     ...
-).setKeyGenerator(sequenceKeyGenerator("store.customer_seq"));
+).setKeyGenerator(sequence("store.customer_seq"));
 ----
 
 === Queried
@@ -277,7 +277,7 @@ The framework can select new primary key values from a query.
 define(Store.T_CUSTOMER
     primaryKeyProperty(Store.CUSTOMER_ID)
     ...
-).setKeyGenerator(queriedKeyGenerator(
+).setKeyGenerator(queried(
     "select new_id
      from store.id_values
      where table_name = 'store.customer'"));
@@ -292,12 +292,17 @@ The framework can automatically increment the primary key value by selecting the
 define(Store.T_CUSTOMER
     primaryKeyProperty(Store.CUSTOMER_ID)
     ...
-).setKeyGenerator(incrementKeyGenerator("store.customer_seq"));
+).setKeyGenerator(increment("store.customer_seq"));
 ----
 
 === Custom
 
 You can provide a custom key generator strategy by implementing a {url-javadoc}/org/jminor/framework/domain/Entity.KeyGenerator.html[KeyGenerator].
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[tags=keyGenerator]
+----
 
 == Domain.StringProvider
 
