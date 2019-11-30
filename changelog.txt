@@ -5376,3 +5376,4 @@
   shutdownServer task added to server build file
   DefaultEntityDefinition constructor simplified, required methods moved from Domain
   DefaultEntityDefinition, some minor refactoring, reordering, Entity.Definition removed a couple of methods
+  Domain.isDefined(entityId) removed, some refactoring

@@ -37,7 +37,7 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * A repository specifying the {@link Entity.Definition}s for a given domain.
- * Used to instantiate {@link Entity} and {@link Entity.Key} instances.
+ * Factory for {@link Entity} and {@link Entity.Key} instances.
  */
 public class Domain implements Entity.Definition.Provider, Serializable {
 
@@ -57,7 +57,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
   private static final Map<String, Domain> REGISTERED_DOMAINS = new HashMap<>();
 
   private final String domainId;
-  private final Map<String, Entity.Definition> entityDefinitions = new LinkedHashMap<>();
+  private final DefaultEntityDefinitionProvider definitionProvider = new DefaultEntityDefinitionProvider();
   private final transient Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
 
   private Map<Class, Entity.Definition> beanEntities;
@@ -86,7 +86,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    */
   public Domain(final Domain domain) {
     this.domainId = requireNonNull(domain).domainId;
-    this.entityDefinitions.putAll(domain.entityDefinitions);
+    this.definitionProvider.entityDefinitions.putAll(domain.definitionProvider.entityDefinitions);
     this.beanEntities = domain.beanEntities;
     this.beanProperties = domain.beanProperties;
     if (domain.databaseOperations != null) {
@@ -404,15 +404,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @return all {@link Entity.Definition}s found in this domain model
    */
   public final Collection<Entity.Definition> getEntityDefinitions() {
-    return Collections.unmodifiableCollection(entityDefinitions.values());
-  }
-
-  /**
-   * @param entityId the entity id
-   * @return true if the entity is defined
-   */
-  public final boolean isDefined(final String entityId) {
-    return entityDefinitions.containsKey(entityId);
+    return Collections.unmodifiableCollection(definitionProvider.entityDefinitions.values());
   }
 
   /**
@@ -538,6 +530,12 @@ public class Domain implements Entity.Definition.Provider, Serializable {
     };
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public final Entity.Definition getDefinition(final String entityId) {
+    return definitionProvider.getDefinition(entityId);
+  }
+
   /**
    * Instantiates a primary key generator which fetches automatically incremented primary key values after insert.
    * @param valueSource the value source, whether a sequence or a table name
@@ -570,20 +568,6 @@ public class Domain implements Entity.Definition.Provider, Serializable {
   }
 
   /**
-   * @param entityId the entity id
-   * @return the definition of the given entity
-   * @throws IllegalArgumentException in case no entity with the given id has been defined
-   */
-  public final Entity.Definition getDefinition(final String entityId) {
-    final Entity.Definition definition = entityDefinitions.get(requireNonNull(entityId, ENTITY_ID_PARAM));
-    if (definition == null) {
-      throw new IllegalArgumentException("Undefined entity: " + entityId);
-    }
-
-    return definition;
-  }
-
-  /**
    * Adds a new {@link Entity.Definition} to this domain model, using the {@code entityId} as table name.
    * Returns the {@link Entity.Definition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
@@ -612,13 +596,9 @@ public class Domain implements Entity.Definition.Provider, Serializable {
                                                    final Property.Builder... propertyBuilders) {
     requireNonNull(entityId, ENTITY_ID_PARAM);
     requireNonNull(tableName, "tableName");
-    if (entityDefinitions.containsKey(entityId) && !ALLOW_REDEFINE_ENTITY.get()) {
-      throw new IllegalArgumentException("Entity has already been defined: " + entityId + ", for table: " + tableName);
-    }
-
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(this,
             domainId, entityId, tableName, new DefaultEntityValidator(), propertyBuilders);
-    entityDefinitions.put(entityId, entityDefinition);
+    definitionProvider.addDefinition(entityDefinition);
 
     return entityDefinition.builder();
   }
@@ -637,7 +617,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
       beanEntities = new HashMap<>();
     }
     if (!beanEntities.containsKey(beanClass)) {
-      final Optional<Entity.Definition> optionalDefinition = entityDefinitions.values().stream()
+      final Optional<Entity.Definition> optionalDefinition = getEntityDefinitions().stream()
               .filter(def -> Objects.equals(beanClass, def.getBeanClass())).findFirst();
       if (!optionalDefinition.isPresent()) {
         throw new IllegalArgumentException("No entity associated with bean class: " + beanClass);
@@ -809,6 +789,32 @@ public class Domain implements Entity.Definition.Provider, Serializable {
     private BeanProperty(final Method getter, final Method setter) {
       this.getter = requireNonNull(getter, "getter");
       this.setter = requireNonNull(setter, "setter");
+    }
+  }
+
+  private static final class DefaultEntityDefinitionProvider implements Entity.Definition.Provider, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private final Map<String, Entity.Definition> entityDefinitions = new LinkedHashMap<>();
+
+    @Override
+    public final Entity.Definition getDefinition(final String entityId) {
+      final Entity.Definition definition = entityDefinitions.get(requireNonNull(entityId, ENTITY_ID_PARAM));
+      if (definition == null) {
+        throw new IllegalArgumentException("Undefined entity: " + entityId);
+      }
+
+      return definition;
+    }
+
+    private void addDefinition(final Entity.Definition definition) {
+      if (entityDefinitions.containsKey(definition.getEntityId()) && !ALLOW_REDEFINE_ENTITY.get()) {
+        throw new IllegalArgumentException("Entity has already been defined: " +
+                definition.getEntityId() + ", for table: " + definition.getTableName());
+      }
+
+      entityDefinitions.put(definition.getEntityId(), definition);
     }
   }
 }
