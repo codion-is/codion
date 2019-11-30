@@ -5391,3 +5391,5 @@
   Blob unit tests improved
   BlobInputProvider added
   BlobProperty is now hidden by default
+  NavigableImagePanel.setMoveImageEnabled() added
+  DefaultEntity, now performes property and type validation on constructor parameters

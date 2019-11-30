@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
@@ -73,29 +74,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * Instantiates a new DefaultEntity
    * @param definitionProvider the domain
-   */
-  DefaultEntity(final Entity.Definition.Provider definitionProvider, final String entityId) {
-    this(definitionProvider, entityId, null, null);
-  }
-
-  /**
-   * Instantiates a new DefaultEntity
-   * @param definitionProvider the domain
    * @param key the primary key
    */
   DefaultEntity(final Entity.Definition.Provider definitionProvider, final Key key) {
-    this(definitionProvider, requireNonNull(key, "key").getEntityId(), createValueMap(key));
+    this(definitionProvider, requireNonNull(key, "key").getEntityId(), createValueMap(key), null);
     this.key = key;
-  }
-
-  /**
-   * Instantiates a new DefaultEntity
-   * @param definitionProvider the domain model
-   * @param entityId the entity id
-   * @param values the initial values
-   */
-  DefaultEntity(final Entity.Definition.Provider definitionProvider, final String entityId, final Map<Property, Object> values) {
-    this(definitionProvider, entityId, values, null);
   }
 
   /**
@@ -104,11 +87,25 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param values the initial values
    * @param originalValues the original values, may be null
    */
-  DefaultEntity(final Entity.Definition.Provider definitionProvider, final String entityId, final Map<Property, Object> values,
-                final Map<Property, Object> originalValues) {
+  DefaultEntity(final Entity.Definition.Provider definitionProvider, final String entityId,
+                final Map<Property, Object> values, final Map<Property, Object> originalValues) {
+    this(requireNonNull(definitionProvider, "definitionProvider"),
+            definitionProvider.getDefinition(entityId), values, originalValues);
+  }
+
+  /**
+   * Instantiates a new DefaultEntity based on the given values.
+   * @param definitionProvider the domain model
+   * @param values the initial values
+   * @param originalValues the original values, may be null
+   */
+  DefaultEntity(final Entity.Definition.Provider definitionProvider, final Entity.Definition definition,
+                final Map<Property, Object> values, final Map<Property, Object> originalValues) {
     super(values, originalValues);
-    this.definitionProvider = requireNonNull(definitionProvider, "domain");
-    this.definition = definitionProvider.getDefinition(entityId);
+    this.definitionProvider = requireNonNull(definitionProvider, "definitionProvider");
+    this.definition = requireNonNull(definition, "definition");
+    validateProperties(definition, values);
+    validateProperties(definition, originalValues);
   }
 
   /** {@inheritDoc} */
@@ -870,6 +867,19 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     return value;
+  }
+
+  private static void validateProperties(final Entity.Definition definition, final Map<Property, Object> propertyValues) {
+    if (propertyValues != null && !propertyValues.isEmpty()) {
+      final Set<Property> propertySet = definition.getPropertySet();
+      for (final Map.Entry<Property, Object> valueEntry : propertyValues.entrySet()) {
+        final Property property = valueEntry.getKey();
+        if (!property.getEntityId().equals(definition.getEntityId()) || !propertySet.contains(property)) {
+          throw new IllegalArgumentException("Property " + property + " is not part of entity: " + definition.getEntityId());
+        }
+        property.validateType(valueEntry.getValue());
+      }
+    }
   }
 
   private static Map<Property, Object> createValueMap(final Key key) {

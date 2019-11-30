@@ -151,6 +151,7 @@ public class NavigableImagePanel extends JPanel {
   private Dimension previousPanelSize;
   private boolean navigationImageEnabled = true;
   private boolean highQualityRenderingEnabled = true;
+  private boolean moveImageEnabled = true;
 
   private WheelZoomDevice wheelZoomDevice = null;
   private ButtonZoomDevice buttonZoomDevice = null;
@@ -193,7 +194,7 @@ public class NavigableImagePanel extends JPanel {
     addMouseMotionListener(new MouseMotionListener() {
       @Override
       public void mouseDragged(final MouseEvent e) {
-        if (SwingUtilities.isLeftMouseButton(e)
+        if (moveImageEnabled && SwingUtilities.isLeftMouseButton(e)
                 && !isInNavigationImage(e.getPoint())) {
           moveImage(e.getPoint());
         }
@@ -548,6 +549,14 @@ public class NavigableImagePanel extends JPanel {
   public final void setNavigationImageEnabled(final boolean enabled) {
     navigationImageEnabled = enabled;
     repaint();
+  }
+
+  public final boolean isMoveImageEnabled() {
+    return moveImageEnabled;
+  }
+
+  public final void setMoveImageEnabled(final boolean moveImageEnabled) {
+    this.moveImageEnabled = moveImageEnabled;
   }
 
   /**

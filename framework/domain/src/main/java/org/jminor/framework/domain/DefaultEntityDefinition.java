@@ -52,6 +52,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final Map<String, Property> propertyMap;
 
   /**
+   * All properties
+   */
+  private final Set<Property> propertySet;
+
+  /**
    * A list view of the properties
    */
   private final List<Property> properties;
@@ -194,6 +199,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.columnProperties = columnProperties;
     this.foreignKeyProperties = foreignKeyProperties;
     this.transientProperties = transientProperties;
+    this.propertySet = new HashSet<>(propertyMap.values());
     this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties(columnProperties);
     this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap(foreignKeyProperties);
     this.selectableColumnProperties = unmodifiableList(getSelectableProperties(columnProperties, lazyLoadedBlobProperties));
@@ -479,6 +485,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public Map<String, Property> getPropertyMap() {
     return propertyMap;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Set<Property> getPropertySet() {
+    return propertySet;
   }
 
   /** {@inheritDoc} */

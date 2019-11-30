@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
@@ -730,6 +731,11 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return the properties for this entity type mapped to propertyIds
      */
     Map<String, Property> getPropertyMap();
+
+    /**
+     * @return a Set containing all the properties in this entity
+     */
+    Set<Property> getPropertySet();
 
     /**
      * @return a unmodifiable list view of the properties

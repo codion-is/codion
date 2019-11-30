@@ -933,9 +933,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       resultSet = executePreparedSelect(statement, selectSQL, whereCondition);
 
       return new EntityResultIterator(statement, resultSet, new EntityResultPacker(
-              domain, selectCondition.getEntityId(), propertiesToSelect,
-              entityDefinition.getLazyLoadedBlobProperties(), entityDefinition.getTransientProperties()),
-              selectCondition.getFetchCount());
+              domain, entityDefinition, propertiesToSelect), selectCondition.getFetchCount());
     }
     catch (final SQLException e) {
       closeSilently(resultSet);

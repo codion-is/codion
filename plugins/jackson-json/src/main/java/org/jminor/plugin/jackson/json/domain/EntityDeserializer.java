@@ -44,7 +44,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     final String entityId = entityNode.get("entityId").asText();
     final Entity.Definition definition = domain.getDefinition(entityId);
 
-    return domain.entity(entityId, getValueMap(entityNode, definition),
+    return domain.entity(definition, getValueMap(entityNode, definition),
             getOriginalValueMap(entityNode, definition));
   }
 
