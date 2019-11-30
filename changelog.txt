@@ -5371,3 +5371,5 @@
   BlobProperty is now hidden by default
   NavigableImagePanel.setMoveImageEnabled() added
   DefaultEntity, now performes property and type validation on constructor parameters
+  Entity.getProperty(propertyId) and Entity.Key.getPropertyCount() removed
+  DefaultEntityDefinition refactored
