@@ -43,7 +43,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private static final long serialVersionUID = 1;
 
   private static final String PROPERTY_PARAM = "property";
-  private static final String PROPERTY_ID_PARAM = "propertyId";
 
   /**
    * Used to cache the return value of the frequently called toString(),
@@ -84,7 +83,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * Instantiates a new DefaultEntity based on the given values.
    * @param definitionProvider the domain model
-   * @param values the initial values
+   * @param values the initial values, may be null
    * @param originalValues the original values, may be null
    */
   DefaultEntity(final Entity.Definition.Provider definitionProvider, final String entityId,
@@ -96,7 +95,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * Instantiates a new DefaultEntity based on the given values.
    * @param definitionProvider the domain model
-   * @param values the initial values
+   * @param values the initial values, may be null
    * @param originalValues the original values, may be null
    */
   DefaultEntity(final Entity.Definition.Provider definitionProvider, final Entity.Definition definition,
@@ -138,18 +137,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public Property getProperty(final String propertyId) {
-    requireNonNull(propertyId, PROPERTY_ID_PARAM);
-    final Property property = definition.getPropertyMap().get(propertyId);
-    if (property == null) {
-      throw new IllegalArgumentException("Property " + propertyId + " not found in entity: " + definition.getEntityId());
-    }
-
-    return property;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public List<Property> getProperties() {
     return definition.getProperties();
   }
@@ -179,7 +166,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public Object put(final String propertyId, final Object value) {
-    return super.put(getProperty(propertyId), value);
+    return super.put(definition.getProperty(propertyId), value);
   }
 
   /**
@@ -188,7 +175,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public Object get(final String propertyId) {
-    return get(getProperty(propertyId));
+    return get(definition.getProperty(propertyId));
   }
 
   /**
@@ -214,7 +201,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public boolean isNull(final String propertyId) {
-    return isNull(getProperty(propertyId));
+    return isNull(definition.getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
@@ -242,18 +229,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public boolean isModified(final String propertyId) {
-    return isModified(getProperty(propertyId));
+    return isModified(definition.getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity getForeignKey(final String foreignKeyPropertyId) {
-    final Property property = getProperty(foreignKeyPropertyId);
-    if (property instanceof ForeignKeyProperty) {
-      return getForeignKey((ForeignKeyProperty) property);
-    }
-
-    throw new IllegalArgumentException(foreignKeyPropertyId + " is not a foreign key property");
+    return getForeignKey(definition.getForeignKeyProperty(foreignKeyPropertyId));
   }
 
   /** {@inheritDoc} */
@@ -366,7 +348,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public String getFormatted(final String propertyId, final Format format) {
-    return getFormatted(getProperty(propertyId), format);
+    return getFormatted(definition.getProperty(propertyId), format);
   }
 
   /** {@inheritDoc} */
@@ -391,7 +373,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public String getAsString(final String propertyId) {
-    return getAsString(getProperty(propertyId));
+    return getAsString(definition.getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
@@ -413,25 +395,25 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public Object getOriginal(final String propertyId) {
-    return getOriginal(getProperty(propertyId));
+    return getOriginal(definition.getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
   public void save(final String propertyId) {
-    save(getProperty(propertyId));
+    save(definition.getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
   public void revert(final String propertyId) {
-    revert(getProperty(propertyId));
+    revert(definition.getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
   public Object remove(final String propertyId) {
-    return remove(getProperty(propertyId));
+    return remove(definition.getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
@@ -514,7 +496,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public boolean containsKey(final String propertyId) {
-    return containsKey(getProperty(propertyId));
+    return containsKey(definition.getProperty(propertyId));
   }
 
   /**

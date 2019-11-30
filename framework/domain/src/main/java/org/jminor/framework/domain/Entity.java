@@ -59,14 +59,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   KeyGenerator.Type getKeyGeneratorType();
 
   /**
-   * Retrieves the property identified by propertyId from the entity repository
-   * @param propertyId the ID of the property to retrieve
-   * @return the property identified by propertyId
-   * @throws IllegalArgumentException in case the property does not exist in this entity
-   */
-  Property getProperty(final String propertyId);
-
-  /**
    * @return the properties comprising this entity
    */
   List<Property> getProperties();
@@ -353,11 +345,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return a List containing the properties comprising this key
      */
     List<ColumnProperty> getProperties();
-
-    /**
-     * @return the number of properties comprising this key
-     */
-    int getPropertyCount();
 
     /**
      * @return true if this key contains no values or if it contains a null value for a non-nullable key property

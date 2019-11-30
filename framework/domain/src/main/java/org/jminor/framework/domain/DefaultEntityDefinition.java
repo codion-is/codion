@@ -64,7 +64,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * A map mapping column property ids to the foreign key properties they are a part of
    */
-  private final Map<String, List<ForeignKeyProperty>> foreignKeyPropertyMap;
+  private final Map<String, List<ForeignKeyProperty>> columpPropertyForeignKeyProperties;
 
   /**
    * The caption to use for the entity type
@@ -171,6 +171,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final Map<String, Set<DerivedProperty>> derivedProperties;
   private final List<ColumnProperty> primaryKeyProperties;
   private final Map<String, ColumnProperty> primaryKeyPropertyMap;
+  private final Map<String, ForeignKeyProperty> foreignKeyPropertyMap;
   private final List<ForeignKeyProperty> foreignKeyProperties;
   private final List<BlobProperty> lazyLoadedBlobProperties;
   private final List<TransientProperty> transientProperties;
@@ -201,11 +202,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.transientProperties = transientProperties;
     this.propertySet = new HashSet<>(propertyMap.values());
     this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties(columnProperties);
-    this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap(foreignKeyProperties);
+    this.columpPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties(foreignKeyProperties);
     this.selectableColumnProperties = unmodifiableList(getSelectableProperties(columnProperties, lazyLoadedBlobProperties));
     this.properties = unmodifiableList(new ArrayList<>(this.propertyMap.values()));
     this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties(this.propertyMap.values()));
     this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
+    this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap(foreignKeyProperties);
     this.visibleProperties = unmodifiableList(getVisibleProperties(this.propertyMap.values()));
     this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties(this.propertyMap.values()));
     this.derivedProperties = initializeDerivedProperties(this.propertyMap.values());
@@ -372,7 +374,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public Property getProperty(final String propertyId) {
     requireNonNull(propertyId, "propertyId");
-    final Property property = getPropertyMap().get(propertyId);
+    final Property property = propertyMap.get(propertyId);
     if (property == null) {
       throw new IllegalArgumentException("Property '" + propertyId + "' not found in entity: " + entityId);
     }
@@ -465,20 +467,18 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public ForeignKeyProperty getForeignKeyProperty(final String propertyId) {
-    for (int i = 0; i < foreignKeyProperties.size(); i++) {
-      final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
-      if (foreignKeyProperty.is(propertyId)) {
-        return foreignKeyProperty;
-      }
+    final ForeignKeyProperty property = foreignKeyPropertyMap.get(propertyId);
+    if (property == null) {
+      throw new IllegalArgumentException("Foreign key property with id: " + propertyId + " not found in entity of type: " + entityId);
     }
 
-    throw new IllegalArgumentException("Foreign key property with id: " + propertyId + " not found in entity of type: " + entityId);
+    return property;
   }
 
   /** {@inheritDoc} */
   @Override
   public List<ForeignKeyProperty> getForeignKeyProperties(final String columnPropertyId) {
-    return foreignKeyPropertyMap.computeIfAbsent(columnPropertyId, propertyId -> Collections.emptyList());
+    return columpPropertyForeignKeyProperties.computeIfAbsent(columnPropertyId, propertyId -> Collections.emptyList());
   }
 
   /** {@inheritDoc} */
@@ -723,7 +723,15 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return stringBuilder.toString();
   }
 
-  private static Map<String, List<ForeignKeyProperty>> initializeForeignKeyPropertyMap(final List<ForeignKeyProperty> foreignKeyProperties) {
+  private static Map<String, ForeignKeyProperty> initializeForeignKeyPropertyMap(final List<ForeignKeyProperty> foreignKeyProperties) {
+    final Map<String, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
+    foreignKeyProperties.forEach(foreignKeyProperty ->
+            foreignKeyMap.put(foreignKeyProperty.getPropertyId(), foreignKeyProperty));
+
+    return foreignKeyMap;
+  }
+
+  private static Map<String, List<ForeignKeyProperty>> initializeColumnPropertyForeignKeyProperties(final List<ForeignKeyProperty> foreignKeyProperties) {
     final Map<String, List<ForeignKeyProperty>> foreignKeyMap = new HashMap<>();
     foreignKeyProperties.forEach(foreignKeyProperty ->
             foreignKeyProperty.getColumnProperties().forEach(columnProperty ->

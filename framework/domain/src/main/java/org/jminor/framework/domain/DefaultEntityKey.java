@@ -117,15 +117,6 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
-  public int getPropertyCount() {
-    if (compositeKey) {
-      return getProperties().size();
-    }
-
-    return 1;
-  }
-
-  @Override
   public boolean isSingleIntegerKey() {
     return singleIntegerKey;
   }
@@ -273,6 +264,14 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
     }
 
     return value.hashCode();
+  }
+
+  private int getPropertyCount() {
+    if (compositeKey) {
+      return getProperties().size();
+    }
+
+    return 1;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
