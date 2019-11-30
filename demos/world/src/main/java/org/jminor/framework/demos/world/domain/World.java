@@ -13,7 +13,7 @@ import java.sql.Types;
 import static java.text.NumberFormat.getIntegerInstance;
 import static java.text.NumberFormat.getNumberInstance;
 import static org.jminor.common.Util.notNull;
-import static org.jminor.framework.domain.KeyGenerators.sequenceKeyGenerator;
+import static org.jminor.framework.domain.KeyGenerators.sequence;
 import static org.jminor.framework.domain.property.Properties.*;
 
 // tag::entityAndPropertyIds[]
@@ -82,7 +82,7 @@ public final class World extends Domain {
             columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
                     .setNullable(false)
                     .setFormat(getIntegerInstance()))
-            .setKeyGenerator(sequenceKeyGenerator("world.city_seq"))
+            .setKeyGenerator(sequence("world.city_seq"))
             .setOrderBy(orderBy().ascending(CITY_NAME))
             .setSearchPropertyIds(CITY_NAME)
             .setStringProvider(new StringProvider(CITY_NAME))

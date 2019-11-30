@@ -13,7 +13,7 @@ import java.sql.Types;
 import java.util.Comparator;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
+import static org.jminor.framework.domain.KeyGenerators.increment;
 
 public final class TestDomain extends Domain {
 
@@ -108,7 +108,7 @@ public final class TestDomain extends Domain {
                     getDefinition(TestDomain.T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
             .setStringProvider(new StringProvider(EMP_NAME))
-            .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
+            .setKeyGenerator(increment("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setCaption("Employee")
             .setColorProvider((entity, property) -> {

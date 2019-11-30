@@ -25,7 +25,7 @@ public final class KeyGenerators {
    * @param columnName the primary key column name
    * @return a incrementing primary key generator
    */
-  public static Entity.KeyGenerator incrementKeyGenerator(final String tableName, final String columnName) {
+  public static Entity.KeyGenerator increment(final String tableName, final String columnName) {
     return new IncrementKeyGenerator(tableName, columnName);
   }
 
@@ -36,7 +36,7 @@ public final class KeyGenerators {
    * @param sequenceName the sequence name
    * @return a sequence based primary key generator
    */
-  public static Entity.KeyGenerator sequenceKeyGenerator(final String sequenceName) {
+  public static Entity.KeyGenerator sequence(final String sequenceName) {
     return new SequenceKeyGenerator(sequenceName);
   }
 
@@ -47,7 +47,7 @@ public final class KeyGenerators {
    * @param query a query for retrieving the primary key value
    * @return a query based primary key generator
    */
-  public static Entity.KeyGenerator queriedKeyGenerator(final String query) {
+  public static Entity.KeyGenerator queried(final String query) {
     return new AbstractQueriedKeyGenerator() {
       @Override
       protected String getQuery(final Database database) {
@@ -61,7 +61,7 @@ public final class KeyGenerators {
    * @param valueSource the value source, whether a sequence or a table name
    * @return a auto-increment based primary key generator
    */
-  public static Entity.KeyGenerator automaticKeyGenerator(final String valueSource) {
+  public static Entity.KeyGenerator automatic(final String valueSource) {
     return new AutomaticKeyGenerator(valueSource);
   }
 

@@ -251,7 +251,7 @@ define(Store.T_CUSTOMER
 define(Store.T_CUSTOMER
     primaryKeyProperty(Store.CUSTOMER_ID)
     ...
-).setKeyGenerator(automaticKeyGenerator("store.customer_seq"));
+).setKeyGenerator(automatic("store.customer_seq"));
 ----
 
 === Sequence
@@ -264,7 +264,7 @@ When sequences are used without triggers the framework can fetch the value from 
 define(Store.T_CUSTOMER
     primaryKeyProperty(Store.CUSTOMER_ID)
     ...
-).setKeyGenerator(sequenceKeyGenerator("store.customer_seq"));
+).setKeyGenerator(sequence("store.customer_seq"));
 ----
 
 === Queried
@@ -277,7 +277,7 @@ The framework can select new primary key values from a query.
 define(Store.T_CUSTOMER
     primaryKeyProperty(Store.CUSTOMER_ID)
     ...
-).setKeyGenerator(queriedKeyGenerator(
+).setKeyGenerator(queried(
     "select new_id
      from store.id_values
      where table_name = 'store.customer'"));
@@ -292,7 +292,7 @@ The framework can automatically increment the primary key value by selecting the
 define(Store.T_CUSTOMER
     primaryKeyProperty(Store.CUSTOMER_ID)
     ...
-).setKeyGenerator(incrementKeyGenerator("store.customer_seq"));
+).setKeyGenerator(increment("store.customer_seq"));
 ----
 
 === Custom

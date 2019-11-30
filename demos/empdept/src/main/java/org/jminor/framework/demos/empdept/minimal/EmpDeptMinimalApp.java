@@ -27,7 +27,7 @@ import java.sql.Types;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
+import static org.jminor.framework.domain.KeyGenerators.increment;
 
 /**
  * EmpDept minimal application demo
@@ -50,7 +50,7 @@ public class EmpDeptMinimalApp {
                       .setMaxLength(14),
               Properties.columnProperty("loc", Types.VARCHAR, "Department location")
                       .setMaxLength(13))
-              .setKeyGenerator(incrementKeyGenerator("scott.dept", "deptno"))
+              .setKeyGenerator(increment("scott.dept", "deptno"))
               .setCaption("Departments")
               .setSearchPropertyIds("dname")
               .setStringProvider(new StringProvider("dname"));
@@ -80,7 +80,7 @@ public class EmpDeptMinimalApp {
                       Properties.columnProperty("mgr")),
               Properties.columnProperty("hiredate", Types.DATE, "Hiredate")
                       .setNullable(false))
-              .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
+              .setKeyGenerator(increment("scott.emp", "empno"))
               .setCaption("Employees")
               .setSearchPropertyIds("ename")
               .setStringProvider(new StringProvider("ename"));

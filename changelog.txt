@@ -5378,3 +5378,4 @@
   DefaultEntityDefinition, some minor refactoring, reordering, Entity.Definition removed a couple of methods
   Domain.isDefined(entityId) removed, some refactoring
   KeyGenerators added, classes and methods moved from Domain
+  KeyGenerators, KeyGenerator suffix removed from method names

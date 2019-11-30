@@ -14,8 +14,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
-import static org.jminor.framework.domain.KeyGenerators.queriedKeyGenerator;
+import static org.jminor.framework.domain.KeyGenerators.increment;
+import static org.jminor.framework.domain.KeyGenerators.queried;
 
 public final class TestDomain extends Domain {
 
@@ -123,7 +123,7 @@ public final class TestDomain extends Domain {
             }, DETAIL_INT),
             Properties.denormalizedProperty(DETAIL_MASTER_CODE_DENORM, DETAIL_MASTER_FK,
                     getDefinition(T_MASTER).getProperty(MASTER_CODE)))
-            .setKeyGenerator(queriedKeyGenerator("select id from dual"))
+            .setKeyGenerator(queried("select id from dual"))
             .setOrderBy(orderBy().ascending(DETAIL_STRING))
             .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
             .setSmallDataset(true)
@@ -220,7 +220,7 @@ public final class TestDomain extends Domain {
             }, EMP_NAME, EMP_DEPARTMENT_FK),
             Properties.blobProperty(EMP_DATA, "Data")
                     .setLazyLoaded(true))
-            .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
+            .setKeyGenerator(increment("scott.emp", "empno"))
             .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .setStringProvider(new StringProvider(EMP_NAME))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
