@@ -62,21 +62,29 @@ public final class Store extends Domain {
             columnProperty(CUSTOMER_IS_ACTIVE, Types.BOOLEAN, "Is active")
                     .setColumnHasDefaultValue(true).setDefaultValue(true))
             .setKeyGenerator(new UUIDKeyGenerator())
-            .setStringProvider(customer -> {
-              StringBuilder builder =
-                      new StringBuilder(customer.getString(CUSTOMER_LAST_NAME))
-                              .append(", ")
-                              .append(customer.getString(CUSTOMER_FIRST_NAME));
-              if (customer.isNotNull(CUSTOMER_EMAIL)) {
-                builder.append(" <")
-                        .append(customer.getString(CUSTOMER_EMAIL))
-                        .append(">");
-              }
-
-              return builder.toString();
-            });
+            .setStringProvider(new CustomerToString());
     // end::customer[]
   }
+
+  // tag::toString[]
+  private static final class CustomerToString implements Entity.ToString {
+
+    @Override
+    public String toString(final Entity customer) {
+      StringBuilder builder =
+              new StringBuilder(customer.getString(CUSTOMER_LAST_NAME))
+                      .append(", ")
+                      .append(customer.getString(CUSTOMER_FIRST_NAME));
+      if (customer.isNotNull(CUSTOMER_EMAIL)) {
+        builder.append(" <")
+                .append(customer.getString(CUSTOMER_EMAIL))
+                .append(">");
+      }
+
+      return builder.toString();
+    }
+  }
+  // end::toString[]
 
   // tag::keyGenerator[]
   private static final class UUIDKeyGenerator implements Entity.KeyGenerator {
