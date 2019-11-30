@@ -108,7 +108,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @return a new {@link Entity} instance
    */
   public final Entity entity(final String entityId) {
-    return new DefaultEntity(this, entityId);
+    return entity(getDefinition(entityId), null, null);
   }
 
   /**
@@ -122,14 +122,26 @@ public class Domain implements Entity.Definition.Provider, Serializable {
 
   /**
    * Instantiates a new {@link Entity} instance with the given values and original values.
-   * Note that no validation is performed on the properties or map values is performed.
    * @param entityId the entity id
    * @param values the values
    * @param originalValues the original values
    * @return a new {@link Entity} instance
    */
-  public final Entity entity(final String entityId, final Map<Property, Object> values, final Map<Property, Object> originalValues) {
-    return new DefaultEntity(this, entityId, values, originalValues);
+  public final Entity entity(final String entityId, final Map<Property, Object> values,
+                             final Map<Property, Object> originalValues) {
+    return entity(getDefinition(entityId), values, originalValues);
+  }
+
+  /**
+   * Instantiates a new {@link Entity} instance with the given values and original values.
+   * @param entityDefinition the entity definition
+   * @param values the values
+   * @param originalValues the original values
+   * @return a new {@link Entity} instance
+   */
+  public final Entity entity(final Entity.Definition entityDefinition, final Map<Property, Object> values,
+                             final Map<Property, Object> originalValues) {
+    return new DefaultEntity(this, entityDefinition, values, originalValues);
   }
 
   /**

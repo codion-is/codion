@@ -7,6 +7,7 @@ import org.jminor.common.FileUtil;
 import org.jminor.common.Util;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.TransientProperty;
 
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,9 @@ import java.io.IOException;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +37,40 @@ public class DefaultEntityTest {
   private final String masterName = "master";
 
   private static final Domain DOMAIN = new TestDomain();
+
+  @Test
+  public void construction() {
+    final Entity.Definition detailDefinition = DOMAIN.getDefinition(TestDomain.T_DETAIL);
+    final Entity.Definition masterDefinition = DOMAIN.getDefinition(TestDomain.T_MASTER);
+
+    final Map<Property, Object> values = new HashMap<>();
+    values.put(detailDefinition.getProperty(TestDomain.DETAIL_BOOLEAN), false);
+    values.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), 1);
+
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, values, null));
+
+    final Map<Property, Object> originalValues = new HashMap<>();
+    originalValues.put(detailDefinition.getProperty(TestDomain.DETAIL_BOOLEAN), false);
+    originalValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), 1);
+
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, null, originalValues));
+
+    final Map<Property, Object> invalidTypeValues = new HashMap<>();
+    invalidTypeValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), false);
+
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, invalidTypeValues, null));
+
+    final Map<Property, Object> invalidTypeOriginalValues = new HashMap<>();
+    invalidTypeOriginalValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), false);
+
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, null, invalidTypeOriginalValues));
+
+    final Property invalid = Properties.columnProperty("invalid", Types.INTEGER).setEntityId(TestDomain.T_MASTER).get();
+    final Map<Property, Object> invalidPropertyValues = new HashMap<>();
+    invalidPropertyValues.put(invalid, 1);
+
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, invalidPropertyValues, null));
+  }
 
   @Test
   public void serialization() throws Exception {

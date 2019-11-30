@@ -24,31 +24,25 @@ import java.util.Map;
 final class EntityResultPacker implements ResultPacker<Entity> {
 
   private final Domain domain;
-  private final String entityId;
+  private final Entity.Definition definition;
   private final List<ColumnProperty> columnProperties;
-  private final List<BlobProperty> lazyLoadedBlobProperties;
-  private final List<TransientProperty> transientProperties;
 
   /**
    * @param domain the Domain model
-   * @param entityId the entityId of the entity to pack
+   * @param definition the entity definition
    * @param columnProperties the column properties in the same order as they appear in the ResultSet
-   * @param lazyLoadedBlobProperties any lazy loaded blob properties
-   * @param transientProperties the transient properties in the given entity type, if any
    */
-  EntityResultPacker(final Domain domain, final String entityId,
-                     final List<ColumnProperty> columnProperties,
-                     final List<BlobProperty> lazyLoadedBlobProperties,
-                     final List<TransientProperty> transientProperties) {
+  EntityResultPacker(final Domain domain, final Entity.Definition definition,
+                     final List<ColumnProperty> columnProperties) {
     this.domain = domain;
-    this.entityId = entityId;
+    this.definition = definition;
     this.columnProperties = columnProperties;
-    this.lazyLoadedBlobProperties = lazyLoadedBlobProperties;
-    this.transientProperties = transientProperties;
   }
 
   @Override
   public Entity fetch(final ResultSet resultSet) throws SQLException {
+    final List<BlobProperty> lazyLoadedBlobProperties = definition.getLazyLoadedBlobProperties();
+    final List<TransientProperty> transientProperties = definition.getTransientProperties();
     final Map<Property, Object> values = new HashMap<>(
             columnProperties.size() + transientProperties.size());
     for (int i = 0; i < transientProperties.size(); i++) {
@@ -63,7 +57,8 @@ final class EntityResultPacker implements ResultPacker<Entity> {
         values.put(property, property.fetchValue(resultSet, i + 1));
       }
       catch (final Exception e) {
-        throw new SQLException("Exception fetching: " + property + ", entity: " + entityId + " [" + e.getMessage() + "]", e);
+        throw new SQLException("Exception fetching: " + property + ", entity: " +
+                definition.getEntityId() + " [" + e.getMessage() + "]", e);
       }
     }
     for (int i = 0; i < lazyLoadedBlobProperties.size(); i++) {
@@ -73,6 +68,6 @@ final class EntityResultPacker implements ResultPacker<Entity> {
       }
     }
 
-    return domain.entity(entityId, values, null);
+    return domain.entity(definition, values, null);
   }
 }
