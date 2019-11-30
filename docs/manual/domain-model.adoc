@@ -230,7 +230,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 * <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>>
 * <<{dir-tutorials}/petstore.adoc#_domain_model, Petstore domain model>>
 
-== Entity.KeyGenerator
+== KeyGenerator
 
 The framework provides implementations for most common primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/org/jminor/framework/domain/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/org/jminor/framework/domain/Entity.KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
 
@@ -298,6 +298,11 @@ define(Store.T_CUSTOMER
 === Custom
 
 You can provide a custom key generator strategy by implementing a {url-javadoc}/org/jminor/framework/domain/Entity.KeyGenerator.html[KeyGenerator].
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[tags=keyGenerator]
+----
 
 == Domain.StringProvider
 
