@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.sql.Types;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
 
 public final class TestDomain extends Domain {
 

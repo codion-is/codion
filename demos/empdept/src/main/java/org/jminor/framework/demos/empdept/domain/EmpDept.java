@@ -12,6 +12,7 @@ import java.sql.Types;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
 import static org.jminor.framework.domain.property.Properties.*;
 
 /**

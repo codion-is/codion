@@ -26,6 +26,7 @@ import java.util.Map;
 
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.domain.Entities.getModifiedEntities;
+import static org.jminor.framework.domain.KeyGenerators.automaticKeyGenerator;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class ChinookImpl extends Domain implements Chinook {

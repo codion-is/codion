@@ -13,6 +13,7 @@ import java.sql.Types;
 import java.util.Comparator;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
 
 public final class TestDomain extends Domain {
 

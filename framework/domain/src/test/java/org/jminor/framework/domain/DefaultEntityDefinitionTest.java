@@ -12,6 +12,7 @@ import java.sql.Types;
 import java.util.Collection;
 import java.util.Comparator;
 
+import static org.jminor.framework.domain.KeyGenerators.automaticKeyGenerator;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityDefinitionTest {
@@ -224,7 +225,7 @@ public class DefaultEntityDefinitionTest {
   public void keyGenerator() {
     domain.define("nullKeyGenerator",
             Properties.primaryKeyProperty("propertyId"))
-            .setKeyGenerator(domain.automaticKeyGenerator("table"));
+            .setKeyGenerator(automaticKeyGenerator("table"));
     assertEquals(Entity.KeyGenerator.Type.AUTOMATIC, domain.getDefinition("nullKeyGenerator").getKeyGeneratorType());
   }
 }

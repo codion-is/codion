@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
 
 public final class TestDomain extends Domain {
 

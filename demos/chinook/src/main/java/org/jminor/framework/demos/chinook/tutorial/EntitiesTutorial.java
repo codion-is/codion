@@ -25,6 +25,7 @@ import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
 import static org.jminor.framework.domain.Entities.getKeys;
+import static org.jminor.framework.domain.KeyGenerators.automaticKeyGenerator;
 import static org.jminor.framework.domain.property.Properties.*;
 
 /**

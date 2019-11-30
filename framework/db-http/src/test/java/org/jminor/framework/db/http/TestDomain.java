@@ -17,6 +17,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
 
 public final class TestDomain extends Domain {
 

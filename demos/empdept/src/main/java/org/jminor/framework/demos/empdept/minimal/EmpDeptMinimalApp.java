@@ -27,6 +27,7 @@ import java.sql.Types;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
 
 /**
  * EmpDept minimal application demo

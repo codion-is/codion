@@ -8,6 +8,7 @@ import org.jminor.framework.domain.StringProvider;
 
 import java.sql.Types;
 
+import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class Petstore extends Domain {

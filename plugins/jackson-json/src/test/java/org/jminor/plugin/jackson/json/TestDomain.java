@@ -10,6 +10,7 @@ import org.jminor.framework.domain.StringProvider;
 import java.sql.Types;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.domain.KeyGenerators.incrementKeyGenerator;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {
