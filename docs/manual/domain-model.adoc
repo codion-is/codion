@@ -215,6 +215,11 @@ Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
 include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=derivedProperty]
 ----
 
+[source,java,indent=0]
+----
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=derivedPropertyProvider]
+----
+
 == Domain
 
 Each entity type is defined by calling {url-javadoc}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.property.Property.Builder...-[Domain.define]. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
@@ -304,7 +309,7 @@ You can provide a custom key generator strategy by implementing a {url-javadoc}/
 include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[tags=keyGenerator]
 ----
 
-== Domain.StringProvider
+== StringProvider
 
 The {url-javadoc}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations for entities. This value is f. ex. used when entties are displayed in a ComboBox or as a foreign key values in table views.
 
@@ -317,10 +322,10 @@ For more complex toString() implementations you can implement a custom {url-java
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[tags=customer]
+include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[tags=toString]
 ----
 
-== Entity.ColorProvider
+== ColorProvider
 
 {url-javadoc}/org/jminor/framework/domain/Entity.ColorProvider.html[Entity.ColorProvider] provides the background color for entity property cells when displayed in a table.
 

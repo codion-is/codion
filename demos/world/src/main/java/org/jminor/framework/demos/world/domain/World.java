@@ -6,9 +6,12 @@ package org.jminor.framework.demos.world.domain;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.property.DerivedProperty;
+import org.jminor.framework.domain.property.Property;
 
 import java.awt.Color;
 import java.sql.Types;
+import java.util.Map;
 
 import static java.text.NumberFormat.getIntegerInstance;
 import static java.text.NumberFormat.getNumberInstance;
@@ -86,16 +89,7 @@ public final class World extends Domain {
             .setOrderBy(orderBy().ascending(CITY_NAME))
             .setSearchPropertyIds(CITY_NAME)
             .setStringProvider(new StringProvider(CITY_NAME))
-            // tag::colorProvider[]
-            .setColorProvider((entity, property) -> {
-              if (property.is(CITY_POPULATION) &&
-                      entity.getInteger(CITY_POPULATION) > 1_000_000) {
-                return Color.BLUE;
-              }
-
-              return null;
-            })
-            // end::colorProvider[]
+            .setColorProvider(new CityColorProvider())
             .setCaption("City");
   }
   // end::defineCity[]
@@ -186,18 +180,41 @@ public final class World extends Domain {
                     .setMin(0).setMax(100),
             // tag::derivedProperty[]
             derivedProperty(COUNTRYLANGUAGE_NO_OF_SPEAKERS, Types.INTEGER, "No. of speakers",
-                    sourceValues -> {
-                      final Double percentage = (Double) sourceValues.get(COUNTRYLANGUAGE_PERCENTAGE);
-                      final Entity country = (Entity) sourceValues.get(COUNTRYLANGUAGE_COUNTRY_FK);
-                      if (notNull(percentage, country) && country.isNotNull(COUNTRY_POPULATION)) {
-                        return country.getInteger(COUNTRY_POPULATION) * (percentage / 100);
-                      }
-
-                      return null;
-                    }, COUNTRYLANGUAGE_COUNTRY_FK, COUNTRYLANGUAGE_PERCENTAGE)
+                    new NoOfSpeakersProvider(), COUNTRYLANGUAGE_COUNTRY_FK, COUNTRYLANGUAGE_PERCENTAGE)
                     .setFormat(getIntegerInstance())
             // end::derivedProperty[]
     ).setOrderBy(orderBy().ascending(COUNTRYLANGUAGE_LANGUAGE).descending(COUNTRYLANGUAGE_PERCENTAGE))
             .setCaption("Language");
   }
+
+  // tag::colorProvider[]
+  private static final class CityColorProvider implements Entity.ColorProvider {
+
+    @Override
+    public Object getColor(final Entity city, final Property property) {
+      if (property.is(CITY_POPULATION) &&
+              city.getInteger(CITY_POPULATION) > 1_000_000) {
+        return Color.BLUE;
+      }
+
+      return null;
+    }
+  }
+  // end::colorProvider[]
+
+  // tag::derivedPropertyProvider[]
+  private static final class NoOfSpeakersProvider implements DerivedProperty.Provider {
+
+    @Override
+    public Object getValue(final Map<String, Object> sourceValues) {
+      final Double percentage = (Double) sourceValues.get(COUNTRYLANGUAGE_PERCENTAGE);
+      final Entity country = (Entity) sourceValues.get(COUNTRYLANGUAGE_COUNTRY_FK);
+      if (notNull(percentage, country) && country.isNotNull(COUNTRY_POPULATION)) {
+        return country.getInteger(COUNTRY_POPULATION) * (percentage / 100);
+      }
+
+      return null;
+    }
+  }
+  // end::derivedPropertyProvider[]
 }
