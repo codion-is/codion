@@ -39,6 +39,66 @@ public class DomainTest {
   private final TestDomain domain = new TestDomain();
 
   @Test
+  public void defineTypes() {
+    final Entity.Definition definition = domain.getDefinition(TestDomain.T_DETAIL);
+
+    //assert types
+    assertEquals(definition.getProperty(TestDomain.DETAIL_ID).getType(), Types.BIGINT);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_INT).getType(), Types.INTEGER);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_DOUBLE).getType(), Types.DOUBLE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_STRING).getType(), Types.VARCHAR);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_DATE).getType(), Types.DATE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_TIMESTAMP).getType(), Types.TIMESTAMP);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_BOOLEAN).getType(), Types.BOOLEAN);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_FK).getType(), Types.OTHER);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_ID).getType(), Types.BIGINT);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_NAME).getType(), Types.VARCHAR);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_CODE).getType(), Types.INTEGER);
+
+    //assert column names
+    assertEquals(definition.getProperty(TestDomain.DETAIL_ID).getPropertyId(), TestDomain.DETAIL_ID);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_INT).getPropertyId(), TestDomain.DETAIL_INT);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_DOUBLE).getPropertyId(), TestDomain.DETAIL_DOUBLE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_STRING).getPropertyId(), TestDomain.DETAIL_STRING);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_DATE).getPropertyId(), TestDomain.DETAIL_DATE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_TIMESTAMP).getPropertyId(), TestDomain.DETAIL_TIMESTAMP);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_BOOLEAN).getPropertyId(), TestDomain.DETAIL_BOOLEAN);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_ID).getPropertyId(), TestDomain.DETAIL_MASTER_ID);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_NAME).getPropertyId(), TestDomain.DETAIL_MASTER_NAME);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_CODE).getPropertyId(), TestDomain.DETAIL_MASTER_CODE);
+
+    //assert captions
+    assertNotNull(definition.getProperty(TestDomain.DETAIL_ID).getCaption());
+    assertEquals(definition.getProperty(TestDomain.DETAIL_INT).getCaption(), TestDomain.DETAIL_INT);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_DOUBLE).getCaption(), TestDomain.DETAIL_DOUBLE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_STRING).getCaption(), "Detail string");
+    assertEquals(definition.getProperty(TestDomain.DETAIL_DATE).getCaption(), TestDomain.DETAIL_DATE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_TIMESTAMP).getCaption(), TestDomain.DETAIL_TIMESTAMP);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_BOOLEAN).getCaption(), TestDomain.DETAIL_BOOLEAN);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_FK).getCaption(), TestDomain.DETAIL_MASTER_FK);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_NAME).getCaption(), TestDomain.DETAIL_MASTER_NAME);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_CODE).getCaption(), TestDomain.DETAIL_MASTER_CODE);
+
+    //assert hidden status
+    assertTrue(definition.getProperty(TestDomain.DETAIL_ID).isHidden());
+    assertFalse(definition.getProperty(TestDomain.DETAIL_INT).isHidden());
+    assertFalse(definition.getProperty(TestDomain.DETAIL_DOUBLE).isHidden());
+    assertFalse(definition.getProperty(TestDomain.DETAIL_STRING).isHidden());
+    assertFalse(definition.getProperty(TestDomain.DETAIL_DATE).isHidden());
+    assertFalse(definition.getProperty(TestDomain.DETAIL_TIMESTAMP).isHidden());
+    assertFalse(definition.getProperty(TestDomain.DETAIL_BOOLEAN).isHidden());
+    assertFalse(definition.getProperty(TestDomain.DETAIL_MASTER_FK).isHidden());
+    assertFalse(definition.getProperty(TestDomain.DETAIL_MASTER_NAME).isHidden());
+    assertFalse(definition.getProperty(TestDomain.DETAIL_MASTER_CODE).isHidden());
+  }
+
+  @Test
+  public void getPropertyWrongEntityType() {
+    final Entity.Definition definition = domain.getDefinition(TestDomain.T_DETAIL);
+    assertThrows(IllegalArgumentException.class, () -> definition.getProperty(TestDomain.MASTER_CODE));
+  }
+
+  @Test
   public void getWritableColumnProperties() {
     List<String> writable = domain.getDefinition(TestDomain.T_DEPARTMENT)
             .getWritableColumnProperties(true, true)

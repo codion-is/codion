@@ -5374,3 +5374,4 @@
   Entity.getProperty(propertyId) and Entity.Key.getPropertyCount() removed
   DefaultEntityDefinition refactored
   shutdownServer task added to server build file
+  DefaultEntityDefinition constructor simplified, required methods moved from Domain

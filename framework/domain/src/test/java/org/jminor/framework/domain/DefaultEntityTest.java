@@ -233,12 +233,6 @@ public class DefaultEntityTest {
   }
 
   @Test
-  public void getPropertyWrongEntityType() {
-    final Entity testEntity = DOMAIN.entity(TestDomain.T_DETAIL);
-    assertThrows(IllegalArgumentException.class, () -> testEntity.getProperty(TestDomain.MASTER_CODE));
-  }
-
-  @Test
   public void entity() throws Exception {
     final Entity referencedEntityValue = DOMAIN.entity(TestDomain.T_MASTER);
     //assert not modified
@@ -250,54 +244,6 @@ public class DefaultEntityTest {
 
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
-    //assert types
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_ID).getType(), Types.BIGINT);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_INT).getType(), Types.INTEGER);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_DOUBLE).getType(), Types.DOUBLE);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_STRING).getType(), Types.VARCHAR);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_DATE).getType(), Types.DATE);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_TIMESTAMP).getType(), Types.TIMESTAMP);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_BOOLEAN).getType(), Types.BOOLEAN);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_FK).getType(), Types.OTHER);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_ID).getType(), Types.BIGINT);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_NAME).getType(), Types.VARCHAR);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_CODE).getType(), Types.INTEGER);
-
-    //assert column names
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_ID).getPropertyId(), TestDomain.DETAIL_ID);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_INT).getPropertyId(), TestDomain.DETAIL_INT);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_DOUBLE).getPropertyId(), TestDomain.DETAIL_DOUBLE);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_STRING).getPropertyId(), TestDomain.DETAIL_STRING);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_DATE).getPropertyId(), TestDomain.DETAIL_DATE);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_TIMESTAMP).getPropertyId(), TestDomain.DETAIL_TIMESTAMP);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_BOOLEAN).getPropertyId(), TestDomain.DETAIL_BOOLEAN);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_ID).getPropertyId(), TestDomain.DETAIL_MASTER_ID);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_NAME).getPropertyId(), TestDomain.DETAIL_MASTER_NAME);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_CODE).getPropertyId(), TestDomain.DETAIL_MASTER_CODE);
-
-    //assert captions
-    assertNotNull(testEntity.getProperty(TestDomain.DETAIL_ID).getCaption());
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_INT).getCaption(), TestDomain.DETAIL_INT);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_DOUBLE).getCaption(), TestDomain.DETAIL_DOUBLE);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_STRING).getCaption(), "Detail string");
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_DATE).getCaption(), TestDomain.DETAIL_DATE);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_TIMESTAMP).getCaption(), TestDomain.DETAIL_TIMESTAMP);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_BOOLEAN).getCaption(), TestDomain.DETAIL_BOOLEAN);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_FK).getCaption(), TestDomain.DETAIL_MASTER_FK);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_NAME).getCaption(), TestDomain.DETAIL_MASTER_NAME);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_CODE).getCaption(), TestDomain.DETAIL_MASTER_CODE);
-
-    //assert hidden status
-    assertTrue(testEntity.getProperty(TestDomain.DETAIL_ID).isHidden());
-    assertFalse(testEntity.getProperty(TestDomain.DETAIL_INT).isHidden());
-    assertFalse(testEntity.getProperty(TestDomain.DETAIL_DOUBLE).isHidden());
-    assertFalse(testEntity.getProperty(TestDomain.DETAIL_STRING).isHidden());
-    assertFalse(testEntity.getProperty(TestDomain.DETAIL_DATE).isHidden());
-    assertFalse(testEntity.getProperty(TestDomain.DETAIL_TIMESTAMP).isHidden());
-    assertFalse(testEntity.getProperty(TestDomain.DETAIL_BOOLEAN).isHidden());
-    assertFalse(testEntity.getProperty(TestDomain.DETAIL_MASTER_FK).isHidden());
-    assertFalse(testEntity.getProperty(TestDomain.DETAIL_MASTER_NAME).isHidden());
-    assertFalse(testEntity.getProperty(TestDomain.DETAIL_MASTER_CODE).isHidden());
 
     //assert values
     assertEquals(testEntity.get(TestDomain.DETAIL_ID), detailId);
