@@ -3,6 +3,9 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
+import org.jminor.common.Configuration;
+import org.jminor.common.value.PropertyValue;
+
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -25,6 +28,14 @@ import java.text.ParsePosition;
 public class NumberField extends JTextField {
 
   /**
+   * Specifies whether NumberFields disable grouping by default.<br>
+   * Value type: Boolean<br>
+   * Default value: false.
+   */
+  public static final PropertyValue<Boolean> DISABLE_GROUPING =
+          Configuration.booleanValue("jminor.swing.common.ui.disableNumberFieldGrouping", true);
+
+  /**
    * Instantiates a new NumberField
    * @param document the document to use
    * @param columns the number of columns
@@ -35,8 +46,9 @@ public class NumberField extends JTextField {
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
     }
-    //todo remove this when grouping functionality is "bullet proof"
-    document.getFormat().setGroupingUsed(false);
+    if (DISABLE_GROUPING.get()) {
+      document.getFormat().setGroupingUsed(false);
+    }
   }
 
   /**

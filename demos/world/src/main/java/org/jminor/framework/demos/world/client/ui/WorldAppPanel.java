@@ -11,6 +11,7 @@ import org.jminor.framework.demos.world.beans.ui.CountryEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryLanguageEditPanel;
 import org.jminor.framework.demos.world.domain.World;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.textfield.NumberField;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
@@ -56,6 +57,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
     Locale.setDefault(new Locale("en", "EN"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
+    NumberField.DISABLE_GROUPING.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.world.domain.World");
     new WorldAppPanel().startApplication("World", null, false, UiUtil.getScreenSizeRatio(0.8),
             new User("scott", "tiger".toCharArray()));

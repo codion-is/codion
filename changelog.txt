@@ -5387,3 +5387,4 @@
   DatabaseConnection.Operation, Function and Procedure moved to package operation, DefaultOperation is now AbstractOperation
   EntityResultPacker refactored
   LocalEntityConnectionProvider refactored, LocalEntityConnectionHandler and proxying removed
+  NumberField.DISABLE_GROUPING configuration value added, true by default, for now
