@@ -11,6 +11,7 @@ module org.jminor.common.db {
   exports org.jminor.common.db;
   exports org.jminor.common.db.exception;
   exports org.jminor.common.db.reports;
+  exports org.jminor.common.db.operation;
   exports org.jminor.common.db.pool;
   exports org.jminor.common.db.valuemap;
   exports org.jminor.common.db.valuemap.exception;
