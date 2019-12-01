@@ -5386,3 +5386,4 @@
   KeyGenerator.isInserted() default implementation added returning true
   DatabaseConnection.Operation, Function and Procedure moved to package operation, DefaultOperation is now AbstractOperation
   EntityResultPacker refactored
+  LocalEntityConnectionProvider refactored, LocalEntityConnectionHandler and proxying removed
