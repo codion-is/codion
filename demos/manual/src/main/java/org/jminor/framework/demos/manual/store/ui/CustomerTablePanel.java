@@ -39,8 +39,9 @@ public class CustomerTablePanel extends EntityTablePanel {
 
   private void viewCustomerReport() throws Exception {
     List<Entity> selectedCustomers = getTableModel().getSelectionModel().getSelectedItems();
-    if (selectedCustomers.isEmpty())
+    if (selectedCustomers.isEmpty()) {
       return;
+    }
 
     String reportPath = "http://test.io/customer_report.jasper";
     Collection<Integer> customerIds = Entities.getValues(Store.CUSTOMER_ID, selectedCustomers);

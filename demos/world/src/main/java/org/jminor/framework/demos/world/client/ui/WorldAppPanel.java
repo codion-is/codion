@@ -21,14 +21,18 @@ import java.util.Locale;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.WorldAppModel> {
 
+  // tag::setupEntityPanelProviders[]
   @Override
   protected void setupEntityPanelProviders() {
     final EntityPanelProvider countryPanelProvider = new EntityPanelProvider(World.T_COUNTRY);
     countryPanelProvider.setEditPanelClass(CountryEditPanel.class);
+
     final EntityPanelProvider cityPanelProvider = new EntityPanelProvider(World.T_CITY);
     cityPanelProvider.setEditPanelClass(CityEditPanel.class);
+
     final EntityPanelProvider countryLanguagePanelProvider = new EntityPanelProvider(World.T_COUNTRYLANGUAGE);
     countryLanguagePanelProvider.setEditPanelClass(CountryLanguageEditPanel.class);
+
     countryPanelProvider.addDetailPanelProvider(cityPanelProvider);
     countryPanelProvider.addDetailPanelProvider(countryLanguagePanelProvider);
 
@@ -41,6 +45,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
 
     addEntityPanelProviders(countryPanelProvider, lookupPanelProvider);
   }
+  // end::setupEntityPanelProviders[]
 
   @Override
   protected WorldAppModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {

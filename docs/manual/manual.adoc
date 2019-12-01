@@ -2,7 +2,7 @@
 :toclevels: 4
 :dir-manual: ../manual
 
-NOTE: The code used throughout this manual is available in the 'manual' demo module included in the project.
+NOTE: Most of the code used throughout this manual is available in the 'manual' demo module included in the project.
 
 :leveloffset: 1
 
@@ -21,5 +21,9 @@ include::{dir-manual}/entity-application-model.adoc[]
 include::{dir-manual}/load-test.adoc[]
 
 include::{dir-manual}/entity-panel.adoc[]
+
+include::{dir-manual}/entity-panel-provider.adoc[]
+
+include::{dir-manual}/entity-application-panel.adoc[]
 
 include::{dir-manual}/reports.adoc[]
