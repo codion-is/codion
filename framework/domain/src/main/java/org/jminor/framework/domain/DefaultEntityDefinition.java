@@ -134,7 +134,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The primary key value generator
    */
-  private transient Entity.KeyGenerator keyGenerator = new DefaultKeyGenerator();
+  private transient KeyGenerator keyGenerator = new DefaultKeyGenerator();
 
   /**
    * A custom sql query used when selecting entities of this type
@@ -264,7 +264,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.KeyGenerator getKeyGenerator() {
+  public KeyGenerator getKeyGenerator() {
     return keyGenerator;
   }
 
@@ -863,7 +863,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
+    public Builder setKeyGenerator(final KeyGenerator keyGenerator) {
       definition.keyGenerator = requireNonNull(keyGenerator, "keyGenerator");
       definition.keyGenerated = true;
       return this;
@@ -971,7 +971,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * A no-op key generator.
    */
-  private static final class DefaultKeyGenerator implements Entity.KeyGenerator {
+  private static final class DefaultKeyGenerator implements KeyGenerator {
 
     @Override
     public boolean isInserted() {

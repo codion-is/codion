@@ -27,6 +27,7 @@ import org.jminor.framework.db.condition.WhereCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.KeyGenerator;
 import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -221,7 +222,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final Entity entity = entities.get(i);
           final String entityId = entity.getEntityId();
           final EntityDefinition entityDefinition = getEntityDefinition(entityId);
-          final Entity.KeyGenerator keyGenerator = entityDefinition.getKeyGenerator();
+          final KeyGenerator keyGenerator = entityDefinition.getKeyGenerator();
           keyGenerator.beforeInsert(entity, connection);
 
           final List<ColumnProperty> insertableProperties =

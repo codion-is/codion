@@ -89,7 +89,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the object responsible for generating primary key values for entities of this type
    */
-  Entity.KeyGenerator getKeyGenerator();
+  KeyGenerator getKeyGenerator();
 
   /**
    * Returns true if the value for the primary key of this entity is generated, either by the framework,
@@ -443,7 +443,7 @@ public interface EntityDefinition extends Serializable {
      * @param keyGenerator the primary key generator
      * @return this {@link Builder} instance
      */
-    Builder setKeyGenerator(final Entity.KeyGenerator keyGenerator);
+    Builder setKeyGenerator(final KeyGenerator keyGenerator);
 
     /**
      * Sets the order by clause for this entity type.

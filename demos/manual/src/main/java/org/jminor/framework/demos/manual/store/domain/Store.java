@@ -6,6 +6,7 @@ package org.jminor.framework.demos.manual.store.domain;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.KeyGenerator;
 import org.jminor.framework.domain.StringProvider;
 
 import java.sql.SQLException;
@@ -87,7 +88,7 @@ public final class Store extends Domain {
   // end::toString[]
 
   // tag::keyGenerator[]
-  private static final class UUIDKeyGenerator implements Entity.KeyGenerator {
+  private static final class UUIDKeyGenerator implements KeyGenerator {
 
     @Override
     public void beforeInsert(final Entity entity, final DatabaseConnection connection)
