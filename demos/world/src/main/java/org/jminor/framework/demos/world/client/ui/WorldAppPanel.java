@@ -15,6 +15,7 @@ import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import java.util.Locale;
 
@@ -31,7 +32,14 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
     countryPanelProvider.addDetailPanelProvider(cityPanelProvider);
     countryPanelProvider.addDetailPanelProvider(countryLanguagePanelProvider);
 
-    addEntityPanelProvider(countryPanelProvider);
+    final EntityPanelProvider lookupPanelProvider = new EntityPanelProvider(World.T_LOOKUP) {
+      @Override
+      protected void configureTablePanel(final EntityTablePanel tablePanel) {
+        tablePanel.setConditionPanelVisible(true);
+      }
+    }.setRefreshOnInit(false);
+
+    addEntityPanelProviders(countryPanelProvider, lookupPanelProvider);
   }
 
   @Override
