@@ -16,6 +16,8 @@ import java.sql.Types;
  */
 public final class KeyGenerators {
 
+  private KeyGenerators() {}
+
   /**
    * Instantiates a primary key generator which fetches the current maximum primary key value and increments
    * it by one prior to insert.
