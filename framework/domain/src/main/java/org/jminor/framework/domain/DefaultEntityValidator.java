@@ -136,9 +136,9 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<Property, E
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (!isNullable(entity, property) && entity.isNull(property)) {
       if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
-        //a new entity being inserted, allow null for columns with default values and auto generated primary key values
+        //a new entity being inserted, allow null for columns with default values and generated primary key values
         final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
-        final boolean primaryKeyPropertyWithoutAutoGenerate = isPrimaryKeyPropertyWithoutAutoGenerate(entity, property);
+        final boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(entity, property);
         if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
           throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
         }
@@ -166,9 +166,9 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<Property, E
     }
   }
 
-  private static boolean isPrimaryKeyPropertyWithoutAutoGenerate(final Entity entity, final Property property) {
+  private static boolean isNonGeneratedPrimaryKeyProperty(final Entity entity, final Property property) {
     return (property instanceof ColumnProperty
-            && ((ColumnProperty) property).isPrimaryKeyProperty()) && entity.getKeyGeneratorType().isManual();
+            && ((ColumnProperty) property).isPrimaryKeyProperty()) && !entity.isKeyGenerated();
   }
 
   /**

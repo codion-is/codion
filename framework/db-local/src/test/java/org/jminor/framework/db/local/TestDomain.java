@@ -144,8 +144,8 @@ public final class TestDomain extends Domain {
         return true;
       }
       @Override
-      public Type getType() {
-        return Type.AUTOMATIC;
+      public boolean isInserted() {
+        return true;
       }
     };
     define(T_UUID_TEST_DEFAULT,
@@ -165,8 +165,8 @@ public final class TestDomain extends Domain {
         entity.put(UUID_TEST_NO_DEFAULT_ID, UUID.randomUUID());
       }
       @Override
-      public Type getType() {
-        return Type.AUTOMATIC;
+      public boolean isInserted() {
+        return true;
       }
     };
     define(T_UUID_TEST_NO_DEFAULT,

@@ -224,7 +224,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           keyGenerator.beforeInsert(entity, connection);
 
           final List<ColumnProperty> insertableProperties =
-                  getInsertableProperties(entityDefinition, !keyGenerator.getType().isAutoIncrement());
+                  getInsertableProperties(entityDefinition, keyGenerator.isInserted());
 
           populateStatementPropertiesAndValues(true, entity, insertableProperties, statementProperties, statementValues);
 

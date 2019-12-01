@@ -149,8 +149,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public KeyGenerator.Type getKeyGeneratorType() {
-    return definition.getKeyGeneratorType();
+  public boolean isKeyGenerated() {
+    return definition.isKeyGenerated();
   }
 
   /**
