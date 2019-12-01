@@ -9,4 +9,6 @@ module org.jminor.framework.demos.empdept {
   requires org.jminor.plugin.jasperreports;
   requires org.jminor.framework.db.test;
   requires org.junit.jupiter.api;
+
+  exports org.jminor.framework.demos.manual.store.domain;
 }
