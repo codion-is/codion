@@ -384,35 +384,4 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw new DatabaseException(e, "Exception while trying to retrieve username from meta data");
     }
   }
-
-  /**
-   * A base Operation implementation
-   */
-  public static class DefaultOperation implements DatabaseConnection.Operation {
-
-    private final String id;
-    private final String name;
-
-    /**
-     * Instantiates a new DefaultOperation
-     * @param id a unique operation ID
-     * @param name the operation name
-     */
-    public DefaultOperation(final String id, final String name) {
-      this.id = id;
-      this.name = name;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final String getId() {
-      return id;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final String getName() {
-      return this.name;
-    }
-  }
 }

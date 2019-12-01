@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.chinook.domain.impl;
 
-import org.jminor.common.db.AbstractFunction;
-import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.operation.AbstractFunction;
+import org.jminor.common.db.operation.AbstractProcedure;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;

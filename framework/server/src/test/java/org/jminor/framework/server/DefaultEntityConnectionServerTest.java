@@ -5,10 +5,10 @@ package org.jminor.framework.server;
 
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
-import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.operation.AbstractProcedure;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.Clients;

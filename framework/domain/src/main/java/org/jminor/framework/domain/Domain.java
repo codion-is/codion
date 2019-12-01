@@ -5,7 +5,9 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Util;
-import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.operation.Function;
+import org.jminor.common.db.operation.Operation;
+import org.jminor.common.db.operation.Procedure;
 import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -54,7 +56,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
 
   private final String domainId;
   private final DefaultEntityDefinitionProvider definitionProvider = new DefaultEntityDefinitionProvider();
-  private final transient Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
+  private final transient Map<String, Operation> databaseOperations = new HashMap<>();
 
   private Map<Class, EntityDefinition> beanEntities;
   private Map<String, Map<String, BeanProperty>> beanProperties;
@@ -432,7 +434,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @param operation the operation to add
    * @throws IllegalArgumentException in case an operation with the same id has already been added
    */
-  public final void addOperation(final DatabaseConnection.Operation operation) {
+  public final void addOperation(final Operation operation) {
     checkIfDeserialized();
     if (databaseOperations.containsKey(operation.getId())) {
       throw new IllegalArgumentException("Operation already defined: " + databaseOperations.get(operation.getId()).getName());
@@ -447,15 +449,15 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return the procedure
    * @throws IllegalArgumentException in case the procedure is not found
    */
-  public final <C> DatabaseConnection.Procedure<C> getProcedure(final String procedureId) {
+  public final <C> Procedure<C> getProcedure(final String procedureId) {
     requireNonNull(procedureId, "procedureId");
     checkIfDeserialized();
-    final DatabaseConnection.Operation operation = databaseOperations.get(procedureId);
+    final Operation operation = databaseOperations.get(procedureId);
     if (operation == null) {
       throw new IllegalArgumentException("Procedure not found: " + procedureId);
     }
 
-    return (DatabaseConnection.Procedure) operation;
+    return (Procedure) operation;
   }
 
   /**
@@ -464,15 +466,15 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return the function
    * @throws IllegalArgumentException in case the function is not found
    */
-  public final <C> DatabaseConnection.Function<C> getFunction(final String functionId) {
+  public final <C> Function<C> getFunction(final String functionId) {
     requireNonNull(functionId, "functionId");
     checkIfDeserialized();
-    final DatabaseConnection.Operation operation = databaseOperations.get(functionId);
+    final Operation operation = databaseOperations.get(functionId);
     if (operation == null) {
       throw new IllegalArgumentException("Function not found: " + functionId);
     }
 
-    return (DatabaseConnection.Function) operation;
+    return (Function) operation;
   }
 
   /**
