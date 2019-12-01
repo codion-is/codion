@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.demos.world.domain;
 
+import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.framework.domain.DefaultEntityValidator;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
@@ -14,8 +16,6 @@ import java.awt.Color;
 import java.sql.Types;
 import java.util.Map;
 
-import static java.text.NumberFormat.getIntegerInstance;
-import static java.text.NumberFormat.getNumberInstance;
 import static org.jminor.common.Util.notNull;
 import static org.jminor.framework.domain.KeyGenerators.sequence;
 import static org.jminor.framework.domain.property.Properties.*;
@@ -107,8 +107,9 @@ public final class World extends Domain {
                     .setMaxLength(20),
             columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
                     .setNullable(false)
-                    .setFormat(getIntegerInstance()))
+                    .setUseNumberFormatGrouping(true))
             .setKeyGenerator(sequence("world.city_seq"))
+            .setValidator(new CityValidator())
             .setOrderBy(orderBy().ascending(CITY_NAME))
             .setSearchPropertyIds(CITY_NAME)
             .setStringProvider(new StringProvider(CITY_NAME))
@@ -135,22 +136,22 @@ public final class World extends Domain {
                     .setNullable(false),
             columnProperty(COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
                     .setNullable(false)
-                    .setFormat(getNumberInstance())
+                    .setUseNumberFormatGrouping(true)
                     .setMaximumFractionDigits(2),
             columnProperty(COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year")
                     .setMin(-200).setMax(2500),
             columnProperty(COUNTRY_POPULATION, Types.INTEGER, "Population")
                     .setNullable(false)
-                    .setFormat(getIntegerInstance()),
+                    .setUseNumberFormatGrouping(true),
             columnProperty(COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy")
                     .setMaximumFractionDigits(1)
                     .setMin(0).setMax(99),
             // end::columnProperty[]
             columnProperty(COUNTRY_GNP, Types.DOUBLE, "GNP")
-                    .setFormat(getNumberInstance())
+                    .setUseNumberFormatGrouping(true)
                     .setMaximumFractionDigits(2),
             columnProperty(COUNTRY_GNPOLD, Types.DOUBLE, "GNP old")
-                    .setFormat(getNumberInstance())
+                    .setUseNumberFormatGrouping(true)
                     .setMaximumFractionDigits(2),
             columnProperty(COUNTRY_LOCALNAME, Types.VARCHAR, "Local name")
                     .setNullable(false)
@@ -165,7 +166,7 @@ public final class World extends Domain {
             // tag::denormalizedViewProperty[]
             denormalizedViewProperty(COUNTRY_CAPITAL_POPULATION, COUNTRY_CAPITAL_FK,
                     getDefinition(T_CITY).getProperty(CITY_POPULATION), "Capital pop.")
-                    .setFormat(getIntegerInstance()),
+                    .setUseNumberFormatGrouping(true),
             // end::denormalizedViewProperty[]
             // tag::blobProperty[]
             blobProperty(COUNTRY_FLAG, "Flag")
@@ -204,7 +205,7 @@ public final class World extends Domain {
             // tag::derivedProperty[]
             derivedProperty(COUNTRYLANGUAGE_NO_OF_SPEAKERS, Types.INTEGER, "No. of speakers",
                     new NoOfSpeakersProvider(), COUNTRYLANGUAGE_COUNTRY_FK, COUNTRYLANGUAGE_PERCENTAGE)
-                    .setFormat(getIntegerInstance())
+                    .setUseNumberFormatGrouping(true)
             // end::derivedProperty[]
     ).setOrderBy(orderBy().ascending(COUNTRYLANGUAGE_LANGUAGE).descending(COUNTRYLANGUAGE_PERCENTAGE))
             .setCaption("Language");
@@ -218,7 +219,8 @@ public final class World extends Domain {
             columnProperty(LOOKUP_COUNTRY_REGION, Types.VARCHAR, "Region"),
             columnProperty(LOOKUP_COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area"),
             columnProperty(LOOKUP_COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year"),
-            columnProperty(LOOKUP_COUNTRY_POPULATION, Types.INTEGER, "Population"),
+            columnProperty(LOOKUP_COUNTRY_POPULATION, Types.INTEGER, "Population")
+                    .setUseNumberFormatGrouping(true),
             columnProperty(LOOKUP_COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy"),
             columnProperty(LOOKUP_COUNTRY_GNP, Types.DOUBLE, "GNP"),
             columnProperty(LOOKUP_COUNTRY_GNPOLD, Types.DOUBLE, "GNP old"),
@@ -242,7 +244,7 @@ public final class World extends Domain {
     public Object getColor(final Entity city, final Property property) {
       if (property.is(CITY_POPULATION) &&
               city.getInteger(CITY_POPULATION) > 1_000_000) {
-        return Color.BLUE;
+        return Color.YELLOW;
       }
 
       return null;
@@ -265,4 +267,23 @@ public final class World extends Domain {
     }
   }
   // end::derivedPropertyProvider[]
+
+  // tag::validator[]
+  private static final class CityValidator extends DefaultEntityValidator {
+
+    @Override
+    public void validate(final Entity city) throws ValidationException {
+      super.validate(city);
+      final Entity country = city.getForeignKey(CITY_COUNTRY_FK);
+      final Integer cityPopulation = city.getInteger(CITY_POPULATION);
+      if (notNull(country, cityPopulation)) {
+        final Integer countryPopulation = country.getInteger(COUNTRY_POPULATION);
+        if (countryPopulation != null && cityPopulation > countryPopulation) {
+          throw new ValidationException(CITY_POPULATION,
+                  cityPopulation, "City population can not exceed country population");
+        }
+      }
+    }
+  }
+  // end::validator[]
 }
