@@ -237,7 +237,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 == KeyGenerator
 
-The framework provides implementations for most common primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/org/jminor/framework/domain/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/org/jminor/framework/domain/Entity.KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
+The framework provides implementations for most common primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/org/jminor/framework/domain/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/org/jminor/framework/domain/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
 
 === Auto-increment
 
@@ -302,7 +302,7 @@ define(Store.T_CUSTOMER
 
 === Custom
 
-You can provide a custom key generator strategy by implementing a {url-javadoc}/org/jminor/framework/domain/Entity.KeyGenerator.html[KeyGenerator].
+You can provide a custom key generator strategy by implementing a {url-javadoc}/org/jminor/framework/domain/KeyGenerator.html[KeyGenerator].
 
 [source,java,indent=0]
 ----

@@ -446,6 +446,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * Describes an object responsible for providing String representations of entity instances
    */
   interface ToString extends Serializable {
+
     /**
      * Returns a string representation of the given entity
      * @param entity the entity
