@@ -42,16 +42,15 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 
   @Override
   public Entity fetch(final ResultSet resultSet) throws SQLException {
-    final List<BlobProperty> lazyLoadedBlobProperties = definition.getLazyLoadedBlobProperties();
-    final List<TransientProperty> transientProperties = definition.getTransientProperties();
-    final Map<Property, Object> values = new HashMap<>(
-            columnProperties.size() + transientProperties.size());
-    for (int i = 0; i < transientProperties.size(); i++) {
-      final TransientProperty transientProperty = transientProperties.get(i);
-      if (!(transientProperty instanceof DerivedProperty)) {
-        values.put(transientProperty, null);
-      }
-    }
+    final Map<Property, Object> values = new HashMap<>(columnProperties.size());
+    addResultSetValues(resultSet, values);
+    addTransientNullValues(values);
+    addLazyLoadedBlobNullValues(values);
+
+    return domain.entity(definition, values, null);
+  }
+
+  private void addResultSetValues(final ResultSet resultSet, final Map<Property, Object> values) throws SQLException {
     for (int i = 0; i < columnProperties.size(); i++) {
       final ColumnProperty property = columnProperties.get(i);
       try {
@@ -62,13 +61,25 @@ final class EntityResultPacker implements ResultPacker<Entity> {
                 definition.getEntityId() + " [" + e.getMessage() + "]", e);
       }
     }
+  }
+
+  private void addTransientNullValues(final Map<Property, Object> values) {
+    final List<TransientProperty> transientProperties = definition.getTransientProperties();
+    for (int i = 0; i < transientProperties.size(); i++) {
+      final TransientProperty transientProperty = transientProperties.get(i);
+      if (!(transientProperty instanceof DerivedProperty)) {
+        values.put(transientProperty, null);
+      }
+    }
+  }
+
+  private void addLazyLoadedBlobNullValues(final Map<Property, Object> values) {
+    final List<BlobProperty> lazyLoadedBlobProperties = definition.getLazyLoadedBlobProperties();
     for (int i = 0; i < lazyLoadedBlobProperties.size(); i++) {
       final BlobProperty blobProperty = lazyLoadedBlobProperties.get(i);
       if (!values.containsKey(blobProperty)) {
         values.put(blobProperty, null);
       }
     }
-
-    return domain.entity(definition, values, null);
   }
 }
