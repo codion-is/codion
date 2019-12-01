@@ -415,7 +415,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      */
     enum Type {
       /**
-       * The primary key is not generated but set manually before insert
+       * The primary key is not generated but set manually before insert by the application
+       * or the key generator
        */
       NONE(true, false),
       /**
@@ -431,8 +432,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
        */
       INCREMENT(false, false),
       /**
-       * The primary key value is automatically created by the underlying database
-       * or the key generator implementation
+       * The primary key value is automatically created by the underlying database,
+       * and is not included in the insert statement
        */
       AUTOMATIC(false, true);
 

@@ -7,7 +7,7 @@ create table store.address (
   id identity not null,
   street varchar(120) not null,
   city varchar(50) not null,
-  constraint address_pk primary key (id);
+  constraint address_pk primary key (id)
 );
 
 create table store.customer (
@@ -16,7 +16,7 @@ create table store.customer (
   last_name varchar(40) not null,
   email varchar(100),
   address_id integer not null,
-  boolean is_active default true not null,
+  is_active boolean default true not null,
   constraint customer_pk primary key (id),
   constraint address_fk foreign key (address_id) references store.address (id)
 )

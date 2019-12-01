@@ -97,7 +97,7 @@ public final class Store extends Domain {
 
     @Override
     public Type getType() {
-      return Type.AUTOMATIC;
+      return Type.NONE;
     }
   }
   // end::keyGenerator[]
