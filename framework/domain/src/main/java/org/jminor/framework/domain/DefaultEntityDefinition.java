@@ -134,7 +134,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The primary key value generator
    */
-  private transient KeyGenerator keyGenerator = new DefaultKeyGenerator();
+  private transient KeyGenerator keyGenerator = new KeyGenerator() {};
 
   /**
    * A custom sql query used when selecting entities of this type
@@ -965,17 +965,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     @Override
     public String toString(final Entity entity) {
       return entity.getEntityId() + ": " + entity.getKey();
-    }
-  }
-
-  /**
-   * A no-op key generator.
-   */
-  private static final class DefaultKeyGenerator implements KeyGenerator {
-
-    @Override
-    public boolean isInserted() {
-      return true;
     }
   }
 }

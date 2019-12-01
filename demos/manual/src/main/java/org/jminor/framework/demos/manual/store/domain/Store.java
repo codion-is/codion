@@ -95,11 +95,6 @@ public final class Store extends Domain {
             throws SQLException {
       entity.put(CUSTOMER_ID, UUID.randomUUID().toString());
     }
-
-    @Override
-    public boolean isInserted() {
-      return true;
-    }
   }
   // end::keyGenerator[]
 }

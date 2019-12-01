@@ -4,9 +4,9 @@
 package org.jminor.framework.servlet;
 
 import org.jminor.common.Item;
-import org.jminor.common.db.AbstractFunction;
-import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.operation.AbstractFunction;
+import org.jminor.common.db.operation.AbstractProcedure;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.StringProvider;

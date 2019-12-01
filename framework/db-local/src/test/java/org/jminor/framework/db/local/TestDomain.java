@@ -4,9 +4,9 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.Item;
-import org.jminor.common.db.AbstractFunction;
-import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.operation.AbstractFunction;
+import org.jminor.common.db.operation.AbstractProcedure;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -144,10 +144,6 @@ public final class TestDomain extends Domain {
       public boolean returnPrimaryKeyValues() {
         return true;
       }
-      @Override
-      public boolean isInserted() {
-        return true;
-      }
     };
     define(T_UUID_TEST_DEFAULT,
             Properties.primaryKeyProperty(UUID_TEST_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
@@ -164,10 +160,6 @@ public final class TestDomain extends Domain {
       @Override
       public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
         entity.put(UUID_TEST_NO_DEFAULT_ID, UUID.randomUUID());
-      }
-      @Override
-      public boolean isInserted() {
-        return true;
       }
     };
     define(T_UUID_TEST_NO_DEFAULT,

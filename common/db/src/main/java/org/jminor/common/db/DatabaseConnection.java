@@ -6,12 +6,10 @@ package org.jminor.common.db;
 import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.value.PropertyValue;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Manages a {@link Connection}, providing basic transaction control.
@@ -121,51 +119,4 @@ public interface DatabaseConnection extends AutoCloseable {
    * @return the MethodLogger being used
    */
   MethodLogger getMethodLogger();
-
-  /**
-   * A database operation
-   */
-  interface Operation {
-
-    /**
-     * @return this operations ID
-     */
-    String getId();
-
-    /**
-     * @return the name of this operation
-     */
-    String getName();
-  }
-
-  /**
-   * A database procedure
-   * @param <C> the connection type required by this procedure
-   */
-  interface Procedure<C> extends Operation {
-
-    /**
-     * Executes this procedure with the given connection
-     * @param connection the connection to use when executing
-     * @param arguments the procedure arguments, if any
-     * @throws DatabaseException in case of an exception during the execution
-     */
-    void execute(final C connection, final Object... arguments) throws DatabaseException;
-  }
-
-  /**
-   * A database function
-   * @param <C> the connection type required by this function
-   */
-  interface Function<C> extends Operation {
-
-    /**
-     * Executes this function with the given connection
-     * @param connection the connection to use when executing
-     * @param arguments the function arguments, if any
-     * @return the function return arguments
-     * @throws DatabaseException in case of an exception during the execution
-     */
-    List execute(final C connection, final Object... arguments) throws DatabaseException;
-  }
 }

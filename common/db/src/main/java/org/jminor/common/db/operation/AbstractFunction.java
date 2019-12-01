@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db;
+package org.jminor.common.db.operation;
 
 /**
  * A base Function implementation
  * @param <C> the connection type to use when executing this function
  */
-public abstract class AbstractFunction<C> extends DefaultDatabaseConnection.DefaultOperation implements DatabaseConnection.Function<C> {
+public abstract class AbstractFunction<C> extends AbstractOperation implements Function<C> {
 
   /**
    * Instantiates a new AbstractFunction.

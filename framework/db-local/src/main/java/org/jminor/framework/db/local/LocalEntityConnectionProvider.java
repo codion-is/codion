@@ -4,8 +4,6 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.MethodLogger;
-import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.value.PropertyValue;
@@ -15,9 +13,6 @@ import org.jminor.framework.domain.Domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Properties;
 
 import static java.util.Objects.requireNonNull;
@@ -27,21 +22,19 @@ import static java.util.Objects.requireNonNull;
  */
 public final class LocalEntityConnectionProvider extends AbstractEntityConnectionProvider<LocalEntityConnection> {
 
-  /**
-   * Specifies whether method logging is enabled by default on local connections.<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  private static final PropertyValue<Boolean> METHOD_LOGGER_ENABLED = Configuration.booleanValue("jminor.db.local.methodLoggerEnabled", false);
-
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
 
   /**
-   * Specifies whether or not an embedded database is shut down when disconnected from<br>
+   * Specifies whether an embedded database is shut down when disconnected from<br>
    * Value type: Boolean<br>
    * Default value: false
    */
   public static final PropertyValue<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT = Configuration.booleanValue("jminor.db.shutdownEmbeddedOnDisconnect", false);
+
+  /**
+   * The underlying domain model
+   */
+  private Domain domain;
 
   /**
    * The underlying database implementation
@@ -91,10 +84,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected LocalEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      final Domain domain = (Domain) Class.forName(getDomainClassName()).getConstructor().newInstance();
-
-      return Util.initializeProxy(LocalEntityConnection.class, new LocalConnectionHandler(domain,
-              LocalEntityConnections.createConnection(domain, getDatabase(), getUser())));
+      return LocalEntityConnections.createConnection(initializeDomain(), getDatabase(), getUser());
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -121,46 +111,11 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     return database;
   }
 
-  private static final class LocalConnectionHandler implements InvocationHandler {
-    private final LocalEntityConnection connection;
-    private final MethodLogger methodLogger;
-
-    private LocalConnectionHandler(final Domain domain, final LocalEntityConnection connection) {
-      this.connection = connection;
-      this.methodLogger = LocalEntityConnections.createLogger(domain);
-      this.connection.setMethodLogger(methodLogger);
-      this.methodLogger.setEnabled(METHOD_LOGGER_ENABLED.get());
+  private Domain initializeDomain() throws Exception {
+    if (domain == null) {
+      domain = (Domain) Class.forName(getDomainClassName()).getConstructor().newInstance();
     }
 
-    @Override
-    public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
-      final String methodName = method.getName();
-      if (methodName.equals(IS_CONNECTED)) {
-        return connection.isConnected();
-      }
-
-      Exception exception = null;
-      try {
-        methodLogger.logAccess(methodName, args);
-
-        return method.invoke(connection, args);
-      }
-      catch (final InvocationTargetException e) {
-        exception = e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
-        throw exception;
-      }
-      catch (final Exception e) {
-        exception = e;
-        LOG.error(e.getMessage(), e);
-        throw exception;
-      }
-      finally {
-        if (methodLogger.isEnabled()) {
-          final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
-          final StringBuilder messageBuilder = new StringBuilder(connection.getUser().toString()).append("\n");
-          MethodLogger.appendLogEntry(messageBuilder, entry, 0);
-        }
-      }
-    }
+    return domain;
   }
 }

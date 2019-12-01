@@ -5405,3 +5405,7 @@
   Entity.Definition.getKeyGeneratorType() removed, isKeyGenerated() added
   Entity.Definition moved up to package level as EntityDefinition
   Entity.KeyGenerator moved up to package level
+  KeyGenerator.isInserted() default implementation added returning true
+  DatabaseConnection.Operation, Function and Procedure moved to package operation, DefaultOperation is now AbstractOperation
+  EntityResultPacker refactored
+  LocalEntityConnectionProvider refactored, LocalEntityConnectionHandler and proxying removed

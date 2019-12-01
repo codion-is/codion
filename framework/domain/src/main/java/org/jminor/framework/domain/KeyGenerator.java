@@ -21,9 +21,12 @@ import java.sql.Statement;
 public interface KeyGenerator {
 
   /**
+   * The default implementation returns true.
    * @return true if the primary key should be included when entities of this type are inserted
    */
-  boolean isInserted();
+  default boolean isInserted() {
+    return true;
+  }
 
   /**
    * Prepares the given entity for insert, that is, generates and fetches any required primary key values
@@ -44,7 +47,8 @@ public interface KeyGenerator {
    * @param insertStatement the insert statement
    * @throws SQLException in case of an exception
    */
-  default void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement insertStatement) throws SQLException {/*for overriding*/}
+  default void afterInsert(final Entity entity, final DatabaseConnection connection,
+                           final Statement insertStatement) throws SQLException {/*for overriding*/}
 
   /**
    * Specifies whether the insert statement should return the primary key column values via the resulting
