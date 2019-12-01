@@ -12,9 +12,11 @@ import java.sql.Statement;
 import java.sql.Types;
 
 /**
- * Factory for standard {@link org.jminor.framework.domain.Entity.KeyGenerator} instances.
+ * Factory for standard {@link KeyGenerator} instances.
  */
 public final class KeyGenerators {
+
+  private KeyGenerators() {}
 
   /**
    * Instantiates a primary key generator which fetches the current maximum primary key value and increments
@@ -25,7 +27,7 @@ public final class KeyGenerators {
    * @param columnName the primary key column name
    * @return a incrementing primary key generator
    */
-  public static Entity.KeyGenerator increment(final String tableName, final String columnName) {
+  public static KeyGenerator increment(final String tableName, final String columnName) {
     return new IncrementKeyGenerator(tableName, columnName);
   }
 
@@ -36,7 +38,7 @@ public final class KeyGenerators {
    * @param sequenceName the sequence name
    * @return a sequence based primary key generator
    */
-  public static Entity.KeyGenerator sequence(final String sequenceName) {
+  public static KeyGenerator sequence(final String sequenceName) {
     return new SequenceKeyGenerator(sequenceName);
   }
 
@@ -47,7 +49,7 @@ public final class KeyGenerators {
    * @param query a query for retrieving the primary key value
    * @return a query based primary key generator
    */
-  public static Entity.KeyGenerator queried(final String query) {
+  public static KeyGenerator queried(final String query) {
     return new AbstractQueriedKeyGenerator() {
       @Override
       protected String getQuery(final Database database) {
@@ -61,11 +63,11 @@ public final class KeyGenerators {
    * @param valueSource the value source, whether a sequence or a table name
    * @return a auto-increment based primary key generator
    */
-  public static Entity.KeyGenerator automatic(final String valueSource) {
+  public static KeyGenerator automatic(final String valueSource) {
     return new AutomaticKeyGenerator(valueSource);
   }
 
-  private static abstract class AbstractQueriedKeyGenerator implements Entity.KeyGenerator {
+  private static abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 
     @Override
     public boolean isInserted() {

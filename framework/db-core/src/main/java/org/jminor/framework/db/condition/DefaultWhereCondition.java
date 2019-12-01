@@ -4,21 +4,21 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.util.List;
 
 final class DefaultWhereCondition implements WhereCondition {
 
-  private final Entity.Definition entityDefinition;
+  private final EntityDefinition entityDefinition;
   private final EntityCondition entityCondition;
   private final Condition condition;
   private final List values;
   private final List<ColumnProperty> columnProperties;
 
   DefaultWhereCondition(final EntityCondition entityCondition, final Condition expandedCondition,
-                        final Entity.Definition entityDefinition) {
+                        final EntityDefinition entityDefinition) {
     this.entityDefinition = entityDefinition;
     this.entityCondition = entityCondition;
     this.condition = expandedCondition;

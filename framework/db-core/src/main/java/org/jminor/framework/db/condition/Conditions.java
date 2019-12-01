@@ -6,6 +6,7 @@ package org.jminor.framework.db.condition;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -178,7 +179,7 @@ public final class Conditions {
    * @param conditionId the id of the condition
    * @return a new Condition instance
    * @throws NullPointerException in case the condition id
-   * @see Entity.Definition.Builder#addConditionProvider(String, Entity.ConditionProvider)
+   * @see EntityDefinition.Builder#addConditionProvider(String, Entity.ConditionProvider)
    */
   public static CustomCondition customCondition(final String conditionId) {
     return customCondition(conditionId, emptyList(), emptyList());
@@ -191,7 +192,7 @@ public final class Conditions {
    * @param values the values used by this condition string
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
-   * @see Entity.Definition.Builder#addConditionProvider(String, Entity.ConditionProvider)
+   * @see EntityDefinition.Builder#addConditionProvider(String, Entity.ConditionProvider)
    */
   public static CustomCondition customCondition(final String conditionId, final List<String> propertyIds, final List values) {
     return new DefaultCustomCondition(conditionId, propertyIds, values);
@@ -217,7 +218,7 @@ public final class Conditions {
    * @return a WhereCondition
    */
   public static WhereCondition whereCondition(final EntityCondition entityCondition,
-                                               final Entity.Definition entityDefinition) {
+                                               final EntityDefinition entityDefinition) {
     return new DefaultWhereCondition(entityCondition,
             expand(entityCondition.getCondition(), entityDefinition), entityDefinition);
   }
@@ -229,7 +230,7 @@ public final class Conditions {
    * @param definition the entity definition
    * @return an expanded Condition
    */
-  public static Condition expand(final Condition condition, final Entity.Definition definition) {
+  public static Condition expand(final Condition condition, final EntityDefinition definition) {
     if (condition instanceof Condition.Set) {
       final Condition.Set conditionSet = (Condition.Set) condition;
       final ListIterator<Condition> conditionsIterator = conditionSet.getConditions().listIterator();

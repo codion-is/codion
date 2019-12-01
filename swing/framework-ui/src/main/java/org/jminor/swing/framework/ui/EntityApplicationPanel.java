@@ -21,7 +21,7 @@ import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityApplicationModel;
@@ -596,7 +596,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public final TreeModel getDependencyTreeModel() {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
     final Domain domain = applicationModel.getDomain();
-    for (final Entity.Definition definition : domain.getEntityDefinitions()) {
+    for (final EntityDefinition definition : domain.getEntityDefinitions()) {
       if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(applicationModel.getDomain(), definition.getEntityId())) {
         root.add(new EntityDependencyTreeNode(definition.getEntityId(), domain));
       }
@@ -1480,7 +1480,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private List<EntityDependencyTreeNode> initializeChildren() {
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
-      for (final Entity.Definition definition : domain.getEntityDefinitions()) {
+      for (final EntityDefinition definition : domain.getEntityDefinitions()) {
         for (final ForeignKeyProperty fkProperty : definition.getForeignKeyProperties()) {
           if (fkProperty.getForeignEntityId().equals(getEntityId()) && !fkProperty.isSoftReference()
                   && !foreignKeyCycle(fkProperty.getForeignEntityId())) {

@@ -4,13 +4,14 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
 import org.jminor.framework.model.PropertyConditionModel;
 
 /**
  * Provides foreign key condition models based on {@link ObservableEntityList} for
- * entities based on small datasets, see {@link org.jminor.framework.domain.Entity.Definition#isSmallDataset()}
+ * entities based on small datasets, see {@link EntityDefinition#isSmallDataset()}
  */
 public class FXConditionModelProvider extends DefaultPropertyConditionModelProvider {
 

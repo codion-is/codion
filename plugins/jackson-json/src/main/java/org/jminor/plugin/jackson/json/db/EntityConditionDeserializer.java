@@ -6,7 +6,7 @@ package org.jminor.plugin.jackson.json.db;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -21,7 +21,7 @@ final class EntityConditionDeserializer extends StdDeserializer<EntityCondition>
   private static final long serialVersionUID = 1;
 
   private final ConditionDeserializer conditionDeserializer;
-  private final Entity.Definition.Provider definitionProvider;
+  private final EntityDefinition.Provider definitionProvider;
 
   EntityConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
     super(EntityCondition.class);

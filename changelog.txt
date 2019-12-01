@@ -5403,3 +5403,5 @@
   KeyGenerators, KeyGenerator suffix removed from method names
   KeyGenerator.Type removed, isInserted() added
   Entity.Definition.getKeyGeneratorType() removed, isKeyGenerated() added
+  Entity.Definition moved up to package level as EntityDefinition
+  Entity.KeyGenerator moved up to package level

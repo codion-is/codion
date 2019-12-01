@@ -32,10 +32,10 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A repository specifying the {@link Entity.Definition}s for a given domain.
+ * A repository specifying the {@link EntityDefinition}s for a given domain.
  * Factory for {@link Entity} and {@link Entity.Key} instances.
  */
-public class Domain implements Entity.Definition.Provider, Serializable {
+public class Domain implements EntityDefinition.Provider, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -56,7 +56,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
   private final DefaultEntityDefinitionProvider definitionProvider = new DefaultEntityDefinitionProvider();
   private final transient Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
 
-  private Map<Class, Entity.Definition> beanEntities;
+  private Map<Class, EntityDefinition> beanEntities;
   private Map<String, Map<String, BeanProperty>> beanProperties;
 
   /**
@@ -134,7 +134,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @param originalValues the original values
    * @return a new {@link Entity} instance
    */
-  public final Entity entity(final Entity.Definition entityDefinition, final Map<Property, Object> values,
+  public final Entity entity(final EntityDefinition entityDefinition, final Map<Property, Object> values,
                              final Map<Property, Object> originalValues) {
     return new DefaultEntity(this, entityDefinition, values, originalValues);
   }
@@ -153,7 +153,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    */
   public final Entity defaultEntity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
     final Entity entity = entity(entityId);
-    final Entity.Definition entityDefinition = getDefinition(entityId);
+    final EntityDefinition entityDefinition = getDefinition(entityId);
     final Collection<ColumnProperty> columnProperties = entityDefinition.getColumnProperties();
     for (final ColumnProperty property : columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
@@ -180,7 +180,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * Transforms the given entities into beans according to the information found in this Domain model
    * @param entities the entities to transform
    * @return a List containing the beans derived from the given entities, an empty List if {@code entities} is null or empty
-   * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see EntityDefinition.Builder#setBeanClass(Class)
    * @see Property.Builder#setBeanProperty(String)
    */
   public final List<Object> toBeans(final List<Entity> entities) {
@@ -200,12 +200,12 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @param <V> the bean type
    * @param entity the entity to transform
    * @return a bean derived from the given entity
-   * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see EntityDefinition.Builder#setBeanClass(Class)
    * @see Property.Builder#setBeanProperty(String)
    */
   public <V> V toBean(final Entity entity) {
     requireNonNull(entity, ENTITY_PARAM);
-    final Entity.Definition definition = getDefinition(entity.getEntityId());
+    final EntityDefinition definition = getDefinition(entity.getEntityId());
     final Class<V> beanClass = definition.getBeanClass();
     if (beanClass == null) {
       throw new IllegalArgumentException("No bean class defined for entityId: " + definition.getEntityId());
@@ -234,7 +234,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * Transforms the given beans into a entities according to the information found in this Domain model
    * @param beans the beans to transform
    * @return a List containing the entities derived from the given beans, an empty List if {@code beans} is null or empty
-   * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see EntityDefinition.Builder#setBeanClass(Class)
    * @see Property.Builder#setBeanProperty(String)
    * */
   public final List<Entity> fromBeans(final List beans) {
@@ -254,13 +254,13 @@ public class Domain implements Entity.Definition.Provider, Serializable {
    * @param bean the bean to convert to an Entity
    * @param <V> the bean type
    * @return a Entity based on the given bean
-   * @see Entity.Definition.Builder#setBeanClass(Class)
+   * @see EntityDefinition.Builder#setBeanClass(Class)
    * @see Property.Builder#setBeanProperty(String)
    */
   public <V> Entity fromBean(final V bean) {
     requireNonNull(bean, "bean");
     final Class beanClass = bean.getClass();
-    final Entity.Definition definition = getBeanEntity(beanClass);
+    final EntityDefinition definition = getBeanEntity(beanClass);
     final Entity entity = entity(definition.getEntityId());
     try {
       final Map<String, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityId());
@@ -398,14 +398,14 @@ public class Domain implements Entity.Definition.Provider, Serializable {
 
   /** {@inheritDoc} */
   @Override
-  public final Entity.Definition getDefinition(final String entityId) {
+  public final EntityDefinition getDefinition(final String entityId) {
     return definitionProvider.getDefinition(entityId);
   }
 
   /**
-   * @return all {@link Entity.Definition}s found in this domain model
+   * @return all {@link EntityDefinition}s found in this domain model
    */
-  public final Collection<Entity.Definition> getEntityDefinitions() {
+  public final Collection<EntityDefinition> getEntityDefinitions() {
     return Collections.unmodifiableCollection(definitionProvider.entityDefinitions.values());
   }
 
@@ -515,32 +515,32 @@ public class Domain implements Entity.Definition.Provider, Serializable {
   }
 
   /**
-   * Adds a new {@link Entity.Definition} to this domain model, using the {@code entityId} as table name.
-   * Returns the {@link Entity.Definition} instance for further configuration.
+   * Adds a new {@link EntityDefinition} to this domain model, using the {@code entityId} as table name.
+   * Returns the {@link EntityDefinition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
    * @param propertyBuilders the {@link Property.Builder} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
-   * @return a {@link Entity.Definition.Builder}
+   * @return a {@link EntityDefinition.Builder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final Entity.Definition.Builder define(final String entityId, final Property.Builder... propertyBuilders) {
+  protected final EntityDefinition.Builder define(final String entityId, final Property.Builder... propertyBuilders) {
     return define(entityId, entityId, propertyBuilders);
   }
 
   /**
-   * Adds a new {@link Entity.Definition} to this domain model.
-   * Returns the {@link Entity.Definition} instance for further configuration.
+   * Adds a new {@link EntityDefinition} to this domain model.
+   * Returns the {@link EntityDefinition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
    * @param tableName the name of the underlying table
    * @param propertyBuilders the {@link Property.Builder} objects to base the entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
-   * @return a {@link Entity.Definition.Builder}
+   * @return a {@link EntityDefinition.Builder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final Entity.Definition.Builder define(final String entityId, final String tableName,
-                                                   final Property.Builder... propertyBuilders) {
+  protected final EntityDefinition.Builder define(final String entityId, final String tableName,
+                                                  final Property.Builder... propertyBuilders) {
     requireNonNull(entityId, ENTITY_ID_PARAM);
     requireNonNull(tableName, "tableName");
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(this,
@@ -559,12 +559,12 @@ public class Domain implements Entity.Definition.Provider, Serializable {
     }
   }
 
-  private Entity.Definition getBeanEntity(final Class beanClass) {
+  private EntityDefinition getBeanEntity(final Class beanClass) {
     if (beanEntities == null) {
       beanEntities = new HashMap<>();
     }
     if (!beanEntities.containsKey(beanClass)) {
-      final Optional<Entity.Definition> optionalDefinition = getEntityDefinitions().stream()
+      final Optional<EntityDefinition> optionalDefinition = getEntityDefinitions().stream()
               .filter(def -> Objects.equals(beanClass, def.getBeanClass())).findFirst();
       if (!optionalDefinition.isPresent()) {
         throw new IllegalArgumentException("No entity associated with bean class: " + beanClass);
@@ -584,7 +584,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
   }
 
   private Map<String, BeanProperty> initializeBeanProperties(final String entityId) {
-    final Entity.Definition entityDefinition = getDefinition(entityId);
+    final EntityDefinition entityDefinition = getDefinition(entityId);
     final Class beanClass = entityDefinition.getBeanClass();
     if (beanClass == null) {
       throw new IllegalArgumentException("No bean class specified for entity: " + entityId);
@@ -631,15 +631,15 @@ public class Domain implements Entity.Definition.Provider, Serializable {
     }
   }
 
-  private static final class DefaultEntityDefinitionProvider implements Entity.Definition.Provider, Serializable {
+  private static final class DefaultEntityDefinitionProvider implements EntityDefinition.Provider, Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private final Map<String, Entity.Definition> entityDefinitions = new LinkedHashMap<>();
+    private final Map<String, EntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
     @Override
-    public final Entity.Definition getDefinition(final String entityId) {
-      final Entity.Definition definition = entityDefinitions.get(requireNonNull(entityId, ENTITY_ID_PARAM));
+    public final EntityDefinition getDefinition(final String entityId) {
+      final EntityDefinition definition = entityDefinitions.get(requireNonNull(entityId, ENTITY_ID_PARAM));
       if (definition == null) {
         throw new IllegalArgumentException("Undefined entity: " + entityId);
       }
@@ -647,7 +647,7 @@ public class Domain implements Entity.Definition.Provider, Serializable {
       return definition;
     }
 
-    private void addDefinition(final Entity.Definition definition) {
+    private void addDefinition(final EntityDefinition definition) {
       if (entityDefinitions.containsKey(definition.getEntityId()) && !ALLOW_REDEFINE_ENTITY.get()) {
         throw new IllegalArgumentException("Entity has already been defined: " +
                 definition.getEntityId() + ", for table: " + definition.getTableName());

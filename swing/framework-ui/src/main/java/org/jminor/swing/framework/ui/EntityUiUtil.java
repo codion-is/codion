@@ -16,6 +16,7 @@ import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -146,7 +147,7 @@ public final class EntityUiUtil {
    * @param lookupCaption the caption for the lookup field, used as a caption for the dialog as well
    * @return the selected entities or an empty collection in case a selection was not performed
    * @see EntityLookupField
-   * @see Entity.Definition#getSearchProperties()
+   * @see EntityDefinition#getSearchProperties()
    */
   public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,
@@ -165,7 +166,7 @@ public final class EntityUiUtil {
    * @param dialogTitle the title to display on the dialog
    * @return the selected entities or an empty collection in case a selection was not performed
    * @see EntityLookupField
-   * @see Entity.Definition#getSearchProperties()
+   * @see EntityDefinition#getSearchProperties()
    */
   public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,

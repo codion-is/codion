@@ -25,6 +25,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -156,7 +157,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final Entity.Definition getEntityDefinition() {
+  public final EntityDefinition getEntityDefinition() {
     return getDomain().getDefinition(entityId);
   }
 
@@ -616,7 +617,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   @Override
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
-      final Entity.Definition entityDefinition = getEntityDefinition();
+      final EntityDefinition entityDefinition = getEntityDefinition();
       for (final ColumnProperty property : entityDefinition.getColumnProperties()) {
         if (!property.isForeignKeyProperty() && valueModified(property)) {
           return true;

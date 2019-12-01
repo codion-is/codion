@@ -6,6 +6,7 @@ package org.jminor.plugin.jackson.json.db;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.CustomCondition;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.plugin.jackson.json.domain.EntityDeserializer;
 import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
@@ -28,7 +29,7 @@ final class CustomConditionDeserializer implements Serializable {
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  CustomCondition deserialize(final Entity.Definition definition, final JsonNode conditionNode) throws IOException {
+  CustomCondition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
     final String conditionId = conditionNode.get("conditionId").asText();
     final JsonNode propertyIdsNode = conditionNode.get("propertyIds");
     final List<String> propertyIds = Arrays.asList(entityObjectMapper.readValue(propertyIdsNode.toString(), String[].class));

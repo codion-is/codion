@@ -44,7 +44,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   /**
    * Caching this extremely frequently referenced object
    */
-  private Entity.Definition definition;
+  private EntityDefinition definition;
 
   /**
    * Instantiates a new DefaultKey for the given entity type, assuming it is a single value key
@@ -52,7 +52,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
    * @param value the value
    * @throws IllegalArgumentException in case this key is a composite key
    */
-  DefaultEntityKey(final Entity.Definition definition, final Object value) {
+  DefaultEntityKey(final EntityDefinition definition, final Object value) {
     this(definition, createSingleValueMap(definition.getPrimaryKeyProperties().get(0), value));
     if (compositeKey) {
       throw new IllegalArgumentException(definition.getEntityId() + " has a composite primary key");
@@ -63,7 +63,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
    * Instantiates a new Key for the given entity type
    * @param definition the entity definition
    */
-  DefaultEntityKey(final Entity.Definition definition, final Map<ColumnProperty, Object> values) {
+  DefaultEntityKey(final EntityDefinition definition, final Map<ColumnProperty, Object> values) {
     super(values, null);
     this.definition = definition;
     final List<ColumnProperty> properties = definition.getPrimaryKeyProperties();

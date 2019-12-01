@@ -5,6 +5,7 @@ package org.jminor.plugin.jackson.json.domain;
 
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -42,7 +43,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
 
     final String entityId = entityNode.get("entityId").asText();
-    final Entity.Definition definition = domain.getDefinition(entityId);
+    final EntityDefinition definition = domain.getDefinition(entityId);
 
     return domain.entity(definition, getValueMap(entityNode, definition),
             getOriginalValueMap(entityNode, definition));
@@ -87,7 +88,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     return jsonNode.asText();
   }
 
-  private Map<Property, Object> getValueMap(final JsonNode node, final Entity.Definition definition)
+  private Map<Property, Object> getValueMap(final JsonNode node, final EntityDefinition definition)
           throws JsonProcessingException {
     final JsonNode values = node.get("values");
     final Map<Property, Object> valueMap = new HashMap<>();
@@ -101,7 +102,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     return valueMap;
   }
 
-  private Map<Property, Object> getOriginalValueMap(final JsonNode node, final Entity.Definition definition)
+  private Map<Property, Object> getOriginalValueMap(final JsonNode node, final EntityDefinition definition)
           throws JsonProcessingException {
     final JsonNode originalValues = node.get("originalValues");
     if (originalValues != null) {

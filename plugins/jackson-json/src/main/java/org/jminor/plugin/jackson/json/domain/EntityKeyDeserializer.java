@@ -5,6 +5,7 @@ package org.jminor.plugin.jackson.json.domain;
 
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -35,7 +36,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
     final ObjectCodec codec = parser.getCodec();
     final JsonNode node = codec.readTree(parser);
     final String entityId = node.get("entityId").asText();
-    final Entity.Definition definition = domain.getDefinition(entityId);
+    final EntityDefinition definition = domain.getDefinition(entityId);
     final JsonNode values = node.get("values");
     final Entity.Key key = domain.key(entityId);
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();

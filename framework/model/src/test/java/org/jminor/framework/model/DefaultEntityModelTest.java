@@ -17,6 +17,7 @@ import org.jminor.common.state.State;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -152,7 +153,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public Domain getDomain() {return null;}
     @Override
-    public Entity.Definition getEntityDefinition() {return null;}
+    public EntityDefinition getEntityDefinition() {return null;}
     @Override
     public TestEntityEditModel getEditModel() {return null;}
     @Override

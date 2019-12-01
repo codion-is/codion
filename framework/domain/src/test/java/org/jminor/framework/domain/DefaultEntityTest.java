@@ -40,8 +40,8 @@ public class DefaultEntityTest {
 
   @Test
   public void construction() {
-    final Entity.Definition detailDefinition = DOMAIN.getDefinition(TestDomain.T_DETAIL);
-    final Entity.Definition masterDefinition = DOMAIN.getDefinition(TestDomain.T_MASTER);
+    final EntityDefinition detailDefinition = DOMAIN.getDefinition(TestDomain.T_DETAIL);
+    final EntityDefinition masterDefinition = DOMAIN.getDefinition(TestDomain.T_MASTER);
 
     final Map<Property, Object> values = new HashMap<>();
     values.put(detailDefinition.getProperty(TestDomain.DETAIL_BOOLEAN), false);

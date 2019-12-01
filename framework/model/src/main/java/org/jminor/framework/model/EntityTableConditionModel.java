@@ -11,7 +11,7 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.StateObserver;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
@@ -170,7 +170,7 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * Uses the simpleSearchText as a basis for a wildcard search on all String based condition models,
    * or the condition models representing the search properties for the underlying entity
-   * @see Entity.Definition#getSearchProperties()
+   * @see EntityDefinition#getSearchProperties()
    */
   void performSimpleSearch();
 

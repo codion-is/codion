@@ -31,7 +31,7 @@ import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -398,7 +398,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   final Map<String, String> getEntityDefinitions() {
     final Map<String, String> definitions = new HashMap<>();
     for (final Domain domain : Domain.getRegisteredDomains()) {
-      for (final Entity.Definition definition : domain.getEntityDefinitions()) {
+      for (final EntityDefinition definition : domain.getEntityDefinitions()) {
         definitions.put(definition.getEntityId(), definition.getTableName());
       }
     }

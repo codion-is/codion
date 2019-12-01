@@ -6,7 +6,7 @@ package org.jminor.plugin.jackson.json.db;
 import org.jminor.common.Conjunction;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -22,7 +22,7 @@ final class ConditionSetDeserializer {
     this.conditionDeserializer = conditionDeserializer;
   }
 
-  Condition.Set deserialize(final Entity.Definition definition, final JsonNode jsonNode) throws IOException {
+  Condition.Set deserialize(final EntityDefinition definition, final JsonNode jsonNode) throws IOException {
     final Conjunction conjunction = Conjunction.valueOf(jsonNode.get("conjunction").asText());
     final JsonNode conditionsNode = jsonNode.get("conditions");
     final List<Condition> conditions = new ArrayList<>(conditionsNode.size());

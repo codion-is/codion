@@ -14,6 +14,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -107,7 +108,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final Entity.Definition getEntityDefinition() {
+  public final EntityDefinition getEntityDefinition() {
     return getDomain().getDefinition(getEntityId());
   }
 
@@ -479,7 +480,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
    * @return the order by clause
-   * @see Entity.Definition#getOrderBy()
+   * @see EntityDefinition#getOrderBy()
    */
   protected OrderBy getOrderBy() {
     return getEntityDefinition().getOrderBy();

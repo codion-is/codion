@@ -4,7 +4,7 @@
 package org.jminor.plugin.jackson.json.db;
 
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,7 +26,7 @@ final class ConditionDeserializer implements Serializable {
     this.customConditionDeserializer = new CustomConditionDeserializer(entityObjectMapper);
   }
 
-  Condition deserialize(final Entity.Definition definition, final JsonNode conditionNode) throws IOException {
+  Condition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
     final JsonNode type = conditionNode.get("type");
     final String typeString = type.asText();
     if ("set".equals(typeString)) {

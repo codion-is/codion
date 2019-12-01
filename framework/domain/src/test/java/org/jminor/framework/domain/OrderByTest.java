@@ -13,7 +13,7 @@ public final class OrderByTest {
   @Test
   public void test() {
     final TestDomain domain = new TestDomain();
-    final Entity.Definition definition = domain.getDefinition(TestDomain.T_DEPARTMENT);
+    final EntityDefinition definition = domain.getDefinition(TestDomain.T_DEPARTMENT);
     OrderBy orderBy = Domain.orderBy().ascending(TestDomain.DEPARTMENT_LOCATION)
             .descending(TestDomain.DEPARTMENT_NAME);
     assertEquals("loc, dname desc", orderBy.getOrderByString(definition));

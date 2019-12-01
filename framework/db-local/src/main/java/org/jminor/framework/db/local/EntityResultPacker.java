@@ -6,6 +6,7 @@ package org.jminor.framework.db.local;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -24,7 +25,7 @@ import java.util.Map;
 final class EntityResultPacker implements ResultPacker<Entity> {
 
   private final Domain domain;
-  private final Entity.Definition definition;
+  private final EntityDefinition definition;
   private final List<ColumnProperty> columnProperties;
 
   /**
@@ -32,7 +33,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
    * @param definition the entity definition
    * @param columnProperties the column properties in the same order as they appear in the ResultSet
    */
-  EntityResultPacker(final Domain domain, final Entity.Definition definition,
+  EntityResultPacker(final Domain domain, final EntityDefinition definition,
                      final List<ColumnProperty> columnProperties) {
     this.domain = domain;
     this.definition = definition;
