@@ -773,23 +773,14 @@ final class DefaultEntityDefinition implements EntityDefinition {
    * @return a list of grouping columns separated with a comma, to serve as a group by clause,
    * null if no grouping properties are defined
    */
-  private static String initializeGroupByClause(final Collection<ColumnProperty> columnProperties) {
-    final List<Property> groupingProperties = columnProperties.stream()
-            .filter(ColumnProperty::isGroupingColumn).collect(toList());
-    if (groupingProperties.isEmpty()) {
+  private static String initializeGroupByClause(final List<ColumnProperty> columnProperties) {
+    final List<String> groupingColumnNames = columnProperties.stream().filter(ColumnProperty::isGroupingColumn)
+            .map(ColumnProperty::getColumnName).collect(toList());
+    if (groupingColumnNames.isEmpty()) {
       return null;
     }
 
-    final StringBuilder stringBuilder = new StringBuilder();
-    int i = 0;
-    for (final Property property : groupingProperties) {
-      stringBuilder.append(property.getPropertyId());
-      if (i++ < groupingProperties.size() - 1) {
-        stringBuilder.append(", ");
-      }
-    }
-
-    return stringBuilder.toString();
+    return String.join(", ", groupingColumnNames);
   }
 
   private static Map<String, ForeignKeyProperty> initializeForeignKeyPropertyMap(final List<ForeignKeyProperty> foreignKeyProperties) {

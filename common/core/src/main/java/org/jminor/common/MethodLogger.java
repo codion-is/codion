@@ -10,12 +10,14 @@ import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.jminor.common.Util.nullOrEmpty;
 
@@ -194,8 +196,6 @@ public final class MethodLogger {
    */
   public static class DefaultArgumentStringProvider implements ArgumentStringProvider {
 
-    private static final int CHAR_PER_ARGUMENT = 40;
-
     /** {@inheritDoc} */
     @Override
     public String toString(final Object argument) {
@@ -209,15 +209,7 @@ public final class MethodLogger {
         return "";
       }
 
-      final StringBuilder stringBuilder = new StringBuilder(arguments.length * CHAR_PER_ARGUMENT);
-      for (int i = 0; i < arguments.length; i++) {
-        stringBuilder.append(toString(arguments[i]));
-        if (i < arguments.length - 1) {
-          stringBuilder.append(", ");
-        }
-      }
-
-      return stringBuilder.toString();
+      return Arrays.stream(arguments).map(this::toString).collect(Collectors.joining(", "));
     }
   }
 

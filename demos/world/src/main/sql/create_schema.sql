@@ -44,6 +44,14 @@ create table world.countrylanguage (
   constraint countrylanguage_country_fk foreign key (countrycode) references world.country(code)
 );
 
+create or replace view world.country_city_v as
+select country.code countrycode, country.name countryname, country.continent, country.region,
+  country.surfacearea, country.indepyear, country.population countrypopulation, country.lifeexpectancy,
+  country.gnp, country.gnpold, country.localname, country.governmentform, country.headofstate,
+  country.capital, country.code2, country.flag,
+  city.id cityid, city.name cityname, city.district, city.population citypopulation
+from world.country join world.city on city.countrycode = country.code;
+
 insert into world.country values ('ABW','Aruba','North America','Caribbean',193.00,NULL,103000,78.4,828.00,793.00,'Aruba','Nonmetropolitan Territory of The Netherlands','Beatrix',129,'AW',null);
 insert into world.country values ('AFG','Afghanistan','Asia','Southern and Central Asia',652090.00,1919,22720000,45.9,5976.00,NULL,'Afganistan/Afqanestan','Islamic Emirate','Mohammad Omar',1,'AF',null);
 insert into world.country values ('AGO','Angola','Africa','Central Africa',1246700.00,1975,12878000,38.3,6648.00,7984.00,'Angola','Republic','José Eduardo dos Santos',56,'AO',null);

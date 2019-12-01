@@ -60,6 +60,27 @@ public final class World extends Domain {
   public static final String COUNTRYLANGUAGE_NO_OF_SPEAKERS = "no_of_speakers";
   // end::entityAndPropertyIds[]
 
+  public static final String T_LOOKUP = "world.country_city_v";
+  public static final String LOOKUP_COUNTRY_CODE = "countrycode";
+  public static final String LOOKUP_COUNTRY_NAME = "countryname";
+  public static final String LOOKUP_COUNTRY_CONTINENT = "continent";
+  public static final String LOOKUP_COUNTRY_REGION = "region";
+  public static final String LOOKUP_COUNTRY_SURFACEAREA = "surfacearea";
+  public static final String LOOKUP_COUNTRY_INDEPYEAR = "indepyear";
+  public static final String LOOKUP_COUNTRY_POPULATION = "countrypopulation";
+  public static final String LOOKUP_COUNTRY_LIFEEXPECTANCY = "lifeexpectancy";
+  public static final String LOOKUP_COUNTRY_GNP = "gnp";
+  public static final String LOOKUP_COUNTRY_GNPOLD = "gnpold";
+  public static final String LOOKUP_COUNTRY_LOCALNAME = "localname";
+  public static final String LOOKUP_COUNTRY_GOVERNMENTFORM = "governmentform";
+  public static final String LOOKUP_COUNTRY_HEADOFSTATE = "headofstate";
+  public static final String LOOKUP_COUNTRY_CODE2 = "code2";
+  public static final String LOOKUP_COUNTRY_FLAG = "flag";
+  public static final String LOOKUP_CITY_ID = "cityid";
+  public static final String LOOKUP_CITY_NAME = "cityname";
+  public static final String LOOKUP_CITY_DISTRICT = "district";
+  public static final String LOOKUP_CITY_POPULATION = "citypopulation";
+
   public World() {
     //disable this default check so we can define a foreign key relation
     //from country to city without having defined the city entity
@@ -68,6 +89,7 @@ public final class World extends Domain {
     city();
     country();
     countryLanguage();
+    lookup();
   }
 
   // tag::defineCity[]
@@ -186,6 +208,31 @@ public final class World extends Domain {
             // end::derivedProperty[]
     ).setOrderBy(orderBy().ascending(COUNTRYLANGUAGE_LANGUAGE).descending(COUNTRYLANGUAGE_PERCENTAGE))
             .setCaption("Language");
+  }
+
+  void lookup() {
+    define(T_LOOKUP,
+            columnProperty(LOOKUP_COUNTRY_CODE, Types.VARCHAR, "Country code").setPrimaryKeyIndex(0),
+            columnProperty(LOOKUP_COUNTRY_NAME, Types.VARCHAR, "Country name"),
+            columnProperty(LOOKUP_COUNTRY_CONTINENT, Types.VARCHAR, "Continent"),
+            columnProperty(LOOKUP_COUNTRY_REGION, Types.VARCHAR, "Region"),
+            columnProperty(LOOKUP_COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area"),
+            columnProperty(LOOKUP_COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year"),
+            columnProperty(LOOKUP_COUNTRY_POPULATION, Types.INTEGER, "Population"),
+            columnProperty(LOOKUP_COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy"),
+            columnProperty(LOOKUP_COUNTRY_GNP, Types.DOUBLE, "GNP"),
+            columnProperty(LOOKUP_COUNTRY_GNPOLD, Types.DOUBLE, "GNP old"),
+            columnProperty(LOOKUP_COUNTRY_LOCALNAME, Types.VARCHAR, "Local name"),
+            columnProperty(LOOKUP_COUNTRY_GOVERNMENTFORM, Types.VARCHAR, "Government form"),
+            columnProperty(LOOKUP_COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state"),
+            blobProperty(LOOKUP_COUNTRY_FLAG, "Flag"),
+            columnProperty(LOOKUP_COUNTRY_CODE2, Types.VARCHAR, "Code2"),
+            columnProperty(LOOKUP_CITY_ID).setPrimaryKeyIndex(1),
+            columnProperty(LOOKUP_CITY_NAME, Types.VARCHAR, "Name"),
+            columnProperty(LOOKUP_CITY_DISTRICT, Types.VARCHAR, "District"),
+            columnProperty(LOOKUP_CITY_POPULATION, Types.INTEGER, "Population")
+    ).setOrderBy(orderBy().ascending(LOOKUP_COUNTRY_NAME).descending(LOOKUP_CITY_POPULATION))
+            .setReadOnly(true).setCaption("Lookup");
   }
 
   // tag::colorProvider[]
