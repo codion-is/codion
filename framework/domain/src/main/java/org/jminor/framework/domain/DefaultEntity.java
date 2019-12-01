@@ -58,12 +58,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * Provides access to domain entity definitions
    */
-  private Entity.Definition.Provider definitionProvider;
+  private EntityDefinition.Provider definitionProvider;
 
   /**
    * Keep a reference to this frequently referenced object
    */
-  private Definition definition;
+  private EntityDefinition definition;
 
   /**
    * The primary key of this entity
@@ -75,7 +75,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param definitionProvider the domain
    * @param key the primary key
    */
-  DefaultEntity(final Entity.Definition.Provider definitionProvider, final Key key) {
+  DefaultEntity(final EntityDefinition.Provider definitionProvider, final Key key) {
     this(definitionProvider, requireNonNull(key, "key").getEntityId(), createValueMap(key), null);
     this.key = key;
   }
@@ -86,7 +86,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param values the initial values, may be null
    * @param originalValues the original values, may be null
    */
-  DefaultEntity(final Entity.Definition.Provider definitionProvider, final String entityId,
+  DefaultEntity(final EntityDefinition.Provider definitionProvider, final String entityId,
                 final Map<Property, Object> values, final Map<Property, Object> originalValues) {
     this(requireNonNull(definitionProvider, "definitionProvider"),
             definitionProvider.getDefinition(entityId), values, originalValues);
@@ -98,7 +98,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param values the initial values, may be null
    * @param originalValues the original values, may be null
    */
-  DefaultEntity(final Entity.Definition.Provider definitionProvider, final Entity.Definition definition,
+  DefaultEntity(final EntityDefinition.Provider definitionProvider, final EntityDefinition definition,
                 final Map<Property, Object> values, final Map<Property, Object> originalValues) {
     super(values, originalValues);
     this.definitionProvider = requireNonNull(definitionProvider, "definitionProvider");
@@ -442,7 +442,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * @param entity the entity to compare with
    * @return the compare result from comparing {@code entity} with this Entity instance
-   * @see Definition#setComparator(java.util.Comparator)
+   * @see EntityDefinition.Builder#setComparator(java.util.Comparator)
    */
   @Override
   public int compareTo(final Entity entity) {
@@ -459,8 +459,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /**
    * @return a string representation of this entity
-   * @see Definition#setStringProvider(Entity.ToString)
-   * @see Definition#toString(Entity)
+   * @see EntityDefinition.Builder#setStringProvider(Entity.ToString)
+   * @see EntityDefinition#toString(Entity)
    */
   @Override
   public String toString() {
@@ -668,7 +668,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   private Key initializeAndCacheCompositeReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
-    final Definition foreignEntityDefinition = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
+    final EntityDefinition foreignEntityDefinition = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
     final List<ColumnProperty> foreignProperties = foreignEntityDefinition.getPrimaryKeyProperties();
     final List<ColumnProperty> columnProperties = foreignKeyProperty.getColumnProperties();
     final Map<ColumnProperty, Object> values = new HashMap<>(columnProperties.size());
@@ -851,7 +851,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return value;
   }
 
-  private static void validateProperties(final Entity.Definition definition, final Map<Property, Object> propertyValues) {
+  private static void validateProperties(final EntityDefinition definition, final Map<Property, Object> propertyValues) {
     if (propertyValues != null && !propertyValues.isEmpty()) {
       final Set<Property> propertySet = definition.getPropertySet();
       for (final Map.Entry<Property, Object> valueEntry : propertyValues.entrySet()) {

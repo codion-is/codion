@@ -13,6 +13,7 @@ import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.state.State;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -62,7 +63,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   /**
    * @return the definition of the underlying entity
    */
-  Entity.Definition getEntityDefinition();
+  EntityDefinition getEntityDefinition();
 
   /**
    * Returns the {@link EntityEditModel} associated with this table model
@@ -178,7 +179,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
    * @param row the row for which to retrieve the background color
    * @param property the property for which to retrieve the background color
    * @return an Object representing the background color for this row and property, specified by the row entity
-   * @see Entity.Definition.Builder#setColorProvider(Entity.ColorProvider)
+   * @see EntityDefinition.Builder#setColorProvider(Entity.ColorProvider)
    */
   Object getPropertyBackgroundColor(final int row, final Property property);
 

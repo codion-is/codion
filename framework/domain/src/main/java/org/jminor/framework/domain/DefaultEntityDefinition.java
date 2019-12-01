@@ -34,7 +34,7 @@ import static org.jminor.common.Util.rejectNullOrEmpty;
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
  */
-final class DefaultEntityDefinition implements Entity.Definition {
+final class DefaultEntityDefinition implements EntityDefinition {
 
   private static final long serialVersionUID = 1;
 
@@ -173,7 +173,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * Defines a new entity type with the entityId serving as the initial entity caption.
    * @throws IllegalArgumentException if no primary key property is specified
    */
-  DefaultEntityDefinition(final Entity.Definition.Provider definitionProvider,
+  DefaultEntityDefinition(final EntityDefinition.Provider definitionProvider,
                           final String domainId, final String entityId, final String tableName,
                           final Entity.Validator validator, final Property.Builder... propertyBuilders) {
     this.domainId = rejectNullOrEmpty(domainId, "domainId");
@@ -598,7 +598,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   /**
-   * @return a {@link org.jminor.framework.domain.Entity.Definition.Builder} for this definition instance
+   * @return a {@link EntityDefinition.Builder} for this definition instance
    */
   Builder builder() {
     return new DefaultBuilder(this);
@@ -611,7 +611,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return unmodifiableMap(map);
   }
 
-  private static Map<String, Property> initializePropertyMap(final Entity.Definition.Provider definitionProvider,
+  private static Map<String, Property> initializePropertyMap(final EntityDefinition.Provider definitionProvider,
                                                              final String entityId,
                                                              final Property.Builder... propertyBuilders) {
     final Map<String, Property> propertyMap = new LinkedHashMap<>(propertyBuilders.length);
@@ -626,12 +626,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return unmodifiableMap(propertyMap);
   }
 
-  private static void initializeForeignKeyProperty(final Entity.Definition.Provider definitionProvider,
+  private static void initializeForeignKeyProperty(final EntityDefinition.Provider definitionProvider,
                                                    final String entityId, final Map<String, Property> propertyMap,
                                                    final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
     final ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyBuilder.get();
-    if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
-      final Entity.Definition foreignEntity = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
+    if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && EntityDefinition.STRICT_FOREIGN_KEYS.get()) {
+      final EntityDefinition foreignEntity = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
       if (foreignEntity == null) {
         throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityId()
                 + "' referenced by entity '" + entityId + "' via foreign key property '"

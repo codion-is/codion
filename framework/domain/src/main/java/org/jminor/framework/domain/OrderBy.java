@@ -45,7 +45,7 @@ public final class OrderBy implements Serializable {
    * @param entityDefinition the entity definition
    * @return a order by string without the ORDER BY keywords
    */
-  public String getOrderByString(final Entity.Definition entityDefinition) {
+  public String getOrderByString(final EntityDefinition entityDefinition) {
     final List<String> orderBys = new LinkedList<>();
     for (final OrderByProperty property : orderByProperties) {
       orderBys.add(entityDefinition.getColumnProperty(property.propertyId).getColumnName() +

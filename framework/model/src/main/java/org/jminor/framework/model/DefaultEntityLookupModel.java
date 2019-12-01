@@ -21,6 +21,7 @@ import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.PropertyCondition;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -86,7 +87,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * Instantiates a new EntityLookupModel, using the search properties for the given entity type
    * @param entityId the ID of the entity to lookup
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
-   * @see Entity.Definition#getSearchProperties()
+   * @see EntityDefinition#getSearchProperties()
    */
   public DefaultEntityLookupModel(final String entityId, final EntityConnectionProvider connectionProvider) {
     this(entityId, connectionProvider, connectionProvider.getDomain().getDefinition(entityId).getSearchProperties());

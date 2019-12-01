@@ -5,6 +5,7 @@ package org.jminor.plugin.json;
 
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -284,7 +285,7 @@ public final class EntityJSONParser {
   public Entity.Key parseKey(final JSONObject keyObject) {
     final String entityId = keyObject.getString(ENTITY_ID);
     final Entity.Key key = domain.key(entityId);
-    final Entity.Definition definition = domain.getDefinition(entityId);
+    final EntityDefinition definition = domain.getDefinition(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
       final String propertyId = propertyValues.names().get(j).toString();
@@ -421,7 +422,7 @@ public final class EntityJSONParser {
     final JSONObject propertyValues = entityObject.getJSONObject(valuesKey);
     for (int j = 0; j < propertyValues.names().length(); j++) {
       final String propertyId = propertyValues.names().get(j).toString();
-      final Entity.Definition entityDefinition = domain.getDefinition(entityId);
+      final EntityDefinition entityDefinition = domain.getDefinition(entityId);
       valueMap.put(entityDefinition.getProperty(propertyId),
               parseValue(entityDefinition.getProperty(propertyId), propertyValues));
     }

@@ -30,7 +30,7 @@ public class DefaultEntityDefinitionTest {
             .setOrderBy(Domain.orderBy().descending("name"))
             .setReadOnly(true).setSelectTableName("selectTableName").setGroupByClause("name")
             .setStringProvider(stringProvider).setComparator(comparator);
-    final Entity.Definition definition = domain.getDefinition("entityId");
+    final EntityDefinition definition = domain.getDefinition("entityId");
     assertEquals("entityId", definition.toString());
     assertEquals("entityId", definition.getEntityId());
     assertEquals("tableName", definition.getTableName());
@@ -88,7 +88,7 @@ public class DefaultEntityDefinitionTest {
             Properties.columnProperty("info", Types.VARCHAR),
             Properties.derivedProperty("derived", Types.VARCHAR, null, linkedValues ->
                     ((String) linkedValues.get("name")) + linkedValues.get("info"), "name", "info"));
-    final Entity.Definition definition = domain.getDefinition("entityId");
+    final EntityDefinition definition = domain.getDefinition("entityId");
     Collection<DerivedProperty> linked = definition.getDerivedProperties("name");
     assertTrue(linked.contains(definition.getProperty("derived")));
     assertEquals(1, linked.size());
@@ -103,7 +103,7 @@ public class DefaultEntityDefinitionTest {
             Properties.primaryKeyProperty("p0").setAggregateColumn(true),
             Properties.columnProperty("p1").setGroupingColumn(true),
             Properties.columnProperty("p2").setGroupingColumn(true));
-    final Entity.Definition definition = domain.getDefinition("entityId");
+    final EntityDefinition definition = domain.getDefinition("entityId");
     assertEquals("p1, p2", definition.getGroupByClause());
   }
 
@@ -120,7 +120,7 @@ public class DefaultEntityDefinitionTest {
     final String havingClause = "p1 > 1";
     domain.define("entityId",
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
-    final Entity.Definition definition = domain.getDefinition("entityId");
+    final EntityDefinition definition = domain.getDefinition("entityId");
     assertEquals(havingClause, definition.getHavingClause());
   }
 
@@ -140,11 +140,11 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testForeignPrimaryKey() {
-    Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
+    EntityDefinition.STRICT_FOREIGN_KEYS.set(false);
     domain.define("entityId",
             Properties.foreignKeyProperty("fkPropertyID", "caption", "parent",
                     Properties.primaryKeyProperty("propertyId")));
-    Entity.Definition.STRICT_FOREIGN_KEYS.set(true);
+    EntityDefinition.STRICT_FOREIGN_KEYS.set(true);
   }
 
   @Test
@@ -171,7 +171,7 @@ public class DefaultEntityDefinitionTest {
             Properties.columnProperty("1"),
             Properties.columnProperty("2"),
             Properties.derivedProperty("der", Types.INTEGER, "cap", linkedValues -> null, "1", "2"));
-    final Entity.Definition definition = domain.getDefinition("entityId");
+    final EntityDefinition definition = domain.getDefinition("entityId");
     assertTrue(definition.hasDerivedProperties("1"));
     assertTrue(definition.hasDerivedProperties("2"));
   }
@@ -183,7 +183,7 @@ public class DefaultEntityDefinitionTest {
             Properties.primaryKeyProperty("propertyId"))
              .setColorProvider((entity1, property) -> colorBlue);;
     final Entity entity = domain.entity("entity");
-    final Entity.Definition definition = domain.getDefinition("entity");
+    final EntityDefinition definition = domain.getDefinition("entity");
     assertEquals(colorBlue, definition.getColor(entity, entity.getKey().getFirstProperty()));
   }
 
@@ -214,7 +214,7 @@ public class DefaultEntityDefinitionTest {
     final String entityId = "defaultKeyGenerator";
     domain.define(entityId,
             Properties.primaryKeyProperty("propertyId"));
-    final Entity.Definition definition = domain.getDefinition(entityId);
+    final EntityDefinition definition = domain.getDefinition(entityId);
     assertNotNull(definition.getKeyGenerator());
     assertFalse(definition.isKeyGenerated());
     assertTrue(definition.getKeyGenerator().isInserted());
@@ -232,7 +232,7 @@ public class DefaultEntityDefinitionTest {
     domain.define(entityId,
             Properties.primaryKeyProperty("propertyId"))
             .setKeyGenerator(automatic("table"));
-    final Entity.Definition definition = domain.getDefinition(entityId);
+    final EntityDefinition definition = domain.getDefinition(entityId);
     assertNotNull(definition.getKeyGenerator());
     assertTrue(definition.isKeyGenerated());
     assertFalse(definition.getKeyGenerator().isInserted());

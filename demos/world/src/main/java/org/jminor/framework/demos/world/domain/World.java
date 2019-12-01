@@ -5,6 +5,7 @@ package org.jminor.framework.demos.world.domain;
 
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.StringProvider;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.Property;
@@ -62,7 +63,7 @@ public final class World extends Domain {
   public World() {
     //disable this default check so we can define a foreign key relation
     //from country to city without having defined the city entity
-    Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
+    EntityDefinition.STRICT_FOREIGN_KEYS.set(false);
 
     city();
     country();

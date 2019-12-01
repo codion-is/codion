@@ -16,6 +16,7 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -118,7 +119,7 @@ public class EntityTestUnit {
       connection.beginTransaction();
       final Map<String, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());
       Entity testEntity = null;
-      final Entity.Definition entityDefinition = getDomain().getDefinition(entityId);
+      final EntityDefinition entityDefinition = getDomain().getDefinition(entityId);
       if (!entityDefinition.isReadOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityId, foreignKeyEntities), "test entity"));
         assertFalse(testEntity.getKey().isNull());

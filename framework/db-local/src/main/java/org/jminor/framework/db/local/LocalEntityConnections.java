@@ -10,6 +10,7 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.sql.Connection;
@@ -62,7 +63,7 @@ public final class LocalEntityConnections {
    * @param definitionProvider the Entity.Definition provider
    * @return A {@link MethodLogger} implementation tailored for LocalEntityConnections
    */
-  public static MethodLogger createLogger(final Entity.Definition.Provider definitionProvider) {
+  public static MethodLogger createLogger(final EntityDefinition.Provider definitionProvider) {
     return new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(),
             false, new EntityArgumentStringProvider(definitionProvider));
   }
@@ -72,9 +73,9 @@ public final class LocalEntityConnections {
    */
   private static final class EntityArgumentStringProvider extends MethodLogger.DefaultArgumentStringProvider {
 
-    private final Entity.Definition.Provider definitionProvider;
+    private final EntityDefinition.Provider definitionProvider;
 
-    private EntityArgumentStringProvider(final Entity.Definition.Provider definitionProvider) {
+    private EntityArgumentStringProvider(final EntityDefinition.Provider definitionProvider) {
       this.definitionProvider = definitionProvider;
     }
 

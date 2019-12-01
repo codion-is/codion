@@ -20,6 +20,7 @@ import org.jminor.common.value.PropertyValue;
 import org.jminor.common.value.Value;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -182,7 +183,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * @return the definition of the underlying entity
    */
-  Entity.Definition getEntityDefinition();
+  EntityDefinition getEntityDefinition();
 
   /**
    * @return true if this model is read only, that is if insert, update and delete are not allowed
