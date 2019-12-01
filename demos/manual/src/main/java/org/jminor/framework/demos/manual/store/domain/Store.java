@@ -96,8 +96,8 @@ public final class Store extends Domain {
     }
 
     @Override
-    public Type getType() {
-      return Type.NONE;
+    public boolean isInserted() {
+      return true;
     }
   }
   // end::keyGenerator[]

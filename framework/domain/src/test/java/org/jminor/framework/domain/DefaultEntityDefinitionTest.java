@@ -35,6 +35,7 @@ public class DefaultEntityDefinitionTest {
     assertEquals("entityId", definition.getEntityId());
     assertEquals("tableName", definition.getTableName());
     assertNotNull(definition.getKeyGenerator());
+    assertFalse(definition.isKeyGenerated());
     assertEquals("select * from dual", definition.getSelectQuery());
     assertFalse(definition.isSmallDataset());
     assertTrue(definition.isReadOnly());
@@ -210,9 +211,13 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void defaultKeyGenerator() {
-    domain.define("nullKeyGenerator",
+    final String entityId = "defaultKeyGenerator";
+    domain.define(entityId,
             Properties.primaryKeyProperty("propertyId"));
-    assertEquals(Entity.KeyGenerator.Type.NONE, domain.getDefinition("nullKeyGenerator").getKeyGeneratorType());
+    final Entity.Definition definition = domain.getDefinition(entityId);
+    assertNotNull(definition.getKeyGenerator());
+    assertFalse(definition.isKeyGenerated());
+    assertTrue(definition.getKeyGenerator().isInserted());
   }
 
   @Test
@@ -223,9 +228,13 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void keyGenerator() {
-    domain.define("nullKeyGenerator",
+    final String entityId = "automaticKeyGenerator";
+    domain.define(entityId,
             Properties.primaryKeyProperty("propertyId"))
             .setKeyGenerator(automatic("table"));
-    assertEquals(Entity.KeyGenerator.Type.AUTOMATIC, domain.getDefinition("nullKeyGenerator").getKeyGeneratorType());
+    final Entity.Definition definition = domain.getDefinition(entityId);
+    assertNotNull(definition.getKeyGenerator());
+    assertTrue(definition.isKeyGenerated());
+    assertFalse(definition.getKeyGenerator().isInserted());
   }
 }

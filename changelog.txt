@@ -5379,3 +5379,5 @@
   Domain.isDefined(entityId) removed, some refactoring
   KeyGenerators added, classes and methods moved from Domain
   KeyGenerators, KeyGenerator suffix removed from method names
+  KeyGenerator.Type removed, isInserted() added
+  Entity.Definition.getKeyGeneratorType() removed, isKeyGenerated() added

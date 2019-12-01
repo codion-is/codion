@@ -68,8 +68,8 @@ public final class KeyGenerators {
   private static abstract class AbstractQueriedKeyGenerator implements Entity.KeyGenerator {
 
     @Override
-    public Type getType() {
-      return Type.QUERY;
+    public boolean isInserted() {
+      return true;
     }
 
     protected final void queryAndSet(final Entity entity, final ColumnProperty keyProperty,
@@ -100,11 +100,6 @@ public final class KeyGenerators {
     }
 
     @Override
-    public Type getType() {
-      return Type.INCREMENT;
-    }
-
-    @Override
     public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
       final ColumnProperty primaryKeyProperty = entity.getPrimaryKeyProperties().get(0);
       if (entity.isNull(primaryKeyProperty)) {
@@ -124,11 +119,6 @@ public final class KeyGenerators {
 
     private SequenceKeyGenerator(final String sequenceName) {
       this.sequenceName = sequenceName;
-    }
-
-    @Override
-    public Type getType() {
-      return Type.SEQUENCE;
     }
 
     @Override
@@ -154,8 +144,8 @@ public final class KeyGenerators {
     }
 
     @Override
-    public Type getType() {
-      return Type.AUTOMATIC;
+    public boolean isInserted() {
+      return false;
     }
 
     @Override
