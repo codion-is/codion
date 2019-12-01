@@ -311,7 +311,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[
 
 == StringProvider
 
-The {url-javadoc}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations for entities. This value is f. ex. used when entties are displayed in a ComboBox or as a foreign key values in table views.
+The {url-javadoc}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations for entities. This value is f. ex. used when entities are displayed in a ComboBox or as a foreign key values in table views.
 
 [source,java,indent=0]
 ----
