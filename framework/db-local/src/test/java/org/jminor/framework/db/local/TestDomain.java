@@ -144,10 +144,6 @@ public final class TestDomain extends Domain {
       public boolean returnPrimaryKeyValues() {
         return true;
       }
-      @Override
-      public boolean isInserted() {
-        return true;
-      }
     };
     define(T_UUID_TEST_DEFAULT,
             Properties.primaryKeyProperty(UUID_TEST_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
@@ -164,10 +160,6 @@ public final class TestDomain extends Domain {
       @Override
       public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
         entity.put(UUID_TEST_NO_DEFAULT_ID, UUID.randomUUID());
-      }
-      @Override
-      public boolean isInserted() {
-        return true;
       }
     };
     define(T_UUID_TEST_NO_DEFAULT,

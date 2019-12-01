@@ -69,11 +69,6 @@ public final class KeyGenerators {
 
   private static abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 
-    @Override
-    public boolean isInserted() {
-      return true;
-    }
-
     protected final void queryAndSet(final Entity entity, final ColumnProperty keyProperty,
                                      final DatabaseConnection connection) throws SQLException {
       final Object value;
