@@ -377,6 +377,11 @@ public interface EntityDefinition extends Serializable {
   interface Builder {
 
     /**
+     * @return the {@link EntityDefinition} instance
+     */
+    EntityDefinition get();
+
+    /**
      * @param validator the validator for this entity type
      * @return this {@link Builder} instance
      */

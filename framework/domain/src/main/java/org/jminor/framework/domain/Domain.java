@@ -49,7 +49,6 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    */
   public static final PropertyValue<Boolean> ALLOW_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.allowRedefineEntity", false);
 
-  private static final String ENTITY_ID_PARAM = "entityId";
   private static final String ENTITY_PARAM = "entity";
 
   private static final Map<String, Domain> REGISTERED_DOMAINS = new HashMap<>();
@@ -532,7 +531,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
 
   /**
    * Adds a new {@link EntityDefinition} to this domain model.
-   * Returns the {@link EntityDefinition} instance for further configuration.
+   * Returns a {@link EntityDefinition.Builder} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
    * @param tableName the name of the underlying table
    * @param propertyBuilders the {@link Property.Builder} objects to base the entity on. In case a select query is specified
@@ -543,13 +542,11 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    */
   protected final EntityDefinition.Builder define(final String entityId, final String tableName,
                                                   final Property.Builder... propertyBuilders) {
-    requireNonNull(entityId, ENTITY_ID_PARAM);
-    requireNonNull(tableName, "tableName");
-    final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(this,
-            domainId, entityId, tableName, new DefaultEntityValidator(), propertyBuilders);
-    definitionProvider.addDefinition(entityDefinition);
+    final EntityDefinition.Builder definitionBuilder =
+            EntityDefinitions.definition(domainId, entityId, tableName, propertyBuilders);
+    definitionProvider.addDefinition(definitionBuilder.get());
 
-    return entityDefinition.builder();
+    return definitionBuilder;
   }
 
   /**
@@ -641,7 +638,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
 
     @Override
     public final EntityDefinition getDefinition(final String entityId) {
-      final EntityDefinition definition = entityDefinitions.get(requireNonNull(entityId, ENTITY_ID_PARAM));
+      final EntityDefinition definition = entityDefinitions.get(requireNonNull(entityId, "entityId"));
       if (definition == null) {
         throw new IllegalArgumentException("Undefined entity: " + entityId);
       }
@@ -654,8 +651,29 @@ public class Domain implements EntityDefinition.Provider, Serializable {
         throw new IllegalArgumentException("Entity has already been defined: " +
                 definition.getEntityId() + ", for table: " + definition.getTableName());
       }
+      validateForeignKeyProperties(definition);
 
       entityDefinitions.put(definition.getEntityId(), definition);
+    }
+
+    private void validateForeignKeyProperties(final EntityDefinition definition) {
+      for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
+        final String entityId = definition.getEntityId();
+        if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && EntityDefinition.STRICT_FOREIGN_KEYS.get()) {
+          final EntityDefinition foreignEntity = getDefinition(foreignKeyProperty.getForeignEntityId());
+          if (foreignEntity == null) {
+            throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityId()
+                    + "' referenced by entity '" + entityId + "' via foreign key property '"
+                    + foreignKeyProperty.getPropertyId() + "' has not been defined");
+          }
+          if (foreignKeyProperty.getColumnProperties().size() != foreignEntity.getPrimaryKeyProperties().size()) {
+            throw new IllegalArgumentException("Number of column properties in '" +
+                    entityId + "." + foreignKeyProperty.getPropertyId() +
+                    "' does not match the number of foreign properties in the referenced entity '" +
+                    foreignKeyProperty.getForeignEntityId() + "'");
+          }
+        }
+      }
     }
   }
 }

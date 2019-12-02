@@ -103,7 +103,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The validator
    */
-  private Entity.Validator validator;
+  private Entity.Validator validator = new DefaultEntityValidator();
 
   /**
    * The IDs of the properties to use when performing a string based lookup on this entity
@@ -173,14 +173,13 @@ final class DefaultEntityDefinition implements EntityDefinition {
    * Defines a new entity type with the entityId serving as the initial entity caption.
    * @throws IllegalArgumentException if no primary key property is specified
    */
-  DefaultEntityDefinition(final EntityDefinition.Provider definitionProvider,
-                          final String domainId, final String entityId, final String tableName,
-                          final Entity.Validator validator, final Property.Builder... propertyBuilders) {
+  DefaultEntityDefinition(final String domainId, final String entityId, final String tableName,
+                          final Property.Builder... propertyBuilders) {
     this.domainId = rejectNullOrEmpty(domainId, "domainId");
     this.entityId = rejectNullOrEmpty(entityId, "entityId");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.caption = entityId;
-    this.propertyMap = initializePropertyMap(definitionProvider, entityId, propertyBuilders);
+    this.propertyMap = initializePropertyMap(entityId, propertyBuilders);
     this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
     this.propertySet = new HashSet<>(propertyMap.values());
     this.visibleProperties = unmodifiableList(getVisibleProperties(propertyMap.values()));
@@ -197,7 +196,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties(propertyMap.values()));
     this.groupByClause = initializeGroupByClause(columnProperties);
     this.hasDenormalizedProperties = !denormalizedProperties.isEmpty();
-    this.validator = validator;
   }
 
   /** {@inheritDoc} */
@@ -611,14 +609,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return unmodifiableMap(map);
   }
 
-  private static Map<String, Property> initializePropertyMap(final EntityDefinition.Provider definitionProvider,
-                                                             final String entityId,
-                                                             final Property.Builder... propertyBuilders) {
+  private static Map<String, Property> initializePropertyMap(final String entityId, final Property.Builder... propertyBuilders) {
     final Map<String, Property> propertyMap = new LinkedHashMap<>(propertyBuilders.length);
     for (final Property.Builder propertyBuilder : propertyBuilders) {
       validateAndAddProperty(propertyBuilder, entityId, propertyMap);
       if (propertyBuilder instanceof ForeignKeyProperty.Builder) {
-        initializeForeignKeyProperty(definitionProvider, entityId, propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
+        initializeForeignKeyProperty(entityId, propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
       }
     }
     checkIfPrimaryKeyIsSpecified(entityId, propertyMap);
@@ -626,24 +622,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return unmodifiableMap(propertyMap);
   }
 
-  private static void initializeForeignKeyProperty(final EntityDefinition.Provider definitionProvider,
-                                                   final String entityId, final Map<String, Property> propertyMap,
+  private static void initializeForeignKeyProperty(final String entityId, final Map<String, Property> propertyMap,
                                                    final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
-    final ForeignKeyProperty foreignKeyProperty = foreignKeyPropertyBuilder.get();
-    if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && EntityDefinition.STRICT_FOREIGN_KEYS.get()) {
-      final EntityDefinition foreignEntity = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
-      if (foreignEntity == null) {
-        throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityId()
-                + "' referenced by entity '" + entityId + "' via foreign key property '"
-                + foreignKeyProperty.getPropertyId() + "' has not been defined");
-      }
-      if (foreignKeyProperty.getColumnProperties().size() != foreignEntity.getPrimaryKeyProperties().size()) {
-        throw new IllegalArgumentException("Number of column properties in '" +
-                entityId + "." + foreignKeyProperty.getPropertyId() +
-                "' does not match the number of foreign properties in the referenced entity '" +
-                foreignKeyProperty.getForeignEntityId() + "'");
-      }
-    }
     for (final ColumnProperty.Builder propertyBuilder : foreignKeyPropertyBuilder.getColmnPropertyBuilders()) {
       if (!(propertyBuilder.get() instanceof MirrorProperty)) {
         validateAndAddProperty(propertyBuilder, entityId, propertyMap);
@@ -807,6 +787,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private DefaultBuilder(final DefaultEntityDefinition definition) {
       this.definition = definition;
+    }
+
+    @Override
+    public EntityDefinition get() {
+      return definition;
     }
 
     @Override
