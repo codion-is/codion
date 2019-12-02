@@ -247,29 +247,19 @@ For auto-increment columns the **valueSource** parameter should be the table nam
 [source,java]
 ----
 //Auto increment column in the 'store.customer' table
-define(Store.T_CUSTOMER
-    primaryKeyProperty(Store.CUSTOMER_ID)
-    ...
-).setKeyGenerator(automaticKeyGenerator("store.customer"));
+.setKeyGenerator(automatic("store.customer"));
 
 //Trigger and sequence named 'store.customer_seq'
-define(Store.T_CUSTOMER
-    primaryKeyProperty(Store.CUSTOMER_ID)
-    ...
-).setKeyGenerator(automatic("store.customer_seq"));
+.setKeyGenerator(automatic("store.customer_seq"));
 ----
 
 === Sequence
 
 When sequences are used without triggers the framework can fetch the value from a sequence before insert.
 
-[source,java]
+[source,java,indent=0]
 ----
-//Sequence named 'store.customer_seq' without a trigger
-define(Store.T_CUSTOMER
-    primaryKeyProperty(Store.CUSTOMER_ID)
-    ...
-).setKeyGenerator(sequence("store.customer_seq"));
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=sequence]
 ----
 
 === Queried
@@ -279,10 +269,7 @@ The framework can select new primary key values from a query.
 [source,java]
 ----
 //Using a query returning the new value
-define(Store.T_CUSTOMER
-    primaryKeyProperty(Store.CUSTOMER_ID)
-    ...
-).setKeyGenerator(queried(
+.setKeyGenerator(queried(
     "select new_id
      from store.id_values
      where table_name = 'store.customer'"));
@@ -294,10 +281,7 @@ The framework can automatically increment the primary key value by selecting the
 
 [source,java]
 ----
-define(Store.T_CUSTOMER
-    primaryKeyProperty(Store.CUSTOMER_ID)
-    ...
-).setKeyGenerator(increment("store.customer_seq"));
+.setKeyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID))
 ----
 
 === Custom
@@ -372,9 +356,9 @@ The unit tests are run within a single transaction which is rolled back after th
 
 The following methods all have default implementations which are based on randomly created property values, based on the constraints set in the domain model, override if the default ones are not working.
 
-* {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-java.util.Map-[initializeReferenceEntity] should initialize return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
+* {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-java.util.Map-[initializeReferenceEntity] should return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
 * {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#initializeTestEntity-java.lang.String-java.util.Map-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
-* {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the db layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
+* {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
 To run the full CRUD test for a domain entity you need to call the __testEntity(String entityId)__ method with the id of the given entity as parameter. You can either create a single __testDomain()__ method and call the __testEntity__ method in turn for each entityId or create a single __testEntityName__ for each domain entity, as we do in the example below.
 

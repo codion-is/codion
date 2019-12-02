@@ -108,7 +108,9 @@ public final class World extends Domain {
             columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
                     .setNullable(false)
                     .setUseNumberFormatGrouping(true))
+            // tag::sequence[]
             .setKeyGenerator(sequence("world.city_seq"))
+            // end::sequence[]
             .setValidator(new CityValidator())
             .setOrderBy(orderBy().ascending(CITY_NAME))
             .setSearchPropertyIds(CITY_NAME)
@@ -274,14 +276,14 @@ public final class World extends Domain {
     @Override
     public void validate(final Entity city) throws ValidationException {
       super.validate(city);
+      //after a call to super.validate() property values that are not nullable
+      //(such as country and population) are guaranteed to be non-null
       final Entity country = city.getForeignKey(CITY_COUNTRY_FK);
       final Integer cityPopulation = city.getInteger(CITY_POPULATION);
-      if (notNull(country, cityPopulation)) {
-        final Integer countryPopulation = country.getInteger(COUNTRY_POPULATION);
-        if (countryPopulation != null && cityPopulation > countryPopulation) {
-          throw new ValidationException(CITY_POPULATION,
-                  cityPopulation, "City population can not exceed country population");
-        }
+      final Integer countryPopulation = country.getInteger(COUNTRY_POPULATION);
+      if (countryPopulation != null && cityPopulation > countryPopulation) {
+        throw new ValidationException(CITY_POPULATION,
+                cityPopulation, "City population can not exceed country population");
       }
     }
   }

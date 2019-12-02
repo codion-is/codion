@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.UUID;
 
+import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class Store extends Domain {
@@ -45,7 +46,8 @@ public final class Store extends Domain {
             columnProperty(ADDRESS_CITY, Types.VARCHAR, "City")
                     .setNullable(false).setMaxLength(50))
             .setStringProvider(new StringProvider(ADDRESS_STREET)
-                    .addText(", ").addValue(ADDRESS_CITY));
+                    .addText(", ").addValue(ADDRESS_CITY))
+            .setKeyGenerator(automatic(T_ADDRESS));
     // end::address[]
   }
 
