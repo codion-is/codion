@@ -5390,3 +5390,5 @@
   NumberField.DISABLE_GROUPING configuration value added, true by default, for now
   ForeignKeyProperty validation moved from DefaultEntityDefinition to Domain.DefaultEntityDefinitionProvider
   EntityDefinitions factory class added
+  EntityDefinition.Builder.setDomainId() added
+  Domain.addDefinition() added

@@ -382,6 +382,13 @@ public interface EntityDefinition extends Serializable {
     EntityDefinition get();
 
     /**
+     * @param domainId the domain id
+     * @return this {@link Builder} instance
+     * @throws IllegalStateException in case the domain id has already been set
+     */
+    Builder setDomainId(final String domainId);
+
+    /**
      * @param validator the validator for this entity type
      * @return this {@link Builder} instance
      */

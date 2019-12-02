@@ -39,14 +39,14 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private static final long serialVersionUID = 1;
 
   /**
-   * The domainId
-   */
-  private final String domainId;
-
-  /**
    * The entityId
    */
   private final String entityId;
+
+  /**
+   * The domainId
+   */
+  private String domainId;
 
   /**
    * The caption to use for the entity type
@@ -173,9 +173,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
    * Defines a new entity type with the entityId serving as the initial entity caption.
    * @throws IllegalArgumentException if no primary key property is specified
    */
-  DefaultEntityDefinition(final String domainId, final String entityId, final String tableName,
-                          final Property.Builder... propertyBuilders) {
-    this.domainId = rejectNullOrEmpty(domainId, "domainId");
+  DefaultEntityDefinition(final String entityId, final String tableName, final Property.Builder... propertyBuilders) {
     this.entityId = rejectNullOrEmpty(entityId, "entityId");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.caption = entityId;
@@ -792,6 +790,16 @@ final class DefaultEntityDefinition implements EntityDefinition {
     @Override
     public EntityDefinition get() {
       return definition;
+    }
+
+    @Override
+    public Builder setDomainId(final String domainId) {
+      rejectNullOrEmpty(domainId, "domainId");
+      if (definition.domainId != null) {
+        throw new IllegalStateException("Domain id has already been set: " + definition.domainId);
+      }
+      definition.domainId = domainId;
+      return this;
     }
 
     @Override
