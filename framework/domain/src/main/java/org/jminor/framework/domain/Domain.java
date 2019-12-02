@@ -548,6 +548,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   /**
    * Adds the {@link EntityDefinition} supplied by the given {@link EntityDefinition.Builder} to this domain model.
    * @param definitionBuilder the {@link EntityDefinition.Builder}
+   * @return the {@link EntityDefinition.Builder}
    */
   protected final EntityDefinition.Builder addDefinition(final EntityDefinition.Builder definitionBuilder) {
     definitionProvider.addDefinition(definitionBuilder.setDomainId(domainId).get());
