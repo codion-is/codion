@@ -15,14 +15,12 @@ final class DefaultEvent<T> implements Event<T> {
 
   @Override
   public void fire(final T data) {
-    synchronized (lock) {
-      if (observer != null && observer.hasListeners()) {
-        for (final EventListener listener : observer.getEventListeners()) {
-          listener.eventOccurred();
-        }
-        for (final EventDataListener<T> dataListener : observer.getEventDataListeners()) {
-          dataListener.eventOccurred(data);
-        }
+    if (observer != null && observer.hasListeners()) {
+      for (final EventListener listener : observer.getEventListeners()) {
+        listener.eventOccurred();
+      }
+      for (final EventDataListener<T> dataListener : observer.getEventDataListeners()) {
+        dataListener.eventOccurred(data);
       }
     }
   }
