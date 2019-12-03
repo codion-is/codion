@@ -42,8 +42,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   private static final long serialVersionUID = 1;
 
-  private static final String PROPERTY_PARAM = "property";
-
   /**
    * Used to cache the return value of the frequently called toString(),
    * invalidated each time a property value changes
@@ -190,7 +188,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public Object get(final Property property) {
-    requireNonNull(property, PROPERTY_PARAM);
+    requireNonNull(property, "property");
     if (property instanceof DerivedProperty) {
       return getDerivedValue((DerivedProperty) property);
     }
@@ -218,7 +216,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public boolean isNull(final Property property) {
-    requireNonNull(property, PROPERTY_PARAM);
+    requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
       return isForeignKeyNull((ForeignKeyProperty) property);
     }
@@ -584,13 +582,16 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   private void removeInvalidForeignKeyValues(final ColumnProperty columnProperty, final Object value) {
-    final List<ForeignKeyProperty> propertyForeignKeyProperties = definition.getForeignKeyProperties(columnProperty.getPropertyId());
+    final List<ForeignKeyProperty> propertyForeignKeyProperties =
+            definition.getForeignKeyProperties(columnProperty.getPropertyId());
     for (final ForeignKeyProperty foreignKeyProperty : propertyForeignKeyProperties) {
-      final Entity foreignKeyValue = (Entity) get(foreignKeyProperty);
-      if (foreignKeyValue != null) {
-        final Entity.Key referencedKey = foreignKeyValue.getKey();
-        final ColumnProperty keyProperty = referencedKey.getProperties().get(foreignKeyProperty.getColumnProperties().indexOf(columnProperty));
-        //if the value isn't equal to the value in the foreign key, that foreign key reference is invalid and is removed
+      final Entity foreignKeyEntity = (Entity) get(foreignKeyProperty);
+      if (foreignKeyEntity != null) {
+        final Entity.Key referencedKey = foreignKeyEntity.getKey();
+        final ColumnProperty keyProperty =
+                referencedKey.getProperties().get(foreignKeyProperty.getColumnProperties().indexOf(columnProperty));
+        //if the value isn't equal to the value in the foreign key,
+        //that foreign key reference is invalid and is removed
         if (!Objects.equals(value, referencedKey.get(keyProperty))) {
           remove(foreignKeyProperty);
           removeCachedReferencedKey(foreignKeyProperty.getPropertyId());
