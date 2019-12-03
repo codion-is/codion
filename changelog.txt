@@ -5392,3 +5392,4 @@
   EntityDefinitions factory class added
   EntityDefinition.Builder.setDomainId() added
   Domain.addDefinition() added
+  DefaultEvent.fire() no longer synchronizes on lock, was causing deadlocks
