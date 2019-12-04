@@ -7,12 +7,28 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class VersionTest {
+
+  @Test
+  public void fromProperties() {
+    final Properties properties = new Properties();
+    properties.put("version", "0.12.5");
+    properties.put("buildTime", "2018.01.02 15:27");
+
+    Version version = Version.fromProperties(properties);
+    assertEquals("0.12.5-2018.01.02 15:27", version.toString());
+
+    properties.put("version", "0.12.5-SNAPSHOT");
+
+    version = Version.fromProperties(properties);
+    assertEquals("0.12.5-SNAPSHOT 2018.01.02 15:27", version.toString());
+  }
 
   @Test
   public void parse() {

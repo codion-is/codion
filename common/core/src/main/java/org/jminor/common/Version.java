@@ -214,11 +214,20 @@ public final class Version implements Comparable<Version>, Serializable {
     return 0;
   }
 
-  private static Version fromProperties(final Properties properties) {
+  static Version fromProperties(final Properties properties) {
     final Version version = parse(properties.getProperty("version"));
     final String buildTime = properties.getProperty("buildTime");
-    final String metadata = version.metadata + (buildTime != null ? (" " + buildTime) : "");
+    final StringBuilder metadata = new StringBuilder();
+    if (version.metadata != null) {
+      metadata.append(version.metadata);
+    }
+    if (metadata.length() > 0) {
+      metadata.append(" ");
+    }
+    if (buildTime != null) {
+      metadata.append(buildTime);
+    }
 
-    return new Version(version.major, version.minor, version.patch, metadata);
+    return new Version(version.major, version.minor, version.patch, metadata.toString());
   }
 }

@@ -5416,3 +5416,4 @@
   Domain.addDefinition() added
   DefaultEvent.fire() no longer synchronizes on lock, was causing deadlocks
 0.12.6
+  Version.fromProperties() bug fixed, did not handle non-snapshot builds correctly
