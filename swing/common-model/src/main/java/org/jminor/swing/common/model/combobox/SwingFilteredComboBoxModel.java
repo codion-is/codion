@@ -221,11 +221,11 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   @Override
   public final void addItem(final T item) {
     if (filterCondition == null || filterCondition.test(item)) {
-      visibleItems.add(item);
+      addVisibleItem(item);
       sortVisibleItems();
     }
     else {
-      filteredItems.add(item);
+      addFilteredItem(item);
     }
   }
 
@@ -441,6 +441,18 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     if (sortComparator != null) {
       visibleItems.sort(sortComparator);
       fireContentsChanged();
+    }
+  }
+
+  private void addVisibleItem(final T item) {
+    if (!visibleItems.contains(item)) {
+      visibleItems.add(item);
+    }
+  }
+
+  private void addFilteredItem(final T item) {
+    if (!filteredItems.contains(item)) {
+      filteredItems.add(item);
     }
   }
 

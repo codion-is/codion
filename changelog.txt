@@ -5418,3 +5418,7 @@
 0.12.6
   Version.fromProperties() bug fixed, did not handle non-snapshot builds correctly
   Domain.DefaultEntityDefinitionProvider.validateForeignKeyProperties() minor bug fixed
+  SwingFilteredComboBoxModel.addItem() no longer allows duplicates
+  EntityEditPanel.InsertEntityAction now adds inserted item instead of refreshing model
+  EntityEditEvents added, DefaultEntityEditModel notifies all insert, update and delete events, SwingEntityComboBoxModel listens
+  EntityEditEvents.ENTITY_EDIT_EVENTS_ENABLED configuration value added, false by default

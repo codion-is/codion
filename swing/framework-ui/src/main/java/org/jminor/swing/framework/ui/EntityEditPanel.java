@@ -2094,8 +2094,9 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
       this(comboBox, panelProvider, ((EntityComboBoxModel) comboBox.getModel()).getConnectionProvider(), insertedEntities -> {
         final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBox.getModel();
-        comboBoxModel.refresh();
-        comboBoxModel.setSelectedItem(insertedEntities.get(0));
+        final Entity item = insertedEntities.get(0);
+        comboBoxModel.addItem(item);
+        comboBoxModel.setSelectedItem(item);
       });
     }
 

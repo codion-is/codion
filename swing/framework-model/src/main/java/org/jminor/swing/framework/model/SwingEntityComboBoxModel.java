@@ -6,6 +6,7 @@ package org.jminor.swing.framework.model;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -14,6 +15,7 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityEditEvents;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;
@@ -75,6 +77,17 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private boolean strictForeignKeyFiltering = true;
 
+  //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
+  private final EventDataListener<List<Entity>> insertListener = entities -> entities.forEach(this::addItem);
+  private final EventDataListener<Map<Entity.Key, Entity>> updateListener = entityMap -> {
+    final Domain domain = getConnectionProvider().getDomain();
+    entityMap.forEach((key, entity) -> {
+      removeItem(domain.entity(key));
+      addItem(entity);
+    });
+  };
+  private final EventDataListener<List<Entity>> deleteListener = entities -> entities.forEach(this::removeItem);
+
   private final Predicate<Entity> foreignKeyFilterCondition = item -> {
     for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
       final Entity foreignKeyValue = item.getForeignKey(entry.getKey());
@@ -101,6 +114,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     this.domain = connectionProvider.getDomain();
     setStaticData(this.domain.getDefinition(entityId).isStaticData());
     setFilterCondition(foreignKeyFilterCondition);
+    bindEvents();
   }
 
   /** {@inheritDoc} */
@@ -351,6 +365,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
       }
     }
     return -1;
+  }
+
+  private void bindEvents() {
+    EntityEditEvents.addInsertListener(getEntityId(), insertListener);
+    EntityEditEvents.addUpdateListener(getEntityId(), updateListener);
+    EntityEditEvents.addDeleteListener(getEntityId(), deleteListener);
   }
 
   private static final class ForeignKeyModelRefreshListener implements EventListener {
