@@ -667,7 +667,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
       for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
         final String entityId = definition.getEntityId();
         if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && EntityDefinition.STRICT_FOREIGN_KEYS.get()) {
-          final EntityDefinition foreignEntity = getDefinition(foreignKeyProperty.getForeignEntityId());
+          final EntityDefinition foreignEntity = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
           if (foreignEntity == null) {
             throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityId()
                     + "' referenced by entity '" + entityId + "' via foreign key property '"
