@@ -860,6 +860,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    */
   protected final void fireAfterInsertEvent(final InsertEvent insertEvent) {
     afterInsertEvent.fire(insertEvent);
+    EntityEditEvents.inserted(insertEvent);
   }
 
   /**
@@ -878,6 +879,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    */
   protected final void fireAfterUpdateEvent(final UpdateEvent updateEvent) {
     afterUpdateEvent.fire(updateEvent);
+    EntityEditEvents.updated(updateEvent);
   }
 
   /**
@@ -896,6 +898,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    */
   protected final void fireAfterDeleteEvent(final DeleteEvent deleteEvent) {
     afterDeleteEvent.fire(deleteEvent);
+    EntityEditEvents.deleted(deleteEvent);
   }
 
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {

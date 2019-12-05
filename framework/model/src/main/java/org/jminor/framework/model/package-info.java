@@ -7,6 +7,7 @@
  * {@link org.jminor.framework.model.EntityEditModel#PERSIST_FOREIGN_KEY_VALUES}<br>
  * {@link org.jminor.framework.model.EntityEditModel#WARN_ABOUT_UNSAVED_DATA}<br>
  * {@link org.jminor.framework.model.EntityEditModel#COMBO_BOX_NULL_VALUE_ITEM}<br>
+ * {@link org.jminor.framework.model.EntityEditEvents#ENTITY_EDIT_EVENTS_ENABLED}<br>
  * {@link org.jminor.framework.model.EntityModel#FILTER_ON_MASTER_INSERT}<br>
  * {@link org.jminor.framework.model.EntityModel#USE_CLIENT_PREFERENCES}
  */
