@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A central event hub for listening for entity inserts, updates and deletes made via {@link EntityEditModel}s.
+ * A central event hub for listening for entity inserts, updates and deletes.
  * Uses {@link java.lang.ref.WeakReference} so adding a listener does not prevent it from being garbage collected, so keep
  * a live reference to any listeners in order to keep them active.
+ * {@link EntityEditModel} uses this to post its events.
+ * @see EntityEditModel#POST_EDIT_EVENTS
  */
 public final class EntityEditEvents {
 
@@ -80,7 +82,7 @@ public final class EntityEditEvents {
    * @param insertEvent the event representing the insert
    */
   public static void notifyInserted(final List<Entity> insertedEntities) {
-    EVENT_OBSERVER.inserted(insertedEntities);
+    EVENT_OBSERVER.notifyInserted(insertedEntities);
   }
 
   /**
@@ -88,7 +90,7 @@ public final class EntityEditEvents {
    * @param updateEvent the event representing the insert
    */
   public static void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities) {
-    EVENT_OBSERVER.updated(updatedEntities);
+    EVENT_OBSERVER.notifyUpdated(updatedEntities);
   }
 
   /**
@@ -96,6 +98,6 @@ public final class EntityEditEvents {
    * @param deleteEvent the event representing the insert
    */
   public static void notifyDeleted(final List<Entity> deletedEntities) {
-    EVENT_OBSERVER.deleted(deletedEntities);
+    EVENT_OBSERVER.notifyDeleted(deletedEntities);
   }
 }

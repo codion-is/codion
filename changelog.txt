@@ -5430,3 +5430,4 @@
   EntityEditObserver no longer uses EntityEditModel events
   EntityEditEvents, notify methods renamed and made public
   SwingEntityComboBoxModelTest.editEvents() test added
+  EntityEditEventObserver, methods renamed, javadocs fixed
