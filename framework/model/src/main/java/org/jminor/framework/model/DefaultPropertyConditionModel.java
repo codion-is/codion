@@ -6,18 +6,18 @@ package org.jminor.framework.model;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.db.condition.Conditions.propertyCondition;
 
 /**
  * A class for searching a set of entities based on a property.
  */
-public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<ColumnProperty>
+public final class DefaultPropertyConditionModel extends DefaultColumnConditionModel<ColumnProperty>
         implements PropertyConditionModel<ColumnProperty> {
 
   /**
@@ -31,12 +31,12 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<C
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyId());
     if (isEnabled()) {
       stringBuilder.append(getConditionType());
-      stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
-      stringBuilder.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
+      stringBuilder.append(toString(getUpperBound()));
+      stringBuilder.append(toString(getLowerBound()));
     }
 
     return stringBuilder.toString();
@@ -44,12 +44,12 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<C
 
   /** {@inheritDoc} */
   @Override
-  public final Condition getCondition() {
-    return getConditionType().getValues().equals(ConditionType.Values.TWO) ?
-            Conditions.propertyCondition(getColumnIdentifier().getPropertyId(), getConditionType(),
-                    asList(getLowerBound(), getUpperBound())).setCaseSensitive(isCaseSensitive()) :
-            Conditions.propertyCondition(getColumnIdentifier().getPropertyId(), getConditionType(),
-                    getUpperBound()).setCaseSensitive(isCaseSensitive());
+  public Condition getCondition() {
+    final Object conditionValue = getConditionType().getValues().equals(ConditionType.Values.TWO) ?
+            asList(getLowerBound(), getUpperBound()) : getUpperBound();
+
+    return propertyCondition(getColumnIdentifier().getPropertyId(), getConditionType(), conditionValue)
+            .setCaseSensitive(isCaseSensitive());
   }
 
   private static String toString(final Object object) {
