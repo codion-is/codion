@@ -5415,3 +5415,4 @@
   FilteredTableColumnModel.setColumnVisible() replaced with showColumn() and hideColumn()
   FilteredTablePanel, search field refactoring
   FilteredTableModel.findNextItemCoordinate() replaced with searchForward() and searchBackward()
+  MasterDetailPanel renamed to HierarchyPanel
