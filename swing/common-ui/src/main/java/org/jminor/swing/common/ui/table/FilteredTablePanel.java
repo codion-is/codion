@@ -14,6 +14,7 @@ import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
+import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
@@ -401,7 +402,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * Shows a dialog for selecting which columns to show/hide
    */
   public final void selectTableColumns() {
-    final List<TableColumn> allColumns = new ArrayList<>(tableModel.getColumnModel().getAllColumns());
+    final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
+    final List<TableColumn> allColumns = new ArrayList<>(columnModel.getAllColumns());
     allColumns.sort(new Comparator<TableColumn>() {
       private final Collator collator = Collator.getInstance();
 
@@ -420,7 +422,12 @@ public class FilteredTablePanel<R, C> extends JPanel {
       }
       checkBoxes.forEach(checkBox -> SwingUtilities.invokeLater(() -> {
         final TableColumn column = allColumns.get(checkBoxes.indexOf(checkBox));
-        tableModel.getColumnModel().setColumnVisible((C) column.getIdentifier(), checkBox.isSelected());
+        if (checkBox.isSelected()) {
+          columnModel.showColumn((C) column.getIdentifier());
+        }
+        else {
+          columnModel.hideColumn((C) column.getIdentifier());
+        }
       }));
     }
   }

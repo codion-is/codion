@@ -17,13 +17,13 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.fill;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -61,11 +61,12 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
    * @param columns the columns to base this model on
    * @param columnFilterModels the filter models if any
    */
-  public SwingFilteredTableColumnModel(final List<TableColumn> columns, final Collection<? extends ColumnConditionModel<C>> columnFilterModels) {
+  public SwingFilteredTableColumnModel(final List<TableColumn> columns,
+                                       final Collection<? extends ColumnConditionModel<C>> columnFilterModels) {
     if (columns == null || columns.isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
-    this.columns = Collections.unmodifiableList(columns);
+    this.columns = unmodifiableList(columns);
     this.columnIndexCache = new int[columns.size()];
     fill(this.columnIndexCache, -1);
     for (final TableColumn column : columns) {
@@ -87,23 +88,24 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
 
   /** {@inheritDoc} */
   @Override
-  public final void setColumnVisible(final C columnIdentifier, final boolean visible) {
-    if (visible) {
-      final TableColumn column = hiddenColumns.get(columnIdentifier);
-      if (column != null) {
-        hiddenColumns.remove(columnIdentifier);
-        addColumn(column);
-        moveColumn(getColumnCount() - 1, 0);
-        columnShownEvent.fire((C) column.getIdentifier());
-      }
+  public final void showColumn(final C columnIdentifier) {
+    final TableColumn column = hiddenColumns.get(columnIdentifier);
+    if (column != null) {
+      hiddenColumns.remove(columnIdentifier);
+      addColumn(column);
+      moveColumn(getColumnCount() - 1, 0);
+      columnShownEvent.fire((C) column.getIdentifier());
     }
-    else {
-      if (!hiddenColumns.containsKey(columnIdentifier)) {
-        final TableColumn column = getTableColumn(columnIdentifier);
-        removeColumn(column);
-        hiddenColumns.put((C) column.getIdentifier(), column);
-        columnHiddenEvent.fire((C) column.getIdentifier());
-      }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void hideColumn(final C columnIdentifier) {
+    if (!hiddenColumns.containsKey(columnIdentifier)) {
+      final TableColumn column = getTableColumn(columnIdentifier);
+      removeColumn(column);
+      hiddenColumns.put((C) column.getIdentifier(), column);
+      columnHiddenEvent.fire((C) column.getIdentifier());
     }
   }
 
@@ -120,12 +122,12 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
       final List<C> identifiers = asList(columnIdentifiers);
       int columnIndex = 0;
       for (final C identifier : identifiers) {
-        setColumnVisible(identifier, true);
+        showColumn(identifier);
         moveColumn(getColumnIndex(identifier), columnIndex++);
       }
       for (final TableColumn column : getAllColumns()) {
         if (!identifiers.contains(column.getIdentifier())) {
-          setColumnVisible((C) column.getIdentifier(), false);
+          hideColumn((C) column.getIdentifier());
         }
       }
     }

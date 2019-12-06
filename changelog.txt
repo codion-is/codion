@@ -5411,3 +5411,5 @@
   EntityEditEventObserver, methods renamed, javadocs fixed, more javadocs fixed
   DefaultEntityTableConditionModel and DefaultEntityLookupModel now final
   DefaultColumnConditionModel and DefaultPropertyFilterModel now final
+  SwingFilteredComboBoxModel, some minor refactoring
+  FilteredTableColumnModel.setColumnVisible() replaced with showColumn() and hideColumn()

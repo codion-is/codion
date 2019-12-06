@@ -13,17 +13,16 @@ import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -124,7 +123,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
       if (filterCondition != null) {
-        for (final ListIterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
+        for (final Iterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
           final T item = iterator.next();
           if (item != null && !filterCondition.test(item)) {
             filteredItems.add(item);
@@ -132,9 +131,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
           }
         }
       }
-      if (!visibleItems.isEmpty()) {
-        sortVisibleItems();
-      }
+      sortVisibleItems();
       if (selectedItem != null && visibleItems.contains(selectedItem)) {
         //update the selected item since the underlying data could have changed
         selectedItem = visibleItems.get(visibleItems.indexOf(selectedItem));
@@ -155,16 +152,16 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   @Override
   public final List<T> getVisibleItems() {
     if (nullValue == null) {
-      return Collections.unmodifiableList(visibleItems);
+      return unmodifiableList(visibleItems);
     }
 
-    return Collections.unmodifiableList(visibleItems.subList(1, getSize()));
+    return unmodifiableList(visibleItems.subList(1, getSize()));
   }
 
   /** {@inheritDoc} */
   @Override
   public final List<T> getFilteredItems() {
-    return Collections.unmodifiableList(filteredItems);
+    return unmodifiableList(filteredItems);
   }
 
   /** {@inheritDoc} */
@@ -234,7 +231,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   public final void removeItem(final T item) {
     visibleItems.remove(item);
     filteredItems.remove(item);
-
     fireContentsChanged();
   }
 
@@ -438,7 +434,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    * Sorts the items visible in this model
    */
   private void sortVisibleItems() {
-    if (sortComparator != null) {
+    if (sortComparator != null && !visibleItems.isEmpty()) {
       visibleItems.sort(sortComparator);
       fireContentsChanged();
     }
@@ -456,8 +452,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     }
   }
 
-  private static final class SortComparator<T> implements Comparator<T>, Serializable {
-    private static final long serialVersionUID = 1;
+  private static final class SortComparator<T> implements Comparator<T> {
 
     private final T nullValue;
     private final Comparator comparator = TextUtil.getSpaceAwareCollator();

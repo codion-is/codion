@@ -32,11 +32,11 @@ public class SwingFilteredTableColumnModelTest {
     assertEquals(1, testModel.getColumnCount());
     assertNotNull(testModel.getTableColumn(0));
 
-    testModel.setColumnVisible(0, false);
+    testModel.hideColumn(0);
     assertFalse(testModel.isColumnVisible(0));
     assertEquals(1, hidden.size());
     assertEquals(1, testModel.getHiddenColumns().size());
-    testModel.setColumnVisible(0, true);
+    testModel.showColumn(0);
     assertTrue(testModel.isColumnVisible(0));
     assertEquals(1, shown.size());
 
