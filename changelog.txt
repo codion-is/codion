@@ -5405,3 +5405,5 @@
   EntityEditEventObserver added, implemented by DefaultEntityEditEventObserver, EntityEditEvents refactored to use it
   SwingEntityComboBoxModel, event listener refactoring
   EntityComboBoxModel.listenToEditEvents property added
+  EntityEditObserver no longer uses EntityEditModel events
+  EntityEditEvents, notify methods renamed and made public

@@ -79,23 +79,23 @@ public final class EntityEditEvents {
    * Notifies insert
    * @param insertEvent the event representing the insert
    */
-  static void inserted(final EntityEditModel.InsertEvent insertEvent) {
-    EVENT_OBSERVER.inserted(insertEvent);
+  public static void notifyInserted(final List<Entity> insertedEntities) {
+    EVENT_OBSERVER.inserted(insertedEntities);
   }
 
   /**
    * Notifies update
    * @param updateEvent the event representing the insert
    */
-  static void updated(final EntityEditModel.UpdateEvent updateEvent) {
-    EVENT_OBSERVER.updated(updateEvent);
+  public static void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities) {
+    EVENT_OBSERVER.updated(updatedEntities);
   }
 
   /**
    * Notifies delete
    * @param deleteEvent the event representing the insert
    */
-  static void deleted(final EntityEditModel.DeleteEvent deleteEvent) {
-    EVENT_OBSERVER.deleted(deleteEvent);
+  public static void notifyDeleted(final List<Entity> deletedEntities) {
+    EVENT_OBSERVER.deleted(deletedEntities);
   }
 }

@@ -880,7 +880,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   protected final void fireAfterInsertEvent(final InsertEvent insertEvent) {
     afterInsertEvent.fire(insertEvent);
     if (postEditEvents) {
-      EntityEditEvents.inserted(insertEvent);
+      EntityEditEvents.notifyInserted(insertEvent.getInsertedEntities());
     }
   }
 
@@ -901,7 +901,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   protected final void fireAfterUpdateEvent(final UpdateEvent updateEvent) {
     afterUpdateEvent.fire(updateEvent);
     if (postEditEvents) {
-      EntityEditEvents.updated(updateEvent);
+      EntityEditEvents.notifyUpdated(updateEvent.getUpdatedEntities());
     }
   }
 
@@ -922,7 +922,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   protected final void fireAfterDeleteEvent(final DeleteEvent deleteEvent) {
     afterDeleteEvent.fire(deleteEvent);
     if (postEditEvents) {
-      EntityEditEvents.deleted(deleteEvent);
+      EntityEditEvents.notifyDeleted(deleteEvent.getDeletedEntities());
     }
   }
 
