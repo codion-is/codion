@@ -496,7 +496,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
     if (searchText.length() != 0) {
-      final RowColumn coordinate = tableModel.findNextItemCoordinate(fromIndex, forward, searchText);
+      final RowColumn coordinate = forward ? tableModel.searchForward(fromIndex, searchText) :
+              tableModel.searchBackward(fromIndex, searchText);
       if (coordinate != null) {
         lastSearchResultCoordinate = coordinate;
         if (addToSelection) {

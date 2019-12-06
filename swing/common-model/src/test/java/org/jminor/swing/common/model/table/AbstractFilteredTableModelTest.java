@@ -261,65 +261,65 @@ public final class AbstractFilteredTableModelTest {
     };
 
     testModel.refresh();
-    RowColumn point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(RowColumn.rowColumn(1, 1), point);
-    point = testModel.findNextItemCoordinate(point.getRow(), true, "e");
-    assertEquals(RowColumn.rowColumn(4, 1), point);
-    point = testModel.findNextItemCoordinate(point.getRow(), false, "c");
-    assertEquals(RowColumn.rowColumn(2, 1), point);
-    point = testModel.findNextItemCoordinate(0, true, "x");
-    assertNull(point);
+    RowColumn coordinate = testModel.searchForward(0, "b");
+    assertEquals(RowColumn.rowColumn(1, 1), coordinate);
+    coordinate = testModel.searchForward(coordinate.getRow(), "e");
+    assertEquals(RowColumn.rowColumn(4, 1), coordinate);
+    coordinate = testModel.searchBackward(coordinate.getRow(), "c");
+    assertEquals(RowColumn.rowColumn(2, 1), coordinate);
+    coordinate = testModel.searchForward(0, "x");
+    assertNull(coordinate);
 
     testModel.getSortModel().setSortingDirective(1, SortingDirective.DESCENDING, false);
 
-    point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(RowColumn.rowColumn(3, 1), point);
-    point = testModel.findNextItemCoordinate(point.getRow(), false, "e");
-    assertEquals(RowColumn.rowColumn(0, 1), point);
+    coordinate = testModel.searchForward(0, "b");
+    assertEquals(RowColumn.rowColumn(3, 1), coordinate);
+    coordinate = testModel.searchBackward(coordinate.getRow(), "e");
+    assertEquals(RowColumn.rowColumn(0, 1), coordinate);
 
     testModel.setRegularExpressionSearch(true);
     assertTrue(testModel.isRegularExpressionSearch());
-    point = testModel.findNextItemCoordinate(0, true, "(?i)B");
-    assertEquals(RowColumn.rowColumn(3, 1), point);
+    coordinate = testModel.searchForward(0, "(?i)B");
+    assertEquals(RowColumn.rowColumn(3, 1), coordinate);
 
     Predicate<Object> condition = item -> item.equals("b") || item.equals("e");
 
-    point = testModel.findNextItemCoordinate(4, false, condition);
-    assertEquals(RowColumn.rowColumn(3, 1), point);
-    point = testModel.findNextItemCoordinate(point.getRow() - 1, false, condition);
-    assertEquals(RowColumn.rowColumn(0, 1), point);
+    coordinate = testModel.searchBackward(4, condition);
+    assertEquals(RowColumn.rowColumn(3, 1), coordinate);
+    coordinate = testModel.searchBackward(coordinate.getRow() - 1, condition);
+    assertEquals(RowColumn.rowColumn(0, 1), coordinate);
 
     testModel.getSortModel().setSortingDirective(1, SortingDirective.ASCENDING, false);
     testModel.getColumnModel().moveColumn(1, 0);
 
     testModel.refresh();
-    point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(RowColumn.rowColumn(1, 0), point);
-    point = testModel.findNextItemCoordinate(point.getRow(), true, "e");
-    assertEquals(RowColumn.rowColumn(4, 0), point);
-    point = testModel.findNextItemCoordinate(point.getRow(), false, "c");
-    assertEquals(RowColumn.rowColumn(2, 0), point);
-    point = testModel.findNextItemCoordinate(0, true, "x");
-    assertNull(point);
+    coordinate = testModel.searchForward(0, "b");
+    assertEquals(RowColumn.rowColumn(1, 0), coordinate);
+    coordinate = testModel.searchForward(coordinate.getRow(), "e");
+    assertEquals(RowColumn.rowColumn(4, 0), coordinate);
+    coordinate = testModel.searchBackward(coordinate.getRow(), "c");
+    assertEquals(RowColumn.rowColumn(2, 0), coordinate);
+    coordinate = testModel.searchForward(0, "x");
+    assertNull(coordinate);
 
     testModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
 
-    point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(RowColumn.rowColumn(3, 0), point);
-    point = testModel.findNextItemCoordinate(point.getRow(), false, "e");
-    assertEquals(RowColumn.rowColumn(0, 0), point);
+    coordinate = testModel.searchForward(0, "b");
+    assertEquals(RowColumn.rowColumn(3, 0), coordinate);
+    coordinate = testModel.searchBackward(coordinate.getRow(), "e");
+    assertEquals(RowColumn.rowColumn(0, 0), coordinate);
 
     testModel.setRegularExpressionSearch(true);
     assertTrue(testModel.isRegularExpressionSearch());
-    point = testModel.findNextItemCoordinate(0, true, "(?i)B");
-    assertEquals(RowColumn.rowColumn(3, 0), point);
+    coordinate = testModel.searchForward(0, "(?i)B");
+    assertEquals(RowColumn.rowColumn(3, 0), coordinate);
 
     condition = item -> item.equals("b") || item.equals("e");
 
-    point = testModel.findNextItemCoordinate(4, false, condition);
-    assertEquals(RowColumn.rowColumn(3, 0), point);
-    point = testModel.findNextItemCoordinate(point.getRow() - 1, false, condition);
-    assertEquals(RowColumn.rowColumn(0, 0), point);
+    coordinate = testModel.searchBackward(4, condition);
+    assertEquals(RowColumn.rowColumn(3, 0), coordinate);
+    coordinate = testModel.searchBackward(coordinate.getRow() - 1, condition);
+    assertEquals(RowColumn.rowColumn(0, 0), coordinate);
   }
 
   @Test

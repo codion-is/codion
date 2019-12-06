@@ -129,9 +129,13 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public Collection getValues(final Property columnIdentifier, final boolean selectedOnly) {return null;}
     @Override
-    public RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText) {return null;}
+    public RowColumn searchForward(final int fromRowIndex, final String searchText) {return null;}
     @Override
-    public RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final Predicate<Object> condition) {return null;}
+    public RowColumn searchBackward(final int fromRowIndex, final String searchText) {return null;}
+    @Override
+    public RowColumn searchForward(final int fromRowIndex, final Predicate<Object> condition) {return null;}
+    @Override
+    public RowColumn searchBackward(final int fromRowIndex, final Predicate<Object> condition) {return null;}
     @Override
     public boolean isRegularExpressionSearch() {return false;}
     @Override
