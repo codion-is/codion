@@ -266,9 +266,10 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * Set to true if this edit model should post its insert, update and delete
    * events on the {@link EntityEditEvents} event bus
+   * @param postEditEvents true if edit events should be posted
    * @return this edit model instance
    */
-  EntityEditModel setPostEditEvents(final boolean postEntityEditEvents);
+  EntityEditModel setPostEditEvents(final boolean postEditEvents);
 
   /**
    * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,

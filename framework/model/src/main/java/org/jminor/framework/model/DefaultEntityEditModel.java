@@ -647,8 +647,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     return postEditEvents;
   }
 
-  /** {@inheritDoc}
-   * @return*/
+  /** {@inheritDoc} */
   @Override
   public final EntityEditModel setPostEditEvents(final boolean postEditEvents) {
     this.postEditEvents = postEditEvents;
