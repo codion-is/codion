@@ -79,7 +79,7 @@ public final class EntityEditEvents {
 
   /**
    * Notifies insert
-   * @param insertEvent the event representing the insert
+   * @param insertedEntities the inserted entities
    */
   public static void notifyInserted(final List<Entity> insertedEntities) {
     EVENT_OBSERVER.notifyInserted(insertedEntities);
@@ -87,7 +87,7 @@ public final class EntityEditEvents {
 
   /**
    * Notifies update
-   * @param updateEvent the event representing the insert
+   * @param updatedEntities the updated entities mapped to their original primary key
    */
   public static void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities) {
     EVENT_OBSERVER.notifyUpdated(updatedEntities);
@@ -95,7 +95,7 @@ public final class EntityEditEvents {
 
   /**
    * Notifies delete
-   * @param deleteEvent the event representing the insert
+   * @param deletedEntities the deleted entities
    */
   public static void notifyDeleted(final List<Entity> deletedEntities) {
     EVENT_OBSERVER.notifyDeleted(deletedEntities);

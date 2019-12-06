@@ -60,19 +60,19 @@ public interface EntityEditEventObserver {
 
   /**
    * Notifies insert
-   * @param insertEvent the insert event
+   * @param insertedEntities the inserted entities
    */
-  void notifyInserted(final List<Entity> insertEvent);
+  void notifyInserted(final List<Entity> insertedEntities);
 
   /**
    * Notifies update
-   * @param updateEvent the update event
+   * @param updatedEntities the updated entities mapped to their original primary key
    */
-  void notifyUpdated(final Map<Entity.Key, Entity> updateEvent);
+  void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities);
 
   /**
    * Notifies delete
-   * @param deleteEvent the delete event
+   * @param deletedEntities the deleted entities
    */
-  void notifyDeleted(final List<Entity> deleteEvent);
+  void notifyDeleted(final List<Entity> deletedEntities);
 }
