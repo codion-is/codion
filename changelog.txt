@@ -5409,3 +5409,4 @@
   EntityEditEvents, notify methods renamed and made public
   SwingEntityComboBoxModelTest.editEvents() test added
   EntityEditEventObserver, methods renamed, javadocs fixed, more javadocs fixed
+  DefaultEntityTableConditionModel and DefaultEntityLookupModel now final

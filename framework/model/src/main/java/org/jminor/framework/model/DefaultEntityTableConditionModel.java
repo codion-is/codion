@@ -34,7 +34,7 @@ import static org.jminor.framework.db.condition.Conditions.conditionSet;
 /**
  * A default EntityTableConditionModel implementation
  */
-public class DefaultEntityTableConditionModel implements EntityTableConditionModel {
+public final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
 
   private final State conditionStateChangedState = States.state();
   private final Event conditionStateChangedEvent = Events.event();
@@ -74,26 +74,26 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final String getEntityId() {
+  public String getEntityId() {
     return entityId;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void rememberCurrentConditionState() {
+  public void rememberCurrentConditionState() {
     rememberedConditionState = getConditionModelState();
     conditionStateChangedState.set(false);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean hasConditionStateChanged() {
+  public boolean hasConditionStateChanged() {
     return conditionStateChangedState.get();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final ColumnConditionModel<Property> getPropertyFilterModel(final String propertyId) {
+  public ColumnConditionModel<Property> getPropertyFilterModel(final String propertyId) {
     if (propertyFilterModels.containsKey(propertyId)) {
       return propertyFilterModels.get(propertyId);
     }
@@ -103,13 +103,13 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<ColumnConditionModel<Property>> getPropertyFilterModels() {
+  public Collection<ColumnConditionModel<Property>> getPropertyFilterModels() {
     return Collections.unmodifiableCollection(propertyFilterModels.values());
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void refresh() {
+  public void refresh() {
     for (final PropertyConditionModel model : propertyConditionModels.values()) {
       if (model instanceof Refreshable) {
         ((Refreshable) model).refresh();
@@ -119,7 +119,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final void clear() {
+  public void clear() {
     for (final PropertyConditionModel model : propertyConditionModels.values()) {
       if (model instanceof Refreshable) {
         ((Refreshable) model).clear();
@@ -129,7 +129,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final void clearPropertyConditionModels() {
+  public void clearPropertyConditionModels() {
     for (final PropertyConditionModel conditionModel : propertyConditionModels.values()) {
       conditionModel.clearCondition();
     }
@@ -137,19 +137,19 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<PropertyConditionModel<? extends Property>> getPropertyConditionModels() {
+  public Collection<PropertyConditionModel<? extends Property>> getPropertyConditionModels() {
     return Collections.unmodifiableCollection(propertyConditionModels.values());
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean containsPropertyConditionModel(final String propertyId) {
+  public boolean containsPropertyConditionModel(final String propertyId) {
     return propertyConditionModels.containsKey(propertyId);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final PropertyConditionModel<? extends Property> getPropertyConditionModel(final String propertyId) {
+  public PropertyConditionModel<? extends Property> getPropertyConditionModel(final String propertyId) {
     if (propertyConditionModels.containsKey(propertyId)) {
       return propertyConditionModels.get(propertyId);
     }
@@ -159,19 +159,19 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isEnabled() {
+  public boolean isEnabled() {
     return propertyConditionModels.values().stream().anyMatch(ColumnConditionModel::isEnabled);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isEnabled(final String propertyId) {
+  public boolean isEnabled(final String propertyId) {
     return containsPropertyConditionModel(propertyId) && getPropertyConditionModel(propertyId).isEnabled();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isFilterEnabled(final String propertyId) {
+  public boolean isFilterEnabled(final String propertyId) {
     final ColumnConditionModel<Property> propertyFilterModel = getPropertyFilterModel(propertyId);
 
     return propertyFilterModel != null && propertyFilterModel.isEnabled();
@@ -179,7 +179,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final boolean setConditionValues(final String propertyId, final Collection values) {
+  public boolean setConditionValues(final String propertyId, final Collection values) {
     final String conditionModelState = getConditionModelState();
     if (containsPropertyConditionModel(propertyId)) {
       final PropertyConditionModel conditionModel = getPropertyConditionModel(propertyId);
@@ -192,7 +192,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final void setFilterValue(final String propertyId, final Comparable value) {
+  public void setFilterValue(final String propertyId, final Comparable value) {
     final ColumnConditionModel<Property> filterModel = getPropertyFilterModel(propertyId);
     if (filterModel != null) {
       filterModel.setLikeValue(value);
@@ -201,7 +201,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Condition getCondition() {
+  public Condition getCondition() {
     final Condition.Set conditionSet = conditionSet(conjunction);
     for (final PropertyConditionModel<? extends Property> conditionModel : propertyConditionModels.values()) {
       if (conditionModel.isEnabled()) {
@@ -217,26 +217,26 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Condition.Provider getAdditionalConditionProvider() {
+  public Condition.Provider getAdditionalConditionProvider() {
     return additionalConditionProvider;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider conditionProvider) {
+  public EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider conditionProvider) {
     this.additionalConditionProvider = conditionProvider;
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String getSimpleConditionString() {
+  public String getSimpleConditionString() {
     return simpleConditionString;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setSimpleConditionString(final String simpleConditionString) {
+  public void setSimpleConditionString(final String simpleConditionString) {
     this.simpleConditionString = simpleConditionString == null ? "" : simpleConditionString;
     clearPropertyConditionModels();
     if (this.simpleConditionString.length() != 0) {
@@ -247,7 +247,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final void performSimpleSearch() {
+  public void performSimpleSearch() {
     final Conjunction previousConjunction = getConjunction();
     try {
       setConjunction(Conjunction.OR);
@@ -260,19 +260,19 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Conjunction getConjunction() {
+  public Conjunction getConjunction() {
     return conjunction;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setConjunction(final Conjunction conjunction) {
+  public void setConjunction(final Conjunction conjunction) {
     this.conjunction = conjunction;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setEnabled(final String propertyId, final boolean enabled) {
+  public void setEnabled(final String propertyId, final boolean enabled) {
     if (containsPropertyConditionModel(propertyId)) {
       getPropertyConditionModel(propertyId).setEnabled(enabled);
     }
@@ -280,37 +280,37 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<String> getSimpleConditionStringObserver() {
+  public EventObserver<String> getSimpleConditionStringObserver() {
     return simpleConditionStringChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final StateObserver getConditionStateObserver() {
+  public StateObserver getConditionStateObserver() {
     return conditionStateChangedState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addConditionStateListener(final EventListener listener) {
+  public void addConditionStateListener(final EventListener listener) {
     conditionStateChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeConditionStateListener(final EventListener listener) {
+  public void removeConditionStateListener(final EventListener listener) {
     conditionStateChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSimpleConditionListener(final EventListener listener) {
+  public void addSimpleConditionListener(final EventListener listener) {
     simpleSearchPerformedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSimpleConditionListener(final EventListener listener) {
+  public void removeSimpleConditionListener(final EventListener listener) {
     simpleSearchPerformedEvent.removeListener(listener);
   }
 
