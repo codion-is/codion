@@ -74,9 +74,10 @@ public class InvoiceEditPanel extends EntityEditPanel {
   }
 
   private void configureCustomerLookup(final EntityLookupField customerField) {
-    final EntityLookupField.TableSelectionProvider customerSelectionProvider = new EntityLookupField.TableSelectionProvider(customerField.getModel());
+    final EntityLookupField.TableSelectionProvider customerSelectionProvider =
+            new EntityLookupField.TableSelectionProvider(customerField.getModel());
     final SwingEntityTableModel tableModel = customerSelectionProvider.getEntityTablePanel().getEntityTableModel();
-    tableModel.setColumns(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME);
+    tableModel.setColumns(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME, CUSTOMER_EMAIL);
     tableModel.getSortModel().setSortingDirective((Property) tableModel.getColumnModel().getColumn(0).getIdentifier(),
               SortingDirective.ASCENDING, false);
     customerField.setSelectionProvider(customerSelectionProvider);

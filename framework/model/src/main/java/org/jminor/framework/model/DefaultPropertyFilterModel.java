@@ -10,7 +10,7 @@ import org.jminor.framework.domain.property.Property;
 /**
  * A class for filtering a set of entities based on a property.
  */
-public class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Property> {
+public final class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Property> {
 
   /**
    * Instantiates a new DefaultPropertyFilterModel

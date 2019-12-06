@@ -5431,3 +5431,10 @@
   EntityEditEvents, notify methods renamed and made public
   SwingEntityComboBoxModelTest.editEvents() test added
   EntityEditEventObserver, methods renamed, javadocs fixed, more javadocs fixed
+  DefaultEntityTableConditionModel and DefaultEntityLookupModel now final
+  DefaultColumnConditionModel and DefaultPropertyFilterModel now final
+  SwingFilteredComboBoxModel, some minor refactoring
+  FilteredTableColumnModel.setColumnVisible() replaced with showColumn() and hideColumn()
+  FilteredTablePanel, search field refactoring
+  FilteredTableModel.findNextItemCoordinate() replaced with searchForward() and searchBackward()
+  MasterDetailPanel renamed to HierarchyPanel

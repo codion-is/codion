@@ -143,28 +143,45 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
-   * the given search condition.
+   * the given search condition when searching towards a higher row index.
    * @param fromIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
-   * @param forward if true then the search is forward (towards higher row indexes), backwards otherwise
-   * @param searchText the text to search by
+   * @param searchText the text to search for
    * @return the search result coordinate, null if nothing was found
    * @see #isRegularExpressionSearch()
-   * @see Predicate#test(Object)
    */
-  RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText);
+  RowColumn searchForward(final int fromRowIndex, final String searchText);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
-   * the given search condition.
+   * the given search condition when searching towards a lower row index.
    * @param fromIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
-   * @param forward if true then the search is forward (towards higher row indexes), backwards otherwise
+   * @param searchText the text to search for
+   * @return the search result coordinate, null if nothing was found
+   * @see #isRegularExpressionSearch()
+   */
+  RowColumn searchBackward(final int fromRowIndex, final String searchText);
+
+  /**
+   * Returns a RowColumn denoting the row and column index of the first value to fulfill
+   * the given search condition when searching towards a lower row index.
+   * @param fromIndex the row index to start searching at, if this is larger than the size of
+   * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
    * @param condition the search condition
    * @return the search result coordinate, null if nothing was found
-   * @see Predicate#test(Object)
    */
-  RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final Predicate<Object> condition);
+  RowColumn searchForward(final int fromRowIndex, final Predicate<Object> condition);
+
+  /**
+   * Returns a RowColumn denoting the row and column index of the first value to fulfill
+   * the given search condition when searching towards a higher row index.
+   * @param fromIndex the row index to start searching at, if this is larger than the size of
+   * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
+   * @param condition the search condition
+   * @return the search result coordinate, null if nothing was found
+   */
+  RowColumn searchBackward(final int fromRowIndex, final Predicate<Object> condition);
 
   /**
    * @return true if regular expressions should be used when searching this table model

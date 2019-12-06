@@ -16,11 +16,11 @@ import org.jminor.common.state.States;
 import javax.swing.DefaultListSelectionModel;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default table selection model implementation
@@ -127,7 +127,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     }
 
     return IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
-            .filter(this::isSelectedIndex).boxed().collect(Collectors.toList());
+            .filter(this::isSelectedIndex).boxed().collect(toList());
   }
 
   /** {@inheritDoc} */
@@ -159,7 +159,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     final Collection<Integer> selectedModelIndexes = getSelectedIndexes();
 
     return selectedModelIndexes.stream().mapToInt(modelIndex ->
-            modelIndex).mapToObj(tableModel::getItemAt).collect(Collectors.toList());
+            modelIndex).mapToObj(tableModel::getItemAt).collect(toList());
   }
 
   /** {@inheritDoc} */
@@ -187,7 +187,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   @Override
   public void addSelectedItems(final Collection<R> items) {
     addSelectedIndexes(items.stream().mapToInt(tableModel::indexOf)
-            .filter(index -> index >= 0).boxed().collect(Collectors.toList()));
+            .filter(index -> index >= 0).boxed().collect(toList()));
   }
 
   /** {@inheritDoc} */
@@ -247,7 +247,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
       }
       else {
         setSelectedIndexes(getSelectedIndexes().stream()
-                .map(index -> index == 0 ? lastIndex : index - 1).collect(Collectors.toList()));
+                .map(index -> index == 0 ? lastIndex : index - 1).collect(toList()));
       }
     }
   }
@@ -261,7 +261,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
       }
       else {
         setSelectedIndexes(getSelectedIndexes().stream()
-                .map(index -> index == tableModel.getRowCount() - 1 ? 0 : index + 1).collect(Collectors.toList()));
+                .map(index -> index == tableModel.getRowCount() - 1 ? 0 : index + 1).collect(toList()));
       }
     }
   }

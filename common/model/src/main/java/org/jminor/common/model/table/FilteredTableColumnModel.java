@@ -26,17 +26,22 @@ public interface FilteredTableColumnModel<C, T> {
   Collection<T> getHiddenColumns();
 
   /**
+   * Shows the column with the given columnIdentifier.
+   * @param columnIdentifier the column identifier
+   */
+  void showColumn(final C columnIdentifier);
+
+  /**
+   * Hides the column with the given columnIdentifier.
+   * @param columnIdentifier the column identifier
+   */
+  void hideColumn(final C columnIdentifier);
+
+  /**
    * @param columnIdentifier the key for which to query if its column is visible
    * @return true if the column is visible, false if it is hidden
    */
   boolean isColumnVisible(final C columnIdentifier);
-
-  /**
-   * Toggles the visibility of the column representing the given columnIdentifier.<br>
-   * @param columnIdentifier the column identifier
-   * @param visible if true the column is shown, otherwise it is hidden
-   */
-  void setColumnVisible(final C columnIdentifier, final boolean visible);
 
   /**
    * Arranges the columns so that only the given columns are visible and in the given order

@@ -18,7 +18,6 @@ import org.jminor.common.model.table.TableSortModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
-import java.math.BigDecimal;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -175,27 +174,36 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText) {
-    return findNextItemCoordinate(fromIndex, forward, getSearchCondition(searchText));
+  public final RowColumn searchForward(final int fromRowIndex, final String searchText) {
+    return searchForward(fromRowIndex, getSearchCondition(searchText));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final Predicate<Object> condition) {
-    if (forward) {
-      for (int row = fromIndex >= getVisibleItemCount() ? 0 : fromIndex; row < getVisibleItemCount(); row++) {
-        final RowColumn point = findColumnValue(columnModel.getColumns(), row, condition);
-        if (point != null) {
-          return point;
-        }
+  public final RowColumn searchBackward(final int fromRowIndex, final String searchText) {
+    return searchBackward(fromRowIndex, getSearchCondition(searchText));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final RowColumn searchForward(final int fromRowIndex, final Predicate<Object> condition) {
+    for (int row = fromRowIndex >= getVisibleItemCount() ? 0 : fromRowIndex; row < getVisibleItemCount(); row++) {
+      final RowColumn point = findColumnValue(columnModel.getColumns(), row, condition);
+      if (point != null) {
+        return point;
       }
     }
-    else {
-      for (int row = fromIndex < 0 ? getVisibleItemCount() - 1 : fromIndex; row >= 0; row--) {
-        final RowColumn point = findColumnValue(columnModel.getColumns(), row, condition);
-        if (point != null) {
-          return point;
-        }
+
+    return null;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final RowColumn searchBackward(final int fromRowIndex, final Predicate<Object> condition) {
+    for (int row = fromRowIndex < 0 ? getVisibleItemCount() - 1 : fromRowIndex; row >= 0; row--) {
+      final RowColumn point = findColumnValue(columnModel.getColumns(), row, condition);
+      if (point != null) {
+        return point;
       }
     }
 
@@ -547,7 +555,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param rowIndex the row index
    * @param column the column
    * @return the search value
-   * @see #findNextItemCoordinate(int, boolean, String)
+   * @see #searchForward(int, String)
+   * @see #searchBackward(int, String)
    */
   protected String getSearchValueAt(final int rowIndex, final TableColumn column) {
     final Object value = getValueAt(rowIndex, column.getModelIndex());
@@ -559,7 +568,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param searchText the search text
    * @return a Predicate based on the given search text
    */
-  protected final Predicate<Object> getSearchCondition(final String searchText) {
+  private Predicate<Object> getSearchCondition(final String searchText) {
     if (regularExpressionSearch) {
       return new RegexFilterCondition<>(searchText);
     }
@@ -650,8 +659,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       this.tableModel = tableModel;
       this.format = format;
       final Class columnClass = tableModel.getSortModel().getColumnClass(columnIdentifier);
-      this.numerical = columnClass.equals(Integer.class) || columnClass.equals(Long.class) ||
-              columnClass.equals(Double.class) || columnClass.equals(BigDecimal.class);
+      this.numerical = Number.class.isAssignableFrom(columnClass);
     }
 
     @Override

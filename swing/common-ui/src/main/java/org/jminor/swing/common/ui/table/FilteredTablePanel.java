@@ -14,6 +14,7 @@ import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
+import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
@@ -268,7 +269,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * Returns the base panel containing the table scroll pane (BorderLayout.CENTER).
    * @return the panel containing the table scroll pane
    */
-  public JPanel getBasePanel() {
+  public final JPanel getBasePanel() {
     return basePanel;
   }
 
@@ -401,7 +402,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * Shows a dialog for selecting which columns to show/hide
    */
   public final void selectTableColumns() {
-    final List<TableColumn> allColumns = new ArrayList<>(tableModel.getColumnModel().getAllColumns());
+    final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
+    final List<TableColumn> allColumns = new ArrayList<>(columnModel.getAllColumns());
     allColumns.sort(new Comparator<TableColumn>() {
       private final Collator collator = Collator.getInstance();
 
@@ -420,7 +422,12 @@ public class FilteredTablePanel<R, C> extends JPanel {
       }
       checkBoxes.forEach(checkBox -> SwingUtilities.invokeLater(() -> {
         final TableColumn column = allColumns.get(checkBoxes.indexOf(checkBox));
-        tableModel.getColumnModel().setColumnVisible((C) column.getIdentifier(), checkBox.isSelected());
+        if (checkBox.isSelected()) {
+          columnModel.showColumn((C) column.getIdentifier());
+        }
+        else {
+          columnModel.hideColumn((C) column.getIdentifier());
+        }
       }));
     }
   }
@@ -440,13 +447,21 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   /**
-   * Performs a text search in the underlying table model, relative to the last search result coordinate.
+   * Performs a text search in the underlying table model, forward relative to the last search result coordinate.
    * @param addToSelection if true then the items found are added to the selection
-   * @param forward if true then the search direction is forward (down), otherwise it's backward (up)
    * @param searchText the text to search for
    */
-  final void findNextValue(final boolean addToSelection, final boolean forward, final String searchText) {
-    performSearch(addToSelection, lastSearchResultCoordinate.getRow() + (forward ? 1 : -1), forward, searchText);
+  final void searchForward(final boolean addToSelection, final String searchText) {
+    searchForward(addToSelection, lastSearchResultCoordinate.getRow() + 1, searchText);
+  }
+
+  /**
+   * Performs a text search in the underlying table model, backwards relative to the last search result coordinate.
+   * @param addToSelection if true then the items found are added to the selection
+   * @param searchText the text to search for
+   */
+  final void searchBackward(final boolean addToSelection, final String searchText) {
+    searchBackward(addToSelection, lastSearchResultCoordinate.getRow() - 1, searchText);
   }
 
   private JTextField initializeSearchField() {
@@ -458,27 +473,12 @@ public class FilteredTablePanel<R, C> extends JPanel {
       @Override
       public void contentsChanged(final DocumentEvent e) {
         if (!textFieldHint.isHintTextVisible()) {
-          performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 : lastSearchResultCoordinate.getRow(), true, field.getText());
+          searchForward(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
+                  lastSearchResultCoordinate.getRow(), field.getText());
         }
       }
     });
-    field.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyReleased(final KeyEvent e) {
-        if (e.getModifiersEx() != 0) {
-          return;
-        }
-        if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
-          findNextValue(e.isShiftDown(), true, field.getText());
-        }
-        else if (e.getKeyCode() == KeyEvent.VK_UP) {
-          findNextValue(e.isShiftDown(), false, field.getText());
-        }
-        else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-          getJTable().requestFocusInWindow();
-        }
-      }
-    });
+    field.addKeyListener(new SearchFieldKeyListener(field));
     UiUtil.selectAllOnFocusGained(field);
 
     field.setComponentPopupMenu(initializeSearchFieldPopupMenu());
@@ -486,9 +486,18 @@ public class FilteredTablePanel<R, C> extends JPanel {
     return field;
   }
 
+  private void searchForward(final boolean addToSelection, final int fromIndex, final String searchText) {
+    performSearch(addToSelection, fromIndex, true, searchText);
+  }
+
+  private void searchBackward(final boolean addToSelection, final int fromIndex, final String searchText) {
+    performSearch(addToSelection, fromIndex, false, searchText);
+  }
+
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
     if (searchText.length() != 0) {
-      final RowColumn coordinate = tableModel.findNextItemCoordinate(fromIndex, forward, searchText);
+      final RowColumn coordinate = forward ? tableModel.searchForward(fromIndex, searchText) :
+              tableModel.searchBackward(fromIndex, searchText);
       if (coordinate != null) {
         lastSearchResultCoordinate = coordinate;
         if (addToSelection) {
@@ -683,7 +692,33 @@ public class FilteredTablePanel<R, C> extends JPanel {
     }
   }
 
+  private final class SearchFieldKeyListener extends KeyAdapter {
+
+    private final JTextField field;
+
+    private SearchFieldKeyListener(final JTextField field) {
+      this.field = field;
+    }
+
+    @Override
+    public void keyReleased(final KeyEvent e) {
+      if (e.getModifiersEx() != 0) {
+        return;
+      }
+      if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
+        searchForward(e.isShiftDown(), field.getText());
+      }
+      else if (e.getKeyCode() == KeyEvent.VK_UP) {
+        searchBackward(e.isShiftDown(), field.getText());
+      }
+      else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        getJTable().requestFocusInWindow();
+      }
+    }
+  }
+
   private final class SortableHeaderRenderer implements TableCellRenderer {
+
     private final TableCellRenderer tableCellRenderer;
 
     private SortableHeaderRenderer(final TableCellRenderer tableCellRenderer) {
@@ -715,9 +750,11 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   private static final class Arrow implements Icon {
+
     private static final double PRIORITY_SIZE_RATIO = 0.8;
     private static final double PRIORITY_SIZE_CONST = 2.0;
-    public static final int ALIGNMENT_CONSTANT = 6;
+    private static final int ALIGNMENT_CONSTANT = 6;
+
     private final boolean descending;
     private final int size;
     private final int priority;

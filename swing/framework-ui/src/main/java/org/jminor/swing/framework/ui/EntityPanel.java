@@ -6,7 +6,7 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.Configuration;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
-import org.jminor.swing.common.ui.MasterDetailPanel;
+import org.jminor.swing.common.ui.HierarchyPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -68,7 +68,7 @@ import static java.util.Objects.requireNonNull;
  *   frame.setVisible(true);
  * </pre>
  */
-public class EntityPanel extends JPanel implements MasterDetailPanel {
+public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName(), Locale.getDefault());
 
@@ -627,8 +627,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /** {@inheritDoc} */
   @Override
   public final void activatePanel() {
-    if (getMasterPanel() != null) {
-      getMasterPanel().setActiveDetailPanel(this);
+    if (getParentPanel() != null) {
+      getParentPanel().setSelectedChildPanel(this);
     }
     initializePanel();
     prepareUI(true, false);
@@ -636,10 +636,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /** {@inheritDoc} */
   @Override
-  public final MasterDetailPanel getMasterPanel() {
-    MasterDetailPanel parentPanel = masterPanel;
+  public final HierarchyPanel getParentPanel() {
+    HierarchyPanel parentPanel = masterPanel;
     if (parentPanel == null) {
-      parentPanel = UiUtil.getParentOfType(this, MasterDetailPanel.class);
+      parentPanel = UiUtil.getParentOfType(this, HierarchyPanel.class);
     }
 
     return parentPanel;
@@ -647,7 +647,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityPanel getActiveDetailPanel() {
+  public final EntityPanel getSelectedChildPanel() {
     final Collection<EntityPanel> linkedDetailPanels = getLinkedDetailPanels();
     if (!linkedDetailPanels.isEmpty()) {
       return linkedDetailPanels.iterator().next();
@@ -658,9 +658,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /** {@inheritDoc} */
   @Override
-  public final void setActiveDetailPanel(final MasterDetailPanel detailPanel) {
+  public final void setSelectedChildPanel(final HierarchyPanel childPanel) {
     if (detailPanelTabbedPane != null) {
-      detailPanelTabbedPane.setSelectedComponent((JComponent) detailPanel);
+      detailPanelTabbedPane.setSelectedComponent((JComponent) childPanel);
       for (final SwingEntityModel linkedModel : new ArrayList<>(entityModel.getLinkedDetailModels())) {
         entityModel.removeLinkedDetailModel(linkedModel);
       }
@@ -670,18 +670,18 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /** {@inheritDoc} */
   @Override
-  public final MasterDetailPanel getPreviousPanel() {
-    if (getMasterPanel() == null) {//no parent, no siblings
+  public final HierarchyPanel getPreviousSiblingPanel() {
+    if (getParentPanel() == null) {//no parent, no siblings
       return null;
     }
-    final List<? extends MasterDetailPanel> masterDetailPanels = getMasterPanel().getDetailPanels();
-    if (masterDetailPanels.contains(this)) {
-      final int index = masterDetailPanels.indexOf(this);
+    final List<? extends HierarchyPanel> siblingPanels = getParentPanel().getChildPanels();
+    if (siblingPanels.contains(this)) {
+      final int index = siblingPanels.indexOf(this);
       if (index == 0) {
-        return masterDetailPanels.get(masterDetailPanels.size() - 1);
+        return siblingPanels.get(siblingPanels.size() - 1);
       }
       else {
-        return masterDetailPanels.get(index - 1);
+        return siblingPanels.get(index - 1);
       }
     }
 
@@ -690,18 +690,18 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /** {@inheritDoc} */
   @Override
-  public final MasterDetailPanel getNextPanel() {
-    if (getMasterPanel() == null) {//no parent, no siblings
+  public final HierarchyPanel getNextSiblingPanel() {
+    if (getParentPanel() == null) {//no parent, no siblings
       return null;
     }
-    final List<? extends MasterDetailPanel> masterDetailPanels = getMasterPanel().getDetailPanels();
-    if (masterDetailPanels.contains(this)) {
-      final int index = masterDetailPanels.indexOf(this);
-      if (index == masterDetailPanels.size() - 1) {
-        return masterDetailPanels.get(0);
+    final List<? extends HierarchyPanel> siblingPanels = getParentPanel().getChildPanels();
+    if (siblingPanels.contains(this)) {
+      final int index = siblingPanels.indexOf(this);
+      if (index == siblingPanels.size() - 1) {
+        return siblingPanels.get(0);
       }
       else {
-        return masterDetailPanels.get(index + 1);
+        return siblingPanels.get(index + 1);
       }
     }
 
@@ -710,7 +710,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /** {@inheritDoc} */
   @Override
-  public final List<MasterDetailPanel> getDetailPanels() {
+  public final List<HierarchyPanel> getChildPanels() {
     return Collections.unmodifiableList(detailEntityPanels);
   }
 
@@ -1534,22 +1534,22 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final MasterDetailPanel panel;
+      final HierarchyPanel panel;
       switch (direction) {
         case LEFT:
-          panel = entityPanel.getPreviousPanel();
+          panel = entityPanel.getPreviousSiblingPanel();
           break;
         case RIGHT:
-          panel = entityPanel.getNextPanel();
+          panel = entityPanel.getNextSiblingPanel();
           break;
         case UP:
-          panel = entityPanel.getMasterPanel();
+          panel = entityPanel.getParentPanel();
           break;
         case DOWN:
           if (entityPanel.getDetailPanelState() == PanelState.HIDDEN) {
             entityPanel.setDetailPanelState(PanelState.EMBEDDED);
           }
-          panel = entityPanel.getActiveDetailPanel();
+          panel = entityPanel.getSelectedChildPanel();
           break;
         default:
           throw new IllegalArgumentException("Unknown direction: " + direction);

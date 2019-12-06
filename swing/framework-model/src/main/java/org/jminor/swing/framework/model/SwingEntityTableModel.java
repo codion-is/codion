@@ -809,7 +809,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
             columnModel.moveColumn(getColumnModel().getColumnIndex(column.getIdentifier()), index);
           }
           else {
-            columnModel.setColumnVisible((Property) column.getIdentifier(), false);
+            columnModel.hideColumn((Property) column.getIdentifier());
           }
         }
         catch (final Exception e) {

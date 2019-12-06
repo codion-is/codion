@@ -28,8 +28,8 @@ import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.DialogExceptionHandler;
+import org.jminor.swing.common.ui.HierarchyPanel;
 import org.jminor.swing.common.ui.LoginPanel;
-import org.jminor.swing.common.ui.MasterDetailPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -96,7 +96,7 @@ import static org.jminor.common.Util.nullOrEmpty;
  * @param <M> the application model type
  */
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
-        extends JPanel implements DialogExceptionHandler, MasterDetailPanel {
+        extends JPanel implements DialogExceptionHandler, HierarchyPanel {
 
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName(), Locale.getDefault());
@@ -448,39 +448,39 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /** {@inheritDoc} */
   @Override
-  public final MasterDetailPanel getMasterPanel() {
+  public final HierarchyPanel getParentPanel() {
     return null;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityPanel getActiveDetailPanel() {
+  public final EntityPanel getSelectedChildPanel() {
     return getEntityPanels().get(0);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setActiveDetailPanel(final MasterDetailPanel detailPanel) {
+  public final void setSelectedChildPanel(final HierarchyPanel childPanel) {
     if (applicationTabPane != null) {//initializeUI() may have been overridden
-      applicationTabPane.setSelectedComponent((JComponent) detailPanel);
+      applicationTabPane.setSelectedComponent((JComponent) childPanel);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public final MasterDetailPanel getPreviousPanel() {
+  public final HierarchyPanel getPreviousSiblingPanel() {
     return null;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final MasterDetailPanel getNextPanel() {
+  public final HierarchyPanel getNextSiblingPanel() {
     return null;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final List<MasterDetailPanel> getDetailPanels() {
+  public final List<HierarchyPanel> getChildPanels() {
     return Collections.unmodifiableList(entityPanels);
   }
 
@@ -1416,19 +1416,19 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  private static DefaultTreeModel createApplicationTree(final Collection<? extends MasterDetailPanel> entityPanels) {
+  private static DefaultTreeModel createApplicationTree(final Collection<? extends HierarchyPanel> entityPanels) {
     final DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
     addModelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityPanels);
 
     return applicationTreeModel;
   }
 
-  private static void addModelsToTree(final DefaultMutableTreeNode root, final Collection<? extends MasterDetailPanel> panels) {
-    for (final MasterDetailPanel entityPanel : panels) {
+  private static void addModelsToTree(final DefaultMutableTreeNode root, final Collection<? extends HierarchyPanel> panels) {
+    for (final HierarchyPanel entityPanel : panels) {
       final DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel);
       root.add(node);
-      if (!entityPanel.getDetailPanels().isEmpty()) {
-        addModelsToTree(node, entityPanel.getDetailPanels());
+      if (!entityPanel.getChildPanels().isEmpty()) {
+        addModelsToTree(node, entityPanel.getChildPanels());
       }
     }
   }
