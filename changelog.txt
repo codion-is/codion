@@ -5402,3 +5402,4 @@
   EntityEditEvents.ENTITY_EDIT_EVENTS_ENABLED configuration value added, false by default
   EntityEditEvents.ENTITY_EDIT_EVENTS_ENABLED configuration value removed, EntityEditModel.POST_EDIT_EVENTS configuration value added, false by default
   DefaultEntityEditModel.postEditEvents property added, defaults to EntityEditModel.POST_EDIT_EVENTS.get()
+  EntityEditEventObserver added, implemented by DefaultEntityEditEventObserver, EntityEditEvents refactored to use it
