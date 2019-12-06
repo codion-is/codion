@@ -5413,3 +5413,4 @@
   DefaultColumnConditionModel and DefaultPropertyFilterModel now final
   SwingFilteredComboBoxModel, some minor refactoring
   FilteredTableColumnModel.setColumnVisible() replaced with showColumn() and hideColumn()
+  FilteredTablePanel, search field refactoring

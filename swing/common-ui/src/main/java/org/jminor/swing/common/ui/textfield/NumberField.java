@@ -121,7 +121,7 @@ public class NumberField extends JTextField {
      */
     @Override
     public final void setDocumentFilter(final DocumentFilter filter) {
-      throw new UnsupportedOperationException("Changing the DocumentFilter of SizedDocument and its descendants is not allowed");
+      throw new UnsupportedOperationException("Changing the DocumentFilter of NumberDocument and its descendants is not allowed");
     }
 
     protected final NumberFormat getFormat() {
