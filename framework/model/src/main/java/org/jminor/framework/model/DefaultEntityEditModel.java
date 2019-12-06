@@ -127,6 +127,12 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   private boolean warnAboutUnsavedData = WARN_ABOUT_UNSAVED_DATA.get();
 
   /**
+   * Specifies whether this edit model posts insert, update and delete events
+   * on the {@link EntityEditEvents} event bus.
+   */
+  private boolean postEditEvents = POST_EDIT_EVENTS.get();
+
+  /**
    * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by {@code entityId}.
    * @param entityId the ID of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
@@ -637,6 +643,20 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
+  public final boolean isPostEditEvents() {
+    return postEditEvents;
+  }
+
+  /** {@inheritDoc}
+   * @return*/
+  @Override
+  public final EntityEditModel setPostEditEvents(final boolean postEditEvents) {
+    this.postEditEvents = postEditEvents;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void removeValueSetListener(final String propertyId, final EventDataListener listener) {
     removeValueSetListener(getEntityDefinition().getProperty(propertyId), listener);
   }
@@ -860,7 +880,9 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    */
   protected final void fireAfterInsertEvent(final InsertEvent insertEvent) {
     afterInsertEvent.fire(insertEvent);
-    EntityEditEvents.inserted(insertEvent);
+    if (postEditEvents) {
+      EntityEditEvents.inserted(insertEvent);
+    }
   }
 
   /**
@@ -879,7 +901,9 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    */
   protected final void fireAfterUpdateEvent(final UpdateEvent updateEvent) {
     afterUpdateEvent.fire(updateEvent);
-    EntityEditEvents.updated(updateEvent);
+    if (postEditEvents) {
+      EntityEditEvents.updated(updateEvent);
+    }
   }
 
   /**
@@ -898,7 +922,9 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    */
   protected final void fireAfterDeleteEvent(final DeleteEvent deleteEvent) {
     afterDeleteEvent.fire(deleteEvent);
-    EntityEditEvents.deleted(deleteEvent);
+    if (postEditEvents) {
+      EntityEditEvents.deleted(deleteEvent);
+    }
   }
 
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {

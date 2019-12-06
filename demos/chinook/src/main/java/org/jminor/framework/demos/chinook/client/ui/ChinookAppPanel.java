@@ -22,7 +22,7 @@ import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.TrackTablePanel;
 import org.jminor.framework.demos.chinook.client.ChinookApplicationModel;
-import org.jminor.framework.model.EntityEditEvents;
+import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
@@ -148,7 +148,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
 
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
-    EntityEditEvents.ENTITY_EDIT_EVENTS_ENABLED.set(true);
+    EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     EntityTablePanel.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(EntityTablePanel.ReferentialIntegrityErrorHandling.DEPENDENCIES);
