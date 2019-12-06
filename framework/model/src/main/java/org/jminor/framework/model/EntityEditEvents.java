@@ -75,14 +75,26 @@ public final class EntityEditEvents {
     EVENT_OBSERVER.removeDeleteListener(entityId, listener);
   }
 
+  /**
+   * Notifies insert
+   * @param insertEvent the event representing the insert
+   */
   static void inserted(final EntityEditModel.InsertEvent insertEvent) {
     EVENT_OBSERVER.inserted(insertEvent);
   }
 
+  /**
+   * Notifies update
+   * @param updateEvent the event representing the insert
+   */
   static void updated(final EntityEditModel.UpdateEvent updateEvent) {
     EVENT_OBSERVER.updated(updateEvent);
   }
 
+  /**
+   * Notifies delete
+   * @param deleteEvent the event representing the insert
+   */
   static void deleted(final EntityEditModel.DeleteEvent deleteEvent) {
     EVENT_OBSERVER.deleted(deleteEvent);
   }
