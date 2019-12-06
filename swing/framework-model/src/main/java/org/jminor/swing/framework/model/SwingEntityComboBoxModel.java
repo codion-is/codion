@@ -77,16 +77,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private boolean strictForeignKeyFiltering = true;
 
+  private boolean listenToEditEvents = true;
+
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
-  private final EventDataListener<List<Entity>> insertListener = entities -> entities.forEach(this::addItem);
-  private final EventDataListener<Map<Entity.Key, Entity>> updateListener = entityMap -> {
-    final Domain domain = getConnectionProvider().getDomain();
-    entityMap.forEach((key, entity) -> {
-      removeItem(domain.entity(key));
-      addItem(entity);
-    });
-  };
-  private final EventDataListener<List<Entity>> deleteListener = entities -> entities.forEach(this::removeItem);
+  private final EventDataListener<List<Entity>> insertListener = new InsertListener();
+  private final EventDataListener<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
+  private final EventDataListener<List<Entity>> deleteListener = new DeleteListener();
 
   private final Predicate<Entity> foreignKeyFilterCondition = item -> {
     for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
@@ -114,7 +110,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     this.domain = connectionProvider.getDomain();
     setStaticData(this.domain.getDefinition(entityId).isStaticData());
     setFilterCondition(foreignKeyFilterCondition);
-    bindEvents();
+    addEditEventListeners();
   }
 
   /** {@inheritDoc} */
@@ -157,6 +153,25 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   @Override
   public final EntityComboBoxModel setStaticData(final boolean staticData) {
     this.staticData = staticData;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isListenToEditEvents() {
+    return listenToEditEvents;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public EntityComboBoxModel setListenToEditEvents(final boolean listenToEditEvents) {
+    this.listenToEditEvents = listenToEditEvents;
+    if (listenToEditEvents) {
+      addEditEventListeners();
+    }
+    else {
+      removeEditEventListeners();
+    }
     return this;
   }
 
@@ -367,10 +382,44 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     return -1;
   }
 
-  private void bindEvents() {
-    EntityEditEvents.addInsertListener(getEntityId(), insertListener);
-    EntityEditEvents.addUpdateListener(getEntityId(), updateListener);
-    EntityEditEvents.addDeleteListener(getEntityId(), deleteListener);
+  private void addEditEventListeners() {
+    EntityEditEvents.addInsertListener(entityId, insertListener);
+    EntityEditEvents.addUpdateListener(entityId, updateListener);
+    EntityEditEvents.addDeleteListener(entityId, deleteListener);
+  }
+
+  private void removeEditEventListeners() {
+    EntityEditEvents.removeInsertListener(entityId, insertListener);
+    EntityEditEvents.removeUpdateListener(entityId, updateListener);
+    EntityEditEvents.removeDeleteListener(entityId, deleteListener);
+  }
+
+  private final class InsertListener implements EventDataListener<List<Entity>> {
+
+    @Override
+    public void eventOccurred(final List<Entity> inserted) {
+      inserted.forEach(SwingEntityComboBoxModel.this::addItem);
+    }
+  }
+
+  private final class UpdateListener implements EventDataListener<Map<Entity.Key, Entity>> {
+
+    @Override
+    public void eventOccurred(final Map<Entity.Key, Entity> updated) {
+      final Domain domain = SwingEntityComboBoxModel.this.getConnectionProvider().getDomain();
+      updated.forEach((key, entity) -> {
+        removeItem(domain.entity(key));
+        addItem(entity);
+      });
+    }
+  }
+
+  private final class DeleteListener implements EventDataListener<List<Entity>> {
+
+    @Override
+    public void eventOccurred(final List<Entity> deleted) {
+      deleted.forEach(SwingEntityComboBoxModel.this::removeItem);
+    }
   }
 
   private static final class ForeignKeyModelRefreshListener implements EventListener {

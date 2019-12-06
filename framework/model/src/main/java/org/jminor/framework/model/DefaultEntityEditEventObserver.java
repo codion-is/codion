@@ -65,9 +65,9 @@ final class DefaultEntityEditEventObserver implements EntityEditEventObserver {
 
   /** {@inheritDoc} */
   @Override
-  public void inserted(final EntityEditModel.InsertEvent insertEvent) {
-    requireNonNull(insertEvent);
-    mapToEntityId(insertEvent.getInsertedEntities()).forEach((entityId, inserted) -> {
+  public void inserted(final List<Entity> insertedEntities) {
+    requireNonNull(insertedEntities);
+    mapToEntityId(insertedEntities).forEach((entityId, inserted) -> {
       final WeakObserver<List<Entity>> event = insertEvents.get(entityId);
       if (event != null) {
         event.fire(inserted);
@@ -77,9 +77,9 @@ final class DefaultEntityEditEventObserver implements EntityEditEventObserver {
 
   /** {@inheritDoc} */
   @Override
-  public void updated(final EntityEditModel.UpdateEvent updateEvent) {
-    requireNonNull(updateEvent);
-    map(updateEvent.getUpdatedEntities().entrySet(),
+  public void updated(final Map<Entity.Key, Entity> updatedEntities) {
+    requireNonNull(updatedEntities);
+    map(updatedEntities.entrySet(),
             entry -> entry.getKey().getEntityId()).forEach((entityId, updated) -> {
       final Map<Entity.Key, Entity> updateMap = new HashMap<>();
       updated.forEach(entry -> updateMap.put(entry.getKey(), entry.getValue()));
@@ -92,9 +92,9 @@ final class DefaultEntityEditEventObserver implements EntityEditEventObserver {
 
   /** {@inheritDoc} */
   @Override
-  public void deleted(final EntityEditModel.DeleteEvent deleteEvent) {
-    requireNonNull(deleteEvent);
-    mapToEntityId(deleteEvent.getDeletedEntities()).forEach((entityId, entities) -> {
+  public void deleted(final List<Entity> deletedEntities) {
+    requireNonNull(deletedEntities);
+    mapToEntityId(deletedEntities).forEach((entityId, entities) -> {
       final WeakObserver<List<Entity>> event = deleteEvents.get(entityId);
       if (event != null) {
         event.fire(entities);

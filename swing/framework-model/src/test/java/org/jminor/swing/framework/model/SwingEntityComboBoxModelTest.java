@@ -13,13 +13,16 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityEditEvents;
 import org.jminor.framework.model.TestDomain;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,6 +42,35 @@ public final class SwingEntityComboBoxModelTest {
 
   public SwingEntityComboBoxModelTest() {
     comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+  }
+
+  @Test
+  public void editEvents() {
+    comboBoxModel.refresh();
+
+    final Entity temp = DOMAIN.entity(TestDomain.T_EMP);
+    temp.put(TestDomain.EMP_ID, -42);
+    temp.put(TestDomain.EMP_NAME, "Noname");
+
+    EntityEditEvents.notifyInserted(singletonList(temp));
+    assertTrue(comboBoxModel.contains(temp, false));
+
+    temp.put(TestDomain.EMP_NAME, "Newname");
+    temp.save(TestDomain.EMP_NAME);
+
+    final Map<Entity.Key, Entity> updated = new HashMap<>();
+    updated.put(temp.getKey(), temp);
+
+    EntityEditEvents.notifyUpdated(updated);
+    assertEquals("Newname", comboBoxModel.getEntity(temp.getKey()).getString(TestDomain.EMP_NAME));
+
+    EntityEditEvents.notifyDeleted(singletonList(temp));
+    assertFalse(comboBoxModel.contains(temp, false));
+
+    comboBoxModel.setListenToEditEvents(false);
+
+    EntityEditEvents.notifyInserted(singletonList(temp));
+    assertFalse(comboBoxModel.contains(temp, false));
   }
 
   @Test

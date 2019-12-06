@@ -111,6 +111,23 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
   boolean isStaticData();
 
   /**
+   * Set to true if this combo box model should respond to entity edit events, by adding inserted items,
+   * updating updated items and removing deleted ones.
+   * @param listenToEditEvents if true then this model listens to entity edit events
+   * @return this EntityComboBoxModel instance
+   * @see EntityEditEvents
+   */
+  EntityComboBoxModel setListenToEditEvents(final boolean listenToEditEvents);
+
+  /**
+   * True if this combo box model responds to entity edit events, by adding inserted items,
+   * updating updated items and removing deleted ones.
+   * @return true if this combo box model listens edit events
+   * @see EntityEditEvents
+   */
+  boolean isListenToEditEvents();
+
+  /**
    * Sets the condition provider to use when querying data
    * @param selectConditionProvider the condition provider
    */

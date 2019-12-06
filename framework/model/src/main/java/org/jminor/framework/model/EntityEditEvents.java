@@ -75,15 +75,27 @@ public final class EntityEditEvents {
     EVENT_OBSERVER.removeDeleteListener(entityId, listener);
   }
 
-  static void inserted(final EntityEditModel.InsertEvent insertEvent) {
-    EVENT_OBSERVER.inserted(insertEvent);
+  /**
+   * Notifies insert
+   * @param insertEvent the event representing the insert
+   */
+  public static void notifyInserted(final List<Entity> insertedEntities) {
+    EVENT_OBSERVER.inserted(insertedEntities);
   }
 
-  static void updated(final EntityEditModel.UpdateEvent updateEvent) {
-    EVENT_OBSERVER.updated(updateEvent);
+  /**
+   * Notifies update
+   * @param updateEvent the event representing the insert
+   */
+  public static void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities) {
+    EVENT_OBSERVER.updated(updatedEntities);
   }
 
-  static void deleted(final EntityEditModel.DeleteEvent deleteEvent) {
-    EVENT_OBSERVER.deleted(deleteEvent);
+  /**
+   * Notifies delete
+   * @param deleteEvent the event representing the insert
+   */
+  public static void notifyDeleted(final List<Entity> deletedEntities) {
+    EVENT_OBSERVER.deleted(deletedEntities);
   }
 }
