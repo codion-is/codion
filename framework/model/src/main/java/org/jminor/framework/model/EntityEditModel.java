@@ -57,6 +57,13 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("jminor.client.comboBoxNullValueItem", "-");
 
   /**
+   * Specifies whether edit models post their insert, update and delete events to the {@link EntityEditEvents}<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("jminor.client.editModelPostEditEvents", false);
+
+  /**
    * @return an Entity instance populated with default values for all properties
    * @see #getDefaultValue(Property)
    */
@@ -248,6 +255,20 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return this edit model instance
    */
   EntityEditModel setDeleteAllowed(final boolean value);
+
+  /**
+   * Returns true if this edit model posts its insert, update and delete events on the
+   * {@link EntityEditEvents} event bus
+   * @return true if insert, update and delete events are posted on the edit event bus
+   */
+  boolean isPostEditEvents();
+
+  /**
+   * Set to true if this edit model should post its insert, update and delete
+   * events on the {@link EntityEditEvents} event bus
+   * @return this edit model instance
+   */
+  EntityEditModel setPostEditEvents(final boolean postEntityEditEvents);
 
   /**
    * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,

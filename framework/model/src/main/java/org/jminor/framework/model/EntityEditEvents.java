@@ -3,9 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.Configuration;
 import org.jminor.common.event.EventDataListener;
-import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.Entity;
 
 import java.lang.ref.WeakReference;
@@ -27,14 +25,6 @@ import static org.jminor.framework.domain.Entities.mapToEntityId;
  */
 public final class EntityEditEvents {
 
-  /**
-   * Specifies whether the {@link EntityEditEvents} event bus is enabled<br>
-   * While this is false calling any method in this class will have no effect.<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final PropertyValue<Boolean> ENTITY_EDIT_EVENTS_ENABLED = Configuration.booleanValue("jminor.client.entityEditEventsEnabled", false);
-
   private static final Map<String, WeakObserver<List<Entity>>> INSERT_EVENTS = new ConcurrentHashMap<>();
   private static final Map<String, WeakObserver<Map<Entity.Key, Entity>>> UPDATE_EVENTS = new ConcurrentHashMap<>();
   private static final Map<String, WeakObserver<List<Entity>>> DELETE_EVENTS = new ConcurrentHashMap<>();
@@ -48,9 +38,7 @@ public final class EntityEditEvents {
    */
   public static void addInsertListener(final String entityId,
                                        final EventDataListener<List<Entity>> listener) {
-    if (ENTITY_EDIT_EVENTS_ENABLED.get()) {
-      getInsertObserver(entityId).addDataListener(listener);
-    }
+    getInsertObserver(entityId).addDataListener(listener);
   }
 
   /**
@@ -60,9 +48,7 @@ public final class EntityEditEvents {
    */
   public static void addUpdateListener(final String entityId,
                                        final EventDataListener<Map<Entity.Key, Entity>> listener) {
-    if (ENTITY_EDIT_EVENTS_ENABLED.get()) {
-      getUpdateObserver(entityId).addDataListener(listener);
-    }
+    getUpdateObserver(entityId).addDataListener(listener);
   }
 
   /**
@@ -72,9 +58,7 @@ public final class EntityEditEvents {
    */
   public static void addDeleteListener(final String entityId,
                                        final EventDataListener<List<Entity>> listener) {
-    if (ENTITY_EDIT_EVENTS_ENABLED.get()) {
-      getDeleteObserver(entityId).addDataListener(listener);
-    }
+    getDeleteObserver(entityId).addDataListener(listener);
   }
 
   /**
@@ -83,9 +67,7 @@ public final class EntityEditEvents {
    * @param listener the listener to remove
    */
   public static void removeInsertListener(final String entityId, final EventDataListener listener) {
-    if (ENTITY_EDIT_EVENTS_ENABLED.get()) {
-      getInsertObserver(entityId).removeDataListener(listener);
-    }
+    getInsertObserver(entityId).removeDataListener(listener);
   }
 
   /**
@@ -94,9 +76,7 @@ public final class EntityEditEvents {
    * @param listener the listener to remove
    */
   public static void removeUpdateListener(final String entityId, final EventDataListener listener) {
-    if (ENTITY_EDIT_EVENTS_ENABLED.get()) {
-      getUpdateObserver(entityId).removeDataListener(listener);
-    }
+    getUpdateObserver(entityId).removeDataListener(listener);
   }
 
   /**
@@ -105,45 +85,37 @@ public final class EntityEditEvents {
    * @param listener the listener to remove
    */
   public static void removeDeleteListener(final String entityId, final EventDataListener listener) {
-    if (ENTITY_EDIT_EVENTS_ENABLED.get()) {
-      getDeleteObserver(entityId).removeDataListener(listener);
-    }
+    getDeleteObserver(entityId).removeDataListener(listener);
   }
 
   static void inserted(final EntityEditModel.InsertEvent insertEvent) {
-    if (ENTITY_EDIT_EVENTS_ENABLED.get()) {
-      mapToEntityId(insertEvent.getInsertedEntities()).forEach((entityId, inserted) -> {
-        final WeakObserver<List<Entity>> event = INSERT_EVENTS.get(entityId);
-        if (event != null) {
-          event.fire(inserted);
-        }
-      });
-    }
+    mapToEntityId(insertEvent.getInsertedEntities()).forEach((entityId, inserted) -> {
+      final WeakObserver<List<Entity>> event = INSERT_EVENTS.get(entityId);
+      if (event != null) {
+        event.fire(inserted);
+      }
+    });
   }
 
   static void updated(final EntityEditModel.UpdateEvent updateEvent) {
-    if (ENTITY_EDIT_EVENTS_ENABLED.get()) {
-      map(updateEvent.getUpdatedEntities().entrySet(),
-              entry -> entry.getKey().getEntityId()).forEach((entityId, updated) -> {
-        final Map<Entity.Key, Entity> updateMap = new HashMap<>();
-        updated.forEach(entry -> updateMap.put(entry.getKey(), entry.getValue()));
-        final WeakObserver<Map<Entity.Key, Entity>> event = UPDATE_EVENTS.get(entityId);
-        if (event != null) {
-          event.fire(updateMap);
-        }
-      });
-    }
+    map(updateEvent.getUpdatedEntities().entrySet(),
+            entry -> entry.getKey().getEntityId()).forEach((entityId, updated) -> {
+      final Map<Entity.Key, Entity> updateMap = new HashMap<>();
+      updated.forEach(entry -> updateMap.put(entry.getKey(), entry.getValue()));
+      final WeakObserver<Map<Entity.Key, Entity>> event = UPDATE_EVENTS.get(entityId);
+      if (event != null) {
+        event.fire(updateMap);
+      }
+    });
   }
 
   static void deleted(final EntityEditModel.DeleteEvent deleteEvent) {
-    if (ENTITY_EDIT_EVENTS_ENABLED.get()) {
-      mapToEntityId(deleteEvent.getDeletedEntities()).forEach((entityId, entities) -> {
-        final WeakObserver<List<Entity>> event = DELETE_EVENTS.get(entityId);
-        if (event != null) {
-          event.fire(entities);
-        }
-      });
-    }
+    mapToEntityId(deleteEvent.getDeletedEntities()).forEach((entityId, entities) -> {
+      final WeakObserver<List<Entity>> event = DELETE_EVENTS.get(entityId);
+      if (event != null) {
+        event.fire(entities);
+      }
+    });
   }
 
   private static WeakObserver<List<Entity>> getInsertObserver(final String entityId) {

@@ -27,6 +27,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.entityCondition;
@@ -49,6 +51,45 @@ public final class DefaultEntityEditModelTest {
     jobProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
     deptProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel = new TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+  }
+
+  @Test
+  public void editEvents() throws DatabaseException, ValidationException {
+    final AtomicInteger insertEvents = new AtomicInteger();
+    final AtomicInteger updateEvents = new AtomicInteger();
+    final AtomicInteger deleteEvents = new AtomicInteger();
+
+    final EventDataListener<List<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
+    final EventDataListener<Map<Entity.Key, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
+    final EventDataListener<List<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
+
+    EntityEditEvents.addInsertListener(TestDomain.T_EMP, insertListener);
+    EntityEditEvents.addUpdateListener(TestDomain.T_EMP, updateListener);
+    EntityEditEvents.addDeleteListener(TestDomain.T_EMP, deleteListener);
+
+    employeeEditModel.setPostEditEvents(true);
+
+    final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
+    try {
+      connection.beginTransaction();
+      final Entity jones = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "JONES");
+      employeeEditModel.setEntity(jones);
+      employeeEditModel.put(TestDomain.EMP_NAME, "Noname");
+      employeeEditModel.insert();
+      assertEquals(1, insertEvents.get());
+      employeeEditModel.put(TestDomain.EMP_NAME, "Another");
+      employeeEditModel.update();
+      assertEquals(1, updateEvents.get());
+      employeeEditModel.delete();
+      assertEquals(1, deleteEvents.get());
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
+
+    EntityEditEvents.removeInsertListener(TestDomain.T_EMP, insertListener);
+    EntityEditEvents.removeUpdateListener(TestDomain.T_EMP, updateListener);
+    EntityEditEvents.removeDeleteListener(TestDomain.T_EMP, deleteListener);
   }
 
   @Test
