@@ -16,11 +16,19 @@ include::{dir-manual}/conditions.adoc[]
 
 include::{dir-manual}/entity-model.adoc[]
 
+include::{dir-manual}/entity-edit-model.adoc[]
+
+include::{dir-manual}/entity-table-model.adoc[]
+
 include::{dir-manual}/entity-application-model.adoc[]
 
 include::{dir-manual}/load-test.adoc[]
 
 include::{dir-manual}/entity-panel.adoc[]
+
+include::{dir-manual}/entity-edit-panel.adoc[]
+
+include::{dir-manual}/entity-table-panel.adoc[]
 
 include::{dir-manual}/entity-panel-provider.adoc[]
 
