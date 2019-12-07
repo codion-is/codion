@@ -61,8 +61,6 @@ import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -123,7 +121,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   private static final String ALT_PREFIX = " (ALT-";
-  private static final int ENTITY_MENU_X_OFFSET = 42;
 
   /**
    * The edit model this edit panel is associated with
@@ -369,25 +366,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     if (components.containsKey(propertyId)) {
       components.get(propertyId).requestFocus();
     }
-  }
-
-  /**
-   * @return a list of propertyIds to use when selecting a input component in this panel,
-   * this returns all propertyIds that have mapped components in this panel
-   * that are enabled, displayable, visible and focusable.
-   * @see #includeComponentSelectionPropertyId(String) (String)
-   * @see #setComponent(String, javax.swing.JComponent)
-   */
-  public final List<String> getSelectComponentPropertyIds() {
-    final List<String> propertyIds = getComponentPropertyIds();
-    propertyIds.removeIf(propertyId -> {
-      final JComponent component = getComponent(propertyId);
-
-      return component == null || !includeComponentSelectionPropertyId(propertyId) || !component.isDisplayable() ||
-              !component.isVisible() || !component.isFocusable() || !component.isEnabled();
-    });
-
-    return propertyIds;
   }
 
   /**
@@ -2047,21 +2025,30 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     }
   }
 
-  private void bindEventsInternal() {
-    addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if (e.isAltDown() && e.getClickCount() == 2) {
-          EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this, new Point(e.getX(), e.getY()), getEditModel().getConnectionProvider());
-        }
-      }
+  /**
+   * @return a list of propertyIds to use when selecting a input component in this panel,
+   * this returns all propertyIds that have mapped components in this panel
+   * that are enabled, displayable, visible and focusable.
+   * @see #includeComponentSelectionPropertyId(String) (String)
+   * @see #setComponent(String, javax.swing.JComponent)
+   */
+  private List<String> getSelectComponentPropertyIds() {
+    final List<String> propertyIds = getComponentPropertyIds();
+    propertyIds.removeIf(propertyId -> {
+      final JComponent component = getComponent(propertyId);
+
+      return component == null || !includeComponentSelectionPropertyId(propertyId) || !component.isDisplayable() ||
+              !component.isVisible() || !component.isFocusable() || !component.isEnabled();
     });
+
+    return propertyIds;
+  }
+
+  private void bindEventsInternal() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(() -> {
-              final int x = getBounds().getLocation().x + ENTITY_MENU_X_OFFSET;
-              final int y = getHeight();
-              EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this, new Point(x, y),
-                      getEditModel().getConnectionProvider());
+              EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this,
+                      new Point(0, 0), getEditModel().getConnectionProvider());
             }, "EntityEditPanel.showEntityMenu"));
     editModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityEditPanel.this));
     editModel.addAfterRefreshListener(() -> UiUtil.setWaitCursor(false, EntityEditPanel.this));

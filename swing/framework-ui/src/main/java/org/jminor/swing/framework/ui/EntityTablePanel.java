@@ -1326,11 +1326,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * Initialize the MouseListener for the table component handling
-   * double click and right click, or popup click with ALT down. Double clicking
-   * simply invokes the action returned by {@link #getTableDoubleClickAction()}
-   * with the JTable as the ActionEvent source while right click with ALT down
-   * invokes {@link EntityUiUtil#showEntityMenu(Entity, JComponent, Point, EntityConnectionProvider)}
+   * Initialize the MouseListener for the table component handling double click.
+   * Double clicking invokes the action returned by {@link #getTableDoubleClickAction()}
+   * with the JTable as the ActionEvent source
    * @return the MouseListener for the table
    * @see #getTableDoubleClickAction()
    */
@@ -1343,10 +1341,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
             tableDoubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
           }
           tableDoubleClickedEvent.fire();
-        }
-        else if (e.isPopupTrigger() && e.isAltDown()) {
-          EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(), EntityTablePanel.this,
-                  e.getPoint(), getEntityTableModel().getConnectionProvider());
         }
       }
     };
