@@ -11,5 +11,37 @@ When extending an EntityEditPanel you must implement the *initializeUI()* method
 include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerEditPanel.java[lines=12..-1]
 ----
 
+== Input controls
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createBooleanComboBox-java.lang.String-[createBooleanComboBox(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createCheckBox-java.lang.String-[createCheckBox(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createDateInputPanel-java.lang.String-[createDateInputPanel(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createForeignKeyComboBox-java.lang.String-[createForeignKeyComboBox(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createForeignKeyField-java.lang.String-[createForeignKeyField(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createForeignKeyLookupField-java.lang.String-[createForeignKeyLookupField(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createPropertyComboBox-java.lang.String-[createPropertyComboBox(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createTextArea-java.lang.String-[createTextArea(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createTextField-java.lang.String-[createTextField(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createTextInputPanel-java.lang.String-[createTextInputPanel(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createTristateCheckBox-java.lang.String-[createTristateCheckBox(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createValueListComboBox-java.lang.String-[createValueListComboBox(propertyId)]
+
+== Panels & labels
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createLabel-java.lang.String-[createLabel(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createPropertyPanel-java.lang.String-[createPropertyPanel(propertyId)]
+
 == Custom actions
 The action mechanism used throughout the JMinor framework is based on the {url-javadoc}/org/jminor/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/org/jminor/swing/common/ui/control/ControlSet.html[ControlSet] class which, as the name suggests, represents a set of controls. There are two static utility classes for creating and presenting controls, {url-javadoc}/org/jminor/swing/common/ui/control/Controls.html[Controls] and {url-javadoc}/org/jminor/swing/common/ui/control/ControlProvider.html[ControlProvider] respectively.
