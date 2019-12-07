@@ -17,8 +17,6 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerEditPan
 
 {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createCheckBox-java.lang.String-[createCheckBox(propertyId)]
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createDateInputPanel-java.lang.String-[createDateInputPanel(propertyId)]
-
 {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createForeignKeyComboBox-java.lang.String-[createForeignKeyComboBox(propertyId)]
 
 {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createForeignKeyField-java.lang.String-[createForeignKeyField(propertyId)]
@@ -26,6 +24,8 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerEditPan
 {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createForeignKeyLookupField-java.lang.String-[createForeignKeyLookupField(propertyId)]
 
 {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createPropertyComboBox-java.lang.String-[createPropertyComboBox(propertyId)]
+
+{url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createTemporalInputPanel-java.lang.String-[createTemporalInputPanel(propertyId)]
 
 {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html#createTextArea-java.lang.String-[createTextArea(propertyId)]
 

@@ -1202,96 +1202,96 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Creates a new DateInputPanel using the default short date format, bound to the property
+   * Creates a new TemporalInputPanel using the default short date format, bound to the property
    * identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
-   * @return a DateInputPanel using the default short date format
+   * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final TemporalInputPanel createDateInputPanel(final String propertyId) {
-    return createDateInputPanel(propertyId, true);
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId) {
+    return createTemporalInputPanel(propertyId, true);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
-   * @return a DateInputPanel using the default short date format
+   * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton) {
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton) {
     final Property property = editModel.getEntityDefinition().getProperty(propertyId);
-    return createDateInputPanel(property, includeButton, null);
+    return createTemporalInputPanel(property, includeButton, null);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
-                                                          final StateObserver enabledState) {
-    return createDateInputPanel(propertyId, includeButton, enabledState, true);
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton,
+                                                              final StateObserver enabledState) {
+    return createTemporalInputPanel(propertyId, includeButton, enabledState, true);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
-                                                          final StateObserver enabledState, final boolean updateOnKeystroke) {
-    return createDateInputPanel(editModel.getEntityDefinition().getProperty(propertyId),
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton,
+                                                              final StateObserver enabledState, final boolean updateOnKeystroke) {
+    return createTemporalInputPanel(editModel.getEntityDefinition().getProperty(propertyId),
             includeButton, enabledState, updateOnKeystroke);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param property the property for which to create the panel
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final Property property) {
-    return createDateInputPanel(property, true);
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property) {
+    return createTemporalInputPanel(property, true);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the given property.
+   * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton) {
-    return createDateInputPanel(property, includeButton, null);
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton) {
+    return createTemporalInputPanel(property, includeButton, null);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the given property.
+   * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
-                                                          final StateObserver enabledState) {
-    return createDateInputPanel(property, includeButton, enabledState, true);
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton,
+                                                              final StateObserver enabledState) {
+    return createTemporalInputPanel(property, includeButton, enabledState, true);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the given property.
+   * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
-                                                          final StateObserver enabledState, final boolean updateOnKeystroke) {
-    final TemporalInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, updateOnKeystroke, includeButton, enabledState);
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton,
+                                                              final StateObserver enabledState, final boolean updateOnKeystroke) {
+    final TemporalInputPanel panel = EntityUiUtil.createTemporalInputPanel(property, editModel, updateOnKeystroke, includeButton, enabledState);
     setComponent(property.getPropertyId(), panel);
 
     return panel;

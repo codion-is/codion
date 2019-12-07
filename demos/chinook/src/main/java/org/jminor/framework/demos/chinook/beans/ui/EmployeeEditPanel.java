@@ -22,7 +22,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
     createTextField(EMPLOYEE_FIRSTNAME).setColumns(16);
     createTextField(EMPLOYEE_LASTNAME).setColumns(16);
-    createDateInputPanel(EMPLOYEE_BIRTHDATE).getInputField().setColumns(16);
+    createTemporalInputPanel(EMPLOYEE_BIRTHDATE).getInputField().setColumns(16);
     createTextField(EMPLOYEE_ADDRESS).setColumns(16);
     createTextField(EMPLOYEE_CITY).setColumns(16);
     UiUtil.makeUpperCase(createTextField(EMPLOYEE_STATE)).setColumns(16);
@@ -32,7 +32,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createTextField(EMPLOYEE_FAX).setColumns(16);
     createTextField(EMPLOYEE_EMAIL).setColumns(16);
     createForeignKeyComboBox(EMPLOYEE_REPORTSTO_FK);
-    createDateInputPanel(EMPLOYEE_HIREDATE).getInputField().setColumns(16);
+    createTemporalInputPanel(EMPLOYEE_HIREDATE).getInputField().setColumns(16);
     createTextField(EMPLOYEE_TITLE).setColumns(16);
 
     setLayout(new FlexibleGridLayout(4, 4, 5, 5));

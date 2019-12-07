@@ -5416,3 +5416,4 @@
   FilteredTablePanel, search field refactoring
   FilteredTableModel.findNextItemCoordinate() replaced with searchForward() and searchBackward()
   MasterDetailPanel renamed to HierarchyPanel
+  EntityUiUtil, EntityEditPanel, createDateInputPanel() renamed to createTemporalInputPanel()
