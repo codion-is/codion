@@ -61,8 +61,6 @@ import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -123,7 +121,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   private static final String ALT_PREFIX = " (ALT-";
-  private static final int ENTITY_MENU_X_OFFSET = 42;
 
   /**
    * The edit model this edit panel is associated with
@@ -369,25 +366,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     if (components.containsKey(propertyId)) {
       components.get(propertyId).requestFocus();
     }
-  }
-
-  /**
-   * @return a list of propertyIds to use when selecting a input component in this panel,
-   * this returns all propertyIds that have mapped components in this panel
-   * that are enabled, displayable, visible and focusable.
-   * @see #includeComponentSelectionPropertyId(String) (String)
-   * @see #setComponent(String, javax.swing.JComponent)
-   */
-  public final List<String> getSelectComponentPropertyIds() {
-    final List<String> propertyIds = getComponentPropertyIds();
-    propertyIds.removeIf(propertyId -> {
-      final JComponent component = getComponent(propertyId);
-
-      return component == null || !includeComponentSelectionPropertyId(propertyId) || !component.isDisplayable() ||
-              !component.isVisible() || !component.isFocusable() || !component.isEnabled();
-    });
-
-    return propertyIds;
   }
 
   /**
@@ -1202,96 +1180,96 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Creates a new DateInputPanel using the default short date format, bound to the property
+   * Creates a new TemporalInputPanel using the default short date format, bound to the property
    * identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
-   * @return a DateInputPanel using the default short date format
+   * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final TemporalInputPanel createDateInputPanel(final String propertyId) {
-    return createDateInputPanel(propertyId, true);
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId) {
+    return createTemporalInputPanel(propertyId, true);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
-   * @return a DateInputPanel using the default short date format
+   * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton) {
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton) {
     final Property property = editModel.getEntityDefinition().getProperty(propertyId);
-    return createDateInputPanel(property, includeButton, null);
+    return createTemporalInputPanel(property, includeButton, null);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
-                                                          final StateObserver enabledState) {
-    return createDateInputPanel(propertyId, includeButton, enabledState, true);
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton,
+                                                              final StateObserver enabledState) {
+    return createTemporalInputPanel(propertyId, includeButton, enabledState, true);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
-                                                          final StateObserver enabledState, final boolean updateOnKeystroke) {
-    return createDateInputPanel(editModel.getEntityDefinition().getProperty(propertyId),
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton,
+                                                              final StateObserver enabledState, final boolean updateOnKeystroke) {
+    return createTemporalInputPanel(editModel.getEntityDefinition().getProperty(propertyId),
             includeButton, enabledState, updateOnKeystroke);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param property the property for which to create the panel
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final Property property) {
-    return createDateInputPanel(property, true);
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property) {
+    return createTemporalInputPanel(property, true);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the given property.
+   * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton) {
-    return createDateInputPanel(property, includeButton, null);
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton) {
+    return createTemporalInputPanel(property, includeButton, null);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the given property.
+   * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
-                                                          final StateObserver enabledState) {
-    return createDateInputPanel(property, includeButton, enabledState, true);
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton,
+                                                              final StateObserver enabledState) {
+    return createTemporalInputPanel(property, includeButton, enabledState, true);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the given property.
+   * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   * @return a DateInputPanel bound to the property
+   * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
-                                                          final StateObserver enabledState, final boolean updateOnKeystroke) {
-    final TemporalInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, updateOnKeystroke, includeButton, enabledState);
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton,
+                                                              final StateObserver enabledState, final boolean updateOnKeystroke) {
+    final TemporalInputPanel panel = EntityUiUtil.createTemporalInputPanel(property, editModel, updateOnKeystroke, includeButton, enabledState);
     setComponent(property.getPropertyId(), panel);
 
     return panel;
@@ -2047,21 +2025,30 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     }
   }
 
-  private void bindEventsInternal() {
-    addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if (e.isAltDown() && e.getClickCount() == 2) {
-          EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this, new Point(e.getX(), e.getY()), getEditModel().getConnectionProvider());
-        }
-      }
+  /**
+   * @return a list of propertyIds to use when selecting a input component in this panel,
+   * this returns all propertyIds that have mapped components in this panel
+   * that are enabled, displayable, visible and focusable.
+   * @see #includeComponentSelectionPropertyId(String) (String)
+   * @see #setComponent(String, javax.swing.JComponent)
+   */
+  private List<String> getSelectComponentPropertyIds() {
+    final List<String> propertyIds = getComponentPropertyIds();
+    propertyIds.removeIf(propertyId -> {
+      final JComponent component = getComponent(propertyId);
+
+      return component == null || !includeComponentSelectionPropertyId(propertyId) || !component.isDisplayable() ||
+              !component.isVisible() || !component.isFocusable() || !component.isEnabled();
     });
+
+    return propertyIds;
+  }
+
+  private void bindEventsInternal() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(() -> {
-              final int x = getBounds().getLocation().x + ENTITY_MENU_X_OFFSET;
-              final int y = getHeight();
-              EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this, new Point(x, y),
-                      getEditModel().getConnectionProvider());
+              EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this,
+                      new Point(0, 0), getEditModel().getConnectionProvider());
             }, "EntityEditPanel.showEntityMenu"));
     editModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityEditPanel.this));
     editModel.addAfterRefreshListener(() -> UiUtil.setWaitCursor(false, EntityEditPanel.this));

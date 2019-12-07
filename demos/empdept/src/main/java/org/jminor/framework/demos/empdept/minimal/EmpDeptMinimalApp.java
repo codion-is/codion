@@ -158,7 +158,7 @@ public class EmpDeptMinimalApp {
       createForeignKeyComboBox("dept_fk");
       createTextField("job");
       createForeignKeyComboBox("mgr_fk");
-      createDateInputPanel("hiredate");
+      createTemporalInputPanel("hiredate");
       createTextField("sal");
       createTextField("comm");
 

@@ -38,7 +38,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     final EntityLookupField customerField = createForeignKeyLookupField(INVOICE_CUSTOMER_FK);
     configureCustomerLookup(customerField);
     customerField.setColumns(16);
-    final TemporalInputPanel datePanel = createDateInputPanel(INVOICE_INVOICEDATE);
+    final TemporalInputPanel datePanel = createTemporalInputPanel(INVOICE_INVOICEDATE);
     datePanel.getInputField().setColumns(16);
     final JTextField addressField = createTextField(INVOICE_BILLINGADDRESS);
     addressField.setColumns(16);

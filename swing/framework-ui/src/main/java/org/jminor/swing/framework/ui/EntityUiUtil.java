@@ -506,9 +506,9 @@ public final class EntityUiUtil {
    * @param includeButton if true then a button for opening a date input dialog is included (only available for LocalDate)
    * @return a date input panel
    */
-  public static TemporalInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
-                                                        final boolean updateOnKeystroke, final boolean includeButton) {
-    return createDateInputPanel(property, editModel, updateOnKeystroke, includeButton, null);
+  public static TemporalInputPanel createTemporalInputPanel(final Property property, final EntityEditModel editModel,
+                                                            final boolean updateOnKeystroke, final boolean includeButton) {
+    return createTemporalInputPanel(property, editModel, updateOnKeystroke, includeButton, null);
   }
 
   /**
@@ -520,9 +520,9 @@ public final class EntityUiUtil {
    * @param enabledState the state controlling the enabled state of the panel
    * @return a date input panel
    */
-  public static TemporalInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
-                                                        final boolean updateOnKeystroke, final boolean includeCalendarButton,
-                                                        final StateObserver enabledState) {
+  public static TemporalInputPanel createTemporalInputPanel(final Property property, final EntityEditModel editModel,
+                                                            final boolean updateOnKeystroke, final boolean includeCalendarButton,
+                                                            final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     if (!property.isTemporal()) {
       throw new IllegalArgumentException("Property " + property + " is not a date or time property");

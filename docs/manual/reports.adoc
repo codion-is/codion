@@ -3,8 +3,6 @@
 :dir-tutorials: ../tutorials
 :url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
 
-== Introduction
-
 JMinor uses a plugin oriented approach to report viewing, and provides an implementation for JasperReports and NextReports.
 
 With the JMinor JasperReports plugin you can either design your report based on a SQL query in which case you use the JasperReportsWrapper class, which facilitates the report being filled using the active database connection or you can design your report around the JRDataSource implementation provided by the {url-javadoc}/org/jminor/plugin/jasperreports/model/JasperReportsEntityDataSource.html[JasperReportsEntityDataSource] class, which is constructed around an iterator.
