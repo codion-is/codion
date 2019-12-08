@@ -237,7 +237,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private final JLabel statusMessageLabel;
 
   private final List<ControlSet> additionalPopupControlSets = new ArrayList<>();
-  private final List<ControlSet> additionalToolbarControlSets = new ArrayList<>();
+  private final List<ControlSet> additionalToolBarControlSets = new ArrayList<>();
 
   /**
    * the action performed when the table is double clicked
@@ -313,7 +313,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       this.conditionScrollPane = null;
     }
     this.statusMessageLabel = initializeStatusMessageLabel();
-    this.refreshToolBar = initializeRefreshToolbar();
+    this.refreshToolBar = initializeRefreshToolBar();
   }
 
   /**
@@ -341,13 +341,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * @param additionalToolbarControls a set of controls to add to the table toolbar menu
+   * @param additionalToolBarControls a set of controls to add to the table toolbar menu
    * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void addToolbarControls(final ControlSet additionalToolbarControls) {
+  public final void addToolBarControls(final ControlSet additionalToolBarControls) {
     checkIfInitialized();
-    this.additionalToolbarControlSets.add(additionalToolbarControls);
+    this.additionalToolBarControlSets.add(additionalToolBarControls);
   }
 
   /**
@@ -1063,7 +1063,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
   }
 
-  protected ControlSet getToolbarControls(final List<ControlSet> additionalToolbarControlSets) {
+  protected ControlSet getToolBarControls(final List<ControlSet> additionalToolBarControlSets) {
     final ControlSet toolbarControls = new ControlSet("");
     if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL)) {
       toolbarControls.add(controlMap.get(TOGGLE_SUMMARY_PANEL));
@@ -1080,7 +1080,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     toolbarControls.addSeparator();
     toolbarControls.add(controlMap.get(MOVE_SELECTION_UP));
     toolbarControls.add(controlMap.get(MOVE_SELECTION_DOWN));
-    additionalToolbarControlSets.forEach(controlSet -> {
+    additionalToolBarControlSets.forEach(controlSet -> {
       toolbarControls.addSeparator();
       for (final Action action : controlSet.getActions()) {
         toolbarControls.add(action);
@@ -1326,34 +1326,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * Initialize the MouseListener for the table component handling double click.
-   * Double clicking invokes the action returned by {@link #getTableDoubleClickAction()}
-   * with the JTable as the ActionEvent source
-   * @return the MouseListener for the table
-   * @see #getTableDoubleClickAction()
-   */
-  protected final MouseListener initializeTableMouseListener() {
-    return new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if (e.getClickCount() == 2) {
-          if (tableDoubleClickAction != null) {
-            tableDoubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
-          }
-          tableDoubleClickedEvent.fire();
-        }
-      }
-    };
-  }
-
-  /**
-   * Initializes the south panel toolbar, by default based on {@code getToolbarControls()}
+   * Initializes the south panel toolbar, by default based on {@code getToolBarControls()}
    * @return the toolbar to add to the south panel
    */
-  protected JToolBar initializeToolbar() {
-    final ControlSet toolbarControlSet = getToolbarControls(additionalToolbarControlSets);
+  protected JToolBar initializeSouthToolBar() {
+    final ControlSet toolbarControlSet = getToolBarControls(additionalToolBarControlSets);
     if (toolbarControlSet != null) {
-      final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
+      final JToolBar southToolBar = ControlProvider.createToolBar(toolbarControlSet, JToolBar.HORIZONTAL);
       for (final Component component : southToolBar.getComponents()) {
         component.setPreferredSize(TOOLBAR_BUTTON_SIZE);
       }
@@ -1365,6 +1344,27 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
 
     return null;
+  }
+
+  /**
+   * Initialize the MouseListener for the table component handling double click.
+   * Double clicking invokes the action returned by {@link #getTableDoubleClickAction()}
+   * with the JTable as the ActionEvent source
+   * @return the MouseListener for the table
+   * @see #getTableDoubleClickAction()
+   */
+  private MouseListener initializeTableMouseListener() {
+    return new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent e) {
+        if (e.getClickCount() == 2) {
+          if (tableDoubleClickAction != null) {
+            tableDoubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
+          }
+          tableDoubleClickedEvent.fire();
+        }
+      }
+    };
   }
 
   private void viewImageForSelected(final String imagePathPropertyId) {
@@ -1434,7 +1434,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       if (conditionPanel.canToggleAdvanced()) {
         UiUtil.linkBoundedRangeModels(getTableScrollPane().getHorizontalScrollBar().getModel(),
                 conditionScrollPane.getHorizontalScrollBar().getModel());
-        conditionPanel.addAdvancedListener(info -> {
+        conditionPanel.addAdvancedListener(data -> {
           if (isConditionPanelVisible()) {
             revalidate();
           }
@@ -1446,7 +1446,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       southPanel = new JPanel(UiUtil.createBorderLayout());
       final JPanel southPanelCenter = initializeSouthPanel();
       if (southPanelCenter != null) {
-        final JToolBar southToolBar = initializeToolbar();
+        final JToolBar southToolBar = initializeSouthToolBar();
         if (southToolBar != null) {
           southPanelCenter.add(southToolBar, BorderLayout.EAST);
         }
@@ -1459,7 +1459,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   /**
    * @return the refresh toolbar
    */
-  private JToolBar initializeRefreshToolbar() {
+  private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
     final Control refresh = Controls.control(getEntityTableModel()::refresh, null,

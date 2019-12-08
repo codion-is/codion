@@ -5420,3 +5420,4 @@
   EntityEditPanel, EntityTablePanel, removed mouse click based entity menu actions
   FilteredTableModel.searchForward() and searchBackward() renamed findNext() and findPrevious()
   FilteredTableModel.findNext() and findPrevious() condition parameter now Predicate<String>
+  EntityTablePanel.initializeTableMouseListener() now private, typos fixed
