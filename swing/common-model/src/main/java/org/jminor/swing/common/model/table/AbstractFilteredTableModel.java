@@ -174,19 +174,19 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final RowColumn searchForward(final int fromRowIndex, final String searchText) {
-    return searchForward(fromRowIndex, getSearchCondition(searchText));
+  public final RowColumn findNext(final int fromRowIndex, final String searchText) {
+    return findNext(fromRowIndex, getSearchCondition(searchText));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final RowColumn searchBackward(final int fromRowIndex, final String searchText) {
-    return searchBackward(fromRowIndex, getSearchCondition(searchText));
+  public final RowColumn findPrevious(final int fromRowIndex, final String searchText) {
+    return findPrevious(fromRowIndex, getSearchCondition(searchText));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final RowColumn searchForward(final int fromRowIndex, final Predicate<Object> condition) {
+  public final RowColumn findNext(final int fromRowIndex, final Predicate<Object> condition) {
     for (int row = fromRowIndex >= getVisibleItemCount() ? 0 : fromRowIndex; row < getVisibleItemCount(); row++) {
       final RowColumn point = findColumnValue(columnModel.getColumns(), row, condition);
       if (point != null) {
@@ -199,7 +199,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final RowColumn searchBackward(final int fromRowIndex, final Predicate<Object> condition) {
+  public final RowColumn findPrevious(final int fromRowIndex, final Predicate<Object> condition) {
     for (int row = fromRowIndex < 0 ? getVisibleItemCount() - 1 : fromRowIndex; row >= 0; row--) {
       final RowColumn point = findColumnValue(columnModel.getColumns(), row, condition);
       if (point != null) {
@@ -555,8 +555,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param rowIndex the row index
    * @param column the column
    * @return the search value
-   * @see #searchForward(int, String)
-   * @see #searchBackward(int, String)
+   * @see #findNext(int, String)
+   * @see #findPrevious(int, String)
    */
   protected String getSearchValueAt(final int rowIndex, final TableColumn column) {
     final Object value = getValueAt(rowIndex, column.getModelIndex());

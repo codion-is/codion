@@ -5418,3 +5418,4 @@
   MasterDetailPanel renamed to HierarchyPanel
   EntityUiUtil, EntityEditPanel, createDateInputPanel() renamed to createTemporalInputPanel()
   EntityEditPanel, EntityTablePanel, removed mouse click based entity menu actions
+  FilteredTableModel.searchForward() and searchBackward() renamed findNext() and findPrevious()
