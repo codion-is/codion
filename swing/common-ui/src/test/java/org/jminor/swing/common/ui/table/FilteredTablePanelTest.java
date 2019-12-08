@@ -77,19 +77,19 @@ public class FilteredTablePanelTest {
 
     searchField.setText("");
 
-    panel.searchForward(false, "da");
+    panel.findNext(false, "da");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
-    panel.searchForward(false, "da");
+    panel.findNext(false, "da");
     assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
-    panel.searchForward(false, "da");
+    panel.findNext(false, "da");
     assertEquals(2, tableModel.getSelectionModel().getSelectedIndex());
-    panel.searchBackward(true, "da");
+    panel.findPrevious(true, "da");
     assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
     assertEquals(2, tableModel.getSelectionModel().getSelectionCount());
-    panel.searchBackward(true, "da");
+    panel.findPrevious(true, "da");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
     assertEquals(3, tableModel.getSelectionModel().getSelectionCount());
-    panel.searchForward(false, "dat");
+    panel.findNext(false, "dat");
   }
 
   public static TestAbstractFilteredTableModel createTestModel() {

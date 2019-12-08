@@ -451,8 +451,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param addToSelection if true then the items found are added to the selection
    * @param searchText the text to search for
    */
-  final void searchForward(final boolean addToSelection, final String searchText) {
-    searchForward(addToSelection, lastSearchResultCoordinate.getRow() + 1, searchText);
+  final void findNext(final boolean addToSelection, final String searchText) {
+    performSearch(addToSelection, lastSearchResultCoordinate.getRow() + 1, true, searchText);
   }
 
   /**
@@ -460,8 +460,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param addToSelection if true then the items found are added to the selection
    * @param searchText the text to search for
    */
-  final void searchBackward(final boolean addToSelection, final String searchText) {
-    searchBackward(addToSelection, lastSearchResultCoordinate.getRow() - 1, searchText);
+  final void findPrevious(final boolean addToSelection, final String searchText) {
+    performSearch(addToSelection, lastSearchResultCoordinate.getRow() - 1, false, searchText);
   }
 
   private JTextField initializeSearchField() {
@@ -473,8 +473,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
       @Override
       public void contentsChanged(final DocumentEvent e) {
         if (!textFieldHint.isHintTextVisible()) {
-          searchForward(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
-                  lastSearchResultCoordinate.getRow(), field.getText());
+          performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
+                  lastSearchResultCoordinate.getRow(), true, field.getText());
         }
       }
     });
@@ -486,18 +486,10 @@ public class FilteredTablePanel<R, C> extends JPanel {
     return field;
   }
 
-  private void searchForward(final boolean addToSelection, final int fromIndex, final String searchText) {
-    performSearch(addToSelection, fromIndex, true, searchText);
-  }
-
-  private void searchBackward(final boolean addToSelection, final int fromIndex, final String searchText) {
-    performSearch(addToSelection, fromIndex, false, searchText);
-  }
-
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
     if (searchText.length() != 0) {
-      final RowColumn coordinate = forward ? tableModel.searchForward(fromIndex, searchText) :
-              tableModel.searchBackward(fromIndex, searchText);
+      final RowColumn coordinate = forward ? tableModel.findNext(fromIndex, searchText) :
+              tableModel.findPrevious(fromIndex, searchText);
       if (coordinate != null) {
         lastSearchResultCoordinate = coordinate;
         if (addToSelection) {
@@ -706,10 +698,10 @@ public class FilteredTablePanel<R, C> extends JPanel {
         return;
       }
       if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
-        searchForward(e.isShiftDown(), field.getText());
+        findNext(e.isShiftDown(), field.getText());
       }
       else if (e.getKeyCode() == KeyEvent.VK_UP) {
-        searchBackward(e.isShiftDown(), field.getText());
+        findPrevious(e.isShiftDown(), field.getText());
       }
       else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
         getJTable().requestFocusInWindow();

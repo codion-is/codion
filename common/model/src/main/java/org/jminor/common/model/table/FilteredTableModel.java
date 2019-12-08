@@ -150,7 +150,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @return the search result coordinate, null if nothing was found
    * @see #isRegularExpressionSearch()
    */
-  RowColumn searchForward(final int fromRowIndex, final String searchText);
+  RowColumn findNext(final int fromRowIndex, final String searchText);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -161,7 +161,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @return the search result coordinate, null if nothing was found
    * @see #isRegularExpressionSearch()
    */
-  RowColumn searchBackward(final int fromRowIndex, final String searchText);
+  RowColumn findPrevious(final int fromRowIndex, final String searchText);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -171,7 +171,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param condition the search condition
    * @return the search result coordinate, null if nothing was found
    */
-  RowColumn searchForward(final int fromRowIndex, final Predicate<Object> condition);
+  RowColumn findNext(final int fromRowIndex, final Predicate<String> condition);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -181,7 +181,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param condition the search condition
    * @return the search result coordinate, null if nothing was found
    */
-  RowColumn searchBackward(final int fromRowIndex, final Predicate<Object> condition);
+  RowColumn findPrevious(final int fromRowIndex, final Predicate<String> condition);
 
   /**
    * @return true if regular expressions should be used when searching this table model
