@@ -452,7 +452,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param searchText the text to search for
    */
   final void findNext(final boolean addToSelection, final String searchText) {
-    findNext(addToSelection, lastSearchResultCoordinate.getRow() + 1, searchText);
+    performSearch(addToSelection, lastSearchResultCoordinate.getRow() + 1, true, searchText);
   }
 
   /**
@@ -461,7 +461,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param searchText the text to search for
    */
   final void findPrevious(final boolean addToSelection, final String searchText) {
-    findPrevious(addToSelection, lastSearchResultCoordinate.getRow() - 1, searchText);
+    performSearch(addToSelection, lastSearchResultCoordinate.getRow() - 1, false, searchText);
   }
 
   private JTextField initializeSearchField() {
@@ -473,8 +473,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
       @Override
       public void contentsChanged(final DocumentEvent e) {
         if (!textFieldHint.isHintTextVisible()) {
-          findNext(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
-                  lastSearchResultCoordinate.getRow(), field.getText());
+          performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
+                  lastSearchResultCoordinate.getRow(), true, field.getText());
         }
       }
     });
@@ -484,14 +484,6 @@ public class FilteredTablePanel<R, C> extends JPanel {
     field.setComponentPopupMenu(initializeSearchFieldPopupMenu());
 
     return field;
-  }
-
-  private void findNext(final boolean addToSelection, final int fromIndex, final String searchText) {
-    performSearch(addToSelection, fromIndex, true, searchText);
-  }
-
-  private void findPrevious(final boolean addToSelection, final int fromIndex, final String searchText) {
-    performSearch(addToSelection, fromIndex, false, searchText);
   }
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
