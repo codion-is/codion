@@ -110,6 +110,9 @@ import java.util.ResourceBundle;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
+import static org.jminor.swing.common.ui.UiUtil.setWaitCursor;
+import static org.jminor.swing.common.ui.control.Controls.control;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.
@@ -507,7 +510,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     Properties.sort(getEntityTableModel().getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (includeUpdateSelectedProperty(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
-        controlSet.add(Controls.control(() -> updateSelectedEntities(property), caption, enabled));
+        controlSet.add(control(() -> updateSelectedEntities(property), caption, enabled));
       }
     });
 
@@ -518,7 +521,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return a control for showing the dependencies dialog
    */
   public final Control getViewDependenciesControl() {
-    return Controls.control(this::viewSelectionDependencies,
+    return control(this::viewSelectionDependencies,
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + TRIPLEDOT,
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
@@ -532,7 +535,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     if (!includeDeleteSelectedControl()) {
       throw new IllegalStateException("Table model is read only or does not allow delete");
     }
-    return Controls.control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
+    return control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
                     getEntityTableModel().getEditModel().getAllowDeleteObserver(),
                     getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()),
@@ -545,7 +548,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    */
   public final Control getPrintTableControl() {
     final String printCaption = MESSAGES.getString("print_table");
-    return Controls.control(this::printTable, printCaption, null,
+    return control(this::printTable, printCaption, null,
             printCaption, printCaption.charAt(0), null, Images.loadImage("Print16.gif"));
   }
 
@@ -554,7 +557,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    */
   public final Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
-    return Controls.control(getEntityTableModel()::refresh, refreshCaption,
+    return control(getEntityTableModel()::refresh, refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
             null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -564,7 +567,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    */
   public final Control getClearControl() {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
-    return Controls.control(getEntityTableModel()::clear, clearCaption,
+    return control(getEntityTableModel()::clear, clearCaption,
             null, null, clearCaption.charAt(0), null, null);
   }
 
@@ -586,14 +589,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     if (inputPanel.isInputAccepted()) {
       Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
       try {
-        UiUtil.setWaitCursor(true, this);
+        setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
       }
       catch (final Exception e) {
         handleException(e);
       }
       finally {
-        UiUtil.setWaitCursor(false, this);
+        setWaitCursor(false, this);
       }
     }
   }
@@ -608,7 +611,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
 
     final SwingEntityTableModel tableModel = getEntityTableModel();
     try {
-      UiUtil.setWaitCursor(true, this);
+      setWaitCursor(true, this);
       final Map<String, Collection<Entity>> dependencies =
               tableModel.getConnectionProvider().getConnection()
                       .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
@@ -624,7 +627,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       handleException(e);
     }
     finally {
-      UiUtil.setWaitCursor(false, this);
+      setWaitCursor(false, this);
     }
   }
 
@@ -636,11 +639,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     try {
       if (confirmDelete()) {
         try {
-          UiUtil.setWaitCursor(true, this);
+          setWaitCursor(true, this);
           getEntityTableModel().deleteSelected();
         }
         finally {
-          UiUtil.setWaitCursor(false, this);
+          setWaitCursor(false, this);
         }
       }
     }
@@ -680,7 +683,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       handleException((DatabaseException) throwable);
     }
     else {
-      displayException(throwable, UiUtil.getParentWindow(this));
+      displayException(throwable, getParentWindow(this));
     }
   }
 
@@ -699,7 +702,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       return null;
     }
 
-    final Control toggleControl = Controls.control(this::toggleConditionPanel, Images.loadImage(Images.IMG_FILTER_16));
+    final Control toggleControl = control(this::toggleConditionPanel, Images.loadImage(Images.IMG_FILTER_16));
     toggleControl.setDescription(MESSAGES.getString("show_condition_panel"));
 
     return toggleControl;
@@ -709,7 +712,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return a control for clearing the table selection
    */
   public final Control getClearSelectionControl() {
-    final Control clearSelection = Controls.control(getEntityTableModel().getSelectionModel()::clearSelection, null,
+    final Control clearSelection = control(getEntityTableModel().getSelectionModel()::clearSelection, null,
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(MESSAGES.getString("clear_selection_tip"));
@@ -721,7 +724,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return a control for moving the table selection down one index
    */
   public final Control getMoveSelectionDownControl() {
-    final Control selectionDown = Controls.control(getEntityTableModel().getSelectionModel()::moveSelectionDown,
+    final Control selectionDown = control(getEntityTableModel().getSelectionModel()::moveSelectionDown,
             Images.loadImage(Images.IMG_DOWN_16));
     selectionDown.setDescription(MESSAGES.getString("selection_down_tip"));
 
@@ -732,7 +735,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return a control for moving the table selection up one index
    */
   public final Control getMoveSelectionUpControl() {
-    final Control selectionUp = Controls.control(getEntityTableModel().getSelectionModel()::moveSelectionUp,
+    final Control selectionUp = control(getEntityTableModel().getSelectionModel()::moveSelectionUp,
             Images.loadImage(Images.IMG_UP_16));
     selectionUp.setDescription(MESSAGES.getString("selection_up_tip"));
 
@@ -749,7 +752,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    */
   public final Control getViewImageControl(final String imagePathPropertyId) {
     requireNonNull(imagePathPropertyId, "imagePathPropertyId");
-    return Controls.control(() -> viewImageForSelected(imagePathPropertyId), "View image",
+    return control(() -> viewImageForSelected(imagePathPropertyId), "View image",
             getTableModel().getSelectionModel().getSingleSelectionObserver());
   }
 
@@ -794,7 +797,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, MESSAGES.getString("delete_dependent_records"));
     }
     catch (final DatabaseException e) {
-      DefaultDialogExceptionHandler.getInstance().displayException(e, UiUtil.getParentWindow(dialogParent));
+      DefaultDialogExceptionHandler.getInstance().displayException(e, getParentWindow(dialogParent));
     }
   }
 
@@ -909,13 +912,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
                                                   final Dimension preferredSize) {
     requireNonNull(lookupModel, "lookupModel");
     final Collection<Entity> selected = new ArrayList<>();
-    final JDialog dialog = new JDialog(dialogOwner instanceof Window ? (Window) dialogOwner : UiUtil.getParentWindow(dialogOwner), dialogTitle);
+    final JDialog dialog = new JDialog(dialogOwner instanceof Window ? (Window) dialogOwner : getParentWindow(dialogOwner), dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final Control okControl = Controls.control(() -> {
+    final Control okControl = control(() -> {
       selected.addAll(lookupModel.getSelectionModel().getSelectedItems());
       dialog.dispose();
     }, Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    final Control cancelControl = Controls.control(() -> {
+    final Control cancelControl = control(() -> {
       selected.add(null);//hack to indicate cancel
       dialog.dispose();
     }, Messages.get(Messages.CANCEL), null, null, Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
@@ -934,14 +937,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       entityTablePanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
-    final Control searchControl = Controls.control(() -> {
+    final Control searchControl = control(() -> {
       lookupModel.refresh();
       if (lookupModel.getRowCount() > 0) {
         lookupModel.getSelectionModel().setSelectedIndexes(singletonList(0));
         entityTablePanel.getJTable().requestFocusInWindow();
       }
       else {
-        JOptionPane.showMessageDialog(UiUtil.getParentWindow(entityTablePanel),
+        JOptionPane.showMessageDialog(getParentWindow(entityTablePanel),
                 FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
       }
     }, FrameworkMessages.get(FrameworkMessages.SEARCH), null, null, FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0));
@@ -986,7 +989,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   public final EntityTablePanel initializePanel() {
     if (!panelInitialized) {
       try {
-        UiUtil.setWaitCursor(true, this);
+        setWaitCursor(true, this);
         setupControls();
         initializeTable();
         initializeUI();
@@ -995,7 +998,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       }
       finally {
         panelInitialized = true;
-        UiUtil.setWaitCursor(false, this);
+        setWaitCursor(false, this);
       }
     }
 
@@ -1039,12 +1042,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
-    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, Controls.control(() -> {
+    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, control(() -> {
       final Point location = getPopupLocation(table);
       popupMenu.show(table, location.x, location.y);
     }, "EntityTablePanel.showPopupMenu"));
     UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            Controls.control(() -> EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(),
+            control(() -> EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(),
                     EntityTablePanel.this, getPopupLocation(table), getEntityTableModel().getConnectionProvider()),
                     "EntityTablePanel.showEntityMenu"));
   }
@@ -1172,12 +1175,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   protected final Control getCopyCellControl() {
-    return Controls.control(this::copySelectedCell, FrameworkMessages.get(FrameworkMessages.COPY_CELL),
+    return control(this::copySelectedCell, FrameworkMessages.get(FrameworkMessages.COPY_CELL),
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver());
   }
 
   protected final Control getCopyTableWithHeaderControl() {
-    return Controls.control(this::copyTableAsDelimitedString, FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
+    return control(this::copyTableAsDelimitedString, FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
   }
 
   /**
@@ -1197,7 +1200,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @param exception the exception to handle
    */
   protected void handleException(final ValidationException exception) {
-    displayException(exception, UiUtil.getParentWindow(this));
+    displayException(exception, getParentWindow(this));
   }
 
   /**
@@ -1206,7 +1209,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @param exception the exception to handle
    */
   protected void handleException(final DatabaseException exception) {
-    displayException(exception, UiUtil.getParentWindow(this));
+    displayException(exception, getParentWindow(this));
   }
 
   /**
@@ -1462,7 +1465,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final Control refresh = Controls.control(getEntityTableModel()::refresh, null,
+    final Control refresh = control(getEntityTableModel()::refresh, null,
             getEntityTableModel().getConditionModel().getConditionStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
@@ -1589,13 +1592,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
                                              final JComponent dialogParent, final String title) {
     JPanel dependenciesPanel;
     try {
-      UiUtil.setWaitCursor(true, dialogParent);
+      setWaitCursor(true, dialogParent);
       dependenciesPanel = createDependenciesPanel(dependencies, connectionProvider);
     }
     finally {
-      UiUtil.setWaitCursor(false, dialogParent);
+      setWaitCursor(false, dialogParent);
     }
-    UiUtil.displayInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel, title);
+    UiUtil.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
   }
 
   private static JLabel initializeStatusMessageLabel() {
