@@ -171,7 +171,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param condition the search condition
    * @return the search result coordinate, null if nothing was found
    */
-  RowColumn findNext(final int fromRowIndex, final Predicate<Object> condition);
+  RowColumn findNext(final int fromRowIndex, final Predicate<String> condition);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -181,7 +181,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param condition the search condition
    * @return the search result coordinate, null if nothing was found
    */
-  RowColumn findPrevious(final int fromRowIndex, final Predicate<Object> condition);
+  RowColumn findPrevious(final int fromRowIndex, final Predicate<String> condition);
 
   /**
    * @return true if regular expressions should be used when searching this table model

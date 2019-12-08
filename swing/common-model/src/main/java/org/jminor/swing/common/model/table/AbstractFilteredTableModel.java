@@ -186,11 +186,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final RowColumn findNext(final int fromRowIndex, final Predicate<Object> condition) {
+  public final RowColumn findNext(final int fromRowIndex, final Predicate<String> condition) {
     for (int row = fromRowIndex >= getVisibleItemCount() ? 0 : fromRowIndex; row < getVisibleItemCount(); row++) {
-      final RowColumn point = findColumnValue(columnModel.getColumns(), row, condition);
-      if (point != null) {
-        return point;
+      final RowColumn coordinate = findColumnValue(row, condition);
+      if (coordinate != null) {
+        return coordinate;
       }
     }
 
@@ -199,11 +199,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final RowColumn findPrevious(final int fromRowIndex, final Predicate<Object> condition) {
+  public final RowColumn findPrevious(final int fromRowIndex, final Predicate<String> condition) {
     for (int row = fromRowIndex < 0 ? getVisibleItemCount() - 1 : fromRowIndex; row >= 0; row--) {
-      final RowColumn point = findColumnValue(columnModel.getColumns(), row, condition);
-      if (point != null) {
-        return point;
+      final RowColumn coordinate = findColumnValue(row, condition);
+      if (coordinate != null) {
+        return coordinate;
       }
     }
 
@@ -568,12 +568,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param searchText the search text
    * @return a Predicate based on the given search text
    */
-  private Predicate<Object> getSearchCondition(final String searchText) {
+  private Predicate<String> getSearchCondition(final String searchText) {
     if (regularExpressionSearch) {
-      return new RegexFilterCondition<>(searchText);
+      return new RegexSearchCondition(searchText);
     }
 
-    return item -> !(item == null || searchText == null) && item.toString().toLowerCase().contains(searchText.toLowerCase());
+    return item -> !(item == null || searchText == null) && item.toLowerCase().contains(searchText.toLowerCase());
   }
 
   private void bindEventsInternal() {
@@ -584,32 +584,32 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     sortModel.addSortingStateChangedListener(this::sortContents);
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
-        rowsDeletedEvent.eventOccurred(asList(e.getFirstRow(), e.getLastRow()));
+        rowsDeletedEvent.fire(asList(e.getFirstRow(), e.getLastRow()));
       }
     });
   }
 
-  private RowColumn findColumnValue(final Enumeration<TableColumn> visibleColumns, final int row, final Predicate<Object> condition) {
-    int column = 0;
-    while (visibleColumns.hasMoreElements()) {
-      if (condition.test(getSearchValueAt(row, visibleColumns.nextElement()))) {
-        return RowColumn.rowColumn(row, column);
+  private RowColumn findColumnValue(final int row, final Predicate<String> condition) {
+    final Enumeration<TableColumn> columnsToSearch = columnModel.getColumns();
+    while (columnsToSearch.hasMoreElements()) {
+      final TableColumn column = columnsToSearch.nextElement();
+      if (condition.test(getSearchValueAt(row, column))) {
+        return RowColumn.rowColumn(row, columnModel.getColumnIndex(column.getIdentifier()));
       }
-      column++;
     }
 
     return null;
   }
 
-  private static final class RegexFilterCondition<T> implements Predicate<T> {
+  private static final class RegexSearchCondition implements Predicate<String> {
 
     private final Pattern pattern;
 
     /**
-     * Instantiates a new RegexFilterCondition.
+     * Instantiates a new RegexSearchCondition.
      * @param patternString the regex pattern
      */
-    private RegexFilterCondition(final String patternString) {
+    private RegexSearchCondition(final String patternString) {
       this.pattern = Pattern.compile(patternString);
     }
 
@@ -619,8 +619,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
      * @return true if the item should be included
      */
     @Override
-    public boolean test(final T item) {
-      return item != null && pattern.matcher(item.toString()).find();
+    public boolean test(final String item) {
+      return item != null && pattern.matcher(item).find();
     }
   }
 

@@ -133,9 +133,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public RowColumn findPrevious(final int fromRowIndex, final String searchText) {return null;}
     @Override
-    public RowColumn findNext(final int fromRowIndex, final Predicate<Object> condition) {return null;}
+    public RowColumn findNext(final int fromRowIndex, final Predicate<String> condition) {return null;}
     @Override
-    public RowColumn findPrevious(final int fromRowIndex, final Predicate<Object> condition) {return null;}
+    public RowColumn findPrevious(final int fromRowIndex, final Predicate<String> condition) {return null;}
     @Override
     public boolean isRegularExpressionSearch() {return false;}
     @Override

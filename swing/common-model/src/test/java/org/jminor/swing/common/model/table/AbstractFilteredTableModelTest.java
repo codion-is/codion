@@ -282,7 +282,7 @@ public final class AbstractFilteredTableModelTest {
     coordinate = testModel.findNext(0, "(?i)B");
     assertEquals(RowColumn.rowColumn(3, 1), coordinate);
 
-    Predicate<Object> condition = item -> item.equals("b") || item.equals("e");
+    Predicate<String> condition = item -> item.equals("b") || item.equals("e");
 
     coordinate = testModel.findPrevious(4, condition);
     assertEquals(RowColumn.rowColumn(3, 1), coordinate);
