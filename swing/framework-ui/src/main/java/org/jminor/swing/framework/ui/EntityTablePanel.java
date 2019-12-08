@@ -10,6 +10,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
@@ -49,6 +50,7 @@ import org.jminor.swing.common.ui.input.LongInputProvider;
 import org.jminor.swing.common.ui.input.TemporalInputProvider;
 import org.jminor.swing.common.ui.input.TextInputProvider;
 import org.jminor.swing.common.ui.input.ValueListInputProvider;
+import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.table.FilteredTablePanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -110,6 +112,9 @@ import java.util.ResourceBundle;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
+import static org.jminor.swing.common.ui.UiUtil.setWaitCursor;
+import static org.jminor.swing.common.ui.control.Controls.control;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.
@@ -209,9 +214,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private static final int POPUP_LOCATION_X_OFFSET = 42;
   private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
-  private static final String TRIPLEDOT = "...";
 
-  private final Event tableDoubleClickedEvent = Events.event();
+  private final Event<MouseEvent> tableDoubleClickedEvent = Events.event();
   private final Event<Boolean> conditionPanelVisibilityChangedEvent = Events.event();
 
   private final Map<String, Control> controlMap = new HashMap<>();
@@ -237,7 +241,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private final JLabel statusMessageLabel;
 
   private final List<ControlSet> additionalPopupControlSets = new ArrayList<>();
-  private final List<ControlSet> additionalToolbarControlSets = new ArrayList<>();
+  private final List<ControlSet> additionalToolBarControlSets = new ArrayList<>();
 
   /**
    * the action performed when the table is double clicked
@@ -245,17 +249,17 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private Action tableDoubleClickAction;
 
   /**
-   * specifies whether or not to include the south panel
+   * specifies whether to include the south panel
    */
   private boolean includeSouthPanel = true;
 
   /**
-   * specifies whether or not to include the condition panel
+   * specifies whether to include the condition panel
    */
   private boolean includeConditionPanel = true;
 
   /**
-   * specifies whether or not to include a popup menu
+   * specifies whether to include a popup menu
    */
   private boolean includePopupMenu = true;
 
@@ -298,9 +302,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @see SwingEntityTableModel#getSelectionModel()
    */
   public EntityTablePanel(final JTable table, final EntityTableConditionPanel conditionPanel) {
-    super(table, column ->
-            new PropertyFilterPanel(((SwingEntityTableModel) table.getModel()).getConditionModel().getPropertyFilterModel(
-                    ((Property) column.getIdentifier()).getPropertyId()), true, true));
+    super(table, new DefaultColumnConditionPanelProvider(table));
     table.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     table.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     table.setRowHeight(table.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
@@ -313,7 +315,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       this.conditionScrollPane = null;
     }
     this.statusMessageLabel = initializeStatusMessageLabel();
-    this.refreshToolBar = initializeRefreshToolbar();
+    this.refreshToolBar = initializeRefreshToolBar();
   }
 
   /**
@@ -341,13 +343,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * @param additionalToolbarControls a set of controls to add to the table toolbar menu
+   * @param additionalToolBarControls a set of controls to add to the table toolbar menu
    * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void addToolbarControls(final ControlSet additionalToolbarControls) {
+  public final void addToolBarControls(final ControlSet additionalToolBarControls) {
     checkIfInitialized();
-    this.additionalToolbarControlSets.add(additionalToolbarControls);
+    this.additionalToolBarControlSets.add(additionalToolBarControls);
   }
 
   /**
@@ -507,7 +509,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     Properties.sort(getEntityTableModel().getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (includeUpdateSelectedProperty(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
-        controlSet.add(Controls.control(() -> updateSelectedEntities(property), caption, enabled));
+        controlSet.add(control(() -> updateSelectedEntities(property), caption, enabled));
       }
     });
 
@@ -518,8 +520,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return a control for showing the dependencies dialog
    */
   public final Control getViewDependenciesControl() {
-    return Controls.control(this::viewSelectionDependencies,
-            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + TRIPLEDOT,
+    return control(this::viewSelectionDependencies,
+            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
@@ -532,7 +534,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     if (!includeDeleteSelectedControl()) {
       throw new IllegalStateException("Table model is read only or does not allow delete");
     }
-    return Controls.control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
+    return control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
                     getEntityTableModel().getEditModel().getAllowDeleteObserver(),
                     getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()),
@@ -545,7 +547,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    */
   public final Control getPrintTableControl() {
     final String printCaption = MESSAGES.getString("print_table");
-    return Controls.control(this::printTable, printCaption, null,
+    return control(this::printTable, printCaption, null,
             printCaption, printCaption.charAt(0), null, Images.loadImage("Print16.gif"));
   }
 
@@ -554,7 +556,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    */
   public final Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
-    return Controls.control(getEntityTableModel()::refresh, refreshCaption,
+    return control(getEntityTableModel()::refresh, refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
             null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -564,7 +566,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    */
   public final Control getClearControl() {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
-    return Controls.control(getEntityTableModel()::clear, clearCaption,
+    return control(getEntityTableModel()::clear, clearCaption,
             null, null, clearCaption.charAt(0), null, null);
   }
 
@@ -586,14 +588,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     if (inputPanel.isInputAccepted()) {
       Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
       try {
-        UiUtil.setWaitCursor(true, this);
+        setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
       }
       catch (final Exception e) {
         handleException(e);
       }
       finally {
-        UiUtil.setWaitCursor(false, this);
+        setWaitCursor(false, this);
       }
     }
   }
@@ -608,7 +610,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
 
     final SwingEntityTableModel tableModel = getEntityTableModel();
     try {
-      UiUtil.setWaitCursor(true, this);
+      setWaitCursor(true, this);
       final Map<String, Collection<Entity>> dependencies =
               tableModel.getConnectionProvider().getConnection()
                       .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
@@ -624,7 +626,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       handleException(e);
     }
     finally {
-      UiUtil.setWaitCursor(false, this);
+      setWaitCursor(false, this);
     }
   }
 
@@ -636,11 +638,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     try {
       if (confirmDelete()) {
         try {
-          UiUtil.setWaitCursor(true, this);
+          setWaitCursor(true, this);
           getEntityTableModel().deleteSelected();
         }
         finally {
-          UiUtil.setWaitCursor(false, this);
+          setWaitCursor(false, this);
         }
       }
     }
@@ -680,7 +682,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       handleException((DatabaseException) throwable);
     }
     else {
-      displayException(throwable, UiUtil.getParentWindow(this));
+      displayException(throwable, getParentWindow(this));
     }
   }
 
@@ -699,7 +701,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       return null;
     }
 
-    final Control toggleControl = Controls.control(this::toggleConditionPanel, Images.loadImage(Images.IMG_FILTER_16));
+    final Control toggleControl = control(this::toggleConditionPanel, Images.loadImage(Images.IMG_FILTER_16));
     toggleControl.setDescription(MESSAGES.getString("show_condition_panel"));
 
     return toggleControl;
@@ -709,7 +711,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return a control for clearing the table selection
    */
   public final Control getClearSelectionControl() {
-    final Control clearSelection = Controls.control(getEntityTableModel().getSelectionModel()::clearSelection, null,
+    final Control clearSelection = control(getEntityTableModel().getSelectionModel()::clearSelection, null,
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(MESSAGES.getString("clear_selection_tip"));
@@ -721,7 +723,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return a control for moving the table selection down one index
    */
   public final Control getMoveSelectionDownControl() {
-    final Control selectionDown = Controls.control(getEntityTableModel().getSelectionModel()::moveSelectionDown,
+    final Control selectionDown = control(getEntityTableModel().getSelectionModel()::moveSelectionDown,
             Images.loadImage(Images.IMG_DOWN_16));
     selectionDown.setDescription(MESSAGES.getString("selection_down_tip"));
 
@@ -732,7 +734,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return a control for moving the table selection up one index
    */
   public final Control getMoveSelectionUpControl() {
-    final Control selectionUp = Controls.control(getEntityTableModel().getSelectionModel()::moveSelectionUp,
+    final Control selectionUp = control(getEntityTableModel().getSelectionModel()::moveSelectionUp,
             Images.loadImage(Images.IMG_UP_16));
     selectionUp.setDescription(MESSAGES.getString("selection_up_tip"));
 
@@ -749,36 +751,36 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    */
   public final Control getViewImageControl(final String imagePathPropertyId) {
     requireNonNull(imagePathPropertyId, "imagePathPropertyId");
-    return Controls.control(() -> viewImageForSelected(imagePathPropertyId), "View image",
+    return control(() -> viewImageForSelected(imagePathPropertyId), "View image",
             getTableModel().getSelectionModel().getSingleSelectionObserver());
   }
 
   /**
    * @param listener a listener notified each time the condition panel visibility changes
    */
-  public final void addConditionPanelVisibleListener(final EventListener listener) {
-    conditionPanelVisibilityChangedEvent.addListener(listener);
+  public final void addConditionPanelVisibleListener(final EventDataListener<Boolean> listener) {
+    conditionPanelVisibilityChangedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeConditionPanelVisibleListener(final EventListener listener) {
-    conditionPanelVisibilityChangedEvent.removeListener(listener);
+  public final void removeConditionPanelVisibleListener(final EventDataListener listener) {
+    conditionPanelVisibilityChangedEvent.removeDataListener(listener);
   }
 
   /**
    * @param listener a listener notified each time the table is double clicked
    */
-  public final void addTableDoubleClickListener(final EventListener listener) {
-    tableDoubleClickedEvent.addListener(listener);
+  public final void addTableDoubleClickListener(final EventDataListener<MouseEvent> listener) {
+    tableDoubleClickedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeTableDoubleClickListener(final EventListener listener) {
-    tableDoubleClickedEvent.removeListener(listener);
+  public final void removeTableDoubleClickListener(final EventDataListener listener) {
+    tableDoubleClickedEvent.removeDataListener(listener);
   }
 
   /**
@@ -794,7 +796,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, MESSAGES.getString("delete_dependent_records"));
     }
     catch (final DatabaseException e) {
-      DefaultDialogExceptionHandler.getInstance().displayException(e, UiUtil.getParentWindow(dialogParent));
+      DefaultDialogExceptionHandler.getInstance().displayException(e, getParentWindow(dialogParent));
     }
   }
 
@@ -909,13 +911,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
                                                   final Dimension preferredSize) {
     requireNonNull(lookupModel, "lookupModel");
     final Collection<Entity> selected = new ArrayList<>();
-    final JDialog dialog = new JDialog(dialogOwner instanceof Window ? (Window) dialogOwner : UiUtil.getParentWindow(dialogOwner), dialogTitle);
+    final JDialog dialog = new JDialog(dialogOwner instanceof Window ? (Window) dialogOwner : getParentWindow(dialogOwner), dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final Control okControl = Controls.control(() -> {
+    final Control okControl = control(() -> {
       selected.addAll(lookupModel.getSelectionModel().getSelectedItems());
       dialog.dispose();
     }, Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    final Control cancelControl = Controls.control(() -> {
+    final Control cancelControl = control(() -> {
       selected.add(null);//hack to indicate cancel
       dialog.dispose();
     }, Messages.get(Messages.CANCEL), null, null, Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
@@ -924,7 +926,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     model.getEditModel().setReadOnly(true);
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.initializePanel();
-    entityTablePanel.addTableDoubleClickListener(() -> {
+    entityTablePanel.addTableDoubleClickListener(mouseEvent -> {
       if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
         okControl.actionPerformed(null);
       }
@@ -934,14 +936,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       entityTablePanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
-    final Control searchControl = Controls.control(() -> {
+    final Control searchControl = control(() -> {
       lookupModel.refresh();
       if (lookupModel.getRowCount() > 0) {
         lookupModel.getSelectionModel().setSelectedIndexes(singletonList(0));
         entityTablePanel.getJTable().requestFocusInWindow();
       }
       else {
-        JOptionPane.showMessageDialog(UiUtil.getParentWindow(entityTablePanel),
+        JOptionPane.showMessageDialog(getParentWindow(entityTablePanel),
                 FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
       }
     }, FrameworkMessages.get(FrameworkMessages.SEARCH), null, null, FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0));
@@ -986,7 +988,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   public final EntityTablePanel initializePanel() {
     if (!panelInitialized) {
       try {
-        UiUtil.setWaitCursor(true, this);
+        setWaitCursor(true, this);
         setupControls();
         initializeTable();
         initializeUI();
@@ -995,7 +997,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       }
       finally {
         panelInitialized = true;
-        UiUtil.setWaitCursor(false, this);
+        setWaitCursor(false, this);
       }
     }
 
@@ -1039,12 +1041,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
-    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, Controls.control(() -> {
+    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, control(() -> {
       final Point location = getPopupLocation(table);
       popupMenu.show(table, location.x, location.y);
     }, "EntityTablePanel.showPopupMenu"));
     UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            Controls.control(() -> EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(),
+            control(() -> EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(),
                     EntityTablePanel.this, getPopupLocation(table), getEntityTableModel().getConnectionProvider()),
                     "EntityTablePanel.showEntityMenu"));
   }
@@ -1063,7 +1065,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
   }
 
-  protected ControlSet getToolbarControls(final List<ControlSet> additionalToolbarControlSets) {
+  protected ControlSet getToolBarControls(final List<ControlSet> additionalToolBarControlSets) {
     final ControlSet toolbarControls = new ControlSet("");
     if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL)) {
       toolbarControls.add(controlMap.get(TOGGLE_SUMMARY_PANEL));
@@ -1080,7 +1082,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     toolbarControls.addSeparator();
     toolbarControls.add(controlMap.get(MOVE_SELECTION_UP));
     toolbarControls.add(controlMap.get(MOVE_SELECTION_DOWN));
-    additionalToolbarControlSets.forEach(controlSet -> {
+    additionalToolBarControlSets.forEach(controlSet -> {
       toolbarControls.addSeparator();
       for (final Action action : controlSet.getActions()) {
         toolbarControls.add(action);
@@ -1172,12 +1174,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   protected final Control getCopyCellControl() {
-    return Controls.control(this::copySelectedCell, FrameworkMessages.get(FrameworkMessages.COPY_CELL),
+    return control(this::copySelectedCell, FrameworkMessages.get(FrameworkMessages.COPY_CELL),
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver());
   }
 
   protected final Control getCopyTableWithHeaderControl() {
-    return Controls.control(this::copyTableAsDelimitedString, FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
+    return control(this::copyTableAsDelimitedString, FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
   }
 
   /**
@@ -1197,7 +1199,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @param exception the exception to handle
    */
   protected void handleException(final ValidationException exception) {
-    displayException(exception, UiUtil.getParentWindow(this));
+    displayException(exception, getParentWindow(this));
   }
 
   /**
@@ -1206,7 +1208,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @param exception the exception to handle
    */
   protected void handleException(final DatabaseException exception) {
-    displayException(exception, UiUtil.getParentWindow(this));
+    displayException(exception, getParentWindow(this));
   }
 
   /**
@@ -1326,34 +1328,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * Initialize the MouseListener for the table component handling double click.
-   * Double clicking invokes the action returned by {@link #getTableDoubleClickAction()}
-   * with the JTable as the ActionEvent source
-   * @return the MouseListener for the table
-   * @see #getTableDoubleClickAction()
-   */
-  protected final MouseListener initializeTableMouseListener() {
-    return new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if (e.getClickCount() == 2) {
-          if (tableDoubleClickAction != null) {
-            tableDoubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
-          }
-          tableDoubleClickedEvent.fire();
-        }
-      }
-    };
-  }
-
-  /**
-   * Initializes the south panel toolbar, by default based on {@code getToolbarControls()}
+   * Initializes the south panel toolbar, by default based on {@code getToolBarControls()}
    * @return the toolbar to add to the south panel
    */
-  protected JToolBar initializeToolbar() {
-    final ControlSet toolbarControlSet = getToolbarControls(additionalToolbarControlSets);
+  protected JToolBar initializeSouthToolBar() {
+    final ControlSet toolbarControlSet = getToolBarControls(additionalToolBarControlSets);
     if (toolbarControlSet != null) {
-      final JToolBar southToolBar = ControlProvider.createToolbar(toolbarControlSet, JToolBar.HORIZONTAL);
+      final JToolBar southToolBar = ControlProvider.createToolBar(toolbarControlSet, JToolBar.HORIZONTAL);
       for (final Component component : southToolBar.getComponents()) {
         component.setPreferredSize(TOOLBAR_BUTTON_SIZE);
       }
@@ -1365,6 +1346,27 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
 
     return null;
+  }
+
+  /**
+   * Initialize the MouseListener for the table component handling double click.
+   * Double clicking invokes the action returned by {@link #getTableDoubleClickAction()}
+   * with the JTable as the ActionEvent source
+   * @return the MouseListener for the table
+   * @see #getTableDoubleClickAction()
+   */
+  private MouseListener initializeTableMouseListener() {
+    return new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent e) {
+        if (e.getClickCount() == 2) {
+          if (tableDoubleClickAction != null) {
+            tableDoubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
+          }
+          tableDoubleClickedEvent.fire(e);
+        }
+      }
+    };
   }
 
   private void viewImageForSelected(final String imagePathPropertyId) {
@@ -1434,7 +1436,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       if (conditionPanel.canToggleAdvanced()) {
         UiUtil.linkBoundedRangeModels(getTableScrollPane().getHorizontalScrollBar().getModel(),
                 conditionScrollPane.getHorizontalScrollBar().getModel());
-        conditionPanel.addAdvancedListener(info -> {
+        conditionPanel.addAdvancedListener(data -> {
           if (isConditionPanelVisible()) {
             revalidate();
           }
@@ -1446,7 +1448,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       southPanel = new JPanel(UiUtil.createBorderLayout());
       final JPanel southPanelCenter = initializeSouthPanel();
       if (southPanelCenter != null) {
-        final JToolBar southToolBar = initializeToolbar();
+        final JToolBar southToolBar = initializeSouthToolBar();
         if (southToolBar != null) {
           southPanelCenter.add(southToolBar, BorderLayout.EAST);
         }
@@ -1459,10 +1461,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   /**
    * @return the refresh toolbar
    */
-  private JToolBar initializeRefreshToolbar() {
+  private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final Control refresh = Controls.control(getEntityTableModel()::refresh, null,
+    final Control refresh = control(getEntityTableModel()::refresh, null,
             getEntityTableModel().getConditionModel().getConditionStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
@@ -1589,13 +1591,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
                                              final JComponent dialogParent, final String title) {
     JPanel dependenciesPanel;
     try {
-      UiUtil.setWaitCursor(true, dialogParent);
+      setWaitCursor(true, dialogParent);
       dependenciesPanel = createDependenciesPanel(dependencies, connectionProvider);
     }
     finally {
-      UiUtil.setWaitCursor(false, dialogParent);
+      setWaitCursor(false, dialogParent);
     }
-    UiUtil.displayInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel, title);
+    UiUtil.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
   }
 
   private static JLabel initializeStatusMessageLabel() {
@@ -1626,5 +1628,20 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION : (table.getSelectedRow() + 1) * table.getRowHeight();
 
     return new Point(x, y);
+  }
+
+  private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Property> {
+
+    private final JTable table;
+
+    private DefaultColumnConditionPanelProvider(final JTable table) {
+      this.table = requireNonNull(table);
+    }
+
+    @Override
+    public ColumnConditionPanel<Property> createColumnConditionPanel(final TableColumn column) {
+      return new PropertyFilterPanel(((SwingEntityTableModel) table.getModel()).getConditionModel().getPropertyFilterModel(
+              ((Property) column.getIdentifier()).getPropertyId()), true, true);
+    }
   }
 }

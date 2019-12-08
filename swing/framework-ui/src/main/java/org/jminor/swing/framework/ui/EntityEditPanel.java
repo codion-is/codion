@@ -567,7 +567,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     if (controlPanelControlSet.size() == 0) {
       return null;
     }
-    return ControlProvider.createToolbar(controlPanelControlSet, orientation);
+    return ControlProvider.createToolBar(controlPanelControlSet, orientation);
   }
 
   /**

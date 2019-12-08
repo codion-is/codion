@@ -123,9 +123,9 @@ public final class ControlProvider {
    * @param orientation the toolbar orientation
    * @return a toolbar based on the given controls
    */
-  public static JToolBar createToolbar(final ControlSet controlSet, final int orientation) {
+  public static JToolBar createToolBar(final ControlSet controlSet, final int orientation) {
     final JToolBar toolBar = new JToolBar(orientation);
-    createToolbar(toolBar, controlSet);
+    createToolBar(toolBar, controlSet);
 
     return toolBar;
   }
@@ -135,7 +135,7 @@ public final class ControlProvider {
    * @param toolBar the toolbar to add the controls to
    * @param controlSet the controls
    */
-  public static void createToolbar(final JToolBar toolBar, final ControlSet controlSet) {
+  public static void createToolBar(final JToolBar toolBar, final ControlSet controlSet) {
     iterate(new ToolBarControlIterator(toolBar), controlSet);
   }
 

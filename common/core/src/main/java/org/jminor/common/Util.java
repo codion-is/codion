@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -427,5 +428,21 @@ public final class Util {
     }
 
     return ownerClass.getMethod("get" + propertyName);
+  }
+
+  /**
+   * Basically String.join with an added toString function.
+   * @param delimiter the delimiter
+   * @param values the values to join
+   * @param toString the toString function, only used for non-null values
+   * @param <T> the type of items being joined
+   * @return a joined string
+   */
+  public static <T> String join(final CharSequence delimiter, final Collection<T> values, final Function<T, String> toString) {
+    requireNonNull(delimiter, "delimiter");
+    requireNonNull(values, "values");
+    requireNonNull(toString, "toString");
+    return values.stream().map(value -> value == null ? Objects.toString(value) : toString.apply(value))
+            .collect(Collectors.joining(delimiter));
   }
 }

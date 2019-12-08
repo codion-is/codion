@@ -101,9 +101,9 @@ public class ControlProviderTest {
   }
 
   @Test
-  public void createToolbar() {
-    final JToolBar bar = ControlProvider.createToolbar(set, JToolBar.VERTICAL);
+  public void createToolBar() {
+    final JToolBar bar = ControlProvider.createToolBar(set, JToolBar.VERTICAL);
     final JToolBar barTwo = new JToolBar();
-    ControlProvider.createToolbar(barTwo, set);
+    ControlProvider.createToolBar(barTwo, set);
   }
 }
