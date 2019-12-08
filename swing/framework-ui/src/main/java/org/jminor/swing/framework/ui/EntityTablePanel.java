@@ -10,6 +10,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
@@ -49,6 +50,7 @@ import org.jminor.swing.common.ui.input.LongInputProvider;
 import org.jminor.swing.common.ui.input.TemporalInputProvider;
 import org.jminor.swing.common.ui.input.TextInputProvider;
 import org.jminor.swing.common.ui.input.ValueListInputProvider;
+import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.table.FilteredTablePanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -212,9 +214,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private static final int POPUP_LOCATION_X_OFFSET = 42;
   private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
-  private static final String TRIPLEDOT = "...";
 
-  private final Event tableDoubleClickedEvent = Events.event();
+  private final Event<MouseEvent> tableDoubleClickedEvent = Events.event();
   private final Event<Boolean> conditionPanelVisibilityChangedEvent = Events.event();
 
   private final Map<String, Control> controlMap = new HashMap<>();
@@ -248,17 +249,17 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private Action tableDoubleClickAction;
 
   /**
-   * specifies whether or not to include the south panel
+   * specifies whether to include the south panel
    */
   private boolean includeSouthPanel = true;
 
   /**
-   * specifies whether or not to include the condition panel
+   * specifies whether to include the condition panel
    */
   private boolean includeConditionPanel = true;
 
   /**
-   * specifies whether or not to include a popup menu
+   * specifies whether to include a popup menu
    */
   private boolean includePopupMenu = true;
 
@@ -301,9 +302,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @see SwingEntityTableModel#getSelectionModel()
    */
   public EntityTablePanel(final JTable table, final EntityTableConditionPanel conditionPanel) {
-    super(table, column ->
-            new PropertyFilterPanel(((SwingEntityTableModel) table.getModel()).getConditionModel().getPropertyFilterModel(
-                    ((Property) column.getIdentifier()).getPropertyId()), true, true));
+    super(table, new DefaultColumnConditionPanelProvider(table));
     table.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     table.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     table.setRowHeight(table.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
@@ -522,7 +521,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    */
   public final Control getViewDependenciesControl() {
     return control(this::viewSelectionDependencies,
-            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + TRIPLEDOT,
+            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
@@ -759,29 +758,29 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   /**
    * @param listener a listener notified each time the condition panel visibility changes
    */
-  public final void addConditionPanelVisibleListener(final EventListener listener) {
-    conditionPanelVisibilityChangedEvent.addListener(listener);
+  public final void addConditionPanelVisibleListener(final EventDataListener<Boolean> listener) {
+    conditionPanelVisibilityChangedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeConditionPanelVisibleListener(final EventListener listener) {
-    conditionPanelVisibilityChangedEvent.removeListener(listener);
+  public final void removeConditionPanelVisibleListener(final EventDataListener listener) {
+    conditionPanelVisibilityChangedEvent.removeDataListener(listener);
   }
 
   /**
    * @param listener a listener notified each time the table is double clicked
    */
-  public final void addTableDoubleClickListener(final EventListener listener) {
-    tableDoubleClickedEvent.addListener(listener);
+  public final void addTableDoubleClickListener(final EventDataListener<MouseEvent> listener) {
+    tableDoubleClickedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeTableDoubleClickListener(final EventListener listener) {
-    tableDoubleClickedEvent.removeListener(listener);
+  public final void removeTableDoubleClickListener(final EventDataListener listener) {
+    tableDoubleClickedEvent.removeDataListener(listener);
   }
 
   /**
@@ -927,7 +926,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     model.getEditModel().setReadOnly(true);
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.initializePanel();
-    entityTablePanel.addTableDoubleClickListener(() -> {
+    entityTablePanel.addTableDoubleClickListener(mouseEvent -> {
       if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
         okControl.actionPerformed(null);
       }
@@ -1364,7 +1363,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
           if (tableDoubleClickAction != null) {
             tableDoubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
           }
-          tableDoubleClickedEvent.fire();
+          tableDoubleClickedEvent.fire(e);
         }
       }
     };
@@ -1629,5 +1628,20 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION : (table.getSelectedRow() + 1) * table.getRowHeight();
 
     return new Point(x, y);
+  }
+
+  private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Property> {
+
+    private final JTable table;
+
+    private DefaultColumnConditionPanelProvider(final JTable table) {
+      this.table = requireNonNull(table);
+    }
+
+    @Override
+    public ColumnConditionPanel<Property> createColumnConditionPanel(final TableColumn column) {
+      return new PropertyFilterPanel(((SwingEntityTableModel) table.getModel()).getConditionModel().getPropertyFilterModel(
+              ((Property) column.getIdentifier()).getPropertyId()), true, true);
+    }
   }
 }

@@ -111,7 +111,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   private final Event<Entity> entitySetEvent = Events.event();
 
   /**
-   * A state indicating whether or not the entity being edited is new
+   * A state indicating whether the entity being edited is new
    * @see #isEntityNew()
    */
   private final State entityNewState = States.state(true);

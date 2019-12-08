@@ -5,6 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.TextUtil;
+import org.jminor.common.Util;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.Event;
@@ -28,13 +29,13 @@ import org.jminor.framework.domain.property.Property;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.framework.db.condition.Conditions.conditionSet;
@@ -44,6 +45,8 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
  * A default EntityLookupModel implementation
  */
 public final class DefaultEntityLookupModel implements EntityLookupModel {
+
+  private static final Entity.ToString DEFAULT_TO_STRING = Object::toString;
 
   private final Event<Collection<Entity>> selectedEntitiesChangedEvent = Events.event();
   private final State searchStringRepresentsSelectedState = States.state(true);
@@ -77,7 +80,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   private final Value<String> multipleItemSeparatorValue = Values.value(",");
   private final Value<Boolean> multipleSelectionAllowedValue = Values.value(true);
 
-  private Entity.ToString toStringProvider = null;
+  private Entity.ToString toStringProvider = DEFAULT_TO_STRING;
   private Condition.Provider additionalConditionProvider;
   private Comparator<Entity> resultSorter = new EntityComparator();
   private String wildcard = Property.WILDCARD_CHARACTER.get();
@@ -128,7 +131,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public Collection<ColumnProperty> getLookupProperties() {
-    return Collections.unmodifiableCollection(lookupProperties);
+    return unmodifiableCollection(lookupProperties);
   }
 
   /** {@inheritDoc} */
@@ -171,13 +174,13 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       this.selectedEntities.addAll(entities);
     }
     refreshSearchText();
-    selectedEntitiesChangedEvent.fire(Collections.unmodifiableCollection(selectedEntities));
+    selectedEntitiesChangedEvent.fire(unmodifiableCollection(selectedEntities));
   }
 
   /** {@inheritDoc} */
   @Override
   public Collection<Entity> getSelectedEntities() {
-    return Collections.unmodifiableCollection(selectedEntities);
+    return unmodifiableCollection(selectedEntities);
   }
 
   @Override
@@ -214,7 +217,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public EntityLookupModel setToStringProvider(final Entity.ToString toStringProvider) {
-    this.toStringProvider = toStringProvider;
+    this.toStringProvider = toStringProvider == null ? DEFAULT_TO_STRING : toStringProvider;
     return this;
   }
 
@@ -334,22 +337,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   private String toString(final Collection<Entity> entities) {
-    final StringBuilder stringBuilder = new StringBuilder();
-    int counter = 0;
-    for (final Entity entity : entities) {
-      if (toStringProvider != null) {
-        stringBuilder.append(toStringProvider.toString(entity));
-      }
-      else {
-        stringBuilder.append(entity.toString());
-      }
-      counter++;
-      if (counter < entities.size()) {
-        stringBuilder.append(multipleItemSeparatorValue.get());
-      }
-    }
-
-    return stringBuilder.toString();
+    return Util.join(multipleItemSeparatorValue.get(), entities, entity -> toStringProvider.toString(entity));
   }
 
   private static void validateLookupProperties(final String entityId, final Collection<ColumnProperty> lookupProperties) {
