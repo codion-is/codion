@@ -14,7 +14,7 @@ import java.util.Map;
  * Uses {@link java.lang.ref.WeakReference} so adding a listener does not prevent it from being garbage collected, so keep
  * a live reference to any listeners in order to keep them active.
  */
-public interface EntityEditEventObserver {
+public interface EntityEditObserver {
 
   /**
    * Adds a insert listener

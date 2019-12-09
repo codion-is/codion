@@ -5428,3 +5428,4 @@
   EntityConnectionProvider no longer generic
   EntityModel.filterOnMasterInsert renamed to searchOnMasterInsert
   EntityDataProvider removed
+  EntityEditEventObserver renamed to EntityEditObserver

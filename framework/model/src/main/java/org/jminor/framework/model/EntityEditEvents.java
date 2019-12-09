@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public final class EntityEditEvents {
 
-  private static final EntityEditEventObserver EVENT_OBSERVER = new DefaultEntityEditEventObserver();
+  private static final EntityEditObserver EVENT_OBSERVER = new DefaultEntityEditObserver();
 
   private EntityEditEvents() {}
 

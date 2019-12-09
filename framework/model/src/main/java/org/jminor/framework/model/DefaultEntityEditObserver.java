@@ -19,9 +19,9 @@ import static org.jminor.common.Util.map;
 import static org.jminor.framework.domain.Entities.mapToEntityId;
 
 /**
- * A default {@link EntityEditEventObserver} implementation.
+ * A default {@link EntityEditObserver} implementation.
  */
-final class DefaultEntityEditEventObserver implements EntityEditEventObserver {
+final class DefaultEntityEditObserver implements EntityEditObserver {
 
   private final Map<String, WeakObserver<List<Entity>>> insertEvents = new ConcurrentHashMap<>();
   private final Map<String, WeakObserver<Map<Entity.Key, Entity>>> updateEvents = new ConcurrentHashMap<>();
