@@ -1903,7 +1903,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return an EntityLookupField bound the property
    */
   protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyId) {
-    return createForeignKeyLookupField(foreignKeyPropertyId, (StateObserver) null);
+    return createForeignKeyLookupField(foreignKeyPropertyId, null);
   }
 
   /**
@@ -2046,10 +2046,9 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
 
   private void bindEventsInternal() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(() -> {
-              EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this,
-                      new Point(0, 0), getEditModel().getConnectionProvider());
-            }, "EntityEditPanel.showEntityMenu"));
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(() ->
+                    EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this,
+                            new Point(0, 0), getEditModel().getConnectionProvider()), "EntityEditPanel.showEntityMenu"));
     editModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityEditPanel.this));
     editModel.addAfterRefreshListener(() -> UiUtil.setWaitCursor(false, EntityEditPanel.this));
     editModel.addConfirmSetEntityObserver(confirmationState -> {
