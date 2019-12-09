@@ -473,34 +473,34 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * Adds the inserted entities to the EntityComboBoxModels based on the inserted entity type,
    * sets the value of the master foreign key property and filters the table model if applicable
-   * @param insertEvent the insert event
+   * @param insertedEntities the inserted entities
    * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
-  protected final void handleMasterInsert(final EntityEditModel.InsertEvent insertEvent) {
-    editModel.addForeignKeyValues(insertEvent.getInsertedEntities());
-    editModel.setForeignKeyValues(insertEvent.getInsertedEntities());
+  protected final void handleMasterInsert(final List<Entity> insertedEntities) {
+    editModel.addForeignKeyValues(insertedEntities);
+    editModel.setForeignKeyValues(insertedEntities);
     if (containsTableModel() && searchOnMasterInsert) {
       ForeignKeyProperty foreignKeyProperty = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKeyProperty == null) {
         foreignKeyProperty = editModel.getEntityDefinition().getForeignKeyReferences(masterModel.getEntityId()).get(0);
       }
-      tableModel.setForeignKeyConditionValues(foreignKeyProperty, insertEvent.getInsertedEntities());
+      tableModel.setForeignKeyConditionValues(foreignKeyProperty, insertedEntities);
     }
   }
 
   /**
    * Replaces the updated master entities wherever they are referenced
-   * @param updateEvent the update event
+   * @param updatedEntities the updated entities
    */
-  protected final void handleMasterUpdate(final EntityEditModel.UpdateEvent updateEvent) {
-    editModel.replaceForeignKeyValues(masterModel.getEntityId(), updateEvent.getUpdatedEntities().values());
+  protected final void handleMasterUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+    editModel.replaceForeignKeyValues(masterModel.getEntityId(), updatedEntities.values());
     if (containsTableModel()) {
-      tableModel.replaceForeignKeyValues(masterModel.getEntityId(), updateEvent.getUpdatedEntities().values());
+      tableModel.replaceForeignKeyValues(masterModel.getEntityId(), updatedEntities.values());
     }
   }
 
-  protected final void handleMasterDelete(final EntityEditModel.DeleteEvent deleteEvent) {
-    editModel.removeForeignKeyValues(deleteEvent.getDeletedEntities());
+  protected final void handleMasterDelete(final List<Entity> deletedEntities) {
+    editModel.removeForeignKeyValues(deletedEntities);
   }
 
   private List<Entity> getActiveEntities() {

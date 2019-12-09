@@ -5429,3 +5429,4 @@
   EntityModel.filterOnMasterInsert renamed to searchOnMasterInsert
   EntityDataProvider removed
   EntityEditEventObserver renamed to EntityEditObserver
+  EntityEditModel.InsertEvent, UpdateEvent and DeleteEvent removed
