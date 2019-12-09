@@ -18,7 +18,8 @@ public class DefaultPropertyConditionModelProvider implements PropertyConditionM
   /** {@inheritDoc} */
   @Override
   public ColumnConditionModel<ColumnProperty> initializePropertyConditionModel(final ColumnProperty property) {
-    return new DefaultColumnConditionModel<ColumnProperty>(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimeFormatPattern());
+    return new DefaultColumnConditionModel<>(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(),
+            property.getFormat(), property.getDateTimeFormatPattern());
   }
 
   /** {@inheritDoc} */

@@ -130,7 +130,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public final FilteredComboBoxModel getComboBoxModel(final String propertyId) {
     requireNonNull(propertyId, "propertyId");
-    FilteredComboBoxModel comboBoxModel = (FilteredComboBoxModel) comboBoxModels.get(propertyId);
+    FilteredComboBoxModel comboBoxModel = comboBoxModels.get(propertyId);
     if (comboBoxModel == null) {
       comboBoxModel = createComboBoxModel(getEntityDefinition().getColumnProperty(propertyId));
       comboBoxModels.put(propertyId, comboBoxModel);
