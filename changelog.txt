@@ -5452,3 +5452,5 @@
   EntityDataProvider removed
   EntityEditEventObserver renamed to EntityEditObserver
   EntityEditModel.InsertEvent, UpdateEvent and DeleteEvent removed
+  PropertyComboBoxModel removed
+  EntityEditModel.update(), insert() and delete() now return a single entity instead of a list

@@ -14,7 +14,6 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.model.DefaultEntityEditModel;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.PropertyComboBoxModel;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,7 +31,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * Holds the ComboBoxModels used by this {@link EntityEditModel},
    * @see org.jminor.common.model.Refreshable
    */
-  private final Map<String, Refreshable> comboBoxModels = new HashMap<>();
+  private final Map<String, FilteredComboBoxModel> comboBoxModels = new HashMap<>();
 
   /**
    * Instantiates a new {@link SwingEntityEditModel} based on the entity identified by {@code entityId}.
@@ -125,13 +124,13 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * Returns a {@link PropertyComboBoxModel} for the given property,
+   * Returns a {@link FilteredComboBoxModel} for the given property,
    * @param propertyId the property ID
-   * @return a {@link PropertyComboBoxModel} for the given property
+   * @return a {@link FilteredComboBoxModel} for the given property
    */
-  public final PropertyComboBoxModel getComboBoxModel(final String propertyId) {
+  public final FilteredComboBoxModel getComboBoxModel(final String propertyId) {
     requireNonNull(propertyId, "propertyId");
-    PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) comboBoxModels.get(propertyId);
+    FilteredComboBoxModel comboBoxModel = (FilteredComboBoxModel) comboBoxModels.get(propertyId);
     if (comboBoxModel == null) {
       comboBoxModel = createComboBoxModel(getEntityDefinition().getColumnProperty(propertyId));
       comboBoxModels.put(propertyId, comboBoxModel);
@@ -176,16 +175,16 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Creates a combo box model containing the current values of the given property.
-   * This default implementation returns a sorted {@link PropertyComboBoxModel} with the default nullValueItem
+   * This default implementation returns a sorted {@link SwingPropertyComboBoxModel} with the default nullValueItem
    * if the underlying property is nullable
    * @param property the property
    * @return a combo box model based on the given property
    */
-  public PropertyComboBoxModel createComboBoxModel(final ColumnProperty property) {
+  public SwingPropertyComboBoxModel createComboBoxModel(final ColumnProperty property) {
     requireNonNull(property, "property");
-    final PropertyComboBoxModel model = new SwingPropertyComboBoxModel<>(getEntityId(),
+    final SwingPropertyComboBoxModel model = new SwingPropertyComboBoxModel(getEntityId(),
             getConnectionProvider(), property, null);
-    ((FilteredComboBoxModel) model).setNullValue(getValidator().isNullable(getEntity(), property) ?
+    model.setNullValue(getValidator().isNullable(getEntity(), property) ?
             EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get() : null);
     model.refresh();
     addEntitiesChangedListener(model::refresh);

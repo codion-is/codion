@@ -115,7 +115,7 @@ public final class SwingEntityModelTest
       assertFalse(departmentsComboBoxModel.contains(operations, true));
       departmentModel.getEditModel().put(TestDomain.DEPARTMENT_ID, 99);
       departmentModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, "nameit");
-      final Entity inserted = departmentModel.getEditModel().insert().get(0);
+      final Entity inserted = departmentModel.getEditModel().insert();
       assertTrue(departmentsComboBoxModel.contains(inserted, true));
       departmentModel.getTableModel().getSelectionModel().setSelectedItem(inserted);
       departmentModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, "nameitagain");

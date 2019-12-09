@@ -173,7 +173,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
 
               albumEditModel.setEntity(album);
               try {
-                final Entity insertedAlbum = albumEditModel.insert().get(0);
+                final Entity insertedAlbum = albumEditModel.insert();
                 final SwingEntityEditModel trackEditModel = (SwingEntityEditModel) albumModel.getDetailModel(T_TRACK).getEditModel();
                 final EntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_GENRE_FK);
                 selectRandomItem(genreComboBoxModel);

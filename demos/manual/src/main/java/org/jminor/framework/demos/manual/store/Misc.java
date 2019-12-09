@@ -12,8 +12,6 @@ import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.framework.demos.manual.store.model.CustomerEditModel;
 import org.jminor.framework.domain.Entity;
 
-import java.util.List;
-
 public class Misc {
 
   public static void main(String[] args) throws DatabaseException, ValidationException {
@@ -33,21 +31,15 @@ public class Misc {
     editModel.put(Store.CUSTOMER_LAST_NAME, "Sigurðsson");
     editModel.put(Store.CUSTOMER_IS_ACTIVE, true);
 
-    //inserts and returns the active entity
-    List<Entity> insertedEntities = editModel.insert();
-
-    //select the customer we just inserted
-    Entity customer = insertedEntities.get(0);
-
-    //set the customer as the entity to edit in the edit model
-    editModel.setEntity(customer);
+    //inserts and returns the inserted entity
+    Entity customer = editModel.insert();
 
     //modify some property values
     editModel.put(Store.CUSTOMER_FIRST_NAME, "John");
     editModel.put(Store.CUSTOMER_LAST_NAME, "Doe");
 
-    //updates the active entity
-    editModel.update();
+    //updates and returns the updated entity
+    customer = editModel.update();
 
     //deletes the active entity
     editModel.delete();
