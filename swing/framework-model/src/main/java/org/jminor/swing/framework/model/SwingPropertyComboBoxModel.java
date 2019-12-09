@@ -7,7 +7,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.model.PropertyComboBoxModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import static org.jminor.framework.db.condition.Conditions.entityCondition;
  * A combo box model based on a single entity property.
  * @param <T> the type of values in this combo box model
  */
-public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> implements PropertyComboBoxModel {
+public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> {
 
   private final ValueCollectionProvider<T> valueProvider;
 
