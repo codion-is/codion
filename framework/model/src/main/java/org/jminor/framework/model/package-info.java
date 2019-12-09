@@ -8,7 +8,7 @@
  * {@link org.jminor.framework.model.EntityEditModel#WARN_ABOUT_UNSAVED_DATA}<br>
  * {@link org.jminor.framework.model.EntityEditModel#COMBO_BOX_NULL_VALUE_ITEM}<br>
  * {@link org.jminor.framework.model.EntityEditModel#POST_EDIT_EVENTS}<br>
- * {@link org.jminor.framework.model.EntityModel#FILTER_ON_MASTER_INSERT}<br>
+ * {@link org.jminor.framework.model.EntityModel#SEARCH_ON_MASTER_INSERT}<br>
  * {@link org.jminor.framework.model.EntityModel#USE_CLIENT_PREFERENCES}
  */
 package org.jminor.framework.model;

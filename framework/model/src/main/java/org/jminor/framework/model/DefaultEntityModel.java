@@ -102,9 +102,10 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   private boolean isRefreshing = false;
 
   /**
-   * If true then the table model is automatically filtered when insert is performed in a master model
+   * If true then this models table model will automatically search by the inserted entity
+   * when an insert is performed in a master model
    */
-  private boolean filterOnMasterInsert = EntityModel.FILTER_ON_MASTER_INSERT.get();
+  private boolean searchOnMasterInsert = EntityModel.SEARCH_ON_MASTER_INSERT.get();
 
   /**
    * Instantiates a new DefaultEntityModel
@@ -381,14 +382,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isFilterOnMasterInsert() {
-    return filterOnMasterInsert;
+  public final boolean isSearchOnMasterInsert() {
+    return searchOnMasterInsert;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setFilterOnMasterInsert(final boolean filterOnMasterInsert) {
-    this.filterOnMasterInsert = filterOnMasterInsert;
+  public final void setSearchOnMasterInsert(final boolean searchOnMasterInsert) {
+    this.searchOnMasterInsert = searchOnMasterInsert;
   }
 
   /** {@inheritDoc} */
@@ -473,12 +474,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Adds the inserted entities to the EntityComboBoxModels based on the inserted entity type,
    * sets the value of the master foreign key property and filters the table model if applicable
    * @param insertEvent the insert event
-   * @see EntityModel#FILTER_ON_MASTER_INSERT
+   * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
   protected final void handleMasterInsert(final EntityEditModel.InsertEvent insertEvent) {
     editModel.addForeignKeyValues(insertEvent.getInsertedEntities());
     editModel.setForeignKeyValues(insertEvent.getInsertedEntities());
-    if (containsTableModel() && filterOnMasterInsert) {
+    if (containsTableModel() && searchOnMasterInsert) {
       ForeignKeyProperty foreignKeyProperty = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKeyProperty == null) {
         foreignKeyProperty = editModel.getEntityDefinition().getForeignKeyReferences(masterModel.getEntityId()).get(0);

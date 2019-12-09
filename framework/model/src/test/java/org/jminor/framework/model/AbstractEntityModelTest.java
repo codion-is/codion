@@ -253,8 +253,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
       return;
     }
     final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
-    employeeModel.setFilterOnMasterInsert(true);
-    assertTrue(employeeModel.isFilterOnMasterInsert());
+    employeeModel.setSearchOnMasterInsert(true);
+    assertTrue(employeeModel.isSearchOnMasterInsert());
     final EntityEditModel editModel = departmentModel.getEditModel();
     editModel.put(TestDomain.DEPARTMENT_ID, 100);
     editModel.put(TestDomain.DEPARTMENT_NAME, "Name");

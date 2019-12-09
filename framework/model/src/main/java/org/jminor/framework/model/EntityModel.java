@@ -25,13 +25,13 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
         extends Refreshable, EntityDataProvider {
 
   /**
-   * Specifies whether or not a table model should be automatically filtered when an insert is performed
-   * in a master model, using the inserted entity.
+   * Specifies whether a table model should be automatically search by the inserted entity
+   * when an insert is performed in a master model.
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> FILTER_ON_MASTER_INSERT = Configuration.booleanValue(
-          "org.jminor.framework.model.EntityModel.filterOnMasterInsert", false);
+  PropertyValue<Boolean> SEARCH_ON_MASTER_INSERT = Configuration.booleanValue(
+          "org.jminor.framework.model.EntityModel.searchOnMasterInsert", false);
 
   /**
    * Specifies whether or not the client should save and apply user preferences<br>
@@ -194,16 +194,18 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   void clearDetailModels();
 
   /**
-   * @return true if this table model is automatically filtered when insert is performed in a master model
-   * @see EntityModel#FILTER_ON_MASTER_INSERT
+   * @return true if this models table model should automatically search by the inserted entity
+   * when an insert is performed in a master model
+   * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
-  boolean isFilterOnMasterInsert();
+  boolean isSearchOnMasterInsert();
 
   /**
-   * @param filterDetailOnInsert if true then the table model is automatically filtered when insert is performed in a master model
-   * @see EntityModel#FILTER_ON_MASTER_INSERT
+   * @param searchOnMasterInsert if true then this models table model will automatically search by the inserted entity
+   * when an insert is performed in a master model
+   * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
-  void setFilterOnMasterInsert(final boolean filterDetailOnInsert);
+  void setSearchOnMasterInsert(final boolean searchOnMasterInsert);
 
   /**
    * @param listener a listener to be notified before a refresh is performed
