@@ -5447,3 +5447,8 @@
   PropertyConditionModel, removed uncecessary override of getCondition()
   DefaultPropertyConditionModel.toString() removed, replaced with DefaultEntityTableConditionModel.toString(ColumnConditionModel)
   PropertyConditionModel removed, didn't add much at all besides complexity
+  EntityConnectionProvider no longer generic
+  EntityModel.filterOnMasterInsert renamed to searchOnMasterInsert
+  EntityDataProvider removed
+  EntityEditEventObserver renamed to EntityEditObserver
+  EntityEditModel.InsertEvent, UpdateEvent and DeleteEvent removed

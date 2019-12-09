@@ -24,7 +24,6 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
-import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityModel;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.EntityTableModel;
@@ -643,7 +642,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void handleDelete(final EntityEditModel.DeleteEvent event) {/*Provided for subclasses*/}
+  protected void handleDelete(final List<Entity> deletedEntities) {/*Provided for subclasses*/}
 
   /**
    * Override to bind events using the edit model, called after the edit model has been set
@@ -700,10 +699,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     });
   }
 
-  private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
+  private void handleInsert(final List<Entity> insertedEntities) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      final List<Entity> entitiesToAdd = insertEvent.getInsertedEntities().stream().filter(entity ->
+      final List<Entity> entitiesToAdd = insertedEntities.stream().filter(entity ->
               entity.getEntityId().equals(getEntityId())).collect(Collectors.toList());
       switch (insertAction) {
         case ADD_TOP:
@@ -719,8 +718,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  private void handleUpdate(final EntityEditModel.UpdateEvent updateEvent) {
-    replaceEntitiesByKey(new HashMap<>(updateEvent.getUpdatedEntities()));
+  private void handleUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+    replaceEntitiesByKey(new HashMap<>(updatedEntities));
   }
 
   /**
@@ -748,11 +747,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  private void handleDeleteInternal(final EntityEditModel.DeleteEvent deleteEvent) {
+  private void handleDeleteInternal(final List<Entity> deletedEntities) {
     if (removeEntitiesOnDelete) {
-      removeItems(deleteEvent.getDeletedEntities());
+      removeItems(deletedEntities);
     }
-    handleDelete(deleteEvent);
+    handleDelete(deletedEntities);
   }
 
   private void handleColumnHidden(final Property property) {

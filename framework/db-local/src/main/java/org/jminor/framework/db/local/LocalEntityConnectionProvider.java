@@ -8,6 +8,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
+import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A class responsible for managing a local EntityConnection.
  */
-public final class LocalEntityConnectionProvider extends AbstractEntityConnectionProvider<LocalEntityConnection> {
+public final class LocalEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
 
@@ -93,7 +94,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  protected void disconnect(final LocalEntityConnection connection) {
+  protected void disconnect(final EntityConnection connection) {
     connection.disconnect();
     if (database != null && database.isEmbedded() && SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get()) {
       final Properties connectionProperties = new Properties();

@@ -18,6 +18,7 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.common.value.Value;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
@@ -31,7 +32,7 @@ import java.util.Map;
 /**
  * Specifies a class for editing {@link Entity} instances.
  */
-public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Refreshable, EntityDataProvider {
+public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Refreshable {
 
   /**
    * Specifies whether foreign key values should persist when the UI is cleared or be reset to null<br>
@@ -62,6 +63,16 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * Default value: false
    */
   PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("jminor.client.editModelPostEditEvents", false);
+
+  /**
+   * @return the ID of the entity this edit model is based on
+   */
+  String getEntityId();
+
+  /**
+   * @return the connection provider used by this edit model
+   */
+  EntityConnectionProvider getConnectionProvider();
 
   /**
    * @return an Entity instance populated with default values for all properties
@@ -522,7 +533,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * @param listener a listener to be notified before an insert is performed
    */
-  void addBeforeInsertListener(final EventDataListener<InsertEvent> listener);
+  void addBeforeInsertListener(final EventDataListener<List<Entity>> listener);
 
   /**
    * @param listener a listener to remove
@@ -532,7 +543,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * @param listener a listener to be notified each time a insert has been performed
    */
-  void addAfterInsertListener(final EventDataListener<InsertEvent> listener);
+  void addAfterInsertListener(final EventDataListener<List<Entity>> listener);
 
   /**
    * @param listener a listener to remove
@@ -542,7 +553,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * @param listener a listener to be notified before an update is performed
    */
-  void addBeforeUpdateListener(final EventDataListener<UpdateEvent> listener);
+  void addBeforeUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener);
 
   /**
    * @param listener a listener to remove
@@ -552,7 +563,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * @param listener a listener to be notified each time an update has been performed
    */
-  void addAfterUpdateListener(final EventDataListener<UpdateEvent> listener);
+  void addAfterUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener);
 
   /**
    * @param listener a listener to remove
@@ -562,7 +573,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * @param listener a listener to be notified before a delete is performed
    */
-  void addBeforeDeleteListener(final EventDataListener<DeleteEvent> listener);
+  void addBeforeDeleteListener(final EventDataListener<List<Entity>> listener);
 
   /**
    * @param listener a listener to remove
@@ -572,7 +583,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * @param listener a listener to be notified each time a delete has been performed
    */
-  void addAfterDeleteListener(final EventDataListener<DeleteEvent> listener);
+  void addAfterDeleteListener(final EventDataListener<List<Entity>> listener);
 
   /**
    * @param listener a listener to remove
@@ -619,35 +630,4 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param listener a listener to remove
    */
   void removeConfirmSetEntityObserver(final EventDataListener listener);
-
-  /**
-   * An event describing a insert action.
-   */
-  interface InsertEvent {
-    /**
-     * @return the entities just inserted
-     */
-    List<Entity> getInsertedEntities();
-  }
-
-  /**
-   * An event describing a delete action.
-   */
-  interface DeleteEvent {
-    /**
-     * @return the deleted entities
-     */
-    List<Entity> getDeletedEntities();
-  }
-
-  /**
-   * An event describing a update action.
-   */
-  interface UpdateEvent {
-    /**
-     * @return the updated entities, mapped to their respective original primary keys, that is,
-     * the primary keys before the update was performed
-     */
-    Map<Entity.Key, Entity> getUpdatedEntities();
-  }
 }

@@ -351,8 +351,8 @@ public final class DefaultEntityEditModelTest {
 
       employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, department);
 
-      employeeEditModel.addAfterInsertListener(data ->
-              assertEquals(department, data.getInsertedEntities().get(0).get(TestDomain.EMP_DEPARTMENT_FK)));
+      employeeEditModel.addAfterInsertListener(insertedEntities ->
+              assertEquals(department, insertedEntities.get(0).get(TestDomain.EMP_DEPARTMENT_FK)));
       employeeEditModel.setInsertAllowed(false);
       assertFalse(employeeEditModel.isInsertAllowed());
       assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
@@ -387,8 +387,8 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       employeeEditModel.put(TestDomain.EMP_NAME, "BJORN");
       final List<Entity> toUpdate = singletonList(employeeEditModel.getEntityCopy());
-      final EventDataListener<EntityEditModel.UpdateEvent> listener = data ->
-              assertEquals(toUpdate, new ArrayList<>(data.getUpdatedEntities().values()));
+      final EventDataListener<Map<Entity.Key, Entity>> listener = updatedEntities ->
+              assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
       employeeEditModel.addAfterUpdateListener(listener);
       employeeEditModel.setUpdateAllowed(false);
       assertFalse(employeeEditModel.isUpdateAllowed());
@@ -412,7 +412,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       final List<Entity> toDelete = singletonList(employeeEditModel.getEntityCopy());
-      employeeEditModel.addAfterDeleteListener(data -> assertEquals(toDelete, data.getDeletedEntities()));
+      employeeEditModel.addAfterDeleteListener(deletedEntities -> assertEquals(toDelete, deletedEntities));
       employeeEditModel.setDeleteAllowed(false);
       assertFalse(employeeEditModel.isDeleteAllowed());
       assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());

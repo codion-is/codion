@@ -65,9 +65,9 @@ public final class ClientUI {
       }
     }));
     //show a message after insert
-    editModel.addAfterInsertListener(insertEvent ->
+    editModel.addAfterInsertListener(insertedEntities ->
             JOptionPane.showMessageDialog(nameField,
-                    "Inserted: " + insertEvent.getInsertedEntities().get(0)));
+                    "Inserted: " + insertedEntities.get(0)));
 
     JPanel artistPanel = new JPanel(new GridLayout(2, 1, 5, 5));
     artistPanel.add(new JLabel("Artist name"));
@@ -129,9 +129,9 @@ public final class ClientUI {
       }
     }));
     //show a message after insert
-    editModel.addAfterInsertListener(insertEvent ->
+    editModel.addAfterInsertListener(insertedEntities ->
             JOptionPane.showMessageDialog(titleField,
-                    "Inserted: " + insertEvent.getInsertedEntities().get(0)));
+                    "Inserted: " + insertedEntities.get(0)));
 
     JPanel albumPanel = new JPanel(new GridLayout(4, 1, 5, 5));
     albumPanel.add(new JLabel("Artist"));

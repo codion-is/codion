@@ -43,6 +43,7 @@ import java.util.Objects;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.framework.db.condition.Conditions.entityCondition;
+import static org.jminor.framework.domain.Entities.mapToOriginalPrimaryKey;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -66,12 +67,12 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   private static final String ENTITIES = "entities";
 
-  private final Event<InsertEvent> beforeInsertEvent = Events.event();
-  private final Event<InsertEvent> afterInsertEvent = Events.event();
-  private final Event<UpdateEvent> beforeUpdateEvent = Events.event();
-  private final Event<UpdateEvent> afterUpdateEvent = Events.event();
-  private final Event<DeleteEvent> beforeDeleteEvent = Events.event();
-  private final Event<DeleteEvent> afterDeleteEvent = Events.event();
+  private final Event<List<Entity>> beforeInsertEvent = Events.event();
+  private final Event<List<Entity>> afterInsertEvent = Events.event();
+  private final Event<Map<Entity.Key, Entity>> beforeUpdateEvent = Events.event();
+  private final Event<Map<Entity.Key, Entity>> afterUpdateEvent = Events.event();
+  private final Event<List<Entity>> beforeDeleteEvent = Events.event();
+  private final Event<List<Entity>> afterDeleteEvent = Events.event();
   private final Event entitiesChangedEvent = Events.event();
   private final Event beforeRefreshEvent = Events.event();
   private final Event afterRefreshEvent = Events.event();
@@ -448,7 +449,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     }
     doSetEntity(insertedEntities.get(0));
 
-    fireAfterInsertEvent(new DefaultInsertEvent(insertedEntities));
+    fireAfterInsertEvent(unmodifiableList(insertedEntities));
 
     return insertedEntities;
   }
@@ -462,7 +463,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     }
     final List<Entity> insertedEntities = insertEntities(entities);
 
-    fireAfterInsertEvent(new DefaultInsertEvent(insertedEntities));
+    fireAfterInsertEvent(unmodifiableList(insertedEntities));
 
     return insertedEntities;
   }
@@ -491,7 +492,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       return emptyList();
     }
 
-    fireBeforeUpdateEvent(new DefaultUpdateEvent(Entities.mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities))));
+    fireBeforeUpdateEvent(unmodifiableMap(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities))));
     validate(modifiedEntities);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
@@ -500,7 +501,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       doSetEntity(updatedEntities.get(index));
     }
 
-    fireAfterUpdateEvent(new DefaultUpdateEvent(Entities.mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(updatedEntities))));
+    fireAfterUpdateEvent(unmodifiableMap(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(updatedEntities))));
 
     return updatedEntities;
   }
@@ -527,14 +528,14 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
     LOG.debug("{} - delete {}", this, TextUtil.getCollectionContentsAsString(entities, false));
 
-    fireBeforeDeleteEvent(new DefaultDeleteEvent(entities));
+    fireBeforeDeleteEvent(unmodifiableList(entities));
 
     final List<Entity> deleted = doDelete(entities);
     if (deleted.contains(getEntity())) {
       doSetEntity(null);
     }
 
-    fireAfterDeleteEvent(new DefaultDeleteEvent(deleted));
+    fireAfterDeleteEvent(unmodifiableList(deleted));
 
     return deleted;
   }
@@ -698,7 +699,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeInsertListener(final EventDataListener<InsertEvent> listener) {
+  public final void addBeforeInsertListener(final EventDataListener<List<Entity>> listener) {
     beforeInsertEvent.addDataListener(listener);
   }
 
@@ -710,7 +711,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterInsertListener(final EventDataListener<InsertEvent> listener) {
+  public final void addAfterInsertListener(final EventDataListener<List<Entity>> listener) {
     afterInsertEvent.addDataListener(listener);
   }
 
@@ -722,7 +723,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeUpdateListener(final EventDataListener<UpdateEvent> listener) {
+  public final void addBeforeUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
     beforeUpdateEvent.addDataListener(listener);
   }
 
@@ -734,13 +735,13 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterUpdateListener(final EventDataListener<UpdateEvent> listener) {
+  public final void addAfterUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
     afterUpdateEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeDeleteListener(final EventDataListener<DeleteEvent> listener) {
+  public final void addBeforeDeleteListener(final EventDataListener<List<Entity>> listener) {
     beforeDeleteEvent.addDataListener(listener);
   }
 
@@ -758,7 +759,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterDeleteListener(final EventDataListener<DeleteEvent> listener) {
+  public final void addAfterDeleteListener(final EventDataListener<List<Entity>> listener) {
     afterDeleteEvent.addDataListener(listener);
   }
 
@@ -865,64 +866,64 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /**
    * Notifies that a insert is about to be performed
-   * @param insertEvent the event describing the insert
+   * @param entities the entities about to be inserted
    * @see #addBeforeInsertListener(EventDataListener)
    */
-  protected final void fireBeforeInsertEvent(final InsertEvent insertEvent) {
-    beforeInsertEvent.fire(insertEvent);
+  protected final void fireBeforeInsertEvent(final List<Entity> entities) {
+    beforeInsertEvent.fire(entities);
   }
 
   /**
    * Notifies that a insert has been performed
-   * @param insertEvent the event describing the insert
+   * @param insertedEntities the inserted entities
    * @see #addAfterInsertListener(EventDataListener)
    */
-  protected final void fireAfterInsertEvent(final InsertEvent insertEvent) {
-    afterInsertEvent.fire(insertEvent);
+  protected final void fireAfterInsertEvent(final List<Entity> insertedEntities) {
+    afterInsertEvent.fire(insertedEntities);
     if (postEditEvents) {
-      EntityEditEvents.notifyInserted(insertEvent.getInsertedEntities());
+      EntityEditEvents.notifyInserted(insertedEntities);
     }
   }
 
   /**
    * Notifies that an update is about to be performed
-   * @param updateEvent the event describing the update
+   * @param entitiesToUpdate the entities about to be updated
    * @see #addBeforeUpdateListener(EventDataListener)
    */
-  protected final void fireBeforeUpdateEvent(final UpdateEvent updateEvent) {
-    beforeUpdateEvent.fire(updateEvent);
+  protected final void fireBeforeUpdateEvent(final Map<Entity.Key, Entity> entitiesToUpdate) {
+    beforeUpdateEvent.fire(entitiesToUpdate);
   }
 
   /**
    * Notifies that an update has been performed
-   * @param updateEvent the event describing the update
+   * @param updatedEntities the updated entities
    * @see #addAfterUpdateListener(EventDataListener)
    */
-  protected final void fireAfterUpdateEvent(final UpdateEvent updateEvent) {
-    afterUpdateEvent.fire(updateEvent);
+  protected final void fireAfterUpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
+    afterUpdateEvent.fire(updatedEntities);
     if (postEditEvents) {
-      EntityEditEvents.notifyUpdated(updateEvent.getUpdatedEntities());
+      EntityEditEvents.notifyUpdated(updatedEntities);
     }
   }
 
   /**
    * Notifies that a delete is about to be performed
-   * @param deleteEvent the event describing the delete
+   * @param deleteEvent the entities about to be deleted
    * @see #addBeforeDeleteListener(EventDataListener)
    */
-  protected final void fireBeforeDeleteEvent(final DeleteEvent deleteEvent) {
+  protected final void fireBeforeDeleteEvent(final List<Entity> deleteEvent) {
     beforeDeleteEvent.fire(deleteEvent);
   }
 
   /**
    * Notifies that a delete has been performed
-   * @param deleteEvent the event describing the delete
+   * @param deletedEntities the deleted entities
    * @see #addAfterDeleteListener(EventDataListener)
    */
-  protected final void fireAfterDeleteEvent(final DeleteEvent deleteEvent) {
-    afterDeleteEvent.fire(deleteEvent);
+  protected final void fireAfterDeleteEvent(final List<Entity> deletedEntities) {
+    afterDeleteEvent.fire(deletedEntities);
     if (postEditEvents) {
-      EntityEditEvents.notifyDeleted(deleteEvent.getDeletedEntities());
+      EntityEditEvents.notifyDeleted(deletedEntities);
     }
   }
 
@@ -933,7 +934,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
     LOG.debug("{} - insert {}", this, TextUtil.getCollectionContentsAsString(entities, false));
 
-    fireBeforeInsertEvent(new DefaultInsertEvent(entities));
+    fireBeforeInsertEvent(unmodifiableList(entities));
     validate(entities);
 
     return connectionProvider.getConnection().select(doInsert(entities));
@@ -1017,61 +1018,6 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     @Override
     public boolean isNullable() {
       return true;
-    }
-  }
-
-  protected static final class DefaultInsertEvent implements InsertEvent {
-
-    private final List<Entity> insertedEntities;
-
-    /**
-     * Instantiates a new DefaultInsertEvent.
-     * @param insertedEntities the inserted entities
-     */
-    public DefaultInsertEvent(final List<Entity> insertedEntities) {
-      this.insertedEntities = unmodifiableList(insertedEntities);
-    }
-
-    @Override
-    public List<Entity> getInsertedEntities() {
-      return insertedEntities;
-    }
-  }
-
-  protected static final class DefaultDeleteEvent implements DeleteEvent {
-
-    private final List<Entity> deletedEntities;
-
-    /**
-     * Instantiates a new DefaultDeleteEvent.
-     * @param deletedEntities the deleted entities
-     */
-    public DefaultDeleteEvent(final List<Entity> deletedEntities) {
-      this.deletedEntities = unmodifiableList(deletedEntities);
-    }
-
-    @Override
-    public List<Entity> getDeletedEntities() {
-      return deletedEntities;
-    }
-  }
-
-  protected static final class DefaultUpdateEvent implements UpdateEvent {
-
-    private final Map<Entity.Key, Entity> updatedEntities;
-
-    /**
-     * Instantiates a new DefaultUpdateEvent.
-     * @param updatedEntities the updated entities, mapped to their respective original primary key, that is,
-     * the primary key prior to the update
-     */
-    public DefaultUpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
-      this.updatedEntities = unmodifiableMap(updatedEntities);
-    }
-
-    @Override
-    public Map<Entity.Key, Entity> getUpdatedEntities() {
-      return updatedEntities;
     }
   }
 }

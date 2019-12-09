@@ -20,9 +20,8 @@ import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * An abstract EntityConnectionProvider implementation.
- * @param <T> the EntityConnection implementation provided by this connection provider
  */
-public abstract class AbstractEntityConnectionProvider<T extends EntityConnection> implements EntityConnectionProvider<T> {
+public abstract class AbstractEntityConnectionProvider implements EntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
   protected static final String IS_CONNECTED = "isConnected";
@@ -38,7 +37,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   private Version clientVersion;
   private String clientTypeId;
 
-  private T entityConnection;
+  private EntityConnection entityConnection;
   private Domain domain;
 
   /** {@inheritDoc} */
@@ -200,7 +199,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  public final T getConnection() {
+  public final EntityConnection getConnection() {
     synchronized (lock) {
       if (user == null) {
         throw new IllegalStateException("No user set");
@@ -226,13 +225,13 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   /**
    * @return an established connection
    */
-  protected abstract T connect();
+  protected abstract EntityConnection connect();
 
   /**
    * Disconnects the given connection
    * @param connection the connection to be disconnected
    */
-  protected abstract void disconnect(final T connection);
+  protected abstract void disconnect(final EntityConnection connection);
 
   protected static String getDomainId(final String domainClass) {
     if (domainClass.contains(".")) {

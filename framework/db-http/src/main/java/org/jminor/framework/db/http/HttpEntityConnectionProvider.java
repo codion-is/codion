@@ -7,6 +7,7 @@ import org.jminor.common.Configuration;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
+import org.jminor.framework.db.EntityConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ import static java.util.Objects.requireNonNull;
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_SECURE
  */
-public final class HttpEntityConnectionProvider extends AbstractEntityConnectionProvider<HttpEntityConnection> {
+public final class HttpEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnectionProvider.class);
 
@@ -108,7 +109,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  protected void disconnect(final HttpEntityConnection connection) {
+  protected void disconnect(final EntityConnection connection) {
     connection.disconnect();
   }
 
