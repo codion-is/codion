@@ -4,8 +4,6 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -75,17 +73,6 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     }
     //noinspection unchecked
     return upperBound == null ? emptyList() : (Collection<Entity>) upperBound;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Condition getCondition() {
-    final Object upperBound = getUpperBound();
-    if (upperBound instanceof Collection) {
-      return Conditions.propertyCondition(getColumnIdentifier().getPropertyId(), getConditionType(), (Collection) upperBound);
-    }
-
-    return Conditions.propertyCondition(getColumnIdentifier().getPropertyId(), getConditionType(), singletonList(upperBound));
   }
 
   /** {@inheritDoc} */

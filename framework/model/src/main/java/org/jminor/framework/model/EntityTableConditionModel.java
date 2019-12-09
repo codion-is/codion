@@ -67,7 +67,7 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * @param propertyId the column propertyId
-   * @return true if the PropertyConditionModel behind column with index {@code columnIndex} is enabled
+   * @return true if the {@link ColumnConditionModel} behind column with index {@code columnIndex} is enabled
    */
   boolean isEnabled(final String propertyId);
 
@@ -108,8 +108,8 @@ public interface EntityTableConditionModel extends Refreshable {
   void setConjunction(final Conjunction conjunction);
 
   /**
-   * @param propertyId the id of the property for which to check for the PropertyConditionModel
-   * @return true if this EntityTableConditionModel contains a PropertyConditionModel associated
+   * @param propertyId the id of the property for which to check for the {@link ColumnConditionModel}
+   * @return true if this EntityTableConditionModel contains a {@link ColumnConditionModel} associated
    * with the property identified by {@code propertyId}
    */
   boolean containsPropertyConditionModel(final String propertyId);
@@ -117,15 +117,15 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return a Collection containing the PropertyConditionModels available in this table condition model
    */
-  Collection<PropertyConditionModel<? extends Property>> getPropertyConditionModels();
+  Collection<ColumnConditionModel<? extends Property>> getPropertyConditionModels();
 
   /**
-   * @param propertyId the id of the property for which to retrieve the PropertyConditionModel
-   * @return the PropertyConditionModel associated with the property identified by {@code propertyId}
+   * @param propertyId the id of the property for which to retrieve the {@link ColumnConditionModel}
+   * @return the {@link ColumnConditionModel} associated with the property identified by {@code propertyId}
    * @throws IllegalArgumentException in case no condition model is found
    * @see #containsPropertyConditionModel(String)
    */
-  PropertyConditionModel<? extends Property> getPropertyConditionModel(final String propertyId);
+  ColumnConditionModel<? extends Property> getPropertyConditionModel(final String propertyId);
 
   /**
    * Clears the search state of all PropertyConditionModels, disables them and

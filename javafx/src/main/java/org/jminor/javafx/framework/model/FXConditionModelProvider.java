@@ -3,11 +3,11 @@
  */
 package org.jminor.javafx.framework.model;
 
+import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
-import org.jminor.framework.model.PropertyConditionModel;
 
 /**
  * Provides foreign key condition models based on {@link ObservableEntityList} for
@@ -17,7 +17,7 @@ public class FXConditionModelProvider extends DefaultPropertyConditionModelProvi
 
   /** {@inheritDoc} */
   @Override
-  public PropertyConditionModel<ForeignKeyProperty> initializeForeignKeyConditionModel(
+  public ColumnConditionModel<ForeignKeyProperty> initializeForeignKeyConditionModel(
           final ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
     if (connectionProvider.getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
       //todo comboBoxModel.setNullValue(Domain.createToStringEntity(property.getForeignEntityId(), ""));

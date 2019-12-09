@@ -3,11 +3,11 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
 import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.framework.model.PropertyConditionModel;
 import org.jminor.framework.model.PropertyConditionModelProvider;
 
 /**
@@ -18,7 +18,7 @@ public class SwingPropertyConditionModelProvider extends DefaultPropertyConditio
 
   /** {@inheritDoc} */
   @Override
-  public PropertyConditionModel<ForeignKeyProperty> initializeForeignKeyConditionModel(
+  public ColumnConditionModel<ForeignKeyProperty> initializeForeignKeyConditionModel(
           final ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
     if (connectionProvider.getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
       final EntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(), connectionProvider);
