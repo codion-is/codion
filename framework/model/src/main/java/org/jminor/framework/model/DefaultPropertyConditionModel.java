@@ -9,8 +9,6 @@ import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.Property;
 
-import java.util.Collection;
-
 import static java.util.Arrays.asList;
 import static org.jminor.framework.db.condition.Conditions.propertyCondition;
 
@@ -31,38 +29,11 @@ public final class DefaultPropertyConditionModel extends DefaultColumnConditionM
 
   /** {@inheritDoc} */
   @Override
-  public String toString() {
-    final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyId());
-    if (isEnabled()) {
-      stringBuilder.append(getConditionType());
-      stringBuilder.append(toString(getUpperBound()));
-      stringBuilder.append(toString(getLowerBound()));
-    }
-
-    return stringBuilder.toString();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Condition getCondition() {
     final Object conditionValue = getConditionType().getValues().equals(ConditionType.Values.TWO) ?
             asList(getLowerBound(), getUpperBound()) : getUpperBound();
 
     return propertyCondition(getColumnIdentifier().getPropertyId(), getConditionType(), conditionValue)
             .setCaseSensitive(isCaseSensitive());
-  }
-
-  private static String toString(final Object object) {
-    final StringBuilder stringBuilder = new StringBuilder();
-    if (object instanceof Collection) {
-      for (final Object obj : (Collection) object) {
-        stringBuilder.append(toString(obj));
-      }
-    }
-    else {
-      stringBuilder.append(object);
-    }
-
-    return stringBuilder.toString();
   }
 }

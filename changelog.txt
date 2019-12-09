@@ -5422,3 +5422,5 @@
   FilteredTableModel.findNext() and findPrevious() condition parameter now Predicate<String>
   EntityTablePanel.initializeTableMouseListener() now private, typos fixed
   DefaultEntityLookupModel, EntityTablePanel, minor refactoring, Util.join() added
+  PropertyConditionModel, removed uncecessary override of getCondition()
+  DefaultPropertyConditionModel.toString() removed, replaced with DefaultEntityTableConditionModel.toString(ColumnConditionModel)

@@ -340,7 +340,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
    * @return a String representing the current state of the condition models
    */
   private String getConditionModelState() {
-    return getPropertyConditionModels().stream().map(PropertyConditionModel::toString).collect(Collectors.joining());
+    return getPropertyConditionModels().stream().map(DefaultEntityTableConditionModel::toString).collect(Collectors.joining());
   }
 
   private void initializeFilterModels(final String entityId, final PropertyFilterModelProvider filterModelProvider) {
@@ -377,5 +377,30 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
         this.propertyConditionModels.put(conditionModel.getColumnIdentifier().getPropertyId(), conditionModel);
       }
     }
+  }
+
+  private static String toString(final ColumnConditionModel<? extends Property> conditionModel) {
+    final StringBuilder stringBuilder = new StringBuilder(conditionModel.getColumnIdentifier().getPropertyId());
+    if (conditionModel.isEnabled()) {
+      stringBuilder.append(conditionModel.getConditionType());
+      stringBuilder.append(boundToString(conditionModel.getUpperBound()));
+      stringBuilder.append(boundToString(conditionModel.getLowerBound()));
+    }
+
+    return stringBuilder.toString();
+  }
+
+  private static String boundToString(final Object object) {
+    final StringBuilder stringBuilder = new StringBuilder();
+    if (object instanceof Collection) {
+      for (final Object obj : (Collection) object) {
+        stringBuilder.append(boundToString(obj));
+      }
+    }
+    else {
+      stringBuilder.append(object);
+    }
+
+    return stringBuilder.toString();
   }
 }

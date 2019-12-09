@@ -13,19 +13,4 @@ import org.jminor.framework.domain.property.Property;
  */
 public interface PropertyConditionModel<T extends Property> extends ColumnConditionModel<T>, Condition.Provider {
 
-  /**
-   * @return a condition object based on this condition model
-   */
-  @Override
-  Condition getCondition();
-
-  /**
-   * Returns a String representing the state of this condition model. The result of this method changes if any condition
-   * state element is changed, such as the operator or upper/lower bounds.
-   * Note that this string is not meant for "human consumption", but comes in handy when trying to determine if
-   * the state of this condition model has changed.
-   * @return a String representing the state of this condition model
-   */
-  @Override
-  String toString();
 }
