@@ -3,9 +3,12 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
+import org.jminor.framework.domain.property.Property;
 
 /**
  * A default PropertyConditionModelProvider implementation.
@@ -14,14 +17,13 @@ public class DefaultPropertyConditionModelProvider implements PropertyConditionM
 
   /** {@inheritDoc} */
   @Override
-  public PropertyConditionModel<ColumnProperty> initializePropertyConditionModel(
-          final ColumnProperty property) {
-    return new DefaultPropertyConditionModel(property);
+  public ColumnConditionModel<ColumnProperty> initializePropertyConditionModel(final ColumnProperty property) {
+    return new DefaultColumnConditionModel<ColumnProperty>(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimeFormatPattern());
   }
 
   /** {@inheritDoc} */
   @Override
-  public PropertyConditionModel<ForeignKeyProperty> initializeForeignKeyConditionModel(
+  public ColumnConditionModel<ForeignKeyProperty> initializeForeignKeyConditionModel(
           final ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getForeignEntityId(), connectionProvider);
     lookupModel.getMultipleSelectionAllowedValue().set(true);

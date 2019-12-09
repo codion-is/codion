@@ -69,6 +69,24 @@ public class DefaultColumnConditionModelTest {
   }
 
   @Test
+  public void testMisc() {
+    final ColumnConditionModel model = new DefaultColumnConditionModel("test", String.class, "%");
+    assertEquals("test", model.getColumnIdentifier());
+    model.setConditionType(ConditionType.LIKE);
+    assertFalse(model.isLowerBoundRequired());
+    model.setConditionType(ConditionType.GREATER_THAN);
+    model.setConditionType(ConditionType.LESS_THAN);
+
+    model.setConditionType(ConditionType.WITHIN_RANGE);
+    assertTrue(model.isLowerBoundRequired());
+
+    model.setConditionType(ConditionType.LIKE);
+    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
+    model.setUpperBound("upper");
+    assertEquals("%upper%", ((String) model.getUpperBound()));
+  }
+
+  @Test
   public void testConditionType() {
     final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.addConditionTypeListener(conditionTypeListener);

@@ -7,13 +7,13 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.value.Values;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.ForeignKeyConditionModel;
-import org.jminor.framework.model.PropertyConditionModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
@@ -286,10 +286,10 @@ public final class EntityTableConditionPanel extends JPanel {
 
   /**
    * Initializes a ColumnConditionPanel for the given model
-   * @param propertyConditionModel the PropertyConditionModel for which to create a condition panel
+   * @param propertyConditionModel the {@link ColumnConditionModel} for which to create a condition panel
    * @return a ColumnConditionPanel based on the given model
    */
-  private static ColumnConditionPanel initializeConditionPanel(final PropertyConditionModel propertyConditionModel) {
+  private static ColumnConditionPanel initializeConditionPanel(final ColumnConditionModel propertyConditionModel) {
     if (propertyConditionModel instanceof ForeignKeyConditionModel) {
       return new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel, true, false);
     }

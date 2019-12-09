@@ -4,10 +4,11 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.db.ConditionType;
+import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.model.DefaultPropertyConditionModel;
-import org.jminor.framework.model.PropertyConditionModel;
+import org.jminor.framework.domain.property.Property;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +22,11 @@ public class PropertySearchPanelTest {
 
   @Test
   public void createWithInitializedModel() {
-    final PropertyConditionModel<ColumnProperty> conditionModel =
-            new DefaultPropertyConditionModel(DOMAIN.getDefinition(TestDomain.T_DEPARTMENT)
-                    .getColumnProperty(TestDomain.DEPARTMENT_NAME));
+    final ColumnProperty property = DOMAIN.getDefinition(TestDomain.T_DEPARTMENT)
+            .getColumnProperty(TestDomain.DEPARTMENT_NAME);
+    final ColumnConditionModel<ColumnProperty> conditionModel =
+            new DefaultColumnConditionModel<>(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(),
+                    property.getFormat(), property.getDateTimeFormatPattern());
     conditionModel.setUpperBound("DALLAS");
     conditionModel.setConditionType(ConditionType.LIKE);
     conditionModel.setEnabled(true);
