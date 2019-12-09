@@ -6,6 +6,7 @@ package org.jminor.framework.model;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
@@ -381,7 +382,7 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void update() throws Exception {
     try {
-      assertTrue(employeeEditModel.update().isEmpty());
+      assertThrows(UpdateException.class, () -> employeeEditModel.update());
       assertTrue(employeeEditModel.update(new ArrayList<>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));

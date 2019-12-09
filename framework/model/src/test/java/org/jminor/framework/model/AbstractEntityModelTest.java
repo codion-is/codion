@@ -259,7 +259,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     editModel.put(TestDomain.DEPARTMENT_ID, 100);
     editModel.put(TestDomain.DEPARTMENT_NAME, "Name");
     editModel.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
-    final List<Entity> inserted = editModel.insert();
+    final Entity inserted = editModel.insert();
     final Entity upperBoundEntity;
     final Object upperBound = employeeModel.getTableModel().getConditionModel().getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK).getUpperBound();
     if (upperBound instanceof Collection) {
@@ -268,7 +268,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     else {
       upperBoundEntity = (Entity) upperBound;
     }
-    assertEquals(inserted.get(0), upperBoundEntity);
+    assertEquals(inserted, upperBoundEntity);
     editModel.delete();
   }
 

@@ -6,6 +6,7 @@ package org.jminor.framework.model;
 import org.jminor.common.Conjunction;
 import org.jminor.common.TextUtil;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.common.db.valuemap.ValueProvider;
@@ -439,7 +440,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final List<Entity> insert() throws DatabaseException, ValidationException {
+  public final Entity insert() throws DatabaseException, ValidationException {
     final boolean includePrimaryKeyValues = !getEntityDefinition().isKeyGenerated();
     final Entity toInsert = getEntityCopy(includePrimaryKeyValues);
     toInsert.saveAll();
@@ -451,7 +452,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
     fireAfterInsertEvent(unmodifiableList(insertedEntities));
 
-    return insertedEntities;
+    return insertedEntities.get(0);
   }
 
   /** {@inheritDoc} */
@@ -470,8 +471,13 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final List<Entity> update() throws DatabaseException, ValidationException {
-    return update(singletonList(getEntityCopy()));
+  public final Entity update() throws DatabaseException, ValidationException {
+    final List<Entity> updated = update(singletonList(getEntityCopy()));
+    if (updated.isEmpty()) {
+      throw new UpdateException("Active entity is not modified");
+    }
+
+    return updated.get(0);
   }
 
   /** {@inheritDoc} */
@@ -508,11 +514,11 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final List<Entity> delete() throws DatabaseException {
+  public final Entity delete() throws DatabaseException {
     final Entity originalEntity = getEntityCopy();
     originalEntity.revertAll();
 
-    return delete(singletonList(originalEntity));
+    return delete(singletonList(originalEntity)).get(0);
   }
 
   /** {@inheritDoc} */

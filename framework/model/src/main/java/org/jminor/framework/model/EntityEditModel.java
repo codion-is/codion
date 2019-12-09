@@ -359,12 +359,12 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * Performs a insert on the active entity, sets the primary key values of the active entity
    * according to the primary key of the inserted entity
-   * @return a list containing the inserted entity
+   * @return the inserted entity
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
-  List<Entity> insert() throws DatabaseException, ValidationException;
+  Entity insert() throws DatabaseException, ValidationException;
 
   /**
    * Performs an insert on the given entities, returns silently on receiving an empty list
@@ -380,13 +380,13 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
 
   /**
    * Performs a update on the active entity
-   * @return the updated entities
+   * @return the updated entity
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
-  List<Entity> update() throws DatabaseException, ValidationException;
+  Entity update() throws DatabaseException, ValidationException;
 
   /**
    * Updates the given entities. If the entities are unmodified or the list is empty
@@ -404,12 +404,12 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
 
   /**
    * Deletes the active entity
-   * @return the deleted entities
+   * @return the deleted entity
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @see #addBeforeDeleteListener(EventDataListener)
    * @see #addAfterDeleteListener(EventDataListener)
    */
-  List<Entity> delete() throws DatabaseException;
+  Entity delete() throws DatabaseException;
 
   /**
    * Deletes the given entities, returns silently on receiving an empty list
