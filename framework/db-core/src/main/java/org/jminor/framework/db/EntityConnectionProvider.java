@@ -15,9 +15,8 @@ import java.util.UUID;
 /**
  * Specifies a class resposible for providing a single {@link EntityConnection} instance.
  * {@link #getConnection()} is guaranteed to return a healthy connection or throw an exception.
- * @param <T> the type of {@link EntityConnection} provided
  */
-public interface EntityConnectionProvider<T extends EntityConnection> {
+public interface EntityConnectionProvider {
 
   /**
    * Indicates a local database connection
@@ -66,7 +65,7 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
    * that is, it must reconnect an invalid connection whether remotely or locally
    * @return a EntityConnection instance
    */
-  T getConnection();
+  EntityConnection getConnection();
 
   /**
    * Returns a String specifying the type of connection provided by this connection provider
