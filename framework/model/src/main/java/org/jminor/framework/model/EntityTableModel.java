@@ -11,6 +11,7 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.state.State;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
@@ -25,7 +26,7 @@ import java.util.List;
  * Specifies a table model containing {@link Entity} objects
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityTableModel}
  */
-public interface EntityTableModel<E extends EntityEditModel> extends EntityDataProvider, FilteredModel<Entity>, Refreshable {
+public interface EntityTableModel<E extends EntityEditModel> extends FilteredModel<Entity>, Refreshable {
 
   String PREFERENCES_COLUMNS = "columns";
   String PREFERENCES_COLUMN_WIDTH = "width";
@@ -54,6 +55,16 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
      */
     ADD_TOP_SORTED
   }
+
+  /**
+   * @return the ID of the entity this table model is based on
+   */
+  String getEntityId();
+
+  /**
+   * @return the connection provider used by this table model
+   */
+  EntityConnectionProvider getConnectionProvider();
 
   /**
    * @return the underlying domain model

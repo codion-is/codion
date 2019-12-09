@@ -6,6 +6,7 @@ package org.jminor.framework.model;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.Value;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -18,7 +19,17 @@ import java.util.Map;
 /**
  * A interface responsible for doing entity lookups based on a set of condition properties.
  */
-public interface EntityLookupModel extends EntityDataProvider {
+public interface EntityLookupModel {
+
+  /**
+   * @return the ID of the entity this lookup model is based on
+   */
+  String getEntityId();
+
+  /**
+   * @return the connection provider used by this lookup model
+   */
+  EntityConnectionProvider getConnectionProvider();
 
   /**
    * @return an unmodifiable view of the selected entities

@@ -5,6 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
 
@@ -14,7 +15,17 @@ import java.util.function.Predicate;
 /**
  * A ComboBoxModel based on {@link Entity} instances.
  */
-public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, EntityDataProvider {
+public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
+
+  /**
+   * @return the ID of the entity this combo box model is based on
+   */
+  String getEntityId();
+
+  /**
+   * @return the connection provider used by this combo box model
+   */
+  EntityConnectionProvider getConnectionProvider();
 
   /**
    * @param primaryKey the primary key of the entity to fetch from this model

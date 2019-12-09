@@ -18,6 +18,7 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.common.value.Value;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
@@ -31,7 +32,7 @@ import java.util.Map;
 /**
  * Specifies a class for editing {@link Entity} instances.
  */
-public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Refreshable, EntityDataProvider {
+public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Refreshable {
 
   /**
    * Specifies whether foreign key values should persist when the UI is cleared or be reset to null<br>
@@ -62,6 +63,16 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * Default value: false
    */
   PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("jminor.client.editModelPostEditEvents", false);
+
+  /**
+   * @return the ID of the entity this edit model is based on
+   */
+  String getEntityId();
+
+  /**
+   * @return the connection provider used by this edit model
+   */
+  EntityConnectionProvider getConnectionProvider();
 
   /**
    * @return an Entity instance populated with default values for all properties

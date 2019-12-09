@@ -9,6 +9,7 @@ import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.value.PropertyValue;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 
@@ -22,7 +23,7 @@ import java.util.List;
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
 public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>>
-        extends Refreshable, EntityDataProvider {
+        extends Refreshable {
 
   /**
    * Specifies whether a table model should be automatically search by the inserted entity
@@ -40,6 +41,16 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    */
   PropertyValue<Boolean> USE_CLIENT_PREFERENCES = Configuration.booleanValue(
           "org.jminor.framework.model.EntityModel.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
+
+  /**
+   * @return the ID of the entity this entity model is based on
+   */
+  String getEntityId();
+
+  /**
+   * @return the connection provider used by this entity model
+   */
+  EntityConnectionProvider getConnectionProvider();
 
   /**
    * @return the {@link EntityEditModel} instance used by this {@link EntityModel}
