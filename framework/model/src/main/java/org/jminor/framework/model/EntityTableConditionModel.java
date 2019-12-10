@@ -34,14 +34,14 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param values the search condition values
    * @return true if the search state changed as a result of this method call, false otherwise
    */
-  boolean setConditionValues(final String propertyId, final Collection values);
+  boolean setConditionValues(String propertyId, Collection values);
 
   /**
    * Sets the condition value of the PropertyFilterModel associated with the property identified by {@code propertyId}.
    * @param propertyId the id of the property
    * @param value the condition value
    */
-  void setFilterValue(final String propertyId, final Comparable value);
+  void setFilterValue(String propertyId, Comparable value);
 
   /**
    * @return the current condition based on the state of the underlying condition models
@@ -58,7 +58,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param conditionProvider the condition provider
    * @return this EntityTableConditionModel instance
    */
-  EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider conditionProvider);
+  EntityTableConditionModel setAdditionalConditionProvider(Condition.Provider conditionProvider);
 
   /**
    * @return true if any of the underlying PropertyConditionModels is enabled
@@ -69,14 +69,14 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param propertyId the column propertyId
    * @return true if the {@link ColumnConditionModel} behind column with index {@code columnIndex} is enabled
    */
-  boolean isEnabled(final String propertyId);
+  boolean isEnabled(String propertyId);
 
   /**
    * Enables/disables the search for the given property
    * @param propertyId the id of the property for which to enable/disable the search
    * @param enabled if true the search is enabled, otherwise it is disabled
    */
-  void setEnabled(final String propertyId, final boolean enabled);
+  void setEnabled(String propertyId, boolean enabled);
 
   /**
    * Remembers the current condition model state, any subsequent changes to condition
@@ -105,14 +105,14 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param conjunction the conjunction to be used when more than one column search condition is active
    * @see Conjunction
    */
-  void setConjunction(final Conjunction conjunction);
+  void setConjunction(Conjunction conjunction);
 
   /**
    * @param propertyId the id of the property for which to check for the {@link ColumnConditionModel}
    * @return true if this EntityTableConditionModel contains a {@link ColumnConditionModel} associated
    * with the property identified by {@code propertyId}
    */
-  boolean containsPropertyConditionModel(final String propertyId);
+  boolean containsPropertyConditionModel(String propertyId);
 
   /**
    * @return a Collection containing the PropertyConditionModels available in this table condition model
@@ -125,7 +125,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @throws IllegalArgumentException in case no condition model is found
    * @see #containsPropertyConditionModel(String)
    */
-  ColumnConditionModel<? extends Property> getPropertyConditionModel(final String propertyId);
+  ColumnConditionModel<? extends Property> getPropertyConditionModel(String propertyId);
 
   /**
    * Clears the search state of all PropertyConditionModels, disables them and
@@ -143,13 +143,13 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param propertyId the id of the property for which to retrieve the PropertyFilterModel
    * @return the PropertyFilterModel for the property with id {@code propertyId}, null if none is found
    */
-  ColumnConditionModel<Property> getPropertyFilterModel(final String propertyId);
+  ColumnConditionModel<Property> getPropertyFilterModel(String propertyId);
 
   /**
    * @param propertyId column propertyId
    * @return true if the PropertyFilterModel behind column with index {@code columnIndex} is enabled
    */
-  boolean isFilterEnabled(final String propertyId);
+  boolean isFilterEnabled(String propertyId);
 
   /**
    * @return the text used when performing a simple search
@@ -165,7 +165,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @see ColumnConditionModel#setCaseSensitive(boolean)
    * @see ColumnConditionModel#setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard)
    */
-  void setSimpleConditionString(final String simpleSearchText);
+  void setSimpleConditionString(String simpleSearchText);
 
   /**
    * Uses the simpleSearchText as a basis for a wildcard search on all String based condition models,
@@ -188,20 +188,20 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @param listener a listener notified each time the search state changes
    */
-  void addConditionStateListener(final EventListener listener);
+  void addConditionStateListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionStateListener(final EventListener listener);
+  void removeConditionStateListener(EventListener listener);
 
   /**
    * @param listener a listener notified each time a simple search is performed
    */
-  void addSimpleConditionListener(final EventListener listener);
+  void addSimpleConditionListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSimpleConditionListener(final EventListener listener);
+  void removeSimpleConditionListener(EventListener listener);
 }

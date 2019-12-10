@@ -41,14 +41,14 @@ public interface EntityLookupModel {
    * Sets the given entity as the selected entity
    * @param entity the entity to set as the selected entity
    */
-  void setSelectedEntity(final Entity entity);
+  void setSelectedEntity(Entity entity);
 
   /**
    * Sets the selected entities
    * @param entities the entities to set as selected
    * @throws IllegalArgumentException if this lookup model does not allow multiple selections and entities.size() is larger than 1
    */
-  void setSelectedEntities(final Collection<Entity> entities);
+  void setSelectedEntities(Collection<Entity> entities);
 
   /**
    * @return a string describing this lookup model, by default a comma separated list of search property names
@@ -58,7 +58,7 @@ public interface EntityLookupModel {
   /**
    * @param description a string describing this lookup model
    */
-  void setDescription(final String description);
+  void setDescription(String description);
 
   /**
    * @return a list containing the properties used when performing a lookup
@@ -68,7 +68,7 @@ public interface EntityLookupModel {
   /**
    * @param resultSorter the comparator used to sort the lookup result, null if the result should not be sorted
    */
-  void setResultSorter(final Comparator<Entity> resultSorter);
+  void setResultSorter(Comparator<Entity> resultSorter);
 
   /**
    * Refreshes the search text so that is represents the selected entities
@@ -79,7 +79,7 @@ public interface EntityLookupModel {
    * Sets the search string to use when performing the next lookup
    * @param searchString the search string
    */
-  void setSearchString(final String searchString);
+  void setSearchString(String searchString);
 
   /**
    * @return the current search string value
@@ -91,7 +91,7 @@ public interface EntityLookupModel {
    * @param wildcard the wildcard
    * @return this EntityLookupModel instance
    */
-  EntityLookupModel setWildcard(final String wildcard);
+  EntityLookupModel setWildcard(String wildcard);
 
   /**
    * @return the wildcard being used by this model
@@ -117,7 +117,7 @@ public interface EntityLookupModel {
    * @param additionalConditionProvider the additional lookup condition provider
    * @return this EntityLookupModel instance
    */
-  EntityLookupModel setAdditionalConditionProvider(final Condition.Provider additionalConditionProvider);
+  EntityLookupModel setAdditionalConditionProvider(Condition.Provider additionalConditionProvider);
 
   /**
    * Override the default toString() for lookup elements when displayed
@@ -125,7 +125,7 @@ public interface EntityLookupModel {
    * @param toStringProvider provides string representations
    * @return this EntityLookupModel instance
    */
-  EntityLookupModel setToStringProvider(final Function<Entity, String> toStringProvider);
+  EntityLookupModel setToStringProvider(Function<Entity, String> toStringProvider);
 
   /**
    * @return the toString provider, null if none is specified
@@ -135,7 +135,7 @@ public interface EntityLookupModel {
   /**
    * @param listener a listener to be notified each time the selected entities are changed
    */
-  void addSelectedEntitiesListener(final EventDataListener<Collection<Entity>> listener);
+  void addSelectedEntitiesListener(EventDataListener<Collection<Entity>> listener);
 
   /**
    * @return a StateObserver indicating whether or not the search string represents the selected entities

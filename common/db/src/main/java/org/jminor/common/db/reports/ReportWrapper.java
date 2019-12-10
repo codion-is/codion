@@ -34,7 +34,7 @@ public interface ReportWrapper<R, D> {
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  ReportResult<R> fillReport(final Connection connection) throws ReportException;
+  ReportResult<R> fillReport(Connection connection) throws ReportException;
 
   /**
    * Fills the report using the data source wrapped by the given data wrapper
@@ -42,7 +42,7 @@ public interface ReportWrapper<R, D> {
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  ReportResult<R> fillReport(final ReportDataWrapper<D> dataWrapper) throws ReportException;
+  ReportResult<R> fillReport(ReportDataWrapper<D> dataWrapper) throws ReportException;
 
   /**
    * @return the value associated with {@link ReportWrapper#REPORT_PATH}

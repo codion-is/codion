@@ -85,7 +85,7 @@ public final class KeyGenerators {
       entity.put(keyProperty, value);
     }
 
-    protected abstract String getQuery(final Database database);
+    protected abstract String getQuery(Database database);
   }
 
   private static final class IncrementKeyGenerator extends AbstractQueriedKeyGenerator {

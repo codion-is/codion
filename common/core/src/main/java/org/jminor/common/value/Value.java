@@ -13,7 +13,7 @@ public interface Value<V> extends ValueObserver<V> {
    * Sets the value, setting the same value again does not trigger a value change
    * @param value the value
    */
-  void set(final V value);
+  void set(V value);
 
   /**
    * @return a read only view of this value

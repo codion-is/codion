@@ -23,63 +23,63 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
   /**
    * @param listener a listener to be notified each time a refresh is about to start
    */
-  void addRefreshStartedListener(final EventListener listener);
+  void addRefreshStartedListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRefreshStartedListener(final EventListener listener);
+  void removeRefreshStartedListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has ended
    */
-  void addRefreshDoneListener(final EventListener listener);
+  void addRefreshDoneListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRefreshDoneListener(final EventListener listener);
+  void removeRefreshDoneListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the model has been sorted or the sorting state has been cleared
    */
-  void addSortingListener(final EventListener listener);
+  void addSortingListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSortingListener(final EventListener listener);
+  void removeSortingListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the table data changes
    */
-  void addTableDataChangedListener(final EventListener listener);
+  void addTableDataChangedListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeTableDataChangedListener(final EventListener listener);
+  void removeTableDataChangedListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the table model is cleared
    */
-  void addTableModelClearedListener(final EventListener listener);
+  void addTableModelClearedListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeTableModelClearedListener(final EventListener listener);
+  void removeTableModelClearedListener(EventListener listener);
 
   /**
    * Adds a listener that is notified each time rows are deleted from the data model.
    * @param listener the listener, the data list contains the fromIndex and toIndex as items at index 0 and 1
    */
-  void addRowsDeletedListener(final EventDataListener<List<Integer>> listener);
+  void addRowsDeletedListener(EventDataListener<List<Integer>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRowsDeletedListener(final EventDataListener listener);
+  void removeRowsDeletedListener(EventDataListener listener);
 
   /**
    * @return true if an impending selection change should be allowed
@@ -95,25 +95,25 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param item the item
    * @return the index of the item in the table model
    */
-  int indexOf(final R item);
+  int indexOf(R item);
 
   /**
    * @param index the index
    * @return the item at the given index in the table model
    */
-  R getItemAt(final int index);
+  R getItemAt(int index);
 
   /**
    * Removes the given items from this table model
    * @param items the items to remove from the model
    */
-  void removeItems(final Collection<R> items);
+  void removeItems(Collection<R> items);
 
   /**
    * Removes the given item from this table model
    * @param item the item to remove from the model
    */
-  void removeItem(final R item);
+  void removeItem(R item);
 
   /**
    * Removes from this table model all visible elements whose index is between fromIndex, inclusive and toIndex, exclusive
@@ -121,7 +121,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param toIndex index after last row to be removed
    * @throws IndexOutOfBoundsException in case the indexes are out of bounds
    */
-  void removeItems(final int fromIndex, final int toIndex);
+  void removeItems(int fromIndex, int toIndex);
 
   /**
    * @return the TableColumnModel used by this TableModel
@@ -132,14 +132,14 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param columnIdentifier the column identifier
    * @return the ColumnSummaryModel for the column identified by the given
    */
-  ColumnSummaryModel getColumnSummaryModel(final C columnIdentifier);
+  ColumnSummaryModel getColumnSummaryModel(C columnIdentifier);
 
   /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values
    * @param selectedOnly if true only values from the selected rows are returned
    * @return the values (including nulls) of the column identified by {@code columnIdentifier} from the rows in the table model
    */
-  Collection getValues(final C columnIdentifier, final boolean selectedOnly);
+  Collection getValues(C columnIdentifier, boolean selectedOnly);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -150,7 +150,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @return the search result coordinate, null if nothing was found
    * @see #isRegularExpressionSearch()
    */
-  RowColumn findNext(final int fromRowIndex, final String searchText);
+  RowColumn findNext(int fromRowIndex, String searchText);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -161,7 +161,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @return the search result coordinate, null if nothing was found
    * @see #isRegularExpressionSearch()
    */
-  RowColumn findPrevious(final int fromRowIndex, final String searchText);
+  RowColumn findPrevious(int fromRowIndex, String searchText);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -171,7 +171,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param condition the search condition
    * @return the search result coordinate, null if nothing was found
    */
-  RowColumn findNext(final int fromRowIndex, final Predicate<String> condition);
+  RowColumn findNext(int fromRowIndex, Predicate<String> condition);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -181,7 +181,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @param condition the search condition
    * @return the search result coordinate, null if nothing was found
    */
-  RowColumn findPrevious(final int fromRowIndex, final Predicate<String> condition);
+  RowColumn findPrevious(int fromRowIndex, Predicate<String> condition);
 
   /**
    * @return true if regular expressions should be used when searching this table model
@@ -192,7 +192,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * Specifies whether or not to use regular expressions when searching this table model
    * @param value the value
    */
-  void setRegularExpressionSearch(final boolean value);
+  void setRegularExpressionSearch(boolean value);
 
   /**
    * Sorts the visible contents according to the {@link TableSortModel}, keeping the selection state intact

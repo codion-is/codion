@@ -38,7 +38,7 @@ public interface Condition extends Serializable {
      * Adds a new Condition object to this set, adding null or a {@link EmptyCondition} instance has no effect
      * @param condition the Condition to add
      */
-    void add(final Condition condition);
+    void add(Condition condition);
 
     /**
      * @return the Conditions contained in this Set

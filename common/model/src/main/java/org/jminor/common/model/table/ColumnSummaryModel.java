@@ -24,13 +24,13 @@ public interface ColumnSummaryModel {
      * @param valueProvider the object responsible for providing the values for the summary
      * @return a summary text
      */
-    String getSummary(final ColumnValueProvider valueProvider);
+    String getSummary(ColumnValueProvider valueProvider);
   }
 
   /**
    * @param summary the type of summary to show
    */
-  void setSummary(final Summary summary);
+  void setSummary(Summary summary);
 
   /**
    * @return the current summary type
@@ -45,7 +45,7 @@ public interface ColumnSummaryModel {
   /**
    * @param value if true then changing summary type is disable
    */
-  void setLocked(final boolean value);
+  void setLocked(boolean value);
 
   /**
    * @return a list containing the available summaries
@@ -60,22 +60,22 @@ public interface ColumnSummaryModel {
   /**
    * @param listener a listener to be notified each time the summary value changes
    */
-  void addSummaryValueListener(final EventListener listener);
+  void addSummaryValueListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSummaryValueListener(final EventListener listener);
+  void removeSummaryValueListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the summary type changes
    */
-  void addSummaryListener(final EventDataListener<Summary> listener);
+  void addSummaryListener(EventDataListener<Summary> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSummaryListener(final EventDataListener<Summary> listener);
+  void removeSummaryListener(EventDataListener<Summary> listener);
 
   /**
    * Provides the values used when creating the summary value.
@@ -86,7 +86,7 @@ public interface ColumnSummaryModel {
      * @param value the value
      * @return the formatted value
      */
-    String format(final Object value);
+    String format(Object value);
 
     /**
      * @return true if the column is numerical
@@ -106,6 +106,6 @@ public interface ColumnSummaryModel {
     /**
      * @param listener the listener to notify of changes to the underlying data which require a summary refresh
      */
-    void addValuesChangedListener(final EventListener listener);
+    void addValuesChangedListener(EventListener listener);
   }
 }

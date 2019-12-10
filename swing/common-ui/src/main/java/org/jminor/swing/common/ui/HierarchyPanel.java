@@ -29,7 +29,7 @@ public interface HierarchyPanel {
    * Activates (and shows) the given child panel
    * @param childPanel the child panel to activate and show
    */
-  void setSelectedChildPanel(final HierarchyPanel childPanel);
+  void setSelectedChildPanel(HierarchyPanel childPanel);
 
   /**
    * @return the previous sibling panel, if one exists, with wrap around

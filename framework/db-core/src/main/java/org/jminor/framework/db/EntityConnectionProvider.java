@@ -99,13 +99,13 @@ public interface EntityConnectionProvider {
    * Adds a listener notified each time this connection provider establishes a connection to the database
    * @param listener a listener notified each time the underlying connection is connected
    */
-  void addOnConnectListener(final EventListener listener);
+  void addOnConnectListener(EventListener listener);
 
   /**
    * Removes the given listener
    * @param listener the listener to remove
    */
-  void removeOnConnectListener(final EventListener listener);
+  void removeOnConnectListener(EventListener listener);
 
   /**
    * Logs out, disconnects and performs cleanup if required
@@ -117,7 +117,7 @@ public interface EntityConnectionProvider {
    * @param user the user
    * @return this EntityConnectionProvider instance
    */
-  EntityConnectionProvider setUser(final User user);
+  EntityConnectionProvider setUser(User user);
 
   /**
    * @return the user used by this connection provider
@@ -130,7 +130,7 @@ public interface EntityConnectionProvider {
    * @return this EntityConnectionProvider instance
    * @throws IllegalArgumentException in case {@code domainClassName} is null
    */
-  EntityConnectionProvider setDomainClassName(final String domainClassName);
+  EntityConnectionProvider setDomainClassName(String domainClassName);
 
   /**
    * @return the domain model classname
@@ -143,7 +143,7 @@ public interface EntityConnectionProvider {
    * @return this EntityConnectionProvider instance
    * @throws IllegalArgumentException in case {@code clientId} is null
    */
-  EntityConnectionProvider setClientId(final UUID clientId);
+  EntityConnectionProvider setClientId(UUID clientId);
 
   /**
    * @return the UUID identifying this client connection
@@ -155,7 +155,7 @@ public interface EntityConnectionProvider {
    * @param clientTypeId a String identifying the client type for this connection provider
    * @return this EntityConnectionProvider instance
    */
-  EntityConnectionProvider setClientTypeId(final String clientTypeId);
+  EntityConnectionProvider setClientTypeId(String clientTypeId);
 
   /**
    * @return the String identifying the client type for this connection provider
@@ -166,7 +166,7 @@ public interface EntityConnectionProvider {
    * @param clientVersion the client version
    * @return this EntityConnectionProvider instance
    */
-  EntityConnectionProvider setClientVersion(final Version clientVersion);
+  EntityConnectionProvider setClientVersion(Version clientVersion);
 
   /**
    * @return the client version

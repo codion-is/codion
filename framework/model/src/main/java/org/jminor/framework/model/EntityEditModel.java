@@ -86,7 +86,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * is null then the entity being edited is populated with default values
    * @param entity the entity
    */
-  void setEntity(final Entity entity);
+  void setEntity(Entity entity);
 
   /**
    * Refreshes the active Entity from the database, discarding all changes.
@@ -105,7 +105,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return a deep copy of the active entity
    * @see org.jminor.framework.domain.Domain#copyEntity(Entity)
    */
-  Entity getEntityCopy(final boolean includePrimaryKeyValues);
+  Entity getEntityCopy(boolean includePrimaryKeyValues);
 
   /**
    * Returns true if the active entity is new or false if it represents a row already persisted.
@@ -130,34 +130,34 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyId the ID of the property
    * @return true if the value of the given property is null
    */
-  boolean isNull(final String propertyId);
+  boolean isNull(String propertyId);
 
   /**
    * @param propertyId the ID of the property
    * @return true if the value of the given property is not null
    */
-  boolean isNotNull(final String propertyId);
+  boolean isNotNull(String propertyId);
 
   /**
    * Sets the given value in the underlying value map
    * @param propertyId the ID of the property to associate the given value with
    * @param value the value to associate with the given property
    */
-  void put(final String propertyId, final Object value);
+  void put(String propertyId, Object value);
 
   /**
    * Removes the given value from the underlying value map
    * @param propertyId the ID of the property
    * @return the value, if any
    */
-  Object remove(final String propertyId);
+  Object remove(String propertyId);
 
   /**
    * Returns the value associated with the given property
    * @param propertyId the ID of the property
    * @return the value associated with the given property
    */
-  Object get(final String propertyId);
+  Object get(String propertyId);
 
   /**
    * Returns the value associated with the given propertyId assuming it
@@ -166,7 +166,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return the value assuming it is an {@link Entity}
    * @throws ClassCastException in case the value was not an {@link Entity}
    */
-  Entity getForeignKey(final String foreignKeyPropertyId);
+  Entity getForeignKey(String foreignKeyPropertyId);
 
   /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with
@@ -175,7 +175,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param foreignKeyEntityId the entity ID of the foreign key values
    * @param foreignKeyValues the new foreign key entities
    */
-  void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues);
+  void replaceForeignKeyValues(String foreignKeyEntityId, Collection<Entity> foreignKeyValues);
 
   /**
    * Initializes a value provider for the given property, useful for adding lookup
@@ -183,7 +183,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param property the property
    * @return a value provider for the given property
    */
-  ValueCollectionProvider getValueProvider(final Property property);
+  ValueCollectionProvider getValueProvider(Property property);
 
   /**
    * Instantiates a new Value based on the value identified by {@code propertyId} in this edit model
@@ -191,7 +191,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param <V> the value type
    * @return a Value based on the given edit model value
    */
-  <V> Value<V> value(final String propertyId);
+  <V> Value<V> value(String propertyId);
 
   /**
    * @return the underlying domain model
@@ -219,7 +219,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @see #setUpdateAllowed(boolean)
    * @see #setDeleteAllowed(boolean)
    */
-  EntityEditModel setReadOnly(final boolean readOnly);
+  EntityEditModel setReadOnly(boolean readOnly);
 
   /**
    * @return true if this model warns about unsaved data
@@ -232,7 +232,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return this edit model instance
    * @see #WARN_ABOUT_UNSAVED_DATA
    */
-  EntityEditModel setWarnAboutUnsavedData(final boolean warnAboutUnsavedData);
+  EntityEditModel setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
 
   /**
    * @return true if this model should allow records to be inserted
@@ -243,7 +243,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param value true if this model should allow inserts
    * @return this edit model instance
    */
-  EntityEditModel setInsertAllowed(final boolean value);
+  EntityEditModel setInsertAllowed(boolean value);
 
   /**
    * @return true if this model should allow records to be updated
@@ -254,7 +254,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param value true if this model should allow records to be updated
    * @return this edit model instance
    */
-  EntityEditModel setUpdateAllowed(final boolean value);
+  EntityEditModel setUpdateAllowed(boolean value);
 
   /**
    * @return true if this model should allow records to be deleted
@@ -265,7 +265,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param value true if this model should allow records to be deleted
    * @return this edit model instance
    */
-  EntityEditModel setDeleteAllowed(final boolean value);
+  EntityEditModel setDeleteAllowed(boolean value);
 
   /**
    * Returns true if this edit model posts its insert, update and delete events on the
@@ -280,7 +280,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param postEditEvents true if edit events should be posted
    * @return this edit model instance
    */
-  EntityEditModel setPostEditEvents(final boolean postEditEvents);
+  EntityEditModel setPostEditEvents(boolean postEditEvents);
 
   /**
    * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,
@@ -291,28 +291,28 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @throws IllegalStateException in case no searchable properties can be found for the entity type referenced by the
    * given foreign key property
    */
-  EntityLookupModel createForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty);
+  EntityLookupModel createForeignKeyLookupModel(ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key property
    * @param foreignKeyPropertyId the ID of the property
    * @return true if a {@link EntityLookupModel} has been initialized for the given foreign key property
    */
-  boolean containsLookupModel(final String foreignKeyPropertyId);
+  boolean containsLookupModel(String foreignKeyPropertyId);
 
   /**
    * @param foreignKeyPropertyId the ID of the property for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
    * has been initialized for the given property, a new one is created, associated with the property and returned.
    */
-  EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyId);
+  EntityLookupModel getForeignKeyLookupModel(String foreignKeyPropertyId);
 
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
    * has been initialized for the given property, a new one is created, associated with the property and returned.
    */
-  EntityLookupModel getForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty);
+  EntityLookupModel getForeignKeyLookupModel(ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Returns the default value for the given property, used when initializing a new default entity for this edit model.
@@ -326,7 +326,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @see #setValuePersistent(String, boolean)
    * @see #isValuePersistent(Property)
    */
-  Object getDefaultValue(final Property property);
+  Object getDefaultValue(Property property);
 
   /**
    * Returns true if the last available value for this property should be used when initializing
@@ -338,7 +338,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return true if the given field value should be reset when the model is cleared
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  boolean isValuePersistent(final Property property);
+  boolean isValuePersistent(Property property);
 
   /**
    * Returns true if values based on this property should be available for lookup via this EditModel.
@@ -354,7 +354,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return this edit model instance
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  EntityEditModel setValuePersistent(final String propertyId, final boolean persistValueOnClear);
+  EntityEditModel setValuePersistent(String propertyId, boolean persistValueOnClear);
 
   /**
    * Performs a insert on the active entity, sets the primary key values of the active entity
@@ -376,7 +376,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @see #addAfterInsertListener(EventDataListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
-  List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException;
+  List<Entity> insert(List<Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Performs a update on the active entity
@@ -401,7 +401,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @see #addAfterUpdateListener(EventDataListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
-  List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException;
+  List<Entity> update(List<Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Deletes the active entity
@@ -420,7 +420,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @see #addBeforeDeleteListener(EventDataListener)
    * @see #addAfterDeleteListener(EventDataListener)
    */
-  List<Entity> delete(final List<Entity> entities) throws DatabaseException;
+  List<Entity> delete(List<Entity> entities) throws DatabaseException;
 
   /**
    * @return true if the underlying Entity is modified
@@ -432,21 +432,21 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * Adds the inserted entities to all foreign key models based on that entity type
    * @param values the values
    */
-  void addForeignKeyValues(final List<Entity> values);
+  void addForeignKeyValues(List<Entity> values);
 
   /**
    * Removes the deleted entities from all foreign key models based on that entity type
    * todo set foreign key values referencing the deleted entity to null
    * @param values the values
    */
-  void removeForeignKeyValues(final List<Entity> values);
+  void removeForeignKeyValues(List<Entity> values);
 
   /**
    * Sets the values in the given list as the values for the respective foreign keys, uses the first
    * value found for each entity type in case of multiple entities of that type
    * @param values the entities
    */
-  void setForeignKeyValues(final List<Entity> values);
+  void setForeignKeyValues(List<Entity> values);
 
   /**
    * Returns a StateObserver responsible for indicating when and if any values in the underlying Entity are modified.
@@ -492,7 +492,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyId the ID of the property for which to retrieve the event
    * @return an EventObserver notified when the value of the given property changes
    */
-  EventObserver<ValueChange<Property, Object>> getValueObserver(final String propertyId);
+  EventObserver<ValueChange<Property, Object>> getValueObserver(String propertyId);
 
   /**
    * Adds a listener notified each time the value associated with the given property is set via
@@ -500,137 +500,137 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the given property is set via this model
    */
-  void addValueSetListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener);
+  void addValueSetListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
 
   /**
    * @param propertyId the propertyId
    * @param listener the listener to remove
    */
-  void removeValueSetListener(final String propertyId, final EventDataListener listener);
+  void removeValueSetListener(String propertyId, EventDataListener listener);
 
   /**
    * Adds a listener notified each time the value associated with the given key changes
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the property identified by {@code propertyId} changes
    */
-  void addValueListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener);
+  void addValueListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
 
   /**
    * @param propertyId the ID of the property for which to remove the listener
    * @param listener the listener to remove
    */
-  void removeValueListener(final String propertyId, final EventDataListener listener);
+  void removeValueListener(String propertyId, EventDataListener listener);
 
   /**
    * @param listener a listener notified each time the entity is set
    */
-  void addEntitySetListener(final EventDataListener<Entity> listener);
+  void addEntitySetListener(EventDataListener<Entity> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeEntitySetListener(final EventDataListener listener);
+  void removeEntitySetListener(EventDataListener listener);
 
   /**
    * @param listener a listener to be notified before an insert is performed
    */
-  void addBeforeInsertListener(final EventDataListener<List<Entity>> listener);
+  void addBeforeInsertListener(EventDataListener<List<Entity>> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeInsertListener(final EventDataListener listener);
+  void removeBeforeInsertListener(EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time a insert has been performed
    */
-  void addAfterInsertListener(final EventDataListener<List<Entity>> listener);
+  void addAfterInsertListener(EventDataListener<List<Entity>> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterInsertListener(final EventDataListener listener);
+  void removeAfterInsertListener(EventDataListener listener);
 
   /**
    * @param listener a listener to be notified before an update is performed
    */
-  void addBeforeUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener);
+  void addBeforeUpdateListener(EventDataListener<Map<Entity.Key, Entity>> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeUpdateListener(final EventDataListener listener);
+  void removeBeforeUpdateListener(EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time an update has been performed,
    * with the updated entities, mapped to their respective original primary keys, that is,
    * the primary keys before the update was performed
    */
-  void addAfterUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener);
+  void addAfterUpdateListener(EventDataListener<Map<Entity.Key, Entity>> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterUpdateListener(final EventDataListener listener);
+  void removeAfterUpdateListener(EventDataListener listener);
 
   /**
    * @param listener a listener to be notified before a delete is performed
    */
-  void addBeforeDeleteListener(final EventDataListener<List<Entity>> listener);
+  void addBeforeDeleteListener(EventDataListener<List<Entity>> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeDeleteListener(final EventDataListener listener);
+  void removeBeforeDeleteListener(EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time a delete has been performed
    */
-  void addAfterDeleteListener(final EventDataListener<List<Entity>> listener);
+  void addAfterDeleteListener(EventDataListener<List<Entity>> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterDeleteListener(final EventDataListener listener);
+  void removeAfterDeleteListener(EventDataListener listener);
 
   /**
    * @param listener a listener to be notified before a refresh is performed
    */
-  void addBeforeRefreshListener(final EventListener listener);
+  void addBeforeRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeRefreshListener(final EventListener listener);
+  void removeBeforeRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has been performed
    */
-  void addAfterRefreshListener(final EventListener listener);
+  void addAfterRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterRefreshListener(final EventListener listener);
+  void removeAfterRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a entity is modified via this model,
    * updated, inserted or deleted
    */
-  void addEntitiesChangedListener(final EventListener listener);
+  void addEntitiesChangedListener(EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeEntitiesChangedListener(final EventListener listener);
+  void removeEntitiesChangedListener(EventListener listener);
 
   /**
    * @param listener a listener notified each time the active entity is about to be set
    */
-  void addConfirmSetEntityObserver(final EventDataListener<State> listener);
+  void addConfirmSetEntityObserver(EventDataListener<State> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeConfirmSetEntityObserver(final EventDataListener listener);
+  void removeConfirmSetEntityObserver(EventDataListener listener);
 }

@@ -73,7 +73,7 @@ public interface ColumnConditionModel<K> {
   /**
    * @param caseSensitive true if this condition model should be case sensitive when working with strings
    */
-  void setCaseSensitive(final boolean caseSensitive);
+  void setCaseSensitive(boolean caseSensitive);
 
   /**
    * @return the Format object to use when formatting input, if any
@@ -89,7 +89,7 @@ public interface ColumnConditionModel<K> {
    * @param object the object
    * @return true if the object should be included or if this model is not enabled
    */
-  boolean include(final Object object);
+  boolean include(Object object);
 
   /**
    * Sets the automatic wildcard type.
@@ -97,7 +97,7 @@ public interface ColumnConditionModel<K> {
    * condition types {@link ConditionType#LIKE} and {@link ConditionType#NOT_LIKE}
    * @param automaticWildcard the automatic wildcard type to use
    */
-  void setAutomaticWildcard(final AutomaticWildcard automaticWildcard);
+  void setAutomaticWildcard(AutomaticWildcard automaticWildcard);
 
   /**
    * @return the automatic wildcard type being used by this model
@@ -108,12 +108,12 @@ public interface ColumnConditionModel<K> {
    * @param comparable the value to check
    * @return true if the given value should be included or if this model is not enabled
    */
-  boolean include(final Comparable comparable);
+  boolean include(Comparable comparable);
 
   /**
    * @param value true to lock this model, false to unlock
    */
-  void setLocked(final boolean value);
+  void setLocked(boolean value);
 
   /**
    * @return true if this model is locked
@@ -128,14 +128,14 @@ public interface ColumnConditionModel<K> {
   /**
    * @param upper the new upper bound
    */
-  void setUpperBound(final Object upper);
+  void setUpperBound(Object upper);
 
   /**
    * A shortcut method for setting the upper bound value, conditionType to LIKE
    * and enabling this model in case of a non-null value.
    * @param value the value to use as condition
    */
-  void setLikeValue(final Object value);
+  void setLikeValue(Object value);
 
   /**
    * @return the upper bound
@@ -145,7 +145,7 @@ public interface ColumnConditionModel<K> {
   /**
    * @param value the lower bound
    */
-  void setLowerBound(final Object value);
+  void setLowerBound(Object value);
 
   /**
    * @return the lower bound
@@ -160,7 +160,7 @@ public interface ColumnConditionModel<K> {
   /**
    * @param conditionType the search type
    */
-  void setConditionType(final ConditionType conditionType);
+  void setConditionType(ConditionType conditionType);
 
   /**
    * @return true if the current search type requires a lower bound value to be specified,
@@ -177,7 +177,7 @@ public interface ColumnConditionModel<K> {
    * If set, this model automatically enables itself when a condition is specified
    * @param autoEnable true to enable, false to disable
    */
-  void setAutoEnable(final boolean autoEnable);
+  void setAutoEnable(boolean autoEnable);
 
   /**
    * @return true if this condition model is enabled
@@ -187,7 +187,7 @@ public interface ColumnConditionModel<K> {
   /**
    * @param value true to enable, false to disable
    */
-  void setEnabled(final boolean value);
+  void setEnabled(boolean value);
 
   /**
    * Disables and clears this condition model, that is, sets the upper and lower bounds to null
@@ -223,70 +223,70 @@ public interface ColumnConditionModel<K> {
   /**
    * @param listener a listener to be notified each time the enabled state changes
    */
-  void addEnabledListener(final EventListener listener);
+  void addEnabledListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeEnabledListener(final EventListener listener);
+  void removeEnabledListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the condition type changes
    */
-  void addConditionTypeListener(final EventDataListener<ConditionType> listener);
+  void addConditionTypeListener(EventDataListener<ConditionType> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionTypeListener(final EventDataListener listener);
+  void removeConditionTypeListener(EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound changes
    */
-  void addLowerBoundListener(final EventListener listener);
+  void addLowerBoundListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeLowerBoundListener(final EventListener listener);
+  void removeLowerBoundListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound required attribute changes
    */
-  void addLowerBoundRequiredListener(final EventListener listener);
+  void addLowerBoundRequiredListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeLowerBoundRequiredListener(final EventListener listener);
+  void removeLowerBoundRequiredListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the upper bound changes
    */
-  void addUpperBoundListener(final EventListener listener);
+  void addUpperBoundListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeUpperBoundListener(final EventListener listener);
+  void removeUpperBoundListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the model is cleared
    */
-  void addClearedListener(final EventListener listener);
+  void addClearedListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeClearedListener(final EventListener listener);
+  void removeClearedListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the condition state changes
    */
-  void addConditionStateListener(final EventListener listener);
+  void addConditionStateListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionStateListener(final EventListener listener);
+  void removeConditionStateListener(EventListener listener);
 }

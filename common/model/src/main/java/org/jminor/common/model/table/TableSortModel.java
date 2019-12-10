@@ -19,7 +19,7 @@ public interface TableSortModel<R, C, T> {
    * Sorts the given list according to the sort configuration
    * @param items the items to sort
    */
-  void sort(final List<R> items);
+  void sort(List<R> items);
 
   /**
    * @param columnIdentifier the identifier of the column to sort by
@@ -28,14 +28,14 @@ public interface TableSortModel<R, C, T> {
    * this column is added to the sorted column set according to sorting priority
    * @see #getSortingState(Object)
    */
-  void setSortingDirective(final C columnIdentifier, final SortingDirective directive,
-                           final boolean addColumnToSort);
+  void setSortingDirective(C columnIdentifier, SortingDirective directive,
+                           boolean addColumnToSort);
 
   /**
    * @param columnIdentifier the column identifier
    * @return the {@link SortingState} associated with the given column
    */
-  SortingState getSortingState(final C columnIdentifier);
+  SortingState getSortingState(C columnIdentifier);
 
   /**
    * @return true if sorting is enabled for one or more columns
@@ -52,12 +52,12 @@ public interface TableSortModel<R, C, T> {
    * @param columnIdentifier the column identifier
    * @return the Class representing the given column
    */
-  Class getColumnClass(final C columnIdentifier);
+  Class getColumnClass(C columnIdentifier);
 
   /**
    * @param listener a listener notified each time the sorting state changes
    */
-  void addSortingStateChangedListener(final EventListener listener);
+  void addSortingStateChangedListener(EventListener listener);
 
   /**
    * Specifies a sorting state for a column.

@@ -23,21 +23,21 @@ public interface EntityModelProvider<M extends EntityModel<M, E, T>, E extends E
    * @param connectionProvider the connection provider
    * @return the entity model instance
    */
-  M createModel(final EntityConnectionProvider connectionProvider);
+  M createModel(EntityConnectionProvider connectionProvider);
 
   /**
    * Creates a {@link EntityEditModel} instance, based on the given connection provider
    * @param connectionProvider the connection provider
    * @return the edit model instance
    */
-  E createEditModel(final EntityConnectionProvider connectionProvider);
+  E createEditModel(EntityConnectionProvider connectionProvider);
 
   /**
    * Creates a {@link EntityTableModel} instance, based on the given connection provider
    * @param connectionProvider the connection provider
    * @return the table model instance
    */
-  T createTableModel(final EntityConnectionProvider connectionProvider);
+  T createTableModel(EntityConnectionProvider connectionProvider);
 
   /**
    * Sets the model class
@@ -45,7 +45,7 @@ public interface EntityModelProvider<M extends EntityModel<M, E, T>, E extends E
    * @return this EntityModelProvider instance
    * @throws java.lang.IllegalArgumentException in case modelClass is null
    */
-  EntityModelProvider<M, E, T> setModelClass(final Class<? extends M> modelClass);
+  EntityModelProvider<M, E, T> setModelClass(Class<? extends M> modelClass);
 
   /**
    * Sets the edit model class
@@ -53,7 +53,7 @@ public interface EntityModelProvider<M extends EntityModel<M, E, T>, E extends E
    * @return this EntityModelProvider instance
    * @throws java.lang.IllegalArgumentException in case editModelClass is null
    */
-  EntityModelProvider<M, E, T> setEditModelClass(final Class<? extends E> editModelClass);
+  EntityModelProvider<M, E, T> setEditModelClass(Class<? extends E> editModelClass);
 
   /**
    * Sets the table model class
@@ -61,19 +61,19 @@ public interface EntityModelProvider<M extends EntityModel<M, E, T>, E extends E
    * @return this EntityModelProvider instance
    * @throws java.lang.IllegalArgumentException in case tableModelClass is null
    */
-  EntityModelProvider<M, E, T> setTableModelClass(final Class<? extends T> tableModelClass);
+  EntityModelProvider<M, E, T> setTableModelClass(Class<? extends T> tableModelClass);
 
   /**
    * @param detailModelProvider an EntityModelProvider providing a detail model
    * @return this EntityModelProvider instance
    */
-  EntityModelProvider<M, E, T> addDetailModelProvider(final EntityModelProvider<M, E, T> detailModelProvider);
+  EntityModelProvider<M, E, T> addDetailModelProvider(EntityModelProvider<M, E, T> detailModelProvider);
 
   /**
    * @param detailModelProvider the detail model provider
    * @return true if this model provider contains the given detail model provider
    */
-  boolean containsDetailModelProvider(final EntityModelProvider<M, E, T> detailModelProvider);
+  boolean containsDetailModelProvider(EntityModelProvider<M, E, T> detailModelProvider);
 
   /**
    * @return the class of the {@link EntityModel}s provided

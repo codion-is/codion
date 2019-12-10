@@ -246,7 +246,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
    * @param connectionProvider the connection provider
    * @return the application model
    */
-  protected abstract M initializeApplicationModel(final EntityConnectionProvider connectionProvider);
+  protected abstract M initializeApplicationModel(EntityConnectionProvider connectionProvider);
 
   private static void handleException(final Exception e) {
     if (e instanceof CancelException) {

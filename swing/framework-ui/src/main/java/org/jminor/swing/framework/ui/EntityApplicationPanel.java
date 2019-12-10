@@ -1212,7 +1212,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return an initialized application model
    * @throws CancelException in case the initialization is cancelled
    */
-  protected abstract M initializeApplicationModel(final EntityConnectionProvider connectionProvider);
+  protected abstract M initializeApplicationModel(EntityConnectionProvider connectionProvider);
 
   /**
    * Returns the user, either via a login dialog or via override, called during startup

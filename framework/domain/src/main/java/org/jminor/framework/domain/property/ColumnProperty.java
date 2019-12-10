@@ -32,13 +32,13 @@ public interface ColumnProperty extends Property {
    * @param value the value to translate
    * @return the sql value used to represent the given value
    */
-  Object toColumnValue(final Object value);
+  Object toColumnValue(Object value);
 
   /**
    * @param value the SQL value Object to translate from
    * @return the value of SQL {@code value}
    */
-  Object fromColumnValue(final Object value);
+  Object fromColumnValue(Object value);
 
   /**
    * @return this propertys zero based index in the primary key, -1 if this property is not part of a primary key
@@ -94,7 +94,7 @@ public interface ColumnProperty extends Property {
    * @return a single value fetched from the given ResultSet
    * @throws java.sql.SQLException in case of an exception
    */
-  Object fetchValue(final ResultSet resultSet, final int index) throws SQLException;
+  Object fetchValue(ResultSet resultSet, int index) throws SQLException;
 
   /**
    * @return a ResultPacker responsible for packing this property
@@ -114,7 +114,7 @@ public interface ColumnProperty extends Property {
      * @return a single value fetched from the given ResultSet
      * @throws java.sql.SQLException in case of an exception
      */
-    T fetchValue(final ResultSet resultSet, final int index) throws SQLException;
+    T fetchValue(ResultSet resultSet, int index) throws SQLException;
   }
 
   /**
@@ -132,13 +132,13 @@ public interface ColumnProperty extends Property {
      * @param value the value to translate
      * @return the sql value used to represent the given value
      */
-    C toColumnValue(final T value);
+    C toColumnValue(T value);
 
     /**
      * @param columnValue the SQL value to translate from
      * @return the value of SQL {@code columnValue}
      */
-    T fromColumnValue(final C columnValue);
+    T fromColumnValue(C columnValue);
   }
 
   /**
@@ -156,19 +156,19 @@ public interface ColumnProperty extends Property {
      * @param columnName the column name
      * @return this instance
      */
-    ColumnProperty.Builder setColumnName(final String columnName);
+    ColumnProperty.Builder setColumnName(String columnName);
 
     /**
      * @param updatable specifies whether this property is updatable
      * @return this instance
      */
-    ColumnProperty.Builder setUpdatable(final boolean updatable);
+    ColumnProperty.Builder setUpdatable(boolean updatable);
 
     /**
      * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
      * @return this instance
      */
-    ColumnProperty.Builder setColumnHasDefaultValue(final boolean columnHasDefaultValue);
+    ColumnProperty.Builder setColumnHasDefaultValue(boolean columnHasDefaultValue);
 
     /**
      * Sets the zero based primary key index of this property.
@@ -180,38 +180,38 @@ public interface ColumnProperty extends Property {
      * @see #setNullable(boolean)
      * @see #setUpdatable(boolean)
      */
-    ColumnProperty.Builder setPrimaryKeyIndex(final int index);
+    ColumnProperty.Builder setPrimaryKeyIndex(int index);
 
     /**
      * @param groupingColumn true if this column should be used in a group by clause
      * @throws IllegalStateException in case the column has already been defined as an aggregate column
      * @return this instance
      */
-    ColumnProperty.Builder setGroupingColumn(final boolean groupingColumn);
+    ColumnProperty.Builder setGroupingColumn(boolean groupingColumn);
 
     /**
      * @param aggregateColumn true if this column is an aggregate function column
      * @throws IllegalStateException in case the column has already been defined as a grouping column
      * @return this instance
      */
-    ColumnProperty.Builder setAggregateColumn(final boolean aggregateColumn);
+    ColumnProperty.Builder setAggregateColumn(boolean aggregateColumn);
 
     /**
      * @param selectable false if this property should not be included in select queries
      * @return this instance
      */
-    ColumnProperty.Builder setSelectable(final boolean selectable);
+    ColumnProperty.Builder setSelectable(boolean selectable);
 
     /**
      * Set a value converter, for converting to and from a sql representation of the value
      * @param valueConverter the converter
      * @return this instance
      */
-    ColumnProperty.Builder setValueConverter(final ValueConverter<?, ?> valueConverter);
+    ColumnProperty.Builder setValueConverter(ValueConverter<?, ?> valueConverter);
 
     /**
      * @param foreignKeyProperty true if this property is part of a foreign key
      */
-    void setForeignKeyProperty(final boolean foreignKeyProperty);
+    void setForeignKeyProperty(boolean foreignKeyProperty);
   }
 }

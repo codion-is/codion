@@ -29,7 +29,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param value the value
    * @return the previous value mapped to the given key
    */
-  V put(final K key, final V value);
+  V put(K key, V value);
 
   /**
    * Removes the given key and value from this value map along with the original value if any.
@@ -37,7 +37,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param key the key to remove
    * @return the value that was removed, null if no value was found
    */
-  V remove(final K key);
+  V remove(K key);
 
   /**
    * Retrieves a string representation of the value mapped to the given key, an empty string is returned
@@ -45,7 +45,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param key the key
    * @return the value mapped to the given key as a string, an empty string if no such mapping exists
    */
-  String getAsString(final K key);
+  String getAsString(K key);
 
   /**
    * Silently removes all values from this map, as in, removes the values
@@ -59,28 +59,28 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * Value change events for affected keys are fired after all values have been set, in no particular order.
    * @param sourceMap the map to copy or null for clearing the destination map
    */
-  void setAs(final ValueMap<K, V> sourceMap);
+  void setAs(ValueMap<K, V> sourceMap);
 
   /**
    * Returns true if a null value is mapped to the given key or the key is not found.
    * @param key the key
    * @return true if the value mapped to the given key is null
    */
-  boolean isNull(final K key);
+  boolean isNull(K key);
 
   /**
    * Returns true if a this ValueMap contains a non-null value mapped to the given key
    * @param key the key
    * @return true if the value mapped to the given key is not null
    */
-  boolean isNotNull(final K key);
+  boolean isNotNull(K key);
 
   /**
    * Returns true if this ValueMap contains a value for the given key, that value can be null.
    * @param key the key
    * @return true if a value is mapped to this key
    */
-  boolean containsKey(final K key);
+  boolean containsKey(K key);
 
   /**
    * @return an unmodifiable view of the keys mapping the values in this ValueMap
@@ -102,7 +102,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param key the key for which to retrieve the original value
    * @return the original value
    */
-  V getOriginal(final K key);
+  V getOriginal(K key);
 
   /**
    * @return true if one or more values have been modified.
@@ -114,14 +114,14 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param key the key
    * @return true if the value has changed
    */
-  boolean isModified(final K key);
+  boolean isModified(K key);
 
   /**
    * Reverts the value associated with the given key to its original value.
    * If the value has not been modified or the key is not found then calling this method has no effect.
    * @param key the key for which to revert the value
    */
-  void revert(final K key);
+  void revert(K key);
 
   /**
    * Reverts all value modifications that have been made.
@@ -135,7 +135,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * If no original value exists calling this method has no effect.
    * @param key the key for which to save the value
    */
-  void save(final K key);
+  void save(K key);
 
   /**
    * Saves all the value modifications that have been made.
@@ -161,13 +161,13 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param valueListener the listener
    * @see ValueChange
    */
-  void addValueListener(final EventDataListener<ValueChange<K, V>> valueListener);
+  void addValueListener(EventDataListener<ValueChange<K, V>> valueListener);
 
   /**
    * Removes the given value listener if it has been registered with this value map.
    * @param valueListener the listener to remove
    */
-  void removeValueListener(final EventDataListener valueListener);
+  void removeValueListener(EventDataListener valueListener);
 
   /**
    * A validator for ValueMaps
@@ -181,20 +181,20 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
      * @param key the key
      * @return true if this value is allowed to be null in the given value map
      */
-    boolean isNullable(final V valueMap, final K key);
+    boolean isNullable(V valueMap, K key);
 
     /**
      * @param valueMap the value map
      * @return true if the given value map contains only valid values
      */
-    boolean isValid(final V valueMap);
+    boolean isValid(V valueMap);
 
     /**
      * Checks if the values in the given value map are valid
      * @param valueMap the value map
      * @throws ValidationException in case of an invalid value
      */
-    void validate(final V valueMap) throws ValidationException;
+    void validate(V valueMap) throws ValidationException;
 
     /**
      * Checks if the value associated with the give key is valid, throws a ValidationException if not
@@ -202,7 +202,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
      * @param key the key the value is associated with
      * @throws ValidationException if the given value is not valid for the given key
      */
-    void validate(final V valueMap, final K key) throws ValidationException;
+    void validate(V valueMap, K key) throws ValidationException;
 
     /**
      * Notifies all re-validation listeners that a re-validation is called for, for example
@@ -215,11 +215,11 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
      * @param listener a listener notified each time a re-validation of all values is required, for example
      * when the underlying validation settings have changed
      */
-    void addRevalidationListener(final EventListener listener);
+    void addRevalidationListener(EventListener listener);
 
     /**
      * @param listener a listener to remove
      */
-    void removeRevalidationListener(final EventListener listener);
+    void removeRevalidationListener(EventListener listener);
   }
 }

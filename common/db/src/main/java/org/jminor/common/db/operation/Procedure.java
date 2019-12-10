@@ -17,5 +17,5 @@ public interface Procedure<C> extends Operation {
    * @param arguments the procedure arguments, if any
    * @throws DatabaseException in case of an exception during the execution
    */
-  void execute(final C connection, final Object... arguments) throws DatabaseException;
+  void execute(C connection, Object... arguments) throws DatabaseException;
 }

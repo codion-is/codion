@@ -379,7 +379,7 @@ public final class EntityLookupField extends JTextField {
      * @param entities the entities to display in the component
      * @return the component to display for selecting entities
      */
-    JComponent getSelectionComponent(final List<Entity> entities);
+    JComponent getSelectionComponent(List<Entity> entities);
 
     /**
      * @return a Control which sets the selected entities in the underlying {@link EntityLookupModel}

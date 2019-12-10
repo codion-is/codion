@@ -18,5 +18,5 @@ public interface ReportUIWrapper<R> {
    * @param result the report result to base the report on.
    * @return a JComponent showing a report.
    */
-  JComponent createReportComponent(final ReportResult<R> result);
+  JComponent createReportComponent(ReportResult<R> result);
 }

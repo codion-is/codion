@@ -645,7 +645,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
      * @param column the column
      * @return a ColumnConditionPanel
      */
-    ColumnConditionPanel<C> createColumnConditionPanel(final TableColumn column);
+    ColumnConditionPanel<C> createColumnConditionPanel(TableColumn column);
   }
 
   private final class MouseSortHandler extends MouseAdapter {

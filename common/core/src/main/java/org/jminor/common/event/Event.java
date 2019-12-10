@@ -29,7 +29,7 @@ public interface Event<T> extends EventListener, EventDataListener<T>, EventObse
    * Notifies all listeners that this event has occurred
    * @param data information to propagate to listeners when notifying
    */
-  void fire(final T data);
+  void fire(T data);
 
   /**
    * @return an observer notified each time this event fires

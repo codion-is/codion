@@ -282,7 +282,7 @@ public final class UiValues {
       return true;
     }
 
-    protected abstract void setInternal(final V value);
+    protected abstract void setInternal(V value);
   }
 
   private static class TextUIValue<V> extends UIValue<V> {

@@ -16,7 +16,7 @@ public interface ValueListProperty extends ColumnProperty {
    * @param value the value to validate
    * @return true if the given value is valid for this property
    */
-  boolean isValid(final Object value);
+  boolean isValid(Object value);
 
   /**
    * @return an unmodifiable view of the available values
@@ -27,5 +27,5 @@ public interface ValueListProperty extends ColumnProperty {
    * @param value the value
    * @return the caption associated with the given value
    */
-  String getCaption(final Object value);
+  String getCaption(Object value);
 }

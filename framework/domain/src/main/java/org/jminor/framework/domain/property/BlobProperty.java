@@ -28,6 +28,6 @@ public interface BlobProperty extends ColumnProperty {
      * @param lazyLoaded if true then this value is not loaded automatically when selected
      * @return this instance
      */
-    BlobProperty.Builder setLazyLoaded(final boolean lazyLoaded);
+    BlobProperty.Builder setLazyLoaded(boolean lazyLoaded);
   }
 }

@@ -43,19 +43,19 @@ public interface LoadTest {
    * @param scenarioName the name of the scenario
    * @param weight the new weight to assign to the scenario
    */
-  void setWeight(final String scenarioName, final int weight);
+  void setWeight(String scenarioName, int weight);
 
   /**
    * @param scenarioName the scenario name
    * @return true if the scenario is enabled
    */
-  boolean isScenarioEnabled(final String scenarioName);
+  boolean isScenarioEnabled(String scenarioName);
 
   /**
    * @param scenarioName the scenario name
    * @param value true if the scenario should be enabled
    */
-  void setScenarioEnabled(final String scenarioName, final boolean value);
+  void setScenarioEnabled(String scenarioName, boolean value);
 
   /**
    * @return the usage scenarios used by this load test;
@@ -66,7 +66,7 @@ public interface LoadTest {
    * @param usageScenarioName the scenario name
    * @return the usage scenario
    */
-  UsageScenario getUsageScenario(final String usageScenarioName);
+  UsageScenario getUsageScenario(String usageScenarioName);
 
   /**
    * @return the the maximum time in milliseconds a work request has to finish
@@ -76,7 +76,7 @@ public interface LoadTest {
   /**
    * @param warningTime the the maximum time in milliseconds a work request has to finish
    */
-  void setWarningTime(final int warningTime);
+  void setWarningTime(int warningTime);
 
   /**
    * @return the chart data update interval in milliseconds
@@ -86,7 +86,7 @@ public interface LoadTest {
   /**
    * @param updateInterval the chart data update interval in milliseconds
    */
-  void setUpdateInterval(final int updateInterval);
+  void setUpdateInterval(int updateInterval);
 
   /**
    * @return the number of active applications
@@ -101,7 +101,7 @@ public interface LoadTest {
   /**
    * @param applicationBatchSize the number of applications to initialize per batch
    */
-  void setApplicationBatchSize(final int applicationBatchSize);
+  void setApplicationBatchSize(int applicationBatchSize);
 
   /**
    * @return true if the load testing is paused
@@ -111,7 +111,7 @@ public interface LoadTest {
   /**
    * @param value true if load testing should be paused
    */
-  void setPaused(final boolean value);
+  void setPaused(boolean value);
 
   /**
    * @return the maximum number of milliseconds that should pass between work requests
@@ -121,7 +121,7 @@ public interface LoadTest {
   /**
    * @param maximumThinkTime the maximum number of milliseconds that should pass between work requests
    */
-  void setMaximumThinkTime(final int maximumThinkTime);
+  void setMaximumThinkTime(int maximumThinkTime);
 
   /**
    * @return the minimum number of milliseconds that should pass between work requests
@@ -131,7 +131,7 @@ public interface LoadTest {
   /**
    * @param minimumThinkTime the minimum number of milliseconds that should pass between work requests
    */
-  void setMinimumThinkTime(final int minimumThinkTime);
+  void setMinimumThinkTime(int minimumThinkTime);
 
   /**
    * Sets the with which to multiply the think time when logging in, this helps
@@ -145,7 +145,7 @@ public interface LoadTest {
    * spread the application logins when creating a batch of application.
    * @param loginDelayFactor the number with which to multiply the think time when logging in
    */
-  void setLoginDelayFactor(final int loginDelayFactor);
+  void setLoginDelayFactor(int loginDelayFactor);
 
   /**
    * @return true if chart data is being collected
@@ -155,7 +155,7 @@ public interface LoadTest {
   /**
    * @param value true if chart data should be collected
    */
-  void setCollectChartData(final boolean value);
+  void setCollectChartData(boolean value);
 
   /**
    * @return an observer notified each time the application count changes
@@ -188,7 +188,7 @@ public interface LoadTest {
    * @return a dataset plotting the average scenario duration
    * @param name the scenario name
    */
-  YIntervalSeriesCollection getScenarioDurationDataset(final String name);
+  YIntervalSeriesCollection getScenarioDurationDataset(String name);
 
   /**
    * @return a dataset plotting the think time
@@ -265,7 +265,7 @@ public interface LoadTest {
      * Runs this scenario with the given application
      * @param application the application to use
      */
-    void run(final T application);
+    void run(T application);
 
     /**
      * @return the total number of times this scenario has been run

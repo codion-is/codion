@@ -20,12 +20,12 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
   /**
    * @param listener a listener notified each time the selection changes
    */
-  void addSelectionListener(final EventDataListener<T> listener);
+  void addSelectionListener(EventDataListener<T> listener);
 
   /**
    * @param listener a selection listener to remove
    */
-  void removeSelectionListener(final EventDataListener listener);
+  void removeSelectionListener(EventDataListener listener);
 
   /**
    * Resets the contents of this model using the values found in {@code contents},
@@ -33,19 +33,19 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * @param contents the contents to display in this combo box model
    * @see #isCleared()
    */
-  void setContents(final Collection<T> contents);
+  void setContents(Collection<T> contents);
 
   /**
    * Adds the given item to this model, respecting the sorting order if specified
    * @param item the item to add
    */
-  void addItem(final T item);
+  void addItem(T item);
 
   /**
    * Removes the given item from this model
    * @param item the item to remove
    */
-  void removeItem(final T item);
+  void removeItem(T item);
 
   /**
    * @return true if the model data has been cleared and needs to be refreshed
@@ -88,7 +88,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * Sets the value which should represent a null value, a refresh is required for it to show up
    * @param nullValue a value which is used to represent a null value
    */
-  void setNullValue(final T nullValue);
+  void setNullValue(T nullValue);
 
   /**
    * @return the value representing the null value, null if no such value has been specified
@@ -103,7 +103,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * By default this is true.
    * @param value if true then the selected item is changed when it is filtered out,
    */
-  void setFilterSelectedItem(final boolean value);
+  void setFilterSelectedItem(boolean value);
 
   /**
    * Specifies whether or not filtering can change the selected item, if true then
@@ -118,7 +118,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
   /**
    * @param item the item to select
    */
-  void setSelectedItem(final Object item);
+  void setSelectedItem(Object item);
 
   /**
    * @return the number of visible items in this model
@@ -129,7 +129,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * @param index the index
    * @return the item at the given index
    */
-  T getElementAt(final int index);
+  T getElementAt(int index);
 
   /**
    * @return the selected item

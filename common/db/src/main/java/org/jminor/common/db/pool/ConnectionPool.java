@@ -29,7 +29,7 @@ public interface ConnectionPool {
    * If the pool has been closed the connection is disconnected and discarded.
    * @param connection the database connection to return to the pool
    */
-  void returnConnection(final Connection connection);
+  void returnConnection(Connection connection);
 
   /**
    * @return the underlying database
@@ -51,7 +51,7 @@ public interface ConnectionPool {
    * @param since the time from which statistics should be retrieved
    * @return connection pool usage statistics
    */
-  ConnectionPoolStatistics getStatistics(final long since);
+  ConnectionPoolStatistics getStatistics(long since);
 
   /**
    * Resets the collected usage statistics
@@ -71,7 +71,7 @@ public interface ConnectionPool {
    * @see #getStatistics(long)
    * @see ConnectionPoolStatistics#getFineGrainedStatistics()
    */
-  void setCollectFineGrainedStatistics(final boolean value);
+  void setCollectFineGrainedStatistics(boolean value);
 
   /**
    * @return the pool cleanup interval in milliseconds
@@ -81,7 +81,7 @@ public interface ConnectionPool {
   /**
    * @param poolCleanupInterval the pool cleanup interval in milliseconds
    */
-  void setCleanupInterval(final int poolCleanupInterval);
+  void setCleanupInterval(int poolCleanupInterval);
 
   /**
    * @return the pooled connection timeout in milliseconds, that is, the time that needs
@@ -93,7 +93,7 @@ public interface ConnectionPool {
    * @param timeout the pooled connection timeout in milliseconds, that is, the time that needs
    * to pass before an idle connection can be harvested
    */
-  void setConnectionTimeout(final int timeout);
+  void setConnectionTimeout(int timeout);
 
   /**
    * @return the maximum number of milliseconds the pool waits between checkout retries
@@ -103,7 +103,7 @@ public interface ConnectionPool {
   /**
    * @param maximumRetryWaitPeriod the maximum number of milliseconds the pool waits between checkout retries
    */
-  void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod);
+  void setMaximumRetryWaitPeriod(int maximumRetryWaitPeriod);
 
   /**
    * @return the minimum number of connections to keep in the pool
@@ -114,7 +114,7 @@ public interface ConnectionPool {
    * @param value the minimum number of connections to keep in the pool
    * @throws IllegalArgumentException if value is less than 0 or larger than maximum pool size
    */
-  void setMinimumPoolSize(final int value);
+  void setMinimumPoolSize(int value);
 
   /**
    * @return the maximum number of connections this pool can create
@@ -128,7 +128,7 @@ public interface ConnectionPool {
    * @param value the maximum number of connections this pool can create
    * @throws IllegalArgumentException if value is less than 1 or less than minimum pool size
    */
-  void setMaximumPoolSize(final int value);
+  void setMaximumPoolSize(int value);
 
   /**
    * @return the maximum number of milliseconds to retry connection checkout before throwing an exception
@@ -141,7 +141,7 @@ public interface ConnectionPool {
    * note that this also modifies the new connection threshold, keeping its value to 1/4 of this one
    * @throws IllegalArgumentException if value is less than 0
    */
-  void setMaximumCheckOutTime(final int value);
+  void setMaximumCheckOutTime(int value);
 
   /**
    * @return the time to wait before a new connection is created
@@ -152,7 +152,7 @@ public interface ConnectionPool {
    * @param value the time to wait before creating a new connection in ms
    * @throws IllegalArgumentException in case value is negative or larger than {@code maximumCheckOutTime}
    */
-  void setNewConnectionThreshold(final int value);
+  void setNewConnectionThreshold(int value);
 
   /**
    * Facilitates the counting of connection pool events
@@ -188,6 +188,6 @@ public interface ConnectionPool {
      * Adds a connection check out time
      * @param milliseconds the check out time in milliseconds
      */
-    void addCheckOutTime(final long milliseconds);
+    void addCheckOutTime(long milliseconds);
   }
 }

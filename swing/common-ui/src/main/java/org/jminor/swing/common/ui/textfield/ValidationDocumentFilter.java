@@ -55,5 +55,5 @@ public abstract class ValidationDocumentFilter extends DocumentFilter {
    * @param text the text to check
    * @return true if the given text is valid
    */
-  protected abstract boolean isValid(final String text);
+  protected abstract boolean isValid(String text);
 }

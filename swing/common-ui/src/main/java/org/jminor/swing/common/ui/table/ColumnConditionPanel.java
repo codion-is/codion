@@ -342,7 +342,7 @@ public class ColumnConditionPanel<K> extends JPanel {
      * with with upper bound value int he condition model, otherwise the lower bound
      * @return a upper/lower bound input field
      */
-    JComponent initializeInputField(final boolean isUpperBound);
+    JComponent initializeInputField(boolean isUpperBound);
   }
 
   private static final class DefaultInputFieldProvider implements InputFieldProvider {

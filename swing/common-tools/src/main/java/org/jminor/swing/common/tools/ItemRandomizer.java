@@ -67,7 +67,7 @@ public interface ItemRandomizer<T> {
    * Adds the given item to this model with default weight of 0.
    * @param item the item to add
    */
-  void addItem(final T item);
+  void addItem(T item);
 
   /**
    * Adds the given item to this model with the given weight value.
@@ -87,32 +87,32 @@ public interface ItemRandomizer<T> {
    * @param item the item
    * @return the ratio of the total weights held by the given item
    */
-  double getWeightRatio(final T item);
+  double getWeightRatio(T item);
 
   /**
    * Increments the weight of the given item by one
    * @param item the item
    */
-  void incrementWeight(final T item);
+  void incrementWeight(T item);
 
   /**
    * Decrements the weight of the given item by one
    * @param item the item
    * @throws IllegalStateException in case the weight is 0
    */
-  void decrementWeight(final T item);
+  void decrementWeight(T item);
 
   /**
    * @param item the item
    * @return true if the item is enabled
    */
-  boolean isItemEnabled(final T item);
+  boolean isItemEnabled(T item);
 
   /**
    * @param item the item
    * @param value true if the item should be enabled
    */
-  void setItemEnabled(final T item, final boolean value);
+  void setItemEnabled(T item, boolean value);
 
   /**
    * Wraps an item for usage in the ItemRandomizer
@@ -148,7 +148,7 @@ public interface ItemRandomizer<T> {
     /**
      * @param value true if this item should be enabled
      */
-    void setEnabled(final boolean value);
+    void setEnabled(boolean value);
 
     /**
      * @return the item this random item represents

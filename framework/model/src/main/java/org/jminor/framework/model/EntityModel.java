@@ -78,7 +78,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Calling this method with a null argument or a model which is already linked is safe.
    * @param detailModel links the given detail model to this model
    */
-  void addLinkedDetailModel(final M detailModel);
+  void addLinkedDetailModel(M detailModel);
 
   /**
    * Removes the given model from the currently linked detail models. Linked models are updated and filtered according
@@ -86,7 +86,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Calling this method with a null argument or a model which is not linked is safe.
    * @param detailModel unlinks the given detail model from this model
    */
-  void removeLinkedDetailModel(final M detailModel);
+  void removeLinkedDetailModel(M detailModel);
 
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities.
@@ -95,7 +95,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param foreignKeyEntityId the ID of the master entity
    * @param foreignKeyValues the master entities
    */
-  void initialize(final String foreignKeyEntityId, final List<Entity> foreignKeyValues);
+  void initialize(String foreignKeyEntityId, List<Entity> foreignKeyValues);
 
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities,
@@ -103,14 +103,14 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param foreignKeyProperty the ID of the foreign key
    * @param foreignKeyValues the foreign key values
    */
-  void initialize(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues);
+  void initialize(ForeignKeyProperty foreignKeyProperty, List<Entity> foreignKeyValues);
 
   /**
    * Sets the model serving as master model
    * @param entityModel the master entity model
    * @throws IllegalStateException if the master model has already been set
    */
-  void setMasterModel(final M entityModel);
+  void setMasterModel(M entityModel);
 
   /**
    * @return the master model, if any
@@ -124,7 +124,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * any data, via {@link EntityTableModel#getQueryConditionRequiredState()}
    * @param detailModels the detail models to add
    */
-  void addDetailModels(final M... detailModels);
+  void addDetailModels(M... detailModels);
 
   /**
    * Adds the given detail model to this model, sets this model as the master model of the
@@ -134,25 +134,25 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param detailModel the detail model
    * @return the detail model just added
    */
-  M addDetailModel(final M detailModel);
+  M addDetailModel(M detailModel);
 
   /**
    * @param modelClass the detail model class
    * @return true if this model contains a detail model of the given class
    */
-  boolean containsDetailModel(final Class<? extends M> modelClass);
+  boolean containsDetailModel(Class<? extends M> modelClass);
 
   /**
    * @param entityId the entity ID
    * @return true if this model contains a detail model for the given entity ID
    */
-  boolean containsDetailModel(final String entityId);
+  boolean containsDetailModel(String entityId);
 
   /**
    * @param detailModel the detail model
    * @return true if this model contains the given detail model
    */
-  boolean containsDetailModel(final M detailModel);
+  boolean containsDetailModel(M detailModel);
 
   /**
    * Returns the first detail model of the given type
@@ -160,7 +160,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case a model is not found
    */
-  M getDetailModel(final Class<? extends M> modelClass);
+  M getDetailModel(Class<? extends M> modelClass);
 
   /**
    * Returns a detail model of the given type
@@ -168,7 +168,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case no detail model for the given entityId is found
    */
-  M getDetailModel(final String entityId);
+  M getDetailModel(String entityId);
 
   /**
    * @return an unmodifiable collection containing the detail models this model contains
@@ -185,14 +185,14 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @see #initialize(ForeignKeyProperty, java.util.List)
    * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
    */
-  void setDetailModelForeignKey(final M detailModel, final String foreignKeyPropertyId);
+  void setDetailModelForeignKey(M detailModel, String foreignKeyPropertyId);
 
   /**
    * @param detailModel the detail model
    * @return the {@link ForeignKeyProperty}
    * the given detail model is based on, null if none has been defined
    */
-  ForeignKeyProperty getDetailModelForeignKey(final M detailModel);
+  ForeignKeyProperty getDetailModelForeignKey(M detailModel);
 
   /**
    * Refreshes the detail models.
@@ -216,47 +216,47 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * when an insert is performed in a master model
    * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
-  void setSearchOnMasterInsert(final boolean searchOnMasterInsert);
+  void setSearchOnMasterInsert(boolean searchOnMasterInsert);
 
   /**
    * @param listener a listener to be notified before a refresh is performed
    */
-  void addBeforeRefreshListener(final EventListener listener);
+  void addBeforeRefreshListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeBeforeRefreshListener(final EventListener listener);
+  void removeBeforeRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has been performed
    */
-  void addAfterRefreshListener(final EventListener listener);
+  void addAfterRefreshListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeAfterRefreshListener(final EventListener listener);
+  void removeAfterRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a linked detail model is added
    */
-  void addLinkedDetailModelAddedListener(final EventDataListener<M> listener);
+  void addLinkedDetailModelAddedListener(EventDataListener<M> listener);
 
   /**
    * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelAddedListener(final EventDataListener listener);
+  void removeLinkedDetailModelAddedListener(EventDataListener listener);
 
     /**
    * @param listener a listener to be notified each time a linked detail model is removed
    */
-  void addLinkedDetailModelRemovedListener(final EventDataListener<M> listener);
+  void addLinkedDetailModelRemovedListener(EventDataListener<M> listener);
 
     /**
    * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelRemovedListener(final EventDataListener listener);
+  void removeLinkedDetailModelRemovedListener(EventDataListener listener);
 
   /**
    * Saves any user preferences

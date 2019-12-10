@@ -47,5 +47,5 @@ public interface ResultPacker<T> {
    * @return the instance fetched from the ResultSet, null if the item should not be fetched for some reason
    * @throws SQLException in case of failure
    */
-  T fetch(final ResultSet resultSet) throws SQLException;
+  T fetch(ResultSet resultSet) throws SQLException;
 }

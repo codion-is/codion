@@ -26,11 +26,11 @@ public interface PropertyCondition extends Condition {
    * @param property the underlying property
    * @return the condition string
    */
-  String getConditionString(final ColumnProperty property);
+  String getConditionString(ColumnProperty property);
 
   /**
    * @param caseSensitive false if this condition should not be case-sensitive
    * @return this condition
    */
-  PropertyCondition setCaseSensitive(final boolean caseSensitive);
+  PropertyCondition setCaseSensitive(boolean caseSensitive);
 }

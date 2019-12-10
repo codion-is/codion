@@ -43,7 +43,7 @@ public interface CredentialsProvider {
    * @return the User credentials associated with the {@code authenticationToken}, null if authenticationToken
    * was null, the user credentials were not found, have expired or if no authentication service is running
    */
-  User getCredentials(final UUID authenticationToken);
+  User getCredentials(UUID authenticationToken);
 
   /**
    * Returns the first {@link CredentialsProvider} implementation service found.

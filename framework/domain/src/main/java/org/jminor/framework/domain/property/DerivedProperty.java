@@ -31,6 +31,6 @@ public interface DerivedProperty extends TransientProperty {
      * @param sourceValues the source values, mapped to their respective propertyIds
      * @return the derived value
      */
-    Object getValue(final Map<String, Object> sourceValues);
+    Object getValue(Map<String, Object> sourceValues);
   }
 }
