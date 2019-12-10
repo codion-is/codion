@@ -103,7 +103,7 @@ public interface EntityConnection {
 
   /**
    * Updates the given entities according to their properties. Returns the updated entities, in no particular order.
-   * Throws an exception if any of the given entities is unmodified..
+   * Throws an exception if any of the given entities is unmodified.
    * Performs a commit unless a transaction is open.
    * @param entities the entities to update
    * @return the updated entities, in no particular order
