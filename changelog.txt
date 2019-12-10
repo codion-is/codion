@@ -5438,3 +5438,5 @@
   DefaultEntityLookupModel, minor refactoring
   TextUtil, removed a couple of methods
   DefaultLocalEntityConnection bug fixed, logging now includes error with stacktrace
+  DateFormats.DateParser moved up to package level
+  ExceptionHandler removed, replaced with Consumer<Throwable>

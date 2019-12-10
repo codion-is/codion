@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.DateFormats;
-import org.jminor.common.ExceptionHandler;
 import org.jminor.common.FileUtil;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.Util;
@@ -120,6 +119,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
@@ -1620,7 +1620,7 @@ public final class UiUtil {
    */
   public static void runWithProgressBar(final JComponent dialogParent, final String progressBarTitle,
                                         final Control.Command task, final Runnable onSuccess,
-                                        final ExceptionHandler onException) {
+                                        final Consumer<Throwable> onException) {
     runWithProgressBar(dialogParent, progressBarTitle, task, onSuccess, onException, null, null);
   }
 
@@ -1635,7 +1635,7 @@ public final class UiUtil {
    */
   public static void runWithProgressBar(final JComponent dialogParent, final String progressBarTitle,
                                         final Control.Command task, final Runnable onSuccess,
-                                        final ExceptionHandler onException, final JPanel northPanel) {
+                                        final Consumer<Throwable> onException, final JPanel northPanel) {
     runWithProgressBar(dialogParent, progressBarTitle, task, onSuccess, onException, northPanel, null);
   }
 
@@ -1651,7 +1651,7 @@ public final class UiUtil {
    */
   public static void runWithProgressBar(final JComponent dialogParent, final String progressBarTitle,
                                         final Control.Command task, final Runnable onSuccess,
-                                        final ExceptionHandler onException, final JPanel northPanel,
+                                        final Consumer<Throwable> onException, final JPanel northPanel,
                                         final ControlSet buttonControls) {
     final ProgressWorker.DialogOwnerProvider dialogOwnerProvider = () -> getParentWindow(dialogParent);
     final ProgressWorker worker = new ProgressWorker(dialogOwnerProvider, progressBarTitle, true, northPanel, buttonControls) {
@@ -1664,7 +1664,7 @@ public final class UiUtil {
       protected void handleException(final Throwable exception) {
         if (!(exception instanceof CancelException)) {
           if (onException != null) {
-            onException.handleException(exception);
+            onException.accept(exception);
           }
           else {
             showExceptionDialog(dialogOwnerProvider.getDialogOwner(), Messages.get(Messages.EXCEPTION), exception);

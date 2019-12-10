@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.DateFormats;
+import org.jminor.common.DateParser;
 import org.jminor.common.state.StateObserver;
 
 import javax.swing.JFormattedTextField;
@@ -26,7 +26,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   private final JFormattedTextField inputField;
   private final String dateFormat;
   private final DateTimeFormatter formatter;
-  private final DateFormats.DateParser<T> dateParser;
+  private final DateParser<T> dateParser;
 
   /**
    * Instantiates a new TemporalInputPanel.
@@ -36,7 +36,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
    * @param enabledState a StateObserver controlling the enabled state of the input field and button
    */
   public TemporalInputPanel(final JFormattedTextField inputField, final String dateFormat,
-                            final DateFormats.DateParser<T> dateParser, final StateObserver enabledState) {
+                            final DateParser<T> dateParser, final StateObserver enabledState) {
     super(new BorderLayout());
     this.inputField = requireNonNull(inputField, "inputField");
     this.dateFormat = requireNonNull(dateFormat, "dateFormat");

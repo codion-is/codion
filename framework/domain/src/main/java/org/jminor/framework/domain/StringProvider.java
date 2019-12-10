@@ -56,7 +56,11 @@ public final class StringProvider implements Function<Entity, String>, Serializa
     addValue(propertyId);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns a String representation of the given entity
+   * @param entity the entity, may not be null
+   * @return a String representation of the entity
+   */
   @Override
   public String apply(final Entity entity) {
     Objects.requireNonNull(entity, "entity");
