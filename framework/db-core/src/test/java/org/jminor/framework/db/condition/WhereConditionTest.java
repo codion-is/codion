@@ -54,7 +54,7 @@ public final class WhereConditionTest {
   public void foreignKeyConditionNull() {
     final EntityDefinition definition = DOMAIN.getDefinition(TestDomain.T_EMP);
     final WhereCondition condition = whereCondition(entityCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, (Entity.Key) null), definition);
+            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, null), definition);
     assertEquals("deptno is null", condition.getWhereClause());
   }
 

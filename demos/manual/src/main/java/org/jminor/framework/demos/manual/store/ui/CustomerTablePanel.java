@@ -45,7 +45,7 @@ public class CustomerTablePanel extends EntityTablePanel {
 
     String reportPath = "http://test.io/customer_report.jasper";
     Collection<Integer> customerIds = Entities.getValues(Store.CUSTOMER_ID, selectedCustomers);
-    Map<String, Object> reportParameters = new HashMap<String, Object>();
+    Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIds);
 
     EntityReportUiUtil.viewJdbcReport(this,

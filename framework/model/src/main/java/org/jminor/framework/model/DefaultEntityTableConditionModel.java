@@ -186,7 +186,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     if (containsPropertyConditionModel(propertyId)) {
       final ColumnConditionModel conditionModel = getPropertyConditionModel(propertyId);
       conditionModel.setEnabled(!Util.nullOrEmpty(values));
-      conditionModel.setUpperBound((Object) null);//because the upperBound could be a reference to the active entity which changes accordingly
+      conditionModel.setUpperBound(null);//because the upperBound could be a reference to the active entity which changes accordingly
       conditionModel.setUpperBound(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
     }
     return !conditionModelState.equals(getConditionModelState());

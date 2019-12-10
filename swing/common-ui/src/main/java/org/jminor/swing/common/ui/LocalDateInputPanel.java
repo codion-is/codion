@@ -55,13 +55,13 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
   /**
    * @return the button, if any
    */
-  public final JButton getCalendarButton() {
+  public JButton getCalendarButton() {
     return button;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setEditable(final boolean editable) {
+  public void setEditable(final boolean editable) {
     super.setEditable(editable);
     if (button != null) {
       button.setEnabled(editable);

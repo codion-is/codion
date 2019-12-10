@@ -302,7 +302,7 @@ public final class UiValues {
       if (updateOnKeystroke) {
         document.addDocumentListener(new DocumentAdapter() {
           @Override
-          public final void contentsChanged(final DocumentEvent e) {
+          public void contentsChanged(final DocumentEvent e) {
             fireChangeEvent(get());
           }
         });
@@ -409,7 +409,7 @@ public final class UiValues {
       if (updateOnKeystroke) {
         numberField.getDocument().addDocumentListener(new DocumentAdapter() {
           @Override
-          public final void contentsChanged(final DocumentEvent e) {
+          public void contentsChanged(final DocumentEvent e) {
             fireChangeEvent(get());
           }
         });

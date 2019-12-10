@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.DefaultForeignKeyConditionModel;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -27,24 +26,24 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
     super(property);
     this.entityComboBoxModel = entityComboBoxModel;
     if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
-      entityComboBoxModel.setSelectedItem((Entity) getUpperBound());
+      entityComboBoxModel.setSelectedItem(getUpperBound());
     }
     bindComboBoxEvents();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void refresh() {
+  public void refresh() {
     entityComboBoxModel.refresh();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void clear() {
+  public void clear() {
     entityComboBoxModel.clear();
   }
 
-  public final EntityComboBoxModel getEntityComboBoxModel() {
+  public EntityComboBoxModel getEntityComboBoxModel() {
     return entityComboBoxModel;
   }
 
@@ -71,10 +70,10 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
     final Object upper = getUpperBound();
     if (upper instanceof Collection) {
       final Collection upperCollection = (Collection) upper;
-      entityComboBoxModel.setSelectedItem((Entity) (upperCollection.isEmpty() ? null : upperCollection.iterator().next()));
+      entityComboBoxModel.setSelectedItem(upperCollection.isEmpty() ? null : upperCollection.iterator().next());
     }
     else {
-      entityComboBoxModel.setSelectedItem((Entity) upper);
+      entityComboBoxModel.setSelectedItem(upper);
     }
   }
 }

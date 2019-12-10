@@ -200,7 +200,7 @@ public final class Util {
    * @return the rounded value
    */
   public static double roundDouble(final double d, final int places) {
-    return Math.round(d * Math.pow(TEN, (double) places)) / Math.pow(TEN, (double) places);
+    return Math.round(d * Math.pow(TEN, places)) / Math.pow(TEN, places);
   }
 
   /**

@@ -54,7 +54,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
 
                 invoiceLineTableModel.update(invoiceLines);
 
-                ((ChinookApplicationModel) application).updateInvoiceTotals();
+                application.updateInvoiceTotals();
               }
               catch (final Exception e) {
                 throw new ScenarioException(e);
@@ -174,7 +174,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
               albumEditModel.setEntity(album);
               try {
                 final Entity insertedAlbum = albumEditModel.insert();
-                final SwingEntityEditModel trackEditModel = (SwingEntityEditModel) albumModel.getDetailModel(T_TRACK).getEditModel();
+                final SwingEntityEditModel trackEditModel = albumModel.getDetailModel(T_TRACK).getEditModel();
                 final EntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_GENRE_FK);
                 selectRandomItem(genreComboBoxModel);
                 final EntityComboBoxModel mediaTypeComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_MEDIATYPE_FK);

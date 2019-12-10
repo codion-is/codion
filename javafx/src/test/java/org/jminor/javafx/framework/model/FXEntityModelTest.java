@@ -23,9 +23,9 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
     new EntityTableView(entityModel.getTableModel());
     final FXEntityModel employeeModel = new FXEntityModel(new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     employeeModel.getEditModel().refreshDataModels();
-    final FXEntityListModel employeeListModel = (FXEntityListModel) employeeModel.getTableModel();
+    final FXEntityListModel employeeListModel = employeeModel.getTableModel();
     new EntityTableView(employeeListModel);
-    final FXEntityEditModel employeeEditModel = (FXEntityEditModel) employeeModel.getEditModel();
+    final FXEntityEditModel employeeEditModel = employeeModel.getEditModel();
     new EntityTableView(employeeEditModel.getForeignKeyListModel(TestDomain.EMP_DEPARTMENT_FK));
     entityModel.addDetailModel(employeeModel);
     entityModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);
@@ -67,7 +67,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
   @Override
   protected FXEntityModel createEmployeeModel() {
     final FXEntityModel model = new FXEntityModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
-    new EntityTableView((FXEntityListModel) model.getTableModel());
+    new EntityTableView(model.getTableModel());
 
     return model;
   }

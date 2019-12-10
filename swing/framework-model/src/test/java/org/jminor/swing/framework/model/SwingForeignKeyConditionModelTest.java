@@ -61,7 +61,7 @@ public class SwingForeignKeyConditionModelTest {
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
 
-    conditionModel.setUpperBound((Object) null);
+    conditionModel.setUpperBound(null);
     assertNull(comboBoxModel.getSelectedItem());
     conditionModel.setUpperBound(sales);
     assertEquals(comboBoxModel.getSelectedItem(), sales);

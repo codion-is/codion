@@ -14,7 +14,6 @@ import org.jminor.framework.domain.property.Property;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -202,7 +201,7 @@ public final class EntityJSONParser {
       return toJSONObject((Entity) value);
     }
     if (property.isBigDecimal()) {
-      return ((BigDecimal) value).toString();
+      return value.toString();
     }
     if (property.isTime()) {
       final LocalTime time = (LocalTime) value;
