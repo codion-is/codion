@@ -5433,3 +5433,5 @@
   PropertyComboBoxModel removed
   EntityEditModel.update(), insert() and delete() now return a single entity instead of a list
   Java.util.logging JulProxy plugin added
+  Util.join removed, simple to do with streams
+  Entity.ToString removed, replaced with Function<Entity, String>

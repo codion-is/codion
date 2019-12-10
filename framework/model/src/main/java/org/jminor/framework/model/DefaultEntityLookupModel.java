@@ -5,7 +5,6 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.TextUtil;
-import org.jminor.common.Util;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.Event;
@@ -33,10 +32,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.framework.db.condition.Conditions.conditionSet;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
@@ -46,7 +47,7 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
  */
 public final class DefaultEntityLookupModel implements EntityLookupModel {
 
-  private static final Entity.ToString DEFAULT_TO_STRING = Object::toString;
+  private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
 
   private final Event<Collection<Entity>> selectedEntitiesChangedEvent = Events.event();
   private final State searchStringRepresentsSelectedState = States.state(true);
@@ -80,7 +81,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   private final Value<String> multipleItemSeparatorValue = Values.value(",");
   private final Value<Boolean> multipleSelectionAllowedValue = Values.value(true);
 
-  private Entity.ToString toStringProvider = DEFAULT_TO_STRING;
+  private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
   private Condition.Provider additionalConditionProvider;
   private Comparator<Entity> resultSorter = new EntityComparator();
   private String wildcard = Property.WILDCARD_CHARACTER.get();
@@ -210,13 +211,13 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.ToString getToStringProvider() {
+  public Function<Entity, String> getToStringProvider() {
     return toStringProvider;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityLookupModel setToStringProvider(final Entity.ToString toStringProvider) {
+  public EntityLookupModel setToStringProvider(final Function<Entity, String> toStringProvider) {
     this.toStringProvider = toStringProvider == null ? DEFAULT_TO_STRING : toStringProvider;
     return this;
   }
@@ -337,7 +338,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   private String toString(final Collection<Entity> entities) {
-    return Util.join(multipleItemSeparatorValue.get(), entities, entity -> toStringProvider.toString(entity));
+    return entities.stream().map(toStringProvider).collect(joining(multipleItemSeparatorValue.get()));
   }
 
   private static void validateLookupProperties(final String entityId, final Collection<ColumnProperty> lookupProperties) {

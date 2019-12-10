@@ -13,6 +13,7 @@ import org.jminor.framework.domain.property.MirrorProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.TransientProperty;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -88,7 +90,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The Entity.ToString instance used when toString() is called for this entity type
    */
-  private Entity.ToString stringProvider = new DefaultStringProvider();
+  private Function<Entity, String> stringProvider = new DefaultStringProvider();
 
   /**
    * Provides the color
@@ -308,7 +310,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.ToString getStringProvider() {
+  public Function<Entity, String> getStringProvider() {
     return stringProvider;
   }
 
@@ -580,7 +582,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /** {@inheritDoc} */
   @Override
   public String toString(final Entity entity) {
-    return stringProvider.toString(requireNonNull(entity, "entity"));
+    return stringProvider.apply(requireNonNull(entity, "entity"));
   }
 
   /** {@inheritDoc} */
@@ -903,7 +905,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder setStringProvider(final Entity.ToString stringProvider) {
+    public Builder setStringProvider(final Function<Entity, String> stringProvider) {
       definition.stringProvider = requireNonNull(stringProvider, "stringProvider");
       return this;
     }
@@ -942,12 +944,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * A ToString implementation using the entityId plus primary key value.
    */
-  private static final class DefaultStringProvider implements Entity.ToString {
+  private static final class DefaultStringProvider implements Function<Entity, String>, Serializable {
 
     private static final long serialVersionUID = 1;
 
     @Override
-    public String toString(final Entity entity) {
+    public String apply(final Entity entity) {
       return entity.getEntityId() + ": " + entity.getKey();
     }
   }

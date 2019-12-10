@@ -12,6 +12,7 @@ import org.jminor.framework.domain.StringProvider;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.UUID;
+import java.util.function.Function;
 
 import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
@@ -70,10 +71,10 @@ public final class Store extends Domain {
   }
 
   // tag::toString[]
-  private static final class CustomerToString implements Entity.ToString {
+  private static final class CustomerToString implements Function<Entity, String> {
 
     @Override
-    public String toString(final Entity customer) {
+    public String apply(final Entity customer) {
       StringBuilder builder =
               new StringBuilder(customer.getString(CUSTOMER_LAST_NAME))
                       .append(", ")

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * A interface responsible for doing entity lookups based on a set of condition properties.
@@ -124,12 +125,12 @@ public interface EntityLookupModel {
    * @param toStringProvider provides string representations
    * @return this EntityLookupModel instance
    */
-  EntityLookupModel setToStringProvider(Entity.ToString toStringProvider);
+  EntityLookupModel setToStringProvider(final Function<Entity, String> toStringProvider);
 
   /**
    * @return the toString provider, null if none is specified
    */
-  Entity.ToString getToStringProvider();
+  Function<Entity, String> getToStringProvider();
 
   /**
    * @param listener a listener to be notified each time the selected entities are changed
