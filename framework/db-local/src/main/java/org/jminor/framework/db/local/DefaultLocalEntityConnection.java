@@ -248,7 +248,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), insertSQL, statementValues, e, null));
+        LOG.error(createLogMessage(getUser(), insertSQL, statementValues, e, null), e);
         throw translateInsertUpdateSQLException(e);
       }
       finally {
@@ -316,7 +316,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateSQL, propertyValuesToSet, e, null));
+        LOG.error(createLogMessage(getUser(), updateSQL, propertyValuesToSet, e, null), e);
         throw translateInsertUpdateSQLException(e);
       }
       catch (final RecordModifiedException e) {
@@ -326,7 +326,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final UpdateException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateSQL, propertyValuesToSet, e, null));
+        LOG.error(createLogMessage(getUser(), updateSQL, propertyValuesToSet, e, null), e);
         throw e;
       }
       finally {
@@ -354,7 +354,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), deleteSQL, whereCondition.getValues(), e, null));
+        LOG.error(createLogMessage(getUser(), deleteSQL, whereCondition.getValues(), e, null), e);
         throw translateDeleteSQLException(e);
       }
       finally {
@@ -373,12 +373,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final Map<String, List<Entity.Key>> keysByEntityId = mapKeysToEntityId(keys);
     checkReadOnly(keysByEntityId.keySet());
     PreparedStatement statement = null;
+    WhereCondition whereCondition = null;
     String deleteSQL = null;
     synchronized (connection) {
       try {
         for (final Map.Entry<String, List<Entity.Key>> entityIdKeys : keysByEntityId.entrySet()) {
           final EntityDefinition entityDefinition = getEntityDefinition(entityIdKeys.getKey());
-          final WhereCondition whereCondition = whereCondition(entityCondition(entityIdKeys.getValue()), entityDefinition);
+          whereCondition = whereCondition(entityCondition(entityIdKeys.getValue()), entityDefinition);
           deleteSQL = createDeleteSQL(entityDefinition.getTableName(), whereCondition.getWhereClause());
           statement = prepareStatement(deleteSQL);
           executePreparedUpdate(statement, deleteSQL, whereCondition.getColumnProperties(), whereCondition.getValues());
@@ -388,7 +389,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), deleteSQL, keys, e, null));
+        LOG.error(createLogMessage(getUser(), deleteSQL, whereCondition.getValues(), e, null), e);
         throw translateDeleteSQLException(e);
       }
       finally {
@@ -505,7 +506,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), selectSQL, asList(propertyId, combinedCondition), e, null));
+        LOG.error(createLogMessage(getUser(), selectSQL, asList(propertyId, combinedCondition), e, null), e);
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -541,7 +542,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), rowCountSQLQuery, whereCondition.getValues(), e, null));
+        LOG.error(createLogMessage(getUser(), rowCountSQLQuery, whereCondition.getValues(), e, null), e);
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -587,7 +588,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(getUser(), functionId, arguments == null ? null : asList(arguments), e, null));
+      LOG.error(createLogMessage(getUser(), functionId, arguments == null ? null : asList(arguments), e, null), e);
       throw e;
     }
     finally {
@@ -610,7 +611,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(getUser(), procedureId, arguments == null ? null : asList(arguments), e, null));
+      LOG.error(createLogMessage(getUser(), procedureId, arguments == null ? null : asList(arguments), e, null), e);
       throw e;
     }
     finally {
@@ -639,7 +640,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final ReportException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), e, null));
+        LOG.error(createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), e, null), e);
         throw e;
       }
       finally {
@@ -688,7 +689,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateSQL, statementValues, exception, null));
+        LOG.error(createLogMessage(getUser(), updateSQL, statementValues, exception, null), e);
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -737,7 +738,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateSQL, whereCondition.getValues(), exception, null));
+        LOG.error(createLogMessage(getUser(), updateSQL, whereCondition.getValues(), exception, null), e);
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -940,7 +941,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     catch (final SQLException e) {
       closeSilently(resultSet);
       closeSilently(statement);
-      LOG.error(createLogMessage(getUser(), selectSQL, whereCondition.getValues(), e, null));
+      LOG.error(createLogMessage(getUser(), selectSQL, whereCondition.getValues(), e, null), e);
       throw e;
     }
   }

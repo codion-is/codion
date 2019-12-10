@@ -5437,3 +5437,4 @@
   Entity.ToString removed, replaced with Function<Entity, String>
   DefaultEntityLookupModel, minor refactoring
   TextUtil, removed a couple of methods
+  DefaultLocalEntityConnection bug fixed, logging now includes error with stacktrace
