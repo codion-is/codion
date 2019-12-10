@@ -5442,3 +5442,4 @@
   ExceptionHandler removed, replaced with Consumer<Throwable>
   MethodLogger.ArgumentStringProvider and Util.MapKeyProvider removed, replaced with Function
   StringProvider.ValueProvider removed, replaced with Function<Entity, String>
+  Property.ValueProvider removed, replaced with Supplier<Object>

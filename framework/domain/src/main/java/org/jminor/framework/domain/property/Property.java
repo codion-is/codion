@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
+import java.util.function.Supplier;
 
 /**
  * Specifies a Property.
@@ -279,16 +280,6 @@ public interface Property extends Serializable {
   boolean isReadOnly();
 
   /**
-   * Provides a single value
-   */
-  interface ValueProvider extends Serializable {
-    /**
-     * @return the provided value
-     */
-    Object getValue();
-  }
-
-  /**
    * Builds a Property instance
    */
   interface Builder {
@@ -324,7 +315,7 @@ public interface Property extends Serializable {
      * @param provider the default value provider
      * @return this instance
      */
-    Property.Builder setDefaultValueProvider(final ValueProvider provider);
+    Property.Builder setDefaultValueProvider(final Supplier<Object> provider);
 
     /**
      * @param hidden specifies whether this property should hidden in table views
