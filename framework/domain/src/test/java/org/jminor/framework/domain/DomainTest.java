@@ -228,7 +228,7 @@ public class DomainTest {
     assertFalse(key.isNull());
     assertEquals(43, key.hashCode());
 
-    assertThrows(NullPointerException.class, () -> domain.key((String) null));
+    assertThrows(NullPointerException.class, () -> domain.key(null));
   }
 
    @Test
@@ -490,7 +490,7 @@ public class DomainTest {
             .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
 
-    assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.toString(employee));
+    assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.apply(employee));
 
     department.put(TestDomain.DEPARTMENT_LOCATION, null);
     department.put(TestDomain.DEPARTMENT_NAME, null);
@@ -504,7 +504,7 @@ public class DomainTest {
             .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
 
-    assertEquals(" (department: , location: , hiredate: )", employeeToString.toString(employee));
+    assertEquals(" (department: , location: , hiredate: )", employeeToString.apply(employee));
   }
 
   @Test

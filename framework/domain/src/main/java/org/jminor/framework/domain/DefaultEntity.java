@@ -457,7 +457,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /**
    * @return a string representation of this entity
-   * @see EntityDefinition.Builder#setStringProvider(Entity.ToString)
+   * @see EntityDefinition.Builder#setStringProvider(java.util.function.Function)
    * @see EntityDefinition#toString(Entity)
    */
   @Override

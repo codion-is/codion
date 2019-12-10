@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -320,46 +319,6 @@ public final class TextUtil {
     }
 
     return contents.toString();
-  }
-
-  /**
-   * @param collection the collection
-   * @param onePerLine if true then each item is put on a separate line, otherwise a comma separator is used
-   * @return the collection contents as a string (using toString())
-   */
-  public static String getCollectionContentsAsString(final Collection collection, final boolean onePerLine) {
-    if (collection == null) {
-      return "";
-    }
-
-    return getArrayContentsAsString(collection.toArray(), onePerLine);
-  }
-
-  /**
-   * @param items the items
-   * @param onePerLine if true then each item is put on a separate line, otherwise a comma separator is used
-   * @return the array contents as a string (using toString())
-   */
-  public static String getArrayContentsAsString(final Object[] items, final boolean onePerLine) {
-    if (items == null) {
-      return "";
-    }
-
-    final StringBuilder stringBuilder = new StringBuilder();
-    for (int i = 0; i < items.length; i++) {
-      final Object item = items[i];
-      if (item instanceof Object[]) {
-        stringBuilder.append(getArrayContentsAsString((Object[]) item, onePerLine));
-      }
-      else if (!onePerLine) {
-        stringBuilder.append(item).append(i < items.length - 1 ? ", " : "");
-      }
-      else {
-        stringBuilder.append(item).append("\n");
-      }
-    }
-
-    return stringBuilder.toString();
   }
 
   /**

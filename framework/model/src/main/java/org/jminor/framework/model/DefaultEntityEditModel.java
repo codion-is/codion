@@ -4,7 +4,6 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.TextUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.valuemap.ValueChange;
@@ -491,7 +490,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       throw new IllegalStateException("This model does not allow updating!");
     }
 
-    LOG.debug("{} - update {}", this, TextUtil.getCollectionContentsAsString(entities, false));
+    LOG.debug("{} - update {}", this, entities.toString());
 
     final List<Entity> modifiedEntities = getModifiedEntities(entities);
     if (modifiedEntities.isEmpty()) {
@@ -532,7 +531,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       throw new IllegalStateException("This model does not allow deleting!");
     }
 
-    LOG.debug("{} - delete {}", this, TextUtil.getCollectionContentsAsString(entities, false));
+    LOG.debug("{} - delete {}", this, entities.toString());
 
     fireBeforeDeleteEvent(unmodifiableList(entities));
 
@@ -938,7 +937,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       throw new IllegalStateException("This model does not allow inserting!");
     }
 
-    LOG.debug("{} - insert {}", this, TextUtil.getCollectionContentsAsString(entities, false));
+    LOG.debug("{} - insert {}", this, entities.toString());
 
     fireBeforeInsertEvent(unmodifiableList(entities));
     validate(entities);

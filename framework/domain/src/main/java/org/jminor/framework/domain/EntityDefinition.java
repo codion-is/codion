@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Specifies a entity definition.
@@ -134,7 +135,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the object responsible for providing toString values for this entity type
    */
-  Entity.ToString getStringProvider();
+  Function<Entity, String> getStringProvider();
 
   /**
    * @return the comparator used when comparing this entity type to other entities
@@ -508,7 +509,7 @@ public interface EntityDefinition extends Serializable {
      * @param stringProvider the string provider
      * @return this {@link Builder} instance
      */
-    Builder setStringProvider(final Entity.ToString stringProvider);
+    Builder setStringProvider(final Function<Entity, String> stringProvider);
 
     /**
      * Sets the comparator to use when comparing this entity type to other entities

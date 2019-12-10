@@ -152,24 +152,24 @@ final class DefaultPropertyCondition implements PropertyCondition {
 
     final int valueCount = values.size();
 
-    final String valuePlaceholder = getValuePlaceholder(property, isCaseSensitive);
-    final String value2Placeholder = valueCount == 2 ? getValuePlaceholder(property, isCaseSensitive) : null;
+    final String firstValuePlaceholder = getValuePlaceholder(property, isCaseSensitive);
+    final String secondValuePlaceholder = valueCount == 2 ? getValuePlaceholder(property, isCaseSensitive) : null;
 
     switch (conditionType) {
       case LIKE:
-        return getLikeCondition(property, columnIdentifier, valuePlaceholder, false, values, valueCount);
+        return getLikeCondition(property, columnIdentifier, firstValuePlaceholder, false, values, valueCount);
       case NOT_LIKE:
-        return getLikeCondition(property, columnIdentifier, valuePlaceholder, true, values, valueCount);
+        return getLikeCondition(property, columnIdentifier, firstValuePlaceholder, true, values, valueCount);
       case LESS_THAN:
-        return columnIdentifier + " <= " + valuePlaceholder;
+        return columnIdentifier + " <= " + firstValuePlaceholder;
       case GREATER_THAN:
-        return columnIdentifier + " >= " + valuePlaceholder;
+        return columnIdentifier + " >= " + firstValuePlaceholder;
       case WITHIN_RANGE:
-        return "(" + columnIdentifier + " >= " + valuePlaceholder + " and " + columnIdentifier + " <= " + value2Placeholder + ")";
+        return "(" + columnIdentifier + " >= " + firstValuePlaceholder + " and " + columnIdentifier + " <= " + secondValuePlaceholder + ")";
       case OUTSIDE_RANGE:
-        return "(" + columnIdentifier + " <= " + valuePlaceholder + " or " + columnIdentifier + " >= " + value2Placeholder + ")";
+        return "(" + columnIdentifier + " <= " + firstValuePlaceholder + " or " + columnIdentifier + " >= " + secondValuePlaceholder + ")";
       default:
-        throw new IllegalArgumentException("Unknown search type" + conditionType);
+        throw new IllegalArgumentException("Unknown condition type" + conditionType);
     }
   }
 

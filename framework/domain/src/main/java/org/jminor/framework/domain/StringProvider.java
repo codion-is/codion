@@ -8,6 +8,7 @@ import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -25,13 +26,13 @@ import static java.util.stream.Collectors.joining;
  * StringProvider provider = new StringProvider();
  * provider.addText("key1=").addValue("key1").addText(", key3='").addValue("key3")
  *         .addText("' foreign key value=").addForeignKeyValue("key4", "refKey");
- * System.out.println(provider.toString(entity));
+ * System.out.println(provider.apply(entity));
  * }
  * <br>
  * outputs the following String:<br><br>
  * {@code key1=value1, key3='value3' foreign key value=refValue}
  */
-public final class StringProvider implements Entity.ToString {
+public final class StringProvider implements Function<Entity, String>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -57,7 +58,7 @@ public final class StringProvider implements Entity.ToString {
 
   /** {@inheritDoc} */
   @Override
-  public String toString(final Entity entity) {
+  public String apply(final Entity entity) {
     Objects.requireNonNull(entity, "entity");
 
     return valueProviders.stream().map(valueProvider -> valueProvider.toString(entity)).collect(joining());

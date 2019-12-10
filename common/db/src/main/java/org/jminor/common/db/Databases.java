@@ -4,7 +4,6 @@
 package org.jminor.common.db;
 
 import org.jminor.common.MethodLogger;
-import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 
 import java.io.Serializable;
@@ -144,7 +143,7 @@ public final class Databases {
     final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");
     if (entry == null) {
       logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ")
-              .append(TextUtil.getCollectionContentsAsString(values, false));
+              .append(values);
     }
     else {
       logMessage.append(entry.toString(1));

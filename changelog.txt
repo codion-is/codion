@@ -5456,3 +5456,8 @@
   EntityEditModel.update(), insert() and delete() now return a single entity instead of a list
   Java.util.logging JulProxy plugin added
   JulProxy module-info.java added
+  Util.join removed, simple to do with streams
+  Entity.ToString removed, replaced with Function<Entity, String>
+  DefaultEntityLookupModel, minor refactoring
+  TextUtil, removed a couple of methods
+  DefaultLocalEntityConnection bug fixed, logging now includes error with stacktrace

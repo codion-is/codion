@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.Collator;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -140,25 +139,5 @@ public final class TextUtilTest {
     assertEquals(2, items.indexOf(bNoSpace));
     assertEquals(3, items.indexOf(d));
     assertEquals(4, items.indexOf(dNoSpace));
-  }
-
-  @Test
-  public void getArrayContentsAsString() throws Exception {
-    assertEquals("", TextUtil.getArrayContentsAsString(null, true));
-    String res = TextUtil.getArrayContentsAsString(new Object[] {1, 2, new Object[] {3, 4}}, false);
-    assertEquals("1, 2, 3, 4", res, "Integer array as string should work");
-    res = TextUtil.getArrayContentsAsString(new Object[] {1, 2, new Object[] {3, 4}}, true);
-    assertEquals("1\n2\n3\n4\n", res, "Integer array as string should work");
-  }
-
-  @Test
-  public void getListContentsAsString() throws Exception {
-    final List<Integer> list = new ArrayList<>();
-    list.add(1);
-    list.add(2);
-    list.add(3);
-    list.add(4);
-    final String res = TextUtil.getCollectionContentsAsString(list, false);
-    assertEquals("1, 2, 3, 4", res, "Integer list as string should work");
   }
 }

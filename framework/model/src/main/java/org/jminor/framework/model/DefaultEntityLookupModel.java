@@ -4,8 +4,6 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.TextUtil;
-import org.jminor.common.Util;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.Event;
@@ -33,10 +31,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.framework.db.condition.Conditions.conditionSet;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
@@ -46,7 +47,7 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
  */
 public final class DefaultEntityLookupModel implements EntityLookupModel {
 
-  private static final Entity.ToString DEFAULT_TO_STRING = Object::toString;
+  private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
 
   private final Event<Collection<Entity>> selectedEntitiesChangedEvent = Events.event();
   private final State searchStringRepresentsSelectedState = States.state(true);
@@ -80,7 +81,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   private final Value<String> multipleItemSeparatorValue = Values.value(",");
   private final Value<Boolean> multipleSelectionAllowedValue = Values.value(true);
 
-  private Entity.ToString toStringProvider = DEFAULT_TO_STRING;
+  private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
   private Condition.Provider additionalConditionProvider;
   private Comparator<Entity> resultSorter = new EntityComparator();
   private String wildcard = Property.WILDCARD_CHARACTER.get();
@@ -111,7 +112,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     this.connectionProvider = connectionProvider;
     this.entityId = entityId;
     this.lookupProperties = lookupProperties;
-    this.description = TextUtil.getCollectionContentsAsString(getLookupProperties(), false);
+    this.description = lookupProperties.stream().map(Objects::toString).collect(joining(", "));
     initializeDefaultSettings();
     bindEventsInternal();
   }
@@ -210,13 +211,13 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.ToString getToStringProvider() {
+  public Function<Entity, String> getToStringProvider() {
     return toStringProvider;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityLookupModel setToStringProvider(final Entity.ToString toStringProvider) {
+  public EntityLookupModel setToStringProvider(final Function<Entity, String> toStringProvider) {
     this.toStringProvider = toStringProvider == null ? DEFAULT_TO_STRING : toStringProvider;
     return this;
   }
@@ -305,16 +306,14 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       throw new IllegalStateException("No search properties provided for lookup model: " + entityId);
     }
     final Condition.Set baseCondition = conditionSet(Conjunction.OR);
-    final String[] lookupTexts = multipleSelectionAllowedValue.get() ? searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
+    final String[] lookupTexts = multipleSelectionAllowedValue.get() ?
+            searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final ColumnProperty lookupProperty : lookupProperties) {
+      final LookupSettings lookupSettings = propertyLookupSettings.get(lookupProperty);
       for (final String rawLookupText : lookupTexts) {
-        final boolean wildcardPrefix = propertyLookupSettings.get(lookupProperty).getWildcardPrefixValue().get();
-        final boolean wildcardPostfix = propertyLookupSettings.get(lookupProperty).getWildcardPostfixValue().get();
-        final boolean caseSensitive = propertyLookupSettings.get(lookupProperty).getCaseSensitiveValue().get();
-        final String lookupText = rawLookupText.trim();
-        final String modifiedLookupText = searchStringValue.get().equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
+        final String lookupText = prepareLookupText(rawLookupText, lookupSettings);
         final PropertyCondition condition = Conditions.propertyCondition(lookupProperty.getPropertyId(),
-                ConditionType.LIKE, modifiedLookupText).setCaseSensitive(caseSensitive);
+                ConditionType.LIKE, lookupText).setCaseSensitive(lookupSettings.getCaseSensitiveValue().get());
         baseCondition.add(condition);
       }
     }
@@ -322,6 +321,14 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     return entitySelectCondition(entityId, additionalConditionProvider == null ? baseCondition :
             conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
             .setOrderBy(connectionProvider.getDomain().getDefinition(entityId).getOrderBy());
+  }
+
+  private String prepareLookupText(final String rawLookupText, final LookupSettings lookupSettings) {
+    final boolean wildcardPrefix = lookupSettings.getWildcardPrefixValue().get();
+    final boolean wildcardPostfix = lookupSettings.getWildcardPostfixValue().get();
+
+    return rawLookupText.equals(wildcard) ? wildcard :
+            ((wildcardPrefix ? wildcard : "") + rawLookupText.trim() + (wildcardPostfix ? wildcard : ""));
   }
 
   private void initializeDefaultSettings() {
@@ -337,7 +344,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   private String toString(final Collection<Entity> entities) {
-    return Util.join(multipleItemSeparatorValue.get(), entities, entity -> toStringProvider.toString(entity));
+    return entities.stream().map(toStringProvider).collect(joining(multipleItemSeparatorValue.get()));
   }
 
   private static void validateLookupProperties(final String entityId, final Collection<ColumnProperty> lookupProperties) {
@@ -353,9 +360,9 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   private static final class DefaultLookupSettings implements LookupSettings {
 
-    private final Value<Boolean> wildcardPrefixValue = Values.value(true);
-    private final Value<Boolean> wildcardPostfixValue = Values.value(true);
-    private final Value<Boolean> caseSensitiveValue = Values.value(false);
+    private final Value<Boolean> wildcardPrefixValue = Values.value(true, false);
+    private final Value<Boolean> wildcardPostfixValue = Values.value(true, false);
+    private final Value<Boolean> caseSensitiveValue = Values.value(false, false);
 
     @Override
     public Value<Boolean> getWildcardPrefixValue() {
