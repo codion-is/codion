@@ -3,8 +3,6 @@
  */
 package org.jminor.swing.common.ui.input;
 
-import org.jminor.swing.common.ui.textfield.DecimalField;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,13 +24,13 @@ public class DoubleInputProviderTest {
     final DoubleInputProvider provider = new DoubleInputProvider(null);
     assertNull(provider.getValue());
 
-    ((DecimalField) provider.getInputComponent()).setSeparators('.', ',');
+    provider.getInputComponent().setSeparators('.', ',');
     provider.getInputComponent().setText("15.5");
     assertEquals(Double.valueOf(15.5), provider.getValue());
     provider.getInputComponent().setText("15,6");
     assertEquals(Double.valueOf(15.5), provider.getValue());
 
-    ((DecimalField) provider.getInputComponent()).setSeparators(',', '.');
+    provider.getInputComponent().setSeparators(',', '.');
     provider.getInputComponent().setText("15.7");
     assertEquals(Double.valueOf(15.5), provider.getValue());
     provider.getInputComponent().setText("15,7");

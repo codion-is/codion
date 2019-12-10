@@ -22,7 +22,7 @@ public final class DefaultPropertyFilterModel extends DefaultColumnConditionMode
 
   /** {@inheritDoc} */
   @Override
-  protected final Comparable getComparable(final Object object) {
+  protected Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
     if (entity.isNull(getColumnIdentifier())) {
       return null;
@@ -33,8 +33,7 @@ public final class DefaultPropertyFilterModel extends DefaultColumnConditionMode
     if (value instanceof Entity) {
       return value.toString();
     }
-    else {
-      return (Comparable) value;
-    }
+
+    return (Comparable) value;
   }
 }

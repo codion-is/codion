@@ -359,12 +359,12 @@ public final class PropertyValues {
     }
 
     @Override
-    public final void set(final V v) {
+    public void set(final V v) {
       stringProperty.set(converter.toString(v));
     }
 
     @Override
-    public final V get() {
+    public V get() {
       return converter.fromString(stringProperty.get());
     }
 

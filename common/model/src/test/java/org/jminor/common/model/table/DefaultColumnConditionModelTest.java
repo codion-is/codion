@@ -83,7 +83,7 @@ public class DefaultColumnConditionModelTest {
     model.setConditionType(ConditionType.LIKE);
     model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
     model.setUpperBound("upper");
-    assertEquals("%upper%", ((String) model.getUpperBound()));
+    assertEquals("%upper%", model.getUpperBound());
   }
 
   @Test

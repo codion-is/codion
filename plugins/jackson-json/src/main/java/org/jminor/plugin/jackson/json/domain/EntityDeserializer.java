@@ -79,7 +79,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
       return new BigDecimal(jsonNode.asText());
     }
     else if (property.isBlob()) {
-      return Base64.getDecoder().decode((String) jsonNode.asText());
+      return Base64.getDecoder().decode(jsonNode.asText());
     }
     else if (property instanceof ForeignKeyProperty) {
       return mapper.readValue(jsonNode.toString(), Entity.class);

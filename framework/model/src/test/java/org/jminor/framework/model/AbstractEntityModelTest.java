@@ -111,7 +111,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void constructorNullEditModelNullTableModel() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntityModel((DefaultEntityEditModel) null, null));
+    assertThrows(NullPointerException.class, () -> new DefaultEntityModel(null, null));
   }
 
   @Test

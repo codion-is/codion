@@ -82,8 +82,8 @@ public final class Entities {
    * @param includeReadOnlyProperties if true then readOnly properties are included in the comparison
    * @return the properties which values differ from the ones in the comparison entity
    */
-  public static final List<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison,
-                                                                       final boolean includeReadOnlyProperties) {
+  public static List<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison,
+                                                                 final boolean includeReadOnlyProperties) {
     //BLOB property values are not loaded, so we can't compare those
     return comparison.keySet().stream().filter(property ->
             property instanceof ColumnProperty

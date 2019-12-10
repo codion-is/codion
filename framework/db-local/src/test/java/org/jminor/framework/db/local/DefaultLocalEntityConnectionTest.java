@@ -41,7 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -729,7 +728,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.update(singletonList(scott));
 
     byte[] lazyFromDb = connection.readBlob(scott.getKey(), EMP_DATA_LAZY);
-    byte[] fromDb = connection.readBlob(scott.getKey(), EMP_DATA);
+    final byte[] fromDb = connection.readBlob(scott.getKey(), EMP_DATA);
     assertArrayEquals(lazyBytes, lazyFromDb);
     assertArrayEquals(bytes, fromDb);
 
@@ -761,7 +760,7 @@ public class DefaultLocalEntityConnectionTest {
     final Entity entity = DOMAIN.entity(T_UUID_TEST_DEFAULT);
     entity.put(UUID_TEST_DEFAULT_DATA, "test");
     connection.insert(singletonList(entity));
-    assertNotNull((UUID) entity.get(UUID_TEST_DEFAULT_ID));
+    assertNotNull(entity.get(UUID_TEST_DEFAULT_ID));
     assertEquals("test", entity.getString(UUID_TEST_DEFAULT_DATA));
   }
 
@@ -770,7 +769,7 @@ public class DefaultLocalEntityConnectionTest {
     final Entity entity = DOMAIN.entity(T_UUID_TEST_NO_DEFAULT);
     entity.put(UUID_TEST_NO_DEFAULT_DATA, "test");
     connection.insert(singletonList(entity));
-    assertNotNull((UUID) entity.get(UUID_TEST_NO_DEFAULT_ID));
+    assertNotNull(entity.get(UUID_TEST_NO_DEFAULT_ID));
     assertEquals("test", entity.getString(UUID_TEST_NO_DEFAULT_DATA));
   }
 

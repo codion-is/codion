@@ -304,11 +304,8 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   public void setSelectedItem(final Entity item) {
     if (selectionModel instanceof MultipleSelectionModel) {
       selectionModel.clearSelection();
-      selectionModel.select(item);
     }
-    else {
-      selectionModel.select(item);
-    }
+    selectionModel.select(item);
   }
 
   /** {@inheritDoc} */

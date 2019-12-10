@@ -644,7 +644,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
     private final Map<String, EntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
     @Override
-    public final EntityDefinition getDefinition(final String entityId) {
+    public EntityDefinition getDefinition(final String entityId) {
       final EntityDefinition definition = entityDefinitions.get(requireNonNull(entityId, "entityId"));
       if (definition == null) {
         throw new IllegalArgumentException("Undefined entity: " + entityId);

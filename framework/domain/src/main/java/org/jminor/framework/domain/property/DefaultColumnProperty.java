@@ -315,7 +315,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
         return null;
       }
 
-      if ((Boolean) value) {
+      if (value) {
         return trueValue;
       }
 

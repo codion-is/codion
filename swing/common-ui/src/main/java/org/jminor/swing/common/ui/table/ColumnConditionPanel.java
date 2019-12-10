@@ -8,7 +8,6 @@ import org.jminor.common.Item;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.State;
@@ -453,7 +452,7 @@ public class ColumnConditionPanel<K> extends JPanel {
       @Override
       public void focusGained(final FocusEvent e) {
         if (!e.isTemporary()) {
-          focusGainedEvent.fire((K) conditionModel.getColumnIdentifier());
+          focusGainedEvent.fire(conditionModel.getColumnIdentifier());
         }
       }
     };
@@ -489,7 +488,7 @@ public class ColumnConditionPanel<K> extends JPanel {
       }
     }
     final JComboBox<ConditionType> comboBox = new SteppedComboBox(comboBoxModel);
-    ValueLinks.selectedItemValueLink(comboBox, conditionModel, "conditionType", ConditionType.class, (EventObserver) conditionModel.getConditionTypeObserver());
+    ValueLinks.selectedItemValueLink(comboBox, conditionModel, "conditionType", ConditionType.class, conditionModel.getConditionTypeObserver());
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,
