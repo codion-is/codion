@@ -562,7 +562,9 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   void removeBeforeUpdateListener(final EventDataListener listener);
 
   /**
-   * @param listener a listener to be notified each time an update has been performed
+   * @param listener a listener to be notified each time an update has been performed,
+   * with the updated entities, mapped to their respective original primary keys, that is,
+   * the primary keys before the update was performed
    */
   void addAfterUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener);
 
