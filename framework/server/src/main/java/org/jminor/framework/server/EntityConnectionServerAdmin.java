@@ -56,7 +56,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @param value the maximum number of concurrent connections this servers accepts
    * @throws RemoteException in case of a communication error
    */
-  void setConnectionLimit(final int value) throws RemoteException;
+  void setConnectionLimit(int value) throws RemoteException;
 
   /**
    * @return the number of ms that should pass between maintenance cycles,
@@ -70,14 +70,14 @@ public interface EntityConnectionServerAdmin extends Remote {
    * that is, when inactive clients are purged
    * @throws RemoteException in case of a communication error
    */
-  void setMaintenanceInterval(final int interval) throws RemoteException;
+  void setMaintenanceInterval(int interval) throws RemoteException;
 
   /**
    * @param clientId the ID of the client for which to retrieve the log
    * @return the log for the given connection
    * @throws RemoteException in case of a communication error
    */
-  ClientLog getClientLog(final UUID clientId) throws RemoteException;
+  ClientLog getClientLog(UUID clientId) throws RemoteException;
 
   /**
    * Returns true if logging is enabled for the given connection
@@ -85,7 +85,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @return true if logging is on for the given connection
    * @throws RemoteException in case of a communication error
    */
-  boolean isLoggingEnabled(final UUID clientId) throws RemoteException;
+  boolean isLoggingEnabled(UUID clientId) throws RemoteException;
 
   /**
    * Sets the logging status for the given connection
@@ -93,7 +93,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @param status the new logging status
    * @throws RemoteException in case of a communication error
    */
-  void setLoggingEnabled(final UUID clientId, final boolean status) throws RemoteException;
+  void setLoggingEnabled(UUID clientId, boolean status) throws RemoteException;
 
   /**
    * @return the total amount of memory allocated by the server process
@@ -133,7 +133,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @param clientId the ID of the client
    * @throws RemoteException in case of a communication error
    */
-  void disconnect(final UUID clientId) throws RemoteException;
+  void disconnect(UUID clientId) throws RemoteException;
 
   /**
    * @return the server logging level
@@ -145,7 +145,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @param level the logging level
    * @throws RemoteException in case of a communication error
    */
-  void setLoggingLevel(final Object level) throws RemoteException;
+  void setLoggingLevel(Object level) throws RemoteException;
 
   /**
    * @return the users currently connected to the server
@@ -164,14 +164,14 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @return the clients associated with the given user
    * @throws RemoteException in case of a communication error
    */
-  Collection<RemoteClient> getClients(final User user) throws RemoteException;
+  Collection<RemoteClient> getClients(User user) throws RemoteException;
 
   /**
    * @param clientTypeId the client type for which to retrieve the clients
    * @return the clients associated with the given user
    * @throws RemoteException in case of a communication error
    */
-  Collection<RemoteClient> getClients(final String clientTypeId) throws RemoteException;
+  Collection<RemoteClient> getClients(String clientTypeId) throws RemoteException;
 
   /**
    * Returns the connection timeout in ms
@@ -186,7 +186,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @throws RemoteException in case of a communication error
    * @throws IllegalArgumentException in case timeout is less than zero
    */
-  void setConnectionTimeout(final int timeout) throws RemoteException;
+  void setConnectionTimeout(int timeout) throws RemoteException;
 
   /**
    * @return the identifiers of the client types connected to the server
@@ -206,7 +206,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @return the pool statistics
    * @throws RemoteException in case of an exception
    */
-  ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) throws RemoteException;
+  ConnectionPoolStatistics getConnectionPoolStatistics(User user, long since) throws RemoteException;
 
   /**
    * @return usage statistics for the underlying database
@@ -225,28 +225,28 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @param timedOutOnly if true only connections that have timed out are culled
    * @throws RemoteException in case of an exception
    */
-  void disconnectClients(final boolean timedOutOnly) throws RemoteException;
+  void disconnectClients(boolean timedOutOnly) throws RemoteException;
 
   /**
    * Resets the statistics that have been collected so far
    * @param user the pool user
    * @throws RemoteException in case of an exception
    */
-  void resetConnectionPoolStatistics(final User user) throws RemoteException;
+  void resetConnectionPoolStatistics(User user) throws RemoteException;
 
   /**
    * @param user the pool user
    * @return true if fine grained statistics should be collected for the given connection pool
    * @throws RemoteException in case of an exception
    */
-  boolean isCollectFineGrainedPoolStatistics(final User user) throws RemoteException;
+  boolean isCollectFineGrainedPoolStatistics(User user) throws RemoteException;
 
   /**
    * @param user the pool user
    * @param value true if fine grained statistics should be collected for the given connection pool
    * @throws RemoteException in case of an exception
    */
-  void setCollectFineGrainedPoolStatistics(final User user, final boolean value) throws RemoteException;
+  void setCollectFineGrainedPoolStatistics(User user, boolean value) throws RemoteException;
 
   /**
    * @return the server system properties
@@ -259,7 +259,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @return a list containing garbage collection notifications
    * @throws RemoteException in case of an exception
    */
-  List<GcEvent> getGcEvents(final long since) throws RemoteException;
+  List<GcEvent> getGcEvents(long since) throws RemoteException;
 
   /**
    * @return current thread statistics
@@ -278,98 +278,98 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @return the pool cleanup interval in ms
    * @throws RemoteException in case of an exception
    */
-  int getConnectionPoolCleanupInterval(final User user) throws RemoteException;
+  int getConnectionPoolCleanupInterval(User user) throws RemoteException;
 
   /**
    * @param user the pool user
    * @param poolCleanupInterval the pool cleanup interval in ms
    * @throws RemoteException in case of an exception
    */
-  void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException;
+  void setConnectionPoolCleanupInterval(User user, int poolCleanupInterval) throws RemoteException;
 
   /**
    * @param user the pool user
    * @return the pooled connection timeout in ms
    * @throws RemoteException in case of an exception
    */
-  int getPooledConnectionTimeout(final User user) throws RemoteException;
+  int getPooledConnectionTimeout(User user) throws RemoteException;
 
   /**
    * @param user the pool user
    * @param timeout the pooled connection timeout in ms
    * @throws RemoteException in case of an exception
    */
-  void setPooledConnectionTimeout(final User user, final int timeout) throws RemoteException;
+  void setPooledConnectionTimeout(User user, int timeout) throws RemoteException;
 
   /**
    * @param user the pool user
    * @return the maximum time to wait between check out retries in ms
    * @throws RemoteException in case of an exception
    */
-  int getMaximumPoolRetryWaitPeriod(final User user) throws RemoteException;
+  int getMaximumPoolRetryWaitPeriod(User user) throws RemoteException;
 
   /**
    * @param user the pool user
    * @param value the maximum time to wait between check out retries in ms
    * @throws RemoteException in case of an exception
    */
-  void setMaximumPoolRetryWaitPeriod(final User user, final int value) throws RemoteException;
+  void setMaximumPoolRetryWaitPeriod(User user, int value) throws RemoteException;
 
   /**
    * @param user the pool user
    * @return the maximum time in ms to retry checking out a connection before throwing an exception
    * @throws RemoteException in case of an exception
    */
-  int getMaximumPoolCheckOutTime(final User user) throws RemoteException;
+  int getMaximumPoolCheckOutTime(User user) throws RemoteException;
 
   /**
    * @param user the pool user
    * @param value the maximum time in ms to retry checking out a connection before throwing an exception
    * @throws RemoteException in case of an exception
    */
-  void setMaximumPoolCheckOutTime(final User user, final int value) throws RemoteException;
+  void setMaximumPoolCheckOutTime(User user, int value) throws RemoteException;
 
   /**
    * @param user the pool user
    * @return the maximum connection pool size
    * @throws RemoteException in case of an exception
    */
-  int getMaximumConnectionPoolSize(final User user) throws RemoteException;
+  int getMaximumConnectionPoolSize(User user) throws RemoteException;
 
   /**
    * @param user the pool user
    * @param value the maximum connection pool size
    * @throws RemoteException in case of an exception
    */
-  void setMaximumConnectionPoolSize(final User user, final int value) throws RemoteException;
+  void setMaximumConnectionPoolSize(User user, int value) throws RemoteException;
 
   /**
    * @param user the pool user
    * @return the minimum connection pool size
    * @throws RemoteException in case of an exception
    */
-  int getMinimumConnectionPoolSize(final User user) throws RemoteException;
+  int getMinimumConnectionPoolSize(User user) throws RemoteException;
 
   /**
    * @param user the pool user
    * @param value the minimum connection pool size
    * @throws RemoteException in case of an exception
    */
-  void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException;
+  void setMinimumConnectionPoolSize(User user, int value) throws RemoteException;
 
   /**
    * @param user the pool user
    * @return the number of milliseconds to wait before trying to create a new connection
    * @throws RemoteException in case of an exception
    */
-  int getPoolConnectionThreshold(final User user) throws RemoteException;
+  int getPoolConnectionThreshold(User user) throws RemoteException;
 
   /**
    * @param user the pool user
    * @param value the number of milliseconds to wait before trying to create a new connection
    * @throws RemoteException in case of an exception
    */
-  void setPoolConnectionThreshold(final User user, final int value) throws RemoteException;
+  void setPoolConnectionThreshold(User user, int value) throws RemoteException;
 
   /**
    * Thread statistics

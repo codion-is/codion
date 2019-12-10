@@ -100,7 +100,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @throws IllegalStateException in case an {@link EntityEditModel} has already been associated with this {@link EntityTableModel}
    * @throws IllegalArgumentException in case the given {@link EntityEditModel} is not based on the same entityId as this {@link EntityTableModel}
    */
-  void setEditModel(final E editModel);
+  void setEditModel(E editModel);
 
   /**
    * Sets {@code foreignKeyValues} as the search condition values for the given foreignKeyProperty
@@ -108,7 +108,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param foreignKeyProperty the ID of the foreign key property
    * @param foreignKeyValues the entities to use as condition values
    */
-  void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues);
+  void setForeignKeyConditionValues(ForeignKeyProperty foreignKeyProperty, Collection<Entity> foreignKeyValues);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
@@ -117,7 +117,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param foreignKeyEntityId the entity ID of the foreign key values
    * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues);
+  void replaceForeignKeyValues(String foreignKeyEntityId, Collection<Entity> foreignKeyValues);
 
   /**
    * Adds the given entities to this table model, it is recommended to only manually add entities
@@ -128,19 +128,19 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param sortAfterAdding if true and sorting is enabled then the model is sorted after adding
    * @see org.jminor.common.model.table.TableSortModel#isSortingEnabled()
    */
-  void addEntities(final List<Entity> entities, final boolean atTop, final boolean sortAfterAdding);
+  void addEntities(List<Entity> entities, boolean atTop, boolean sortAfterAdding);
 
   /**
    * Replaces the given entities in this table model
    * @param entities the entities to replace
    */
-  void replaceEntities(final Collection<Entity> entities);
+  void replaceEntities(Collection<Entity> entities);
 
   /**
    * Refreshes the entities with the given keys by re-selecting them from the underlying database.
    * @param keys the keys of the entities to refresh
    */
-  void refreshEntities(final List<Entity.Key> keys);
+  void refreshEntities(List<Entity.Key> keys);
 
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
@@ -177,14 +177,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param batchUpdateAllowed true if this model should allow multiple entities to be updated at a time
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel<E> setBatchUpdateAllowed(final boolean batchUpdateAllowed);
+  EntityTableModel<E> setBatchUpdateAllowed(boolean batchUpdateAllowed);
 
   /**
    * Returns the {@link ColumnSummaryModel} associated with the property identified by {@code propertyId}
    * @param propertyId the ID of the property
    * @return the {@link ColumnSummaryModel} for the given property ID
    */
-  ColumnSummaryModel getColumnSummaryModel(final String propertyId);
+  ColumnSummaryModel getColumnSummaryModel(String propertyId);
 
   /**
    * @param row the row for which to retrieve the background color
@@ -192,13 +192,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return an Object representing the background color for this row and property, specified by the row entity
    * @see EntityDefinition.Builder#setColorProvider(Entity.ColorProvider)
    */
-  Object getPropertyBackgroundColor(final int row, final Property property);
+  Object getPropertyBackgroundColor(int row, Property property);
 
   /**
    * @param propertyId the propertyId
    * @return the index of the column representing the given property
    */
-  int getPropertyColumnIndex(final String propertyId);
+  int getPropertyColumnIndex(String propertyId);
 
   /**
    * @return a String describing the selected/filtered state of this table model
@@ -218,7 +218,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param fetchCount the fetch count
    * @return this table model
    */
-  EntityTableModel<E> setFetchCount(final int fetchCount);
+  EntityTableModel<E> setFetchCount(int fetchCount);
 
   /**
    * Updates the given entities. If the entities are unmodified or the list is empty
@@ -231,7 +231,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow updating
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
-  void update(final List<Entity> entities) throws ValidationException, DatabaseException;
+  void update(List<Entity> entities) throws ValidationException, DatabaseException;
 
   /**
    * Deletes the selected entities
@@ -261,7 +261,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * should be automatically removed from this table model
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel<E> setRemoveEntitiesOnDelete(final boolean value);
+  EntityTableModel<E> setRemoveEntitiesOnDelete(boolean value);
 
   /**
    * @return the action performed when entities are inserted via the associated edit model
@@ -272,20 +272,20 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param insertAction the action to perform when entities are inserted via the associated edit model
    * @return this EntityTableModel instance
    */
-  EntityTableModel<E> setInsertAction(final InsertAction insertAction);
+  EntityTableModel<E> setInsertAction(InsertAction insertAction);
 
   /**
    * Finds entities according to the values in {@code keys}
    * @param keys the primary key values to use as condition
    * @return the entities having the primary key values as in {@code keys}
    */
-  Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys);
+  Collection<Entity> getEntitiesByKey(Collection<Entity.Key> keys);
 
   /**
    * Sets the selected entities according to the primary keys in {@code primaryKeys}
    * @param keys the primary keys of the entities to select
    */
-  void setSelectedByKey(final Collection<Entity.Key> keys);
+  void setSelectedByKey(Collection<Entity.Key> keys);
 
   /**
    * Returns an Iterator which iterates through the selected entities
@@ -297,13 +297,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param primaryKey the primary key to search by
    * @return the entity with the given primary key from the table model, null if it's not found
    */
-  Entity getEntityByKey(final Entity.Key primaryKey);
+  Entity getEntityByKey(Entity.Key primaryKey);
 
   /**
    * @param primaryKey the primary key
    * @return the row index of the entity with the given primary key, -1 if not found
    */
-  int indexOf(final Entity.Key primaryKey);
+  int indexOf(Entity.Key primaryKey);
 
   /**
    * Saves any user preferences
@@ -314,13 +314,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Arranges the column model so that only the given columns are visible and in the given order
    * @param propertyIds the column identifiers
    */
-  void setColumns(final String... propertyIds);
+  void setColumns(String... propertyIds);
 
   /**
    * @param delimiter the delimiter
    * @return the table data as a tab delimited string, with column names as a header
    */
-  String getTableDataAsDelimitedString(final char delimiter);
+  String getTableDataAsDelimitedString(char delimiter);
 
   /**
    * @return the items in this table model, visible and filtered
@@ -341,14 +341,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @param listener notified when the selection changes in the underlying selection model
    */
-  void addSelectionChangedListener(final EventListener listener);
+  void addSelectionChangedListener(EventListener listener);
 
   /**
    * @param value true if this table model should automatically refresh when foreign key condition values are set
    * @see #setForeignKeyConditionValues(ForeignKeyProperty, Collection)
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean value);
+  EntityTableModel setRefreshOnForeignKeyConditionValuesSet(boolean value);
 
   /**
    * @return true if this table model automatically refreshes when foreign key condition values are set

@@ -547,7 +547,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   /**
    * @param application the application to disconnect
    */
-  protected abstract void disconnectApplication(final T application);
+  protected abstract void disconnectApplication(T application);
 
   /**
    * @return a random think time in milliseconds based on the values of minimumThinkTime and maximumThinkTime
@@ -842,7 +842,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
      * @param application the application
      * @throws ScenarioException in case of an exception
      */
-    protected abstract void performScenario(final T application) throws ScenarioException;
+    protected abstract void performScenario(T application) throws ScenarioException;
 
     /**
      * Called before this scenario is run, override to prepare the application for each run

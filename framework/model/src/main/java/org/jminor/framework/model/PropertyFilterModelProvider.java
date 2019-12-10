@@ -16,5 +16,5 @@ public interface PropertyFilterModelProvider {
    * @param property the Property for which to initialize a ColumnConditionModel
    * @return a ColumnConditionModel for the given property
    */
-  ColumnConditionModel<Property> initializePropertyFilterModel(final Property property);
+  ColumnConditionModel<Property> initializePropertyFilterModel(Property property);
 }

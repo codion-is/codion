@@ -34,42 +34,42 @@ public interface SelectionModel<R> {
   /**
    * @param listener a listener to be notified each time the selection changes
    */
-  void addSelectionChangedListener(final EventListener listener);
+  void addSelectionChangedListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectionChangedListener(final EventListener listener);
+  void removeSelectionChangedListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the selected index changes
    */
-  void addSelectedIndexListener(final EventDataListener<Integer> listener);
+  void addSelectedIndexListener(EventDataListener<Integer> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedIndexListener(final EventDataListener listener);
+  void removeSelectedIndexListener(EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time the selected item changes
    */
-  void addSelectedItemListener(final EventDataListener<R> listener);
+  void addSelectedItemListener(EventDataListener<R> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedItemListener(final EventDataListener listener);
+  void removeSelectedItemListener(EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time the selected items change
    */
-  void addSelectedItemsListener(final EventDataListener<List<R>> listener);
+  void addSelectedItemsListener(EventDataListener<List<R>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedItemsListener(final EventDataListener listener);
+  void removeSelectedItemsListener(EventDataListener listener);
 
   /**
    * Moves all selected indexes down one index, wraps around.
@@ -95,31 +95,31 @@ public interface SelectionModel<R> {
    * Selects the item at {@code index}
    * @param index the index
    */
-  void addSelectedIndex(final int index);
+  void addSelectedIndex(int index);
 
   /**
    * Removes the item at {@code index} from the selection
    * @param index the index
    */
-  void removeSelectedIndex(final int index);
+  void removeSelectedIndex(int index);
 
   /**
    * Removes the given indexes from the selection
    * @param indexes the indexes
    */
-  void removeSelectedIndexes(final Collection<Integer> indexes);
+  void removeSelectedIndexes(Collection<Integer> indexes);
 
   /**
    * Clears the selection and selects the item at {@code index}
    * @param index the index
    */
-  void setSelectedIndex(final int index);
+  void setSelectedIndex(int index);
 
   /**
    * Selects the given indexes
    * @param indexes the indexes to select
    */
-  void setSelectedIndexes(final Collection<Integer> indexes);
+  void setSelectedIndexes(Collection<Integer> indexes);
 
   /**
    * @return the selected indexes, an empty list if selection is empty
@@ -136,7 +136,7 @@ public interface SelectionModel<R> {
    * Adds these indexes to the selection
    * @param indexes the indexes to add to the selection
    */
-  void addSelectedIndexes(final Collection<Integer> indexes);
+  void addSelectedIndexes(Collection<Integer> indexes);
 
   /**
    * @return the number of selected indexes in the underlying selection model.
@@ -147,7 +147,7 @@ public interface SelectionModel<R> {
    * Selects the given items
    * @param items the items to select
    */
-  void setSelectedItems(final Collection<R> items);
+  void setSelectedItems(Collection<R> items);
 
   /**
    * @return a list containing the selected items
@@ -163,31 +163,31 @@ public interface SelectionModel<R> {
    * Sets the selected item
    * @param item the item to select
    */
-  void setSelectedItem(final R item);
+  void setSelectedItem(R item);
 
   /**
    * Adds the given item to the selection
    * @param item the item to add to the selection
    */
-  void addSelectedItem(final R item);
+  void addSelectedItem(R item);
 
   /**
    * Adds the given items to the selection
    * @param items the items to add to the selection
    */
-  void addSelectedItems(final Collection<R> items);
+  void addSelectedItems(Collection<R> items);
 
   /**
    * Remove the given item from the selection
    * @param item the item to remove from the selection
    */
-  void removeSelectedItem(final R item);
+  void removeSelectedItem(R item);
 
   /**
    * Remove the given items from the selection
    * @param items the items to remove from the selection
    */
-  void removeSelectedItems(final Collection<R> items);
+  void removeSelectedItems(Collection<R> items);
 
   /**
    * Clears the selection

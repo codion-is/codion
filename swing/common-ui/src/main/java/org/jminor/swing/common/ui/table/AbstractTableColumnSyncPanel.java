@@ -91,7 +91,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
    * @param column the column
    * @return the column panel for the given column
    */
-  protected abstract JPanel initializeColumnPanel(final TableColumn column);
+  protected abstract JPanel initializeColumnPanel(TableColumn column);
 
   private void bindColumnAndPanelSizes() {
     for (final TableColumn column : columns) {

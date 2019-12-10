@@ -31,7 +31,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param primaryKey the primary key of the entity to fetch from this model
    * @return the entity with the given key if found in the model, null otherwise
    */
-  Entity getEntity(final Entity.Key primaryKey);
+  Entity getEntity(Entity.Key primaryKey);
 
   /**
    * Use this method to retrieve the default foreign key filter condition model if you
@@ -53,7 +53,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyPropertyId the ID of the foreign key property
    * @return the entity values currently used to filter the contents of this model
    */
-  Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyId);
+  Collection<Entity> getForeignKeyFilterEntities(String foreignKeyPropertyId);
 
   /**
    * Filters this combo box model so that only entities referencing the given foreign key entities
@@ -61,7 +61,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyPropertyId the property ID
    * @param entities the entities
    */
-  void setForeignKeyFilterEntities(final String foreignKeyPropertyId, final Collection<Entity> entities);
+  void setForeignKeyFilterEntities(String foreignKeyPropertyId, Collection<Entity> entities);
 
   /**
    * Specifies whether foreign key filtering should be strict or not.
@@ -71,7 +71,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param strictForeignKeyFiltering the value
    * @see #setForeignKeyFilterEntities(String, Collection)
    */
-  void setStrictForeignKeyFiltering(final boolean strictForeignKeyFiltering);
+  void setStrictForeignKeyFiltering(boolean strictForeignKeyFiltering);
 
   /**
    * @return true if strict foreign key filtering is enabled
@@ -84,7 +84,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @return a combo box model for selecting a filtering value for this combo box model
    * @see #linkForeignKeyComboBoxModel(String, EntityComboBoxModel)
    */
-  EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyId);
+  EntityComboBoxModel createForeignKeyFilterComboBoxModel(String foreignKeyPropertyId);
 
   /**
    * Links the given combo box model representing master entities to this combo box model
@@ -92,14 +92,14 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyPropertyId the ID of the foreign key property
    * @param foreignKeyModel the combo box model to link
    */
-  void linkForeignKeyComboBoxModel(final String foreignKeyPropertyId, final EntityComboBoxModel foreignKeyModel);
+  void linkForeignKeyComboBoxModel(String foreignKeyPropertyId, EntityComboBoxModel foreignKeyModel);
 
   /**
    * Selects the entity with the given primary key, if the entity is not available
    * in the model this method returns silently without changing the selection
    * @param primaryKey the primary key of the entity to select
    */
-  void setSelectedEntityByKey(final Entity.Key primaryKey);
+  void setSelectedEntityByKey(Entity.Key primaryKey);
 
   /**
    * Forces a refresh of this model, disregarding the staticData directive
@@ -113,7 +113,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param staticData the value
    * @return this EntityComboBoxModel instance
    */
-  EntityComboBoxModel setStaticData(final boolean staticData);
+  EntityComboBoxModel setStaticData(boolean staticData);
 
   /**
    * @return true if the data for this model should only be fetched once
@@ -128,7 +128,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @return this EntityComboBoxModel instance
    * @see EntityEditEvents
    */
-  EntityComboBoxModel setListenToEditEvents(final boolean listenToEditEvents);
+  EntityComboBoxModel setListenToEditEvents(boolean listenToEditEvents);
 
   /**
    * True if this combo box model responds to entity edit events, by adding inserted items,
@@ -142,7 +142,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * Sets the condition provider to use when querying data
    * @param selectConditionProvider the condition provider
    */
-  void setSelectConditionProvider(final Condition.Provider selectConditionProvider);
+  void setSelectConditionProvider(Condition.Provider selectConditionProvider);
 
   /**
    * @return the select condition provider, null if none is specified
@@ -152,10 +152,10 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * @param listener a listener to be notified each time this model is refreshed
    */
-  void addRefreshListener(final EventListener listener);
+  void addRefreshListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRefreshListener(final EventListener listener);
+  void removeRefreshListener(EventListener listener);
 }

@@ -28,5 +28,5 @@ public interface RemoteClient extends ConnectionRequest {
   /**
    * @param clientHost the client hostname
    */
-  void setClientHost(final String clientHost);
+  void setClientHost(String clientHost);
 }

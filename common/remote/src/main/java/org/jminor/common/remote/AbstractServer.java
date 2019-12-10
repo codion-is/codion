@@ -316,7 +316,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    * @throws LoginException in case of an error during the login
    * @throws ConnectionNotAvailableException in case the server is not accepting new connections
    */
-  protected abstract T doConnect(final RemoteClient remoteClient)
+  protected abstract T doConnect(RemoteClient remoteClient)
           throws RemoteException, LoginException, ConnectionNotAvailableException;
 
   /**
@@ -324,7 +324,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    * @param connection the connection to disconnect
    * @throws RemoteException in case of an exception
    */
-  protected abstract void doDisconnect(final T connection) throws RemoteException;
+  protected abstract void doDisconnect(T connection) throws RemoteException;
 
   /**
    * Validates the given user credentials

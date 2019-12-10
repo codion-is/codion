@@ -22,7 +22,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param orderBy the OrderBy to use when applying this condition
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setOrderBy(final OrderBy orderBy);
+  EntitySelectCondition setOrderBy(OrderBy orderBy);
 
   /**
    * @return the limit to use for the given condition
@@ -33,7 +33,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param limit the limit to use for this condition
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setLimit(final int limit);
+  EntitySelectCondition setLimit(int limit);
 
   /**
    * @return the offset to use for the given condition
@@ -44,7 +44,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param offset the offset to use for this condition
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setOffset(final int offset);
+  EntitySelectCondition setOffset(int offset);
 
   /**
    * @return true if this select should lock the result for update
@@ -58,7 +58,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param forUpdate if true then the results should be locked for update
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForUpdate(final boolean forUpdate);
+  EntitySelectCondition setForUpdate(boolean forUpdate);
 
   /**
    * @return the maximum number of records to fetch from the result
@@ -69,7 +69,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param fetchCount the maximum number of records to fetch from the result
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setFetchCount(final int fetchCount);
+  EntitySelectCondition setFetchCount(int fetchCount);
 
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
@@ -77,7 +77,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param foreignKeyPropertyId the foreign key property ID
    * @return the number of levels of foreign key values to fetch
    */
-  Integer getForeignKeyFetchDepthLimit(final String foreignKeyPropertyId);
+  Integer getForeignKeyFetchDepthLimit(String foreignKeyPropertyId);
 
   /**
    * Limit the levels of foreign keys to fetch via the given foreign key property
@@ -85,14 +85,14 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param fetchDepthLimit the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForeignKeyFetchDepthLimit(final String foreignKeyPropertyId, final int fetchDepthLimit);
+  EntitySelectCondition setForeignKeyFetchDepthLimit(String foreignKeyPropertyId, int fetchDepthLimit);
 
   /**
    * Limit the levels of foreign keys to fetch
    * @param fetchDepthLimit the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForeignKeyFetchDepthLimit(final int fetchDepthLimit);
+  EntitySelectCondition setForeignKeyFetchDepthLimit(int fetchDepthLimit);
 
   /**
    * Sets the properties to include in the resulting Entities,
@@ -104,7 +104,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param propertyIds the ids of the column properties to include
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setSelectPropertyIds(final String... propertyIds);
+  EntitySelectCondition setSelectPropertyIds(String... propertyIds);
 
   /**
    * @return the ids of the properties to include in the query result,

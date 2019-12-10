@@ -13,5 +13,5 @@ public interface EventDataListener<T> {
    * Called when an event this listener is registered for occurs
    * @param data information relating to the event
    */
-  void eventOccurred(final T data);
+  void eventOccurred(T data);
 }

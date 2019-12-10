@@ -58,7 +58,7 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * @param user the user to login
    * @throws NullPointerException in case user is null
    */
-  void login(final User user);
+  void login(User user);
 
   /**
    * @return the current user
@@ -87,32 +87,32 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * Adds the given entity models to this model.
    * @param entityModels the entity models to add
    */
-  void addEntityModels(final M... entityModels);
+  void addEntityModels(M... entityModels);
 
   /**
    * Adds the given entity model to this model
    * @param entityModel the detail model
    * @return the EntityModel model just added
    */
-  M addEntityModel(final M entityModel);
+  M addEntityModel(M entityModel);
 
   /**
    * @param modelClass the application model class
    * @return true if this model contains a EntityModel instance of the given class
    */
-  boolean containsEntityModel(final Class<? extends M> modelClass);
+  boolean containsEntityModel(Class<? extends M> modelClass);
 
   /**
    * @param entityId the entity ID
    * @return true if this model contains a EntityModel for the given entity ID
    */
-  boolean containsEntityModel(final String entityId);
+  boolean containsEntityModel(String entityId);
 
   /**
    * @param entityModel the entity model
    * @return true if this model contains the given EntityModel
    */
-  boolean containsEntityModel(final M entityModel);
+  boolean containsEntityModel(M entityModel);
 
   /**
    * @return true if this model warns about unsaved data
@@ -124,7 +124,7 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * @param warnAboutUnsavedData if true then this model warns about unsaved data
    * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
    */
-  void setWarnAboutUnsavedData(final boolean warnAboutUnsavedData);
+  void setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
 
   /**
    * @return true if any edit model associated with this application model contains
@@ -147,11 +147,11 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * @param modelClass the model class
    * @return the EntityModel of the given type
    */
-  M getEntityModel(final Class<? extends M> modelClass);
+  M getEntityModel(Class<? extends M> modelClass);
 
   /**
    * @param entityId the entity ID
    * @return the EntityModel based on the given entityId
    */
-  M getEntityModel(final String entityId);
+  M getEntityModel(String entityId);
 }

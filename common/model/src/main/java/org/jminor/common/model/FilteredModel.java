@@ -17,12 +17,12 @@ public interface FilteredModel<T> {
   /**
    * @param listener a listener notified each time this model is filtered
    */
-  void addFilteringListener(final EventListener listener);
+  void addFilteringListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeFilteringListener(final EventListener listener);
+  void removeFilteringListener(EventListener listener);
 
   /**
    * Filters the table according to the condition returned by {@code getFilterCondition()}.
@@ -44,7 +44,7 @@ public interface FilteredModel<T> {
    * Sets the filter condition and filters the model
    * @param filterCondition the Predicate to use, null if no filtering should be performed
    */
-  void setFilterCondition(final Predicate<T> filterCondition);
+  void setFilterCondition(Predicate<T> filterCondition);
 
   /**
    * @return an unmodifiable view of the visible items
@@ -77,19 +77,19 @@ public interface FilteredModel<T> {
    * @param includeFiltered if true then the filtered items are included
    * @return true if this model contains the item
    */
-  boolean contains(final T item, final boolean includeFiltered);
+  boolean contains(T item, boolean includeFiltered);
 
   /**
    * Returns true if the given item is visible, that is, not filtered in this model
    * @param item the item
    * @return true if the given item is visible
    */
-  boolean isVisible(final T item);
+  boolean isVisible(T item);
 
   /**
    * Returns true if the given item is being filtered in this model, that is, is not visible
    * @param item the item
    * @return true if the given item is filtered
    */
-  boolean isFiltered(final T item);
+  boolean isFiltered(T item);
 }

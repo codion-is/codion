@@ -170,7 +170,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * @throws LoginException in case the login fails
    * @throws ConnectionValidationException in case connection validation fails
    */
-  T connect(final ConnectionRequest connectionRequest) throws RemoteException,
+  T connect(ConnectionRequest connectionRequest) throws RemoteException,
           ConnectionNotAvailableException, LoginException, ConnectionValidationException;
 
   /**
@@ -180,14 +180,14 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * @throws RemoteException in case of a communitation error
    * @throws ServerAuthenticationException in case authentication fails
    */
-  A getServerAdmin(final User user) throws RemoteException, ServerAuthenticationException;
+  A getServerAdmin(User user) throws RemoteException, ServerAuthenticationException;
 
   /**
    * Disconnects the connection identified by the given key.
    * @param clientId the UUID identifying the client that should be disconnected
    * @throws RemoteException in case of a communication error
    */
-  void disconnect(final UUID clientId) throws RemoteException;
+  void disconnect(UUID clientId) throws RemoteException;
 
   /**
    * @return static information about this server

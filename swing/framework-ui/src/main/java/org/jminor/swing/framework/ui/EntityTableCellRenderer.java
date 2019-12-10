@@ -20,7 +20,7 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
    * If true then columns involved in a condition have different background color
    * @param indicateSearch the value
    */
-  void setIndicateCondition(final boolean indicateSearch);
+  void setIndicateCondition(boolean indicateSearch);
 
   /**
    * @return if true then the cell data is added as a tool tip for the cell
@@ -30,5 +30,5 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
   /**
    * @param tooltipData if true then the cell data is added as a tool tip for the cell
    */
-  void setTooltipData(final boolean tooltipData);
+  void setTooltipData(boolean tooltipData);
 }

@@ -312,7 +312,7 @@ public final class Util {
      * @param value the value
      * @return the value
      */
-    String writeValue(final String property, final String value);
+    String writeValue(String property, String value);
   }
 
   /**

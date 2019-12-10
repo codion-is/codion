@@ -31,5 +31,5 @@ public abstract class DocumentAdapter implements DocumentListener {
    * Called when the contents of this document change, either via insertion, update or removal
    * @param e the document event
    */
-  public abstract void contentsChanged(final DocumentEvent e);
+  public abstract void contentsChanged(DocumentEvent e);
 }

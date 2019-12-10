@@ -231,7 +231,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    * Disconnects the given connection
    * @param connection the connection to be disconnected
    */
-  protected abstract void disconnect(final EntityConnection connection);
+  protected abstract void disconnect(EntityConnection connection);
 
   protected static String getDomainId(final String domainClass) {
     if (domainClass.contains(".")) {

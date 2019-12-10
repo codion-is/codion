@@ -32,26 +32,26 @@ public interface ValueMapEditModel<K, V> {
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of {@code key} is set via this model
    */
-  void addValueSetListener(final K key, final EventDataListener<ValueChange<K, V>> listener);
+  void addValueSetListener(K key, EventDataListener<ValueChange<K, V>> listener);
 
   /**
    * @param key the key
    * @param listener the listener to remove
    */
-  void removeValueSetListener(final K key, final EventDataListener listener);
+  void removeValueSetListener(K key, EventDataListener listener);
 
   /**
    * Adds a listener notified each time the value associated with the given key changes
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of {@code key} changes
    */
-  void addValueListener(final K key, final EventDataListener<ValueChange<K, V>> listener);
+  void addValueListener(K key, EventDataListener<ValueChange<K, V>> listener);
 
   /**
    * @param key the key
    * @param listener the listener to remove
    */
-  void removeValueListener(final K key, final EventDataListener listener);
+  void removeValueListener(K key, EventDataListener listener);
 
   /**
    * @return an EventObserver notified each time a value changes
@@ -73,47 +73,47 @@ public interface ValueMapEditModel<K, V> {
    * @param key the key
    * @return true if this value is allowed to be null in the underlying value map
    */
-  boolean isNullable(final K key);
+  boolean isNullable(K key);
 
   /**
    * @param key the key
    * @return true if the value of the given key is null
    */
-  boolean isNull(final K key);
+  boolean isNull(K key);
 
   /**
    * @param key the key
    * @return true if the value of the given key is not null
    */
-  boolean isNotNull(final K key);
+  boolean isNotNull(K key);
 
   /**
    * Sets the given value in the underlying value map
    * @param key the key to associate the given value with
    * @param value the value to associate with the given key
    */
-  void put(final K key, final V value);
+  void put(K key, V value);
 
   /**
    * Removes the given value from the map
    * @param key the key associated with the value to remove
    * @return the value, if any
    */
-  V remove(final K key);
+  V remove(K key);
 
   /**
    * Returns the value associated with the given key in the underlying value map
    * @param key the key of the value to retrieve
    * @return the value associated with the given key
    */
-  V get(final K key);
+  V get(K key);
 
   /**
    * Checks if the value associated with the given key is valid, throws a ValidationException if not
    * @param key the key the value is associated with
    * @throws ValidationException if the given value is not valid for the given key
    */
-  void validate(final K key) throws ValidationException;
+  void validate(K key) throws ValidationException;
 
   /**
    * Validates the current state of the ValueMap
@@ -126,14 +126,14 @@ public interface ValueMapEditModel<K, V> {
    * @param valueMap the ValueMap to validate
    * @throws ValidationException in case the ValueMap is invalid
    */
-  void validate(final ValueMap<K, V> valueMap) throws ValidationException;
+  void validate(ValueMap<K, V> valueMap) throws ValidationException;
 
   /**
    * Validates the given ValueMaps
    * @param valueMaps the value maps to validate
    * @throws ValidationException on finding the first invalid ValueMap
    */
-  void validate(final Collection<? extends ValueMap<K, V>> valueMaps) throws ValidationException;
+  void validate(Collection<? extends ValueMap<K, V>> valueMaps) throws ValidationException;
 
   /**
    * Returns true if the value associated with the given key is valid, using the {@code validate} method
@@ -142,7 +142,7 @@ public interface ValueMapEditModel<K, V> {
    * @see #validate(Object)
    * @see ValueMap.Validator#validate(ValueMap)
    */
-  boolean isValid(final K key);
+  boolean isValid(K key);
 
   /**
    * @return true if the underlying value map contains only valid values

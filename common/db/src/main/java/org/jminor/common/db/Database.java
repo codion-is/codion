@@ -116,7 +116,7 @@ public interface Database {
   /**
    * @param urlAppend a string to append to the connection URL
    */
-  void setUrlAppend(final String urlAppend);
+  void setUrlAppend(String urlAppend);
 
   /**
    * @return the string to append to the connection URL
@@ -129,7 +129,7 @@ public interface Database {
    * @return a query string for retrieving the last auto-increment value from idSource
    * @throws NullPointerException in case {@code idSource} is required and is null
    */
-  String getAutoIncrementQuery(final String idSource);
+  String getAutoIncrementQuery(String idSource);
 
   /**
    * @param sequenceName the name of the sequence
@@ -137,14 +137,14 @@ public interface Database {
    * @throws UnsupportedOperationException in case the underlying database does not support sequences
    * @throws NullPointerException in case {@code sequenceName} is null
    */
-  String getSequenceQuery(final String sequenceName);
+  String getSequenceQuery(String sequenceName);
 
   /**
    * @param connectionProperties the connection properties, used primarily to provide
    * embedded databases with user info for authentication purposes
    * @return the database url of the active database, based on system properties
    */
-  String getURL(final Properties connectionProperties);
+  String getURL(Properties connectionProperties);
 
   /**
    * In the case of embedded databases the user login info can be appended
@@ -156,14 +156,14 @@ public interface Database {
    * @return an authentication string to append to the connection url,
    * f.ex. user=scott;password=tiger, null if none is required
    */
-  String getAuthenticationInfo(final Properties connectionProperties);
+  String getAuthenticationInfo(Properties connectionProperties);
 
   /**
    * This should shutdown the database in case it is an embedded one
    * and if that is applicable, such as for Derby.
    * @param connectionProperties the connection properties
    */
-  void shutdownEmbedded(final Properties connectionProperties);
+  void shutdownEmbedded(Properties connectionProperties);
 
   /**
    * @return true if the dbms supports the Java 6 jdbc call Connection.isValid()
@@ -196,25 +196,25 @@ public interface Database {
    * @param exception the underlying SQLException
    * @return the message assigned to the given exception
    */
-  String getErrorMessage(final SQLException exception);
+  String getErrorMessage(SQLException exception);
 
   /**
    * @param exception the exception
    * @return true if this exception represents a login credentials failure
    */
-  boolean isAuthenticationException(final SQLException exception);
+  boolean isAuthenticationException(SQLException exception);
 
   /**
    * @param exception the exception
    * @return true if this exception is a referential integrity exception
    */
-  boolean isReferentialIntegrityException(final SQLException exception);
+  boolean isReferentialIntegrityException(SQLException exception);
 
   /**
    * @param exception the exception
    * @return true if this exception is a unique key exception
    */
-  boolean isUniqueConstraintException(final SQLException exception);
+  boolean isUniqueConstraintException(SQLException exception);
 
   /**
    * Adds any dbms specific connection properties to the given properties map,
@@ -222,7 +222,7 @@ public interface Database {
    * @param properties the properties map to add to
    * @return the properties map
    */
-  Properties addConnectionProperties(final Properties properties);
+  Properties addConnectionProperties(Properties properties);
 
   /**
    * Creates a connection for the given user.
@@ -231,7 +231,7 @@ public interface Database {
    * @throws DatabaseException in case of a connection error
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
-  Connection createConnection(final User user) throws DatabaseException;
+  Connection createConnection(User user) throws DatabaseException;
 
   /**
    * @return the name of the driver class

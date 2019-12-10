@@ -26,7 +26,7 @@ public interface LoggerProxy {
    * Sets the log level
    * @param logLevel the log level
    */
-  void setLogLevel(final Object logLevel);
+  void setLogLevel(Object logLevel);
 
   /**
    * @return the available log levels

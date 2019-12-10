@@ -83,7 +83,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  List executeFunction(final String functionId, final Object... arguments) throws RemoteException, DatabaseException;
+  List executeFunction(String functionId, Object... arguments) throws RemoteException, DatabaseException;
 
   /**
    * Executes the procedure with the given id
@@ -92,7 +92,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  void executeProcedure(final String procedureId, final Object... arguments) throws RemoteException, DatabaseException;
+  void executeProcedure(String procedureId, Object... arguments) throws RemoteException, DatabaseException;
 
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
@@ -104,7 +104,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity.Key> insert(final List<Entity> entities) throws RemoteException, DatabaseException;
+  List<Entity.Key> insert(List<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Updates the given entities according to their properties.
@@ -115,7 +115,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> update(final List<Entity> entities) throws RemoteException, DatabaseException;
+  List<Entity> update(List<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Deletes the entities according to the given primary keys.
@@ -124,7 +124,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  void delete(final List<Entity.Key> entityKeys) throws RemoteException, DatabaseException;
+  void delete(List<Entity.Key> entityKeys) throws RemoteException, DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition
@@ -133,7 +133,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  void delete(final EntityCondition condition) throws RemoteException, DatabaseException;
+  void delete(EntityCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given property
@@ -145,7 +145,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
-  List<Object> selectValues(final String propertyId, final EntityCondition condition)
+  List<Object> selectValues(String propertyId, EntityCondition condition)
           throws RemoteException, DatabaseException;
 
   /**
@@ -160,7 +160,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  Entity selectSingle(final String entityId, final String propertyId, final Object value) throws RemoteException, DatabaseException;
+  Entity selectSingle(String entityId, String propertyId, Object value) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -171,7 +171,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  Entity selectSingle(final Entity.Key key) throws RemoteException, DatabaseException;
+  Entity selectSingle(Entity.Key key) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity according to the specified condition, throws a DatabaseException
@@ -183,7 +183,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  Entity selectSingle(final EntitySelectCondition condition) throws RemoteException, DatabaseException;
+  Entity selectSingle(EntitySelectCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Returns entities according to {@code keys}
@@ -192,7 +192,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> select(final List<Entity.Key> keys) throws RemoteException, DatabaseException;
+  List<Entity> select(List<Entity.Key> keys) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities according to the specified condition
@@ -201,7 +201,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> select(final EntitySelectCondition condition) throws RemoteException, DatabaseException;
+  List<Entity> select(EntitySelectCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities according to one property ({@code propertyId}), using {@code values} as a condition
@@ -212,7 +212,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> select(final String entityId, final String propertyId, final Object... values) throws RemoteException, DatabaseException;
+  List<Entity> select(String entityId, String propertyId, Object... values) throws RemoteException, DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIds
@@ -221,7 +221,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws RemoteException, DatabaseException;
+  Map<String, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Selects the number of rows returned according to the given condition
@@ -230,7 +230,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  int selectRowCount(final EntityCondition condition) throws RemoteException, DatabaseException;
+  int selectRowCount(EntityCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Takes a ReportWrapper object using a JDBC datasource and returns an initialized ReportResult object
@@ -241,7 +241,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws RemoteException in case of a remote exception
    * @see org.jminor.common.db.reports.ReportWrapper#fillReport(java.sql.Connection)
    */
-  ReportResult fillReport(final ReportWrapper reportWrapper) throws RemoteException, DatabaseException, ReportException;
+  ReportResult fillReport(ReportWrapper reportWrapper) throws RemoteException, DatabaseException, ReportException;
 
   /**
    * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyId}
@@ -252,7 +252,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws RemoteException, DatabaseException;
+  void writeBlob(Entity.Key primaryKey, String blobPropertyId, byte[] blobData) throws RemoteException, DatabaseException;
 
   /**
    * Reads the blob specified by the property identified by {@code propertyId} from the given entity
@@ -262,5 +262,5 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws RemoteException, DatabaseException;
+  byte[] readBlob(Entity.Key primaryKey, String blobPropertyId) throws RemoteException, DatabaseException;
 }

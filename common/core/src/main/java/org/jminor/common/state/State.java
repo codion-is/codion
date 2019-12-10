@@ -22,7 +22,7 @@ public interface State extends StateObserver {
   /**
    * @param value the new active state of this State instance
    */
-  void set(final boolean value);
+  void set(boolean value);
 
   /**
    * @return an StateObserver notified each time the state changes
@@ -43,12 +43,12 @@ public interface State extends StateObserver {
     /**
      * @param state the state to add to this aggregate state
      */
-    void addState(final StateObserver state);
+    void addState(StateObserver state);
 
     /**
      * @param state the state to remove from this aggregate state
      */
-    void removeState(final StateObserver state);
+    void removeState(StateObserver state);
   }
 
   /**
@@ -64,6 +64,6 @@ public interface State extends StateObserver {
      * Adding an active state deactivates all other states in the group.
      * @param state the State to add
      */
-    void addState(final State state);
+    void addState(State state);
   }
 }

@@ -21,58 +21,58 @@ public interface EntityEditObserver {
    * @param entityId the type of entity to listen for
    * @param listener the listener
    */
-  void addInsertListener(final String entityId, final EventDataListener<List<Entity>> listener);
+  void addInsertListener(String entityId, EventDataListener<List<Entity>> listener);
 
   /**
    * Adds a update listener
    * @param entityId the type of entity to listen for
    * @param listener the listener
    */
-  void addUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener);
+  void addUpdateListener(String entityId, EventDataListener<Map<Entity.Key, Entity>> listener);
 
   /**
    * Adds a delete listener
    * @param entityId the type of entity to listen for
    * @param listener the listener
    */
-  void addDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener);
+  void addDeleteListener(String entityId, EventDataListener<List<Entity>> listener);
 
   /**
    * Removes the given listener
    * @param entityId the entity id
    * @param listener the listener to remove
    */
-  void removeInsertListener(final String entityId, final EventDataListener listener);
+  void removeInsertListener(String entityId, EventDataListener listener);
 
   /**
    * Removes the given listener
    * @param entityId the entity id
    * @param listener the listener to remove
    */
-  void removeUpdateListener(final String entityId, final EventDataListener listener);
+  void removeUpdateListener(String entityId, EventDataListener listener);
 
   /**
    * Removes the given listener
    * @param entityId the entity id
    * @param listener the listener to remove
    */
-  void removeDeleteListener(final String entityId, final EventDataListener listener);
+  void removeDeleteListener(String entityId, EventDataListener listener);
 
   /**
    * Notifies insert
    * @param insertedEntities the inserted entities
    */
-  void notifyInserted(final List<Entity> insertedEntities);
+  void notifyInserted(List<Entity> insertedEntities);
 
   /**
    * Notifies update
    * @param updatedEntities the updated entities mapped to their original primary key
    */
-  void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities);
+  void notifyUpdated(Map<Entity.Key, Entity> updatedEntities);
 
   /**
    * Notifies delete
    * @param deletedEntities the deleted entities
    */
-  void notifyDeleted(final List<Entity> deletedEntities);
+  void notifyDeleted(List<Entity> deletedEntities);
 }

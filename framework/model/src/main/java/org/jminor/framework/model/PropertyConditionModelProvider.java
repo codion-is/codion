@@ -19,7 +19,7 @@ public interface PropertyConditionModelProvider {
    * @return a {@link ColumnConditionModel} for the given property, null if searching
    * should not be allowed for this property
    */
-  ColumnConditionModel<ColumnProperty> initializePropertyConditionModel(final ColumnProperty property);
+  ColumnConditionModel<ColumnProperty> initializePropertyConditionModel(ColumnProperty property);
 
   /**
    * Initializes a {@link ColumnConditionModel} for the given property
@@ -29,5 +29,5 @@ public interface PropertyConditionModelProvider {
    * should not be allowed for this property
    */
   ColumnConditionModel<ForeignKeyProperty> initializeForeignKeyConditionModel(
-          final ForeignKeyProperty property, final EntityConnectionProvider connectionProvider);
+          ForeignKeyProperty property, EntityConnectionProvider connectionProvider);
 }

@@ -21,7 +21,7 @@ public interface ConnectionPoolProvider {
    * @return a connection pool based on the given user
    * @throws DatabaseException in case of an exception
    */
-  ConnectionPool createConnectionPool(final User user, final Database database) throws DatabaseException;
+  ConnectionPool createConnectionPool(User user, Database database) throws DatabaseException;
 
   static ConnectionPoolProvider getConnectionPoolProvider(final String classname) {
     final ServiceLoader<ConnectionPoolProvider> loader = ServiceLoader.load(ConnectionPoolProvider.class);

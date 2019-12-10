@@ -19,5 +19,5 @@ public interface CredentialsService extends Remote {
    * @return the user credentials associated with the given token, null if expired or invalid
    * @throws RemoteException in case of a communication error
    */
-  User getUser(final UUID authenticationToken) throws RemoteException;
+  User getUser(UUID authenticationToken) throws RemoteException;
 }

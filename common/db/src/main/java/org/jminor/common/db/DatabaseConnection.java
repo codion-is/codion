@@ -40,7 +40,7 @@ public interface DatabaseConnection extends AutoCloseable {
    * transaction checking is performed, it is simply used 'as is'
    * @param connection the JDBC connection
    */
-  void setConnection(final Connection connection);
+  void setConnection(Connection connection);
 
   /**
    * Performs the given query and returns the result as an integer
@@ -48,7 +48,7 @@ public interface DatabaseConnection extends AutoCloseable {
    * @return the first record in the result as a integer
    * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
    */
-  int queryInteger(final String sql) throws SQLException;
+  int queryInteger(String sql) throws SQLException;
 
   /**
    * Performs the given query and returns the result as a long
@@ -56,7 +56,7 @@ public interface DatabaseConnection extends AutoCloseable {
    * @return the first record in the result as a long
    * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
    */
-  long queryLong(final String sql) throws SQLException;
+  long queryLong(String sql) throws SQLException;
 
   /**
    * Begins a transaction on this connection, to end the transaction use {@link #commitTransaction()} or {@link #rollbackTransaction()}.
@@ -113,7 +113,7 @@ public interface DatabaseConnection extends AutoCloseable {
   /**
    * @param methodLogger the MethodLogger to use
    */
-  void setMethodLogger(final MethodLogger methodLogger);
+  void setMethodLogger(MethodLogger methodLogger);
 
   /**
    * @return the MethodLogger being used

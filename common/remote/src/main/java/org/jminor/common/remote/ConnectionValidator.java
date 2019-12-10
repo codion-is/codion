@@ -20,5 +20,5 @@ public interface ConnectionValidator {
    * @param connectionRequest the connection to validate
    * @throws ConnectionValidationException in case the validation fails
    */
-  void validate(final ConnectionRequest connectionRequest) throws ConnectionValidationException;
+  void validate(ConnectionRequest connectionRequest) throws ConnectionValidationException;
 }

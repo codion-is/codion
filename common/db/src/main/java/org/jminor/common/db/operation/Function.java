@@ -20,5 +20,5 @@ public interface Function<C> extends Operation {
    * @return the function return arguments
    * @throws DatabaseException in case of an exception during the execution
    */
-  List execute(final C connection, final Object... arguments) throws DatabaseException;
+  List execute(C connection, Object... arguments) throws DatabaseException;
 }
