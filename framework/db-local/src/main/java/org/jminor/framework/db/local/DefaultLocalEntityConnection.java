@@ -389,7 +389,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), deleteSQL, whereCondition.getValues(), e, null), e);
+        LOG.error(createLogMessage(getUser(), deleteSQL,
+                whereCondition == null ? emptyList() : whereCondition.getValues(), e, null), e);
         throw translateDeleteSQLException(e);
       }
       finally {
