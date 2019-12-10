@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -201,24 +200,6 @@ public final class Util {
    */
   public static double roundDouble(final double d, final int places) {
     return Math.round(d * Math.pow(TEN, places)) / Math.pow(TEN, places);
-  }
-
-  /**
-   * Closes the given Closeable instances, swallowing any Exceptions that occur
-   * @param closeables the closeables to close
-   */
-  public static void closeSilently(final Closeable... closeables) {
-    if (closeables == null) {
-      return;
-    }
-    for (final Closeable closeable : closeables) {
-      try {
-        if (closeable != null) {
-          closeable.close();
-        }
-      }
-      catch (final Exception ignored) {/*ignored*/}
-    }
   }
 
   /**

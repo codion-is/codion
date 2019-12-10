@@ -42,7 +42,7 @@ public class TrackTablePanel extends EntityTablePanel {
     final SwingEntityTableModel tableModel = getEntityTableModel();
 
     final BigDecimal increase = getAmountFromUser();
-    final List<Object> trackIds = Entities.getValues(TRACK_TRACKID,
+    final List<Long> trackIds = Entities.getValues(TRACK_TRACKID,
             tableModel.getSelectionModel().getSelectedItems());
 
     final List<Entity> result = tableModel.getConnectionProvider().getConnection()
