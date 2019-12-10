@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.DateFormats;
+import org.jminor.common.DateParser;
 import org.jminor.common.Formats;
 import org.jminor.common.Item;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
@@ -525,10 +525,10 @@ public final class UiValues {
 
   private static final class TemporalUiValue<T extends Temporal> extends TextUIValue<T> {
     private final DateTimeFormatter formatter;
-    private final DateFormats.DateParser<T> dateParser;
+    private final DateParser<T> dateParser;
 
     private TemporalUiValue(final JFormattedTextField textComponent, final String dateFormat,
-                            final boolean updateOnKeystroke, final DateFormats.DateParser<T> dateParser) {
+                            final boolean updateOnKeystroke, final DateParser<T> dateParser) {
       super(textComponent, null, updateOnKeystroke);
       this.formatter = DateTimeFormatter.ofPattern(dateFormat);
       this.dateParser = dateParser;

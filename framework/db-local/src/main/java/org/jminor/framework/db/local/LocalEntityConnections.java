@@ -69,7 +69,7 @@ public final class LocalEntityConnections {
   }
 
   /**
-   * A {@link MethodLogger.ArgumentStringProvider} implementation tailored for EntityConnections
+   * An implementation tailored for EntityConnections.
    */
   private static final class EntityArgumentStringProvider extends MethodLogger.DefaultArgumentStringProvider {
 
@@ -80,7 +80,7 @@ public final class LocalEntityConnections {
     }
 
     @Override
-    public String toString(final Object argument) {
+    public String apply(final Object argument) {
       if (argument == null) {
         return "";
       }

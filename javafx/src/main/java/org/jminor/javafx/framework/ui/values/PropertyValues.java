@@ -3,7 +3,7 @@
  */
 package org.jminor.javafx.framework.ui.values;
 
-import org.jminor.common.DateFormats;
+import org.jminor.common.DateParser;
 import org.jminor.common.Item;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Value;
@@ -317,9 +317,9 @@ public final class PropertyValues {
   private static final class DateConverter<T extends Temporal> extends StringConverter<T> {
 
     private final DateTimeFormatter dateFormatter;
-    private final DateFormats.DateParser<T> parser;
+    private final DateParser<T> parser;
 
-    private DateConverter(final DateTimeFormatter dateFormatter, final DateFormats.DateParser<T> parser) {
+    private DateConverter(final DateTimeFormatter dateFormatter, final DateParser<T> parser) {
       this.dateFormatter = dateFormatter;
       this.parser = parser;
     }

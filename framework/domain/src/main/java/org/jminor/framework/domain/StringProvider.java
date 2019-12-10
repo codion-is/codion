@@ -41,7 +41,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
   /**
    * Holds the ValueProviders used when constructing the String representation
    */
-  private final List<ValueProvider> valueProviders = new ArrayList<>();
+  private final List<Function<Entity, String>> valueProviders = new ArrayList<>();
 
   /**
    * Instantiates a new {@link StringProvider} instance
@@ -56,12 +56,16 @@ public final class StringProvider implements Function<Entity, String>, Serializa
     addValue(propertyId);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns a String representation of the given entity
+   * @param entity the entity, may not be null
+   * @return a String representation of the entity
+   */
   @Override
   public String apply(final Entity entity) {
     Objects.requireNonNull(entity, "entity");
 
-    return valueProviders.stream().map(valueProvider -> valueProvider.toString(entity)).collect(joining());
+    return valueProviders.stream().map(valueProvider -> valueProvider.apply(entity)).collect(joining());
   }
 
   /**
@@ -112,15 +116,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
     return this;
   }
 
-  private interface ValueProvider extends Serializable {
-    /**
-     * @param entity the entity
-     * @return a String representation of a property value from the given entity
-     */
-    String toString(final Entity entity);
-  }
-
-  private static final class FormattedValueProvider implements ValueProvider {
+  private static final class FormattedValueProvider implements Function<Entity, String>, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -133,7 +129,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
     }
 
     @Override
-    public String toString(final Entity entity) {
+    public String apply(final Entity entity) {
       if (entity.isNull(propertyId)) {
         return "";
       }
@@ -142,7 +138,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
     }
   }
 
-  private static final class ForeignKeyValueProvider implements ValueProvider {
+  private static final class ForeignKeyValueProvider implements Function<Entity, String>, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -155,7 +151,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
     }
 
     @Override
-    public String toString(final Entity entity) {
+    public String apply(final Entity entity) {
       if (entity.isNull(foreignKeyPropertyId)) {
         return "";
       }
@@ -164,7 +160,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
     }
   }
 
-  private static final class StringValueProvider implements ValueProvider {
+  private static final class StringValueProvider implements Function<Entity, String>, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -175,12 +171,12 @@ public final class StringProvider implements Function<Entity, String>, Serializa
     }
 
     @Override
-    public String toString(final Entity entity) {
+    public String apply(final Entity entity) {
       return entity.getAsString(propertyId);
     }
   }
 
-  private static final class StaticTextProvider implements ValueProvider {
+  private static final class StaticTextProvider implements Function<Entity, String>, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -191,7 +187,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
     }
 
     @Override
-    public String toString(final Entity entity) {
+    public String apply(final Entity entity) {
       return text;
     }
   }

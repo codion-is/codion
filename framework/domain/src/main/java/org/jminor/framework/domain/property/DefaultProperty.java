@@ -5,6 +5,7 @@ package org.jminor.framework.domain.property;
 
 import org.jminor.common.Formats;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.text.DecimalFormat;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.function.Supplier;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
@@ -25,7 +27,7 @@ abstract class DefaultProperty implements Property {
 
   private static final long serialVersionUID = 1;
 
-  private static final ValueProvider DEFAULT_VALUE_PROVIDER = new NullDefaultValueProvider();
+  private static final Supplier<Object> DEFAULT_VALUE_PROVIDER = new NullDefaultValueProvider();
 
   /**
    * The ID of the entity this property is associated with
@@ -67,7 +69,7 @@ abstract class DefaultProperty implements Property {
   /**
    * The default value provider for this property
    */
-  private ValueProvider defaultValueProvider = DEFAULT_VALUE_PROVIDER;
+  private Supplier<Object> defaultValueProvider = DEFAULT_VALUE_PROVIDER;
 
   /**
    * True if the value of this property is allowed to be null
@@ -304,7 +306,7 @@ abstract class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final Object getDefaultValue() {
-    return this.defaultValueProvider.getValue();
+    return this.defaultValueProvider.get();
   }
 
   /** {@inheritDoc} */
@@ -487,7 +489,7 @@ abstract class DefaultProperty implements Property {
     }
   }
 
-  private static class DefaultValueProvider implements ValueProvider {
+  private static class DefaultValueProvider implements Supplier<Object>, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -498,7 +500,7 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public Object getValue() {
+    public Object get() {
       return defaultValue;
     }
   }
@@ -559,9 +561,9 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public Property.Builder setDefaultValueProvider(final ValueProvider provider) {
+    public Property.Builder setDefaultValueProvider(final Supplier<Object> provider) {
       if (provider != null) {
-        property.validateType(provider.getValue());
+        property.validateType(provider.get());
       }
       property.defaultValueProvider = provider == null ? DEFAULT_VALUE_PROVIDER : provider;
       return this;
