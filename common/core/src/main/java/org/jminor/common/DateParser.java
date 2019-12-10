@@ -20,5 +20,5 @@ public interface DateParser<T extends Temporal> {
    * @return the Temporal value
    * @throws DateTimeParseException if unable to parse the text
    */
-  T parse(CharSequence text, DateTimeFormatter formatter) throws DateTimeParseException;
+  T parse(CharSequence text, DateTimeFormatter formatter);
 }

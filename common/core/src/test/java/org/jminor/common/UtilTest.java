@@ -5,7 +5,6 @@ package org.jminor.common;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -37,13 +36,6 @@ public final class UtilTest {
     assertEquals(Double.valueOf(5.12346), Double.valueOf(Util.roundDouble(d, 5)));
     assertEquals(Double.valueOf(5.123457), Double.valueOf(Util.roundDouble(d, 6)));
     assertEquals(Double.valueOf(5.1234567), Double.valueOf(Util.roundDouble(d, 7)));
-  }
-
-  @Test
-  public void closeSilently() {
-    Util.closeSilently((Closeable) null);
-    Util.closeSilently((Closeable[]) null);
-    Util.closeSilently(null, null);
   }
 
   @Test

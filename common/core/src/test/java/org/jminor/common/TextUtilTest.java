@@ -77,30 +77,6 @@ public final class TextUtilTest {
   }
 
   @Test
-  public void getDouble() throws Exception {
-    assertEquals(Double.valueOf(4.22), TextUtil.getDouble("4,22"), "getDouble should work with comma");
-    assertEquals(Double.valueOf(4.22), TextUtil.getDouble("4.22"), "getDouble should work with period");
-    assertEquals(Double.valueOf(-1), TextUtil.getDouble("-"), "getDouble should work with single minus sign");
-    assertNull(TextUtil.getDouble(""), "getDouble should work with an empty string");
-  }
-
-  @Test
-  public void getInt() throws Exception {
-    assertEquals(Integer.valueOf(4), TextUtil.getInt("4"), "getInt should work with a digit string");
-    assertEquals(Integer.valueOf(-1), TextUtil.getInt("-"), "getInt should work with single minus sign");
-    assertNull(TextUtil.getInt(""), "getInt should work with an empty string");
-    assertNull(TextUtil.getInt(null), "getInt should work with a null value");
-  }
-
-  @Test
-  public void getLong() throws Exception {
-    assertEquals(Long.valueOf(4), TextUtil.getLong("4"), "getLong should work with a digit string");
-    assertEquals(Long.valueOf(-1), TextUtil.getLong("-"), "getLong should work with single minus sign");
-    assertNull(TextUtil.getLong(""), "getLong should work with an empty string");
-    assertNull(TextUtil.getLong(null), "getLong should work with a null value");
-  }
-
-  @Test
   public void getDelimitedString() {
     final String result = "test\ttest2" + Util.LINE_SEPARATOR + "data1\tdata2" + Util.LINE_SEPARATOR + "data3\tdata4";
     assertEquals(result, TextUtil.getDelimitedString(new String[][] {new String[] {"test", "test2"}},

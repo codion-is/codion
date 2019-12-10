@@ -55,68 +55,6 @@ public final class TextUtil {
   private TextUtil() {}
 
   /**
-   * Parses an Integer from the given String.
-   * A null or empty String results in null, "-" in -1.
-   * @param text the text to parse
-   * @return an Integer based on the given text
-   */
-  public static Integer getInt(final String text) {
-    if (text == null) {
-      return null;
-    }
-
-    final String noGrouping = text.replace(".", "").replace(",", "");
-    if (noGrouping.length() == 0) {
-      return null;
-    }
-    if ("-".equals(noGrouping)) {
-      return -1;
-    }
-
-    return Integer.parseInt(noGrouping);
-  }
-
-  /**
-   * Parses a Double from the given String.
-   * A null or empty String results in null, "-" in -1.
-   * @param text the text to parse
-   * @return a Double based on the given text
-   */
-  public static Double getDouble(final String text) {
-    if (nullOrEmpty(text)) {
-      return null;
-    }
-
-    if ("-".equals(text)) {
-      return -1d;
-    }
-
-    return Double.parseDouble(text.replace(',', '.'));
-  }
-
-  /**
-   * Parses a Long from the given String.
-   * A null or empty String results in null, "-" in -1.
-   * @param text the text to parse
-   * @return a Long based on the given text
-   */
-  public static Long getLong(final String text) {
-    if (text == null) {
-      return null;
-    }
-
-    final String noGrouping = text.replace(".", "").replace(",", "");
-    if (noGrouping.length() == 0) {
-      return null;
-    }
-    if ("-".equals(noGrouping)) {
-      return -1L;
-    }
-
-    return Long.parseLong(noGrouping);
-  }
-
-  /**
    * Creates a random string from alphanumeric uppercase characters
    * @param minLength the minimum length
    * @param maxLength the maximum length
