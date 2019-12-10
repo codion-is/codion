@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -100,8 +101,8 @@ public final class Util {
    * }
    *
    * List&#60;Person&#62; persons = ...;
-   * MapKeyProvider ageKeyProvider = new MapKeyProvider&#60;Integer, Person&#62;() {
-   *   public Integer getKey(Person person) {
+   * Function<Person, Integer> ageKeyProvider = new Function&#60;Person, Integer&#62;() {
+   *   public Integer apply(Person person) {
    *     return person.getAge();
    *   }
    * };
@@ -113,12 +114,12 @@ public final class Util {
    * @param <V> the value type
    * @return a LinkedHashMap with the values mapped to their respective key values, respecting the iteration order of the given collection
    */
-  public static <K, V> LinkedHashMap<K, List<V>> map(final Collection<V> values, final MapKeyProvider<K, V> keyProvider) {
+  public static <K, V> LinkedHashMap<K, List<V>> map(final Collection<V> values, final Function<V, K> keyProvider) {
     requireNonNull(values, "values");
     requireNonNull(keyProvider, "keyProvider");
     final LinkedHashMap<K, List<V>> map = new LinkedHashMap<>(values.size());
     for (final V value : values) {
-      map.computeIfAbsent(keyProvider.getKey(value), k -> new ArrayList<>()).add(value);
+      map.computeIfAbsent(keyProvider.apply(value), k -> new ArrayList<>()).add(value);
     }
 
     return map;
@@ -301,23 +302,10 @@ public final class Util {
   }
 
   /**
-   * Provides objects of type K, derived from a value of type V, for hashing said value via .hashCode().
-   * @param <K> the type of the object to use for key generation via .hashCode()
-   * @param <V> the value type
-   * @see Util#map(java.util.Collection, MapKeyProvider)
-   */
-  public interface MapKeyProvider<K, V> {
-    /**
-     * @param value the value being mapped
-     * @return a map key for the given value
-     */
-    K getKey(final V value);
-  }
-
-  /**
    * Writes a property value
    */
   public interface PropertyWriter {
+
     /**
      * Writes the given value.
      * @param property the property

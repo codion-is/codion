@@ -10,15 +10,16 @@ import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
 import static org.jminor.common.Util.nullOrEmpty;
 
 /**
@@ -27,27 +28,9 @@ import static org.jminor.common.Util.nullOrEmpty;
  */
 public final class MethodLogger {
 
-  /**
-   * Provides String representations of method arguments
-   */
-  public interface ArgumentStringProvider {
-
-    /**
-     * @param argument the argument
-     * @return a String representation of the given argument
-     */
-    String toString(final Object argument);
-
-    /**
-     * @param arguments the arguments
-     * @return a String representation of the given arguments array
-     */
-    String toString(final Object[] arguments);
-  }
-
   private final Deque<Entry> callStack = new LinkedList<>();
   private final LinkedList<Entry> entries = new LinkedList<>();
-  private final ArgumentStringProvider argumentStringProvider;
+  private final Function<Object, String> argumentStringProvider;
   private final int maxSize;
 
   private boolean enabled;
@@ -67,7 +50,7 @@ public final class MethodLogger {
    * @param enabled true if this logger should be enabled
    * @param argumentStringProvider the ArgumentStringProvider
    */
-  public MethodLogger(final int maxSize, final boolean enabled, final ArgumentStringProvider argumentStringProvider) {
+  public MethodLogger(final int maxSize, final boolean enabled, final Function<Object, String> argumentStringProvider) {
     this.maxSize = maxSize;
     this.enabled = enabled;
     this.argumentStringProvider = argumentStringProvider;
@@ -86,7 +69,7 @@ public final class MethodLogger {
    */
   public synchronized void logAccess(final String method, final Object[] arguments) {
     if (enabled) {
-      callStack.push(new Entry(method, argumentStringProvider.toString(arguments)));
+      callStack.push(new Entry(method, argumentStringProvider.apply(arguments)));
     }
   }
 
@@ -192,24 +175,28 @@ public final class MethodLogger {
   }
 
   /**
-   * A default {@link ArgumentStringProvider} implementation based on {@link String#valueOf(Object)}
+   * Provides String represenations of method arguments.
    */
-  public static class DefaultArgumentStringProvider implements ArgumentStringProvider {
+  public static class DefaultArgumentStringProvider implements Function<Object, String> {
 
-    /** {@inheritDoc} */
     @Override
-    public String toString(final Object argument) {
-      return String.valueOf(argument);
+    public String apply(final Object object) {
+      if (object == null) {
+        return "";
+      }
+      if (object.getClass().isArray()) {
+        return toString((Object[]) object);
+      }
+
+      return object.toString();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public final String toString(final Object[] arguments) {
+    protected static String toString(final Object[] arguments) {
       if (arguments == null || arguments.length == 0) {
         return "";
       }
 
-      return Arrays.stream(arguments).map(this::toString).collect(Collectors.joining(", "));
+      return stream(arguments).map(Object::toString).collect(joining(", "));
     }
   }
 
