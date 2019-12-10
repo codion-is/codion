@@ -384,6 +384,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
+   * @throws org.jminor.common.db.exception.UpdateException in case the active entity is not modified
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   Entity update() throws DatabaseException, ValidationException;
