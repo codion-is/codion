@@ -5441,3 +5441,4 @@
   DateFormats.DateParser moved up to package level
   ExceptionHandler removed, replaced with Consumer<Throwable>
   MethodLogger.ArgumentStringProvider and Util.MapKeyProvider removed, replaced with Function
+  StringProvider.ValueProvider removed, replaced with Function<Entity, String>
