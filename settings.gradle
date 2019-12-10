@@ -114,6 +114,9 @@ project(':jminor-plugin-jackson-json').projectDir = file('plugins/jackson-json')
 include 'jminor-plugin-jasperreports'
 project(':jminor-plugin-jasperreports').projectDir = file('plugins/jasperreports')
 
+include 'jminor-plugin-jul-proxy'
+project(':jminor-plugin-jul-proxy').projectDir = file('plugins/jul-proxy')
+
 include 'jminor-plugin-json'
 project(':jminor-plugin-json').projectDir = file('plugins/json')
 

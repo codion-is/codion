@@ -5432,3 +5432,4 @@
   EntityEditModel.InsertEvent, UpdateEvent and DeleteEvent removed
   PropertyComboBoxModel removed
   EntityEditModel.update(), insert() and delete() now return a single entity instead of a list
+  Java.util.logging JulProxy plugin added
