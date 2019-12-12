@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.world.beans.ui;
+package org.jminor.framework.demos.world.ui;
 
 import org.jminor.framework.demos.world.domain.World;
 import org.jminor.swing.framework.model.SwingEntityEditModel;

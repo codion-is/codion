@@ -1,14 +1,11 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.world.client.ui;
+package org.jminor.framework.demos.world.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.world.beans.ui.CityEditPanel;
-import org.jminor.framework.demos.world.beans.ui.CountryEditPanel;
-import org.jminor.framework.demos.world.beans.ui.CountryLanguageEditPanel;
 import org.jminor.framework.demos.world.domain.World;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.textfield.NumberField;

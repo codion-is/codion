@@ -21,22 +21,22 @@ include::{dir-test-source}/org/jminor/framework/demos/world/domain/WorldTest.jav
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CityEditPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/world/ui/CityEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CountryEditPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/world/ui/CountryEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CountryLanguageEditPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/world/ui/CountryLanguageEditPanel.java[lines=4..-1]
 ----
 
 == Main application panel
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/client/ui/WorldAppPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/world/ui/WorldAppPanel.java[lines=4..-1]
 ----
