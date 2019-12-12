@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.beans;
+package org.jminor.framework.demos.empdept.model;
 
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.db.EntityConnectionProvider;

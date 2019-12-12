@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.beans.ui;
+package org.jminor.framework.demos.empdept.ui;
 
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.demos.empdept.model.EmployeeEditModel;
 import org.jminor.swing.framework.ui.test.EntityEditPanelTestUnit;
 
 import org.junit.jupiter.api.Test;

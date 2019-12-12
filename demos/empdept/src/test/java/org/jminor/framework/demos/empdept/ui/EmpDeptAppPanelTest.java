@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.client.ui;
+package org.jminor.framework.demos.empdept.ui;
 
 import org.jminor.common.User;
 import org.jminor.swing.framework.ui.test.EntityApplicationPanelTestUnit;

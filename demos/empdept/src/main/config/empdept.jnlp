@@ -22,5 +22,5 @@
     <property name="jminor.report.path" value="reports/demos" />
   </resources>
 
-  <application-desc main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
+  <application-desc main-class="org.jminor.framework.demos.empdept.ui.EmpDeptAppPanel"/>
 </jnlp>

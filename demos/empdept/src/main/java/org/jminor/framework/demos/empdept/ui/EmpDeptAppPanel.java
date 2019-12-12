@@ -1,18 +1,15 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.client.ui;
+package org.jminor.framework.demos.empdept.ui;
 
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnSummary;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
-import org.jminor.framework.demos.empdept.beans.ui.DepartmentEditPanel;
-import org.jminor.framework.demos.empdept.beans.ui.DepartmentTablePanel;
-import org.jminor.framework.demos.empdept.beans.ui.EmployeeEditPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.demos.empdept.model.EmployeeEditModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.plugin.json.EntityJSONParser;
 import org.jminor.swing.common.ui.UiUtil;

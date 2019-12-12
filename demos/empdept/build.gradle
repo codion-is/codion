@@ -39,7 +39,7 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+ext.mainClass = 'org.jminor.framework.demos.empdept.ui.EmpDeptAppPanel'
 ext.loadTestMainClass = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
 
 test {
