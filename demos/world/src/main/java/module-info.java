@@ -1,6 +1,6 @@
 module org.jminor.framework.demos.world {
   requires org.jminor.swing.framework.ui;
 
-  exports org.jminor.framework.demos.world.beans.ui
+  exports org.jminor.framework.demos.world.ui
           to org.jminor.swing.framework.ui;
 }

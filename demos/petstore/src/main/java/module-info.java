@@ -3,6 +3,6 @@ module org.jminor.framework.demos.petstore {
   requires org.jminor.swing.framework.tools;
   requires org.jminor.swing.framework.ui;
 
-  exports org.jminor.framework.demos.petstore.beans.ui
+  exports org.jminor.framework.demos.petstore.ui
           to org.jminor.swing.framework.ui;
 }

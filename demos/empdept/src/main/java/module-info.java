@@ -13,7 +13,7 @@ module org.jminor.framework.demos.empdept {
 
   exports org.jminor.framework.demos.empdept.domain
           to org.jminor.framework.db.local;
-  exports org.jminor.framework.demos.empdept.beans
+  exports org.jminor.framework.demos.empdept.model
           to org.jminor.swing.framework.model;
   exports org.jminor.framework.demos.empdept.javafx
           to javafx.graphics;

@@ -20,11 +20,11 @@ dependencies {
 }
 
 ext {
-    mainClass = "$moduleName/org.jminor.framework.demos.world.client.ui.WorldAppPanel"
+    mainClass = "$moduleName/org.jminor.framework.demos.world.ui.WorldAppPanel"
     testAddModules = ['org.jminor.framework.db.test', 'org.jminor.swing.framework.ui.test']
     testAddReads = ['org.jminor.framework.demos.world': 'org.jminor.framework.db.test,org.jminor.swing.framework.ui.test']
     testAddExports = [
-            'org.jminor.framework.demos.world/org.jminor.framework.demos.world.client.ui': 'org.jminor.swing.framework.ui.test',
+            'org.jminor.framework.demos.world/org.jminor.framework.demos.world.ui': 'org.jminor.swing.framework.ui.test',
             'org.jminor.framework.demos.world/org.jminor.framework.demos.world.domain': 'org.jminor.framework.db.local',
             'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
             'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'

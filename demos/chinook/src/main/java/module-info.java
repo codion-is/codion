@@ -9,7 +9,7 @@ module org.jminor.framework.demos.chinook {
   requires org.jminor.plugin.imagepanel;
   requires jasperreports;
 
-  exports org.jminor.framework.demos.chinook.beans.ui
+  exports org.jminor.framework.demos.chinook.ui
           to org.jminor.swing.framework.ui;
   exports org.jminor.framework.demos.chinook.domain.impl
           to org.jminor.framework.db.local;
