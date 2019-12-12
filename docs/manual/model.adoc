@@ -1,6 +1,8 @@
-= The basics
+= Model layer
 :dir-source: ../../demos/manual/src/main/java
 :url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+
+The model layer in a JMinor application contains the business logic, most of the events and application state.
 
 == Common classes
 
