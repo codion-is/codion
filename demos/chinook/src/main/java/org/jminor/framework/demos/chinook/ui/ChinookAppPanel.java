@@ -1,27 +1,14 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.client.ui;
+package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.chinook.beans.ui.AlbumEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.ArtistEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.CustomerEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.CustomerTablePanel;
-import org.jminor.framework.demos.chinook.beans.ui.EmployeeEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.GenreEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.InvoiceEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.InvoiceLineEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.MediaTypeEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.PlaylistEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
-import org.jminor.framework.demos.chinook.beans.ui.TrackTablePanel;
-import org.jminor.framework.demos.chinook.client.ChinookApplicationModel;
+import org.jminor.framework.demos.chinook.model.ChinookApplicationModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;

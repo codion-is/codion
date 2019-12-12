@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.beans.ui;
+package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.plugin.imagepanel.NavigableImagePanel;
 import org.jminor.swing.common.ui.UiUtil;

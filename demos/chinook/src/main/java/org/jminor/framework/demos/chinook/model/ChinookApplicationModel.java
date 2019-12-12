@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.client;
+package org.jminor.framework.demos.chinook.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -16,7 +16,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     super(connectionProvider);
     final SwingEntityModel artistModel = new SwingEntityModel(T_ARTIST, connectionProvider);
     final SwingEntityModel albumModel = new SwingEntityModel(T_ALBUM, connectionProvider);
-    final SwingEntityModel trackModel = new SwingEntityModel(T_TRACK, connectionProvider);
+    final SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
 
     albumModel.addDetailModel(trackModel);
     artistModel.addDetailModel(albumModel);

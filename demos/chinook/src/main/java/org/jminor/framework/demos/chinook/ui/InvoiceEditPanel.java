@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.beans.ui;
+package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.domain.property.Property;

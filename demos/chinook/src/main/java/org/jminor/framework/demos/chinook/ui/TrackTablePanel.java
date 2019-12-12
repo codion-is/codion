@@ -1,12 +1,11 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.beans.ui;
+package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.demos.chinook.model.TrackTableModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
@@ -18,9 +17,6 @@ import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import static org.jminor.framework.demos.chinook.domain.Chinook.F_RAISE_PRICE;
-import static org.jminor.framework.demos.chinook.domain.Chinook.TRACK_TRACKID;
 
 public class TrackTablePanel extends EntityTablePanel {
 
@@ -39,15 +35,9 @@ public class TrackTablePanel extends EntityTablePanel {
   }
 
   private void raisePriceOfSelected() throws DatabaseException {
-    final SwingEntityTableModel tableModel = getEntityTableModel();
+    final TrackTableModel tableModel = (TrackTableModel) getEntityTableModel();
 
-    final BigDecimal increase = getAmountFromUser();
-    final List<Long> trackIds = Entities.getValues(TRACK_TRACKID,
-            tableModel.getSelectionModel().getSelectedItems());
-
-    final List<Entity> result = tableModel.getConnectionProvider().getConnection()
-            .executeFunction(F_RAISE_PRICE, trackIds, increase);
-    tableModel.replaceEntities(result);
+    tableModel.raisePriceOfSelected(getAmountFromUser());
   }
 
   private BigDecimal getAmountFromUser() {

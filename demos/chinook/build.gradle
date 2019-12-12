@@ -41,7 +41,7 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
+ext.mainClass = 'org.jminor.framework.demos.chinook.ui.ChinookAppPanel'
 ext.loadTestMainClass = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
 
 test {

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.beans.ui;
+package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.domain.Entities;
@@ -15,6 +15,7 @@ import org.jminor.swing.framework.ui.reporting.EntityReportUiUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.CUSTOMER_CUSTOMERID;
 
@@ -24,25 +25,23 @@ public class CustomerTablePanel extends EntityTablePanel {
     super(tableModel);
   }
 
-  public void viewCustomerReport() throws Exception {
-    if (getEntityTableModel().getSelectionModel().isSelectionEmpty()) {
-      return;
-    }
-
-    final String reportPath = ReportWrapper.getReportPath() + "/customer_report.jasper";
-    final Collection customerIDs =
-            Entities.getDistinctValues(CUSTOMER_CUSTOMERID, getEntityTableModel().getSelectionModel().getSelectedItems());
-    final HashMap<String, Object> reportParameters = new HashMap<>();
-    reportParameters.put("CUSTOMER_IDS", customerIDs);
-    EntityReportUiUtil.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
-            new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
-  }
-
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
-    printControlSet.add(Controls.control(this::viewCustomerReport, "Customer report"));
+    printControlSet.add(Controls.control(this::viewCustomerReport, "Customer report",
+            getTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()));
 
     return printControlSet;
+  }
+
+  private void viewCustomerReport() throws Exception {
+    final String reportPath = ReportWrapper.getReportPath() + "/customer_report.jasper";
+    final Collection<Integer> customerIDs = Entities.getDistinctValues(CUSTOMER_CUSTOMERID,
+            getEntityTableModel().getSelectionModel().getSelectedItems());
+    final Map<String, Object> reportParameters = new HashMap<>();
+    reportParameters.put("CUSTOMER_IDS", customerIDs);
+
+    EntityReportUiUtil.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
+            new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
   }
 }
