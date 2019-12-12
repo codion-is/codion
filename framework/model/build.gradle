@@ -49,6 +49,7 @@ task testJar(type: Jar, dependsOn: testClasses) {
                 "Implementation-Vendor": "JMinor",
                 "Implementation-Vendor-Id": "org.jminor",
                 "Implementation-URL": "http://jminor.org",
+                "Automatic-Module-Name": moduleName,
                 "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
                 "Built-By": System.getProperty("user.name")/*,
                 "Build-Time": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")*/)
