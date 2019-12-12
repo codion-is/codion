@@ -6,5 +6,5 @@ The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanelProvider.html[EntityP
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/client/ui/WorldAppPanel.java[tag=setupEntityPanelProviders]
+include::{dir-source}/org/jminor/framework/demos/world/ui/WorldAppPanel.java[tag=setupEntityPanelProviders]
 ----
