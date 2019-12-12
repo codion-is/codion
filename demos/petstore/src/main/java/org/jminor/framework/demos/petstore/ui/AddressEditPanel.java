@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petstore.beans.ui;
+package org.jminor.framework.demos.petstore.ui;
 
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.framework.model.SwingEntityEditModel;

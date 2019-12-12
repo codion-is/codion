@@ -1,19 +1,12 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petstore.client.ui;
+package org.jminor.framework.demos.petstore.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.petstore.beans.ui.AddressEditPanel;
-import org.jminor.framework.demos.petstore.beans.ui.CategoryEditPanel;
-import org.jminor.framework.demos.petstore.beans.ui.ContactInfoEditPanel;
-import org.jminor.framework.demos.petstore.beans.ui.ItemEditPanel;
-import org.jminor.framework.demos.petstore.beans.ui.ProductEditPanel;
-import org.jminor.framework.demos.petstore.beans.ui.TagEditPanel;
-import org.jminor.framework.demos.petstore.beans.ui.TagItemEditPanel;
-import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
+import org.jminor.framework.demos.petstore.model.PetstoreAppModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;

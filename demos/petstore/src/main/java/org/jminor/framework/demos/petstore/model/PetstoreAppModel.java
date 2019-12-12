@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petstore.client;
+package org.jminor.framework.demos.petstore.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;

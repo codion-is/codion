@@ -5445,4 +5445,4 @@
   Property.ValueProvider removed, replaced with Supplier<Object>
   Parameters in interfaces and abstract methods no longer final
   Code cleanup
-  Chinook demo code restructured, EmpDept demo code restructured
+  Chinook demo code restructured, EmpDept demo code restructured, Petstore demo code restructured
