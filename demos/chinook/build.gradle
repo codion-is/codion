@@ -49,7 +49,7 @@ dependencies {
 }
 
 ext {
-    mainClass = "$moduleName/org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"
+    mainClass = "$moduleName/org.jminor.framework.demos.chinook.ui.ChinookAppPanel"
     loadTestMainClass = "$moduleName/org.jminor.framework.demos.chinook.testing.ChinookLoadTest"
     testAddModules = ['org.jminor.framework.db.test']
     testAddReads = ['org.jminor.framework.demos.chinook': 'org.jminor.framework.db.test']

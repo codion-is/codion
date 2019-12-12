@@ -11,7 +11,7 @@ ui.background_image = jminor-getdown.png
 code = petstore.jar
 
 # The main entry point for the application
-class = org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel
+class = org.jminor.framework.demos.petstore.ui.PetstoreAppPanel
 
 allow_offline = true
 

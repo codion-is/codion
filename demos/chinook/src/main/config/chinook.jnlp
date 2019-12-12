@@ -22,5 +22,5 @@
     <property name="jminor.report.path" value="reports/demos" />
   </resources>
 
-  <application-desc main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
+  <application-desc main-class="org.jminor.framework.demos.chinook.ui.ChinookAppPanel"/>
 </jnlp>

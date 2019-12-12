@@ -6,13 +6,13 @@ NOTE: Most of the code used throughout this manual is available in the 'manual' 
 
 :leveloffset: 1
 
-include::{dir-manual}/basics.adoc[]
-
 include::{dir-manual}/domain-model.adoc[]
 
 include::{dir-manual}/entity-connection.adoc[]
 
 include::{dir-manual}/conditions.adoc[]
+
+include::{dir-manual}/model.adoc[]
 
 include::{dir-manual}/entity-model.adoc[]
 

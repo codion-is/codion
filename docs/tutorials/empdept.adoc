@@ -69,7 +69,7 @@ We must provide a constructor with a single *EntityConnectionProvider* parameter
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=17..23]
+include::{dir-source}/org/jminor/framework/demos/empdept/model/EmployeeEditModel.java[lines=17..23]
 ----
 
 At some point we are going to be editing the manager property of an employee which means we'll need a value list of managers. We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager property.
@@ -80,14 +80,14 @@ We start by calling the super class method which creates an unfiltered {url-java
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=24..42]
+include::{dir-source}/org/jminor/framework/demos/empdept/model/EmployeeEditModel.java[lines=24..42]
 ----
 
 Finally we bind a couple of events, for further information see <<{dir-manual}/manual.adoc#_event_binding, Manual#Event binding>>.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=44..61]
+include::{dir-source}/org/jminor/framework/demos/empdept/model/EmployeeEditModel.java[lines=44..61]
 ----
 
 == Application UI layer
@@ -98,14 +98,14 @@ A class extending *EntityEditPanel* must provide a constructor taking a single *
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/DepartmentEditPanel.java[lines=14..19]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/DepartmentEditPanel.java[lines=14..19]
 ----
 
 We override the *intializeUI* method to construct the actual UI, used for editing the department entity. The {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class provides methods for creating all the basic controls required, named *create...*, such as *createTextField(propertyId)* or *createForeignKeyComboBox(foreignKeyPropertyId)*.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/DepartmentEditPanel.java[lines=20..48]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/DepartmentEditPanel.java[lines=20..48]
 ----
 
 We extend *EntityTablePanel* for the department entity in order to provide a report print action.
@@ -114,35 +114,35 @@ A class extending *EntityTablePanel* must provide a constructor taking a single 
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/DepartmentTablePanel.java[lines=20..25]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/DepartmentTablePanel.java[lines=20..25]
 ----
 
 We create a method for viewing a report, which is called via an action we'll initialize in the next step. For further information about report viewing and printing see <<{dir-manual}/manual.adoc#_reporting_with_jasperreports, Manual#Reporting with JasperReports>>.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/DepartmentTablePanel.java[lines=26..37]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/DepartmentTablePanel.java[lines=26..37]
 ----
 
 Next we override *getPrintControls()* to add our report action to the popup print control set.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/DepartmentTablePanel.java[lines=39..50]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/DepartmentTablePanel.java[lines=39..50]
 ----
 
 For editing employee entities we create the *EmployeeEditPanel* class.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/EmployeeEditPanel.java[lines=16..21]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmployeeEditPanel.java[lines=16..21]
 ----
 
 All we have to do is override *initializeUI*.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/EmployeeEditPanel.java[lines=22..52]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmployeeEditPanel.java[lines=22..52]
 ----
 
 == Main application panel
@@ -151,56 +151,56 @@ We create a main application panel by extending {url-javadoc}/org/jminor/swing/f
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=33..57]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[lines=30..55]
 ----
 
 Next we add a method for importing a JSON text file, which we'll call via an action initialized in the next section.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=59..64]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[lines=57..62]
 ----
 
 We override *getToolsControlSet()* to add our import action to the Tools menu.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=66..72]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[lines=64..70]
 ----
 
 We implement *initializeApplicationModel()* by returning an instance of the *EmpDeptApplicationModel* class, which we'll define later.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=74..77]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[lines=72..75]
 ----
 
 We create a *main()* method for configuring and running the application. See <<{dir-technical}/client-configuration.adoc#_configuration, client configuration>> for what configuration is required for running the client.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=79..85]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[lines=77..84]
 ----
 
 We then define the *EmpDeptApplicationModel* class by extending *SwingEntityApplicationModel*.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=87..92]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[lines=86..91]
 ----
 
 Then we define a *EmployeeModelProvider* by extending *SwingEntityModelProvider*, in order to configure the table model after initialization.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=94..104]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[lines=93..103]
 ----
 
 We create a *EmployeePanelProvider* by extending *EntityPanelProvider*, in order to configure the table panel after initialization.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=106..115]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[lines=105..116]
 ----
 
 == Application load test
@@ -230,27 +230,27 @@ include::{dir-test-source}/org/jminor/framework/demos/empdept/domain/EmpDeptTest
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/empdept/model/EmployeeEditModel.java[lines=4..-1]
 ----
 
 === Application UI
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/DepartmentEditPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/DepartmentEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/DepartmentTablePanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/DepartmentTablePanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/EmployeeEditPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmployeeEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[lines=4..-1]
 ----

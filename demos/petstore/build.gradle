@@ -25,7 +25,7 @@ dependencies {
 }
 
 ext {
-    mainClass = "$moduleName/org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel"
+    mainClass = "$moduleName/org.jminor.framework.demos.petstore.ui.PetstoreAppPanel"
     loadTestMainClass = "$moduleName/org.jminor.framework.demos.petstore.testing.PetstoreLoadTest"
     testAddModules = ['org.jminor.framework.db.test']
     testAddReads = ['org.jminor.framework.demos.petstore': 'org.jminor.framework.db.test']
