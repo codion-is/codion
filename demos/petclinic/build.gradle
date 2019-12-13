@@ -1,0 +1,48 @@
+apply from: '../demos.gradle'
+
+dependencies {
+    implementation project(':jminor-swing-framework-ui')
+
+    runtimeOnly project(':jminor-plugin-logback-proxy')
+
+    runtimeOnly project(':jminor-framework-db-local')
+    runtimeOnly project(':jminor-framework-db-remote')
+    runtimeOnly project(':jminor-framework-db-http')
+
+    testImplementation project(':jminor-framework-domain-test')
+    testImplementation project(':jminor-swing-framework-ui-test')
+
+    runtimeOnly project(':jminor-dbms-h2database')
+    runtimeOnly "com.h2database:h2:${h2Version}"
+}
+
+ext.mainClass = 'org.jminor.framework.demos.petclinic.ui.PetclinicAppPanel'
+
+test {
+    systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
+    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.petstore.domain.impl.PetclinicImpl"
+}
+
+startScripts {
+    mainClassName = mainClass
+}
+
+clientRMIScript {
+    mainClassName = mainClass
+}
+
+clientHttpScript {
+    mainClassName = mainClass
+}
+
+runClientLocal {
+    main = mainClass
+}
+
+runClientRMI {
+    main = mainClass
+}
+
+runClientHttp {
+    main = mainClass
+}
