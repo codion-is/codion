@@ -8,8 +8,8 @@ import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
 
-import static org.jminor.framework.demos.petclinic.domain.Petclinic.VET_SPECIALTY_SPECIALTY_FK;
-import static org.jminor.framework.demos.petclinic.domain.Petclinic.VET_SPECIALTY_VET_FK;
+import static org.jminor.framework.demos.petclinic.domain.Clinic.VET_SPECIALTY_SPECIALTY_FK;
+import static org.jminor.framework.demos.petclinic.domain.Clinic.VET_SPECIALTY_VET_FK;
 
 public final class VetSpecialtyEditPanel extends EntityEditPanel {
 

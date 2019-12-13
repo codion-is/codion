@@ -4,49 +4,49 @@
 package org.jminor.framework.demos.petclinic.domain;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.demos.petclinic.domain.impl.PetclinicImpl;
+import org.jminor.framework.demos.petclinic.domain.impl.ClinicImpl;
 import org.jminor.framework.domain.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
-public final class PetclinicTest extends EntityTestUnit {
+public final class ClinicTest extends EntityTestUnit {
 
-  public PetclinicTest() {
-    super(PetclinicImpl.class.getName());
+  public ClinicTest() {
+    super(ClinicImpl.class.getName());
   }
 
   @Test
   void vet() throws DatabaseException {
-    testEntity(Petclinic.T_VET);
+    testEntity(Clinic.T_VET);
   }
 
   @Test
   void specialty() throws DatabaseException {
-    testEntity(Petclinic.T_SPECIALTY);
+    testEntity(Clinic.T_SPECIALTY);
   }
 
   @Test
   void vetSpecialty() throws DatabaseException {
-    testEntity(Petclinic.T_VET_SPECIALTY);
+    testEntity(Clinic.T_VET_SPECIALTY);
   }
 
   @Test
   void petType() throws DatabaseException {
-    testEntity(Petclinic.T_PET_TYPE);
+    testEntity(Clinic.T_PET_TYPE);
   }
 
   @Test
   void owner() throws DatabaseException {
-    testEntity(Petclinic.T_OWNER);
+    testEntity(Clinic.T_OWNER);
   }
 
   @Test
   void pet() throws DatabaseException {
-    testEntity(Petclinic.T_PET);
+    testEntity(Clinic.T_PET);
   }
 
   @Test
   void visit() throws DatabaseException {
-    testEntity(Petclinic.T_VISIT);
+    testEntity(Clinic.T_VISIT);
   }
 }

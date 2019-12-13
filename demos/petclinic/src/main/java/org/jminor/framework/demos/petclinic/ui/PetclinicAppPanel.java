@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.demos.petclinic.domain.Petclinic.*;
+import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 

@@ -8,7 +8,7 @@ import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
 
-import static org.jminor.framework.demos.petclinic.domain.Petclinic.SPECIALTY_NAME;
+import static org.jminor.framework.demos.petclinic.domain.Clinic.SPECIALTY_NAME;
 
 public final class SpecialtyEditPanel extends EntityEditPanel {
 

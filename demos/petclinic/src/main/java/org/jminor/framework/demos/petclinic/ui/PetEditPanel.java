@@ -13,7 +13,7 @@ import javax.swing.Action;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 
-import static org.jminor.framework.demos.petclinic.domain.Petclinic.*;
+import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
 
 public final class PetEditPanel extends EntityEditPanel {
 

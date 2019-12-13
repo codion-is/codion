@@ -8,13 +8,13 @@ import org.jminor.framework.domain.StringProvider;
 
 import java.sql.Types;
 
-import static org.jminor.framework.demos.petclinic.domain.Petclinic.*;
+import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
 import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
-public final class PetclinicImpl extends Domain {
+public final class ClinicImpl extends Domain {
 
-  public PetclinicImpl() {
+  public ClinicImpl() {
     vet();
     specialty();
     vetSpecialty();
@@ -28,9 +28,11 @@ public final class PetclinicImpl extends Domain {
     define(T_VET,
             primaryKeyProperty(VET_ID),
             columnProperty(VET_FIRST_NAME, Types.VARCHAR, "First name")
-                    .setMaxLength(30),
+                    .setMaxLength(30)
+                    .setNullable(false),
             columnProperty(VET_LAST_NAME, Types.VARCHAR, "Last name")
-                    .setMaxLength(30))
+                    .setMaxLength(30)
+                    .setNullable(false))
             .setKeyGenerator(automatic(T_VET))
             .setCaption("Vets")
             .setSearchPropertyIds(VET_FIRST_NAME, VET_LAST_NAME)
@@ -44,7 +46,8 @@ public final class PetclinicImpl extends Domain {
     define(T_SPECIALTY,
             primaryKeyProperty(SPECIALTY_ID),
             columnProperty(SPECIALTY_NAME, Types.VARCHAR, "Name")
-                    .setMaxLength(80))
+                    .setMaxLength(80)
+                    .setNullable(false))
             .setKeyGenerator(automatic(T_SPECIALTY))
             .setCaption("Specialties")
             .setSearchPropertyIds(SPECIALTY_NAME)
@@ -56,10 +59,12 @@ public final class PetclinicImpl extends Domain {
     define(T_VET_SPECIALTY,
             foreignKeyProperty(VET_SPECIALTY_VET_FK, "Vet", T_VET,
                     columnProperty(VET_SPECIALTY_VET)
-                            .setPrimaryKeyIndex(0)),
+                            .setPrimaryKeyIndex(0))
+                    .setNullable(false),
             foreignKeyProperty(VET_SPECIALTY_SPECIALTY_FK, "Specialty", T_SPECIALTY,
                     primaryKeyProperty(VET_SPECIALTY_SPECIALTY)
-                            .setPrimaryKeyIndex(1)))
+                            .setPrimaryKeyIndex(1))
+                    .setNullable(false))
             .setCaption("Vet specialties")
             .setStringProvider(new StringProvider(VET_SPECIALTY_VET_FK).addText(" - ")
                     .addValue(VET_SPECIALTY_SPECIALTY_FK));
@@ -69,7 +74,8 @@ public final class PetclinicImpl extends Domain {
     define(T_PET_TYPE,
             primaryKeyProperty(PET_TYPE_ID),
             columnProperty(PET_TYPE_NAME, Types.VARCHAR, "Name")
-                    .setMaxLength(80))
+                    .setMaxLength(80)
+                    .setNullable(false))
             .setKeyGenerator(automatic(T_PET_TYPE))
             .setCaption("Pet types")
             .setSearchPropertyIds(PET_TYPE_NAME)
@@ -82,9 +88,11 @@ public final class PetclinicImpl extends Domain {
     define(T_OWNER,
             primaryKeyProperty(OWNER_ID),
             columnProperty(OWNER_FIRST_NAME, Types.VARCHAR, "First name")
-                    .setMaxLength(30),
+                    .setMaxLength(30)
+                    .setNullable(false),
             columnProperty(OWNER_LAST_NAME, Types.VARCHAR, "Last name")
-                    .setMaxLength(30),
+                    .setMaxLength(30)
+                    .setNullable(false),
             columnProperty(OWNER_ADDRESS, Types.VARCHAR, "Address")
                     .setMaxLength(255),
             columnProperty(OWNER_CITY, Types.VARCHAR, "City")
@@ -103,12 +111,15 @@ public final class PetclinicImpl extends Domain {
     define(T_PET,
             primaryKeyProperty(PET_ID),
             columnProperty(PET_NAME, Types.VARCHAR, "Name")
-                    .setMaxLength(30),
+                    .setMaxLength(30)
+                    .setNullable(false),
             columnProperty(PET_BIRTH_DATE, Types.DATE, "Birth date"),
             foreignKeyProperty(PET_PET_TYPE_FK, "Pet type", T_PET_TYPE,
-                    columnProperty(PET_PET_TYPE_ID)),
+                    columnProperty(PET_PET_TYPE_ID))
+                    .setNullable(false),
             foreignKeyProperty(PET_OWNER_FK, "Owner", T_OWNER,
-                    columnProperty(PET_OWNER_ID)))
+                    columnProperty(PET_OWNER_ID))
+                    .setNullable(false))
             .setKeyGenerator(automatic(T_PET))
             .setCaption("Pets")
             .setSearchPropertyIds(PET_NAME)
@@ -120,8 +131,10 @@ public final class PetclinicImpl extends Domain {
     define(T_VISIT,
             primaryKeyProperty(VISIT_ID),
             foreignKeyProperty(VISIT_PET_FK, "Pet", T_PET,
-                    columnProperty(VISIT_PET_ID)),
-            columnProperty(VISIT_DATE, Types.DATE, "Date"),
+                    columnProperty(VISIT_PET_ID))
+                    .setNullable(false),
+            columnProperty(VISIT_DATE, Types.DATE, "Date")
+                    .setNullable(false),
             columnProperty(VISIT_DESCRIPTION, Types.VARCHAR, "Description")
                     .setMaxLength(255))
             .setKeyGenerator(automatic(T_VISIT))
