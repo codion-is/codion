@@ -8,9 +8,11 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.petclinic.model.PetclinicAppModel;
+import org.jminor.framework.demos.petclinic.model.VetSpecialtyEditModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityModelProvider;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
@@ -63,8 +65,11 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     EntityPanelProvider vetsPanelProvider =
             new EntityPanelProvider(T_VET, "Vets")
                     .setEditPanelClass(VetEditPanel.class);
+    SwingEntityModelProvider vetSpecialtyModelProvider =
+            new SwingEntityModelProvider(T_VET_SPECIALTY)
+                    .setEditModelClass(VetSpecialtyEditModel.class);
     EntityPanelProvider vetSpecialtiesPanelProvider =
-            new EntityPanelProvider(T_VET_SPECIALTY, "Specialties")
+            new EntityPanelProvider(vetSpecialtyModelProvider, "Specialties")
                     .setEditPanelClass(VetSpecialtyEditPanel.class);
     vetsPanelProvider.addDetailPanelProvider(vetSpecialtiesPanelProvider);
 
@@ -79,7 +84,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     EntityTablePanel.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(EntityTablePanel.ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.petclinic.domain.impl.PetclinicImpl");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.petclinic.domain.impl.ClinicImpl");
     new PetclinicAppPanel().startApplication("Petclinic", null, false,
             UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray()));
   }

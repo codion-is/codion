@@ -26,6 +26,11 @@ include::{dir-test-source}/org/jminor/framework/demos/petclinic/domain/ClinicTes
 
 [source,java]
 ----
+include::{dir-source}/org/jminor/framework/demos/petclinic/model/VetSpecialtyEditModel.java[lines=4..-1]
+----
+
+[source,java]
+----
 include::{dir-source}/org/jminor/framework/demos/petclinic/model/PetclinicAppModel.java[lines=4..-1]
 ----
 
