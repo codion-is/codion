@@ -3,11 +3,12 @@
  */
 package org.jminor.framework.demos.petclinic.ui;
 
-import org.jminor.framework.demos.petclinic.domain.Petclinic;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
+
+import static org.jminor.framework.demos.petclinic.domain.Petclinic.PET_TYPE_NAME;
 
 public final class PetTypeEditPanel extends EntityEditPanel {
 
@@ -17,12 +18,12 @@ public final class PetTypeEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(Petclinic.PET_TYPE_NAME);
+    setInitialFocusProperty(PET_TYPE_NAME);
 
-    createTextField(Petclinic.PET_TYPE_NAME).setColumns(12);
+    createTextField(PET_TYPE_NAME).setColumns(12);
 
     setLayout(new GridLayout(1, 1, 5, 5));
 
-    addPropertyPanel(Petclinic.PET_TYPE_NAME);
+    addPropertyPanel(PET_TYPE_NAME);
   }
 }

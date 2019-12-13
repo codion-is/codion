@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.petclinic.domain.Petclinic;
 import org.jminor.framework.demos.petclinic.model.PetclinicAppModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -21,7 +20,8 @@ import org.jminor.swing.framework.ui.EntityTablePanel;
 import java.util.List;
 import java.util.Locale;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.jminor.framework.demos.petclinic.domain.Petclinic.*;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 
@@ -32,36 +32,39 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
   @Override
   protected List<EntityPanel> initializeEntityPanels(final PetclinicAppModel applicationModel) {
-    SwingEntityModel ownersModel = applicationModel.getEntityModel(Petclinic.T_OWNER);
-    SwingEntityModel petsModel = ownersModel.getDetailModel(Petclinic.T_PET);
-    SwingEntityModel visitsModel = petsModel.getDetailModel(Petclinic.T_VISIT);
+    SwingEntityModel ownersModel = applicationModel.getEntityModel(T_OWNER);
+    SwingEntityModel petsModel = ownersModel.getDetailModel(T_PET);
+    SwingEntityModel visitsModel = petsModel.getDetailModel(T_VISIT);
 
-    EntityPanel ownersPanel = new EntityPanel(ownersModel);
-    EntityPanel petsPanel = new EntityPanel(petsModel);
-    EntityPanel visitsPanel = new EntityPanel(visitsModel);
+    EntityPanel ownersPanel = new EntityPanel(ownersModel,
+            new OwnerEditPanel(ownersModel.getEditModel()));
+    EntityPanel petsPanel = new EntityPanel(petsModel,
+            new PetEditPanel(petsModel.getEditModel()));
+    EntityPanel visitsPanel = new EntityPanel(visitsModel,
+            new VisitEditPanel(visitsModel.getEditModel()));
 
     ownersPanel.addDetailPanel(petsPanel);
     petsPanel.addDetailPanel(visitsPanel);
 
     ownersModel.refresh();
 
-    return asList(ownersPanel);
+    return singletonList(ownersPanel);
   }
 
   @Override
   protected void setupEntityPanelProviders() {
     EntityPanelProvider petTypePanelProvider =
-            new EntityPanelProvider(Petclinic.T_PET_TYPE, "Pet types")
+            new EntityPanelProvider(T_PET_TYPE, "Pet types")
                     .setEditPanelClass(PetTypeEditPanel.class);
     EntityPanelProvider specialtiesPanelProvider =
-            new EntityPanelProvider(Petclinic.T_SPECIALTY, "Specialties")
+            new EntityPanelProvider(T_SPECIALTY, "Specialties")
                     .setEditPanelClass(SpecialtyEditPanel.class);
 
     EntityPanelProvider vetsPanelProvider =
-            new EntityPanelProvider(Petclinic.T_VET, "Vets")
+            new EntityPanelProvider(T_VET, "Vets")
                     .setEditPanelClass(VetEditPanel.class);
     EntityPanelProvider vetSpecialtiesPanelProvider =
-            new EntityPanelProvider(Petclinic.T_VET_SPECIALTY, "Specialties")
+            new EntityPanelProvider(T_VET_SPECIALTY, "Specialties")
                     .setEditPanelClass(VetSpecialtyEditPanel.class);
     vetsPanelProvider.addDetailPanelProvider(vetSpecialtiesPanelProvider);
 

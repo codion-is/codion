@@ -3,16 +3,16 @@
  */
 package org.jminor.framework.demos.petclinic.domain.impl;
 
-import org.jminor.framework.demos.petclinic.domain.Petclinic;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.StringProvider;
 
 import java.sql.Types;
 
+import static org.jminor.framework.demos.petclinic.domain.Petclinic.*;
 import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
-public final class PetclinicImpl extends Domain implements Petclinic {
+public final class PetclinicImpl extends Domain {
 
   public PetclinicImpl() {
     vet();
