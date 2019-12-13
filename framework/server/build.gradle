@@ -28,6 +28,7 @@ dependencies {
 
     serverRuntime project(path: ':jminor-demos-empdept', configuration: 'domain')
     serverRuntime project(path: ':jminor-demos-chinook', configuration: 'domain')
+    serverRuntime project(path: ':jminor-demos-petclinic', configuration: 'domain')
     serverRuntime project(path: ':jminor-demos-petstore', configuration: 'domain')
     serverRuntime project(path: ':jminor-demos-schemabrowser', configuration: 'domain')
     serverRuntime project(path: ':jminor-demos-world', configuration: 'domain')
@@ -104,7 +105,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'jminor.db.type'                            : 'h2',
             'jminor.db.host'                            : 'h2db',
             'jminor.db.embeddedInMemory'                : 'true',
-            'jminor.db.initScript'                      : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
+            'jminor.db.initScript'                      : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
             'jminor.server.pooling.startupPoolUsers'    : 'scott:tiger',
             'jminor.server.port'                        : '2222',
             'jminor.server.admin.port'                  : '2223',
@@ -112,7 +113,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'jminor.server.http.secure'                 : 'false',
             'jminor.server.pooling.poolProviderClass'   : 'org.jminor.plugin.hikari.pool.HikariConnectionPoolProvider',
             'jminor.server.auxiliaryServerClassNames'   : 'org.jminor.framework.servlet.EntityServletServer',
-            'jminor.server.domain.classes'              : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.impl.ChinookImpl,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
+            'jminor.server.domain.classes'              : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.impl.ChinookImpl,org.jminor.framework.demos.petclinic.domain.impl.PetclinicImpl,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
             'jminor.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
             'jminor.server.serializationFilterDryRun'   : 'false',
             'jminor.server.loginProxyClasses'           : 'org.jminor.framework.demos.chinook.server.ChinookLoginProxy',

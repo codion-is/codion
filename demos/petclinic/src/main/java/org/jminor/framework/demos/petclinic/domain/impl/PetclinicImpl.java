@@ -5,6 +5,7 @@ package org.jminor.framework.demos.petclinic.domain.impl;
 
 import org.jminor.framework.demos.petclinic.domain.Petclinic;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.StringProvider;
 
 import java.sql.Types;
 
@@ -33,8 +34,8 @@ public final class PetclinicImpl extends Domain implements Petclinic {
             .setKeyGenerator(automatic(T_VET))
             .setCaption("Vets")
             .setSearchPropertyIds(VET_FIRST_NAME, VET_LAST_NAME)
-            .setStringProvider(vet ->
-                    vet.get(VET_LAST_NAME) + ", " + vet.get(VET_FIRST_NAME))
+            .setStringProvider(new StringProvider(VET_LAST_NAME)
+                    .addText(", ").addValue(VET_FIRST_NAME))
             .setSmallDataset(true);
   }
 
@@ -46,7 +47,7 @@ public final class PetclinicImpl extends Domain implements Petclinic {
             .setKeyGenerator(automatic(T_SPECIALTY))
             .setCaption("Specialties")
             .setSearchPropertyIds(SPECIALTY_NAME)
-            .setStringProvider(specialty -> specialty.getString(SPECIALTY_NAME))
+            .setStringProvider(new StringProvider(SPECIALTY_NAME))
             .setSmallDataset(true);
   }
 
@@ -59,9 +60,8 @@ public final class PetclinicImpl extends Domain implements Petclinic {
                     primaryKeyProperty(VET_SPECIALTY_SPECIALTY)
                             .setPrimaryKeyIndex(1)))
             .setCaption("Vet specialties")
-            .setStringProvider(vetSpecialty ->
-                    vetSpecialty.getAsString(VET_SPECIALTY_VET_FK) + " - " +
-                            vetSpecialty.getAsString(VET_SPECIALTY_SPECIALTY_FK));
+            .setStringProvider(new StringProvider(VET_SPECIALTY_VET_FK).addText(" - ")
+                    .addValue(VET_SPECIALTY_SPECIALTY_FK));
   }
 
   private void petType() {
@@ -72,7 +72,7 @@ public final class PetclinicImpl extends Domain implements Petclinic {
             .setKeyGenerator(automatic(T_PET_TYPE))
             .setCaption("Pet types")
             .setSearchPropertyIds(PET_TYPE_NAME)
-            .setStringProvider(petType -> petType.getString(PET_TYPE_NAME))
+            .setStringProvider(new StringProvider(PET_TYPE_NAME))
             .setSmallDataset(true);
   }
 
@@ -92,8 +92,8 @@ public final class PetclinicImpl extends Domain implements Petclinic {
             .setKeyGenerator(automatic(T_OWNER))
             .setCaption("Owners")
             .setSearchPropertyIds(OWNER_FIRST_NAME, OWNER_LAST_NAME)
-            .setStringProvider(owner ->
-                    owner.get(OWNER_LAST_NAME) + ", " + owner.get(OWNER_FIRST_NAME));
+            .setStringProvider(new StringProvider(OWNER_LAST_NAME).addText(", ")
+            .addValue(OWNER_FIRST_NAME));
   }
 
   private void pet() {
@@ -109,7 +109,7 @@ public final class PetclinicImpl extends Domain implements Petclinic {
             .setKeyGenerator(automatic(T_PET))
             .setCaption("Pets")
             .setSearchPropertyIds(PET_NAME)
-            .setStringProvider(pet -> pet.getString(PET_NAME));
+            .setStringProvider(new StringProvider(PET_NAME));
   }
 
   private void visit() {
