@@ -5471,3 +5471,4 @@
   Chinook demo code restructured, EmpDept demo code restructured, Petstore demo code restructured, World demo code restructured
   Demo module-info.java fixed after restructuring
   Petclinic demo added, unfinished
+  EntityTestUnit.testEntity() renamed to test()

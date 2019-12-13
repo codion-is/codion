@@ -24,17 +24,17 @@ public final class WorldTest extends EntityTestUnit {
 
   @Test
   public void country() throws DatabaseException {
-    testEntity(World.T_COUNTRY);
+    test(World.T_COUNTRY);
   }
 
   @Test
   public void city() throws DatabaseException {
-    testEntity(World.T_CITY);
+    test(World.T_CITY);
   }
 
   @Test
   public void countryLanguage() throws DatabaseException {
-    testEntity(World.T_COUNTRYLANGUAGE);
+    test(World.T_COUNTRYLANGUAGE);
   }
 
   @Override

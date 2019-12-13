@@ -23,37 +23,37 @@ public class PetstoreTest extends EntityTestUnit {
 
   @Test
   public void address() throws Exception {
-    testEntity(T_ADDRESS);
+    test(T_ADDRESS);
   }
 
   @Test
   public void category() throws Exception {
-    testEntity(T_CATEGORY);
+    test(T_CATEGORY);
   }
 
   @Test
   public void item() throws Exception {
-    testEntity(T_ITEM);
+    test(T_ITEM);
   }
 
   @Test
   public void product() throws Exception {
-    testEntity(T_PRODUCT);
+    test(T_PRODUCT);
   }
 
   @Test
   public void sellerInfo() throws Exception {
-    testEntity(T_SELLER_CONTACT_INFO);
+    test(T_SELLER_CONTACT_INFO);
   }
 
   @Test
   public void tag() throws Exception {
-    testEntity(T_TAG);
+    test(T_TAG);
   }
 
   @Test
   public void tagItem() throws Exception {
-    testEntity(T_TAG_ITEM);
+    test(T_TAG_ITEM);
   }
 
   @Override

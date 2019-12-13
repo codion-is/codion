@@ -24,12 +24,12 @@ public class EmpDeptTest extends EntityTestUnit {
 
   @Test
   public void department() throws Exception {
-    testEntity(T_DEPARTMENT);
+    test(T_DEPARTMENT);
   }
 
   @Test
   public void employee() throws Exception {
-    testEntity(T_EMPLOYEE);
+    test(T_EMPLOYEE);
   }
 
   @Override
