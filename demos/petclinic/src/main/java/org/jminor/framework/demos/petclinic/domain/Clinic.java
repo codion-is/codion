@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.petclinic.domain;
 
-public interface Petclinic {
+public interface Clinic {
 
   String T_VET = "petclinic.vet";
   String VET_ID = "id";

@@ -113,7 +113,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'jminor.server.http.secure'                 : 'false',
             'jminor.server.pooling.poolProviderClass'   : 'org.jminor.plugin.hikari.pool.HikariConnectionPoolProvider',
             'jminor.server.auxiliaryServerClassNames'   : 'org.jminor.framework.servlet.EntityServletServer',
-            'jminor.server.domain.classes'              : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.impl.ChinookImpl,org.jminor.framework.demos.petclinic.domain.impl.PetclinicImpl,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
+            'jminor.server.domain.classes'              : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.impl.ChinookImpl,org.jminor.framework.demos.petclinic.domain.impl.ClinicImpl,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
             'jminor.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
             'jminor.server.serializationFilterDryRun'   : 'false',
             'jminor.server.loginProxyClasses'           : 'org.jminor.framework.demos.chinook.server.ChinookLoginProxy',

@@ -8,13 +8,13 @@ import org.jminor.framework.domain.StringProvider;
 
 import java.sql.Types;
 
-import static org.jminor.framework.demos.petclinic.domain.Petclinic.*;
+import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
 import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
-public final class PetclinicImpl extends Domain {
+public final class ClinicImpl extends Domain {
 
-  public PetclinicImpl() {
+  public ClinicImpl() {
     vet();
     specialty();
     vetSpecialty();

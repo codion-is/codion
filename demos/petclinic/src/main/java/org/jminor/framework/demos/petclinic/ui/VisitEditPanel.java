@@ -11,7 +11,7 @@ import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
-import static org.jminor.framework.demos.petclinic.domain.Petclinic.*;
+import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
 
 public final class VisitEditPanel extends EntityEditPanel {
 
