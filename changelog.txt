@@ -5446,3 +5446,4 @@
   Parameters in interfaces and abstract methods no longer final
   Code cleanup
   Chinook demo code restructured, EmpDept demo code restructured, Petstore demo code restructured, World demo code restructured
+  Petclinic demo added, unfinished
