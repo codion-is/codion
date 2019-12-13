@@ -17,36 +17,36 @@ public final class ClinicTest extends EntityTestUnit {
 
   @Test
   void vet() throws DatabaseException {
-    testEntity(Clinic.T_VET);
+    test(Clinic.T_VET);
   }
 
   @Test
   void specialty() throws DatabaseException {
-    testEntity(Clinic.T_SPECIALTY);
+    test(Clinic.T_SPECIALTY);
   }
 
   @Test
   void vetSpecialty() throws DatabaseException {
-    testEntity(Clinic.T_VET_SPECIALTY);
+    test(Clinic.T_VET_SPECIALTY);
   }
 
   @Test
   void petType() throws DatabaseException {
-    testEntity(Clinic.T_PET_TYPE);
+    test(Clinic.T_PET_TYPE);
   }
 
   @Test
   void owner() throws DatabaseException {
-    testEntity(Clinic.T_OWNER);
+    test(Clinic.T_OWNER);
   }
 
   @Test
   void pet() throws DatabaseException {
-    testEntity(Clinic.T_PET);
+    test(Clinic.T_PET);
   }
 
   @Test
   void visit() throws DatabaseException {
-    testEntity(Clinic.T_VISIT);
+    test(Clinic.T_VISIT);
   }
 }

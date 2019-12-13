@@ -114,7 +114,7 @@ public class EntityTestUnit {
    * @param entityId the ID of the entity to test
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
-  public final void testEntity(final String entityId) throws DatabaseException {
+  public final void test(final String entityId) throws DatabaseException {
     try {
       connection.beginTransaction();
       final Map<String, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());

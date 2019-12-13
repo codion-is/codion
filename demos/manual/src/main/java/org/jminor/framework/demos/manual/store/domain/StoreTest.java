@@ -18,12 +18,12 @@ public class StoreTest extends EntityTestUnit {
 
   @Test
   public void address() throws Exception {
-    testEntity(Store.T_ADDRESS);
+    test(Store.T_ADDRESS);
   }
 
   @Test
   public void customer() throws Exception {
-    testEntity(Store.T_CUSTOMER);
+    test(Store.T_CUSTOMER);
   }
 
   @Override

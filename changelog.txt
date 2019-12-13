@@ -5447,3 +5447,4 @@
   Code cleanup
   Chinook demo code restructured, EmpDept demo code restructured, Petstore demo code restructured, World demo code restructured
   Petclinic demo added, unfinished
+  EntityTestUnit.testEntity() renamed to test()

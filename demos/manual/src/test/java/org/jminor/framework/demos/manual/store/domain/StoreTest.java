@@ -22,12 +22,12 @@ public final class StoreTest extends EntityTestUnit {
 
   @Test
   void address() throws DatabaseException {
-    testEntity(Store.T_ADDRESS);
+    test(Store.T_ADDRESS);
   }
 
   @Test
   void customer() throws DatabaseException {
-    testEntity(Store.T_CUSTOMER);
+    test(Store.T_CUSTOMER);
   }
 
   @Override
