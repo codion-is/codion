@@ -48,6 +48,13 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
   void removeItem(T item);
 
   /**
+   * Replaces the given item in this combo box model
+   * @param item the item to replace
+   * @param replacement the replacement item
+   */
+  void replaceItem(T item, T replacement);
+
+  /**
    * @return true if the model data has been cleared and needs to be refreshed
    */
   boolean isCleared();

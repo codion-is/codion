@@ -218,11 +218,13 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   @Override
   public final void addItem(final T item) {
     if (filterCondition == null || filterCondition.test(item)) {
-      addVisibleItem(item);
-      sortVisibleItems();
+      if (!visibleItems.contains(item)) {
+        visibleItems.add(item);
+        sortVisibleItems();
+      }
     }
-    else {
-      addFilteredItem(item);
+    else if (!filteredItems.contains(item)) {
+      filteredItems.add(item);
     }
   }
 
@@ -232,6 +234,17 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     visibleItems.remove(item);
     filteredItems.remove(item);
     fireContentsChanged();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void replaceItem(final T item, final T replacement) {
+    removeItem(item);
+    addItem(replacement);
+    if (Objects.equals(selectedItem, item)) {
+      selectedItem = translateSelectionItem(null);
+      setSelectedItem(replacement);
+    }
   }
 
   /** {@inheritDoc} */
@@ -437,18 +450,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     if (sortComparator != null && !visibleItems.isEmpty()) {
       visibleItems.sort(sortComparator);
       fireContentsChanged();
-    }
-  }
-
-  private void addVisibleItem(final T item) {
-    if (!visibleItems.contains(item)) {
-      visibleItems.add(item);
-    }
-  }
-
-  private void addFilteredItem(final T item) {
-    if (!filteredItems.contains(item)) {
-      filteredItems.add(item);
     }
   }
 
