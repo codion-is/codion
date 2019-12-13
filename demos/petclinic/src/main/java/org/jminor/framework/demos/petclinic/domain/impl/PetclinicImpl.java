@@ -36,6 +36,7 @@ public final class PetclinicImpl extends Domain {
             .setSearchPropertyIds(VET_FIRST_NAME, VET_LAST_NAME)
             .setStringProvider(new StringProvider(VET_LAST_NAME)
                     .addText(", ").addValue(VET_FIRST_NAME))
+            .setOrderBy(orderBy().ascending(VET_LAST_NAME, VET_FIRST_NAME))
             .setSmallDataset(true);
   }
 
@@ -73,6 +74,7 @@ public final class PetclinicImpl extends Domain {
             .setCaption("Pet types")
             .setSearchPropertyIds(PET_TYPE_NAME)
             .setStringProvider(new StringProvider(PET_TYPE_NAME))
+            .setOrderBy(orderBy().ascending(PET_TYPE_NAME))
             .setSmallDataset(true);
   }
 
@@ -93,7 +95,8 @@ public final class PetclinicImpl extends Domain {
             .setCaption("Owners")
             .setSearchPropertyIds(OWNER_FIRST_NAME, OWNER_LAST_NAME)
             .setStringProvider(new StringProvider(OWNER_LAST_NAME).addText(", ")
-            .addValue(OWNER_FIRST_NAME));
+                    .addValue(OWNER_FIRST_NAME))
+            .setOrderBy(orderBy().ascending(OWNER_LAST_NAME, OWNER_FIRST_NAME));
   }
 
   private void pet() {
@@ -109,7 +112,8 @@ public final class PetclinicImpl extends Domain {
             .setKeyGenerator(automatic(T_PET))
             .setCaption("Pets")
             .setSearchPropertyIds(PET_NAME)
-            .setStringProvider(new StringProvider(PET_NAME));
+            .setStringProvider(new StringProvider(PET_NAME))
+            .setOrderBy(orderBy().ascending(PET_NAME));
   }
 
   private void visit() {
@@ -121,6 +125,7 @@ public final class PetclinicImpl extends Domain {
             columnProperty(VISIT_DESCRIPTION, Types.VARCHAR, "Description")
                     .setMaxLength(255))
             .setKeyGenerator(automatic(T_VISIT))
+            .setOrderBy(orderBy().ascending(VISIT_PET_ID).descending(VISIT_DATE))
             .setCaption("Visits");
   }
 }
