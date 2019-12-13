@@ -4,9 +4,10 @@
 package org.jminor.framework.demos.petclinic.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.petclinic.domain.Petclinic;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
+
+import static org.jminor.framework.demos.petclinic.domain.Petclinic.*;
 
 public final class PetclinicAppModel extends SwingEntityApplicationModel {
 
@@ -16,9 +17,9 @@ public final class PetclinicAppModel extends SwingEntityApplicationModel {
   }
 
   private void setupEntityModels(final EntityConnectionProvider connectionProvider) {
-    SwingEntityModel ownersModel = new SwingEntityModel(Petclinic.T_OWNER, connectionProvider);
-    SwingEntityModel petsModel = new SwingEntityModel(Petclinic.T_PET, connectionProvider);
-    SwingEntityModel visitModel = new SwingEntityModel(Petclinic.T_VISIT, connectionProvider);
+    SwingEntityModel ownersModel = new SwingEntityModel(T_OWNER, connectionProvider);
+    SwingEntityModel petsModel = new SwingEntityModel(T_PET, connectionProvider);
+    SwingEntityModel visitModel = new SwingEntityModel(T_VISIT, connectionProvider);
 
     ownersModel.addDetailModel(petsModel);
     petsModel.addDetailModel(visitModel);
