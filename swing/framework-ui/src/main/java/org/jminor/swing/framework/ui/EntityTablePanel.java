@@ -1490,10 +1490,19 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
 
   private void updateStatusMessage() {
     if (statusMessageLabel != null) {
-      final String status = getEntityTableModel().getStatusMessage();
+      final String status = getStatusMessage();
       statusMessageLabel.setText(status);
       statusMessageLabel.setToolTipText(status);
     }
+  }
+
+  private String getStatusMessage() {
+    final SwingEntityTableModel tableModel = getEntityTableModel();
+    final int filteredItemCount = tableModel.getFilteredItemCount();
+
+    return tableModel.getRowCount() + " (" + tableModel.getSelectionModel().getSelectionCount() + " " +
+            MESSAGES.getString("selected") + (filteredItemCount > 0 ? ", " +
+            filteredItemCount + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
   private void bindPanelEvents() {

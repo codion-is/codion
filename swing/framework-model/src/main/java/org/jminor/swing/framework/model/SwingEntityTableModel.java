@@ -45,9 +45,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -76,8 +74,6 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
  */
 public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
         implements EntityTableModel<SwingEntityEditModel> {
-
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingEntityTableModel.class.getName(), Locale.getDefault());
 
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
 
@@ -394,16 +390,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final int indexOf(final Entity.Key primaryKey) {
     return indexOf(getEntityByKey(primaryKey));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final String getStatusMessage() {
-    final int filteredItemCount = getFilteredItemCount();
-
-    return getRowCount() + " (" + getSelectionModel().getSelectionCount() + " " +
-            MESSAGES.getString("selected") + (filteredItemCount > 0 ? ", " +
-            filteredItemCount + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
   /** {@inheritDoc} */

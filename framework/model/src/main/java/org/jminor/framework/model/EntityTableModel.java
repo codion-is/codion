@@ -201,11 +201,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   int getPropertyColumnIndex(String propertyId);
 
   /**
-   * @return a String describing the selected/filtered state of this table model
-   */
-  String getStatusMessage();
-
-  /**
    * Returns the maximum number of records to fetch via the underlying query the next time
    * this table model is refreshed, a value of -1 means all records should be fetched
    * @return the fetch count
