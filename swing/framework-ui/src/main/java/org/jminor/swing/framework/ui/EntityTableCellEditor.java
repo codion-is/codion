@@ -10,6 +10,8 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.util.EventObject;
 
 import static java.util.Collections.emptyList;
 
@@ -42,6 +44,16 @@ final class EntityTableCellEditor extends AbstractCellEditor implements TableCel
   @Override
   public Object getCellEditorValue() {
     return inputProvider.getValue();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isCellEditable(final EventObject event) {
+    if (event instanceof MouseEvent) {
+      return ((MouseEvent) event).getClickCount() >= 2;
+    }
+
+    return true;
   }
 
   private InputProvider initializeEditorComponent(final int column) {
