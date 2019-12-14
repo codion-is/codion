@@ -5466,3 +5466,4 @@
   InputProvider.setValue() added
   EntityTableCellEditor added
   EntityTableCellEditor improvements
+  EntityUiUtil, major refactoring, EntityEditModel parameters replaced with Value

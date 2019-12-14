@@ -12,6 +12,7 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.PropertyValue;
+import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
@@ -26,7 +27,6 @@ import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.DefaultEntityLookupModel;
 import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
@@ -47,8 +47,6 @@ import org.jminor.swing.common.ui.textfield.DocumentSizeFilter;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
-import org.jminor.swing.common.ui.valuemap.ValueLinkValidators;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -112,7 +110,7 @@ public final class EntityUiUtil {
   public static final PropertyValue<String> COMBO_BOX_COMPLETION_MODE = Configuration.stringValue("jminor.swing.comboBoxCompletionMode", COMPLETION_MODE_MAXIMUM_MATCH);
 
   private static final String PROPERTY_PARAM_NAME = "property";
-  private static final String EDIT_MODEL_PARAM_NAME = "editModel";
+  private static final String VALUE_PARAM_NAME = "value";
   private static final String FOREIGN_KEY_PROPERTY_PARAM_NAME = "foreignKeyProperty";
   private static final int BOOLEAN_COMBO_BOX_POPUP_WIDTH = 40;
   private static final Color INVALID_COLOR = Color.RED;
@@ -213,90 +211,89 @@ public final class EntityUiUtil {
   /**
    * Creates a JCheckBox based on the given boolean property
    * @param property the property on which value to base the checkbox
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel) {
-    return createCheckBox(property, editModel, null);
+  public static JCheckBox createCheckBox(final Property property, final Value value) {
+    return createCheckBox(property, value, null);
   }
 
   /**
    * Creates a JCheckBox based on the given boolean property
    * @param property the property on which value to base the checkbox
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the checkbox
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
+  public static JCheckBox createCheckBox(final Property property, final Value value,
                                          final StateObserver enabledState) {
-    return createCheckBox(property, editModel, enabledState, true);
+    return createCheckBox(property, value, enabledState, true);
   }
 
   /**
    * Creates a JCheckBox based on the given boolean property
    * @param property the property on which value to base the checkbox
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the checkbox
    * @param includeCaption if true then the property caption is included as the checkbox text
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
+  public static JCheckBox createCheckBox(final Property property, final Value value,
                                          final StateObserver enabledState, final boolean includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
-    checkProperty(property, editModel);
+    requireNonNull(value, VALUE_PARAM_NAME);
     if (!property.isBoolean()) {
       throw new IllegalArgumentException("Boolean property required for createCheckBox");
     }
 
-    return initializeCheckBox(property, editModel, enabledState,
+    return initializeCheckBox(property, value, enabledState,
             includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox());
   }
 
   /**
    * Creates a TristateCheckBox based on the given boolean property
    * @param property the property on which value to base the checkbox
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the checkbox
    * @param includeCaption if true then the property caption is included as the checkbox text
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a nullable boolean property
    */
-  public static TristateCheckBox createTristateCheckBox(final Property property, final EntityEditModel editModel,
+  public static TristateCheckBox createTristateCheckBox(final Property property, final Value value,
                                                         final StateObserver enabledState, final boolean includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
-    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
-    checkProperty(property, editModel);
+    requireNonNull(value, VALUE_PARAM_NAME);
     if (!property.isBoolean() || !property.isNullable()) {
       throw new IllegalArgumentException("Nullable boolean property required for createTristateCheckBox");
     }
 
-    return (TristateCheckBox) initializeCheckBox(property, editModel, enabledState,
+    return (TristateCheckBox) initializeCheckBox(property, value, enabledState,
             new TristateCheckBox(includeCaption ? property.getCaption() : null));
   }
 
   /**
    * Creates a combobox containing the values (null, yes, no) based on the given boolean property
    * @param property the property on which to base the combobox
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @return a SteppedComboBox based on the given boolean property
    */
-  public static SteppedComboBox createBooleanComboBox(final Property property, final EntityEditModel editModel) {
-    return createBooleanComboBox(property, editModel, null);
+  public static SteppedComboBox createBooleanComboBox(final Property property, final Value value) {
+    return createBooleanComboBox(property, value, null);
   }
 
   /**
    * Creates a combobox containing the values (null, yes, no) based on the given boolean property
    * @param property the property on which to base the combobox
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the combobox
    * @return a SteppedComboBox based on the given boolean property
    */
-  public static SteppedComboBox createBooleanComboBox(final Property property, final EntityEditModel editModel,
+  public static SteppedComboBox createBooleanComboBox(final Property property, final Value value,
                                                       final StateObserver enabledState) {
-    final SteppedComboBox box = createComboBox(property, editModel, new BooleanComboBoxModel(), enabledState);
+    final SteppedComboBox box = createComboBox(property, value, new BooleanComboBoxModel(), enabledState);
     box.setPopupWidth(BOOLEAN_COMBO_BOX_POPUP_WIDTH);
 
     return box;
@@ -305,30 +302,31 @@ public final class EntityUiUtil {
   /**
    * Creates EntityComboBox based on the given foreign key property
    * @param foreignKeyProperty the foreign key property on which entity to base the combobox
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
+   * @param comboBoxModel the combo box model
    * @return a EntityComboBox based on the given foreign key property
    */
   public static EntityComboBox createForeignKeyComboBox(final ForeignKeyProperty foreignKeyProperty,
-                                                        final EntityEditModel editModel) {
-    return createForeignKeyComboBox(foreignKeyProperty, editModel, null);
+                                                        final Value value, final EntityComboBoxModel comboBoxModel) {
+    return createForeignKeyComboBox(foreignKeyProperty, value, comboBoxModel, null);
   }
 
   /**
    * Creates EntityComboBox based on the given foreign key property
    * @param foreignKeyProperty the foreign key property on which entity to base the combobox
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
+   * @param comboBoxModel the combo box model
    * @param enabledState the state controlling the enabled state of the combobox
    * @return a EntityComboBox based on the given foreign key property
    */
   public static EntityComboBox createForeignKeyComboBox(final ForeignKeyProperty foreignKeyProperty,
-                                                        final EntityEditModel editModel, final StateObserver enabledState) {
+                                                        final Value value, final EntityComboBoxModel comboBoxModel,
+                                                        final StateObserver enabledState) {
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
-    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
-    checkProperty(foreignKeyProperty, editModel);
-    final EntityComboBoxModel boxModel = ((SwingEntityEditModel) editModel).getForeignKeyComboBoxModel(foreignKeyProperty);
-    boxModel.refresh();
-    final EntityComboBox comboBox = new EntityComboBox(boxModel);
-    ValueLinks.selectedItemValueLink(comboBox, editModel.value(foreignKeyProperty.getPropertyId()));
+    requireNonNull(comboBoxModel, "comboBoxModel");
+    comboBoxModel.refresh();
+    final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
+    ValueLinks.selectedItemValueLink(comboBox, value);
     if (enabledState != null) {
       UiUtil.linkToEnabledState(enabledState, comboBox);
     }
@@ -343,53 +341,34 @@ public final class EntityUiUtil {
   }
 
   /**
-   * Creates a read-only, non-focusable JTextField displaying the value of the given property in the given edit model
-   * @param foreignKeyProperty the property which value should be displayed
-   * @param editModel the edit model
-   * @return a read-only, non-focusable JTextField displaying the value of the given property
-   */
-  public static JTextField createForeignKeyField(final ForeignKeyProperty foreignKeyProperty,
-                                                 final EntityEditModel editModel) {
-    requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
-    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
-    checkProperty(foreignKeyProperty, editModel);
-    final JTextField textField = new JTextField();
-    textField.setEditable(false);
-    textField.setFocusable(false);
-    textField.setToolTipText(foreignKeyProperty.getDescription());
-    ValueLinks.textValueLink(textField, new ForeignKeyModelValue(editModel, foreignKeyProperty.getPropertyId()));
-
-    return textField;
-  }
-
-  /**
    * Creates a EntityLookupField based on the given foreign key property
    * @param foreignKeyProperty the foreign key property on which entity to base the lookup model
-   * @param editModel the edit model providing the {@link EntityLookupModel} to use and to bind with the value
+   * @param value the value to bind to the field
+   * @param lookupModel the {@link EntityLookupModel} to use and to bind with the value
    * @return a lookup model based on the given foreign key property
    */
   public static EntityLookupField createForeignKeyLookupField(final ForeignKeyProperty foreignKeyProperty,
-                                                              final EntityEditModel editModel) {
-    return createForeignKeyLookupField(foreignKeyProperty, editModel, null);
+                                                              final Value value, final EntityLookupModel lookupModel) {
+    return createForeignKeyLookupField(foreignKeyProperty, value, lookupModel, null);
   }
 
   /**
    * Creates a EntityLookupField based on the given foreign key property
    * @param foreignKeyProperty the foreign key property on which entity to base the lookup model
-   * @param editModel the edit model providing the {@link EntityLookupModel} to use and to bind with the value
+   * @param value the value to bind to the field
+   * @param lookupModel the {@link EntityLookupModel} to use and to bind with the value
    * @param enabledState the state controlling the enabled state of the lookup field
    * @return a lookup model based on the given foreign key property
    */
-  public static EntityLookupField createForeignKeyLookupField(final ForeignKeyProperty foreignKeyProperty,
-                                                              final EntityEditModel editModel, final StateObserver enabledState) {
-    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
+  public static EntityLookupField createForeignKeyLookupField(final ForeignKeyProperty foreignKeyProperty, final Value value,
+                                                              final EntityLookupModel lookupModel, final StateObserver enabledState) {
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
-    final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty);
+    requireNonNull(lookupModel, "lookupModel");
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
     if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       lookupField.setTransferFocusOnEnter();
     }
-    Values.link(editModel.value(foreignKeyProperty.getPropertyId()), new LookupUIValue(lookupField.getModel()));
+    Values.link(value, new LookupUIValue(lookupField.getModel()));
     if (enabledState != null) {
       UiUtil.linkToEnabledState(enabledState, lookupField);
     }
@@ -402,46 +381,46 @@ public final class EntityUiUtil {
   /**
    * Creates a combo box based on the values in the given value list property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final EntityEditModel editModel) {
-    return createValueListComboBox(property, editModel, true, null);
+  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value) {
+    return createValueListComboBox(property, value, true, null);
   }
 
   /**
    * Creates a combo box based on the values in the given value list property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the combo box
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final EntityEditModel editModel,
+  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
                                                         final StateObserver enabledState) {
-    return createValueListComboBox(property, editModel, true, enabledState);
+    return createValueListComboBox(property, value, true, enabledState);
   }
 
   /**
    * Creates a combo box based on the values in the given value list property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param sortItems if true then the items are sorted
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final EntityEditModel editModel,
+  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
                                                         final boolean sortItems) {
-    return createValueListComboBox(property, editModel, sortItems, null);
+    return createValueListComboBox(property, value, sortItems, null);
   }
 
   /**
    * Creates a combo box based on the values in the given value list property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param sortItems if true then the items are sorted
    * @param enabledState the state controlling the enabled state of the combo box
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final EntityEditModel editModel,
+  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
                                                         final boolean sortItems, final StateObserver enabledState) {
     final ItemComboBoxModel model;
     if (sortItems) {
@@ -450,7 +429,7 @@ public final class EntityUiUtil {
     else {
       model = new ItemComboBoxModel(null, property.getValues());
     }
-    final SteppedComboBox comboBox = createComboBox(property, editModel, model, enabledState);
+    final SteppedComboBox comboBox = createComboBox(property, value, model, enabledState);
     addComboBoxCompletion(comboBox);
 
     return comboBox;
@@ -459,33 +438,33 @@ public final class EntityUiUtil {
   /**
    * Creates a combo box based on the given combo box model
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param model the combo box model
    * @param enabledState the state controlling the enabled state of the combo box
    * @return a combo box based on the given model
    */
-  public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
+  public static SteppedComboBox createComboBox(final Property property, final Value value,
                                                final ComboBoxModel model, final StateObserver enabledState) {
-    return createComboBox(property, editModel, model, enabledState, false);
+    return createComboBox(property, value, model, enabledState, false);
   }
 
   /**
    * Creates a combo box based on the given combo box model
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param model the combo box model
    * @param enabledState the state controlling the enabled state of the combo box
    * @param editable if true then the combo box is made editable
    * @return a combo box based on the given model
    */
-  public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
+  public static SteppedComboBox createComboBox(final Property property, final Value value,
                                                final ComboBoxModel model, final StateObserver enabledState,
                                                final boolean editable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
-    checkProperty(property, editModel);
+    requireNonNull(value, VALUE_PARAM_NAME);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
-    ValueLinks.selectedItemValueLink(comboBox, editModel.value(property.getPropertyId()));
+    ValueLinks.selectedItemValueLink(comboBox, value);
     if (enabledState != null) {
       UiUtil.linkToEnabledState(enabledState, comboBox);
     }
@@ -501,26 +480,26 @@ public final class EntityUiUtil {
   /**
    * Creates a panel with a date input field and a button for opening a date input dialog
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param includeButton if true then a button for opening a date input dialog is included (only available for LocalDate)
    * @return a date input panel
    */
-  public static TemporalInputPanel createTemporalInputPanel(final Property property, final EntityEditModel editModel,
+  public static TemporalInputPanel createTemporalInputPanel(final Property property, final Value value,
                                                             final boolean updateOnKeystroke, final boolean includeButton) {
-    return createTemporalInputPanel(property, editModel, updateOnKeystroke, includeButton, null);
+    return createTemporalInputPanel(property, value, updateOnKeystroke, includeButton, null);
   }
 
   /**
    * Creates a panel with a date input field and a button for opening a date input dialog (if applicable)
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param includeCalendarButton if true then a button for opening a calendar dialog is included
    * @param enabledState the state controlling the enabled state of the panel
    * @return a date input panel
    */
-  public static TemporalInputPanel createTemporalInputPanel(final Property property, final EntityEditModel editModel,
+  public static TemporalInputPanel createTemporalInputPanel(final Property property, final Value value,
                                                             final boolean updateOnKeystroke, final boolean includeCalendarButton,
                                                             final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
@@ -529,7 +508,7 @@ public final class EntityUiUtil {
     }
 
     final String formatString = property.getDateTimeFormatPattern();
-    final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel,
+    final JFormattedTextField field = (JFormattedTextField) createTextField(property, value,
             DateFormats.getDateMask(formatString), updateOnKeystroke, enabledState);
     if (property.isDate()) {
       final LocalDateInputPanel panel = new LocalDateInputPanel(field, formatString, includeCalendarButton, enabledState);
@@ -552,16 +531,16 @@ public final class EntityUiUtil {
   /**
    * Creates a panel with a text field and a button for opening a dialog with a text area
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param buttonFocusable if true then the dialog button is focusable
    * @return a text input panel
    */
-  public static TextInputPanel createTextInputPanel(final Property property, final EntityEditModel editModel,
+  public static TextInputPanel createTextInputPanel(final Property property, final Value value,
                                                     final boolean updateOnKeystroke, final boolean buttonFocusable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
-    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
-    final JTextField field = createTextField(property, editModel, null, updateOnKeystroke);
+    requireNonNull(value, VALUE_PARAM_NAME);
+    final JTextField field = createTextField(property, value, null, updateOnKeystroke);
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
     panel.setMaxLength(property.getMaxLength());
     if (panel.getButton() != null && EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
@@ -574,45 +553,44 @@ public final class EntityUiUtil {
   /**
    * Creates a text area based on the given property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a text area
    */
-  public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
+  public static JTextArea createTextArea(final Property property, final Value value,
                                          final boolean updateOnKeystroke) {
-    return createTextArea(property, editModel, -1, -1, updateOnKeystroke);
+    return createTextArea(property, value, -1, -1, updateOnKeystroke);
   }
 
   /**
    * Creates a text area based on the given property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param rows the number of rows
    * @param columns the number of columns
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a text area
    */
-  public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
+  public static JTextArea createTextArea(final Property property, final Value value,
                                          final int rows, final int columns, final boolean updateOnKeystroke) {
-    return createTextArea(property, editModel, rows, columns, updateOnKeystroke, null);
+    return createTextArea(property, value, rows, columns, updateOnKeystroke, null);
   }
 
   /**
    * Creates a text area based on the given property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param rows the number of rows
    * @param columns the number of columns
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param enabledState a state indicating when the text area should be enabled
    * @return a text area
    */
-  public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
+  public static JTextArea createTextArea(final Property property, final Value value,
                                          final int rows, final int columns, final boolean updateOnKeystroke,
                                          final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
-    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
-    checkProperty(property, editModel);
+    requireNonNull(value, VALUE_PARAM_NAME);
     if (!property.isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string property");
     }
@@ -627,8 +605,7 @@ public final class EntityUiUtil {
       UiUtil.linkToEnabledState(enabledState, textArea);
     }
 
-    ValueLinks.textValueLink(textArea, editModel.value(property.getPropertyId()), null, updateOnKeystroke);
-    ValueLinkValidators.addValidator(property, textArea, editModel);
+    ValueLinks.textValueLink(textArea, value, null, updateOnKeystroke);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -637,45 +614,46 @@ public final class EntityUiUtil {
   /**
    * Creates a text field based on the given property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @return a text field for the given property
    */
-  public static JTextField createTextField(final Property property, final EntityEditModel editModel) {
-    return createTextField(property, editModel, null, true);
+  public static JTextField createTextField(final Property property, final Value value) {
+    return createTextField(property, value, null, true);
   }
 
   /**
    * Creates a text field based on the given property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a text field for the given property
    */
-  public static JTextField createTextField(final Property property, final EntityEditModel editModel,
+  public static JTextField createTextField(final Property property, final Value value,
                                            final String formatMaskString, final boolean updateOnKeystroke) {
-    return createTextField(property, editModel, formatMaskString, updateOnKeystroke, null);
+    return createTextField(property, value, formatMaskString, updateOnKeystroke, null);
   }
 
   /**
    * Creates a text field based on the given property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param enabledState the state controlling the enabled state of the panel
    * @return a text field for the given property
    */
-  public static JTextField createTextField(final Property property, final EntityEditModel editModel,
+  public static JTextField createTextField(final Property property, final Value value,
                                            final String formatMaskString, final boolean updateOnKeystroke,
                                            final StateObserver enabledState) {
-    return createTextField(property, editModel, formatMaskString, updateOnKeystroke, enabledState, false);
+    return createTextField(property, value, formatMaskString,
+            updateOnKeystroke, enabledState, false);
   }
 
   /**
    * Creates a text field based on the given property
    * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param enabledState the state controlling the enabled state of the panel
@@ -683,49 +661,41 @@ public final class EntityUiUtil {
    * associated with a the format mask
    * @return a text field for the given property
    */
-  public static JTextField createTextField(final Property property, final EntityEditModel editModel,
-                                           final String formatMaskString, final boolean updateOnKeystroke,
-                                           final StateObserver enabledState,
+  public static JTextField createTextField(final Property property, final Value value, final String formatMaskString,
+                                           final boolean updateOnKeystroke, final StateObserver enabledState,
                                            final boolean valueContainsLiteralCharacters) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
-    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
-    checkProperty(property, editModel);
-    final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
+    requireNonNull(value, VALUE_PARAM_NAME);
+    final JTextField textField = initializeTextField(property, enabledState, formatMaskString, valueContainsLiteralCharacters);
     if (property.isString()) {
-      ValueLinks.textValueLink(textField, editModel.value(property.getPropertyId()), property.getFormat(), updateOnKeystroke);
+      ValueLinks.textValueLink(textField, value, property.getFormat(), updateOnKeystroke);
     }
     else if (property.isInteger()) {
-      ValueLinks.integerValueLink((IntegerField) textField, editModel.value(property.getPropertyId()), true, updateOnKeystroke);
+      ValueLinks.integerValueLink((IntegerField) textField, value, true, updateOnKeystroke);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DecimalField) textField, editModel.value(property.getPropertyId()), true, updateOnKeystroke);
+      ValueLinks.doubleValueLink((DecimalField) textField, value, true, updateOnKeystroke);
     }
     else if (property.isBigDecimal()) {
-      ValueLinks.bigDecimalValueLink((DecimalField) textField, editModel.value(property.getPropertyId()), updateOnKeystroke);
+      ValueLinks.bigDecimalValueLink((DecimalField) textField, value, updateOnKeystroke);
     }
     else if (property.isLong()) {
-      ValueLinks.longValueLink((LongField) textField, editModel.value(property.getPropertyId()), true, updateOnKeystroke);
+      ValueLinks.longValueLink((LongField) textField, value, true, updateOnKeystroke);
     }
     else if (property.isDate()) {
-      ValueLinks.localDateValueLink((JFormattedTextField) textField, editModel.value(property.getPropertyId()),
+      ValueLinks.localDateValueLink((JFormattedTextField) textField, value,
               property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else if (property.isTime()) {
-      ValueLinks.localTimeValueLink((JFormattedTextField) textField, editModel.value(property.getPropertyId()),
+      ValueLinks.localTimeValueLink((JFormattedTextField) textField, value,
               property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else if (property.isTimestamp()) {
-      ValueLinks.localDateTimeValueLink((JFormattedTextField) textField, editModel.value(property.getPropertyId()),
+      ValueLinks.localDateTimeValueLink((JFormattedTextField) textField, value,
               property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);
-    }
-    if (property.isString() && formatMaskString != null) {
-      ValueLinkValidators.addFormattedValidator(property, textField, editModel);
-    }
-    else {
-      ValueLinkValidators.addValidator(property, textField, editModel);
     }
 
     return textField;
@@ -733,61 +703,30 @@ public final class EntityUiUtil {
 
   /**
    * Creates a combo box based on the values of the given property
-   * @param propertyId the propertyId
-   * @param editModel the edit model to bind with the value
-   * @return a combo box based on the property values
-   */
-  public static SteppedComboBox createPropertyComboBox(final String propertyId, final EntityEditModel editModel) {
-    return createPropertyComboBox(propertyId, editModel, null);
-  }
-
-  /**
-   * Creates a combo box based on the values of the given property
-   * @param propertyId the propertyId
-   * @param editModel the edit model to bind with the value
+   * @param property the property
+   * @param value the value to bind to the field
+   * @param comboBoxModel the combo box model
    * @param enabledState the state controlling the enabled state of the panel
    * @return a combo box based on the property values
    */
-  public static SteppedComboBox createPropertyComboBox(final String propertyId, final EntityEditModel editModel,
-                                                       final StateObserver enabledState) {
-    return createPropertyComboBox(editModel.getEntityDefinition()
-                    .getColumnProperty(propertyId), editModel, enabledState);
+  public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final Value value,
+                                                       final ComboBoxModel comboBoxModel, final StateObserver enabledState) {
+    return createPropertyComboBox(property, value, comboBoxModel, enabledState, false);
   }
 
   /**
    * Creates a combo box based on the values of the given property
    * @param property the property
-   * @param editModel the edit model to bind with the value
-   * @return a combo box based on the property values
-   */
-  public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final EntityEditModel editModel) {
-    return createPropertyComboBox(property, editModel, null);
-  }
-
-  /**
-   * Creates a combo box based on the values of the given property
-   * @param property the property
-   * @param editModel the edit model to bind with the value
-   * @param enabledState the state controlling the enabled state of the panel
-   * @return a combo box based on the property values
-   */
-  public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final EntityEditModel editModel,
-                                                       final StateObserver enabledState) {
-    return createPropertyComboBox(property, editModel, enabledState, false);
-  }
-
-  /**
-   * Creates a combo box based on the values of the given property
-   * @param property the property
-   * @param editModel the edit model to bind with the value
+   * @param value the value to bind to the field
+   * @param comboBoxModel the combo box model
    * @param enabledState the state controlling the enabled state of the panel
    * @param editable if true then the combo box will be editable
    * @return a combo box based on the property values
    */
-  public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final EntityEditModel editModel,
-                                                       final StateObserver enabledState, final boolean editable) {
-    final SteppedComboBox comboBox = createComboBox(property, editModel,
-            (ComboBoxModel) ((SwingEntityEditModel) editModel).getComboBoxModel(property.getPropertyId()), enabledState, editable);
+  public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final Value value,
+                                                       final ComboBoxModel comboBoxModel, final StateObserver enabledState,
+                                                       final boolean editable) {
+    final SteppedComboBox comboBox = createComboBox(property, value, comboBoxModel, enabledState, editable);
     if (!editable) {
       addComboBoxCompletion(comboBox);
     }
@@ -826,9 +765,8 @@ public final class EntityUiUtil {
     }
   }
 
-  private static JTextField initializeTextField(final Property property, final EntityEditModel editModel,
-                                                final StateObserver enabledState, final String formatMaskString,
-                                                final boolean valueContainsLiteralCharacters) {
+  private static JTextField initializeTextField(final Property property, final StateObserver enabledState,
+                                                final String formatMaskString, final boolean valueContainsLiteralCharacters) {
     final JTextField field = initializeTextField(property, formatMaskString, valueContainsLiteralCharacters);
     if (enabledState != null) {
       UiUtil.linkToEnabledState(enabledState, field);
@@ -840,14 +778,12 @@ public final class EntityUiUtil {
     if (property.getMaxLength() > 0 && field.getDocument() instanceof SizedDocument) {
       ((SizedDocument) field.getDocument()).setMaxLength(property.getMaxLength());
     }
-    if (editModel.isLookupEnabled(property)) {
-      UiUtil.addLookupDialog(field, editModel.getValueProvider(property));
-    }
 
     return field;
   }
 
-  private static JTextField initializeTextField(final Property property, final String formatMaskString, final boolean valueContainsLiteralCharacters) {
+  private static JTextField initializeTextField(final Property property, final String formatMaskString,
+                                                final boolean valueContainsLiteralCharacters) {
     final JTextField field;
     if (property.isInteger()) {
       field = initializeIntField(property);
@@ -910,9 +846,9 @@ public final class EntityUiUtil {
     return field;
   }
 
-  private static JCheckBox initializeCheckBox(final Property property, final EntityEditModel editModel,
+  private static JCheckBox initializeCheckBox(final Property property, final Value value,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
-    ValueLinks.toggleValueLink(checkBox.getModel(), editModel.value(property.getPropertyId()), false);
+    ValueLinks.toggleValueLink(checkBox.getModel(), value, false);
     if (enabledState != null) {
       UiUtil.linkToEnabledState(enabledState, checkBox);
     }
@@ -940,12 +876,6 @@ public final class EntityUiUtil {
     cloned.setParseIntegerOnly(format.isParseIntegerOnly());
 
     return cloned;
-  }
-
-  private static void checkProperty(final Property property, final EntityEditModel editModel) {
-    if (!property.getEntityId().equals(editModel.getEntityId())) {
-      throw new IllegalArgumentException("Entity type mismatch: " + property.getEntityId() + ", should be: " + editModel.getEntityId());
-    }
   }
 
   /**
@@ -1144,33 +1074,6 @@ public final class EntityUiUtil {
     @Override
     public boolean isNullable() {
       return true;
-    }
-  }
-
-  private static final class ForeignKeyModelValue extends AbstractValue<String> {
-
-    private final EntityEditModel editModel;
-    private final String foreignKeyPropertyId;
-
-    private ForeignKeyModelValue(final EntityEditModel editModel, final String foreignKeyPropertyId) {
-      this.editModel = editModel;
-      this.foreignKeyPropertyId = foreignKeyPropertyId;
-      editModel.addValueListener(foreignKeyPropertyId, valueChange -> fireChangeEvent(get()));
-    }
-
-    @Override
-    public void set(final String value) {/*read only*/}
-
-    @Override
-    public String get() {
-      final Entity value = editModel.getForeignKey(foreignKeyPropertyId);
-
-      return value == null ? "" : value.toString();
-    }
-
-    @Override
-    public boolean isNullable() {
-      return false;
     }
   }
 }
