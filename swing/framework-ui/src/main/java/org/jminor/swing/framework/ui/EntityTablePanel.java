@@ -1250,11 +1250,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       case Types.BIGINT:
         return new LongInputProvider((Long) currentValue);
       case Types.CHAR:
-        return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property),
-                (String) currentValue, 1);
+        return new TextInputProvider(property.getCaption(), (String) currentValue, 1);
       case Types.VARCHAR:
-        return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property),
-                (String) currentValue, property.getMaxLength());
+        return new TextInputProvider(property.getCaption(), (String) currentValue, property.getMaxLength());
       case Types.BLOB:
         return new BlobInputProvider();
       default:
