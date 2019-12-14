@@ -193,8 +193,6 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public int getPropertyColumnIndex(final String propertyId) {return 0;}
     @Override
-    public String getStatusMessage() {return null;}
-    @Override
     public int getFetchCount() {return 0;}
     @Override
     public EntityTableModel<TestEntityEditModel> setFetchCount(final int fetchCount) {return null;}

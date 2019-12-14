@@ -311,12 +311,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final String getStatusMessage() {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final int getFetchCount() {
     return fetchCount;
   }
