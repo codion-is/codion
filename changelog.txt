@@ -5455,3 +5455,4 @@
   EntityTableModel.getStatusMessage() removed, SwingEntityTableModel implementation moved to EntityTablePanel
   EntityTablePanel.viewImage functionality removed
   Couple of EntityTableModel.getStatusMessage() implementations removed
+  Most instances of allowed replaced with enabled, such as setUpdateAllowed() is now setUpdateEnabled()

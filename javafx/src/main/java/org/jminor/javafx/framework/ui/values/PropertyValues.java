@@ -69,7 +69,7 @@ public final class PropertyValues {
    * @return a {@link Value} based on the entities selected in the given lookup model
    */
   public static Value lookupValue(final EntityLookupModel lookupModel) {
-    if (lookupModel.getMultipleSelectionAllowedValue().get()) {
+    if (lookupModel.getMultipleSelectionEnabledValue().get()) {
       return new EntityLookupMultiValue(lookupModel);
     }
     else {

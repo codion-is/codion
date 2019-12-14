@@ -152,7 +152,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @see #hasEditModel()
    * @see #setEditModel(EntityEditModel)
    */
-  boolean isDeleteAllowed();
+  boolean isDeleteEnabled();
 
   /**
    * @return true if this model has no {@link EntityEditModel} or if that edit model is read only
@@ -166,18 +166,18 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @see #hasEditModel()
    * @see #setEditModel(EntityEditModel)
    */
-  boolean isUpdateAllowed();
+  boolean isUpdateEnabled();
 
   /**
-   * @return true if this model allows multiple entities to be updated at a time
+   * @return true if multiple entities can be updated at a time
    */
-  boolean isBatchUpdateAllowed();
+  boolean isBatchUpdateEnabled();
 
   /**
-   * @param batchUpdateAllowed true if this model should allow multiple entities to be updated at a time
+   * @param batchUpdateEnabled true if this model should enable multiple entities to be updated at a time
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel<E> setBatchUpdateAllowed(boolean batchUpdateAllowed);
+  EntityTableModel<E> setBatchUpdateEnabled(boolean batchUpdateEnabled);
 
   /**
    * Returns the {@link ColumnSummaryModel} associated with the property identified by {@code propertyId}

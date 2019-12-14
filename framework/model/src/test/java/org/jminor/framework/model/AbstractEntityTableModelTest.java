@@ -212,25 +212,25 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void isUpdateAllowed() {
+  public void isUpdateEnabled() {
     final TableModel tableModel = createDetailTableModel();
     final EditModel editModel = createDetailEditModel();
-    assertFalse(tableModel.isUpdateAllowed());
+    assertFalse(tableModel.isUpdateEnabled());
     tableModel.setEditModel(editModel);
-    assertTrue(tableModel.isUpdateAllowed());
-    editModel.setUpdateAllowed(false);
-    assertFalse(tableModel.isUpdateAllowed());
+    assertTrue(tableModel.isUpdateEnabled());
+    editModel.setUpdateEnabled(false);
+    assertFalse(tableModel.isUpdateEnabled());
   }
 
   @Test
-  public void isDeleteAllowed() {
+  public void isDeleteEnabled() {
     final TableModel tableModel = createDetailTableModel();
     final EditModel editModel = createDetailEditModel();
-    assertFalse(tableModel.isDeleteAllowed());
+    assertFalse(tableModel.isDeleteEnabled());
     tableModel.setEditModel(editModel);
-    assertTrue(tableModel.isDeleteAllowed());
-    editModel.setDeleteAllowed(false);
-    assertFalse(tableModel.isDeleteAllowed());
+    assertTrue(tableModel.isDeleteEnabled());
+    editModel.setDeleteEnabled(false);
+    assertFalse(tableModel.isDeleteEnabled());
   }
 
   @Test
@@ -239,18 +239,18 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void deleteNotAllowed() {
-    testModel.getEditModel().setDeleteAllowed(false);
-    assertFalse(testModel.isDeleteAllowed());
+  public void deleteNotEnabled() {
+    testModel.getEditModel().setDeleteEnabled(false);
+    assertFalse(testModel.isDeleteEnabled());
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndexes(singletonList(0));
     assertThrows(IllegalStateException.class, testModel::deleteSelected);
   }
 
   @Test
-  public void updateNotAllowed() {
-    testModel.getEditModel().setUpdateAllowed(false);
-    assertFalse(testModel.isUpdateAllowed());
+  public void updateNotEnabled() {
+    testModel.getEditModel().setUpdateEnabled(false);
+    assertFalse(testModel.isUpdateEnabled());
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndexes(singletonList(0));
     final Entity entity = testModel.getSelectionModel().getSelectedItem();
@@ -259,9 +259,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void batchUpdateNotAllowed() {
-    testModel.setBatchUpdateAllowed(false);
-    assertFalse(testModel.isBatchUpdateAllowed());
+  public void batchUpdateNotEnabled() {
+    testModel.setBatchUpdateEnabled(false);
+    assertFalse(testModel.isBatchUpdateEnabled());
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndexes(asList(0, 1));
     final List<Entity> entities = testModel.getSelectionModel().getSelectedItems();

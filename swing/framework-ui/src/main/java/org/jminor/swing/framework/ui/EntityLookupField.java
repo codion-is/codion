@@ -331,7 +331,7 @@ public final class EntityLookupField extends JTextField {
       }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
-      ValueLinks.toggleValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionAllowedValue(), false);
+      ValueLinks.toggleValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionEnabledValue(), false);
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
       final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
@@ -404,7 +404,7 @@ public final class EntityLookupField extends JTextField {
         model.setSelectedEntities(list.getSelectedValuesList());
         UiUtil.getParentDialog(list).dispose();
       }, Messages.get(Messages.OK));
-      list.setSelectionMode(model.getMultipleSelectionAllowedValue().get() ?
+      list.setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       list.addMouseListener(new MouseAdapter() {
         @Override
@@ -468,7 +468,7 @@ public final class EntityLookupField extends JTextField {
       tablePanel.setIncludeConditionPanel(false);
       tablePanel.setIncludePopupMenu(false);
       tablePanel.setIncludeSouthPanel(false);
-      tablePanel.getJTable().setSelectionMode(model.getMultipleSelectionAllowedValue().get() ?
+      tablePanel.getJTable().setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       tablePanel.setTableDoubleClickAction(selectControl);
       tablePanel.initializePanel();

@@ -62,7 +62,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private List<PropertyTableColumn> initialColumns;
 
   private InsertAction insertAction = InsertAction.ADD_TOP;
-  private boolean batchUpdateAllowed = true;
+  private boolean batchUpdateEnabled = true;
   private boolean removeEntitiesOnDelete = true;
   private boolean refreshOnForeignKeyConditionValuesSet = true;
   private int fetchCount = -1;
@@ -249,8 +249,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isDeleteAllowed() {
-    return editModel != null && editModel.isDeleteAllowed();
+  public final boolean isDeleteEnabled() {
+    return editModel != null && editModel.isDeleteEnabled();
   }
 
   /** {@inheritDoc} */
@@ -261,20 +261,20 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isUpdateAllowed() {
-    return editModel != null && editModel.isUpdateAllowed();
+  public final boolean isUpdateEnabled() {
+    return editModel != null && editModel.isUpdateEnabled();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isBatchUpdateAllowed() {
-    return batchUpdateAllowed;
+  public final boolean isBatchUpdateEnabled() {
+    return batchUpdateEnabled;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final FXEntityListModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
-    this.batchUpdateAllowed = batchUpdateAllowed;
+  public final FXEntityListModel setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
+    this.batchUpdateEnabled = batchUpdateEnabled;
     return this;
   }
 
@@ -326,10 +326,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities);
-    if (!isUpdateAllowed()) {
+    if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not allowed via this table model");
     }
-    if (entities.size() > 1 && !batchUpdateAllowed) {
+    if (entities.size() > 1 && !batchUpdateEnabled) {
       throw new IllegalStateException("Batch update of entities is not allowed!");
     }
     editModel.update(entities);

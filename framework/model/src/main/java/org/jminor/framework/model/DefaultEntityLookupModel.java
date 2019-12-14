@@ -79,7 +79,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   private final Value<String> searchStringValue = Values.value("");
   private final Value<String> multipleItemSeparatorValue = Values.value(",");
-  private final Value<Boolean> multipleSelectionAllowedValue = Values.value(true);
+  private final Value<Boolean> multipleSelectionEnabledValue = Values.value(true);
 
   private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
   private Condition.Provider additionalConditionProvider;
@@ -166,7 +166,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     if (nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
-    if (entities != null && entities.size() > 1 && !multipleSelectionAllowedValue.get()) {
+    if (entities != null && entities.size() > 1 && !multipleSelectionEnabledValue.get()) {
       throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
     }
     //todo handle non-loaded entities, select from db?
@@ -280,8 +280,8 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public Value<Boolean> getMultipleSelectionAllowedValue() {
-    return multipleSelectionAllowedValue;
+  public Value<Boolean> getMultipleSelectionEnabledValue() {
+    return multipleSelectionEnabledValue;
   }
 
   /** {@inheritDoc} */
@@ -306,7 +306,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       throw new IllegalStateException("No search properties provided for lookup model: " + entityId);
     }
     final Condition.Set baseCondition = conditionSet(Conjunction.OR);
-    final String[] lookupTexts = multipleSelectionAllowedValue.get() ?
+    final String[] lookupTexts = multipleSelectionEnabledValue.get() ?
             searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final ColumnProperty lookupProperty : lookupProperties) {
       final LookupSettings lookupSettings = propertyLookupSettings.get(lookupProperty);

@@ -177,15 +177,15 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public EntityTableConditionModel getConditionModel() {return null;}
     @Override
-    public boolean isDeleteAllowed() {return false;}
+    public boolean isDeleteEnabled() {return false;}
     @Override
     public boolean isReadOnly() {return false;}
     @Override
-    public boolean isUpdateAllowed() {return false;}
+    public boolean isUpdateEnabled() {return false;}
     @Override
-    public boolean isBatchUpdateAllowed() {return false;}
+    public boolean isBatchUpdateEnabled() {return false;}
     @Override
-    public EntityTableModel<TestEntityEditModel> setBatchUpdateAllowed(final boolean batchUpdateAllowed) {return null;}
+    public EntityTableModel<TestEntityEditModel> setBatchUpdateEnabled(final boolean batchUpdateEnabled) {return null;}
     @Override
     public ColumnSummaryModel getColumnSummaryModel(final String propertyId) {return null;}
     @Override

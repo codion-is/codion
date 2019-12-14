@@ -325,14 +325,14 @@ public class EntityTableView extends TableView<Entity> {
   private boolean includeUpdateSelectedControls() {
     final FXEntityListModel entityTableModel = getListModel();
 
-    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateAllowed() &&
-            entityTableModel.isBatchUpdateAllowed() &&
+    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
+            entityTableModel.isBatchUpdateEnabled() &&
             !entityTableModel.getEntityDefinition().getUpdatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {
     final FXEntityListModel entityTableModel = getListModel();
 
-    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteAllowed();
+    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteEnabled();
   }
 }

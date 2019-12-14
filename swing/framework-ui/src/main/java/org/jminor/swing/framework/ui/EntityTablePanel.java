@@ -487,21 +487,21 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   /**
    * Creates a {@link ControlSet} containing controls for updating the value of a single property
    * for the selected entities. These controls are enabled as long as the selection is not empty
-   * and {@link EntityEditModel#getAllowUpdateObserver()} is enabled.
+   * and {@link EntityEditModel#getUpdateEnabledObserver()} is enabled.
    * @return a control set containing a set of controls, one for each updatable property in the
    * underlying entity, for performing an update on the selected entities
    * @see #initializePanel()
-   * @throws IllegalStateException in case the underlying edit model is read only or updating is not allowed
+   * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
    * @see #includeUpdateSelectedProperty(Property)
-   * @see EntityEditModel#getAllowUpdateObserver()
+   * @see EntityEditModel#getUpdateEnabledObserver()
    */
   public ControlSet getUpdateSelectedControlSet() {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
     final StateObserver selectionNotEmpty = getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver();
-    final StateObserver updateAllowed = getEntityTableModel().getEditModel().getAllowUpdateObserver();
-    final StateObserver enabled = States.aggregateState(Conjunction.AND, selectionNotEmpty, updateAllowed);
+    final StateObserver updateEnabled = getEntityTableModel().getEditModel().getUpdateEnabledObserver();
+    final StateObserver enabled = States.aggregateState(Conjunction.AND, selectionNotEmpty, updateEnabled);
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
@@ -527,7 +527,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
 
   /**
    * @return a control for deleting the selected entities
-   * @throws IllegalStateException in case the underlying model is read only or if deleting is not allowed
+   * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
    */
   public final Control getDeleteSelectedControl() {
     if (!includeDeleteSelectedControl()) {
@@ -535,7 +535,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
     return control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getEntityTableModel().getEditModel().getAllowDeleteObserver(),
+                    getEntityTableModel().getEditModel().getDeleteEnabledObserver(),
                     getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
@@ -1383,15 +1383,15 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private boolean includeUpdateSelectedControls() {
     final SwingEntityTableModel entityTableModel = getEntityTableModel();
 
-    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateAllowed() &&
-            entityTableModel.isBatchUpdateAllowed() &&
+    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
+            entityTableModel.isBatchUpdateEnabled() &&
             !entityTableModel.getEntityDefinition().getUpdatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {
     final SwingEntityTableModel entityTableModel = getEntityTableModel();
 
-    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteAllowed();
+    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteEnabled();
   }
 
   private void initializeUI() {
