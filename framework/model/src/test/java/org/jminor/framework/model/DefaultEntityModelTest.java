@@ -105,9 +105,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void removeRefreshDoneListener(final EventListener listener) {}
     @Override
-    public void addSortingListener(final EventListener listener) {}
+    public void addSortListener(final EventListener listener) {}
     @Override
-    public void removeSortingListener(final EventListener listener) {}
+    public void removeSortListener(final EventListener listener) {}
     @Override
     public void addTableDataChangedListener(final EventListener listener) {}
     @Override
@@ -141,7 +141,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void setRegularExpressionSearch(final boolean value) {}
     @Override
-    public void sortContents() {}
+    public void sort() {}
     @Override
     public TableSortModel<Entity, Property, Object> getSortModel() {return null;}
     @Override

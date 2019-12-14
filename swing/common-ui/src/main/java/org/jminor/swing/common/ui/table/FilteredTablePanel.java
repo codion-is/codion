@@ -561,7 +561,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   private void bindEvents() {
-    tableModel.addSortingListener(table.getTableHeader()::repaint);
+    tableModel.addSortListener(table.getTableHeader()::repaint);
     tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
       if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
         scrollToCoordinate(selected, table.getSelectedColumn(), false, false);

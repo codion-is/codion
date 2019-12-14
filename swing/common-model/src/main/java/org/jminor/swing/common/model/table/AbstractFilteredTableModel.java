@@ -300,7 +300,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void sortContents() {
+  public final void sort() {
     final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
     sortModel.sort(visibleItems);
     fireTableRowsUpdated(0, visibleItems.size());
@@ -453,13 +453,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void addSortingListener(final EventListener listener) {
+  public final void addSortListener(final EventListener listener) {
     sortEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSortingListener(final EventListener listener) {
+  public final void removeSortListener(final EventListener listener) {
     sortEvent.removeListener(listener);
   }
 
@@ -571,7 +571,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     for (final ColumnConditionModel conditionModel : columnModel.getColumnFilterModels()) {
       conditionModel.addConditionStateListener(this::filterContents);
     }
-    sortModel.addSortingStateChangedListener(this::sortContents);
+    sortModel.addSortingStateChangedListener(this::sort);
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
         rowsDeletedEvent.fire(asList(e.getFirstRow(), e.getLastRow()));

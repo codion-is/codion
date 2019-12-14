@@ -5458,3 +5458,4 @@
   Most instances of allowed replaced with enabled, such as setUpdateAllowed() is now setUpdateEnabled()
   FilteredTablePanel, minor refactoring
   AbstractFilteredTableModel, minor event model changes
+  FilteredTableModel.sortContents() renamed to sort(), sortingListener renamed to sortListener

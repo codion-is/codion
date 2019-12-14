@@ -344,7 +344,7 @@ public final class AbstractFilteredTableModelTest {
   public void sorting() {
     final AtomicInteger actionsPerformed = new AtomicInteger();
     final EventListener listener = actionsPerformed::incrementAndGet;
-    tableModel.addSortingListener(listener);
+    tableModel.addSortListener(listener);
 
     tableModel.refresh();
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
@@ -379,7 +379,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(null));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.UNSORTED, false);
-    tableModel.removeSortingListener(listener);
+    tableModel.removeSortListener(listener);
   }
 
   @Test
