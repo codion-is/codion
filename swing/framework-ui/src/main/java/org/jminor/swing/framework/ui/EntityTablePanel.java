@@ -103,7 +103,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -316,7 +315,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolBar();
-    initializeDefaultEditors();
   }
 
   /**
@@ -1052,19 +1050,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
   }
 
-  /**
-   * Creates a TableCellEditor for the given property, returns null if no editor is available
-   * @param property the property
-   * @return a TableCellEditor for the given property
-   */
-  protected TableCellEditor createCellEditor(final Property property) {
-    if (property.isReadOnly()) {
-      return null;
-    }
-
-    return new EntityTableCellEditor(this);
-  }
-
   protected ControlSet getToolBarControls(final List<ControlSet> additionalToolBarControlSets) {
     final ControlSet toolbarControls = new ControlSet("");
     if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL)) {
@@ -1241,11 +1226,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
     final Collection values = Entities.getDistinctValues(property.getPropertyId(), toUpdate);
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
-    if (property instanceof ValueListProperty) {
-      return new ValueListInputProvider(currentValue, ((ValueListProperty) property).getValues());
-    }
     if (property instanceof ForeignKeyProperty) {
       return createEntityInputProvider((ForeignKeyProperty) property, (Entity) currentValue, getEntityTableModel().getEditModel());
+    }
+    if (property instanceof ValueListProperty) {
+      return new ValueListInputProvider(currentValue, ((ValueListProperty) property).getValues());
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
@@ -1299,7 +1284,20 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return the TableCellRenderer for the given property
    */
   protected TableCellRenderer initializeTableCellRenderer(final Property property) {
-    return EntityTableCellRenderers.getTableCellRenderer(getEntityTableModel(), property);
+    return EntityTableCellRenderers.createTableCellRenderer(getEntityTableModel(), property);
+  }
+
+  /**
+   * Creates a TableCellEditor for the given property, returns null if no editor is available
+   * @param property the property
+   * @return a TableCellEditor for the given property
+   */
+  protected TableCellEditor initializeTableCellEditor(final Property property) {
+    if (property.isReadOnly()) {
+      return null;
+    }
+
+    return new EntityTableCellEditor(getEntityTableModel().getConnectionProvider(), property);
   }
 
   /**
@@ -1481,11 +1479,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
             filteredItemCount + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
-  private void initializeDefaultEditors() {
-    getTableModel().getColumnModel().getAllColumns().forEach(column ->
-            column.setCellEditor(createCellEditor((Property) column.getIdentifier())));
-  }
-
   private void bindPanelEvents() {
     if (includeDeleteSelectedControl()) {
       UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
@@ -1509,15 +1502,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   private void initializeTable() {
+    getJTable().putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
     getJTable().addMouseListener(initializeTableMouseListener());
-
-    final Enumeration<TableColumn> columnEnumeration = getTableModel().getColumnModel().getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final TableColumn column = columnEnumeration.nextElement();
+    getTableModel().getColumnModel().getAllColumns().forEach(column -> {
       final Property property = (Property) column.getIdentifier();
       column.setCellRenderer(initializeTableCellRenderer(property));
+      column.setCellEditor(initializeTableCellEditor(property));
       column.setResizable(true);
-    }
+    });
     final JTableHeader header = getJTable().getTableHeader();
     final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
     final Font defaultFont = getJTable().getFont();

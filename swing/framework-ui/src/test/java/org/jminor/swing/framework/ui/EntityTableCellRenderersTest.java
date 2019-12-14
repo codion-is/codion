@@ -27,7 +27,7 @@ public class EntityTableCellRenderersTest {
   public void test() {
     final EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
-    final EntityTableCellRenderer renderer = EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
+    final EntityTableCellRenderer renderer = EntityTableCellRenderers.createTableCellRenderer(tablePanel.getEntityTableModel(),
             DOMAIN.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_NAME));
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, false, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, false, 0, 0);
@@ -46,7 +46,7 @@ public class EntityTableCellRenderersTest {
   public void entityMismatch() {
     final EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
-    assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
+    assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderers.createTableCellRenderer(tablePanel.getEntityTableModel(),
             DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DEPARTMENT_NAME)));
   }
 }

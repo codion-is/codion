@@ -5489,3 +5489,7 @@
   TextInputComponent no longer adds a lookup action to the text field
   InputProvider.setValue() added
   EntityTableCellEditor added
+  EntityTableCellEditor improvements
+  EntityUiUtil, major refactoring, EntityEditModel parameters replaced with Value
+  EntityUiUtil.createInputComponent() added
+  EntityTableCellEditor makes use of the just refactored EntityUiUtil to do its thing
