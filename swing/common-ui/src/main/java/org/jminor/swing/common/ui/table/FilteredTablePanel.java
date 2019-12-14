@@ -569,28 +569,30 @@ public class FilteredTablePanel<R, C> extends JPanel {
     });
     tableModel.addRefreshStartedListener(() -> UiUtil.setWaitCursor(true, FilteredTablePanel.this));
     tableModel.addRefreshDoneListener(() -> UiUtil.setWaitCursor(false, FilteredTablePanel.this));
-    tableModel.getColumnModel().getAllColumns().forEach(column -> SwingUtilities.invokeLater(() -> {
-      final ColumnConditionModel model = tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier());
-      if (model != null) {
-        model.addConditionStateListener(() -> {
-          if (model.isEnabled()) {
-            addFilterIndicator(column);
-          }
-          else {
-            removeFilterIndicator(column);
-          }
-
-          getJTable().getTableHeader().repaint();
-        });
-        if (model.isEnabled()) {
-          addFilterIndicator(column);
-        }
-      }
-    }));
+    tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
     UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(table, false));
     UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(table, true));
     UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(table, true));
     UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(table, false));
+  }
+
+  private void bindFilterIndicatorEvents(final TableColumn column) {
+    final ColumnConditionModel<C> model = tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier());
+    if (model != null) {
+      model.addConditionStateListener(() -> SwingUtilities.invokeLater(() -> {
+        if (model.isEnabled()) {
+          addFilterIndicator(column);
+        }
+        else {
+          removeFilterIndicator(column);
+        }
+
+        getJTable().getTableHeader().repaint();
+      }));
+      if (model.isEnabled()) {
+        SwingUtilities.invokeLater(() -> addFilterIndicator(column));
+      }
+    }
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
