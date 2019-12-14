@@ -95,7 +95,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.time.LocalDate;
@@ -488,21 +487,21 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   /**
    * Creates a {@link ControlSet} containing controls for updating the value of a single property
    * for the selected entities. These controls are enabled as long as the selection is not empty
-   * and {@link EntityEditModel#getAllowUpdateObserver()} is enabled.
+   * and {@link EntityEditModel#getUpdateEnabledObserver()} is enabled.
    * @return a control set containing a set of controls, one for each updatable property in the
    * underlying entity, for performing an update on the selected entities
    * @see #initializePanel()
-   * @throws IllegalStateException in case the underlying edit model is read only or updating is not allowed
+   * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
    * @see #includeUpdateSelectedProperty(Property)
-   * @see EntityEditModel#getAllowUpdateObserver()
+   * @see EntityEditModel#getUpdateEnabledObserver()
    */
   public ControlSet getUpdateSelectedControlSet() {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
     final StateObserver selectionNotEmpty = getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver();
-    final StateObserver updateAllowed = getEntityTableModel().getEditModel().getAllowUpdateObserver();
-    final StateObserver enabled = States.aggregateState(Conjunction.AND, selectionNotEmpty, updateAllowed);
+    final StateObserver updateEnabled = getEntityTableModel().getEditModel().getUpdateEnabledObserver();
+    final StateObserver enabled = States.aggregateState(Conjunction.AND, selectionNotEmpty, updateEnabled);
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
@@ -528,7 +527,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
 
   /**
    * @return a control for deleting the selected entities
-   * @throws IllegalStateException in case the underlying model is read only or if deleting is not allowed
+   * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
    */
   public final Control getDeleteSelectedControl() {
     if (!includeDeleteSelectedControl()) {
@@ -536,7 +535,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
     return control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getEntityTableModel().getEditModel().getAllowDeleteObserver(),
+                    getEntityTableModel().getEditModel().getDeleteEnabledObserver(),
                     getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
@@ -739,20 +738,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     selectionUp.setDescription(MESSAGES.getString("selection_up_tip"));
 
     return selectionUp;
-  }
-
-  /**
-   * Creates a Control for viewing an image based on the entity selected in this EntityTablePanel.
-   * The action shows an image found at the path specified by the value of the given propertyId.
-   * If no entity is selected or the image path value is null no action is performed.
-   * Note that for the image to be displayed {@link #viewImage} must be implemented.
-   * @param imagePathPropertyId the ID of the property specifying the image path
-   * @return a Control for viewing an image based on the selected entity in a EntityTablePanel
-   */
-  public final Control getViewImageControl(final String imagePathPropertyId) {
-    requireNonNull(imagePathPropertyId, "imagePathPropertyId");
-    return control(() -> viewImageForSelected(imagePathPropertyId), "View image",
-            getTableModel().getSelectionModel().getSingleSelectionObserver());
   }
 
   /**
@@ -1188,7 +1173,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return true if the given property should be included in the update selected menu.
    * @see #getUpdateSelectedControlSet()
    */
-  @SuppressWarnings("UnusedParameters")
   protected boolean includeUpdateSelectedProperty(final Property property) {
     return true;
   }
@@ -1319,15 +1303,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * Displays the given image
-   * @param imagePath the path to the image
-   * @throws IOException in case the image is not found
-   */
-  protected void viewImage(final String imagePath) throws IOException {
-    throw new UnsupportedOperationException("viewImage must be overridden");
-  }
-
-  /**
    * Initializes the south panel toolbar, by default based on {@code getToolBarControls()}
    * @return the toolbar to add to the south panel
    */
@@ -1369,18 +1344,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     };
   }
 
-  private void viewImageForSelected(final String imagePathPropertyId) {
-    try {
-      final Entity selected = getTableModel().getSelectionModel().getSelectedItem();
-      if (selected.isNotNull(imagePathPropertyId)) {
-        viewImage(selected.getString(imagePathPropertyId));
-      }
-    }
-    catch (final IOException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
-
   private void setupControls() {
     if (includeDeleteSelectedControl()) {
       setControl(DELETE_SELECTED, getDeleteSelectedControl());
@@ -1419,15 +1382,15 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private boolean includeUpdateSelectedControls() {
     final SwingEntityTableModel entityTableModel = getEntityTableModel();
 
-    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateAllowed() &&
-            entityTableModel.isBatchUpdateAllowed() &&
+    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
+            entityTableModel.isBatchUpdateEnabled() &&
             !entityTableModel.getEntityDefinition().getUpdatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {
     final SwingEntityTableModel entityTableModel = getEntityTableModel();
 
-    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteAllowed();
+    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteEnabled();
   }
 
   private void initializeUI() {
@@ -1490,10 +1453,19 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
 
   private void updateStatusMessage() {
     if (statusMessageLabel != null) {
-      final String status = getEntityTableModel().getStatusMessage();
+      final String status = getStatusMessage();
       statusMessageLabel.setText(status);
       statusMessageLabel.setToolTipText(status);
     }
+  }
+
+  private String getStatusMessage() {
+    final SwingEntityTableModel tableModel = getEntityTableModel();
+    final int filteredItemCount = tableModel.getFilteredItemCount();
+
+    return tableModel.getRowCount() + " (" + tableModel.getSelectionModel().getSelectionCount() + " " +
+            MESSAGES.getString("selected") + (filteredItemCount > 0 ? ", " +
+            filteredItemCount + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
   private void bindPanelEvents() {

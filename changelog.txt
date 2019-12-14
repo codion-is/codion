@@ -5444,7 +5444,7 @@
   FilteredTableModel.findNext() and findPrevious() condition parameter now Predicate<String>
   EntityTablePanel.initializeTableMouseListener() now private, typos fixed
   DefaultEntityLookupModel, EntityTablePanel, minor refactoring, Util.join() added
-  PropertyConditionModel, removed uncecessary override of getCondition()
+  PropertyConditionModel, removed unnecessary override of getCondition()
   DefaultPropertyConditionModel.toString() removed, replaced with DefaultEntityTableConditionModel.toString(ColumnConditionModel)
   PropertyConditionModel removed, didn't add much at all besides complexity
   EntityConnectionProvider no longer generic
@@ -5472,3 +5472,15 @@
   Demo module-info.java fixed after restructuring
   Petclinic demo added, unfinished
   EntityTestUnit.testEntity() renamed to test()
+  FilteredComboBoxModel.replaceItem() added
+  SwingEntityComboBoxModel now calls replaceItem() in UpdateListener
+  ObservableEntityList.isFiltered() bug fixed, refactored
+  FilteredModel, filterCondition semantics totally changed when FilterCondition was replaced with Predicate, renamed to includeCondition
+  EntityTableModel.getStatusMessage() removed, SwingEntityTableModel implementation moved to EntityTablePanel
+  EntityTablePanel.viewImage functionality removed
+  Couple of EntityTableModel.getStatusMessage() implementations removed
+  Most instances of allowed replaced with enabled, such as setUpdateAllowed() is now setUpdateEnabled()
+  FilteredTablePanel, minor refactoring
+  AbstractFilteredTableModel, minor event model changes
+  FilteredTableModel.sortContents() renamed to sort(), sortingListener renamed to sortListener
+  FilteredTableModel.getValues() split into getValues() and getSelectedValues()

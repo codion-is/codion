@@ -234,7 +234,7 @@ public final class ClientUserMonitor {
             addItems(singletonList(newUserInfo), true, false);
           }
         }
-        sortContents();
+        sort();
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);

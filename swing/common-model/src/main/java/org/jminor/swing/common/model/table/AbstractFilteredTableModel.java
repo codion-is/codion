@@ -30,9 +30,11 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A TableModel implementation that supports filtering, searching and sorting.
@@ -49,9 +51,8 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C, TableColumn> {
 
-  private final Event filteringDoneEvent = Events.event();
-  private final Event sortingStartedEvent = Events.event();
-  private final Event sortingDoneEvent = Events.event();
+  private final Event filterEvent = Events.event();
+  private final Event sortEvent = Events.event();
   private final Event refreshStartedEvent = Events.event();
   private final Event refreshDoneEvent = Events.event();
   private final Event tableDataChangedEvent = Events.event();
@@ -89,9 +90,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
 
   /**
-   * the filter condition used by this model
+   * the include condition used by this model
    */
-  private Predicate<R> filterCondition;
+  private Predicate<R> includeCondition;
 
   /**
    * true if searching the table model should be done via regular expressions
@@ -109,7 +110,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     this.sortModel = requireNonNull(sortModel, "sortModel");
     this.columnModel = new SwingFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
     this.selectionModel = new SwingTableSelectionModel<>(this);
-    this.filterCondition = new DefaultFilterCondition<>(this.columnModel.getColumnFilterModels());
+    this.includeCondition = new DefaultIncludeCondition<>(this.columnModel.getColumnFilterModels());
     bindEventsInternal();
   }
 
@@ -262,17 +263,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final Collection getValues(final C columnIdentifier, final boolean selectedOnly) {
-    final int columnModelIndex = columnModel.getTableColumn(columnIdentifier).getModelIndex();
-    final Collection values = new ArrayList();
-    if (selectedOnly) {
-      getSelectionModel().getSelectedIndexes().forEach(rowIndex -> values.add(getValueAt(rowIndex, columnModelIndex)));
-    }
-    else {
-      IntStream.range(0, getVisibleItemCount()).forEach(rowIndex -> values.add(getValueAt(rowIndex, columnModelIndex)));
-    }
+  public final Collection getValues(final C columnIdentifier) {
+    return getColumnValues(IntStream.range(0, getVisibleItemCount()).boxed(),
+            columnModel.getTableColumn(columnIdentifier).getModelIndex());
+  }
 
-    return values;
+  /** {@inheritDoc} */
+  @Override
+  public final Collection getSelectedValues(final C columnIdentifier) {
+    return getColumnValues(getSelectionModel().getSelectedIndexes().stream(),
+            columnModel.getTableColumn(columnIdentifier).getModelIndex());
   }
 
   /** {@inheritDoc} */
@@ -301,54 +301,45 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void sortContents() {
-    try {
-      sortingStartedEvent.fire();
-      final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
-      sortModel.sort(visibleItems);
-      fireTableRowsUpdated(0, visibleItems.size());
-      selectionModel.setSelectedItems(selectedItems);
-    }
-    finally {
-      sortingDoneEvent.fire();
-    }
+  public final void sort() {
+    final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
+    sortModel.sort(visibleItems);
+    fireTableRowsUpdated(0, visibleItems.size());
+    selectionModel.setSelectedItems(selectedItems);
+    sortEvent.fire();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void filterContents() {
-    try {
-      final List<R> selectedItems = selectionModel.getSelectedItems();
-      visibleItems.addAll(filteredItems);
-      filteredItems.clear();
-      if (filterCondition != null) {
-        for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
-          final R item = iterator.next();
-          if (!filterCondition.test(item)) {
-            filteredItems.add(item);
-            iterator.remove();
-          }
+    final List<R> selectedItems = selectionModel.getSelectedItems();
+    visibleItems.addAll(filteredItems);
+    filteredItems.clear();
+    if (includeCondition != null) {
+      for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
+        final R item = iterator.next();
+        if (!includeCondition.test(item)) {
+          filteredItems.add(item);
+          iterator.remove();
         }
       }
-      sortModel.sort(visibleItems);
-      fireTableDataChanged();
-      selectionModel.setSelectedItems(selectedItems);
     }
-    finally {
-      filteringDoneEvent.fire();
-    }
+    sortModel.sort(visibleItems);
+    fireTableDataChanged();
+    selectionModel.setSelectedItems(selectedItems);
+    filterEvent.fire();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Predicate<R> getFilterCondition() {
-    return filterCondition;
+  public final Predicate<R> getIncludeCondition() {
+    return includeCondition;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setFilterCondition(final Predicate<R> filterCondition) {
-    this.filterCondition = filterCondition;
+  public final void setIncludeCondition(final Predicate<R> includeCondition) {
+    this.includeCondition = includeCondition;
     filterContents();
   }
 
@@ -452,25 +443,25 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void addFilteringListener(final EventListener listener) {
-    filteringDoneEvent.addListener(listener);
+    filterEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeFilteringListener(final EventListener listener) {
-    filteringDoneEvent.removeListener(listener);
+    filterEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSortingListener(final EventListener listener) {
-    sortingDoneEvent.addListener(listener);
+  public final void addSortListener(final EventListener listener) {
+    sortEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSortingListener(final EventListener listener) {
-    sortingDoneEvent.removeListener(listener);
+  public final void removeSortListener(final EventListener listener) {
+    sortEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -537,7 +528,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected final void addItems(final List<R> items, final int index, final boolean sortAfterAdding) {
     int counter = 0;
     for (final R item : items) {
-      if (filterCondition == null || filterCondition.test(item)) {
+      if (includeCondition == null || includeCondition.test(item)) {
         visibleItems.add(index + counter++, item);
       }
       else {
@@ -581,12 +572,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     for (final ColumnConditionModel conditionModel : columnModel.getColumnFilterModels()) {
       conditionModel.addConditionStateListener(this::filterContents);
     }
-    sortModel.addSortingStateChangedListener(this::sortContents);
+    sortModel.addSortingStateChangedListener(this::sort);
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
         rowsDeletedEvent.fire(asList(e.getFirstRow(), e.getLastRow()));
       }
     });
+  }
+
+  private List getColumnValues(final Stream<Integer> rowIndexStream, final int columnModelIndex) {
+    return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
   }
 
   private RowColumn findColumnValue(final int row, final Predicate<String> condition) {
@@ -624,11 +619,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
   }
 
-  private static final class DefaultFilterCondition<R, C> implements Predicate<R> {
+  private static final class DefaultIncludeCondition<R, C> implements Predicate<R> {
 
     private final Collection<? extends ColumnConditionModel<C>> columnFilters;
 
-    private DefaultFilterCondition(final Collection<? extends ColumnConditionModel<C>> columnFilters) {
+    private DefaultIncludeCondition(final Collection<? extends ColumnConditionModel<C>> columnFilters) {
       this.columnFilters = columnFilters;
     }
 
@@ -680,7 +675,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
     @Override
     public Collection getValues() {
-      return tableModel.getValues(columnIdentifier, isValueSubset());
+      return isValueSubset() ? tableModel.getSelectedValues(columnIdentifier) : tableModel.getValues(columnIdentifier);
     }
 
     @Override

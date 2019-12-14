@@ -204,20 +204,20 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   EntityDefinition getEntityDefinition();
 
   /**
-   * @return true if this model is read only, that is if insert, update and delete are not allowed
-   * @see #isInsertAllowed()
-   * @see #isUpdateAllowed()
-   * @see #isDeleteAllowed()
+   * @return true if this model is read only, that is if insert, update and delete are not enabled
+   * @see #isInsertEnabled()
+   * @see #isUpdateEnabled()
+   * @see #isDeleteEnabled()
    */
   boolean isReadOnly();
 
   /**
-   * Makes this model read-only by disallowing insert, update and delete
+   * Makes this model read-only by disabling insert, update and delete
    * @param readOnly the read only status
    * @return this edit model instance
-   * @see #setInsertAllowed(boolean)
-   * @see #setUpdateAllowed(boolean)
-   * @see #setDeleteAllowed(boolean)
+   * @see #setInsertEnabled(boolean)
+   * @see #setUpdateEnabled(boolean)
+   * @see #setDeleteEnabled(boolean)
    */
   EntityEditModel setReadOnly(boolean readOnly);
 
@@ -235,37 +235,37 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   EntityEditModel setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
 
   /**
-   * @return true if this model should allow records to be inserted
+   * @return true if this model should enable records to be inserted
    */
-  boolean isInsertAllowed();
+  boolean isInsertEnabled();
 
   /**
-   * @param value true if this model should allow inserts
+   * @param insertEnabled true if this model should enable inserts
    * @return this edit model instance
    */
-  EntityEditModel setInsertAllowed(boolean value);
+  EntityEditModel setInsertEnabled(boolean insertEnabled);
 
   /**
-   * @return true if this model should allow records to be updated
+   * @return true if this model should enable records to be updated
    */
-  boolean isUpdateAllowed();
+  boolean isUpdateEnabled();
 
   /**
-   * @param value true if this model should allow records to be updated
+   * @param updateEnabled true if this model should enable records to be updated
    * @return this edit model instance
    */
-  EntityEditModel setUpdateAllowed(boolean value);
+  EntityEditModel setUpdateEnabled(boolean updateEnabled);
 
   /**
    * @return true if this model should allow records to be deleted
    */
-  boolean isDeleteAllowed();
+  boolean isDeleteEnabled();
 
   /**
-   * @param value true if this model should allow records to be deleted
+   * @param deleteEnabled true if this model should enable records to be deleted
    * @return this edit model instance
    */
-  EntityEditModel setDeleteAllowed(boolean value);
+  EntityEditModel setDeleteEnabled(boolean deleteEnabled);
 
   /**
    * Returns true if this edit model posts its insert, update and delete events on the
@@ -344,9 +344,9 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * Returns true if values based on this property should be available for lookup via this EditModel.
    * This means displaying all the distinct property values to the user, allowing her to select one.
    * @param property the property
-   * @return true if value lookup should be allowed for this property
+   * @return true if value lookup should be enabled for this property
    */
-  boolean isLookupAllowed(Property property);
+  boolean isLookupEnabled(Property property);
 
   /**
    * @param propertyId the property ID
@@ -464,10 +464,10 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
 
   /**
    * @return the state used to determine if deleting should be enabled
-   * @see #isDeleteAllowed()
-   * @see #setDeleteAllowed(boolean)
+   * @see #isDeleteEnabled()
+   * @see #setDeleteEnabled(boolean)
    */
-  StateObserver getAllowDeleteObserver();
+  StateObserver getDeleteEnabledObserver();
 
   /**
    * @return a {@link StateObserver} indicating whether or not the primary key of the active entity is null
@@ -476,17 +476,17 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
 
   /**
    * @return the {@link StateObserver} used to determine if updating should be enabled
-   * @see #isUpdateAllowed()
-   * @see #setUpdateAllowed(boolean)
+   * @see #isUpdateEnabled()
+   * @see #setUpdateEnabled(boolean)
    */
-  StateObserver getAllowUpdateObserver();
+  StateObserver getUpdateEnabledObserver();
 
   /**
    * @return the {@link StateObserver} used to determine if inserting should be enabled
-   * @see #isInsertAllowed()
-   * @see #setInsertAllowed(boolean)
+   * @see #isInsertEnabled()
+   * @see #setInsertEnabled(boolean)
    */
-  StateObserver getAllowInsertObserver();
+  StateObserver getInsertEnabledObserver();
 
   /**
    * @param propertyId the ID of the property for which to retrieve the event

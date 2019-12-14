@@ -81,8 +81,8 @@ public final class DefaultEntityLookupModelTest {
   }
 
   @Test
-  public void setSelectedEntitiesMultipleNotAllowed() {
-    lookupModel.getMultipleSelectionAllowedValue().set(false);
+  public void setMultipleSelectionNotEnabled() {
+    lookupModel.getMultipleSelectionEnabledValue().set(false);
     final Collection<Entity> entities = asList(DOMAIN.entity(TestDomain.T_EMP), DOMAIN.entity(TestDomain.T_EMP));
     assertThrows(IllegalArgumentException.class, () -> lookupModel.setSelectedEntities(entities));
   }
@@ -103,7 +103,7 @@ public final class DefaultEntityLookupModelTest {
 
   @Test
   public void lookupModel() throws Exception {
-    lookupModel.getMultipleSelectionAllowedValue().set(true);
+    lookupModel.getMultipleSelectionEnabledValue().set(true);
     lookupModel.setWildcard("%");
     lookupModel.setSearchString("joh");
     assertFalse(lookupModel.searchStringRepresentsSelected());
@@ -199,7 +199,7 @@ public final class DefaultEntityLookupModelTest {
 
   @Test
   public void setAdditionalLookupCondition() {
-    lookupModel.getMultipleSelectionAllowedValue().set(false);
+    lookupModel.getMultipleSelectionEnabledValue().set(false);
     lookupModel.setWildcard("%");
     lookupModel.setSearchString("johnson");
     List<Entity> result = lookupModel.performQuery();

@@ -173,7 +173,7 @@ public final class EntityUiUtil {
                                                   final String lookupCaption, final String dialogTitle) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
     if (singleSelection) {
-      lookupModel.getMultipleSelectionAllowedValue().set(false);
+      lookupModel.getMultipleSelectionEnabledValue().set(false);
     }
     final InputProviderPanel inputPanel = new InputProviderPanel(lookupCaption, new EntityLookupProvider(lookupModel, null));
     UiUtil.displayInDialog(dialogParent, inputPanel, dialogTitle, true, inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
@@ -840,7 +840,7 @@ public final class EntityUiUtil {
     if (property.getMaxLength() > 0 && field.getDocument() instanceof SizedDocument) {
       ((SizedDocument) field.getDocument()).setMaxLength(property.getMaxLength());
     }
-    if (editModel.isLookupAllowed(property)) {
+    if (editModel.isLookupEnabled(property)) {
       UiUtil.addLookupDialog(field, editModel.getValueProvider(property));
     }
 

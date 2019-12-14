@@ -45,9 +45,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -76,8 +74,6 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
  */
 public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
         implements EntityTableModel<SwingEntityEditModel> {
-
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingEntityTableModel.class.getName(), Locale.getDefault());
 
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
 
@@ -124,7 +120,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * Indicates if multiple entities can be updated at a time
    */
-  private boolean batchUpdateAllowed = true;
+  private boolean batchUpdateEnabled = true;
 
   /**
    * Indicates if this table model should automatically refresh when foreign key condition values are set
@@ -280,14 +276,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isBatchUpdateAllowed() {
-    return batchUpdateAllowed;
+  public final boolean isBatchUpdateEnabled() {
+    return batchUpdateEnabled;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
-    this.batchUpdateAllowed = batchUpdateAllowed;
+  public final SwingEntityTableModel setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
+    this.batchUpdateEnabled = batchUpdateEnabled;
     return this;
   }
 
@@ -306,14 +302,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isDeleteAllowed() {
-    return editModel != null && editModel.isDeleteAllowed();
+  public final boolean isDeleteEnabled() {
+    return editModel != null && editModel.isDeleteEnabled();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isUpdateAllowed() {
-    return editModel != null && editModel.isUpdateAllowed();
+  public final boolean isUpdateEnabled() {
+    return editModel != null && editModel.isUpdateEnabled();
   }
 
   /** {@inheritDoc} */
@@ -394,16 +390,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final int indexOf(final Entity.Key primaryKey) {
     return indexOf(getEntityByKey(primaryKey));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final String getStatusMessage() {
-    final int filteredItemCount = getFilteredItemCount();
-
-    return getRowCount() + " (" + getSelectionModel().getSelectionCount() + " " +
-            MESSAGES.getString("selected") + (filteredItemCount > 0 ? ", " +
-            filteredItemCount + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
   /** {@inheritDoc} */
@@ -489,7 +475,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void deleteSelected() throws DatabaseException {
-    if (!isDeleteAllowed()) {
+    if (!isDeleteEnabled()) {
       throw new IllegalStateException("Deleting is not allowed via this table model");
     }
     editModel.delete(getSelectionModel().getSelectedItems());
@@ -499,10 +485,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities, "entities");
-    if (!isUpdateAllowed()) {
+    if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not allowed via this table model");
     }
-    if (entities.size() > 1 && !batchUpdateAllowed) {
+    if (entities.size() > 1 && !batchUpdateEnabled) {
       throw new IllegalStateException("Batch update of entities is not allowed!");
     }
     editModel.update(entities);
@@ -641,7 +627,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     return getEntityDefinition().getOrderBy();
   }
 
-  @SuppressWarnings({"UnusedDeclaration"})
   protected void handleDelete(final List<Entity> deletedEntities) {/*Provided for subclasses*/}
 
   /**

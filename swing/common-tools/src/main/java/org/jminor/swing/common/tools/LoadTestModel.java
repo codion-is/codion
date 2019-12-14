@@ -848,14 +848,12 @@ public abstract class LoadTestModel<T> implements LoadTest {
      * Called before this scenario is run, override to prepare the application for each run
      * @param application the application
      */
-    @SuppressWarnings({"UnusedDeclaration"})
     protected void prepare(final Object application) {/*Provided for subclasses*/}
 
     /**
      * Called after this scenario has been run, override to cleanup the application after each run
      * @param application the application
      */
-    @SuppressWarnings({"UnusedDeclaration"})
     protected void cleanup(final Object application) {/*Provided for subclasses*/}
   }
 

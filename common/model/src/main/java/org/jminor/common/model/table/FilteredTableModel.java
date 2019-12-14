@@ -43,12 +43,12 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
   /**
    * @param listener a listener to be notified each time the model has been sorted or the sorting state has been cleared
    */
-  void addSortingListener(EventListener listener);
+  void addSortListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSortingListener(EventListener listener);
+  void removeSortListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the table data changes
@@ -136,10 +136,15 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
 
   /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values
-   * @param selectedOnly if true only values from the selected rows are returned
    * @return the values (including nulls) of the column identified by {@code columnIdentifier} from the rows in the table model
    */
-  Collection getValues(C columnIdentifier, boolean selectedOnly);
+  Collection getValues(C columnIdentifier);
+
+  /**
+   * @param columnIdentifier the identifier of the column for which to retrieve the values
+   * @return the values (including nulls) of the column identified by {@code columnIdentifier} from the selected rows in the table model
+   */
+  Collection getSelectedValues(C columnIdentifier);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -198,7 +203,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * Sorts the visible contents according to the {@link TableSortModel}, keeping the selection state intact
    * @see #getSortModel()
    */
-  void sortContents();
+  void sort();
 
   /**
    * @return the selection model used by this table model

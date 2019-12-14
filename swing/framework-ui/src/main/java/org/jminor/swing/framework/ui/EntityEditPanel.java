@@ -453,7 +453,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     return Controls.control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
                     getActiveObserver(),
-                    editModel.getAllowDeleteObserver(),
+                    editModel.getDeleteEnabledObserver(),
                     editModel.getEntityNewObserver().getReversedObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
@@ -477,7 +477,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     return Controls.control(this::update, FrameworkMessages.get(FrameworkMessages.UPDATE),
             States.aggregateState(Conjunction.AND,
                     getActiveObserver(),
-                    editModel.getAllowUpdateObserver(),
+                    editModel.getUpdateEnabledObserver(),
                     editModel.getEntityNewObserver().getReversedObserver(),
                     editModel.getModifiedObserver()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0),
@@ -490,7 +490,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.control(this::insert, FrameworkMessages.get(FrameworkMessages.INSERT),
-            States.aggregateState(Conjunction.AND, getActiveObserver(), editModel.getAllowInsertObserver()),
+            States.aggregateState(Conjunction.AND, getActiveObserver(), editModel.getInsertEnabledObserver()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_ADD_16));
   }
@@ -501,8 +501,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   public final Control getSaveControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC);
-    final State insertUpdateState = States.aggregateState(Conjunction.OR, editModel.getAllowInsertObserver(),
-            States.aggregateState(Conjunction.AND, editModel.getAllowUpdateObserver(),
+    final State insertUpdateState = States.aggregateState(Conjunction.OR, editModel.getInsertEnabledObserver(),
+            States.aggregateState(Conjunction.AND, editModel.getUpdateEnabledObserver(),
                     editModel.getModifiedObserver()));
     return Controls.control(this::save, FrameworkMessages.get(FrameworkMessages.SAVE),
             States.aggregateState(Conjunction.AND, getActiveObserver(), insertUpdateState),
@@ -608,8 +608,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * is asked whether to update the selected entity or insert a new one
    */
   public final void save() {
-    if (editModel.isEntityNew() || !editModel.isModified() || !editModel.isUpdateAllowed()) {
-      //no entity selected, selected entity is unmodified or update is not allowed, can only insert
+    if (editModel.isEntityNew() || !editModel.isModified() || !editModel.isUpdateEnabled()) {
+      //no entity selected, selected entity is unmodified or update is not enabled, can only insert
       insert();
     }
     else {//possibly update
@@ -1992,7 +1992,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @see org.jminor.swing.common.ui.control.Control
    * @see #setControl(ControlCode, org.jminor.swing.common.ui.control.Control)
    * @see #getControl(ControlCode)
-   * todo updateAllowed(false) þá vantar Insert control nema það sé tiltekið í smið
+   * todo updateEnabled(false) þá vantar Insert control nema það sé tiltekið í smið
    */
   private void setupControls(final ControlCode... controlCodes) {
     if (controlCodes == null || controlCodes.length == 0) {
@@ -2011,16 +2011,16 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   private void setupEditControls(final Collection<ControlCode> controlCodes) {
-    if (editModel.isInsertAllowed() && editModel.isUpdateAllowed() && controlCodes.contains(ControlCode.SAVE)) {
+    if (editModel.isInsertEnabled() && editModel.isUpdateEnabled() && controlCodes.contains(ControlCode.SAVE)) {
       setControl(ControlCode.SAVE, getSaveControl());
     }
-    if (editModel.isInsertAllowed() && controlCodes.contains(ControlCode.INSERT)) {
+    if (editModel.isInsertEnabled() && controlCodes.contains(ControlCode.INSERT)) {
       setControl(ControlCode.INSERT, getInsertControl());
     }
-    if (editModel.isUpdateAllowed() && controlCodes.contains(ControlCode.UPDATE)) {
+    if (editModel.isUpdateEnabled() && controlCodes.contains(ControlCode.UPDATE)) {
       setControl(ControlCode.UPDATE, getUpdateControl());
     }
-    if (editModel.isDeleteAllowed() && controlCodes.contains(ControlCode.DELETE)) {
+    if (editModel.isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
       setControl(ControlCode.DELETE, getDeleteControl());
     }
   }

@@ -58,9 +58,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A UI implementation for ColumnConditionModel
- * @param <K> the type of objects used to identify columns
+ * @param <C> the type of objects used to identify columns
  */
-public class ColumnConditionPanel<K> extends JPanel {
+public class ColumnConditionPanel<C> extends JPanel {
 
   public static final int DEFAULT_FIELD_COLUMNS = 4;
 
@@ -69,7 +69,7 @@ public class ColumnConditionPanel<K> extends JPanel {
   /**
    * The ColumnConditionModel this ColumnConditionPanel represents
    */
-  private final ColumnConditionModel<K> conditionModel;
+  private final ColumnConditionModel<C> conditionModel;
 
   /**
    * The search types allowed in this model
@@ -89,7 +89,7 @@ public class ColumnConditionPanel<K> extends JPanel {
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
-  private final Event<K> focusGainedEvent = Events.event();
+  private final Event<C> focusGainedEvent = Events.event();
   private final State advancedConditionState = States.state();
 
   private JDialog dialog;
@@ -103,7 +103,7 @@ public class ColumnConditionPanel<K> extends JPanel {
    * @param includeToggleEnabledButton if true an activation button is included
    * @param includeToggleAdvancedConditionButton if true an advanced toggle button is included
    */
-  public ColumnConditionPanel(final ColumnConditionModel<K> conditionModel, final boolean includeToggleEnabledButton,
+  public ColumnConditionPanel(final ColumnConditionModel<C> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton) {
     this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton, ConditionType.values());
   }
@@ -115,7 +115,7 @@ public class ColumnConditionPanel<K> extends JPanel {
    * @param includeToggleAdvancedConditionButton if true an advanced toggle button is include
    * @param conditionTypes the search types available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<K> conditionModel, final boolean includeToggleEnabledButton,
+  public ColumnConditionPanel(final ColumnConditionModel<C> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton, final ConditionType... conditionTypes) {
     this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton, new DefaultInputFieldProvider(conditionModel), conditionTypes);
   }
@@ -128,7 +128,7 @@ public class ColumnConditionPanel<K> extends JPanel {
    * @param inputFieldProvider the input field provider
    * @param conditionTypes the search types available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<K> conditionModel, final boolean includeToggleEnabledButton,
+  public ColumnConditionPanel(final ColumnConditionModel<C> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton, final InputFieldProvider inputFieldProvider,
                               final ConditionType... conditionTypes) {
     this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton, inputFieldProvider.initializeInputField(true),
@@ -144,7 +144,7 @@ public class ColumnConditionPanel<K> extends JPanel {
    * @param lowerBoundField the lower bound input field
    * @param conditionTypes the search types available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<K> conditionModel, final boolean includeToggleEnabledButton,
+  public ColumnConditionPanel(final ColumnConditionModel<C> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton, final JComponent upperBoundField,
                               final JComponent lowerBoundField, final ConditionType... conditionTypes) {
     requireNonNull(conditionModel, "conditionModel");
@@ -177,7 +177,7 @@ public class ColumnConditionPanel<K> extends JPanel {
   /**
    * @return the condition model this panel uses
    */
-  public final ColumnConditionModel<K> getConditionModel() {
+  public final ColumnConditionModel<C> getConditionModel() {
     return this.conditionModel;
   }
 
@@ -327,7 +327,7 @@ public class ColumnConditionPanel<K> extends JPanel {
   /**
    * @param listener listener notified when a this condition panels input fields receive focus
    */
-  public final void addFocusGainedListener(final EventDataListener<K> listener) {
+  public final void addFocusGainedListener(final EventDataListener<C> listener) {
     focusGainedEvent.addDataListener(listener);
   }
 
@@ -405,7 +405,6 @@ public class ColumnConditionPanel<K> extends JPanel {
               upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue(), false);
     }
 
-    @SuppressWarnings("unchecked")
     private void createTextProperty(final JComponent component, final boolean upperBound) {
       final Value modelValue = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
       final Class typeClass = columnConditionModel.getTypeClass();

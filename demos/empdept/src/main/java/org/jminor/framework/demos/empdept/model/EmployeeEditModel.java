@@ -52,7 +52,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
     addValueListener(EmpDept.EMPLOYEE_DEPARTMENT_FK, valueChange -> {
       //only show managers from the same department as the selected employee and hide the currently
       //selected employee to prevent an employee from being made her own manager
-      getForeignKeyComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCondition(manager ->
+      getForeignKeyComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setIncludeCondition(manager ->
               Objects.equals(manager.getForeignKey(EmpDept.EMPLOYEE_DEPARTMENT_FK), valueChange.getCurrentValue())
                       && !Objects.equals(manager, getEntity()));
     });

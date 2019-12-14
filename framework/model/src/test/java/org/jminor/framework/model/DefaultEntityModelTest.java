@@ -105,9 +105,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void removeRefreshDoneListener(final EventListener listener) {}
     @Override
-    public void addSortingListener(final EventListener listener) {}
+    public void addSortListener(final EventListener listener) {}
     @Override
-    public void removeSortingListener(final EventListener listener) {}
+    public void removeSortListener(final EventListener listener) {}
     @Override
     public void addTableDataChangedListener(final EventListener listener) {}
     @Override
@@ -127,7 +127,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public ColumnSummaryModel getColumnSummaryModel(final Property columnIdentifier) {return null;}
     @Override
-    public Collection getValues(final Property columnIdentifier, final boolean selectedOnly) {return null;}
+    public Collection getValues(final Property columnIdentifier) {return null;}
+    @Override
+    public Collection getSelectedValues(final Property columnIdentifier) {return null;}
     @Override
     public RowColumn findNext(final int fromRowIndex, final String searchText) {return null;}
     @Override
@@ -141,7 +143,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void setRegularExpressionSearch(final boolean value) {}
     @Override
-    public void sortContents() {}
+    public void sort() {}
     @Override
     public TableSortModel<Entity, Property, Object> getSortModel() {return null;}
     @Override
@@ -177,23 +179,21 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public EntityTableConditionModel getConditionModel() {return null;}
     @Override
-    public boolean isDeleteAllowed() {return false;}
+    public boolean isDeleteEnabled() {return false;}
     @Override
     public boolean isReadOnly() {return false;}
     @Override
-    public boolean isUpdateAllowed() {return false;}
+    public boolean isUpdateEnabled() {return false;}
     @Override
-    public boolean isBatchUpdateAllowed() {return false;}
+    public boolean isBatchUpdateEnabled() {return false;}
     @Override
-    public EntityTableModel<TestEntityEditModel> setBatchUpdateAllowed(final boolean batchUpdateAllowed) {return null;}
+    public EntityTableModel<TestEntityEditModel> setBatchUpdateEnabled(final boolean batchUpdateEnabled) {return null;}
     @Override
     public ColumnSummaryModel getColumnSummaryModel(final String propertyId) {return null;}
     @Override
     public Object getPropertyBackgroundColor(final int row, final Property property) {return null;}
     @Override
     public int getPropertyColumnIndex(final String propertyId) {return 0;}
-    @Override
-    public String getStatusMessage() {return null;}
     @Override
     public int getFetchCount() {return 0;}
     @Override
@@ -243,9 +243,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void filterContents() {}
     @Override
-    public Predicate<Entity> getFilterCondition() {return null;}
+    public Predicate<Entity> getIncludeCondition() {return null;}
     @Override
-    public void setFilterCondition(final Predicate<Entity> filterCondition) {}
+    public void setIncludeCondition(final Predicate<Entity> includeCondition) {}
     @Override
     public List<Entity> getVisibleItems() {return null;}
     @Override

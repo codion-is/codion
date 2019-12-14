@@ -51,7 +51,7 @@ public final class ObservableEntityListTest {
   }
 
   @Test
-  public void filterCondition() throws DatabaseException {
+  public void includeCondition() throws DatabaseException {
     final AtomicInteger counter = new AtomicInteger(0);
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final EventListener listener = counter::incrementAndGet;
@@ -62,20 +62,20 @@ public final class ObservableEntityListTest {
     final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "OPERATIONS");
 
-    list.setFilterCondition(item -> Objects.equals(item.get(TestDomain.DEPARTMENT_NAME), "SALES"));
+    list.setIncludeCondition(item -> Objects.equals(item.get(TestDomain.DEPARTMENT_NAME), "SALES"));
     assertEquals(1, counter.get());
-    assertNotNull(list.getFilterCondition());
+    assertNotNull(list.getIncludeCondition());
     assertEquals(3, list.getFilteredItemCount());
     assertEquals(1, list.getVisibleItemCount());
     assertEquals(3, list.getFilteredItems().size());
-    assertTrue(list.isFiltered(sales));
+    assertFalse(list.isFiltered(sales));
     assertTrue(list.isVisible(sales));
 
     assertTrue(list.contains(operations, true));
 
-    list.setFilterCondition(null);
+    list.setIncludeCondition(null);
     assertEquals(2, counter.get());
-    assertNull(list.getFilterCondition());
+    assertNull(list.getIncludeCondition());
     assertEquals(0, list.getFilteredItemCount());
     assertEquals(4, list.getVisibleItemCount());
     assertEquals(0, list.getFilteredItems().size());

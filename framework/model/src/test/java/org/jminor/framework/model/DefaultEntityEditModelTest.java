@@ -185,32 +185,32 @@ public final class DefaultEntityEditModelTest {
 
     employeeEditModel.setReadOnly(false);
     assertFalse(employeeEditModel.isReadOnly());
-    assertTrue(employeeEditModel.getAllowInsertObserver().get());
-    assertTrue(employeeEditModel.getAllowUpdateObserver().get());
-    assertTrue(employeeEditModel.getAllowDeleteObserver().get());
+    assertTrue(employeeEditModel.getInsertEnabledObserver().get());
+    assertTrue(employeeEditModel.getUpdateEnabledObserver().get());
+    assertTrue(employeeEditModel.getDeleteEnabledObserver().get());
 
     employeeEditModel.setReadOnly(true);
     assertTrue(employeeEditModel.isReadOnly());
-    assertFalse(employeeEditModel.getAllowInsertObserver().get());
-    assertFalse(employeeEditModel.getAllowUpdateObserver().get());
-    assertFalse(employeeEditModel.getAllowDeleteObserver().get());
+    assertFalse(employeeEditModel.getInsertEnabledObserver().get());
+    assertFalse(employeeEditModel.getUpdateEnabledObserver().get());
+    assertFalse(employeeEditModel.getDeleteEnabledObserver().get());
 
-    employeeEditModel.setDeleteAllowed(true);
+    employeeEditModel.setDeleteEnabled(true);
     assertFalse(employeeEditModel.isReadOnly());
 
-    employeeEditModel.setDeleteAllowed(false);
+    employeeEditModel.setDeleteEnabled(false);
     assertTrue(employeeEditModel.isReadOnly());
 
-    employeeEditModel.setUpdateAllowed(true);
+    employeeEditModel.setUpdateEnabled(true);
     assertFalse(employeeEditModel.isReadOnly());
 
-    employeeEditModel.setUpdateAllowed(false);
+    employeeEditModel.setUpdateEnabled(false);
     assertTrue(employeeEditModel.isReadOnly());
 
     employeeEditModel.setReadOnly(false);
-    assertTrue(employeeEditModel.getAllowInsertObserver().get());
-    assertTrue(employeeEditModel.getAllowUpdateObserver().get());
-    assertTrue(employeeEditModel.getAllowDeleteObserver().get());
+    assertTrue(employeeEditModel.getInsertEnabledObserver().get());
+    assertTrue(employeeEditModel.getUpdateEnabledObserver().get());
+    assertTrue(employeeEditModel.getDeleteEnabledObserver().get());
 
     final EventDataListener eventDataListener = data -> {};
     employeeEditModel.addAfterDeleteListener(eventDataListener);
@@ -354,11 +354,11 @@ public final class DefaultEntityEditModelTest {
 
       employeeEditModel.addAfterInsertListener(insertedEntities ->
               assertEquals(department, insertedEntities.get(0).get(TestDomain.EMP_DEPARTMENT_FK)));
-      employeeEditModel.setInsertAllowed(false);
-      assertFalse(employeeEditModel.isInsertAllowed());
+      employeeEditModel.setInsertEnabled(false);
+      assertFalse(employeeEditModel.isInsertEnabled());
       assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
-      employeeEditModel.setInsertAllowed(true);
-      assertTrue(employeeEditModel.isInsertAllowed());
+      employeeEditModel.setInsertEnabled(true);
+      assertTrue(employeeEditModel.isInsertEnabled());
 
       employeeEditModel.insert();
       assertFalse(employeeEditModel.isEntityNew());
@@ -391,11 +391,11 @@ public final class DefaultEntityEditModelTest {
       final EventDataListener<Map<Entity.Key, Entity>> listener = updatedEntities ->
               assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
       employeeEditModel.addAfterUpdateListener(listener);
-      employeeEditModel.setUpdateAllowed(false);
-      assertFalse(employeeEditModel.isUpdateAllowed());
+      employeeEditModel.setUpdateEnabled(false);
+      assertFalse(employeeEditModel.isUpdateEnabled());
       assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
-      employeeEditModel.setUpdateAllowed(true);
-      assertTrue(employeeEditModel.isUpdateAllowed());
+      employeeEditModel.setUpdateEnabled(true);
+      assertTrue(employeeEditModel.isUpdateEnabled());
 
       employeeEditModel.update();
       assertFalse(employeeEditModel.getModifiedObserver().get());
@@ -414,11 +414,11 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       final List<Entity> toDelete = singletonList(employeeEditModel.getEntityCopy());
       employeeEditModel.addAfterDeleteListener(deletedEntities -> assertEquals(toDelete, deletedEntities));
-      employeeEditModel.setDeleteAllowed(false);
-      assertFalse(employeeEditModel.isDeleteAllowed());
+      employeeEditModel.setDeleteEnabled(false);
+      assertFalse(employeeEditModel.isDeleteEnabled());
       assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
-      employeeEditModel.setDeleteAllowed(true);
-      assertTrue(employeeEditModel.isDeleteAllowed());
+      employeeEditModel.setDeleteEnabled(true);
+      assertTrue(employeeEditModel.isDeleteEnabled());
 
       employeeEditModel.delete();
     }

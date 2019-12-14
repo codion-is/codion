@@ -35,19 +35,19 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Use this method to retrieve the default foreign key filter condition model if you
-   * want to add a custom {@link Predicate} to this model via {@link #setFilterCondition(Predicate)}.
+   * want to add a custom {@link Predicate} to this model via {@link #setIncludeCondition(Predicate)}.
    * <pre>
-   *   Predicate fkCondition = model.getForeignKeyFilterCondition();
-   *   model.setFilterCondition(new Predicate() {
+   *   Predicate fkCondition = model.getForeignKeyIncludeCondition();
+   *   model.setIncludeCondition(new Predicate() {
    *     public boolean test(Entity item) {
-   *       return fkCondition.include(item) &amp;&amp; ...;
+   *       return fkCondition.test(item) &amp;&amp; ...;
    *     }
    *   });
    * </pre>
    * @return the {@link Predicate} based on the foreign key filter entities
    * @see #setForeignKeyFilterEntities(String, Collection)
    */
-  Predicate<Entity> getForeignKeyFilterCondition();
+  Predicate<Entity> getForeignKeyIncludeCondition();
 
   /**
    * @param foreignKeyPropertyId the ID of the foreign key property

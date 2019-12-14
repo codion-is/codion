@@ -42,12 +42,12 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   private static final long serialVersionUID = 1;
 
   /**
-   * Specifies whether or not to allow entities to be re-defined, that is,
+   * Specifies whether or not to enable entities to be re-defined, that is,
    * allow a new definition to replace an old one.
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> ALLOW_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.allowRedefineEntity", false);
+  public static final PropertyValue<Boolean> ENABLE_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.redefineEntityEnabled", false);
 
   private static final String ENTITY_PARAM = "entity";
 
@@ -654,7 +654,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
     }
 
     private void addDefinition(final EntityDefinition definition) {
-      if (entityDefinitions.containsKey(definition.getEntityId()) && !ALLOW_REDEFINE_ENTITY.get()) {
+      if (entityDefinitions.containsKey(definition.getEntityId()) && !ENABLE_REDEFINE_ENTITY.get()) {
         throw new IllegalArgumentException("Entity has already been defined: " +
                 definition.getEntityId() + ", for table: " + definition.getTableName());
       }

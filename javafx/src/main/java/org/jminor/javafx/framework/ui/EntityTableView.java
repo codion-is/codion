@@ -312,10 +312,10 @@ public class EntityTableView extends TableView<Entity> {
     listModel.getSortedList().comparatorProperty().bind(comparatorProperty());
     filterText.textProperty().addListener((observable, oldValue, newValue) -> {
       if (nullOrEmpty(newValue)) {
-        listModel.setFilterCondition(null);
+        listModel.setIncludeCondition(null);
       }
       else {
-        listModel.setFilterCondition(item -> getColumns().stream().map(column -> column.getCellObservableValue(item).getValue())
+        listModel.setIncludeCondition(item -> getColumns().stream().map(column -> column.getCellObservableValue(item).getValue())
                 .anyMatch(value -> value != null && value.toString().toLowerCase().contains(newValue.toLowerCase())));
       }
     });
@@ -325,14 +325,14 @@ public class EntityTableView extends TableView<Entity> {
   private boolean includeUpdateSelectedControls() {
     final FXEntityListModel entityTableModel = getListModel();
 
-    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateAllowed() &&
-            entityTableModel.isBatchUpdateAllowed() &&
+    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
+            entityTableModel.isBatchUpdateEnabled() &&
             !entityTableModel.getEntityDefinition().getUpdatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {
     final FXEntityListModel entityTableModel = getListModel();
 
-    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteAllowed();
+    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteEnabled();
   }
 }

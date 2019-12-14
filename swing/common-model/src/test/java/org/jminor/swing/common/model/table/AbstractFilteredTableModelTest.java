@@ -103,14 +103,14 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void filterContents() {
     tableModel.refresh();
-    tableModel.setFilterCondition(item -> !item.equals("b") && !item.equals("f"));
+    tableModel.setIncludeCondition(item -> !item.equals("b") && !item.equals("f"));
     assertFalse(tableModel.contains("b", false));
     assertTrue(tableModel.contains("b", true));
     tableModel.addItemsAt(singletonList("f"), 0);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertFalse(tableModel.contains("f", false));
     assertTrue(tableModel.contains("f", true));
-    tableModel.setFilterCondition(null);
+    tableModel.setIncludeCondition(null);
     assertTrue(tableModel.contains("b", false));
     assertTrue(tableModel.contains("f", false));
   }
@@ -344,7 +344,7 @@ public final class AbstractFilteredTableModelTest {
   public void sorting() {
     final AtomicInteger actionsPerformed = new AtomicInteger();
     final EventListener listener = actionsPerformed::incrementAndGet;
-    tableModel.addSortingListener(listener);
+    tableModel.addSortListener(listener);
 
     tableModel.refresh();
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
@@ -379,7 +379,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(null));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.UNSORTED, false);
-    tableModel.removeSortingListener(listener);
+    tableModel.removeSortListener(listener);
   }
 
   @Test
@@ -631,9 +631,9 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test
-  public void setFilterCondition() {
+  public void setIncludeCondition() {
     tableModel.refresh();
-    tableModel.setFilterCondition(item -> false);
+    tableModel.setIncludeCondition(item -> false);
     assertEquals(0, tableModel.getRowCount());
   }
 
@@ -661,7 +661,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.refresh();
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
-    assertNotNull(tableModel.getFilterCondition());
+    assertNotNull(tableModel.getIncludeCondition());
 
     //test filters
     assertTrue(tableModel.contains("b", false));
@@ -708,12 +708,12 @@ public final class AbstractFilteredTableModelTest {
   public void getValues() {
     tableModel.refresh();
     tableModel.getSelectionModel().setSelectedIndexes(asList(0, 2));
-    Collection values = tableModel.getValues(0, true);
+    Collection values = tableModel.getSelectedValues(0);
     assertEquals(2, values.size());
     assertTrue(values.contains("a"));
     assertTrue(values.contains("c"));
 
-    values = tableModel.getValues(0, false);
+    values = tableModel.getValues(0);
     assertEquals(5, values.size());
     assertTrue(values.contains("a"));
     assertTrue(values.contains("b"));

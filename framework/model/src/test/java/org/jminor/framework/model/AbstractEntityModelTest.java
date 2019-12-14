@@ -68,7 +68,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final Entity operations = deptTableModel.getSelectionModel().getSelectedItem();
     assertEquals(80, operations.get(TestDomain.DEPARTMENT_ID));
 
-    deptTableModel.setFilterCondition(item ->
+    deptTableModel.setIncludeCondition(item ->
             !Objects.equals(80, item.get(TestDomain.DEPARTMENT_ID)));
 
     deptEditModel.setEntity(operations);

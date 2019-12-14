@@ -79,11 +79,11 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   private final Event<State> confirmSetEntityEvent = Events.event();
 
   private final State primaryKeyNullState = States.state(true);
-  private final State allowInsertState = States.state(true);
-  private final State allowUpdateState = States.state(true);
-  private final State allowDeleteState = States.state(true);
+  private final State insertEnabledState = States.state(true);
+  private final State updateEnabledState = States.state(true);
+  private final State deleteEnabledState = States.state(true);
   private final State readOnlyState = States.aggregateState(Conjunction.AND,
-          allowInsertState.getReversedObserver(), allowUpdateState.getReversedObserver(), allowDeleteState.getReversedObserver());
+          insertEnabledState.getReversedObserver(), updateEnabledState.getReversedObserver(), deleteEnabledState.getReversedObserver());
 
   /**
    * The ID of the entity this edit model is based on
@@ -198,9 +198,9 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final EntityEditModel setReadOnly(final boolean readOnly) {
-    allowInsertState.set(!readOnly);
-    allowUpdateState.set(!readOnly);
-    allowDeleteState.set(!readOnly);
+    insertEnabledState.set(!readOnly);
+    updateEnabledState.set(!readOnly);
+    deleteEnabledState.set(!readOnly);
     return this;
   }
 
@@ -219,7 +219,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public boolean isLookupAllowed(final Property property) {
+  public boolean isLookupEnabled(final Property property) {
     return property instanceof ColumnProperty;
   }
 
@@ -242,21 +242,21 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isInsertAllowed() {
-    return allowInsertState.get();
+  public final boolean isInsertEnabled() {
+    return insertEnabledState.get();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityEditModel setInsertAllowed(final boolean value) {
-    allowInsertState.set(value);
+  public final EntityEditModel setInsertEnabled(final boolean insertEnabled) {
+    insertEnabledState.set(insertEnabled);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final StateObserver getAllowInsertObserver() {
-    return allowInsertState.getObserver();
+  public final StateObserver getInsertEnabledObserver() {
+    return insertEnabledState.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -267,40 +267,40 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isUpdateAllowed() {
-    return allowUpdateState.get();
+  public final boolean isUpdateEnabled() {
+    return updateEnabledState.get();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityEditModel setUpdateAllowed(final boolean value) {
-    allowUpdateState.set(value);
+  public final EntityEditModel setUpdateEnabled(final boolean updateEnabled) {
+    updateEnabledState.set(updateEnabled);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final StateObserver getAllowUpdateObserver() {
-    return allowUpdateState.getObserver();
+  public final StateObserver getUpdateEnabledObserver() {
+    return updateEnabledState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isDeleteAllowed() {
-    return allowDeleteState.get();
+  public final boolean isDeleteEnabled() {
+    return deleteEnabledState.get();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityEditModel setDeleteAllowed(final boolean value) {
-    allowDeleteState.set(value);
+  public final EntityEditModel setDeleteEnabled(final boolean deleteEnabled) {
+    deleteEnabledState.set(deleteEnabled);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final StateObserver getAllowDeleteObserver() {
-    return allowDeleteState.getObserver();
+  public final StateObserver getDeleteEnabledObserver() {
+    return deleteEnabledState.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -486,7 +486,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     if (entities.isEmpty()) {
       return emptyList();
     }
-    if (!isUpdateAllowed()) {
+    if (!isUpdateEnabled()) {
       throw new IllegalStateException("This model does not allow updating!");
     }
 
@@ -527,7 +527,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     if (entities.isEmpty()) {
       return emptyList();
     }
-    if (!isDeleteAllowed()) {
+    if (!isDeleteEnabled()) {
       throw new IllegalStateException("This model does not allow deleting!");
     }
 
@@ -588,7 +588,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     }
 
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(foreignKeyProperty.getForeignEntityId(), connectionProvider, searchProperties);
-    lookupModel.getMultipleSelectionAllowedValue().set(false);
+    lookupModel.getMultipleSelectionEnabledValue().set(false);
 
     return lookupModel;
   }
@@ -933,7 +933,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   }
 
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {
-    if (!isInsertAllowed()) {
+    if (!isInsertEnabled()) {
       throw new IllegalStateException("This model does not allow inserting!");
     }
 

@@ -158,9 +158,9 @@ public interface EntityLookupModel {
   Value<String> getMultipleItemSeparatorValue();
 
   /**
-   * @return the Value representing the multiple selection allowed setting
+   * @return the Value representing the multiple selection enabled setting
    */
-  Value<Boolean> getMultipleSelectionAllowedValue();
+  Value<Boolean> getMultipleSelectionEnabledValue();
 
   /**
    * Property lookup settings

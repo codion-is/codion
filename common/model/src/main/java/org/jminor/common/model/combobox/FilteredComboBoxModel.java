@@ -9,11 +9,12 @@ import org.jminor.common.model.Refreshable;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.function.Predicate;
 
 /**
  * A ComboBoxModel that allows filtering via Predicate objects.
  * @param <T> the type of the combo box model elements
- * @see #setFilterCondition(Predicate)
+ * @see #setIncludeCondition(Predicate)
  */
 public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable {
 
@@ -46,6 +47,13 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * @param item the item to remove
    */
   void removeItem(T item);
+
+  /**
+   * Replaces the given item in this combo box model
+   * @param item the item to replace
+   * @param replacement the replacement item
+   */
+  void replaceItem(T item, T replacement);
 
   /**
    * @return true if the model data has been cleared and needs to be refreshed
