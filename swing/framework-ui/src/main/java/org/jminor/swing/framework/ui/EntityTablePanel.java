@@ -95,7 +95,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.time.LocalDate;
@@ -742,20 +741,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * Creates a Control for viewing an image based on the entity selected in this EntityTablePanel.
-   * The action shows an image found at the path specified by the value of the given propertyId.
-   * If no entity is selected or the image path value is null no action is performed.
-   * Note that for the image to be displayed {@link #viewImage} must be implemented.
-   * @param imagePathPropertyId the ID of the property specifying the image path
-   * @return a Control for viewing an image based on the selected entity in a EntityTablePanel
-   */
-  public final Control getViewImageControl(final String imagePathPropertyId) {
-    requireNonNull(imagePathPropertyId, "imagePathPropertyId");
-    return control(() -> viewImageForSelected(imagePathPropertyId), "View image",
-            getTableModel().getSelectionModel().getSingleSelectionObserver());
-  }
-
-  /**
    * @param listener a listener notified each time the condition panel visibility changes
    */
   public final void addConditionPanelVisibleListener(final EventDataListener<Boolean> listener) {
@@ -1319,15 +1304,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * Displays the given image
-   * @param imagePath the path to the image
-   * @throws IOException in case the image is not found
-   */
-  protected void viewImage(final String imagePath) throws IOException {
-    throw new UnsupportedOperationException("viewImage must be overridden");
-  }
-
-  /**
    * Initializes the south panel toolbar, by default based on {@code getToolBarControls()}
    * @return the toolbar to add to the south panel
    */
@@ -1367,18 +1343,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
         }
       }
     };
-  }
-
-  private void viewImageForSelected(final String imagePathPropertyId) {
-    try {
-      final Entity selected = getTableModel().getSelectionModel().getSelectedItem();
-      if (selected.isNotNull(imagePathPropertyId)) {
-        viewImage(selected.getString(imagePathPropertyId));
-      }
-    }
-    catch (final IOException ex) {
-      throw new RuntimeException(ex);
-    }
   }
 
   private void setupControls() {

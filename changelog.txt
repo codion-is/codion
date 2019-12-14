@@ -5453,3 +5453,4 @@
   ObservableEntityList.isFiltered() bug fixed, refactored
   FilteredModel, filterCondition semantics totally changed when FilterCondition was replaced with Predicate, renamed to includeCondition
   EntityTableModel.getStatusMessage() removed, SwingEntityTableModel implementation moved to EntityTablePanel
+  EntityTablePanel.viewImage functionality removed
