@@ -50,6 +50,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 
@@ -352,15 +353,25 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   /**
-   * Sets the value in the cell at <code>columnIndex</code> and
-   * <code>rowIndex</code> to <code>aValue</code>.
+   * Sets the value in the given cell and updates the underlying Entity.
    * @param value the new value
    * @param rowIndex the row whose value is to be changed
    * @param modelColumnIndex the model index of the column to be changed
    */
   @Override
-  public void setValueAt(final Object value, final int rowIndex, final int modelColumnIndex) {
-    throw new UnsupportedOperationException("setValueAt is not supported");
+  public final void setValueAt(final Object value, final int rowIndex, final int modelColumnIndex) {
+    if (isReadOnly() || !isUpdateEnabled()) {
+      throw new IllegalStateException("This table model is readOnly or has disabled update");
+    }
+    final Entity entity = getDomain().copyEntity(getItemAt(rowIndex));
+
+    entity.put(getColumnModel().getColumnIdentifier(modelColumnIndex), value);
+    try {
+      update(singletonList(entity));
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**

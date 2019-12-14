@@ -172,7 +172,12 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   public void setValueAt() {
-    assertThrows(UnsupportedOperationException.class, () -> testModel.setValueAt("hello", 0, 0));
+    final SwingEntityTableModel tableModel = createEmployeeTableModel();
+    tableModel.refresh();
+    tableModel.setValueAt("newname", 0, 1);
+    final Entity entity = tableModel.getItemAt(0);
+    assertEquals("newname", entity.getString(TestDomain.EMP_NAME));
+    assertThrows(RuntimeException.class, () -> tableModel.setValueAt("newname", 0, 0));
   }
 
   @Test
