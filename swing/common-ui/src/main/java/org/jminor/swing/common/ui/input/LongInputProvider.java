@@ -35,4 +35,10 @@ public final class LongInputProvider extends AbstractInputProvider<Long, LongFie
   public Long getValue() {
     return getInputComponent().getLong();
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final Long value) {
+    getInputComponent().setLong(value);
+  }
 }

@@ -79,6 +79,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
@@ -315,6 +316,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolBar();
+    initializeDefaultEditors();
   }
 
   /**
@@ -1050,6 +1052,19 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
   }
 
+  /**
+   * Creates a TableCellEditor for the given property, returns null if no editor is available
+   * @param property the property
+   * @return a TableCellEditor for the given property
+   */
+  protected TableCellEditor createCellEditor(final Property property) {
+    if (property.isReadOnly()) {
+      return null;
+    }
+
+    return new EntityTableCellEditor(this);
+  }
+
   protected ControlSet getToolBarControls(final List<ControlSet> additionalToolBarControlSets) {
     final ControlSet toolbarControls = new ControlSet("");
     if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL)) {
@@ -1250,11 +1265,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       case Types.BIGINT:
         return new LongInputProvider((Long) currentValue);
       case Types.CHAR:
-        return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property),
-                (String) currentValue, 1);
+        return new TextInputProvider(property.getCaption(), (String) currentValue, 1);
       case Types.VARCHAR:
-        return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property),
-                (String) currentValue, property.getMaxLength());
+        return new TextInputProvider(property.getCaption(), (String) currentValue, property.getMaxLength());
       case Types.BLOB:
         return new BlobInputProvider();
       default:
@@ -1466,6 +1479,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     return tableModel.getRowCount() + " (" + tableModel.getSelectionModel().getSelectionCount() + " " +
             MESSAGES.getString("selected") + (filteredItemCount > 0 ? ", " +
             filteredItemCount + " " + MESSAGES.getString("hidden") + ")" : ")");
+  }
+
+  private void initializeDefaultEditors() {
+    getTableModel().getColumnModel().getAllColumns().forEach(column ->
+            column.setCellEditor(createCellEditor((Property) column.getIdentifier())));
   }
 
   private void bindPanelEvents() {

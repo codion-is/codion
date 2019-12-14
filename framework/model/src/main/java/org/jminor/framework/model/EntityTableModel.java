@@ -148,6 +148,16 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   EntityTableConditionModel getConditionModel();
 
   /**
+   * @return true if this table model is editable
+   */
+  boolean isEditable();
+
+  /**
+   * @param editable true if this table model should be editable
+   */
+  void setEditable(boolean editable);
+
+  /**
    * @return true if this model has an edit model and that edit model allows deletion of records
    * @see #hasEditModel()
    * @see #setEditModel(EntityEditModel)

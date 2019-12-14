@@ -40,6 +40,12 @@ public final class BigDecimalInputProvider extends AbstractInputProvider<BigDeci
     return getInputComponent().getBigDecimal();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final BigDecimal value) {
+    getInputComponent().setBigDecimal(value);
+  }
+
   private static DecimalFormat createFormat() {
     final DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance();
     format.setParseBigDecimal(true);

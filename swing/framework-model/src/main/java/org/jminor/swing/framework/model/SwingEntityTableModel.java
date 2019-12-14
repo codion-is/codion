@@ -21,7 +21,6 @@ import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityModel;
@@ -50,6 +49,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 
@@ -126,6 +126,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * Indicates if this table model should automatically refresh when foreign key condition values are set
    */
   private boolean refreshOnForeignKeyConditionValuesSet = true;
+
+  /**
+   * Is this table model editable.
+   * @see #isCellEditable(int, int)
+   * @see #setValueAt(Object, int, int)
+   */
+  private boolean editable = false;
 
   /**
    * Instantiates a new DefaultEntityTableModel with default column and condition models.
@@ -276,6 +283,18 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
+  public final boolean isEditable() {
+    return editable;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setEditable(final boolean editable) {
+    this.editable = editable;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isBatchUpdateEnabled() {
     return batchUpdateEnabled;
   }
@@ -325,8 +344,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   /**
-   * Returns true if the cell at <code>rowIndex</code> and <code>modelColumnIndex</code>
-   * is editable.  Otherwise, <code>setValueAt</code> on the cell will not change the value of that cell.
+   * Returns true if the cell at <code>rowIndex</code> and <code>modelColumnIndex</code> is editable.
    * @param rowIndex the row whose value to be queried
    * @param modelColumnIndex the column whose value to be queried
    * @return true if the cell is editable
@@ -334,11 +352,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   @Override
   public boolean isCellEditable(final int rowIndex, final int modelColumnIndex) {
-    return false;
+    return editable && !isReadOnly() && isUpdateEnabled() &&
+            !getColumnModel().getColumnIdentifier(modelColumnIndex).isReadOnly();
   }
 
   /**
-   * Returns the value for the cell at <code>modelColumnIndex</code> and <code>rowIndex</code>.   *
+   * Returns the value for the cell at <code>modelColumnIndex</code> and <code>rowIndex</code>.
    * @param rowIndex the row whose value is to be queried
    * @param modelColumnIndex the column whose value is to be queried
    * @return the value Object at the specified cell
@@ -352,15 +371,25 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   /**
-   * Sets the value in the cell at <code>columnIndex</code> and
-   * <code>rowIndex</code> to <code>aValue</code>.
+   * Sets the value in the given cell and updates the underlying Entity.
    * @param value the new value
    * @param rowIndex the row whose value is to be changed
    * @param modelColumnIndex the model index of the column to be changed
    */
   @Override
-  public void setValueAt(final Object value, final int rowIndex, final int modelColumnIndex) {
-    throw new UnsupportedOperationException("setValueAt is not supported");
+  public final void setValueAt(final Object value, final int rowIndex, final int modelColumnIndex) {
+    if (!editable || isReadOnly() || !isUpdateEnabled()) {
+      throw new IllegalStateException("This table model is readOnly or has disabled update");
+    }
+    final Entity entity = getDomain().copyEntity(getItemAt(rowIndex));
+
+    entity.put(getColumnModel().getColumnIdentifier(modelColumnIndex), value);
+    try {
+      update(singletonList(entity));
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -594,8 +623,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * Return the value to display in a table cell for the given property of the given entity.
-   * Note that this method is responsible for providing a "human readable" version of the value,
-   * such as the caption for value list properties and string versions of foreign key values.
    * @param entity the entity
    * @param property the property
    * @return the value of the given property for the given entity for display
@@ -604,9 +631,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   protected Object getValue(final Entity entity, final Property property) {
     requireNonNull(entity, "entity");
     requireNonNull(property, "property");
-    if (property instanceof ValueListProperty || property instanceof ForeignKeyProperty) {
-      return entity.getAsString(property);
-    }
 
     return entity.get(property);
   }
@@ -710,11 +734,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * Replace the entities identified by the Entity.Key map keys with their respective value.
    * Note that this does not trigger {@link #filterContents()}, that must be done explicitly.
-   * @param entityMap the entities to replace mapped to the corresponding primary key found in this table model
+   * @param entitiesByKey the entities to replace mapped to the corresponding primary key found in this table model
    */
-  private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entityMap) {
+  private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entitiesByKey) {
     for (final Entity entity : getAllItems()) {
-      final Iterator<Map.Entry<Entity.Key, Entity>> mapIterator = entityMap.entrySet().iterator();
+      final Iterator<Map.Entry<Entity.Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
       while (mapIterator.hasNext()) {
         final Map.Entry<Entity.Key, Entity> entry = mapIterator.next();
         if (entity.getKey().equals(entry.getKey())) {
@@ -726,7 +750,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
           }
         }
       }
-      if (entityMap.isEmpty()) {
+      if (entitiesByKey.isEmpty()) {
         break;
       }
     }

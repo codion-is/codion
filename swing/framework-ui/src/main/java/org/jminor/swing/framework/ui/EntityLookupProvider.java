@@ -31,6 +31,12 @@ public final class EntityLookupProvider extends AbstractInputProvider<Entity, En
     return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final Entity value) {
+    getInputComponent().getModel().setSelectedEntity(value);
+  }
+
   private static EntityLookupField createEntityLookupField(final EntityLookupModel lookupModel, final Entity initialValue) {
     final EntityLookupField field = new EntityLookupField(lookupModel, false);
     lookupModel.setSelectedEntity(initialValue);

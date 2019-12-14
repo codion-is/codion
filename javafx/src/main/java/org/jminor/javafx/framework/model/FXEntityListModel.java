@@ -65,6 +65,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private boolean batchUpdateEnabled = true;
   private boolean removeEntitiesOnDelete = true;
   private boolean refreshOnForeignKeyConditionValuesSet = true;
+  private boolean editable = false;
   private int fetchCount = -1;
 
   /**
@@ -176,6 +177,18 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final State getQueryConditionRequiredState() {
     return queryConditionRequiredState;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isEditable() {
+    return editable;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setEditable(final boolean editable) {
+    this.editable = editable;
   }
 
   /** {@inheritDoc} */

@@ -141,7 +141,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public boolean isRegularExpressionSearch() {return false;}
     @Override
-    public void setRegularExpressionSearch(final boolean value) {}
+    public void setRegularExpressionSearch(final boolean regularExpressionSearch) {}
     @Override
     public void sort() {}
     @Override
@@ -178,6 +178,10 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     public void refreshEntities(final List<Entity.Key> keys) {}
     @Override
     public EntityTableConditionModel getConditionModel() {return null;}
+    @Override
+    public boolean isEditable() {return false;}
+    @Override
+    public void setEditable(final boolean editable) {}
     @Override
     public boolean isDeleteEnabled() {return false;}
     @Override

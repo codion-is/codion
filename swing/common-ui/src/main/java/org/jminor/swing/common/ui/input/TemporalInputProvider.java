@@ -41,4 +41,10 @@ public final class TemporalInputProvider<T extends Temporal> extends AbstractInp
       throw new IllegalArgumentException("Wrong date format " + getInputComponent().getDateFormat() + " expected", e);
     }
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final T value) {
+    getInputComponent().setTemporal(value);
+  }
 }

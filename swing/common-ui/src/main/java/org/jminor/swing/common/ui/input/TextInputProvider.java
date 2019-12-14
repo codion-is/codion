@@ -3,9 +3,7 @@
  */
 package org.jminor.swing.common.ui.input;
 
-import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.swing.common.ui.TextInputPanel;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 
 import javax.swing.JTextField;
@@ -20,13 +18,11 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
   /**
    * Instantiates a new TextInputProvider.
    * @param inputDialogTitle the title to use for the lookup input dialog
-   * @param valueProvider the value provider, if specified a lookup dialog accessed by CTRL-SPACE is added to the field
    * @param initialValue the initial value
    * @param maxLength the maximum input length, -1 for no limit
    */
-  public TextInputProvider(final String inputDialogTitle, final ValueCollectionProvider valueProvider,
-                           final String initialValue, final int maxLength) {
-    this(createDefaultTextField(valueProvider, initialValue, maxLength), inputDialogTitle);
+  public TextInputProvider(final String inputDialogTitle, final String initialValue, final int maxLength) {
+    this(createDefaultTextField(initialValue, maxLength), inputDialogTitle);
   }
 
   /**
@@ -46,16 +42,18 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
     return value.length() == 0 ? null : value;
   }
 
-  private static JTextField createDefaultTextField(final ValueCollectionProvider valueProvider, final Object initialValue,
-                                                   final int maxLength) {
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final String value) {
+    getInputComponent().setText(value);
+  }
+
+  private static JTextField createDefaultTextField(final Object initialValue, final int maxLength) {
     final SizedDocument document = new SizedDocument();
     if (maxLength > 0) {
       document.setMaxLength(maxLength);
     }
     final JTextField textField = new JTextField(document, initialValue != null ? initialValue.toString() : "", DEFAULT_COLUMNS);
-    if (valueProvider != null) {
-      UiUtil.addLookupDialog(textField, valueProvider);
-    }
 
     return textField;
   }

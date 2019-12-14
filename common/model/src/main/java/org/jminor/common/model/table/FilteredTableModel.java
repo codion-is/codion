@@ -195,9 +195,9 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
 
   /**
    * Specifies whether or not to use regular expressions when searching this table model
-   * @param value the value
+   * @param regularExpressionSearch true if regular expression search should be enabled
    */
-  void setRegularExpressionSearch(boolean value);
+  void setRegularExpressionSearch(boolean regularExpressionSearch);
 
   /**
    * Sorts the visible contents according to the {@link TableSortModel}, keeping the selection state intact

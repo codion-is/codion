@@ -5484,3 +5484,8 @@
   AbstractFilteredTableModel, minor event model changes
   FilteredTableModel.sortContents() renamed to sort(), sortingListener renamed to sortListener
   FilteredTableModel.getValues() split into getValues() and getSelectedValues()
+  SwingEntityTableModel.setValueAt() implemented
+  SwingEntityTableModel.editable added, false by default, isCellEditable() implemented
+  TextInputComponent no longer adds a lookup action to the text field
+  InputProvider.setValue() added
+  EntityTableCellEditor added
