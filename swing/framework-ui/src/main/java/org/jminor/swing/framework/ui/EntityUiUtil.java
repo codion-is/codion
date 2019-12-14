@@ -66,6 +66,7 @@ import javax.swing.text.AbstractDocument;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Point;
+import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -180,6 +181,43 @@ public final class EntityUiUtil {
     }
 
     return emptyList();
+  }
+
+  /**
+   * @param property the property for which to create the input component
+   * @param value the value to bind to the field
+   * @param foreignKeyComboBoxModel required in case property is a {@link ForeignKeyProperty}
+   * @return the component handling input for {@code property}
+   */
+  public static JComponent createInputComponent(final Property property, final Value value,
+                                                final EntityComboBoxModel foreignKeyComboBoxModel) {
+    if (property instanceof ForeignKeyProperty) {
+      requireNonNull(foreignKeyComboBoxModel, "foreignKeyComboBoxModel");
+      final ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) property;
+
+      return createForeignKeyComboBox(foreignKeyProperty, value, foreignKeyComboBoxModel);
+    }
+    if (property instanceof ValueListProperty) {
+      return createValueListComboBox((ValueListProperty) property, value);
+    }
+    switch (property.getType()) {
+      case Types.BOOLEAN:
+        return createBooleanComboBox(property, value);
+      case Types.DATE:
+      case Types.TIMESTAMP:
+      case Types.TIME:
+      case Types.DOUBLE:
+      case Types.DECIMAL:
+      case Types.INTEGER:
+      case Types.BIGINT:
+      case Types.CHAR:
+      case Types.VARCHAR:
+        return createTextField(property, value);
+      case Types.BLOB:
+      default:
+        throw new IllegalArgumentException("No input component available for property: " +
+                property + " (type: " + property.getType() + ")");
+    }
   }
 
   /**
@@ -666,7 +704,7 @@ public final class EntityUiUtil {
                                            final boolean valueContainsLiteralCharacters) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    final JTextField textField = initializeTextField(property, enabledState, formatMaskString, valueContainsLiteralCharacters);
+    final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiteralCharacters);
     if (property.isString()) {
       ValueLinks.textValueLink(textField, value, property.getFormat(), updateOnKeystroke);
     }
@@ -765,9 +803,9 @@ public final class EntityUiUtil {
     }
   }
 
-  private static JTextField initializeTextField(final Property property, final StateObserver enabledState,
-                                                final String formatMaskString, final boolean valueContainsLiteralCharacters) {
-    final JTextField field = initializeTextField(property, formatMaskString, valueContainsLiteralCharacters);
+  private static JTextField createTextField(final Property property, final StateObserver enabledState,
+                                            final String formatMaskString, final boolean valueContainsLiteralCharacters) {
+    final JTextField field = createTextField(property, formatMaskString, valueContainsLiteralCharacters);
     if (enabledState != null) {
       UiUtil.linkToEnabledState(enabledState, field);
     }
@@ -782,8 +820,8 @@ public final class EntityUiUtil {
     return field;
   }
 
-  private static JTextField initializeTextField(final Property property, final String formatMaskString,
-                                                final boolean valueContainsLiteralCharacters) {
+  private static JTextField createTextField(final Property property, final String formatMaskString,
+                                            final boolean valueContainsLiteralCharacters) {
     final JTextField field;
     if (property.isInteger()) {
       field = initializeIntField(property);

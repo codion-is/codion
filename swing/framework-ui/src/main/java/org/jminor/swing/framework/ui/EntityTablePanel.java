@@ -1226,11 +1226,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
     final Collection values = Entities.getDistinctValues(property.getPropertyId(), toUpdate);
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
-    if (property instanceof ValueListProperty) {
-      return new ValueListInputProvider(currentValue, ((ValueListProperty) property).getValues());
-    }
     if (property instanceof ForeignKeyProperty) {
       return createEntityInputProvider((ForeignKeyProperty) property, (Entity) currentValue, getEntityTableModel().getEditModel());
+    }
+    if (property instanceof ValueListProperty) {
+      return new ValueListInputProvider(currentValue, ((ValueListProperty) property).getValues());
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
@@ -1297,7 +1297,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       return null;
     }
 
-    return new EntityTableCellEditor(this);
+    return new EntityTableCellEditor(getEntityTableModel().getConnectionProvider(), property);
   }
 
   /**
