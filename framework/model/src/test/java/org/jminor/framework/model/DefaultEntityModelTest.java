@@ -179,6 +179,10 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public EntityTableConditionModel getConditionModel() {return null;}
     @Override
+    public boolean isEditable() {return false;}
+    @Override
+    public void setEditable(final boolean editable) {}
+    @Override
     public boolean isDeleteEnabled() {return false;}
     @Override
     public boolean isReadOnly() {return false;}

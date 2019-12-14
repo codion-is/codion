@@ -5461,3 +5461,4 @@
   FilteredTableModel.sortContents() renamed to sort(), sortingListener renamed to sortListener
   FilteredTableModel.getValues() split into getValues() and getSelectedValues()
   SwingEntityTableModel.setValueAt() implemented
+  SwingEntityTableModel.editable added, false by default, isCellEditable() implemented

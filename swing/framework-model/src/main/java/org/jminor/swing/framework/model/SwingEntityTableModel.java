@@ -129,6 +129,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private boolean refreshOnForeignKeyConditionValuesSet = true;
 
   /**
+   * Is this table model editable.
+   * @see #isCellEditable(int, int)
+   * @see #setValueAt(Object, int, int)
+   */
+  private boolean editable = false;
+
+  /**
    * Instantiates a new DefaultEntityTableModel with default column and condition models.
    * @param entityId the entity ID
    * @param connectionProvider the db provider
@@ -277,6 +284,18 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
+  public final boolean isEditable() {
+    return editable;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setEditable(final boolean editable) {
+    this.editable = editable;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isBatchUpdateEnabled() {
     return batchUpdateEnabled;
   }
@@ -326,8 +345,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   /**
-   * Returns true if the cell at <code>rowIndex</code> and <code>modelColumnIndex</code>
-   * is editable.  Otherwise, <code>setValueAt</code> on the cell will not change the value of that cell.
+   * Returns true if the cell at <code>rowIndex</code> and <code>modelColumnIndex</code> is editable.
    * @param rowIndex the row whose value to be queried
    * @param modelColumnIndex the column whose value to be queried
    * @return true if the cell is editable
@@ -335,7 +353,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   @Override
   public boolean isCellEditable(final int rowIndex, final int modelColumnIndex) {
-    return false;
+    return editable && !isReadOnly() && isUpdateEnabled() &&
+            !getColumnModel().getColumnIdentifier(modelColumnIndex).isReadOnly();
   }
 
   /**
@@ -360,7 +379,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   @Override
   public final void setValueAt(final Object value, final int rowIndex, final int modelColumnIndex) {
-    if (isReadOnly() || !isUpdateEnabled()) {
+    if (!editable || isReadOnly() || !isUpdateEnabled()) {
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
     final Entity entity = getDomain().copyEntity(getItemAt(rowIndex));
