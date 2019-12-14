@@ -5450,3 +5450,4 @@
   EntityTestUnit.testEntity() renamed to test()
   FilteredComboBoxModel.replaceItem() added
   SwingEntityComboBoxModel now calls replaceItem() in UpdateListener
+  ObservableEntityList.isFiltered() bug fixed, refactored

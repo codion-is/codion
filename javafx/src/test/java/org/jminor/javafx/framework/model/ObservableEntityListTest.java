@@ -68,7 +68,7 @@ public final class ObservableEntityListTest {
     assertEquals(3, list.getFilteredItemCount());
     assertEquals(1, list.getVisibleItemCount());
     assertEquals(3, list.getFilteredItems().size());
-    assertTrue(list.isFiltered(sales));
+    assertFalse(list.isFiltered(sales));
     assertTrue(list.isVisible(sales));
 
     assertTrue(list.contains(operations, true));

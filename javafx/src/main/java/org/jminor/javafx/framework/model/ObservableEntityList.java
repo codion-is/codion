@@ -193,7 +193,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   /** {@inheritDoc} */
   @Override
   public final boolean isFiltered(final Entity item) {
-    return filterCondition != null && filterCondition.test(item);
+    return contains(item) && !filteredList.contains(item);
   }
 
   /** {@inheritDoc} */
