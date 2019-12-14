@@ -30,9 +30,11 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A TableModel implementation that supports filtering, searching and sorting.
@@ -261,17 +263,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final Collection getValues(final C columnIdentifier, final boolean selectedOnly) {
-    final int columnModelIndex = columnModel.getTableColumn(columnIdentifier).getModelIndex();
-    final Collection values = new ArrayList();
-    if (selectedOnly) {
-      getSelectionModel().getSelectedIndexes().forEach(rowIndex -> values.add(getValueAt(rowIndex, columnModelIndex)));
-    }
-    else {
-      IntStream.range(0, getVisibleItemCount()).forEach(rowIndex -> values.add(getValueAt(rowIndex, columnModelIndex)));
-    }
+  public final Collection getValues(final C columnIdentifier) {
+    return getColumnValues(IntStream.range(0, getVisibleItemCount()).boxed(),
+            columnModel.getTableColumn(columnIdentifier).getModelIndex());
+  }
 
-    return values;
+  /** {@inheritDoc} */
+  @Override
+  public final Collection getSelectedValues(final C columnIdentifier) {
+    return getColumnValues(getSelectionModel().getSelectedIndexes().stream(),
+            columnModel.getTableColumn(columnIdentifier).getModelIndex());
   }
 
   /** {@inheritDoc} */
@@ -579,6 +580,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     });
   }
 
+  private List getColumnValues(final Stream<Integer> rowIndexStream, final int columnModelIndex) {
+    return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
+  }
+
   private RowColumn findColumnValue(final int row, final Predicate<String> condition) {
     final Enumeration<TableColumn> columnsToSearch = columnModel.getColumns();
     while (columnsToSearch.hasMoreElements()) {
@@ -670,7 +675,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
     @Override
     public Collection getValues() {
-      return tableModel.getValues(columnIdentifier, isValueSubset());
+      return isValueSubset() ? tableModel.getSelectedValues(columnIdentifier) : tableModel.getValues(columnIdentifier);
     }
 
     @Override

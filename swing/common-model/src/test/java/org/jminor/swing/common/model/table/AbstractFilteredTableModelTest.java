@@ -708,12 +708,12 @@ public final class AbstractFilteredTableModelTest {
   public void getValues() {
     tableModel.refresh();
     tableModel.getSelectionModel().setSelectedIndexes(asList(0, 2));
-    Collection values = tableModel.getValues(0, true);
+    Collection values = tableModel.getSelectedValues(0);
     assertEquals(2, values.size());
     assertTrue(values.contains("a"));
     assertTrue(values.contains("c"));
 
-    values = tableModel.getValues(0, false);
+    values = tableModel.getValues(0);
     assertEquals(5, values.size());
     assertTrue(values.contains("a"));
     assertTrue(values.contains("b"));

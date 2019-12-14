@@ -127,7 +127,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public ColumnSummaryModel getColumnSummaryModel(final Property columnIdentifier) {return null;}
     @Override
-    public Collection getValues(final Property columnIdentifier, final boolean selectedOnly) {return null;}
+    public Collection getValues(final Property columnIdentifier) {return null;}
+    @Override
+    public Collection getSelectedValues(final Property columnIdentifier) {return null;}
     @Override
     public RowColumn findNext(final int fromRowIndex, final String searchText) {return null;}
     @Override
