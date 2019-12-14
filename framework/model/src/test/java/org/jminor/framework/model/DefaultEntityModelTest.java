@@ -141,7 +141,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public boolean isRegularExpressionSearch() {return false;}
     @Override
-    public void setRegularExpressionSearch(final boolean value) {}
+    public void setRegularExpressionSearch(final boolean regularExpressionSearch) {}
     @Override
     public void sort() {}
     @Override

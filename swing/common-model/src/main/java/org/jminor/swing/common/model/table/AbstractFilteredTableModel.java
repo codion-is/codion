@@ -283,8 +283,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void setRegularExpressionSearch(final boolean value) {
-    this.regularExpressionSearch = value;
+  public final void setRegularExpressionSearch(final boolean regularExpressionSearch) {
+    this.regularExpressionSearch = regularExpressionSearch;
   }
 
   /** {@inheritDoc} */

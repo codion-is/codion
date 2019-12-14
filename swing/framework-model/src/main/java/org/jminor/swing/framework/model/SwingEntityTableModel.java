@@ -338,7 +338,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   /**
-   * Returns the value for the cell at <code>modelColumnIndex</code> and <code>rowIndex</code>.   *
+   * Returns the value for the cell at <code>modelColumnIndex</code> and <code>rowIndex</code>.
    * @param rowIndex the row whose value is to be queried
    * @param modelColumnIndex the column whose value is to be queried
    * @return the value Object at the specified cell
@@ -710,11 +710,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * Replace the entities identified by the Entity.Key map keys with their respective value.
    * Note that this does not trigger {@link #filterContents()}, that must be done explicitly.
-   * @param entityMap the entities to replace mapped to the corresponding primary key found in this table model
+   * @param entitiesByKey the entities to replace mapped to the corresponding primary key found in this table model
    */
-  private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entityMap) {
+  private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entitiesByKey) {
     for (final Entity entity : getAllItems()) {
-      final Iterator<Map.Entry<Entity.Key, Entity>> mapIterator = entityMap.entrySet().iterator();
+      final Iterator<Map.Entry<Entity.Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
       while (mapIterator.hasNext()) {
         final Map.Entry<Entity.Key, Entity> entry = mapIterator.next();
         if (entity.getKey().equals(entry.getKey())) {
@@ -726,7 +726,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
           }
         }
       }
-      if (entityMap.isEmpty()) {
+      if (entitiesByKey.isEmpty()) {
         break;
       }
     }
