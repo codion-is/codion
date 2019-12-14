@@ -20,6 +20,7 @@ public class TrackTableModel extends SwingEntityTableModel {
 
   public TrackTableModel(final EntityConnectionProvider connectionProvider) {
     super(Chinook.T_TRACK, connectionProvider);
+    setEditable(true);
   }
 
   public void raisePriceOfSelected(final BigDecimal increase) throws DatabaseException {

@@ -35,4 +35,10 @@ public final class IntegerInputProvider extends AbstractInputProvider<Integer, I
   public Integer getValue() {
     return getInputComponent().getInteger();
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final Integer value) {
+    getInputComponent().setInteger(value);
+  }
 }

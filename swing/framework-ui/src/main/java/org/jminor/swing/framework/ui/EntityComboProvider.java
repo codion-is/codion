@@ -31,6 +31,12 @@ public final class EntityComboProvider extends AbstractInputProvider<Entity, JCo
     return ((EntityComboBoxModel) getInputComponent().getModel()).getSelectedValue();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final Entity value) {
+    getInputComponent().setSelectedItem(value);
+  }
+
   private static JComboBox<Entity> createComboBox(final EntityComboBoxModel comboBoxModel, final Object currentValue) {
     if (comboBoxModel.isCleared()) {
       comboBoxModel.refresh();

@@ -42,6 +42,11 @@ public class BlobInputProvider extends AbstractInputProvider<byte[], BlobInputPr
     }
   }
 
+  @Override
+  public void setValue(final byte[] value) {
+    throw new UnsupportedOperationException();
+  }
+
   public static final class FileInputPanel extends JPanel {
 
     private final JTextField filePathField = new JTextField(20);

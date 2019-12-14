@@ -7,7 +7,6 @@ import org.jminor.common.event.EventDataListener;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JComponent;
 import javax.swing.JTextField;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,14 +17,18 @@ public class InputProviderPanelTest {
   @Test
   public void test() {
     final JTextField textField = new JTextField();
-    final InputProviderPanel panel = new InputProviderPanel("Test", new InputProvider() {
+    final InputProviderPanel panel = new InputProviderPanel("Test", new InputProvider<String, JTextField>() {
       @Override
-      public JComponent getInputComponent() {
+      public JTextField getInputComponent() {
         return textField;
       }
       @Override
-      public Object getValue() {
+      public String getValue() {
         return textField.getText();
+      }
+      @Override
+      public void setValue(final String value) {
+        textField.setText(value);
       }
     });
     assertEquals(textField, panel.getInputComponent());

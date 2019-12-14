@@ -80,6 +80,12 @@ public final class InputProviderPanel<T, K extends JComponent> extends JPanel im
 
   /** {@inheritDoc} */
   @Override
+  public void setValue(final T value) {
+    inputProvider.setValue(value);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public K getInputComponent() {
     return inputProvider.getInputComponent();
   }

@@ -42,6 +42,12 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
     return value.length() == 0 ? null : value;
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final String value) {
+    getInputComponent().setText(value);
+  }
+
   private static JTextField createDefaultTextField(final Object initialValue, final int maxLength) {
     final SizedDocument document = new SizedDocument();
     if (maxLength > 0) {

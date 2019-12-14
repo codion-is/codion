@@ -21,4 +21,10 @@ public interface InputProvider<T, K extends JComponent> {
    * @return the value according to the input component
    */
   T getValue();
+
+  /**
+   * Sets the value of this InputProvider
+   * @param value the value
+   */
+  void setValue(T value);
 }

@@ -21,7 +21,6 @@ import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityModel;
@@ -624,8 +623,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * Return the value to display in a table cell for the given property of the given entity.
-   * Note that this method is responsible for providing a "human readable" version of the value,
-   * such as the caption for value list properties and string versions of foreign key values.
    * @param entity the entity
    * @param property the property
    * @return the value of the given property for the given entity for display
@@ -634,9 +631,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   protected Object getValue(final Entity entity, final Property property) {
     requireNonNull(entity, "entity");
     requireNonNull(property, "property");
-    if (property instanceof ValueListProperty || property instanceof ForeignKeyProperty) {
-      return entity.getAsString(property);
-    }
 
     return entity.get(property);
   }

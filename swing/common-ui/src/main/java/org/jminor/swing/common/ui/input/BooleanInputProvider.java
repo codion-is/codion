@@ -27,4 +27,10 @@ public final class BooleanInputProvider extends AbstractInputProvider<Boolean, J
   public Boolean getValue() {
     return (Boolean) ((Item) getInputComponent().getModel().getSelectedItem()).getValue();
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final Boolean value) {
+    getInputComponent().setSelectedItem(value);
+  }
 }

@@ -2074,7 +2074,6 @@ public final class UiUtil {
     private static final int NORTH_PANEL_DIMENSIONS = 2;
     private static final int COMPONENT_GAP = 0;
     private static final int TAB_SIZE = 4;
-    private static final int FONT_SIZE = 9;
 
     //ui components
     private JTextField exceptionField;
@@ -2205,7 +2204,6 @@ public final class UiUtil {
 
     private JPanel createCenterPanel() {
       detailsArea = new JTextArea();
-      detailsArea.setFont(new Font("Dialog", Font.PLAIN, FONT_SIZE));
       detailsArea.setTabSize(TAB_SIZE);
       detailsArea.setEditable(false);
       detailsArea.setLineWrap(true);

@@ -33,6 +33,12 @@ public final class ValueListInputProvider<T> extends AbstractInputProvider<T, JC
     return ((ItemComboBoxModel<T>) getInputComponent().getModel()).getSelectedValue().getValue();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final T value) {
+    getInputComponent().setSelectedItem(value);
+  }
+
   private static <T> JComboBox<Item<T>> createComboBox(final T currentValue, final List<Item<T>> values) {
     final ItemComboBoxModel<T> boxModel = new ItemComboBoxModel<>(values);
     final JComboBox<Item<T>> box = new SteppedComboBox<>(boxModel);

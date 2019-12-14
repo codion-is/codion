@@ -35,4 +35,10 @@ public final class DoubleInputProvider extends AbstractInputProvider<Double, Dec
   public Double getValue() {
     return getInputComponent().getDouble();
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final Double value) {
+    getInputComponent().setDouble(value);
+  }
 }
