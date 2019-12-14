@@ -61,7 +61,6 @@ public class JasperReportsEntityDataSourceTest {
     public JRPropertiesMap getPropertiesMap() {return null;}
     @Override
     public JRPropertiesHolder getParentProperties() {return null;}
-    @SuppressWarnings({"CloneDoesntCallSuperClone"})
     @Override
     public Object clone() {return null;}
     @Override

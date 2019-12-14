@@ -1173,7 +1173,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return true if the given property should be included in the update selected menu.
    * @see #getUpdateSelectedControlSet()
    */
-  @SuppressWarnings("UnusedParameters")
   protected boolean includeUpdateSelectedProperty(final Property property) {
     return true;
   }

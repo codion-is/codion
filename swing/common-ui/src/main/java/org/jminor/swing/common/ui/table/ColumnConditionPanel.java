@@ -405,7 +405,6 @@ public class ColumnConditionPanel<K> extends JPanel {
               upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue(), false);
     }
 
-    @SuppressWarnings("unchecked")
     private void createTextProperty(final JComponent component, final boolean upperBound) {
       final Value modelValue = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
       final Class typeClass = columnConditionModel.getTypeClass();

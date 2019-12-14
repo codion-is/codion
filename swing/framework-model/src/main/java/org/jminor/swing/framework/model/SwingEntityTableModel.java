@@ -627,7 +627,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     return getEntityDefinition().getOrderBy();
   }
 
-  @SuppressWarnings({"UnusedDeclaration"})
   protected void handleDelete(final List<Entity> deletedEntities) {/*Provided for subclasses*/}
 
   /**
