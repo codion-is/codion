@@ -166,7 +166,7 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(clark, comboBoxModel.getSelectedValue());
     comboBoxModel.setSelectedItem(null);
     assertNull(comboBoxModel.getSelectedValue());
-    comboBoxModel.setFilterCondition(entity -> false);
+    comboBoxModel.setIncludeCondition(entity -> false);
     comboBoxModel.setSelectedEntityByKey(clark.getKey());
     assertEquals(clark, comboBoxModel.getSelectedValue());
     final Entity.Key nobodyPK = DOMAIN.key(TestDomain.T_EMP, -1);

@@ -142,37 +142,37 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   public void filterWithSelection() {
     testModel.setSelectedItem(BJORN);
-    testModel.setFilterCondition(item -> !item.equals(BJORN));
+    testModel.setIncludeCondition(item -> !item.equals(BJORN));
     assertEquals(NULL, testModel.getSelectedItem());
     assertNull(testModel.getSelectedValue());
 
-    testModel.setFilterCondition(null);
+    testModel.setIncludeCondition(null);
     testModel.setFilterSelectedItem(false);
     assertFalse(testModel.isFilterSelectedItem());
     testModel.setSelectedItem(BJORN);
-    testModel.setFilterCondition(item -> !item.equals(BJORN));
+    testModel.setIncludeCondition(item -> !item.equals(BJORN));
     assertNotNull(testModel.getSelectedItem());
     assertEquals(BJORN, testModel.getSelectedValue());
   }
 
   @Test
-  public void setFilterCondition() {
+  public void setIncludeCondition() {
     final AtomicInteger filteringEndedCounter = new AtomicInteger();
     final EventListener filteringEndedListener = filteringEndedCounter::incrementAndGet;
     testModel.addListDataListener(listDataListener);
     testModel.addFilteringListener(filteringEndedListener);
 
-    testModel.setFilterCondition(item -> false);
+    testModel.setIncludeCondition(item -> false);
     assertEquals(1, filteringEndedCounter.get());
     assertEquals(1, testModel.getSize());
-    testModel.setFilterCondition(item -> true);
+    testModel.setIncludeCondition(item -> true);
     assertEquals(2, filteringEndedCounter.get());
     assertEquals(6, testModel.getSize());
-    testModel.setFilterCondition(item -> !item.equals(ANNA));
+    testModel.setIncludeCondition(item -> !item.equals(ANNA));
     assertEquals(5, testModel.getSize());
     assertFalse(testModel.isVisible(ANNA));
     assertTrue(testModel.isFiltered(ANNA));
-    testModel.setFilterCondition(item -> item.equals(ANNA));
+    testModel.setIncludeCondition(item -> item.equals(ANNA));
     assertEquals(2, testModel.getSize());
     assertTrue(testModel.isVisible(ANNA));
 
@@ -195,9 +195,9 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   public void removeItem() {
     //remove filtered item
-    testModel.setFilterCondition(item -> !item.equals(BJORN));
+    testModel.setIncludeCondition(item -> !item.equals(BJORN));
     testModel.removeItem(BJORN);
-    testModel.setFilterCondition(null);
+    testModel.setIncludeCondition(null);
     assertFalse(testModel.isVisible(BJORN));
 
     //remove visible item
@@ -209,7 +209,7 @@ public class SwingFilteredComboBoxModelTest {
   public void addItem() {
     testModel.clear();
     //add filtered item
-    testModel.setFilterCondition(item -> !item.equals(BJORN));
+    testModel.setIncludeCondition(item -> !item.equals(BJORN));
     testModel.addItem(BJORN);
     assertFalse(testModel.isVisible(BJORN));
 
@@ -217,7 +217,7 @@ public class SwingFilteredComboBoxModelTest {
     testModel.addItem(KALLI);
     assertTrue(testModel.isVisible(KALLI));
 
-    testModel.setFilterCondition(null);
+    testModel.setIncludeCondition(null);
     assertTrue(testModel.isVisible(BJORN));
   }
 

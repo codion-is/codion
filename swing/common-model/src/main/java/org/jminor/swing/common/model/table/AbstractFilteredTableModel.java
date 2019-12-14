@@ -89,9 +89,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
 
   /**
-   * the filter condition used by this model
+   * the include condition used by this model
    */
-  private Predicate<R> filterCondition;
+  private Predicate<R> includeCondition;
 
   /**
    * true if searching the table model should be done via regular expressions
@@ -109,7 +109,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     this.sortModel = requireNonNull(sortModel, "sortModel");
     this.columnModel = new SwingFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
     this.selectionModel = new SwingTableSelectionModel<>(this);
-    this.filterCondition = new DefaultFilterCondition<>(this.columnModel.getColumnFilterModels());
+    this.includeCondition = new DefaultIncludeCondition<>(this.columnModel.getColumnFilterModels());
     bindEventsInternal();
   }
 
@@ -321,10 +321,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       final List<R> selectedItems = selectionModel.getSelectedItems();
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
-      if (filterCondition != null) {
+      if (includeCondition != null) {
         for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
           final R item = iterator.next();
-          if (!filterCondition.test(item)) {
+          if (!includeCondition.test(item)) {
             filteredItems.add(item);
             iterator.remove();
           }
@@ -341,14 +341,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final Predicate<R> getFilterCondition() {
-    return filterCondition;
+  public final Predicate<R> getIncludeCondition() {
+    return includeCondition;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setFilterCondition(final Predicate<R> filterCondition) {
-    this.filterCondition = filterCondition;
+  public final void setIncludeCondition(final Predicate<R> includeCondition) {
+    this.includeCondition = includeCondition;
     filterContents();
   }
 
@@ -537,7 +537,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected final void addItems(final List<R> items, final int index, final boolean sortAfterAdding) {
     int counter = 0;
     for (final R item : items) {
-      if (filterCondition == null || filterCondition.test(item)) {
+      if (includeCondition == null || includeCondition.test(item)) {
         visibleItems.add(index + counter++, item);
       }
       else {
@@ -624,11 +624,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
   }
 
-  private static final class DefaultFilterCondition<R, C> implements Predicate<R> {
+  private static final class DefaultIncludeCondition<R, C> implements Predicate<R> {
 
     private final Collection<? extends ColumnConditionModel<C>> columnFilters;
 
-    private DefaultFilterCondition(final Collection<? extends ColumnConditionModel<C>> columnFilters) {
+    private DefaultIncludeCondition(final Collection<? extends ColumnConditionModel<C>> columnFilters) {
       this.columnFilters = columnFilters;
     }
 

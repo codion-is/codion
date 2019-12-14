@@ -312,10 +312,10 @@ public class EntityTableView extends TableView<Entity> {
     listModel.getSortedList().comparatorProperty().bind(comparatorProperty());
     filterText.textProperty().addListener((observable, oldValue, newValue) -> {
       if (nullOrEmpty(newValue)) {
-        listModel.setFilterCondition(null);
+        listModel.setIncludeCondition(null);
       }
       else {
-        listModel.setFilterCondition(item -> getColumns().stream().map(column -> column.getCellObservableValue(item).getValue())
+        listModel.setIncludeCondition(item -> getColumns().stream().map(column -> column.getCellObservableValue(item).getValue())
                 .anyMatch(value -> value != null && value.toString().toLowerCase().contains(newValue.toLowerCase())));
       }
     });

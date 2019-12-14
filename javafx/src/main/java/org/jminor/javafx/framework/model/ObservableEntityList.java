@@ -52,7 +52,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   private FXEntityListSelectionModel selectionModel;
 
   private Condition selectCondition;
-  private Predicate<Entity> filterCondition;
+  private Predicate<Entity> includeCondition;
 
   /**
    * Instantiates a new {@link ObservableEntityList}
@@ -97,7 +97,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   /**
    * @return a filtered view of this list
-   * @see #setFilterCondition(Predicate)
+   * @see #setIncludeCondition(Predicate)
    */
   public final FilteredList<Entity> getFilteredList() {
     return filteredList;
@@ -235,21 +235,21 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   /** {@inheritDoc} */
   @Override
-  public final Predicate<Entity> getFilterCondition() {
-    return filterCondition;
+  public final Predicate<Entity> getIncludeCondition() {
+    return includeCondition;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setFilterCondition(final Predicate<Entity> filterCondition) {
-    this.filterCondition = filterCondition;
+  public final void setIncludeCondition(final Predicate<Entity> includeCondition) {
+    this.includeCondition = includeCondition;
     filterContents();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void filterContents() {
-    filteredList.setPredicate(entity -> filterCondition == null || filterCondition.test(entity));
+    filteredList.setPredicate(entity -> includeCondition == null || includeCondition.test(entity));
     filteringDoneEvent.fire();
   }
 

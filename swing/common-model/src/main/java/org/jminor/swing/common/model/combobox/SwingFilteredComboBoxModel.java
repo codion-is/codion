@@ -45,7 +45,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private Comparator<T> sortComparator;
   private T selectedItem = null;
   private T nullValue;
-  private Predicate<T> filterCondition;
+  private Predicate<T> includeCondition;
   private boolean filterSelectedItem = true;
 
   /**
@@ -122,10 +122,10 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     try {
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
-      if (filterCondition != null) {
+      if (includeCondition != null) {
         for (final Iterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
           final T item = iterator.next();
-          if (item != null && !filterCondition.test(item)) {
+          if (item != null && !includeCondition.test(item)) {
             filteredItems.add(item);
             iterator.remove();
           }
@@ -175,15 +175,15 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   /** {@inheritDoc} */
   @Override
-  public final void setFilterCondition(final Predicate<T> filterCondition) {
-    this.filterCondition = filterCondition;
+  public final void setIncludeCondition(final Predicate<T> includeCondition) {
+    this.includeCondition = includeCondition;
     filterContents();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Predicate<T> getFilterCondition() {
-    return filterCondition;
+  public final Predicate<T> getIncludeCondition() {
+    return includeCondition;
   }
 
   /** {@inheritDoc} */
@@ -217,7 +217,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   /** {@inheritDoc} */
   @Override
   public final void addItem(final T item) {
-    if (filterCondition == null || filterCondition.test(item)) {
+    if (includeCondition == null || includeCondition.test(item)) {
       if (!visibleItems.contains(item)) {
         visibleItems.add(item);
         sortVisibleItems();

@@ -243,9 +243,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void filterContents() {}
     @Override
-    public Predicate<Entity> getFilterCondition() {return null;}
+    public Predicate<Entity> getIncludeCondition() {return null;}
     @Override
-    public void setFilterCondition(final Predicate<Entity> filterCondition) {}
+    public void setIncludeCondition(final Predicate<Entity> includeCondition) {}
     @Override
     public List<Entity> getVisibleItems() {return null;}
     @Override

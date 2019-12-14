@@ -84,7 +84,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final EventDataListener<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
   private final EventDataListener<List<Entity>> deleteListener = new DeleteListener();
 
-  private final Predicate<Entity> foreignKeyFilterCondition = item -> {
+  private final Predicate<Entity> foreignKeyIncludeCondition = item -> {
     for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
       final Entity foreignKeyValue = item.getForeignKey(entry.getKey());
       if (foreignKeyValue == null) {
@@ -109,7 +109,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     this.connectionProvider = connectionProvider;
     this.domain = connectionProvider.getDomain();
     setStaticData(this.domain.getDefinition(entityId).isStaticData());
-    setFilterCondition(foreignKeyFilterCondition);
+    setIncludeCondition(foreignKeyIncludeCondition);
     addEditEventListeners();
   }
 
@@ -211,8 +211,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /** {@inheritDoc} */
   @Override
-  public final Predicate<Entity> getForeignKeyFilterCondition() {
-    return foreignKeyFilterCondition;
+  public final Predicate<Entity> getForeignKeyIncludeCondition() {
+    return foreignKeyIncludeCondition;
   }
 
   /** {@inheritDoc} */
@@ -224,7 +224,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     else {
       foreignKeyFilterEntities.put(foreignKeyPropertyId, new HashSet<>(entities));
     }
-    setFilterCondition(foreignKeyFilterCondition);
+    setIncludeCondition(foreignKeyIncludeCondition);
   }
 
   /** {@inheritDoc} */
@@ -275,13 +275,13 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     if (!Util.nullOrEmpty(filterEntities)) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
-    final Predicate rejectAllCondition = item -> false;
+    final Predicate<Entity> filterAllCondition = item -> false;
     if (isStrictForeignKeyFiltering()) {
-      setFilterCondition(rejectAllCondition);
+      setIncludeCondition(filterAllCondition);
     }
     foreignKeyModel.addSelectionListener(selected -> {
       if (selected == null && isStrictForeignKeyFiltering()) {
-        setFilterCondition(rejectAllCondition);
+        setIncludeCondition(filterAllCondition);
       }
       else {
         setForeignKeyFilterEntities(foreignKeyPropertyId, selected == null ? emptyList() : singletonList(selected));

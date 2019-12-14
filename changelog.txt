@@ -5451,3 +5451,4 @@
   FilteredComboBoxModel.replaceItem() added
   SwingEntityComboBoxModel now calls replaceItem() in UpdateListener
   ObservableEntityList.isFiltered() bug fixed, refactored
+  FilteredModel, filterCondition semantics totally changed when FilterCondition was replaced with Predicate, renamed to includeCondition
