@@ -49,9 +49,8 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C, TableColumn> {
 
-  private final Event filteringDoneEvent = Events.event();
-  private final Event sortingStartedEvent = Events.event();
-  private final Event sortingDoneEvent = Events.event();
+  private final Event filterEvent = Events.event();
+  private final Event sortEvent = Events.event();
   private final Event refreshStartedEvent = Events.event();
   private final Event refreshDoneEvent = Events.event();
   private final Event tableDataChangedEvent = Events.event();
@@ -302,41 +301,32 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void sortContents() {
-    try {
-      sortingStartedEvent.fire();
-      final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
-      sortModel.sort(visibleItems);
-      fireTableRowsUpdated(0, visibleItems.size());
-      selectionModel.setSelectedItems(selectedItems);
-    }
-    finally {
-      sortingDoneEvent.fire();
-    }
+    final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
+    sortModel.sort(visibleItems);
+    fireTableRowsUpdated(0, visibleItems.size());
+    selectionModel.setSelectedItems(selectedItems);
+    sortEvent.fire();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void filterContents() {
-    try {
-      final List<R> selectedItems = selectionModel.getSelectedItems();
-      visibleItems.addAll(filteredItems);
-      filteredItems.clear();
-      if (includeCondition != null) {
-        for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
-          final R item = iterator.next();
-          if (!includeCondition.test(item)) {
-            filteredItems.add(item);
-            iterator.remove();
-          }
+    final List<R> selectedItems = selectionModel.getSelectedItems();
+    visibleItems.addAll(filteredItems);
+    filteredItems.clear();
+    if (includeCondition != null) {
+      for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
+        final R item = iterator.next();
+        if (!includeCondition.test(item)) {
+          filteredItems.add(item);
+          iterator.remove();
         }
       }
-      sortModel.sort(visibleItems);
-      fireTableDataChanged();
-      selectionModel.setSelectedItems(selectedItems);
     }
-    finally {
-      filteringDoneEvent.fire();
-    }
+    sortModel.sort(visibleItems);
+    fireTableDataChanged();
+    selectionModel.setSelectedItems(selectedItems);
+    filterEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -452,25 +442,25 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void addFilteringListener(final EventListener listener) {
-    filteringDoneEvent.addListener(listener);
+    filterEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeFilteringListener(final EventListener listener) {
-    filteringDoneEvent.removeListener(listener);
+    filterEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addSortingListener(final EventListener listener) {
-    sortingDoneEvent.addListener(listener);
+    sortEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSortingListener(final EventListener listener) {
-    sortingDoneEvent.removeListener(listener);
+    sortEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
