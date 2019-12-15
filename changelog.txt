@@ -5472,3 +5472,4 @@
   EntityEditPanel.createForeignKeyField() reintroduced
   TristateCheckBox replaced with its simpler cousin NullableCheckBox
   NullableToggleButtonModel, NullableCheckBox, renamed and refactored a few things, UiValues.NullableToggleUIValue added
+  jminor.swing.common.ui.disableNumberFieldGrouping no longer true by default, as per javadoc
