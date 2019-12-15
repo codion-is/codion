@@ -5474,3 +5474,4 @@
   NullableToggleButtonModel, NullableCheckBox, renamed and refactored a few things, UiValues.NullableToggleUIValue added
   jminor.swing.common.ui.disableNumberFieldGrouping no longer true by default, as per javadoc
   Unit tests updated to reflect the above
+  ForeignKeyTableCellEditor added, related refactoring

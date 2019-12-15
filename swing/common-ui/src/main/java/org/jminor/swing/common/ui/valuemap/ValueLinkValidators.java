@@ -39,7 +39,7 @@ public final class ValueLinkValidators {
    * @param <K> the type of the edit model value keys
    */
   public static <K> void addFormattedValidator(final K key, final JTextComponent textComponent,
-                                               final ValueMapEditModel<K, Object> editModel) {
+                                               final ValueMapEditModel<K, ?> editModel) {
     addFormattedValidator(key, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
   }
 

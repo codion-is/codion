@@ -5,10 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JComponent;
@@ -18,26 +15,26 @@ import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A {@link TableCellEditor} implementation for {@link EntityTablePanel}.
  */
-final class EntityTableCellEditor extends AbstractCellEditor implements TableCellEditor {
+class EntityTableCellEditor extends AbstractCellEditor implements TableCellEditor {
 
-  private final EntityConnectionProvider connectionProvider;
   private final Property property;
   private final Value cellValue = Values.value();
 
   private JComponent component;
 
-  EntityTableCellEditor(final EntityConnectionProvider connectionProvider, final Property property) {
-    this.connectionProvider = connectionProvider;
-    this.property = property;
+  EntityTableCellEditor(final Property property) {
+    this.property = requireNonNull(property, "property");
   }
 
   /** {@inheritDoc} */
   @Override
-  public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
-                                               final int row, final int column) {
+  public final Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
+                                                     final int row, final int column) {
     if (component == null) {
       component = initializeEditorComponent();
     }
@@ -48,13 +45,13 @@ final class EntityTableCellEditor extends AbstractCellEditor implements TableCel
 
   /** {@inheritDoc} */
   @Override
-  public Object getCellEditorValue() {
+  public final Object getCellEditorValue() {
     return cellValue.get();
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isCellEditable(final EventObject event) {
+  public final boolean isCellEditable(final EventObject event) {
     if (event instanceof MouseEvent) {
       return ((MouseEvent) event).getClickCount() >= 2;
     }
@@ -62,13 +59,15 @@ final class EntityTableCellEditor extends AbstractCellEditor implements TableCel
     return true;
   }
 
-  private JComponent initializeEditorComponent() {
-    if (property instanceof ForeignKeyProperty) {
-      return EntityUiUtil.createInputComponent(property, cellValue,
-              new SwingEntityComboBoxModel(((ForeignKeyProperty) property).getForeignEntityId(),
-                      connectionProvider));
-    }
+  protected final Property getProperty() {
+    return property;
+  }
 
-    return EntityUiUtil.createInputComponent(property, cellValue, null);
+  protected final Value getCellValue() {
+    return cellValue;
+  }
+
+  protected JComponent initializeEditorComponent() {
+    return EntityUiUtil.createInputComponent(property, cellValue);
   }
 }
