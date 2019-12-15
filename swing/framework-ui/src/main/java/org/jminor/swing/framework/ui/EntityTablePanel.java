@@ -1297,7 +1297,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       return null;
     }
 
-    return new EntityTableCellEditor(getEntityTableModel().getConnectionProvider(), property);
+    if (property instanceof ForeignKeyProperty) {
+      return new ForeignKeyTableCellEditor(getEntityTableModel().getConnectionProvider(), (ForeignKeyProperty) property);
+    }
+
+    return new EntityTableCellEditor(property);
   }
 
   /**

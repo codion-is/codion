@@ -33,7 +33,7 @@ public class NumberField extends JTextField {
    * Default value: false.
    */
   public static final PropertyValue<Boolean> DISABLE_GROUPING =
-          Configuration.booleanValue("jminor.swing.common.ui.disableNumberFieldGrouping", true);
+          Configuration.booleanValue("jminor.swing.common.ui.disableNumberFieldGrouping", false);
 
   /**
    * Instantiates a new NumberField

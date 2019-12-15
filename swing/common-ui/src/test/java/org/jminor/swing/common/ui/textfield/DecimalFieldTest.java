@@ -17,6 +17,7 @@ public class DecimalFieldTest {
   @Test
   public void testNoGrouping() {
     final DecimalField decimalField = new DecimalField();
+    decimalField.setGroupingUsed(false);
     decimalField.setSeparators(',', '.');
     decimalField.setText(",");
     assertEquals("0,", decimalField.getText());
@@ -205,6 +206,7 @@ public class DecimalFieldTest {
   @Test
   public void decimalSeparators() {
     final DecimalField decimalField = new DecimalField();
+    decimalField.setGroupingUsed(false);
     decimalField.setSeparators('.', ',');
     decimalField.setText("1.5");
     assertEquals(Double.valueOf(1.5), decimalField.getDouble());

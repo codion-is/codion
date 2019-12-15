@@ -187,16 +187,11 @@ public final class EntityUiUtil {
   /**
    * @param property the property for which to create the input component
    * @param value the value to bind to the field
-   * @param foreignKeyComboBoxModel required in case property is a {@link ForeignKeyProperty}
    * @return the component handling input for {@code property}
    */
-  public static JComponent createInputComponent(final Property property, final Value value,
-                                                final EntityComboBoxModel foreignKeyComboBoxModel) {
+  public static JComponent createInputComponent(final Property property, final Value value) {
     if (property instanceof ForeignKeyProperty) {
-      requireNonNull(foreignKeyComboBoxModel, "foreignKeyComboBoxModel");
-      final ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) property;
-
-      return createForeignKeyComboBox(foreignKeyProperty, value, foreignKeyComboBoxModel);
+      throw new IllegalArgumentException("Use createForeignKeyComboBox() or createForeignKeyLookupField() for ForeignKeyProperties");
     }
     if (property instanceof ValueListProperty) {
       return createValueListComboBox((ValueListProperty) property, value);
