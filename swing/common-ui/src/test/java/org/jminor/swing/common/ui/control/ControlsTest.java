@@ -9,7 +9,7 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
-import org.jminor.swing.common.model.checkbox.TristateButtonModel;
+import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,12 +30,12 @@ public final class ControlsTest {
     return value;
   }
 
-  public void setTristateValue(final Boolean value) {
+  public void setNullableValue(final Boolean value) {
     this.value = value;
     valueChangeEvent.fire(value);
   }
 
-  public Boolean isTristateValue() {
+  public Boolean isNullableValue() {
     return value;
   }
 
@@ -51,16 +51,16 @@ public final class ControlsTest {
 
     final Value<Boolean> nullableValue = Values.value(true);
     final Controls.ToggleControl nullableControl = Controls.toggleControl(nullableValue);
-    assertTrue(nullableControl.getButtonModel() instanceof TristateButtonModel);
+    assertTrue(nullableControl.getButtonModel() instanceof NullableToggleButtonModel);
     assertTrue(nullableControl.getButtonModel().isSelected());
     nullableValue.set(false);
     assertFalse(nullableControl.getButtonModel().isSelected());
     nullableValue.set(null);
-    assertTrue(((TristateButtonModel) nullableControl.getButtonModel()).isIndeterminate());
+    assertNull(((NullableToggleButtonModel) nullableControl.getButtonModel()).get());
 
     final Value<Boolean> nonNullableValue = Values.value(true, false);
     final Controls.ToggleControl nonNullableControl = Controls.toggleControl(nonNullableValue);
-    assertFalse(nonNullableControl.getButtonModel() instanceof TristateButtonModel);
+    assertFalse(nonNullableControl.getButtonModel() instanceof NullableToggleButtonModel);
     assertTrue(nonNullableControl.getButtonModel().isSelected());
     nonNullableValue.set(false);
     assertFalse(nonNullableControl.getButtonModel().isSelected());
@@ -100,26 +100,27 @@ public final class ControlsTest {
   }
 
   @Test
-  public void tristateToggleControl() {
-    final Controls.ToggleControl toggleControl = Controls.toggleControl(this, "tristateValue", "tristate", valueChangeEvent, null, true);
-    final TristateButtonModel buttonModel = (TristateButtonModel) toggleControl.getButtonModel();
-    buttonModel.setIndeterminate();
+  public void nullableToggleControl() {
+    final Controls.ToggleControl toggleControl = Controls.toggleControl(this, "nullableValue", "nullable", valueChangeEvent, null, true);
+    final NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) toggleControl.getButtonModel();
+    buttonModel.set(null);
     assertNull(value);
     buttonModel.setSelected(false);
     assertFalse(value);
     buttonModel.setSelected(true);
     assertTrue(value);
-    buttonModel.setIndeterminate();
+    buttonModel.set(null);
     assertNull(value);
 
-    setTristateValue(false);
+    setNullableValue(false);
     assertFalse(buttonModel.isSelected());
-    assertFalse(buttonModel.isIndeterminate());
-    setTristateValue(true);
+    assertFalse(buttonModel.get());
+    setNullableValue(true);
     assertTrue(buttonModel.isSelected());
-    assertFalse(buttonModel.isIndeterminate());
-    setTristateValue(null);
-    assertTrue(buttonModel.isIndeterminate());
+    assertTrue(buttonModel.get());
+    setNullableValue(null);
+    assertFalse(buttonModel.isSelected());
+    assertNull(buttonModel.get());
   }
 
   @Test

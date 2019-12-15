@@ -4,8 +4,8 @@
 package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.state.StateObserver;
-import org.jminor.swing.common.model.checkbox.TristateButtonModel;
-import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
+import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
+import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 
 import javax.swing.Action;
 import javax.swing.ButtonModel;
@@ -325,8 +325,8 @@ public final class ControlProvider {
   public static JCheckBox createCheckBox(final Controls.ToggleControl toggleControl) {
     final ButtonModel buttonModel = toggleControl.getButtonModel();
     final JCheckBox checkBox;
-    if (buttonModel instanceof TristateButtonModel) {
-      checkBox = new TristateCheckBox(toggleControl.getName());
+    if (buttonModel instanceof NullableToggleButtonModel) {
+      checkBox = new NullableCheckBox(toggleControl.getName(), (NullableToggleButtonModel) buttonModel);
     }
     else {
       checkBox = new JCheckBox(toggleControl);

@@ -31,7 +31,7 @@ import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
-import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
+import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.Control;
@@ -1479,65 +1479,65 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by {@code propertyId}
+   * Creates a NullableCheckBox bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyId) {
-    return createTristateCheckBox(propertyId, null);
+  protected final NullableCheckBox createNullableCheckBox(final String propertyId) {
+    return createNullableCheckBox(propertyId, null);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by {@code propertyId}
+   * Creates a NullableCheckBox bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyId, final StateObserver enabledState) {
-    return createTristateCheckBox(propertyId, enabledState, true);
+  protected final NullableCheckBox createNullableCheckBox(final String propertyId, final StateObserver enabledState) {
+    return createNullableCheckBox(propertyId, enabledState, true);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by {@code propertyId}
+   * Creates a NullableCheckBox bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyId, final StateObserver enabledState,
+  protected final NullableCheckBox createNullableCheckBox(final String propertyId, final StateObserver enabledState,
                                                           final boolean includeCaption) {
-    return createTristateCheckBox(editModel.getEntityDefinition().getProperty(propertyId), enabledState, includeCaption);
+    return createNullableCheckBox(editModel.getEntityDefinition().getProperty(propertyId), enabledState, includeCaption);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the given property
+   * Creates a NullableCheckBox bound to the given property
    * @param property the property to bind
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final Property property) {
-    return createTristateCheckBox(property, null);
+  protected final NullableCheckBox createNullableCheckBox(final Property property) {
+    return createNullableCheckBox(property, null);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the given property
+   * Creates a NullableCheckBox bound to the given property
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final Property property, final StateObserver enabledState) {
-    return createTristateCheckBox(property, enabledState, true);
+  protected final NullableCheckBox createNullableCheckBox(final Property property, final StateObserver enabledState) {
+    return createNullableCheckBox(property, enabledState, true);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the given property
+   * Creates a NullableCheckBox bound to the given property
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final Property property, final StateObserver enabledState,
+  protected final NullableCheckBox createNullableCheckBox(final Property property, final StateObserver enabledState,
                                                           final boolean includeCaption) {
-    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(property,
+    final NullableCheckBox box = EntityUiUtil.createNullableCheckBox(property,
             editModel.value(property.getPropertyId()), enabledState, includeCaption);
     setComponent(property.getPropertyId(), box);
 

@@ -28,6 +28,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.DefaultEntityLookupModel;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityLookupModel;
+import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.LocalDateInputPanel;
@@ -37,7 +38,7 @@ import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
-import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
+import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.AutoCompletion;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
@@ -292,7 +293,7 @@ public final class EntityUiUtil {
   }
 
   /**
-   * Creates a TristateCheckBox based on the given boolean property
+   * Creates a NullableCheckBox based on the given boolean property
    * @param property the property on which value to base the checkbox
    * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the checkbox
@@ -300,16 +301,16 @@ public final class EntityUiUtil {
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a nullable boolean property
    */
-  public static TristateCheckBox createTristateCheckBox(final Property property, final Value value,
+  public static NullableCheckBox createNullableCheckBox(final Property property, final Value value,
                                                         final StateObserver enabledState, final boolean includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     if (!property.isBoolean() || !property.isNullable()) {
-      throw new IllegalArgumentException("Nullable boolean property required for createTristateCheckBox");
+      throw new IllegalArgumentException("Nullable boolean property required for createNullableCheckBox");
     }
 
-    return (TristateCheckBox) initializeCheckBox(property, value, enabledState,
-            new TristateCheckBox(includeCaption ? property.getCaption() : null));
+    return (NullableCheckBox) initializeCheckBox(property, value, enabledState,
+            new NullableCheckBox(includeCaption ? property.getCaption() : null, new NullableToggleButtonModel()));
   }
 
   /**

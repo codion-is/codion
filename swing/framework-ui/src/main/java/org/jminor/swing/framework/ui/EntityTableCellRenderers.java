@@ -8,8 +8,9 @@ import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.EntityTableModel;
+import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
+import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 
-import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -223,7 +224,7 @@ public final class EntityTableCellRenderers {
 
   private static final class BooleanRenderer extends DefaultEntityTableCellRenderer {
 
-    private final JCheckBox checkBox = new JCheckBox();
+    private final NullableCheckBox checkBox = new NullableCheckBox(null, new NullableToggleButtonModel());
 
     private BooleanRenderer(final EntityTableModel tableModel, final Property property) {
       super(tableModel, property, null, null, CENTER);
@@ -243,8 +244,7 @@ public final class EntityTableCellRenderers {
 
     @Override
     protected void setValue(final Object value) {
-      checkBox.setSelected(Boolean.TRUE.equals(value));
-      checkBox.setEnabled(value != null);
+      checkBox.getNullableModel().set((Boolean) value);
     }
   }
 }
