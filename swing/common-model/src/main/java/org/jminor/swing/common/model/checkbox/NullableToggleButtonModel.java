@@ -72,7 +72,7 @@ public final class NullableToggleButtonModel extends JToggleButton.ToggleButtonM
   }
 
   /**
-   * Iterates between the states: null -> false -> true
+   * Iterates between the states: null -&gt; false -&gt; true
    */
   public void nextState() {
     final Boolean value = get();
