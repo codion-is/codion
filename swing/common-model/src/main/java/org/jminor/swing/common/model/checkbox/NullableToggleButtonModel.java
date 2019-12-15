@@ -3,87 +3,95 @@
  */
 package org.jminor.swing.common.model.checkbox;
 
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 
-import javax.swing.JToggleButton;
+import javax.swing.DefaultButtonModel;
 import java.awt.event.ItemEvent;
 import java.util.Objects;
 
 /**
- * A ToggleButtonModel implementation, which allows null values.
+ * A ToggleButtonModel implementation, which allows the null state.
  * The states are null -&gt; false -&gt; true.
  *
  * Heavily influenced by TristateCheckBox by Heinz M. Kabutz
  * http://www.javaspecialists.eu/archive/Issue145.html
  */
-public final class NullableToggleButtonModel extends JToggleButton.ToggleButtonModel {
-
-  private final Value<Boolean> buttonValue;
+public final class NullableToggleButtonModel extends DefaultButtonModel {
 
   /**
-   * Instantiates a new {@link NullableToggleButtonModel} with a null initial value.
+   * The item state NULL.
+   * @see ItemEvent#SELECTED
+   * @see ItemEvent#DESELECTED
+   */
+  public static final int NULL = 3;
+
+  private final Value<Boolean> buttonState;
+
+  /**
+   * Instantiates a new {@link NullableToggleButtonModel} with a null initial state.
    */
   public NullableToggleButtonModel() {
     this(null);
   }
 
   /**
-   * Instantiates a new {@link NullableToggleButtonModel} with the given initial value.
-   * @param initialValue the initial value
+   * Instantiates a new {@link NullableToggleButtonModel} with the given initial state.
+   * @param initialState the initial state
    */
-  public NullableToggleButtonModel(final Boolean initialValue) {
-    this.buttonValue = Values.value(initialValue);
+  public NullableToggleButtonModel(final Boolean initialState) {
+    this.buttonState = Values.value(initialState);
     bindEvents();
     displayState();
   }
 
   /**
-   * @return true if the underlying value is true
+   * @return true if the underlying state is true
    */
   @Override
   public boolean isSelected() {
-    return Objects.equals(buttonValue.get(), Boolean.TRUE);
+    return Objects.equals(buttonState.get(), Boolean.TRUE);
   }
 
   /**
-   * Sets the underlying value to true or false
-   * @param selected the value to set
+   * Sets the underlying state to true or false
+   * @param selected the new state
    */
   @Override
   public void setSelected(final boolean selected) {
-    set(selected);
+    setState(selected);
   }
 
   /**
-   * Sets the underlying value
-   * @param value the value
+   * Sets the underlying state
+   * @param state the state
    */
-  public void set(final Boolean value) {
-    buttonValue.set(value);
+  public void setState(final Boolean state) {
+    buttonState.set(state);
   }
 
   /**
    * Returns the underlying value
-   * @return the value
+   * @return the state
    */
-  public Boolean get() {
-    return buttonValue.get();
+  public Boolean getState() {
+    return buttonState.get();
   }
 
   /**
    * Iterates between the states: null -&gt; false -&gt; true
    */
   public void nextState() {
-    final Boolean value = get();
-    if (value == null) {
-      set(false);
+    final Boolean state = getState();
+    if (state == null) {
+      setState(false);
     }
-    else if (!value) {
-      set(true);
+    else if (!state) {
+      setState(true);
     }
     else {
-      set(null);
+      setState(null);
     }
   }
 
@@ -92,26 +100,42 @@ public final class NullableToggleButtonModel extends JToggleButton.ToggleButtonM
    * @param value the value
    */
   @Override
-  public void setArmed(final boolean value) {/*N/A*/}
+  public void setArmed(final boolean value) {/*Not implemented*/}
 
   /**
    * Does nothing.
    * @param value the value
    */
   @Override
-  public void setPressed(final boolean value) {/*N/A*/}
+  public void setPressed(final boolean value) {/*Not implemented*/}
+
+  /**
+   * Adds a listener notified each time the state changes.
+   * @param listener the listener
+   */
+  public void addStateListener(final EventDataListener<Boolean> listener) {
+    buttonState.addDataListener(listener);
+  }
+
+  /**
+   * Removes the given listener.
+   * @param listener the listener to remove
+   */
+  public void removeStateListener(final EventDataListener listener) {
+    buttonState.removeDataListener(listener);
+  }
 
   private void bindEvents() {
-    buttonValue.addDataListener(value -> {
+    buttonState.addDataListener(value -> {
       displayState();
       fireStateChanged();
       fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED,this,
-              value == null ? 3 : (value ?  ItemEvent.SELECTED : ItemEvent.DESELECTED)));
+              value == null ? NULL : (value ?  ItemEvent.SELECTED : ItemEvent.DESELECTED)));
     });
   }
 
   private void displayState() {
-    super.setArmed(buttonValue.get() == null);
-    super.setPressed(buttonValue.get() == null);
+    super.setArmed(buttonState.get() == null);
+    super.setPressed(buttonState.get() == null);
   }
 }

@@ -5495,3 +5495,4 @@
   EntityTableCellEditor makes use of the just refactored EntityUiUtil to do its thing
   EntityEditPanel.createForeignKeyField() reintroduced
   TristateCheckBox replaced with its simpler cousin NullableCheckBox
+  NullableToggleButtonModel, NullableCheckBox, renamed and refactored a few things, UiValues.NullableToggleUIValue added

@@ -310,7 +310,7 @@ public final class EntityUiUtil {
     }
 
     return (NullableCheckBox) initializeCheckBox(property, value, enabledState,
-            new NullableCheckBox(includeCaption ? property.getCaption() : null, new NullableToggleButtonModel()));
+            new NullableCheckBox(new NullableToggleButtonModel(), includeCaption ? property.getCaption() : null));
   }
 
   /**

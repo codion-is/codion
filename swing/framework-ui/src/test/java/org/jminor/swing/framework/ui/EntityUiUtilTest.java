@@ -92,7 +92,7 @@ public final class EntityUiUtilTest {
 
     box.getMouseListeners()[0].mousePressed(null);
 
-    assertNull(box.get());
+    assertNull(box.getState());
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
     editModel.put(TestDomain.DETAIL_BOOLEAN_NULLABLE, false);

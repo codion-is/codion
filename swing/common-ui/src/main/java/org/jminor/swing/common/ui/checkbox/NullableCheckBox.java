@@ -4,9 +4,10 @@
 package org.jminor.swing.common.ui.checkbox;
 
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
-import org.jminor.swing.common.ui.control.Controls;
 
 import javax.swing.ActionMap;
+import javax.swing.ButtonModel;
+import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.ActionMapUIResource;
@@ -15,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import static java.util.Objects.requireNonNull;
+import static org.jminor.swing.common.ui.control.Controls.control;
 
 /**
  * A JCheckBox implementation, which allows null values, via {@link NullableToggleButtonModel}.
@@ -25,14 +27,31 @@ import static java.util.Objects.requireNonNull;
 public final class NullableCheckBox extends JCheckBox {
 
   /**
-   * Instantiates a new NullableCheckBox.
-   * @param caption the caption, if any
+   * Instantiates a new NullableCheckBox with no caption.
    * @param model the model
    */
-  public NullableCheckBox(final String caption, final NullableToggleButtonModel model) {
-    super(caption);
-    requireNonNull(model, "model");
-    setModel(model);
+  public NullableCheckBox(final NullableToggleButtonModel model) {
+    this(model, null);
+  }
+
+  /**
+   * Instantiates a new NullableCheckBox.
+   * @param model the model
+   * @param caption the caption, if any
+   */
+  public NullableCheckBox(final NullableToggleButtonModel model, final String caption) {
+    this(model, caption, null);
+  }
+
+  /**
+   * Instantiates a new NullableCheckBox.
+   * @param model the model
+   * @param caption the caption, if any
+   * @param icon the icon, if any
+   */
+  public NullableCheckBox(final NullableToggleButtonModel model, final String caption, final Icon icon) {
+    super(caption, icon);
+    super.setModel(requireNonNull(model, "model"));
     super.addMouseListener(new MouseAdapter() {
       @Override
       public void mousePressed(final MouseEvent e) {
@@ -40,7 +59,7 @@ public final class NullableCheckBox extends JCheckBox {
       }
     });
     final ActionMap actions = new ActionMapUIResource();
-    actions.put("pressed", Controls.control(model::nextState));
+    actions.put("pressed", control(model::nextState));
     actions.put("released", null);
     SwingUtilities.replaceUIActionMap(this, actions);
   }
@@ -49,8 +68,8 @@ public final class NullableCheckBox extends JCheckBox {
    * Returns the current state, null, false or true
    * @return the current state
    */
-  public Boolean get() {
-    return ((NullableToggleButtonModel) getModel()).get();
+  public Boolean getState() {
+    return getNullableModel().getState();
   }
 
   /**
@@ -58,6 +77,19 @@ public final class NullableCheckBox extends JCheckBox {
    */
   public NullableToggleButtonModel getNullableModel() {
     return (NullableToggleButtonModel) getModel();
+  }
+
+  /**
+   * Disabled.
+   * @param model the model
+   * @throws UnsupportedOperationException always
+   */
+  @Override
+  public void setModel(final ButtonModel model) {
+    if (getModel() instanceof NullableToggleButtonModel) {
+      throw new UnsupportedOperationException("Setting the model of a NullableCheckBox is not supported");
+    }
+    super.setModel(model);
   }
 
   /**
