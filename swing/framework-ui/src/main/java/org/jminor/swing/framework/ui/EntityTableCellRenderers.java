@@ -224,7 +224,7 @@ public final class EntityTableCellRenderers {
 
   private static final class BooleanRenderer extends DefaultEntityTableCellRenderer {
 
-    private final NullableCheckBox checkBox = new NullableCheckBox(null, new NullableToggleButtonModel());
+    private final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
 
     private BooleanRenderer(final EntityTableModel tableModel, final Property property) {
       super(tableModel, property, null, null, CENTER);
@@ -244,7 +244,7 @@ public final class EntityTableCellRenderers {
 
     @Override
     protected void setValue(final Object value) {
-      checkBox.getNullableModel().set((Boolean) value);
+      checkBox.getNullableModel().setState((Boolean) value);
     }
   }
 }

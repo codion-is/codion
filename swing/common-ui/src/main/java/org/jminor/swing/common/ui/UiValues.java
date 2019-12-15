@@ -240,10 +240,16 @@ public final class UiValues {
   }
 
   /**
+   * Creates a boolean value based on the given button model.
+   * If the button model is a {@link NullableToggleButtonModel} the value will be nullable otherwise not
    * @param buttonModel the button model
-   * @return a Value bound to the given component
+   * @return a Value bound to the given button model
    */
   public static Value<Boolean> booleanValue(final ButtonModel buttonModel) {
+    if (buttonModel instanceof NullableToggleButtonModel) {
+      return new NullableToggleUIValue((NullableToggleButtonModel) buttonModel);
+    }
+
     return new ToggleUIValue(buttonModel);
   }
 
@@ -568,26 +574,41 @@ public final class UiValues {
 
     @Override
     public Boolean get() {
-      if (buttonModel instanceof NullableToggleButtonModel) {
-        return ((NullableToggleButtonModel) buttonModel).get();
-      }
-
       return buttonModel.isSelected();
     }
 
     @Override
     public boolean isNullable() {
-      return buttonModel instanceof NullableToggleButtonModel;
+      return false;
     }
 
     @Override
     protected void setInternal(final Boolean value) {
-      if (buttonModel instanceof NullableToggleButtonModel) {
-        ((NullableToggleButtonModel) buttonModel).set(value);
-      }
-      else {
-        buttonModel.setSelected(value != null && value);
-      }
+       buttonModel.setSelected(value != null && value);
+    }
+  }
+
+  private static final class NullableToggleUIValue extends UIValue<Boolean> {
+    private final NullableToggleButtonModel buttonModel;
+
+    private NullableToggleUIValue(final NullableToggleButtonModel buttonModel) {
+      this.buttonModel = buttonModel;
+      buttonModel.addStateListener(value -> fireChangeEvent(get()));
+    }
+
+    @Override
+    public Boolean get() {
+      return buttonModel.getState();
+    }
+
+    @Override
+    public boolean isNullable() {
+      return true;
+    }
+
+    @Override
+    protected void setInternal(final Boolean value) {
+      buttonModel.setState(value);
     }
   }
 

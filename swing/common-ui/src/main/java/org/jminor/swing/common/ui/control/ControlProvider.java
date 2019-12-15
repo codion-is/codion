@@ -326,12 +326,12 @@ public final class ControlProvider {
     final ButtonModel buttonModel = toggleControl.getButtonModel();
     final JCheckBox checkBox;
     if (buttonModel instanceof NullableToggleButtonModel) {
-      checkBox = new NullableCheckBox(toggleControl.getName(), (NullableToggleButtonModel) buttonModel);
+      checkBox = new NullableCheckBox((NullableToggleButtonModel) buttonModel, toggleControl.getName());
     }
     else {
       checkBox = new JCheckBox(toggleControl);
+      checkBox.setModel(buttonModel);
     }
-    checkBox.setModel(buttonModel);
 
     return checkBox;
   }

@@ -56,7 +56,7 @@ public final class ControlsTest {
     nullableValue.set(false);
     assertFalse(nullableControl.getButtonModel().isSelected());
     nullableValue.set(null);
-    assertNull(((NullableToggleButtonModel) nullableControl.getButtonModel()).get());
+    assertNull(((NullableToggleButtonModel) nullableControl.getButtonModel()).getState());
 
     final Value<Boolean> nonNullableValue = Values.value(true, false);
     final Controls.ToggleControl nonNullableControl = Controls.toggleControl(nonNullableValue);
@@ -103,24 +103,24 @@ public final class ControlsTest {
   public void nullableToggleControl() {
     final Controls.ToggleControl toggleControl = Controls.toggleControl(this, "nullableValue", "nullable", valueChangeEvent, null, true);
     final NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) toggleControl.getButtonModel();
-    buttonModel.set(null);
+    buttonModel.setState(null);
     assertNull(value);
     buttonModel.setSelected(false);
     assertFalse(value);
     buttonModel.setSelected(true);
     assertTrue(value);
-    buttonModel.set(null);
+    buttonModel.setState(null);
     assertNull(value);
 
     setNullableValue(false);
     assertFalse(buttonModel.isSelected());
-    assertFalse(buttonModel.get());
+    assertFalse(buttonModel.getState());
     setNullableValue(true);
     assertTrue(buttonModel.isSelected());
-    assertTrue(buttonModel.get());
+    assertTrue(buttonModel.getState());
     setNullableValue(null);
     assertFalse(buttonModel.isSelected());
-    assertNull(buttonModel.get());
+    assertNull(buttonModel.getState());
   }
 
   @Test

@@ -13,20 +13,22 @@ public class NullableCheckBoxTest {
 
   @Test
   public void test() {
-    final NullableCheckBox box = new NullableCheckBox("Test", new NullableToggleButtonModel(false));
-    assertFalse(box.get());
+    final NullableCheckBox box = new NullableCheckBox(new NullableToggleButtonModel(false), "Test");
+    assertFalse(box.getState());
     box.getMouseListeners()[0].mousePressed(null);
-    assertTrue(box.get());
+    assertTrue(box.getState());
     box.getMouseListeners()[0].mousePressed(null);
-    assertNull(box.get());
+    assertNull(box.getState());
     box.getMouseListeners()[0].mousePressed(null);
-    assertFalse(box.get());
+    assertFalse(box.getState());
 
-    box.getNullableModel().setEnabled(false);
+    box.getModel().setEnabled(false);
     box.getMouseListeners()[0].mousePressed(null);
-    assertTrue(box.get());
+    assertTrue(box.getState());
 
-    box.getNullableModel().set(null);
-    assertNull(box.get());
+    box.getNullableModel().setState(null);
+    assertNull(box.getState());
+
+    assertThrows(UnsupportedOperationException.class, () -> box.setModel(new NullableToggleButtonModel()));
   }
 }

@@ -293,13 +293,13 @@ public class UiValuesTest {
     value.set(true);
     assertTrue(model.isSelected());
     value.set(null);
-    assertNull(model.get());
+    assertNull(model.getState());
 
     model.setSelected(false);
     assertFalse(value.get());
     model.setSelected(true);
     assertTrue(value.get());
-    model.set(null);
+    model.setState(null);
     assertNull(value.get());
   }
 
