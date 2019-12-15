@@ -190,15 +190,26 @@ public final class EntityUiUtil {
    * @return the component handling input for {@code property}
    */
   public static JComponent createInputComponent(final Property property, final Value value) {
+    return createInputComponent(property, value, null);
+  }
+
+  /**
+   * @param property the property for which to create the input component
+   * @param value the value to bind to the field
+   * @param enabledState the enabled state
+   * @return the component handling input for {@code property}
+   */
+  public static JComponent createInputComponent(final Property property, final Value value,
+                                                final StateObserver enabledState) {
     if (property instanceof ForeignKeyProperty) {
       throw new IllegalArgumentException("Use createForeignKeyComboBox() or createForeignKeyLookupField() for ForeignKeyProperties");
     }
     if (property instanceof ValueListProperty) {
-      return createValueListComboBox((ValueListProperty) property, value);
+      return createValueListComboBox((ValueListProperty) property, value, enabledState);
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
-        return createBooleanComboBox(property, value);
+        return createNullableCheckBox(property, value, enabledState, false);
       case Types.DATE:
       case Types.TIMESTAMP:
       case Types.TIME:
@@ -208,7 +219,7 @@ public final class EntityUiUtil {
       case Types.BIGINT:
       case Types.CHAR:
       case Types.VARCHAR:
-        return createTextField(property, value);
+        return createTextField(property, value, null, true, enabledState);
       case Types.BLOB:
       default:
         throw new IllegalArgumentException("No input component available for property: " +

@@ -5475,3 +5475,5 @@
   jminor.swing.common.ui.disableNumberFieldGrouping no longer true by default, as per javadoc
   Unit tests updated to reflect the above
   ForeignKeyTableCellEditor added, related refactoring
+  NullableCheckBox, now requests focus on mouse click
+  EntityTableCellEditor now center aligns JCheckBox

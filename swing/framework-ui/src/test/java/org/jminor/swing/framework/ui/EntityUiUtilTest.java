@@ -90,7 +90,7 @@ public final class EntityUiUtilTest {
     assertTrue(box.isSelected());//default value is true
     assertTrue((Boolean) editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
-    box.getMouseListeners()[0].mousePressed(null);
+    box.getMouseListeners()[0].mouseClicked(null);
 
     assertNull(box.getState());
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));

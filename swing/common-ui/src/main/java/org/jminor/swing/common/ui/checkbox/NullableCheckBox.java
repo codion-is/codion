@@ -54,7 +54,8 @@ public final class NullableCheckBox extends JCheckBox {
     super.setModel(requireNonNull(model, "model"));
     super.addMouseListener(new MouseAdapter() {
       @Override
-      public void mousePressed(final MouseEvent e) {
+      public void mouseClicked(final MouseEvent e) {
+        requestFocusInWindow();
         model.nextState();
       }
     });
