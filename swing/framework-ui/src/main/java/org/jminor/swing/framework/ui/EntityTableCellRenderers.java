@@ -222,6 +222,7 @@ public final class EntityTableCellRenderers {
     }
   }
 
+  //TODO fix selected border
   private static final class BooleanRenderer extends DefaultEntityTableCellRenderer {
 
     private final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());

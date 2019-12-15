@@ -8,8 +8,10 @@ import org.jminor.common.value.Values;
 import org.jminor.framework.domain.property.Property;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellEditor;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
@@ -56,7 +58,7 @@ class EntityTableCellEditor extends AbstractCellEditor implements TableCellEdito
       return ((MouseEvent) event).getClickCount() >= 2;
     }
 
-    return true;
+    return false;
   }
 
   protected final Property getProperty() {
@@ -68,6 +70,11 @@ class EntityTableCellEditor extends AbstractCellEditor implements TableCellEdito
   }
 
   protected JComponent initializeEditorComponent() {
-    return EntityUiUtil.createInputComponent(property, cellValue);
+    final JComponent editorComponent = EntityUiUtil.createInputComponent(property, cellValue);
+    if (editorComponent instanceof JCheckBox) {
+      ((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
+    }
+
+    return editorComponent;
   }
 }

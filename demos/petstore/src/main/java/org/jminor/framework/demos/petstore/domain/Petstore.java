@@ -130,6 +130,7 @@ public final class Petstore extends Domain {
                     .ascending(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME))
             .setStringProvider(new StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
                     .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
+            .setSearchPropertyIds(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME)
             .setCaption("Seller info");
   }
 
