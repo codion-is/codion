@@ -13,6 +13,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
+import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
@@ -29,7 +30,8 @@ import org.jminor.swing.common.ui.DialogExceptionHandler;
 import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
+import org.jminor.swing.common.ui.ValueLinks;
+import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.Control;
@@ -1477,65 +1479,65 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by {@code propertyId}
+   * Creates a NullableCheckBox bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyId) {
-    return createTristateCheckBox(propertyId, null);
+  protected final NullableCheckBox createNullableCheckBox(final String propertyId) {
+    return createNullableCheckBox(propertyId, null);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by {@code propertyId}
+   * Creates a NullableCheckBox bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyId, final StateObserver enabledState) {
-    return createTristateCheckBox(propertyId, enabledState, true);
+  protected final NullableCheckBox createNullableCheckBox(final String propertyId, final StateObserver enabledState) {
+    return createNullableCheckBox(propertyId, enabledState, true);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by {@code propertyId}
+   * Creates a NullableCheckBox bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyId, final StateObserver enabledState,
+  protected final NullableCheckBox createNullableCheckBox(final String propertyId, final StateObserver enabledState,
                                                           final boolean includeCaption) {
-    return createTristateCheckBox(editModel.getEntityDefinition().getProperty(propertyId), enabledState, includeCaption);
+    return createNullableCheckBox(editModel.getEntityDefinition().getProperty(propertyId), enabledState, includeCaption);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the given property
+   * Creates a NullableCheckBox bound to the given property
    * @param property the property to bind
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final Property property) {
-    return createTristateCheckBox(property, null);
+  protected final NullableCheckBox createNullableCheckBox(final Property property) {
+    return createNullableCheckBox(property, null);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the given property
+   * Creates a NullableCheckBox bound to the given property
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final Property property, final StateObserver enabledState) {
-    return createTristateCheckBox(property, enabledState, true);
+  protected final NullableCheckBox createNullableCheckBox(final Property property, final StateObserver enabledState) {
+    return createNullableCheckBox(property, enabledState, true);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the given property
+   * Creates a NullableCheckBox bound to the given property
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
-   * @return a TristateCheckBox bound to the property
+   * @return a NullableCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final Property property, final StateObserver enabledState,
+  protected final NullableCheckBox createNullableCheckBox(final Property property, final StateObserver enabledState,
                                                           final boolean includeCaption) {
-    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(property,
+    final NullableCheckBox box = EntityUiUtil.createNullableCheckBox(property,
             editModel.value(property.getPropertyId()), enabledState, includeCaption);
     setComponent(property.getPropertyId(), box);
 
@@ -1969,6 +1971,33 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
+   * Creates an uneditable JTextField bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
+   * @return an uneditable JTextField bound to the property
+   */
+  protected final JTextField createForeignKeyField(final String propertyId) {
+    return createForeignKeyField(editModel.getEntityDefinition().getForeignKeyProperty(propertyId));
+  }
+
+  /**
+   * Creates an uneditable JTextField bound to the given property
+   * @param foreignKeyProperty the foreign key property to bind
+   * @return an uneditable JTextField bound to the property
+   */
+  protected final JTextField createForeignKeyField(final ForeignKeyProperty foreignKeyProperty) {
+    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    final JTextField textField = new JTextField();
+    textField.setEditable(false);
+    textField.setFocusable(false);
+    textField.setToolTipText(foreignKeyProperty.getDescription());
+    ValueLinks.textValueLink(textField, new ForeignKeyModelValue(editModel, foreignKeyProperty.getPropertyId()));
+
+    setComponent(foreignKeyProperty.getPropertyId(), textField);
+
+    return textField;
+  }
+
+  /**
    * Creates a JLabel with a caption from the property identified by {@code propertyId}
    * @param propertyId the ID of the property from which to retrieve the caption
    * @return a JLabel for the given property
@@ -2069,6 +2098,33 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     }
     else {
       requestFocus();
+    }
+  }
+
+  private static final class ForeignKeyModelValue extends AbstractValue<String> {
+
+    private final EntityEditModel editModel;
+    private final String foreignKeyPropertyId;
+
+    private ForeignKeyModelValue(final EntityEditModel editModel, final String foreignKeyPropertyId) {
+      this.editModel = editModel;
+      this.foreignKeyPropertyId = foreignKeyPropertyId;
+      editModel.addValueListener(foreignKeyPropertyId, valueChange -> fireChangeEvent(get()));
+    }
+
+    @Override
+    public void set(final String value) {/*read only*/}
+
+    @Override
+    public String get() {
+      final Entity value = editModel.getForeignKey(foreignKeyPropertyId);
+
+      return value == null ? "" : value.toString();
+    }
+
+    @Override
+    public boolean isNullable() {
+      return false;
     }
   }
 

@@ -10,7 +10,7 @@ import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Value;
 import org.jminor.swing.common.model.DocumentAdapter;
-import org.jminor.swing.common.model.checkbox.TristateButtonModel;
+import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
@@ -568,8 +568,8 @@ public final class UiValues {
 
     @Override
     public Boolean get() {
-      if (buttonModel instanceof TristateButtonModel && ((TristateButtonModel) buttonModel).isIndeterminate()) {
-        return null;
+      if (buttonModel instanceof NullableToggleButtonModel) {
+        return ((NullableToggleButtonModel) buttonModel).get();
       }
 
       return buttonModel.isSelected();
@@ -577,13 +577,13 @@ public final class UiValues {
 
     @Override
     public boolean isNullable() {
-      return buttonModel instanceof TristateButtonModel;
+      return buttonModel instanceof NullableToggleButtonModel;
     }
 
     @Override
     protected void setInternal(final Boolean value) {
-      if (value == null && buttonModel instanceof TristateButtonModel) {
-        ((TristateButtonModel) buttonModel).setIndeterminate();
+      if (buttonModel instanceof NullableToggleButtonModel) {
+        ((NullableToggleButtonModel) buttonModel).set(value);
       }
       else {
         buttonModel.setSelected(value != null && value);

@@ -12,7 +12,7 @@ import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
+import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.jupiter.api.Test;
@@ -43,16 +43,16 @@ public final class EntityUiUtilTest {
   }
 
   @Test
-  public void createTristateCheckBoxNonNullableBooleanProperty() {
+  public void createNullableCheckBoxNonNullableBooleanProperty() {
     assertThrows(IllegalArgumentException.class, () ->
-            EntityUiUtil.createTristateCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_BOOLEAN),
+            EntityUiUtil.createNullableCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_BOOLEAN),
                     editModel.value(TestDomain.DETAIL_BOOLEAN), null, true));
   }
 
   @Test
-  public void createTristateCheckBoxNonBooleanProperty() {
+  public void createNullableCheckBoxNonBooleanProperty() {
     assertThrows(IllegalArgumentException.class, () ->
-            EntityUiUtil.createTristateCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_TIMESTAMP),
+            EntityUiUtil.createNullableCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_TIMESTAMP),
                     editModel.value(TestDomain.DETAIL_TIMESTAMP), null, true));
   }
 
@@ -82,17 +82,17 @@ public final class EntityUiUtilTest {
   }
 
   @Test
-  public void createTristateCheckBox() {
+  public void createNullableCheckBox() {
     //set default values
     editModel.setEntity(null);
-    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(
+    final NullableCheckBox box = EntityUiUtil.createNullableCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(
             TestDomain.DETAIL_BOOLEAN_NULLABLE), editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE), null, false);
     assertTrue(box.isSelected());//default value is true
     assertTrue((Boolean) editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
     box.getMouseListeners()[0].mousePressed(null);
 
-    assertTrue(box.isIndeterminate());
+    assertNull(box.get());
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
     editModel.put(TestDomain.DETAIL_BOOLEAN_NULLABLE, false);

@@ -5,7 +5,7 @@ package org.jminor.swing.common.ui;
 
 import org.jminor.common.DateFormats;
 import org.jminor.common.value.Value;
-import org.jminor.swing.common.model.checkbox.TristateButtonModel;
+import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
@@ -280,9 +280,8 @@ public class UiValuesTest {
   }
 
   @Test
-  public void tristateToggleUiValue() {
-    final TristateButtonModel model = new TristateButtonModel();
-    model.setIndeterminate();
+  public void nullableToggleUiValue() {
+    final NullableToggleButtonModel model = new NullableToggleButtonModel();
     final Value<Boolean> value = UiValues.booleanValue(model);
 
     assertNull(value.get());
@@ -294,13 +293,13 @@ public class UiValuesTest {
     value.set(true);
     assertTrue(model.isSelected());
     value.set(null);
-    assertTrue(model.isIndeterminate());
+    assertNull(model.get());
 
     model.setSelected(false);
     assertFalse(value.get());
     model.setSelected(true);
     assertTrue(value.get());
-    model.setIndeterminate();
+    model.set(null);
     assertNull(value.get());
   }
 

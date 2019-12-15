@@ -38,7 +38,7 @@ public class ItemEditPanel extends EntityEditPanel {
     addressBox.setPreferredSize(UiUtil.getPreferredTextFieldSize());
     createTextField(ITEM_IMAGE_URL).setColumns(14);
     createTextField(ITEM_IMAGE_THUMB_URL).setColumns(14);
-    createTristateCheckBox(ITEM_DISABLED, null, false);
+    createNullableCheckBox(ITEM_DISABLED, null, false);
 
     setLayout(new FlexibleGridLayout(3, 3, 5, 5));
     addPropertyPanel(ITEM_PRODUCT_FK);
