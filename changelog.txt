@@ -5469,3 +5469,4 @@
   EntityUiUtil, major refactoring, EntityEditModel parameters replaced with Value
   EntityUiUtil.createInputComponent() added
   EntityTableCellEditor makes use of the just refactored EntityUiUtil to do its thing
+  EntityEditPanel.createForeignKeyField() reintroduced
