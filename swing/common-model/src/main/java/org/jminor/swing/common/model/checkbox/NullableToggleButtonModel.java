@@ -12,7 +12,7 @@ import java.util.Objects;
 
 /**
  * A ToggleButtonModel implementation, which allows null values.
- * The states are null -&gt false -&gt true.
+ * The states are null -&gt; false -&gt; true.
  *
  * Heavily influenced by TristateCheckBox by Heinz M. Kabutz
  * http://www.javaspecialists.eu/archive/Issue145.html
