@@ -21,6 +21,7 @@ import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityModel;
@@ -631,6 +632,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   protected Object getValue(final Entity entity, final Property property) {
     requireNonNull(entity, "entity");
     requireNonNull(property, "property");
+    if (property instanceof ValueListProperty) {
+      return entity.getAsString(property);
+    }
 
     return entity.get(property);
   }

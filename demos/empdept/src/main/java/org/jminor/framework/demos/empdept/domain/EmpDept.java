@@ -48,8 +48,9 @@ public final class EmpDept extends Domain {
   public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
 
   public static final List<Item> JOB_VALUES = asList(
-          new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"),
-          new Item("PRESIDENT"), new Item("SALESMAN"));
+          new Item("ANALYST", "Analyst"), new Item("CLERK", "Clerk"),
+          new Item("MANAGER", "Manager"), new Item("PRESIDENT", "President"),
+          new Item("SALESMAN", "Salesman"));
 
   /** Initializes this domain model */
   public EmpDept() {
