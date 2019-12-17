@@ -5501,3 +5501,4 @@
   ForeignKeyTableCellEditor added, related refactoring
   NullableCheckBox, now requests focus on mouse click
   EntityTableCellEditor now center aligns JCheckBox
+  EntityTableCellRenderers.DefaultEntityTableCellRenderer bug fixed, assumed String values for ValueListProperty (SwingEntityTableModel.getValue() change from the other day)
