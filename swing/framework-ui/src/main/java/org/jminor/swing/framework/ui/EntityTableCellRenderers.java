@@ -6,6 +6,7 @@ package org.jminor.swing.framework.ui;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
@@ -189,9 +190,16 @@ public final class EntityTableCellRenderers {
       return this;
     }
 
+    /**
+     * @param value the value to set
+     * @see org.jminor.swing.framework.model.SwingEntityTableModel#getValue(Entity, Property)
+     */
     @Override
     protected void setValue(final Object value) {
-      if (value instanceof Temporal) {
+      if (property instanceof ValueListProperty) {
+        setText((String) value);
+      }
+      else if (value instanceof Temporal) {
         setText(dateTimeFormatter.format((Temporal) value));
       }
       else if (format != null && value != null) {
