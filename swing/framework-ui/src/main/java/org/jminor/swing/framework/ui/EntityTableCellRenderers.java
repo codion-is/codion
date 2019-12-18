@@ -65,7 +65,7 @@ public final class EntityTableCellRenderers {
    * @see Entity.ColorProvider
    * @see EntityDefinition.Builder#setColorProvider(Entity.ColorProvider)
    */
-  public static TableCellRenderer createTableCellRenderer(final EntityTableModel tableModel, final Property property) {
+  public static EntityTableCellRenderer createTableCellRenderer(final EntityTableModel tableModel, final Property property) {
     if (!Objects.equals(tableModel.getEntityId(), property.getEntityId())) {
       throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityId());
     }
