@@ -53,7 +53,7 @@ import org.jminor.swing.common.ui.input.ValueListInputProvider;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
 import org.jminor.swing.common.ui.table.FilteredTable;
-import org.jminor.swing.common.ui.table.FilteredTablePanel;
+import org.jminor.swing.common.ui.table.FilteredTableSummaryPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
@@ -72,6 +72,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -218,10 +219,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final Event<MouseEvent> tableDoubleClickedEvent = Events.event();
   private final Event<Boolean> conditionPanelVisibilityChangedEvent = Events.event();
+  private final Event<Boolean> summaryPanelVisibleChangedEvent = Events.event();
 
   private final Map<String, Control> controlMap = new HashMap<>();
 
-  private final FilteredTablePanel<Entity, Property, SwingEntityTableModel> filteredTablePanel;
+  private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
+
+  private final JPanel centerPanel = new JPanel(new BorderLayout());
 
   /**
    * the condition panel
@@ -229,9 +233,34 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final EntityTableConditionPanel conditionPanel;
 
   /**
+   * the column summary panel
+   */
+  private final FilteredTableSummaryPanel summaryPanel;
+
+  /**
+   * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
+   */
+  private final JPanel summaryBasePanel;
+
+  /**
+   * the scroll pane used for the summary panel
+   */
+  private final JScrollPane summaryScrollPane;
+
+  /**
    * the scroll pane used for the condition panel
    */
   private final JScrollPane conditionScrollPane;
+
+  /**
+   * the scroll pane used by the JTable instance
+   */
+  private final JScrollPane tableScrollPane;
+
+  /**
+   * the horizontal table scroll bar
+   */
+  private final JScrollBar horizontalTableScrollBar;
 
   /**
    * the toolbar containing the refresh button
@@ -291,12 +320,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel,
                           final EntityTableConditionPanel conditionPanel) {
-    final FilteredTable<Entity, Property, SwingEntityTableModel> table = new FilteredTable<>(tableModel,
-            new DefaultColumnConditionPanelProvider(tableModel));
+    table = new FilteredTable<>(tableModel, new DefaultColumnConditionPanelProvider(tableModel));
     table.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     table.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     table.setRowHeight(table.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
-    this.filteredTablePanel = new FilteredTablePanel<>(table);
     this.conditionPanel = conditionPanel;
     if (conditionPanel != null) {
       this.conditionScrollPane = new JScrollPane(conditionPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -305,22 +332,31 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     else {
       this.conditionScrollPane = null;
     }
+    this.tableScrollPane = new JScrollPane(table);
+    this.horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
+    this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
+    this.summaryScrollPane = new JScrollPane(summaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.summaryBasePanel = new JPanel(new BorderLayout());
+    this.summaryBasePanel.add(summaryScrollPane, BorderLayout.NORTH);
+    this.summaryBasePanel.add(horizontalTableScrollBar, BorderLayout.SOUTH);
+    this.tableScrollPane.getViewport().addChangeListener(e -> {
+      horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
+      revalidate();
+    });
+    UiUtil.linkBoundedRangeModels(horizontalTableScrollBar.getModel(), summaryScrollPane.getHorizontalScrollBar().getModel());
+    setSummaryPanelVisible(false);
+    this.centerPanel.add(tableScrollPane, BorderLayout.CENTER);
+    this.centerPanel.add(summaryBasePanel, BorderLayout.SOUTH);
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolBar();
-  }
-
-  /**
-   * @return the filtered table panel instance
-   */
-  public final FilteredTablePanel<Entity, Property, SwingEntityTableModel> getFilteredTablePanel() {
-    return filteredTablePanel;
+    bindEvents();
   }
 
   /**
    * @return the filtered table instance
    */
   public final FilteredTable<Entity, Property, SwingEntityTableModel> getTable() {
-    return filteredTablePanel.getTable();
+    return table;
   }
 
   /**
@@ -462,6 +498,27 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       }
       conditionPanel.selectConditionPanel();
     }
+  }
+
+  /**
+   * Hides or shows the column summary panel for this EntityTablePanel
+   * @param visible if true then the summary panel is shown, if false it is hidden
+   */
+  public final void setSummaryPanelVisible(final boolean visible) {
+    if (visible && isSummaryPanelVisible()) {
+      return;
+    }
+
+    summaryScrollPane.setVisible(visible);
+    revalidate();
+    summaryPanelVisibleChangedEvent.fire(visible);
+  }
+
+  /**
+   * @return true if the column summary panel is visible, false if it is hidden
+   */
+  public final boolean isSummaryPanelVisible() {
+    return summaryScrollPane.isVisible();
   }
 
   /**
@@ -708,6 +765,19 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     final Control toggleControl = control(this::toggleConditionPanel, Images.loadImage(Images.IMG_FILTER_16));
     toggleControl.setDescription(MESSAGES.getString("show_condition_panel"));
+
+    return toggleControl;
+  }
+
+  /**
+   * Initializes the button used to toggle the summary panel state (hidden and visible)
+   * @return a summary panel toggle button
+   */
+  public final Control getToggleSummaryPanelControl() {
+    final Control toggleControl = Controls.toggleControl(this, "summaryPanelVisible", null,
+            summaryPanelVisibleChangedEvent);
+    toggleControl.setIcon(Images.loadImage("Sum16.gif"));
+    toggleControl.setDescription(MESSAGES.getString("toggle_summary_tip"));
 
     return toggleControl;
   }
@@ -1001,7 +1071,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   protected JPanel initializeSouthPanel() {
     final JPanel centerPanel = new JPanel(UiUtil.createBorderLayout());
-    final JTextField searchField = filteredTablePanel.getSearchField();
+    final JTextField searchField = table.getSearchField();
     final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     searchFieldPanel.add(searchField);
     centerPanel.add(statusMessageLabel, BorderLayout.CENTER);
@@ -1319,7 +1389,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   protected void layoutPanel(final JPanel southPanel) {
     setLayout(new BorderLayout());
-    add(filteredTablePanel, BorderLayout.CENTER);
+    add(centerPanel, BorderLayout.CENTER);
     if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
@@ -1381,7 +1451,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     setControl(REFRESH, getRefreshControl());
     setControl(SELECT_COLUMNS, getTable().getSelectColumnsControl());
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
-    setControl(TOGGLE_SUMMARY_PANEL, filteredTablePanel.getToggleSummaryPanelControl());
+    setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
     if (includeConditionPanel && conditionPanel != null) {
       setControl(TOGGLE_CONDITION_PANEL, getToggleConditionPanelControl());
     }
@@ -1418,9 +1488,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void initializeUI() {
     if (includeConditionPanel && conditionScrollPane != null) {
-      filteredTablePanel.getBasePanel().add(conditionScrollPane, BorderLayout.NORTH);
+      centerPanel.add(conditionScrollPane, BorderLayout.NORTH);
       if (conditionPanel.canToggleAdvanced()) {
-        UiUtil.linkBoundedRangeModels(filteredTablePanel.getTableScrollPane().getHorizontalScrollBar().getModel(),
+        UiUtil.linkBoundedRangeModels(tableScrollPane.getHorizontalScrollBar().getModel(),
                 conditionScrollPane.getHorizontalScrollBar().getModel());
         conditionPanel.addAdvancedListener(data -> {
           if (isConditionPanelVisible()) {
@@ -1454,8 +1524,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             getEntityTableModel().getConditionModel().getConditionStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
-    final InputMap inputMap = filteredTablePanel.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    final ActionMap actionMap = filteredTablePanel.getActionMap();
+    final InputMap inputMap = table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    final ActionMap actionMap = table.getActionMap();//todo
 
     inputMap.put(keyStroke, "EntityTablePanel.refreshControl");
     actionMap.put("EntityTablePanel.refreshControl", refresh);
@@ -1491,6 +1561,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             filteredItemCount + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
+  private void bindEvents() {
+    table.getModel().addSortListener(table.getTableHeader()::repaint);
+    table.getModel().addRefreshStartedListener(() -> UiUtil.setWaitCursor(true, EntityTablePanel.this));
+    table.getModel().addRefreshDoneListener(() -> UiUtil.setWaitCursor(false, EntityTablePanel.this));
+  }
+
   private void bindPanelEvents() {
     if (includeDeleteSelectedControl()) {
       UiUtil.addKeyEvent(getTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
@@ -1506,7 +1582,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
               getTable().repaint();
             })));
     if (conditionPanel != null) {
-      conditionPanel.addFocusGainedListener(filteredTablePanel::scrollToColumn);
+      conditionPanel.addFocusGainedListener(table::scrollToColumn);
     }
     if (getEntityTableModel().hasEditModel()) {
       getEntityTableModel().getEditModel().addEntitiesChangedListener(() -> SwingUtilities.invokeLater(getTable()::repaint));

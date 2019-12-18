@@ -10,6 +10,7 @@ import org.jminor.swing.common.model.table.AbstractTableSortModel;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import java.awt.AWTException;
@@ -34,6 +35,7 @@ public class FilteredTableTest {
     final TestAbstractFilteredTableModel tableModel = createTestModel();
     final FilteredTable<String, Integer, TestAbstractFilteredTableModel> panel =
             new FilteredTable<>(tableModel);
+    new JScrollPane(panel);
 
     tableModel.addItemsAt(asList("darri", "dac", "dansinn", "dlabo"), 0);
 

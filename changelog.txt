@@ -5486,3 +5486,4 @@
   EntityEditComponentPanel split from EntityEditPanel
   FilteredTable split from FilteredTablePanel
   EntityTablePanel no longer extends FilteredTablePanel, which is now final, plus related refactoring
+  FilteredTablePanel merged into EntityTablePanel

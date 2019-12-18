@@ -1157,7 +1157,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     final Control selectEditPanelControl = Controls.control(this::selectEditPanel, "EntityPanel.selectEditPanel");
     final Control selectInputComponentControl = Controls.control(this::selectInputComponent, "EntityPanel.selectInputComponent");
     final Control selectTablePanelControl = Controls.control(getTablePanel().getTable()::requestFocus, "EntityPanel.selectTablePanel");
-    final Control selectSearchFieldControl = Controls.control(getTablePanel().getFilteredTablePanel().getSearchField()::requestFocus, "EntityPanel.selectSearchField");
+    final Control selectSearchFieldControl = Controls.control(getTablePanel().getTable().getSearchField()::requestFocus, "EntityPanel.selectSearchField");
     if (containsTablePanel()) {
       final Control selectConditionPanelAction = Controls.control(getTablePanel()::selectConditionPanel, "EntityPanel.selectConditionPanel");
       UiUtil.addKeyEvent(this, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,

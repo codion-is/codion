@@ -137,6 +137,16 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     bindEvents();
   }
 
+  //todo shouldn't be necessary, World test fails without it
+  @Override
+  public int getRowCount() {
+    if (getModel() == null) {
+      return 0;
+    }
+
+    return super.getRowCount();
+  }
+
   /** {@inheritDoc} */
   @Override
   public T getModel() {
@@ -231,6 +241,33 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   /**
+   * Returns true if the given cell is visible.
+   * @param row the row
+   * @param column the column
+   * @return true if the cell with the given coordinates is visible
+   * @throws IllegalStateException in case this table is not in a scrollable viewport
+   */
+  public boolean isCellVisible(final int row, final int column) {
+    final JViewport viewport = getViewport();
+    final Rectangle cellRect = getCellRect(row, column, true);
+    final Point viewPosition = viewport.getViewPosition();
+    cellRect.setLocation(cellRect.x - viewPosition.x, cellRect.y - viewPosition.y);
+
+    return new Rectangle(viewport.getExtentSize()).contains(cellRect);
+  }
+
+  /**
+   * Scrolls horizontally so that the column identified by columnIdentifier becomes visible, centered if possible
+   * @param columnIdentifier the column identifier
+   * @throws IllegalStateException in case this table is not in a scrollable viewport
+   */
+  public void scrollToColumn(final Object columnIdentifier) {
+    final JViewport viewport = getViewport();
+    scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
+            getModel().getColumnModel().getColumnIndex(columnIdentifier), false, false);
+  }
+
+  /**
    * Scrolls to the given coordinate.
    * @param row the row
    * @param column the column
@@ -239,10 +276,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @throws IllegalStateException in case this table is not in a scrollable viewport
    */
   public void scrollToCoordinate(final int row, final int column, final boolean centerXPos, final boolean centerYPos) {
-    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
-    if (viewport == null) {
-      throw new IllegalStateException("Table must be contained in a JViewport for scrollToCoordinate");
-    }
+    final JViewport viewport = getViewport();
     final Rectangle cellRectangle = getCellRect(row, column, true);
     final Rectangle viewRectangle = viewport.getViewRect();
     cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
@@ -287,6 +321,15 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public void findPrevious(final boolean addToSelection, final String searchText) {
     performSearch(addToSelection, lastSearchResultCoordinate.getRow() - 1, false, searchText);
+  }
+
+  private JViewport getViewport() {
+    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
+    if (viewport == null) {
+      throw new IllegalStateException("Table is not contained in a JViewport");
+    }
+
+    return viewport;
   }
 
   /**
