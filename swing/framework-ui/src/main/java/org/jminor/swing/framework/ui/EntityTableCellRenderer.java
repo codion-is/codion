@@ -18,9 +18,9 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
 
   /**
    * If true then columns involved in a condition have different background color
-   * @param indicateSearch the value
+   * @param indicateCondition the value
    */
-  void setIndicateCondition(boolean indicateSearch);
+  void setIndicateCondition(boolean indicateCondition);
 
   /**
    * @return if true then the cell data is added as a tool tip for the cell

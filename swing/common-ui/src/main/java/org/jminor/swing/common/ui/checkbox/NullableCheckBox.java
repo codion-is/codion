@@ -24,7 +24,7 @@ import static org.jminor.swing.common.ui.control.Controls.control;
  * Heavily influenced by TristateCheckBox by Heinz M. Kabutz
  * http://www.javaspecialists.eu/archive/Issue145.html
  */
-public final class NullableCheckBox extends JCheckBox {
+public class NullableCheckBox extends JCheckBox {
 
   /**
    * Instantiates a new NullableCheckBox with no caption.
@@ -69,14 +69,14 @@ public final class NullableCheckBox extends JCheckBox {
    * Returns the current state, null, false or true
    * @return the current state
    */
-  public Boolean getState() {
+  public final Boolean getState() {
     return getNullableModel().getState();
   }
 
   /**
    * @return the underlying button model
    */
-  public NullableToggleButtonModel getNullableModel() {
+  public final NullableToggleButtonModel getNullableModel() {
     return (NullableToggleButtonModel) getModel();
   }
 
@@ -86,7 +86,7 @@ public final class NullableCheckBox extends JCheckBox {
    * @throws UnsupportedOperationException always
    */
   @Override
-  public void setModel(final ButtonModel model) {
+  public final void setModel(final ButtonModel model) {
     if (getModel() instanceof NullableToggleButtonModel) {
       throw new UnsupportedOperationException("Setting the model of a NullableCheckBox is not supported");
     }
@@ -98,5 +98,5 @@ public final class NullableCheckBox extends JCheckBox {
    * @param listener the listener
    */
   @Override
-  public void addMouseListener(final MouseListener listener) {/*Disabled*/}
+  public final void addMouseListener(final MouseListener listener) {/*Disabled*/}
 }

@@ -11,9 +11,15 @@ import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.UIResource;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.Format;
@@ -60,7 +66,7 @@ public final class EntityTableCellRenderers {
    * @see Entity.ColorProvider
    * @see EntityDefinition.Builder#setColorProvider(Entity.ColorProvider)
    */
-  public static EntityTableCellRenderer createTableCellRenderer(final EntityTableModel tableModel, final Property property) {
+  public static TableCellRenderer createTableCellRenderer(final EntityTableModel tableModel, final Property property) {
     if (!Objects.equals(tableModel.getEntityId(), property.getEntityId())) {
       throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityId());
     }
@@ -82,6 +88,37 @@ public final class EntityTableCellRenderers {
     b += b < RGB_CENTER ? amount : -amount;
 
     return new Color(r, g, b);
+  }
+
+  private static void setCellColor(final Color foreground, final EntityTableModel tableModel, final Property property,
+                                   final int row, final JComponent cellComponent, final boolean indicateCondition) {
+    final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getPropertyId());
+    final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getPropertyId());
+    final boolean showCondition = indicateCondition && (propertyConditionEnabled || propertyFilterEnabled);
+    final Color cellColor = (Color) tableModel.getPropertyBackgroundColor(row, property);
+    cellComponent.setForeground(foreground);
+    if (showCondition) {
+      cellComponent.setBackground(getConditionEnabledColor(row, propertyConditionEnabled, propertyFilterEnabled, cellColor));
+    }
+    else if (cellColor != null) {
+      cellComponent.setBackground(cellColor);
+    }
+    else {
+      cellComponent.setBackground(row % 2 == 0 ? DEFAULT_BACKGROUND : DEFAULT_ALTERNATE_BACKGROUND);
+    }
+  }
+
+  private static Color getConditionEnabledColor(final int row, final boolean propertyConditionEnabled,
+                                                final boolean propertyFilterEnabled, final Color cellColor) {
+    final boolean doubleShade = propertyConditionEnabled && propertyFilterEnabled;
+    if (cellColor != null) {
+      return shade(cellColor, doubleShade ? SHADE_AMOUNT * 2 : SHADE_AMOUNT);
+    }
+    else {
+      return row % 2 == 0 ?
+              (doubleShade ? DOUBLE_SEARCH_BACKGROUND : SEARCH_BACKGROUND) :
+              (doubleShade ? DOUBLE_ALTERNATE_SEARCH_BACKGROUND : SEARCH_ALTERNATE_BACKGROUND);
+    }
   }
 
   /**
@@ -172,21 +209,8 @@ public final class EntityTableCellRenderers {
         return this;
       }
 
-      final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getPropertyId());
-      final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getPropertyId());
-      final boolean showCondition = indicateCondition && (propertyConditionEnabled || propertyFilterEnabled);
-      final Color cellColor = (Color) tableModel.getPropertyBackgroundColor(row, property);
-      if (showCondition) {
-        setBackground(getConditionEnabledColor(row, propertyConditionEnabled, propertyFilterEnabled, cellColor));
-      }
-      else {
-        if (cellColor != null) {
-          setBackground(cellColor);
-        }
-        else {
-          setBackground(row % 2 == 0 ? DEFAULT_BACKGROUND : DEFAULT_ALTERNATE_BACKGROUND);
-        }
-      }
+      setCellColor(table.getForeground(), tableModel, property, row, this, indicateCondition);
+
       return this;
     }
 
@@ -209,45 +233,68 @@ public final class EntityTableCellRenderers {
         super.setValue(value);
       }
     }
-
-    private static Color getConditionEnabledColor(final int row, final boolean propertyConditionEnabled,
-                                                  final boolean propertyFilterEnabled, final Color cellColor) {
-      final boolean doubleShade = propertyConditionEnabled && propertyFilterEnabled;
-      if (cellColor != null) {
-        return shade(cellColor, doubleShade ? SHADE_AMOUNT * 2 : SHADE_AMOUNT);
-      }
-      else {
-        return row % 2 == 0 ?
-                (doubleShade ? DOUBLE_SEARCH_BACKGROUND : SEARCH_BACKGROUND) :
-                (doubleShade ? DOUBLE_ALTERNATE_SEARCH_BACKGROUND : SEARCH_ALTERNATE_BACKGROUND);
-      }
-    }
   }
 
-  //TODO fix selected border
-  private static final class BooleanRenderer extends DefaultEntityTableCellRenderer {
+  private static final class BooleanRenderer extends NullableCheckBox implements TableCellRenderer, UIResource, EntityTableCellRenderer {
 
-    private final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
+    private static final Border nonFocusedBorder = new EmptyBorder(1, 1, 1, 1);
+    private static final Border focusedBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
 
-    private BooleanRenderer(final EntityTableModel tableModel, final Property property) {
-      super(tableModel, property, null, null, CENTER);
-      checkBox.setHorizontalAlignment(CENTER);
-      checkBox.setOpaque(true);
+    private final EntityTableModel tableModel;
+    private final Property property;
+
+    private boolean indicateCondition = true;
+
+    public BooleanRenderer(final EntityTableModel tableModel, final Property property) {
+      super(new NullableToggleButtonModel());
+      this.tableModel = tableModel;
+      this.property = property;
+      setHorizontalAlignment(JLabel.CENTER);
+      setBorderPainted(true);
     }
 
-    @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
-      final Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      checkBox.setBackground(component.getBackground());
-      checkBox.setForeground(component.getForeground());
+      getNullableModel().setState((Boolean) value);
+      if (isSelected) {
+        setForeground(table.getSelectionForeground());
+        super.setBackground(table.getSelectionBackground());
+      }
+      else {
+        setCellColor(table.getForeground(), tableModel, property, row, this, indicateCondition);
+      }
 
-      return checkBox;
+      setBorder(hasFocus ? focusedBorder : nonFocusedBorder);
+
+      return this;
     }
 
     @Override
-    protected void setValue(final Object value) {
-      checkBox.getNullableModel().setState((Boolean) value);
+    public boolean isIndicateCondition() {
+      return indicateCondition;
+    }
+
+    @Override
+    public void setIndicateCondition(final boolean indicateCondition) {
+      this.indicateCondition = indicateCondition;
+    }
+
+    /**
+     * @return false
+     */
+    @Override
+    public boolean isTooltipData() {
+      return false;
+    }
+
+    /**
+     * Disabled
+     * @param tooltipData the value
+     * @throws UnsupportedOperationException always
+     */
+    @Override
+    public void setTooltipData(final boolean tooltipData) {
+      throw new UnsupportedOperationException("Tooltip data is not available for boolean properties");
     }
   }
 }
