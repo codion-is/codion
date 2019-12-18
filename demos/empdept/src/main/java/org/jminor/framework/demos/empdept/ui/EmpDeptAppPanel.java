@@ -109,7 +109,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
     @Override
     protected void configureTablePanel(final EntityTablePanel tablePanel) {
-      tablePanel.setSummaryPanelVisible(true);
+      tablePanel.getFilteredTablePanel().setSummaryPanelVisible(true);
     }
   }
 }

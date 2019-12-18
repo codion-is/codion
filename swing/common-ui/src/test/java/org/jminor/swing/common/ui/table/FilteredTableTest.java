@@ -20,31 +20,20 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FilteredTablePanelTest {
+public class FilteredTableTest {
 
   private static final String[] ITEMS = {"a", "b", "c", "d", "e"};
 
   @Test
-  public void test() {
-    final FilteredTablePanel<String, Integer> panel = new FilteredTablePanel<>(createTestModel());
-    assertNotNull(panel.getTable());
-    assertNotNull(panel.getSearchField());
-  }
-
-  @Test
-  public void constructorNullTableModel() {
-    assertThrows(NullPointerException.class, () -> new FilteredTablePanel<String, Integer>((AbstractFilteredTableModel) null, null));
-  }
-
-  @Test
   public void constructorNullTable() {
-    assertThrows(Exception.class, () -> new FilteredTablePanel<String, Integer>(null, null));
+    assertThrows(Exception.class, () -> new FilteredTable(null));
   }
 
   @Test
   public void searchField() throws AWTException {
     final TestAbstractFilteredTableModel tableModel = createTestModel();
-    final FilteredTablePanel<String, Integer> panel = new FilteredTablePanel<>(tableModel);
+    final FilteredTable<String, Integer, TestAbstractFilteredTableModel> panel =
+            new FilteredTable<>(tableModel);
 
     tableModel.addItemsAt(asList("darri", "dac", "dansinn", "dlabo"), 0);
 
@@ -75,19 +64,19 @@ public class FilteredTablePanelTest {
 
     searchField.setText("");
 
-    panel.getTable().findNext(false, "da");
+    panel.findNext(false, "da");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
-    panel.getTable().findNext(false, "da");
+    panel.findNext(false, "da");
     assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
-    panel.getTable().findNext(false, "da");
+    panel.findNext(false, "da");
     assertEquals(2, tableModel.getSelectionModel().getSelectedIndex());
-    panel.getTable().findPrevious(true, "da");
+    panel.findPrevious(true, "da");
     assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
     assertEquals(2, tableModel.getSelectionModel().getSelectionCount());
-    panel.getTable().findPrevious(true, "da");
+    panel.findPrevious(true, "da");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
     assertEquals(3, tableModel.getSelectionModel().getSelectionCount());
-    panel.getTable().findNext(false, "dat");
+    panel.findNext(false, "dat");
   }
 
   public static TestAbstractFilteredTableModel createTestModel() {

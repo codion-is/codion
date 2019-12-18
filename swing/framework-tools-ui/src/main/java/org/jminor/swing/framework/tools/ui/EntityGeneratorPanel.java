@@ -6,11 +6,12 @@ package org.jminor.swing.framework.tools.ui;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.value.Values;
+import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.UiValues;
 import org.jminor.swing.common.ui.images.Images;
-import org.jminor.swing.common.ui.table.FilteredTablePanel;
+import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.framework.tools.EntityGeneratorModel;
 
 import javax.swing.ImageIcon;
@@ -43,9 +44,10 @@ public class EntityGeneratorPanel extends JPanel {
    */
   public EntityGeneratorPanel(final EntityGeneratorModel generatorModel) {
     this.model = generatorModel;
-    final FilteredTablePanel<EntityGeneratorModel.Table, Integer> table =
-            new FilteredTablePanel<>(generatorModel.getTableModel());
-    final JScrollPane scroller = new JScrollPane(table.getTable());
+    final FilteredTable<EntityGeneratorModel.Table, Integer,
+            AbstractFilteredTableModel<EntityGeneratorModel.Table, Integer>> table =
+            new FilteredTable<>(generatorModel.getTableModel());
+    final JScrollPane scroller = new JScrollPane(table);
 
     final JSplitPane splitPane = new JSplitPane();
     splitPane.setLeftComponent(scroller);

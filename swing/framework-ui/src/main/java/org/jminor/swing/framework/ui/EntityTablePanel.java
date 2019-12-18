@@ -145,7 +145,7 @@ import static org.jminor.swing.common.ui.control.Controls.control;
  * Note that {@link #initializePanel()} must be called to initialize this panel before displaying it.
  * @see EntityTableModel
  */
-public class EntityTablePanel extends FilteredTablePanel<Entity, Property> implements DialogExceptionHandler {
+public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
@@ -221,6 +221,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
 
   private final Map<String, Control> controlMap = new HashMap<>();
 
+  private final FilteredTablePanel<Entity, Property, SwingEntityTableModel> filteredTablePanel;
+
   /**
    * the condition panel
    */
@@ -287,22 +289,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @param tableModel the EntityTableModel instance
    * @param conditionPanel the condition panel
    */
-  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableConditionPanel conditionPanel) {
-    this(new FilteredTable<>(tableModel,  new DefaultColumnConditionPanelProvider(tableModel)), conditionPanel);
-  }
-
-  /**
-   * Initializes a new EntityTablePanel instance.
-   * @param table the Table to use
-   * @param conditionPanel the condition panel
-   * @see SwingEntityTableModel#getColumnModel()
-   * @see SwingEntityTableModel#getSelectionModel()
-   */
-  public EntityTablePanel(final FilteredTable<Entity, Property> table, final EntityTableConditionPanel conditionPanel) {
-    super(table);
+  public EntityTablePanel(final SwingEntityTableModel tableModel,
+                          final EntityTableConditionPanel conditionPanel) {
+    final FilteredTable<Entity, Property, SwingEntityTableModel> table = new FilteredTable<>(tableModel,
+            new DefaultColumnConditionPanelProvider(tableModel));
     table.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     table.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     table.setRowHeight(table.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
+    this.filteredTablePanel = new FilteredTablePanel<>(table);
     this.conditionPanel = conditionPanel;
     if (conditionPanel != null) {
       this.conditionScrollPane = new JScrollPane(conditionPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -313,6 +307,27 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     }
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolBar();
+  }
+
+  /**
+   * @return the filtered table panel instance
+   */
+  public final FilteredTablePanel<Entity, Property, SwingEntityTableModel> getFilteredTablePanel() {
+    return filteredTablePanel;
+  }
+
+  /**
+   * @return the filtered table instance
+   */
+  public final FilteredTable<Entity, Property, SwingEntityTableModel> getTable() {
+    return filteredTablePanel.getTable();
+  }
+
+  /**
+   * @return the EntityTableModel used by this EntityTablePanel
+   */
+  public final SwingEntityTableModel getEntityTableModel() {
+    return getTable().getModel();
   }
 
   /**
@@ -378,13 +393,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   public final void setIncludePopupMenu(final boolean value) {
     checkIfInitialized();
     this.includePopupMenu = value;
-  }
-
-  /**
-   * @return the EntityTableModel used by this EntityTablePanel
-   */
-  public final SwingEntityTableModel getEntityTableModel() {
-    return (SwingEntityTableModel) super.getTableModel();
   }
 
   /**
@@ -601,7 +609,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * Shows a dialog containing lists of entities depending on the selected entities via foreign key
    */
   public final void viewSelectionDependencies() {
-    if (getTableModel().getSelectionModel().isSelectionEmpty()) {
+    if (getEntityTableModel().getSelectionModel().isSelectionEmpty()) {
       return;
     }
 
@@ -993,7 +1001,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    */
   protected JPanel initializeSouthPanel() {
     final JPanel centerPanel = new JPanel(UiUtil.createBorderLayout());
-    final JTextField searchField = getSearchField();
+    final JTextField searchField = filteredTablePanel.getSearchField();
     final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     searchFieldPanel.add(searchField);
     centerPanel.add(statusMessageLabel, BorderLayout.CENTER);
@@ -1310,6 +1318,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @see #getBasePanel()
    */
   protected void layoutPanel(final JPanel southPanel) {
+    setLayout(new BorderLayout());
+    add(filteredTablePanel, BorderLayout.CENTER);
     if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
@@ -1371,7 +1381,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     setControl(REFRESH, getRefreshControl());
     setControl(SELECT_COLUMNS, getTable().getSelectColumnsControl());
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
-    setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
+    setControl(TOGGLE_SUMMARY_PANEL, filteredTablePanel.getToggleSummaryPanelControl());
     if (includeConditionPanel && conditionPanel != null) {
       setControl(TOGGLE_CONDITION_PANEL, getToggleConditionPanelControl());
     }
@@ -1408,9 +1418,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
 
   private void initializeUI() {
     if (includeConditionPanel && conditionScrollPane != null) {
-      getBasePanel().add(conditionScrollPane, BorderLayout.NORTH);
+      filteredTablePanel.getBasePanel().add(conditionScrollPane, BorderLayout.NORTH);
       if (conditionPanel.canToggleAdvanced()) {
-        UiUtil.linkBoundedRangeModels(getTableScrollPane().getHorizontalScrollBar().getModel(),
+        UiUtil.linkBoundedRangeModels(filteredTablePanel.getTableScrollPane().getHorizontalScrollBar().getModel(),
                 conditionScrollPane.getHorizontalScrollBar().getModel());
         conditionPanel.addAdvancedListener(data -> {
           if (isConditionPanelVisible()) {
@@ -1444,8 +1454,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
             getEntityTableModel().getConditionModel().getConditionStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
-    final InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    final ActionMap actionMap = getActionMap();
+    final InputMap inputMap = filteredTablePanel.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    final ActionMap actionMap = filteredTablePanel.getActionMap();
 
     inputMap.put(keyStroke, "EntityTablePanel.refreshControl");
     actionMap.put("EntityTablePanel.refreshControl", refresh);
@@ -1496,7 +1506,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
               getTable().repaint();
             })));
     if (conditionPanel != null) {
-      conditionPanel.addFocusGainedListener(this::scrollToColumn);
+      conditionPanel.addFocusGainedListener(filteredTablePanel::scrollToColumn);
     }
     if (getEntityTableModel().hasEditModel()) {
       getEntityTableModel().getEditModel().addEntitiesChangedListener(() -> SwingUtilities.invokeLater(getTable()::repaint));
@@ -1506,7 +1516,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private void initializeTable() {
     getTable().putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
     getTable().addMouseListener(initializeTableMouseListener());
-    getTableModel().getColumnModel().getAllColumns().forEach(column -> {
+    getEntityTableModel().getColumnModel().getAllColumns().forEach(column -> {
       final Property property = (Property) column.getIdentifier();
       column.setCellRenderer(initializeTableCellRenderer(property));
       column.setCellEditor(initializeTableCellEditor(property));

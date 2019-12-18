@@ -65,8 +65,9 @@ import static java.util.Objects.requireNonNull;
  * A JTable implementation for {@link AbstractFilteredTableModel}.
  * @param <R> the type representing rows
  * @param <C> type type used to identify columns
+ * @param <M> the table model type
  */
-public final class FilteredTable<R, C> extends JTable {
+public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C>> extends JTable {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName(), Locale.getDefault());
 
@@ -81,7 +82,7 @@ public final class FilteredTable<R, C> extends JTable {
   /**
    * The table model
    */
-  private final AbstractFilteredTableModel<R, C> tableModel;
+  private final T tableModel;
 
   /**
    * Provides filter panels
@@ -92,6 +93,11 @@ public final class FilteredTable<R, C> extends JTable {
    * the property filter panels
    */
   private final Map<TableColumn, ColumnConditionPanel<C>> columnFilterPanels = new HashMap<>();
+
+  /**
+   * The text field used for entering the search condition
+   */
+  private final JTextField searchField;
 
   /**
    * If true then sorting via the table header is enabled
@@ -112,21 +118,36 @@ public final class FilteredTable<R, C> extends JTable {
    * Instantiates a new FilteredTable using the given model
    * @param tableModel the table model
    */
-  public FilteredTable(final AbstractFilteredTableModel<R, C> tableModel, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
+  public FilteredTable(final T tableModel) {
+    this(tableModel, column -> new ColumnConditionPanel<>(tableModel.getColumnModel().getColumnFilterModel(
+            (C) column.getIdentifier()), true, true));
+  }
+
+  /**
+   * Instantiates a new FilteredTable using the given model
+   * @param tableModel the table model
+   */
+  public FilteredTable(final T tableModel, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
             (ListSelectionModel) tableModel.getSelectionModel());
     this.tableModel = tableModel;
     this.conditionPanelProvider = requireNonNull(conditionPanelProvider, "conditionPanelProvider");
+    this.searchField = initializeSearchField();
     initializeTableHeader();
     bindEvents();
   }
 
-  /**
-   * Returns the underlying table model
-   * @return the table model
-   */
-  public AbstractFilteredTableModel<R, C> getTableModel() {
+  /** {@inheritDoc} */
+  @Override
+  public T getModel() {
     return tableModel;
+  }
+
+  /**
+   * @return the search field
+   */
+  public JTextField getSearchField() {
+    return searchField;
   }
 
   /**
@@ -163,7 +184,7 @@ public final class FilteredTable<R, C> extends JTable {
    * Hides or shows the active filter panels for this table panel
    * @param value true if the active filter panels should be shown, false if they should be hidden
    */
-  public final void setFilterPanelsVisible(final boolean value) {
+  public void setFilterPanelsVisible(final boolean value) {
     columnFilterPanels.values().forEach(columnFilterPanel -> SwingUtilities.invokeLater(() -> {
       if (value) {
         columnFilterPanel.showDialog();
@@ -217,7 +238,7 @@ public final class FilteredTable<R, C> extends JTable {
    * @param centerYPos if true then the selected row is positioned in the center of the table, if possible
    * @throws IllegalStateException in case this table is not in a scrollable viewport
    */
-  public final void scrollToCoordinate(final int row, final int column, final boolean centerXPos, final boolean centerYPos) {
+  public void scrollToCoordinate(final int row, final int column, final boolean centerXPos, final boolean centerYPos) {
     final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
     if (viewport == null) {
       throw new IllegalStateException("Table must be contained in a JViewport for scrollToCoordinate");
@@ -272,7 +293,7 @@ public final class FilteredTable<R, C> extends JTable {
    * Creates a JTextField for searching through this table.
    * @return a search field
    */
-  public JTextField initializeSearchField() {
+  private JTextField initializeSearchField() {
     final JTextField field = new JTextField();
     field.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
     field.setColumns(SEARCH_FIELD_COLUMNS);
@@ -355,7 +376,7 @@ public final class FilteredTable<R, C> extends JTable {
   }
 
   private void bindFilterIndicatorEvents(final TableColumn column) {
-    final ColumnConditionModel<C> model = getTableModel().getColumnModel().getColumnFilterModel((C) column.getIdentifier());
+    final ColumnConditionModel<C> model = getModel().getColumnModel().getColumnFilterModel((C) column.getIdentifier());
     if (model != null) {
       model.addConditionStateListener(() -> SwingUtilities.invokeLater(() -> {
         if (model.isEnabled()) {
@@ -374,7 +395,7 @@ public final class FilteredTable<R, C> extends JTable {
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
-    final AbstractFilteredTableModel<R, C> tableModel = getTableModel();
+    final AbstractFilteredTableModel<R, C> tableModel = getModel();
     final int index = tableModel.getColumnModel().getColumnIndexAtX(event.getX());
     final TableColumn column = tableModel.getColumnModel().getColumn(index);
     if (!columnFilterPanels.containsKey(column)) {
@@ -578,7 +599,7 @@ public final class FilteredTable<R, C> extends JTable {
       final int index = columnModel.getColumnIndexAtX(e.getX());
       if (index >= 0) {
         final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
-        SortingDirective status = getTableModel().getSortModel().getSortingState(columnIdentifier).getDirective();
+        SortingDirective status = getModel().getSortModel().getSortingState(columnIdentifier).getDirective();
         final boolean shiftDown = e.isShiftDown();
         switch (status) {
           case UNSORTED:
@@ -597,7 +618,7 @@ public final class FilteredTable<R, C> extends JTable {
             break;
         }
 
-        getTableModel().getSortModel().setSortingDirective(columnIdentifier, status, e.isControlDown());
+        getModel().getSortModel().setSortingDirective(columnIdentifier, status, e.isControlDown());
       }
     }
   }
