@@ -24,6 +24,7 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor {
   }
 
   //TODO handle Enter key correctly
+  @Override
   protected JComponent initializeEditorComponent() {
     final ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) getProperty();
     final String foreignEntityId = foreignKeyProperty.getForeignEntityId();
