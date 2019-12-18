@@ -958,18 +958,18 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * Hides or shows the active filter panels for this panel and all its child panels
    * (detail panels and their detail panels etc.)
-   * @param value true if the active panels should be shown, false if they should be hidden
+   * @param visible true if the active panels should be shown, false if they should be hidden
    */
-  public final void setFilterPanelsVisible(final boolean value) {
+  public final void setFilterPanelsVisible(final boolean visible) {
     if (!panelInitialized) {
       return;
     }
 
     if (containsTablePanel()) {
-      tablePanel.setFilterPanelsVisible(value);
+      tablePanel.getTable().setFilterPanelsVisible(visible);
     }
     for (final EntityPanel detailEntityPanel : detailEntityPanels) {
-      detailEntityPanel.setFilterPanelsVisible(value);
+      detailEntityPanel.setFilterPanelsVisible(visible);
     }
   }
 
@@ -1023,7 +1023,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     else if (setInitialFocus) {
       if (tablePanel != null) {
-        tablePanel.getJTable().requestFocus();
+        tablePanel.getTable().requestFocus();
       }
       else if (getComponentCount() > 0) {
         getComponents()[0].requestFocus();
@@ -1156,7 +1156,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private void setupKeyboardActions() {
     final Control selectEditPanelControl = Controls.control(this::selectEditPanel, "EntityPanel.selectEditPanel");
     final Control selectInputComponentControl = Controls.control(this::selectInputComponent, "EntityPanel.selectInputComponent");
-    final Control selectTablePanelControl = Controls.control(getTablePanel().getJTable()::requestFocus, "EntityPanel.selectTablePanel");
+    final Control selectTablePanelControl = Controls.control(getTablePanel().getTable()::requestFocus, "EntityPanel.selectTablePanel");
     final Control selectSearchFieldControl = Controls.control(getTablePanel().getSearchField()::requestFocus, "EntityPanel.selectSearchField");
     if (containsTablePanel()) {
       final Control selectConditionPanelAction = Controls.control(getTablePanel()::selectConditionPanel, "EntityPanel.selectConditionPanel");

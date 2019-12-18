@@ -29,17 +29,17 @@ public class EntityTableCellRenderersTest {
     tablePanel.getEntityTableModel().refresh();
     final EntityTableCellRenderer renderer = EntityTableCellRenderers.createTableCellRenderer(tablePanel.getEntityTableModel(),
             DOMAIN.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_NAME));
-    renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, false, false, 0, 0);
-    renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, false, 0, 0);
-    renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, true, 0, 0);
+    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, false, false, 0, 0);
+    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, false, 0, 0);
+    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, true, 0, 0);
 
-    renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, false, false, 0, 1);
-    renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, false, 0, 1);
-    renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, true, 0, 1);
+    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, false, false, 0, 1);
+    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, false, 0, 1);
+    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, true, 0, 1);
 
-    renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, false, false, 0, 7);
-    renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, false, 0, 7);
-    renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, true, 0, 7);
+    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, false, false, 0, 7);
+    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, false, 0, 7);
+    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, true, 0, 7);
   }
 
   @Test

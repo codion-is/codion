@@ -5484,3 +5484,4 @@
   EntityTableCellRenderer.getForeground() and getBackground() added, EntityTableCellRenderers refactored
   ColumnConditionPanel now uses NullableCheckBox, DefaultColumnConditionModel now handles boolean null values
   EntityEditComponentPanel split from EntityEditPanel
+  FilteredTable split from FilteredTablePanel

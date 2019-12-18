@@ -10,7 +10,6 @@ import org.jminor.swing.common.model.table.AbstractTableSortModel;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import java.awt.AWTException;
@@ -27,9 +26,8 @@ public class FilteredTablePanelTest {
 
   @Test
   public void test() {
-    final FilteredTablePanel<String, Integer> panel =
-            new FilteredTablePanel<>(createTestModel());
-    assertNotNull(panel.getJTable());
+    final FilteredTablePanel<String, Integer> panel = new FilteredTablePanel<>(createTestModel());
+    assertNotNull(panel.getTable());
     assertNotNull(panel.getSearchField());
   }
 
@@ -40,7 +38,7 @@ public class FilteredTablePanelTest {
 
   @Test
   public void constructorNullTable() {
-    assertThrows(Exception.class, () -> new FilteredTablePanel<String, Integer>((JTable) null, null));
+    assertThrows(Exception.class, () -> new FilteredTablePanel<String, Integer>(null, null));
   }
 
   @Test
@@ -77,19 +75,19 @@ public class FilteredTablePanelTest {
 
     searchField.setText("");
 
-    panel.findNext(false, "da");
+    panel.getTable().findNext(false, "da");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
-    panel.findNext(false, "da");
+    panel.getTable().findNext(false, "da");
     assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
-    panel.findNext(false, "da");
+    panel.getTable().findNext(false, "da");
     assertEquals(2, tableModel.getSelectionModel().getSelectedIndex());
-    panel.findPrevious(true, "da");
+    panel.getTable().findPrevious(true, "da");
     assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
     assertEquals(2, tableModel.getSelectionModel().getSelectionCount());
-    panel.findPrevious(true, "da");
+    panel.getTable().findPrevious(true, "da");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
     assertEquals(3, tableModel.getSelectionModel().getSelectionCount());
-    panel.findNext(false, "dat");
+    panel.getTable().findNext(false, "dat");
   }
 
   public static TestAbstractFilteredTableModel createTestModel() {
