@@ -5481,3 +5481,4 @@
   SwingEntityTableModel.getValue() bug fixed, did not handle ValueListProperty, displayed the underlying value instead of the item caption
   EntityTableCellRenderer bug fixed, did not handle ValueListProperty
   EntityTableCellRenderers bug fixed, boolean renderer now displays selection correctly
+  EntityTableCellRenderer.getForeground() and getBackground() added, EntityTableCellRenderers refactored

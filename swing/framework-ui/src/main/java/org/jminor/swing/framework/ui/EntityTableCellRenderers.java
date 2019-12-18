@@ -11,7 +11,6 @@ import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -90,21 +89,20 @@ public final class EntityTableCellRenderers {
     return new Color(r, g, b);
   }
 
-  private static void setCellColor(final Color foreground, final EntityTableModel tableModel, final Property property,
-                                   final int row, final JComponent cellComponent, final boolean indicateCondition) {
+  private static Color getBackgroundColor(final EntityTableModel tableModel, final Property property, final int row,
+                                          final boolean indicateCondition) {
     final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getPropertyId());
     final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getPropertyId());
     final boolean showCondition = indicateCondition && (propertyConditionEnabled || propertyFilterEnabled);
     final Color cellColor = (Color) tableModel.getPropertyBackgroundColor(row, property);
-    cellComponent.setForeground(foreground);
     if (showCondition) {
-      cellComponent.setBackground(getConditionEnabledColor(row, propertyConditionEnabled, propertyFilterEnabled, cellColor));
+      return getConditionEnabledColor(row, propertyConditionEnabled, propertyFilterEnabled, cellColor);
     }
     else if (cellColor != null) {
-      cellComponent.setBackground(cellColor);
+      return cellColor;
     }
     else {
-      cellComponent.setBackground(row % 2 == 0 ? DEFAULT_BACKGROUND : DEFAULT_ALTERNATE_BACKGROUND);
+      return row % 2 == 0 ? DEFAULT_BACKGROUND : DEFAULT_ALTERNATE_BACKGROUND;
     }
   }
 
@@ -202,16 +200,22 @@ public final class EntityTableCellRenderers {
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
       super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      setForeground(getForeground(table, isSelected));
+      setBackground(getBackground(table, row, isSelected));
       if (isTooltipData()) {
         setToolTipText(value == null ? "" : value.toString());
       }
-      if (isSelected) {
-        return this;
-      }
-
-      setCellColor(table.getForeground(), tableModel, property, row, this, indicateCondition);
 
       return this;
+    }
+
+    @Override
+    public Color getBackground(final JTable table, final int row, final boolean selected) {
+      if (selected) {
+        return table.getSelectionBackground();
+      }
+
+      return getBackgroundColor(tableModel, property, row, indicateCondition);
     }
 
     /**
@@ -256,17 +260,20 @@ public final class EntityTableCellRenderers {
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
       getNullableModel().setState((Boolean) value);
-      if (isSelected) {
-        setForeground(table.getSelectionForeground());
-        super.setBackground(table.getSelectionBackground());
-      }
-      else {
-        setCellColor(table.getForeground(), tableModel, property, row, this, indicateCondition);
-      }
-
+      setForeground(getForeground(table, isSelected));
+      setBackground(getBackground(table, row, isSelected));
       setBorder(hasFocus ? focusedBorder : nonFocusedBorder);
 
       return this;
+    }
+
+    @Override
+    public Color getBackground(final JTable table, final int row, final boolean selected) {
+      if (selected) {
+        return table.getSelectionBackground();
+      }
+
+      return getBackgroundColor(tableModel, property, row, indicateCondition);
     }
 
     @Override

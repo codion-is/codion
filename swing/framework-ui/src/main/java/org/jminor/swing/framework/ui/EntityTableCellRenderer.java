@@ -3,7 +3,9 @@
  */
 package org.jminor.swing.framework.ui;
 
+import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
+import java.awt.Color;
 
 /**
  * A TableCellRenderer with the added options of visually displaying if a
@@ -31,4 +33,33 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
    * @param tooltipData if true then the cell data is added as a tool tip for the cell
    */
   void setTooltipData(boolean tooltipData);
+
+  /**
+   * Provides the foreground to use for cells in the given table.
+   * @param table the table
+   * @param selected true if the cell is selected
+   * @return the foreground color
+   */
+  default Color getForeground(final JTable table, final boolean selected) {
+    if (selected) {
+      return table.getSelectionForeground();
+    }
+
+    return table.getForeground();
+  }
+
+  /**
+   * Provides the background color for cells in the given table.
+   * @param table the table
+   * @param row the row
+   * @param selected true if the cell is selected
+   * @return the background color
+   */
+  default Color getBackground(final JTable table, final int row, final boolean selected) {
+    if (selected) {
+      return table.getSelectionBackground();
+    }
+
+    return table.getBackground();
+  }
 }
