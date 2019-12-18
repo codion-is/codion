@@ -13,9 +13,11 @@ import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.common.value.Value;
+import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
+import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
@@ -35,6 +37,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -391,7 +394,10 @@ public class ColumnConditionPanel<C> extends JPanel {
         return new LongField(DEFAULT_FIELD_COLUMNS);
       }
       else if (typeClass.equals(Boolean.class)) {
-        return new JCheckBox();
+        final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
+        checkBox.setHorizontalAlignment(SwingConstants.CENTER);
+
+        return checkBox;
       }
       else if (typeClass.equals(LocalTime.class) || typeClass.equals(LocalDateTime.class) || typeClass.equals(LocalDate.class)) {
         return UiUtil.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));

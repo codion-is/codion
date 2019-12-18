@@ -407,24 +407,19 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
       return true;
     }
 
-    Comparable toCompare = comparable;
-    if (comparable instanceof LocalDateTime) {
-      toCompare = ((LocalDateTime) comparable).truncatedTo(ChronoUnit.MINUTES);
-    }
-
     switch (conditionTypeValue.get()) {
       case LIKE:
-        return includeLike(toCompare);
+        return includeLike(comparable);
       case NOT_LIKE:
-        return includeNotLike(toCompare);
+        return includeNotLike(comparable);
       case LESS_THAN:
-        return includeLessThan(toCompare);
+        return includeLessThan(comparable);
       case GREATER_THAN:
-        return includeGreaterThan(toCompare);
+        return includeGreaterThan(comparable);
       case WITHIN_RANGE:
-        return includeWithinRange(toCompare);
+        return includeWithinRange(comparable);
       case OUTSIDE_RANGE:
-        return includeOutsideRange(toCompare);
+        return includeOutsideRange(comparable);
       default:
         throw new IllegalArgumentException("Undefined search type: " + conditionTypeValue.get());
     }
@@ -435,6 +430,10 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
    * @return a Comparable representing the given object
    */
   protected Comparable getComparable(final Object object) {
+    if (object instanceof LocalDateTime) {
+      return ((LocalDateTime) object).truncatedTo(ChronoUnit.MINUTES);
+    }
+
     return (Comparable) object;
   }
 
@@ -454,12 +453,11 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   }
 
   private boolean includeLike(final Comparable comparable) {
-    if (getUpperBound() == null) {
-      return true;
-    }
-
     if (comparable == null) {
-      return false;
+      return getUpperBound() == null;
+    }
+    if (getUpperBound() == null) {
+      return comparable == null;
     }
 
     if (comparable instanceof String) {//for Entity and String values
@@ -470,12 +468,11 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   }
 
   private boolean includeNotLike(final Comparable comparable) {
-    if (getUpperBound() == null) {
-      return true;
-    }
-
     if (comparable == null) {
-      return false;
+      return getUpperBound() != null;
+    }
+    if (getUpperBound() == null) {
+      return comparable != null;
     }
 
     if (comparable instanceof String && ((String) comparable).contains(wildcard)) {
