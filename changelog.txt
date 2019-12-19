@@ -5491,3 +5491,4 @@
   EntityTablePanel.getEntityTableModel() renamed to getTableModel()
   EntityTablePanel constructor refactored
   FilteredTable no longer throws IllegalStateException if a required viewport is not found
+  EntityConnection.delete() now returns the number of deleted records

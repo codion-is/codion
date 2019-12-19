@@ -439,9 +439,8 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final EntityCondition entityCondition = deserialize(request);
-      connection.delete(entityCondition);
 
-      return Response.ok().build();
+      return Response.ok(Util.serialize(connection.delete(entityCondition))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -462,9 +461,8 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Entity.Key> keys = deserialize(request);
-      connection.delete(keys);
 
-      return Response.ok().build();
+      return Response.ok(Util.serialize(connection.delete(keys))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

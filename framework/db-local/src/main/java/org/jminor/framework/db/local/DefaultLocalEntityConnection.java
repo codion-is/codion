@@ -337,7 +337,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public void delete(final EntityCondition condition) throws DatabaseException {
+  public int delete(final EntityCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
     checkReadOnly(condition.getEntityId());
 
@@ -349,8 +349,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         deleteSQL = createDeleteSQL(entityDefinition.getTableName(), whereCondition.getWhereClause());
         statement = prepareStatement(deleteSQL);
-        executePreparedUpdate(statement, deleteSQL, whereCondition.getColumnProperties(), whereCondition.getValues());
+        final int deleteCount = executePreparedUpdate(statement, deleteSQL,
+                whereCondition.getColumnProperties(), whereCondition.getValues());
         commitIfTransactionIsNotOpen();
+
+        return deleteCount;
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
@@ -365,10 +368,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public void delete(final List<Entity.Key> keys) throws DatabaseException {
+  public int delete(final List<Entity.Key> keys) throws DatabaseException {
     requireNonNull(keys, "keys");
     if (keys.isEmpty()) {
-      return;
+      return 0;
     }
     final Map<String, List<Entity.Key>> keysByEntityId = mapKeysToEntityId(keys);
     checkReadOnly(keysByEntityId.keySet());
@@ -377,15 +380,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String deleteSQL = null;
     synchronized (connection) {
       try {
+        int deleteCount = 0;
         for (final Map.Entry<String, List<Entity.Key>> entityIdKeys : keysByEntityId.entrySet()) {
           final EntityDefinition entityDefinition = getEntityDefinition(entityIdKeys.getKey());
           whereCondition = whereCondition(entityCondition(entityIdKeys.getValue()), entityDefinition);
           deleteSQL = createDeleteSQL(entityDefinition.getTableName(), whereCondition.getWhereClause());
           statement = prepareStatement(deleteSQL);
-          executePreparedUpdate(statement, deleteSQL, whereCondition.getColumnProperties(), whereCondition.getValues());
+          deleteCount += executePreparedUpdate(statement, deleteSQL,
+                  whereCondition.getColumnProperties(), whereCondition.getValues());
           statement.close();
         }
         commitIfTransactionIsNotOpen();
+
+        return deleteCount;
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();

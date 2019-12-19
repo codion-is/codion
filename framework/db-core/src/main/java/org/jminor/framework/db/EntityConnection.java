@@ -117,17 +117,19 @@ public interface EntityConnection {
    * Deletes the entities according to the given primary keys.
    * Performs a commit unless a transaction is open.
    * @param entityKeys the primary keys of the entities to delete
+   * @return the number of deleted records
    * @throws DatabaseException in case of a database exception
    */
-  void delete(List<Entity.Key> entityKeys) throws DatabaseException;
+  int delete(List<Entity.Key> entityKeys) throws DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition.
    * Performs a commit unless a transaction is open.
    * @param condition the condition specifying the entities to delete
+   * @return the number of deleted records
    * @throws DatabaseException in case of a database exception
    */
-  void delete(EntityCondition condition) throws DatabaseException;
+  int delete(EntityCondition condition) throws DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given property, note that the given property
