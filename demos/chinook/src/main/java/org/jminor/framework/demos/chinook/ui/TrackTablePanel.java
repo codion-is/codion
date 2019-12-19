@@ -28,14 +28,14 @@ public class TrackTablePanel extends EntityTablePanel {
   protected ControlSet getPopupControls(final List<ControlSet> additionalPopupControlSets) {
     final ControlSet controls = super.getPopupControls(additionalPopupControlSets);
     controls.addAt(Controls.control(this::raisePriceOfSelected, "Raise price...",
-            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()), 0);
+            getTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()), 0);
     controls.addSeparatorAt(1);
 
     return controls;
   }
 
   private void raisePriceOfSelected() throws DatabaseException {
-    final TrackTableModel tableModel = (TrackTableModel) getEntityTableModel();
+    final TrackTableModel tableModel = (TrackTableModel) getTableModel();
 
     tableModel.raisePriceOfSelected(getAmountFromUser());
   }

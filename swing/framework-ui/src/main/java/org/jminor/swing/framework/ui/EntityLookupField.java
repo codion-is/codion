@@ -456,7 +456,7 @@ public final class EntityLookupField extends JTextField {
         model.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
         UiUtil.getParentDialog(tablePanel).dispose();
       }, Messages.get(Messages.OK));
-      final JTable table = tablePanel.getJTable();
+      final JTable table = tablePanel.getTable();
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
       final String enterActionKey = "EntityLookupField.enter";
       table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
@@ -468,7 +468,7 @@ public final class EntityLookupField extends JTextField {
       tablePanel.setIncludeConditionPanel(false);
       tablePanel.setIncludePopupMenu(false);
       tablePanel.setIncludeSouthPanel(false);
-      tablePanel.getJTable().setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
+      tablePanel.getTable().setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       tablePanel.setTableDoubleClickAction(selectControl);
       tablePanel.initializePanel();
@@ -477,16 +477,16 @@ public final class EntityLookupField extends JTextField {
     /**
      * @return the underlying EntityTablePanel
      */
-    public EntityTablePanel getEntityTablePanel() {
+    public EntityTablePanel getTablePanel() {
       return tablePanel;
     }
 
     /** {@inheritDoc} */
     @Override
     public JComponent getSelectionComponent(final List<Entity> entities) {
-      tablePanel.getEntityTableModel().clear();
-      tablePanel.getEntityTableModel().addEntities(entities, false, false);
-      tablePanel.getJTable().scrollRectToVisible(tablePanel.getJTable().getCellRect(0, 0, true));
+      tablePanel.getTableModel().clear();
+      tablePanel.getTableModel().addEntities(entities, false, false);
+      tablePanel.getTable().scrollRectToVisible(tablePanel.getTable().getCellRect(0, 0, true));
 
       return tablePanel;
     }

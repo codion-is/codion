@@ -57,7 +57,7 @@ public final class ClientUserMonitor {
   private final Event<Integer> connectionTimeoutChangedEvent = Events.event();
   private final DefaultListModel<ClientMonitor> clientTypeListModel = new DefaultListModel<>();
   private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
-  private final AbstractFilteredTableModel<UserInfo, Integer> userHistoryTableModel = new UserHistoryTableModel();
+  private final UserHistoryTableModel userHistoryTableModel = new UserHistoryTableModel();
 
   private final TaskScheduler updateScheduler = new TaskScheduler(() -> {
     try {
@@ -102,7 +102,7 @@ public final class ClientUserMonitor {
   /**
    * @return a TableModel for displaying the user connection history
    */
-  public AbstractFilteredTableModel getUserHistoryTableModel() {
+  public UserHistoryTableModel getUserHistoryTableModel() {
     return userHistoryTableModel;
   }
 

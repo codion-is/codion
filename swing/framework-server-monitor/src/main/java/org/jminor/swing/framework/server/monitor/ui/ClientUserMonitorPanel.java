@@ -8,7 +8,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.table.FilteredTablePanel;
+import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.framework.server.monitor.ClientMonitor;
 import org.jminor.swing.framework.server.monitor.ClientUserMonitor;
 
@@ -135,7 +135,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     configBase.add(configPanel, BorderLayout.CENTER);
     configBase.add(new JButton(Controls.control(model::resetHistory, "Reset")), BorderLayout.EAST);
 
-    final FilteredTablePanel userHistoryTable = new FilteredTablePanel(model.getUserHistoryTableModel());
+    final FilteredTable userHistoryTable = new FilteredTable(model.getUserHistoryTableModel());
 
     final JPanel connectionHistoryPanel = new JPanel(UiUtil.createBorderLayout());
     connectionHistoryPanel.add(userHistoryTable, BorderLayout.CENTER);

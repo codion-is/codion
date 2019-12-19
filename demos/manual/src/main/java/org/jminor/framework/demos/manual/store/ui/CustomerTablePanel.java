@@ -31,14 +31,14 @@ public class CustomerTablePanel extends EntityTablePanel {
     //add a Control which calls the viewCustomerReport method in this class
     //enabled only when the selection is not empty
     printControls.add(Controls.control(this::viewCustomerReport, "Customer report",
-            getTableModel().getSelectionModel()
+            getTable().getModel().getSelectionModel()
                     .getSelectionEmptyObserver().getReversedObserver()));
 
     return printControls;
   }
 
   private void viewCustomerReport() throws Exception {
-    List<Entity> selectedCustomers = getTableModel().getSelectionModel().getSelectedItems();
+    List<Entity> selectedCustomers = getTable().getModel().getSelectionModel().getSelectedItems();
     if (selectedCustomers.isEmpty()) {
       return;
     }
@@ -51,6 +51,6 @@ public class CustomerTablePanel extends EntityTablePanel {
     EntityReportUiUtil.viewJdbcReport(this,
             new JasperReportsWrapper(reportPath, reportParameters),
             new JasperReportsUIWrapper(),  "Customer Report",
-            getEntityTableModel().getConnectionProvider());
+            getTableModel().getConnectionProvider());
   }
 }

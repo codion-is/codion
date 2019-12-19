@@ -10,7 +10,7 @@ import org.jminor.swing.common.model.table.AbstractTableSortModel;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JTable;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import java.awt.AWTException;
@@ -21,32 +21,21 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FilteredTablePanelTest {
+public class FilteredTableTest {
 
   private static final String[] ITEMS = {"a", "b", "c", "d", "e"};
 
   @Test
-  public void test() {
-    final FilteredTablePanel<String, Integer> panel =
-            new FilteredTablePanel<>(createTestModel());
-    assertNotNull(panel.getJTable());
-    assertNotNull(panel.getSearchField());
-  }
-
-  @Test
-  public void constructorNullTableModel() {
-    assertThrows(NullPointerException.class, () -> new FilteredTablePanel<String, Integer>((AbstractFilteredTableModel) null, null));
-  }
-
-  @Test
   public void constructorNullTable() {
-    assertThrows(Exception.class, () -> new FilteredTablePanel<String, Integer>((JTable) null, null));
+    assertThrows(Exception.class, () -> new FilteredTable(null));
   }
 
   @Test
   public void searchField() throws AWTException {
     final TestAbstractFilteredTableModel tableModel = createTestModel();
-    final FilteredTablePanel<String, Integer> panel = new FilteredTablePanel<>(tableModel);
+    final FilteredTable<String, Integer, TestAbstractFilteredTableModel> panel =
+            new FilteredTable<>(tableModel);
+    new JScrollPane(panel);
 
     tableModel.addItemsAt(asList("darri", "dac", "dansinn", "dlabo"), 0);
 

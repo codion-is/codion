@@ -4,12 +4,8 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.TextUtil;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.swing.common.model.DocumentAdapter;
@@ -18,7 +14,6 @@ import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
 
 import javax.swing.AbstractAction;
@@ -29,7 +24,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -68,34 +62,27 @@ import java.util.ResourceBundle;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A UI component based on a FilteredTableModel.
- * This panel uses a {@link BorderLayout} and contains a base panel {@link #getBasePanel()}, itself with
- * a {@link BorderLayout}, containing the actual table at location {@link BorderLayout#CENTER}
- * @param <R> the type representing the rows in the table model
- * @param <C> type type used to identify columns in the table model
- * @see FilteredTableModel
+ * A JTable implementation for {@link AbstractFilteredTableModel}.
+ * @param <R> the type representing rows
+ * @param <C> type type used to identify columns
+ * @param <T> the table model type
  */
-public class FilteredTablePanel<R, C> extends JPanel {
+public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C>> extends JTable {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTablePanel.class.getName(), Locale.getDefault());
-  private static final String SELECT_COLUMNS = "select_columns";
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName(), Locale.getDefault());
 
   public static final char FILTER_INDICATOR = '*';
 
-  private static final int SORT_ICON_SIZE = 5;
-  private static final RowColumn NULL_COORDINATE = RowColumn.rowColumn(-1, -1);
+  private static final String SELECT_COLUMNS = "select_columns";
   private static final int SELECT_COLUMNS_GRID_ROWS = 15;
   private static final int SEARCH_FIELD_COLUMNS = 8;
-
-  /**
-   * Notified when the table summary panel is made visible or hidden
-   */
-  private final Event<Boolean> summaryPanelVisibleChangedEvent = Events.event();
+  private static final int SORT_ICON_SIZE = 5;
+  private static final RowColumn NULL_COORDINATE = RowColumn.rowColumn(-1, -1);
 
   /**
    * The table model
    */
-  private final AbstractFilteredTableModel<R, C> tableModel;
+  private final T tableModel;
 
   /**
    * Provides filter panels
@@ -106,46 +93,6 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * the property filter panels
    */
   private final Map<TableColumn, ColumnConditionPanel<C>> columnFilterPanels = new HashMap<>();
-
-  /**
-   * the column summary panel
-   */
-  private final FilteredTableSummaryPanel summaryPanel;
-
-  /**
-   * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
-   */
-  private final JPanel summaryBasePanel;
-
-  /**
-   * the scroll pane used for the summary panel
-   */
-  private final JScrollPane summaryScrollPane;
-
-  /**
-   * the JTable for showing the underlying entities
-   */
-  private final JTable table;
-
-  /**
-   * the scroll pane used by the JTable instance
-   */
-  private final JScrollPane tableScrollPane;
-
-  /**
-   * the horizontal table scroll bar
-   */
-  private final JScrollBar horizontalTableScrollBar;
-
-  /**
-   * The base panel containing the table scrollpane
-   */
-  private final JPanel basePanel;
-
-  /**
-   * The coordinate of the last search result
-   */
-  private RowColumn lastSearchResultCoordinate = NULL_COORDINATE;
 
   /**
    * The text field used for entering the search condition
@@ -163,69 +110,82 @@ public class FilteredTablePanel<R, C> extends JPanel {
   private boolean scrollToSelectedItem = true;
 
   /**
-   * Instantiates a new FilteredTablePanel.
+   * The coordinate of the last search result
+   */
+  private RowColumn lastSearchResultCoordinate = NULL_COORDINATE;
+
+  /**
+   * Instantiates a new FilteredTable using the given model
    * @param tableModel the table model
    */
-  public FilteredTablePanel(final AbstractFilteredTableModel<R, C> tableModel) {
+  public FilteredTable(final T tableModel) {
     this(tableModel, column -> new ColumnConditionPanel<>(tableModel.getColumnModel().getColumnFilterModel(
             (C) column.getIdentifier()), true, true));
   }
 
   /**
-   * Instantiates a new FilteredTablePanel.
+   * Instantiates a new FilteredTable using the given model
    * @param tableModel the table model
-   * @param conditionPanelProvider the column condition panel provider the column filter models found in the table model
+   * @param conditionPanelProvider the column condition panel provider
    */
-  public FilteredTablePanel(final AbstractFilteredTableModel<R, C> tableModel,
-                            final ColumnConditionPanelProvider<C> conditionPanelProvider) {
-    this(new JTable(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
-            (ListSelectionModel) tableModel.getSelectionModel()), conditionPanelProvider);
+  public FilteredTable(final T tableModel, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
+    super(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
+            (ListSelectionModel) tableModel.getSelectionModel());
+    this.tableModel = tableModel;
+    this.conditionPanelProvider = requireNonNull(conditionPanelProvider, "conditionPanelProvider");
+    this.searchField = initializeSearchField();
+    initializeTableHeader();
+    bindEvents();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public T getModel() {
+    return (T) super.getModel();
   }
 
   /**
-   * Instantiates a new FilteredTablePanel. Note that the JTable must have been instantiated with a {@link AbstractFilteredTableModel}.
-   * <pre>
-   *   AbstractFilteredTableModel tableModel = ...;
-   *   JTable table = new JTable(tableModel, tableModel.getColumnModel(), (ListSelectionModel) tableModel.getSelectionModel());
-   * </pre>
-   * @param table the table to use
-   * @param conditionPanelProvider the column condition panel provider the column filter models found in the table model
-   * @see FilteredTableModel#getColumnModel()
-   * @see FilteredTableModel#getSelectionModel()
+   * @return the search field
    */
-  public FilteredTablePanel(final JTable table, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
-    requireNonNull(table, "table");
-    this.table = table;
-    this.tableModel = (AbstractFilteredTableModel<R, C>) table.getModel();
-    this.conditionPanelProvider = conditionPanelProvider;
-    this.tableScrollPane = new JScrollPane(table);
-    this.horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
-    this.searchField = initializeSearchField();
-    this.basePanel = new JPanel(new BorderLayout());
-    this.basePanel.add(tableScrollPane, BorderLayout.CENTER);
-    this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
-    this.summaryScrollPane = new JScrollPane(summaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    this.summaryBasePanel = new JPanel(new BorderLayout());
-    this.summaryBasePanel.add(summaryScrollPane, BorderLayout.NORTH);
-    this.summaryBasePanel.add(horizontalTableScrollBar, BorderLayout.SOUTH);
-    this.tableScrollPane.getViewport().addChangeListener(e -> {
-      horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
-      revalidate();
-    });
-    UiUtil.linkBoundedRangeModels(horizontalTableScrollBar.getModel(), summaryScrollPane.getHorizontalScrollBar().getModel());
-    setSummaryPanelVisible(false);
-    basePanel.add(summaryBasePanel, BorderLayout.SOUTH);
-    setLayout(new BorderLayout());
-    add(basePanel, BorderLayout.CENTER);
-    initializeTableHeader();
-    bindEvents();
+  public JTextField getSearchField() {
+    return searchField;
+  }
+
+  /**
+   * @return true if sorting via the table header is enabled
+   */
+  public boolean isSortingEnabled() {
+    return sortingEnabled;
+  }
+
+  /**
+   * @param sortingEnabled true if sorting via the table header should be enabled
+   */
+  public void setSortingEnabled(final boolean sortingEnabled) {
+    this.sortingEnabled = sortingEnabled;
+  }
+
+  /**
+   * @return true if the JTable instance scrolls automatically to the coordinate
+   * of the record selected in the underlying table model
+   */
+  public boolean isScrollToSelectedItem() {
+    return scrollToSelectedItem;
+  }
+
+  /**
+   * @param scrollToSelectedItem true if the JTable instance should scroll automatically
+   * to the coordinate of the record selected in the underlying table model
+   */
+  public void setScrollToSelectedItem(final boolean scrollToSelectedItem) {
+    this.scrollToSelectedItem = scrollToSelectedItem;
   }
 
   /**
    * Hides or shows the active filter panels for this table panel
    * @param value true if the active filter panels should be shown, false if they should be hidden
    */
-  public final void setFilterPanelsVisible(final boolean value) {
+  public void setFilterPanelsVisible(final boolean value) {
     columnFilterPanels.values().forEach(columnFilterPanel -> SwingUtilities.invokeLater(() -> {
       if (value) {
         columnFilterPanel.showDialog();
@@ -237,171 +197,9 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   /**
-   * @return the TableModel used by this TablePanel
-   */
-  public final AbstractFilteredTableModel<R, C> getTableModel() {
-    return tableModel;
-  }
-
-  /**
-   * @return the JTable instance
-   */
-  public final JTable getJTable() {
-    return table;
-  }
-
-  /**
-   * @return the text field used to enter a search condition
-   * @see #initializeSearchField()
-   */
-  public final JTextField getSearchField() {
-    return searchField;
-  }
-
-  /**
-   * @return the JScrollPane containing the table
-   */
-  public final JScrollPane getTableScrollPane() {
-    return tableScrollPane;
-  }
-
-  /**
-   * Returns the base panel containing the table scroll pane (BorderLayout.CENTER).
-   * @return the panel containing the table scroll pane
-   */
-  public final JPanel getBasePanel() {
-    return basePanel;
-  }
-
-  /**
-   * Hides or shows the column summary panel for this EntityTablePanel
-   * @param visible if true then the summary panel is shown, if false it is hidden
-   */
-  public final void setSummaryPanelVisible(final boolean visible) {
-    if (visible && isSummaryPanelVisible()) {
-      return;
-    }
-
-    summaryScrollPane.setVisible(visible);
-    revalidate();
-    summaryPanelVisibleChangedEvent.fire(visible);
-  }
-
-  /**
-   * @return true if the column summary panel is visible, false if it is hidden
-   */
-  public final boolean isSummaryPanelVisible() {
-    return summaryScrollPane.isVisible();
-  }
-
-  /**
-   * Returns true if the given cell is visible.
-   * @param row the row
-   * @param column the column
-   * @return true if the cell with the given coordinates is visible
-   */
-  public final boolean isCellVisible(final int row, final int column) {
-    final JViewport viewport = (JViewport) getJTable().getParent();
-    final Rectangle cellRect = getJTable().getCellRect(row, column, true);
-    final Point viewPosition = viewport.getViewPosition();
-    cellRect.setLocation(cellRect.x - viewPosition.x, cellRect.y - viewPosition.y);
-
-    return new Rectangle(viewport.getExtentSize()).contains(cellRect);
-  }
-
-  /**
-   * Scrolls horizontally so that the column identified by columnIdentifier becomes visible, centered if possible
-   * @param columnIdentifier the column identifier
-   */
-  public final void scrollToColumn(final Object columnIdentifier) {
-    scrollToCoordinate(table.rowAtPoint(getTableScrollPane().getViewport().getViewPosition()),
-            getTableModel().getColumnModel().getColumnIndex(columnIdentifier), false, false);
-  }
-
-  /**
-   * Scrolls to the given coordinate.
-   * @param row the row
-   * @param column the column
-   * @param centerXPos if true then the selected column is positioned in the center of the table, if possible
-   * @param centerYPos if true then the selected row is positioned in the center of the table, if possible
-   */
-  public final void scrollToCoordinate(final int row, final int column, final boolean centerXPos, final boolean centerYPos) {
-    final JViewport viewport = tableScrollPane.getViewport();
-    final Rectangle cellRectangle = table.getCellRect(row, column, true);
-    final Rectangle viewRectangle = viewport.getViewRect();
-    cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
-    if (centerXPos) {
-      int centerX = (viewRectangle.width - cellRectangle.width) / 2;
-      if (cellRectangle.x < centerX) {
-        centerX = -centerX;
-      }
-      cellRectangle.translate(centerX, cellRectangle.y);
-    }
-    if (centerYPos) {
-      int centerY = (viewRectangle.height - cellRectangle.height) / 2;
-      if (cellRectangle.y < centerY) {
-        centerY = -centerY;
-      }
-      cellRectangle.translate(cellRectangle.x, centerY);
-    }
-    viewport.scrollRectToVisible(cellRectangle);
-  }
-
-  /**
-   * @return a control for showing the column selection dialog
-   */
-  public final Control getSelectColumnsControl() {
-    return Controls.control(this::selectTableColumns, MESSAGES.getString(SELECT_COLUMNS) + "...",
-            null, MESSAGES.getString(SELECT_COLUMNS));
-  }
-
-  /**
-   * Initializes the button used to toggle the summary panel state (hidden and visible)
-   * @return a summary panel toggle button
-   */
-  public final Control getToggleSummaryPanelControl() {
-    final Control toggleControl = Controls.toggleControl(this, "summaryPanelVisible", null,
-            summaryPanelVisibleChangedEvent);
-    toggleControl.setIcon(Images.loadImage("Sum16.gif"));
-    toggleControl.setDescription(MESSAGES.getString("toggle_summary_tip"));
-
-    return toggleControl;
-  }
-
-  /**
-   * @return true if sorting via the table header is enabled
-   */
-  public final boolean isSortingEnabled() {
-    return sortingEnabled;
-  }
-
-  /**
-   * @param sortingEnabled true if sorting via the table header should be enabled
-   */
-  public final void setSortingEnabled(final boolean sortingEnabled) {
-    this.sortingEnabled = sortingEnabled;
-  }
-
-  /**
-   * @return true if the JTable instance scrolls automatically to the coordinate
-   * of the record selected in the underlying table model
-   */
-  public final boolean isScrollToSelectedItem() {
-    return scrollToSelectedItem;
-  }
-
-  /**
-   * @param scrollToSelectedItem true if the JTable instance should scroll automatically
-   * to the coordinate of the record selected in the underlying table model
-   */
-  public final void setScrollToSelectedItem(final boolean scrollToSelectedItem) {
-    this.scrollToSelectedItem = scrollToSelectedItem;
-  }
-
-  /**
    * Shows a dialog for selecting which columns to show/hide
    */
-  public final void selectTableColumns() {
+  public void selectColumns() {
     final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
     final List<TableColumn> allColumns = new ArrayList<>(columnModel.getAllColumns());
     allColumns.sort(new Comparator<TableColumn>() {
@@ -415,7 +213,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
     final List<JCheckBox> checkBoxes = new ArrayList<>();
     final int result = JOptionPane.showOptionDialog(this, initializeSelectColumnsPanel(allColumns, checkBoxes),
             MESSAGES.getString(SELECT_COLUMNS), JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-            new String[] {MESSAGES.getString("show_all_columns"), Messages.get(Messages.CANCEL), Messages.get(Messages.OK)}, Messages.get(Messages.OK));
+            new String[] {MESSAGES.getString("show_all_columns"), Messages.get(Messages.CANCEL),
+                    Messages.get(Messages.OK)}, Messages.get(Messages.OK));
     if (result != 1) {
       if (result == 0) {
         setSelected(checkBoxes, true);
@@ -433,17 +232,73 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   /**
-   * @param listener a listener notified each time the summary panel visibility changes
+   * Returns true if the given cell is visible.
+   * @param row the row
+   * @param column the column
+   * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
    */
-  public final void addSummaryPanelVisibleListener(final EventListener listener) {
-    summaryPanelVisibleChangedEvent.addListener(listener);
+  public boolean isCellVisible(final int row, final int column) {
+    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
+    if (viewport == null) {
+      return false;
+    }
+    final Rectangle cellRect = getCellRect(row, column, true);
+    final Point viewPosition = viewport.getViewPosition();
+    cellRect.setLocation(cellRect.x - viewPosition.x, cellRect.y - viewPosition.y);
+
+    return new Rectangle(viewport.getExtentSize()).contains(cellRect);
   }
 
   /**
-   * @param listener the listener to remove
+   * Scrolls horizontally so that the column identified by columnIdentifier becomes visible, centered if possible.
+   * Has no effect if this table is not contained in a scrollpanel.
+   * @param columnIdentifier the column identifier
    */
-  public final void removeSummaryPanelVisibleListener(final EventListener listener) {
-    summaryPanelVisibleChangedEvent.removeListener(listener);
+  public void scrollToColumn(final Object columnIdentifier) {
+    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
+    if (viewport != null) {
+      scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
+              getModel().getColumnModel().getColumnIndex(columnIdentifier), false, false);
+    }
+  }
+
+  /**
+   * Scrolls to the given coordinate. Has no effect if this table is not contained in a scrollpanel.
+   * @param row the row
+   * @param column the column
+   * @param centerXPos if true then the selected column is positioned in the center of the table, if possible
+   * @param centerYPos if true then the selected row is positioned in the center of the table, if possible
+   */
+  public void scrollToCoordinate(final int row, final int column, final boolean centerXPos, final boolean centerYPos) {
+    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
+    if (viewport != null) {
+      final Rectangle cellRectangle = getCellRect(row, column, true);
+      final Rectangle viewRectangle = viewport.getViewRect();
+      cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
+      if (centerXPos) {
+        int centerX = (viewRectangle.width - cellRectangle.width) / 2;
+        if (cellRectangle.x < centerX) {
+          centerX = -centerX;
+        }
+        cellRectangle.translate(centerX, cellRectangle.y);
+      }
+      if (centerYPos) {
+        int centerY = (viewRectangle.height - cellRectangle.height) / 2;
+        if (cellRectangle.y < centerY) {
+          centerY = -centerY;
+        }
+        cellRectangle.translate(cellRectangle.x, centerY);
+      }
+      viewport.scrollRectToVisible(cellRectangle);
+    }
+  }
+
+  /**
+   * @return a control for showing the column selection dialog
+   */
+  public Control getSelectColumnsControl() {
+    return Controls.control(this::selectColumns, MESSAGES.getString(SELECT_COLUMNS) + "...",
+            null, MESSAGES.getString(SELECT_COLUMNS));
   }
 
   /**
@@ -451,7 +306,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param addToSelection if true then the items found are added to the selection
    * @param searchText the text to search for
    */
-  final void findNext(final boolean addToSelection, final String searchText) {
+  public void findNext(final boolean addToSelection, final String searchText) {
     performSearch(addToSelection, lastSearchResultCoordinate.getRow() + 1, true, searchText);
   }
 
@@ -460,10 +315,14 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param addToSelection if true then the items found are added to the selection
    * @param searchText the text to search for
    */
-  final void findPrevious(final boolean addToSelection, final String searchText) {
+  public void findPrevious(final boolean addToSelection, final String searchText) {
     performSearch(addToSelection, lastSearchResultCoordinate.getRow() - 1, false, searchText);
   }
 
+  /**
+   * Creates a JTextField for searching through this table.
+   * @return a search field
+   */
   private JTextField initializeSearchField() {
     final JTextField field = new JTextField();
     field.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
@@ -497,7 +356,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
         }
         else {
           tableModel.getSelectionModel().setSelectedIndex(coordinate.getRow());
-          table.setColumnSelectionInterval(coordinate.getColumn(), coordinate.getColumn());
+          setColumnSelectionInterval(coordinate.getColumn(), coordinate.getColumn());
         }
         scrollToCoordinate(coordinate.getRow(), coordinate.getColumn(), false, false);
       }
@@ -522,7 +381,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
     final JPopupMenu popupMenu = new JPopupMenu();
     final String settingsMessage = MESSAGES.getString("settings");
     popupMenu.add(Controls.control(() ->
-            UiUtil.displayInDialog(FilteredTablePanel.this, panel, settingsMessage, control), settingsMessage));
+            UiUtil.displayInDialog(FilteredTable.this, panel, settingsMessage, control), settingsMessage));
 
     return popupMenu;
   }
@@ -546,38 +405,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
     return base;
   }
 
-  private void initializeTableHeader() {
-    table.getTableHeader().setReorderingAllowed(true);
-    table.getTableHeader().addMouseListener(new MouseSortHandler());
-    table.getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(table.getTableHeader().getDefaultRenderer()));
-    table.getTableHeader().addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if (e.isAltDown() && e.isControlDown()) {
-          toggleColumnFilterPanel(e);
-        }
-      }
-    });
-  }
-
-  private void bindEvents() {
-    tableModel.addSortListener(table.getTableHeader()::repaint);
-    tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
-      if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
-        scrollToCoordinate(selected, table.getSelectedColumn(), false, false);
-      }
-    });
-    tableModel.addRefreshStartedListener(() -> UiUtil.setWaitCursor(true, FilteredTablePanel.this));
-    tableModel.addRefreshDoneListener(() -> UiUtil.setWaitCursor(false, FilteredTablePanel.this));
-    tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
-    UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(table, false));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(table, true));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(table, true));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(table, false));
-  }
-
   private void bindFilterIndicatorEvents(final TableColumn column) {
-    final ColumnConditionModel<C> model = tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier());
+    final ColumnConditionModel<C> model = getModel().getColumnModel().getColumnFilterModel((C) column.getIdentifier());
     if (model != null) {
       model.addConditionStateListener(() -> SwingUtilities.invokeLater(() -> {
         if (model.isEnabled()) {
@@ -587,7 +416,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
           removeFilterIndicator(column);
         }
 
-        getJTable().getTableHeader().repaint();
+        getTableHeader().repaint();
       }));
       if (model.isEnabled()) {
         SwingUtilities.invokeLater(() -> addFilterIndicator(column));
@@ -596,13 +425,14 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
+    final AbstractFilteredTableModel<R, C> tableModel = getModel();
     final int index = tableModel.getColumnModel().getColumnIndexAtX(event.getX());
     final TableColumn column = tableModel.getColumnModel().getColumn(index);
     if (!columnFilterPanels.containsKey(column)) {
       columnFilterPanels.put(column, conditionPanelProvider.createColumnConditionPanel(column));
     }
 
-    toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(column), table);
+    toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(column), this);
   }
 
   private static void toggleFilterPanel(final Point position, final ColumnConditionPanel columnFilterPanel,
@@ -633,57 +463,39 @@ public class FilteredTablePanel<R, C> extends JPanel {
     column.setHeaderValue(val);
   }
 
+  private void initializeTableHeader() {
+    getTableHeader().addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent e) {
+        if (e.isAltDown() && e.isControlDown()) {
+          toggleColumnFilterPanel(e);
+        }
+      }
+    });
+    getTableHeader().setReorderingAllowed(true);
+    getTableHeader().addMouseListener(new MouseSortHandler());
+    getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(getTableHeader().getDefaultRenderer()));
+  }
+
+  private void bindEvents() {
+    tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
+      if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
+        scrollToCoordinate(selected, getSelectedColumn(), false, false);
+      }
+    });
+    tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
+    UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK,
+            new ResizeSelectedColumnAction(this, false));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK,
+            new ResizeSelectedColumnAction(this, true));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
+            new MoveSelectedColumnAction(this, true));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
+            new MoveSelectedColumnAction(this, false));
+  }
+
   private static void setSelected(final List<JCheckBox> checkBoxes, final boolean selected) {
     checkBoxes.forEach(box -> SwingUtilities.invokeLater(() -> box.setSelected(selected)));
-  }
-
-  /**
-   * Responsible for creating {@link ColumnConditionPanel}s
-   * @param <C> the type used as column identifier
-   */
-  public interface ColumnConditionPanelProvider<C> {
-    /**
-     * Creates a ColumnConditionPanel for the given column
-     * @param column the column
-     * @return a ColumnConditionPanel
-     */
-    ColumnConditionPanel<C> createColumnConditionPanel(TableColumn column);
-  }
-
-  private final class MouseSortHandler extends MouseAdapter {
-    @Override
-    public void mouseClicked(final MouseEvent e) {
-      if (!sortingEnabled || e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
-        return;
-      }
-
-      final JTableHeader tableHeader = (JTableHeader) e.getSource();
-      final TableColumnModel columnModel = tableHeader.getColumnModel();
-      final int index = columnModel.getColumnIndexAtX(e.getX());
-      if (index >= 0) {
-        final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
-        SortingDirective status = tableModel.getSortModel().getSortingState(columnIdentifier).getDirective();
-        final boolean shiftDown = e.isShiftDown();
-        switch (status) {
-          case UNSORTED:
-            if (shiftDown) {
-              status = SortingDirective.DESCENDING;
-            }
-            else {
-              status = SortingDirective.ASCENDING;
-            }
-            break;
-          case ASCENDING:
-            status = SortingDirective.DESCENDING;
-            break;
-          default://case DESCENDING:
-            status = SortingDirective.ASCENDING;
-            break;
-        }
-
-        tableModel.getSortModel().setSortingDirective(columnIdentifier, status, e.isControlDown());
-      }
-    }
   }
 
   private final class SearchFieldKeyListener extends KeyAdapter {
@@ -706,7 +518,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
         findPrevious(e.isShiftDown(), field.getText());
       }
       else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-        getJTable().requestFocusInWindow();
+        requestFocusInWindow();
       }
     }
   }
@@ -739,7 +551,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
         return null;
       }
 
-      return new Arrow(directive == SortingDirective.DESCENDING, iconSizePixels, tableModel.getSortModel().getSortingState(columnIdentifier).getPriority());
+      return new Arrow(directive == SortingDirective.DESCENDING, iconSizePixels,
+              tableModel.getSortModel().getSortingState(columnIdentifier).getPriority());
     }
   }
 
@@ -801,6 +614,42 @@ public class FilteredTablePanel<R, C> extends JPanel {
     @Override
     public int getIconHeight() {
       return size;
+    }
+  }
+
+  private final class MouseSortHandler extends MouseAdapter {
+    @Override
+    public void mouseClicked(final MouseEvent e) {
+      if (!sortingEnabled || e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
+        return;
+      }
+
+      final JTableHeader tableHeader = (JTableHeader) e.getSource();
+      final TableColumnModel columnModel = tableHeader.getColumnModel();
+      final int index = columnModel.getColumnIndexAtX(e.getX());
+      if (index >= 0) {
+        final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
+        SortingDirective status = getModel().getSortModel().getSortingState(columnIdentifier).getDirective();
+        final boolean shiftDown = e.isShiftDown();
+        switch (status) {
+          case UNSORTED:
+            if (shiftDown) {
+              status = SortingDirective.DESCENDING;
+            }
+            else {
+              status = SortingDirective.ASCENDING;
+            }
+            break;
+          case ASCENDING:
+            status = SortingDirective.DESCENDING;
+            break;
+          default://case DESCENDING:
+            status = SortingDirective.ASCENDING;
+            break;
+        }
+
+        getModel().getSortModel().setSortingDirective(columnIdentifier, status, e.isControlDown());
+      }
     }
   }
 

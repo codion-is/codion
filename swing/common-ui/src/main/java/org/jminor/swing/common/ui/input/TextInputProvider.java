@@ -53,8 +53,7 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
     if (maxLength > 0) {
       document.setMaxLength(maxLength);
     }
-    final JTextField textField = new JTextField(document, initialValue != null ? initialValue.toString() : "", DEFAULT_COLUMNS);
 
-    return textField;
+    return new JTextField(document, initialValue != null ? initialValue.toString() : "", DEFAULT_COLUMNS);
   }
 }

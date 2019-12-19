@@ -29,7 +29,7 @@ public class CustomerTablePanel extends EntityTablePanel {
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
     printControlSet.add(Controls.control(this::viewCustomerReport, "Customer report",
-            getTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()));
+            getTable().getModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()));
 
     return printControlSet;
   }
@@ -37,11 +37,11 @@ public class CustomerTablePanel extends EntityTablePanel {
   private void viewCustomerReport() throws Exception {
     final String reportPath = ReportWrapper.getReportPath() + "/customer_report.jasper";
     final Collection<Integer> customerIDs = Entities.getDistinctValues(CUSTOMER_CUSTOMERID,
-            getEntityTableModel().getSelectionModel().getSelectedItems());
+            getTableModel().getSelectionModel().getSelectedItems());
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
 
     EntityReportUiUtil.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
-            new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
+            new JasperReportsUIWrapper(), null, getTableModel().getConnectionProvider());
   }
 }
