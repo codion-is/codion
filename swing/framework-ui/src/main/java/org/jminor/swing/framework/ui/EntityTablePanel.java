@@ -227,7 +227,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
 
-  private final JPanel centerPanel = new JPanel(new BorderLayout());
+  /**
+   * Contains the table, condition and summary panels
+   */
+  private final JPanel tablePanel = new JPanel(new BorderLayout());
 
   /**
    * the condition panel
@@ -348,8 +351,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     });
     UiUtil.linkBoundedRangeModels(horizontalTableScrollBar.getModel(), summaryScrollPane.getHorizontalScrollBar().getModel());
     setSummaryPanelVisible(false);
-    this.centerPanel.add(tableScrollPane, BorderLayout.CENTER);
-    this.centerPanel.add(summaryBasePanel, BorderLayout.SOUTH);
+    this.tablePanel.add(tableScrollPane, BorderLayout.CENTER);
+    this.tablePanel.add(summaryBasePanel, BorderLayout.SOUTH);
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolBar();
     bindEvents();
@@ -1391,7 +1394,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   protected void layoutPanel(final JPanel southPanel) {
     setLayout(new BorderLayout());
-    add(centerPanel, BorderLayout.CENTER);
+    add(tablePanel, BorderLayout.CENTER);
     if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
@@ -1490,7 +1493,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void initializeUI() {
     if (includeConditionPanel && conditionScrollPane != null) {
-      centerPanel.add(conditionScrollPane, BorderLayout.NORTH);
+      tablePanel.add(conditionScrollPane, BorderLayout.NORTH);
       if (conditionPanel.canToggleAdvanced()) {
         UiUtil.linkBoundedRangeModels(tableScrollPane.getHorizontalScrollBar().getModel(),
                 conditionScrollPane.getHorizontalScrollBar().getModel());
@@ -1591,8 +1594,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void initializeTable() {
-    getTable().putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
-    getTable().addMouseListener(initializeTableMouseListener());
+    table.putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
+    table.addMouseListener(initializeTableMouseListener());
     tableModel.getColumnModel().getAllColumns().forEach(column -> {
       final Property property = (Property) column.getIdentifier();
       column.setCellRenderer(initializeTableCellRenderer(property));
