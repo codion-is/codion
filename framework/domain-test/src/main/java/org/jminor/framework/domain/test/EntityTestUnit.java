@@ -385,13 +385,13 @@ public class EntityTestUnit {
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
   private void testDelete(final Entity testEntity) throws DatabaseException {
-    connection.delete(Entities.getKeys(singletonList(testEntity)));
+    assertEquals(1, connection.delete(Entities.getKeys(singletonList(testEntity))));
 
     boolean caught = false;
     try {
       connection.selectSingle(testEntity.getKey());
     }
-    catch (final DatabaseException e) {
+    catch (final RecordNotFoundException e) {
       caught = true;
     }
     assertTrue(caught, "Entity of type " + testEntity.getEntityId() + " failed delete test");
