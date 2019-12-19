@@ -5493,3 +5493,4 @@
   FilteredTable no longer throws IllegalStateException if a required viewport is not found
   EntityConnection.delete() now returns the number of deleted records
   EntityUiUtil.createInputComponent() bug fixed, now only creates NullableCheckBox for nullable boolean properties
+  PropertyConditionPanel.PropertyInputFieldProvider refactored to use EntityUiUtil.createInputField()
