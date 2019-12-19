@@ -137,20 +137,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     bindEvents();
   }
 
-  //todo shouldn't be necessary, World test fails without it
-  @Override
-  public int getRowCount() {
-    if (getModel() == null) {
-      return 0;
-    }
-
-    return super.getRowCount();
-  }
-
   /** {@inheritDoc} */
   @Override
   public T getModel() {
-    return tableModel;
+    return (T) super.getModel();
   }
 
   /**
