@@ -477,15 +477,15 @@ public final class EntityLookupField extends JTextField {
     /**
      * @return the underlying EntityTablePanel
      */
-    public EntityTablePanel getEntityTablePanel() {
+    public EntityTablePanel getTablePanel() {
       return tablePanel;
     }
 
     /** {@inheritDoc} */
     @Override
     public JComponent getSelectionComponent(final List<Entity> entities) {
-      tablePanel.getEntityTableModel().clear();
-      tablePanel.getEntityTableModel().addEntities(entities, false, false);
+      tablePanel.getTableModel().clear();
+      tablePanel.getTableModel().addEntities(entities, false, false);
       tablePanel.getTable().scrollRectToVisible(tablePanel.getTable().getCellRect(0, 0, true));
 
       return tablePanel;

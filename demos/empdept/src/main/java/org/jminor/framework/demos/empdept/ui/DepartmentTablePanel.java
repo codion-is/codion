@@ -28,18 +28,18 @@ public class DepartmentTablePanel extends EntityTablePanel {
     final String reportPath = ReportWrapper.getReportPath() + "/empdept_employees.jasper";
     final Collection departmentNumbers =
             Entities.getDistinctValues(EmpDept.DEPARTMENT_ID,
-                    getEntityTableModel().getSelectionModel().getSelectedItems());
+                    getTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
     EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this,
             new JasperReportsWrapper(reportPath, reportParameters),
-            new JasperReportsUIWrapper(), "Employee Report", getEntityTableModel().getConnectionProvider());
+            new JasperReportsUIWrapper(), "Employee Report", getTableModel().getConnectionProvider());
   }
 
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
-    final StateObserver selectionNotEmptyObserver = getEntityTableModel().getSelectionModel()
+    final StateObserver selectionNotEmptyObserver = getTableModel().getSelectionModel()
             .getSelectionEmptyObserver().getReversedObserver();
     printControlSet.add(Controls.control(this::viewEmployeeReport,
             "Employee Report", selectionNotEmptyObserver));

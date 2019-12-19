@@ -51,6 +51,6 @@ public class CustomerTablePanel extends EntityTablePanel {
     EntityReportUiUtil.viewJdbcReport(this,
             new JasperReportsWrapper(reportPath, reportParameters),
             new JasperReportsUIWrapper(),  "Customer Report",
-            getEntityTableModel().getConnectionProvider());
+            getTableModel().getConnectionProvider());
   }
 }

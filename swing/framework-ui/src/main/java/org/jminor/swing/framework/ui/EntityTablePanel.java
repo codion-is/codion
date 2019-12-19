@@ -223,6 +223,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final Map<String, Control> controlMap = new HashMap<>();
 
+  private final SwingEntityTableModel tableModel;
+
   private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
 
   private final JPanel centerPanel = new JPanel(new BorderLayout());
@@ -320,6 +322,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel,
                           final EntityTableConditionPanel conditionPanel) {
+    this.tableModel = tableModel;
     table = new FilteredTable<>(tableModel, new DefaultColumnConditionPanelProvider(tableModel));
     table.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     table.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
@@ -362,8 +365,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return the EntityTableModel used by this EntityTablePanel
    */
-  public final SwingEntityTableModel getEntityTableModel() {
-    return getTable().getModel();
+  public final SwingEntityTableModel getTableModel() {
+    return tableModel;
   }
 
   /**
@@ -531,7 +534,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + getEntityTableModel().getEntityId();
+    return getClass().getSimpleName() + ": " + tableModel.getEntityId();
   }
 
   /**
@@ -562,13 +565,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
-    final StateObserver selectionNotEmpty = getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver();
-    final StateObserver updateEnabled = getEntityTableModel().getEditModel().getUpdateEnabledObserver();
+    final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver();
+    final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
     final StateObserver enabled = States.aggregateState(Conjunction.AND, selectionNotEmpty, updateEnabled);
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
-    Properties.sort(getEntityTableModel().getEntityDefinition().getUpdatableProperties()).forEach(property -> {
+    Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (includeUpdateSelectedProperty(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
         controlSet.add(control(() -> updateSelectedEntities(property), caption, enabled));
@@ -584,7 +587,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final Control getViewDependenciesControl() {
     return control(this::viewSelectionDependencies,
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
-            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
+            tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
 
@@ -598,8 +601,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     return control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getEntityTableModel().getEditModel().getDeleteEnabledObserver(),
-                    getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()),
+                    tableModel.getEditModel().getDeleteEnabledObserver(),
+                    tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -618,7 +621,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
-    return control(getEntityTableModel()::refresh, refreshCaption,
+    return control(tableModel::refresh, refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
             null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -628,7 +631,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final Control getClearControl() {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
-    return control(getEntityTableModel()::clear, clearCaption,
+    return control(tableModel::clear, clearCaption,
             null, null, clearCaption.charAt(0), null, null);
   }
 
@@ -638,11 +641,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @see #getInputProvider(Property, java.util.List)
    */
   public final void updateSelectedEntities(final Property propertyToUpdate) {
-    if (getEntityTableModel().getSelectionModel().isSelectionEmpty()) {
+    if (tableModel.getSelectionModel().isSelectionEmpty()) {
       return;
     }
 
-    final List<Entity> selectedEntities = getEntityTableModel().getDomain().deepCopyEntities(getEntityTableModel().getSelectionModel().getSelectedItems());
+    final List<Entity> selectedEntities = tableModel.getDomain().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
@@ -651,7 +654,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
       try {
         setWaitCursor(true, this);
-        getEntityTableModel().update(selectedEntities);
+        tableModel.update(selectedEntities);
       }
       catch (final Exception e) {
         handleException(e);
@@ -666,11 +669,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Shows a dialog containing lists of entities depending on the selected entities via foreign key
    */
   public final void viewSelectionDependencies() {
-    if (getEntityTableModel().getSelectionModel().isSelectionEmpty()) {
+    if (tableModel.getSelectionModel().isSelectionEmpty()) {
       return;
     }
 
-    final SwingEntityTableModel tableModel = getEntityTableModel();
     try {
       setWaitCursor(true, this);
       final Map<String, Collection<Entity>> dependencies =
@@ -701,7 +703,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       if (confirmDelete()) {
         try {
           setWaitCursor(true, this);
-          getEntityTableModel().deleteSelected();
+          tableModel.deleteSelected();
         }
         finally {
           setWaitCursor(false, this);
@@ -710,8 +712,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     catch (final ReferentialIntegrityException e) {
       if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-        showDependenciesDialog(getEntityTableModel().getSelectionModel().getSelectedItems(),
-                getEntityTableModel().getConnectionProvider(), this);
+        showDependenciesDialog(tableModel.getSelectionModel().getSelectedItems(),
+                tableModel.getConnectionProvider(), this);
       }
       else {
         handleException(e);
@@ -786,8 +788,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control for clearing the table selection
    */
   public final Control getClearSelectionControl() {
-    final Control clearSelection = control(getEntityTableModel().getSelectionModel()::clearSelection, null,
-            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(), null, -1, null,
+    final Control clearSelection = control(tableModel.getSelectionModel()::clearSelection, null,
+            tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(MESSAGES.getString("clear_selection_tip"));
 
@@ -798,7 +800,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control for moving the table selection down one index
    */
   public final Control getMoveSelectionDownControl() {
-    final Control selectionDown = control(getEntityTableModel().getSelectionModel()::moveSelectionDown,
+    final Control selectionDown = control(tableModel.getSelectionModel()::moveSelectionDown,
             Images.loadImage(Images.IMG_DOWN_16));
     selectionDown.setDescription(MESSAGES.getString("selection_down_tip"));
 
@@ -809,7 +811,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control for moving the table selection up one index
    */
   public final Control getMoveSelectionUpControl() {
-    final Control selectionUp = control(getEntityTableModel().getSelectionModel()::moveSelectionUp,
+    final Control selectionUp = control(tableModel.getSelectionModel()::moveSelectionUp,
             Images.loadImage(Images.IMG_UP_16));
     selectionUp.setDescription(MESSAGES.getString("selection_up_tip"));
 
@@ -1107,8 +1109,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       popupMenu.show(table, location.x, location.y);
     }, "EntityTablePanel.showPopupMenu"));
     UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            control(() -> EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(),
-                    EntityTablePanel.this, getPopupLocation(table), getEntityTableModel().getConnectionProvider()),
+            control(() -> EntityUiUtil.showEntityMenu(tableModel.getSelectionModel().getSelectedItem(),
+                    EntityTablePanel.this, getPopupLocation(table), tableModel.getConnectionProvider()),
                     "EntityTablePanel.showEntityMenu"));
   }
 
@@ -1236,7 +1238,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected final Control getCopyCellControl() {
     return control(this::copySelectedCell, FrameworkMessages.get(FrameworkMessages.COPY_CELL),
-            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver());
+            tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver());
   }
 
   protected final Control getCopyTableWithHeaderControl() {
@@ -1303,7 +1305,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Collection values = Entities.getDistinctValues(property.getPropertyId(), toUpdate);
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     if (property instanceof ForeignKeyProperty) {
-      return createEntityInputProvider((ForeignKeyProperty) property, (Entity) currentValue, getEntityTableModel().getEditModel());
+      return createEntityInputProvider((ForeignKeyProperty) property, (Entity) currentValue, tableModel.getEditModel());
     }
     if (property instanceof ValueListProperty) {
       return new ValueListInputProvider(currentValue, ((ValueListProperty) property).getValues());
@@ -1346,7 +1348,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected final InputProvider createEntityInputProvider(final ForeignKeyProperty foreignKeyProperty,
                                                           final Entity currentValue,
                                                           final EntityEditModel editModel) {
-    if (getEntityTableModel().getConnectionProvider().getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
+    if (tableModel.getConnectionProvider().getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
       return new EntityComboProvider(((SwingEntityEditModel) editModel).createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {
@@ -1360,7 +1362,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the TableCellRenderer for the given property
    */
   protected TableCellRenderer initializeTableCellRenderer(final Property property) {
-    return EntityTableCellRenderers.createTableCellRenderer(getEntityTableModel(), property);
+    return EntityTableCellRenderers.createTableCellRenderer(tableModel, property);
   }
 
   /**
@@ -1374,7 +1376,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     if (property instanceof ForeignKeyProperty) {
-      return new ForeignKeyTableCellEditor(getEntityTableModel().getConnectionProvider(), (ForeignKeyProperty) property);
+      return new ForeignKeyTableCellEditor(tableModel.getConnectionProvider(), (ForeignKeyProperty) property);
     }
 
     return new EntityTableCellEditor(property);
@@ -1469,11 +1471,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void copyTableAsDelimitedString() {
-    UiUtil.setClipboard(getEntityTableModel().getTableDataAsDelimitedString('\t'));
+    UiUtil.setClipboard(tableModel.getTableDataAsDelimitedString('\t'));
   }
 
   private boolean includeUpdateSelectedControls() {
-    final SwingEntityTableModel entityTableModel = getEntityTableModel();
+    final SwingEntityTableModel entityTableModel = tableModel;
 
     return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
             entityTableModel.isBatchUpdateEnabled() &&
@@ -1481,7 +1483,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private boolean includeDeleteSelectedControl() {
-    final SwingEntityTableModel entityTableModel = getEntityTableModel();
+    final SwingEntityTableModel entityTableModel = tableModel;
 
     return !entityTableModel.isReadOnly() && entityTableModel.isDeleteEnabled();
   }
@@ -1520,8 +1522,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final Control refresh = control(getEntityTableModel()::refresh, null,
-            getEntityTableModel().getConditionModel().getConditionStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
+    final Control refresh = control(tableModel::refresh, null,
+            tableModel.getConditionModel().getConditionStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -1553,7 +1555,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private String getStatusMessage() {
-    final SwingEntityTableModel tableModel = getEntityTableModel();
     final int filteredItemCount = tableModel.getFilteredItemCount();
 
     return tableModel.getRowCount() + " (" + tableModel.getSelectionModel().getSelectionCount() + " " +
@@ -1572,11 +1573,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       UiUtil.addKeyEvent(getTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
     final EventListener statusListener = () -> SwingUtilities.invokeLater(EntityTablePanel.this::updateStatusMessage);
-    getEntityTableModel().getSelectionModel().addSelectionChangedListener(statusListener);
-    getEntityTableModel().addFilteringListener(statusListener);
-    getEntityTableModel().addTableDataChangedListener(statusListener);
+    tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
+    tableModel.addFilteringListener(statusListener);
+    tableModel.addTableDataChangedListener(statusListener);
 
-    getEntityTableModel().getConditionModel().getPropertyConditionModels().forEach(conditionModel ->
+    tableModel.getConditionModel().getPropertyConditionModels().forEach(conditionModel ->
             conditionModel.addConditionStateListener(() -> SwingUtilities.invokeLater(() -> {
               getTable().getTableHeader().repaint();
               getTable().repaint();
@@ -1584,15 +1585,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (conditionPanel != null) {
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
     }
-    if (getEntityTableModel().hasEditModel()) {
-      getEntityTableModel().getEditModel().addEntitiesChangedListener(() -> SwingUtilities.invokeLater(getTable()::repaint));
+    if (tableModel.hasEditModel()) {
+      tableModel.getEditModel().addEntitiesChangedListener(() -> SwingUtilities.invokeLater(getTable()::repaint));
     }
   }
 
   private void initializeTable() {
     getTable().putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
     getTable().addMouseListener(initializeTableMouseListener());
-    getEntityTableModel().getColumnModel().getAllColumns().forEach(column -> {
+    tableModel.getColumnModel().getAllColumns().forEach(column -> {
       final Property property = (Property) column.getIdentifier();
       column.setCellRenderer(initializeTableCellRenderer(property));
       column.setCellEditor(initializeTableCellEditor(property));
@@ -1605,7 +1606,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     header.setDefaultRenderer((table, value, isSelected, hasFocus, row, column) -> {
       final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
               hasFocus, row, column);
-      final SwingEntityTableModel tableModel = getEntityTableModel();
       final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
       final TableCellRenderer renderer = tableColumn.getCellRenderer();
       final Property property = (Property) tableColumn.getIdentifier();
