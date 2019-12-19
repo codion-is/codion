@@ -160,7 +160,7 @@ public final class EntityConnectionDemo {
     // tag::deleteCondition[]
     Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Proper Name");
 
-    connection.delete(entityCondition(T_ALBUM, ALBUM_ARTIST_FK, LIKE, myBand));
+    int deleteCount = connection.delete(entityCondition(T_ALBUM, ALBUM_ARTIST_FK, LIKE, myBand));
     // end::deleteCondition[]
   }
 
@@ -168,7 +168,7 @@ public final class EntityConnectionDemo {
     // tag::deleteKey[]
     Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Proper Name");
 
-    connection.delete(singletonList(myBand.getKey()));
+    int deleteCount = connection.delete(singletonList(myBand.getKey()));
     // end::deleteKey[]
   }
 
