@@ -209,7 +209,9 @@ public final class EntityUiUtil {
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
-        return createNullableCheckBox(property, value, enabledState, false);
+        return property.isNullable() ?
+                createNullableCheckBox(property, value, enabledState, false) :
+                createCheckBox(property, value, enabledState, false);
       case Types.DATE:
       case Types.TIMESTAMP:
       case Types.TIME:
