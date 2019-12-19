@@ -65,7 +65,7 @@ import static java.util.Objects.requireNonNull;
  * A JTable implementation for {@link AbstractFilteredTableModel}.
  * @param <R> the type representing rows
  * @param <C> type type used to identify columns
- * @param <M> the table model type
+ * @param <T> the table model type
  */
 public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C>> extends JTable {
 
@@ -126,6 +126,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * Instantiates a new FilteredTable using the given model
    * @param tableModel the table model
+   * @param conditionPanelProvider the column condition panel provider
    */
   public FilteredTable(final T tableModel, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
@@ -234,11 +235,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Returns true if the given cell is visible.
    * @param row the row
    * @param column the column
-   * @return true if the cell with the given coordinates is visible
-   * @throws IllegalStateException in case this table is not in a scrollable viewport
+   * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
    */
   public boolean isCellVisible(final int row, final int column) {
-    final JViewport viewport = getViewport();
+    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
+    if (viewport == null) {
+      return false;
+    }
     final Rectangle cellRect = getCellRect(row, column, true);
     final Point viewPosition = viewport.getViewPosition();
     cellRect.setLocation(cellRect.x - viewPosition.x, cellRect.y - viewPosition.y);
@@ -247,44 +250,47 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   /**
-   * Scrolls horizontally so that the column identified by columnIdentifier becomes visible, centered if possible
+   * Scrolls horizontally so that the column identified by columnIdentifier becomes visible, centered if possible.
+   * Has no effect if this table is not contained in a scrollpanel.
    * @param columnIdentifier the column identifier
-   * @throws IllegalStateException in case this table is not in a scrollable viewport
    */
   public void scrollToColumn(final Object columnIdentifier) {
-    final JViewport viewport = getViewport();
-    scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
-            getModel().getColumnModel().getColumnIndex(columnIdentifier), false, false);
+    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
+    if (viewport != null) {
+      scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
+              getModel().getColumnModel().getColumnIndex(columnIdentifier), false, false);
+    }
   }
 
   /**
-   * Scrolls to the given coordinate.
+   * Scrolls to the given coordinate. Has no effect if this table is not contained in a scrollpanel.
    * @param row the row
    * @param column the column
    * @param centerXPos if true then the selected column is positioned in the center of the table, if possible
    * @param centerYPos if true then the selected row is positioned in the center of the table, if possible
-   * @throws IllegalStateException in case this table is not in a scrollable viewport
    */
   public void scrollToCoordinate(final int row, final int column, final boolean centerXPos, final boolean centerYPos) {
-    final JViewport viewport = getViewport();
-    final Rectangle cellRectangle = getCellRect(row, column, true);
-    final Rectangle viewRectangle = viewport.getViewRect();
-    cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
-    if (centerXPos) {
-      int centerX = (viewRectangle.width - cellRectangle.width) / 2;
-      if (cellRectangle.x < centerX) {
-        centerX = -centerX;
+    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
+    if (viewport != null) {
+      final Rectangle cellRectangle = getCellRect(row, column, true);
+      final Rectangle viewRectangle = viewport.getViewRect();
+      cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
+      if (centerXPos) {
+        int centerX = (viewRectangle.width - cellRectangle.width) / 2;
+        if (cellRectangle.x < centerX) {
+          centerX = -centerX;
+        }
+        cellRectangle.translate(centerX, cellRectangle.y);
       }
-      cellRectangle.translate(centerX, cellRectangle.y);
-    }
-    if (centerYPos) {
-      int centerY = (viewRectangle.height - cellRectangle.height) / 2;
-      if (cellRectangle.y < centerY) {
-        centerY = -centerY;
+      if (centerYPos) {
+        int centerY = (viewRectangle.height - cellRectangle.height) / 2;
+        if (cellRectangle.y < centerY) {
+          centerY = -centerY;
+        }
+        cellRectangle.translate(cellRectangle.x, centerY);
       }
-      cellRectangle.translate(cellRectangle.x, centerY);
+      viewport.scrollRectToVisible(cellRectangle);
     }
-    viewport.scrollRectToVisible(cellRectangle);
   }
 
   /**
@@ -311,15 +317,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public void findPrevious(final boolean addToSelection, final String searchText) {
     performSearch(addToSelection, lastSearchResultCoordinate.getRow() - 1, false, searchText);
-  }
-
-  private JViewport getViewport() {
-    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
-    if (viewport == null) {
-      throw new IllegalStateException("Table is not contained in a JViewport");
-    }
-
-    return viewport;
   }
 
   /**

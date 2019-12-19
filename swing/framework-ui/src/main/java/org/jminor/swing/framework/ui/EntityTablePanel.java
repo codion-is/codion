@@ -72,7 +72,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -227,45 +226,20 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
 
-  /**
-   * Contains the table, condition and summary panels
-   */
-  private final JPanel tablePanel = new JPanel(new BorderLayout());
+  private final JScrollPane tableScrollPane;
 
-  /**
-   * the condition panel
-   */
   private final EntityTableConditionPanel conditionPanel;
 
-  /**
-   * the column summary panel
-   */
+  private final JScrollPane conditionScrollPane;
+
   private final FilteredTableSummaryPanel summaryPanel;
 
-  /**
-   * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
-   */
-  private final JPanel summaryBasePanel;
-
-  /**
-   * the scroll pane used for the summary panel
-   */
   private final JScrollPane summaryScrollPane;
 
   /**
-   * the scroll pane used for the condition panel
+   * Base panel for the table, condition and summary panels
    */
-  private final JScrollPane conditionScrollPane;
-
-  /**
-   * the scroll pane used by the JTable instance
-   */
-  private final JScrollPane tableScrollPane;
-
-  /**
-   * the horizontal table scroll bar
-   */
-  private final JScrollBar horizontalTableScrollBar;
+  private final JPanel tablePanel = new JPanel(new BorderLayout());
 
   /**
    * the toolbar containing the refresh button
@@ -275,7 +249,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * the label for showing the status of the table, that is, the number of rows, number of selected rows etc.
    */
-  private final JLabel statusMessageLabel;
+  private final JLabel statusMessageLabel = initializeStatusMessageLabel();
 
   private final List<ControlSet> additionalPopupControlSets = new ArrayList<>();
   private final List<ControlSet> additionalToolBarControlSets = new ArrayList<>();
@@ -323,37 +297,19 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param tableModel the EntityTableModel instance
    * @param conditionPanel the condition panel
    */
-  public EntityTablePanel(final SwingEntityTableModel tableModel,
-                          final EntityTableConditionPanel conditionPanel) {
+  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableConditionPanel conditionPanel) {
     this.tableModel = tableModel;
-    table = new FilteredTable<>(tableModel, new DefaultColumnConditionPanelProvider(tableModel));
-    table.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
-    table.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
-    table.setRowHeight(table.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
-    this.conditionPanel = conditionPanel;
-    if (conditionPanel != null) {
-      this.conditionScrollPane = new JScrollPane(conditionPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      this.conditionScrollPane.setVisible(false);
-    }
-    else {
-      this.conditionScrollPane = null;
-    }
+    this.table = initializeTable(tableModel);
     this.tableScrollPane = new JScrollPane(table);
-    this.horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
-    this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
-    this.summaryScrollPane = new JScrollPane(summaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    this.summaryBasePanel = new JPanel(new BorderLayout());
-    this.summaryBasePanel.add(summaryScrollPane, BorderLayout.NORTH);
-    this.summaryBasePanel.add(horizontalTableScrollBar, BorderLayout.SOUTH);
     this.tableScrollPane.getViewport().addChangeListener(e -> {
-      horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
+      tableScrollPane.getHorizontalScrollBar().setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
       revalidate();
     });
-    UiUtil.linkBoundedRangeModels(horizontalTableScrollBar.getModel(), summaryScrollPane.getHorizontalScrollBar().getModel());
-    setSummaryPanelVisible(false);
+    this.conditionPanel = conditionPanel;
+    this.conditionScrollPane = conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
+    this.summaryScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel = new FilteredTableSummaryPanel(tableModel));
     this.tablePanel.add(tableScrollPane, BorderLayout.CENTER);
-    this.tablePanel.add(summaryBasePanel, BorderLayout.SOUTH);
-    this.statusMessageLabel = initializeStatusMessageLabel();
+    this.tablePanel.add(summaryScrollPane, BorderLayout.SOUTH);
     this.refreshToolBar = initializeRefreshToolBar();
     bindEvents();
   }
@@ -1386,13 +1342,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * This method simply adds the given {@code southPanel} to the {@code BorderLayout.SOUTH} location, assuming the
-   * {@code basePanel} is at location BorderLayout.CENTER.
+   * This method simply adds the given {@code southPanel} to the {@code BorderLayout.SOUTH} location and the
+   * {@code tablePanel} at location BorderLayout.CENTER.
    * By overriding this method you can override the default layout.
-   * @param southPanel the panel to add at the BorderLayout.SOUTH position, if any
-   * @see #getBasePanel()
+   * @param tablePanel the panel containing the table, condition and summary panel
+   * @param southPanel the south toolbar panel
    */
-  protected void layoutPanel(final JPanel southPanel) {
+  protected void layoutPanel(final JPanel tablePanel, final JPanel southPanel) {
     setLayout(new BorderLayout());
     add(tablePanel, BorderLayout.CENTER);
     if (southPanel != null) {
@@ -1495,8 +1451,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (includeConditionPanel && conditionScrollPane != null) {
       tablePanel.add(conditionScrollPane, BorderLayout.NORTH);
       if (conditionPanel.canToggleAdvanced()) {
-        UiUtil.linkBoundedRangeModels(tableScrollPane.getHorizontalScrollBar().getModel(),
-                conditionScrollPane.getHorizontalScrollBar().getModel());
         conditionPanel.addAdvancedListener(data -> {
           if (isConditionPanelVisible()) {
             revalidate();
@@ -1516,7 +1470,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         southPanel.add(southPanelCenter, BorderLayout.SOUTH);
       }
     }
-    layoutPanel(southPanel);
+    layoutPanel(tablePanel, southPanel);
   }
 
   /**
@@ -1671,6 +1625,24 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       setWaitCursor(false, dialogParent);
     }
     UiUtil.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
+  }
+
+  private static FilteredTable<Entity, Property, SwingEntityTableModel> initializeTable(final SwingEntityTableModel tableModel) {
+    final FilteredTable<Entity, Property, SwingEntityTableModel> filteredTable =
+            new FilteredTable<>(tableModel, new DefaultColumnConditionPanelProvider(tableModel));
+    filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
+    filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
+    filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
+
+    return filteredTable;
+  }
+
+  private static JScrollPane createHiddenLinkedScrollPane(final JScrollPane masterScrollPane, final JPanel panel) {
+    final JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    UiUtil.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
+    scrollPane.setVisible(false);
+
+    return scrollPane;
   }
 
   private static JLabel initializeStatusMessageLabel() {

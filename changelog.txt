@@ -5489,3 +5489,5 @@
   FilteredTablePanel merged into EntityTablePanel
   FilteredTable bug fixed, getModel() did not call super.getModel() which caused NullPointerException during construction
   EntityTablePanel.getEntityTableModel() renamed to getTableModel()
+  EntityTablePanel constructor refactored
+  FilteredTable no longer throws IllegalStateException if a required viewport is not found
