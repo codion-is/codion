@@ -134,7 +134,7 @@ public final class HttpEntityConnectionTest {
     final Entity employee = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "ADAMS");
     try {
       connection.beginTransaction();
-      connection.delete(singletonList(employee.getKey()));
+      assertEquals(1, connection.delete(singletonList(employee.getKey())));
       final List<Entity> selected = connection.select(singletonList(employee.getKey()));
       assertTrue(selected.isEmpty());
     }
@@ -150,7 +150,7 @@ public final class HttpEntityConnectionTest {
     try {
       connection.beginTransaction();
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());
-      connection.delete(asList(deptKey, empKey));
+      assertEquals(2, connection.delete(asList(deptKey, empKey)));
       final List<Entity> selected = connection.select(asList(deptKey, empKey));
       assertTrue(selected.isEmpty());
     }

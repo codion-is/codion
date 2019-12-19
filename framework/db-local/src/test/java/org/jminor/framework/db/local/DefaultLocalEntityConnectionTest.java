@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.db.local;
 
+import org.jminor.common.Conjunction;
 import org.jminor.common.DateFormats;
 import org.jminor.common.User;
 import org.jminor.common.db.ConditionType;
@@ -44,8 +45,7 @@ import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.entityCondition;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.db.local.TestDomain.*;
 import static org.jminor.framework.domain.Entities.getKeys;
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,8 +75,8 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 40);
-      connection.delete(new ArrayList<>());
-      connection.delete(singletonList(key));
+      assertEquals(0, connection.delete(new ArrayList<>()));
+      assertEquals(1, connection.delete(singletonList(key)));
       try {
         connection.selectSingle(key);
         fail();
@@ -89,12 +89,22 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 40);
-      connection.delete(entityCondition(key));
+      assertEquals(1, connection.delete(entityCondition(key)));
       try {
         connection.selectSingle(key);
         fail();
       }
       catch (final DatabaseException ignored) {/*ignored*/}
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
+    try {
+      connection.beginTransaction();
+      //scott, james, adams
+      assertEquals(3, connection.delete(entityCondition(T_EMP, conditionSet(Conjunction.AND,
+              propertyCondition(EMP_NAME, ConditionType.LIKE, "%S%"),
+              propertyCondition(EMP_JOB, ConditionType.LIKE, "CLERK")))));
     }
     finally {
       connection.rollbackTransaction();

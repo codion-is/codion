@@ -121,19 +121,21 @@ public interface RemoteEntityConnection extends Remote {
    * Deletes the entities according to the given primary keys.
    * Performs a commit unless a transaction is open.
    * @param entityKeys the primary keys of the entities to delete
+   * @return the number of deleted records
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  void delete(List<Entity.Key> entityKeys) throws RemoteException, DatabaseException;
+  int delete(List<Entity.Key> entityKeys) throws RemoteException, DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition
    * Performs a commit unless a transaction is open.
    * @param condition the condition specifying the entities to delete
+   * @return the number of deleted records
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  void delete(EntityCondition condition) throws RemoteException, DatabaseException;
+  int delete(EntityCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given property
