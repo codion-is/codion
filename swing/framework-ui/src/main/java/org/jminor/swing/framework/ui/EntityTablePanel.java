@@ -307,7 +307,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     });
     this.conditionPanel = conditionPanel;
     this.conditionScrollPane = conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
-    this.summaryScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel = new FilteredTableSummaryPanel(tableModel));
+    this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
+    this.summaryScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
     this.tablePanel.add(tableScrollPane, BorderLayout.CENTER);
     this.tablePanel.add(summaryScrollPane, BorderLayout.SOUTH);
     this.refreshToolBar = initializeRefreshToolBar();
@@ -1424,7 +1425,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void copySelectedCell() {
-    final JTable table = getTable();
     final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
     UiUtil.setClipboard(value == null ? "" : value.toString());
   }

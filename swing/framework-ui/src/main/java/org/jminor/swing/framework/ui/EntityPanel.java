@@ -49,7 +49,13 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.swing.common.ui.UiUtil.addKeyEvent;
+import static org.jminor.swing.framework.ui.EntityPanel.Direction.*;
+import static org.jminor.swing.framework.ui.EntityPanel.PanelState.*;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
@@ -157,24 +163,13 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * The novigation directions.
+   * The navigation and resizing directions.
    */
-  public enum Direction {
+  enum Direction {
     UP, DOWN, RIGHT, LEFT
   }
 
-  private static final String NAVIGATE_UP = "navigateUp";
-  private static final String NAVIGATE_DOWN = "navigateDown";
-  private static final String NAVIGATE_RIGHT = "navigateRight";
-  private static final String NAVIGATE_LEFT = "navigateLeft";
-
-  private static final String RESIZE_LEFT = "resizeLeft";
-  private static final String RESIZE_RIGHT = "resizeRight";
-  private static final String RESIZE_UP = "resizeUp";
-  private static final String RESIZE_DOWN = "resizeDown";
-
   private static final int RESIZE_AMOUNT = 30;
-
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
   private static final int DETAIL_DIALOG_OFFSET = 29;
   private static final double DETAIL_DIALOG_SIZE_RATIO = 1.5;
@@ -201,7 +196,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private final EntityEditPanel editPanel;
 
   /**
-   * The EntityTablePanel instance used by this EntityPanel
+   * The EntityTablePanel instance
    */
   private final EntityTablePanel tablePanel;
 
@@ -212,8 +207,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * The horizontal split pane, which is used in case this entity panel has detail panels.
-   * It splits the lower section of this EntityPanel into the EntityTablePanel on the left
-   * and the detail panels on the right
+   * It splits the lower section of this EntityPanel into the EntityTablePanel
+   * on the left, and the detail panels on the right.
    */
   private JSplitPane horizontalSplitPane;
 
@@ -228,7 +223,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private JTabbedPane detailPanelTabbedPane;
 
   /**
-   * A base panel used in case this EntityPanel is configured to be compact
+   * A base panel used in case this EntityPanel is in a compact configuration
    */
   private JPanel compactBase;
 
@@ -243,7 +238,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private JDialog editPanelDialog;
 
   /**
-   * true if this panel should be compact
+   * true if this panel should use a compact layout
    */
   private boolean compactDetailLayout = COMPACT_ENTITY_PANEL_LAYOUT.get();
 
@@ -255,12 +250,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)
    */
-  private PanelState editPanelState = PanelState.EMBEDDED;
+  private PanelState editPanelState = EMBEDDED;
 
   /**
    * Holds the current state of the detail panels (HIDDEN, EMBEDDED or DIALOG)
    */
-  private PanelState detailPanelState = PanelState.EMBEDDED;
+  private PanelState detailPanelState = EMBEDDED;
 
   /**
    * if true then the edit control panel should be included
@@ -423,7 +418,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * |  (EntityEditPanel)     | panel | } edit control panel
    * |________________________|_______|
    *
-   * With  (BorderLayout.SOUTH):
+   * With (BorderLayout.SOUTH):
    * __________________________
    * |         edit           |
    * |        panel           |
@@ -852,14 +847,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Toggles the detail panel state between DIALOG, HIDDEN and EMBEDDED
    */
   public final void toggleDetailPanelState() {
-    if (detailPanelState == PanelState.DIALOG) {
-      setDetailPanelState(PanelState.HIDDEN);
+    if (detailPanelState == DIALOG) {
+      setDetailPanelState(HIDDEN);
     }
-    else if (detailPanelState == PanelState.EMBEDDED) {
-      setDetailPanelState(PanelState.DIALOG);
+    else if (detailPanelState == EMBEDDED) {
+      setDetailPanelState(DIALOG);
     }
     else {
-      setDetailPanelState(PanelState.EMBEDDED);
+      setDetailPanelState(EMBEDDED);
     }
   }
 
@@ -867,14 +862,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Toggles the edit panel state between DIALOG, HIDDEN and EMBEDDED
    */
   public final void toggleEditPanelState() {
-    if (editPanelState == PanelState.DIALOG) {
-      setEditPanelState(PanelState.HIDDEN);
+    if (editPanelState == DIALOG) {
+      setEditPanelState(HIDDEN);
     }
-    else if (editPanelState == PanelState.EMBEDDED) {
-      setEditPanelState(PanelState.DIALOG);
+    else if (editPanelState == EMBEDDED) {
+      setEditPanelState(DIALOG);
     }
     else {
-      setEditPanelState(PanelState.EMBEDDED);
+      setEditPanelState(EMBEDDED);
     }
   }
 
@@ -901,19 +896,19 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       return;
     }
 
-    if (state != PanelState.HIDDEN) {
+    if (state != HIDDEN) {
       getTabbedDetailPanel().initializePanel();
     }
 
-    if (detailPanelState == PanelState.DIALOG) {//if we are leaving the DIALOG state, hide all child detail dialogs
+    if (detailPanelState == DIALOG) {//if we are leaving the DIALOG state, hide all child detail dialogs
       for (final EntityPanel detailPanel : detailEntityPanels) {
-        if (detailPanel.detailPanelState == PanelState.DIALOG) {
-          detailPanel.setDetailPanelState(PanelState.HIDDEN);
+        if (detailPanel.detailPanelState == DIALOG) {
+          detailPanel.setDetailPanelState(HIDDEN);
         }
       }
     }
 
-    if (state == PanelState.HIDDEN) {
+    if (state == HIDDEN) {
       entityModel.removeLinkedDetailModel(getTabbedDetailPanel().entityModel);
     }
     else {
@@ -921,14 +916,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     detailPanelState = state;
-    if (state != PanelState.DIALOG) {
+    if (state != DIALOG) {
       disposeDetailDialog();
     }
 
-    if (state == PanelState.EMBEDDED) {
+    if (state == EMBEDDED) {
       horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
     }
-    else if (state == PanelState.HIDDEN) {
+    else if (state == HIDDEN) {
       horizontalSplitPane.setRightComponent(null);
     }
     else {
@@ -976,20 +971,20 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final void resizePanel(final Direction direction, final int pixelAmount) {
     switch (direction) {
       case UP:
-        setEditPanelState(PanelState.HIDDEN);
+        setEditPanelState(HIDDEN);
         break;
       case DOWN:
-        if (editPanelState == PanelState.EMBEDDED) {
-          setEditPanelState(PanelState.DIALOG);
+        if (editPanelState == EMBEDDED) {
+          setEditPanelState(DIALOG);
         }
         else {
-          setEditPanelState(PanelState.EMBEDDED);
+          setEditPanelState(EMBEDDED);
         }
         break;
       case RIGHT:
         if (horizontalSplitPane != null) {
           horizontalSplitPane.setDividerLocation(Math.min(horizontalSplitPane.getDividerLocation() + pixelAmount,
-                          horizontalSplitPane.getMaximumDividerLocation()));
+                  horizontalSplitPane.getMaximumDividerLocation()));
         }
         break;
       case LEFT:
@@ -1010,16 +1005,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void requestInitialFocus() {
-    if (editPanel != null && editPanelState != PanelState.HIDDEN) {
+    if (editPanel != null && editPanelState != HIDDEN) {
       editPanel.requestInitialFocus();
     }
+    else if (tablePanel != null) {
+      tablePanel.getTable().requestFocus();
+    }
+    else if (getComponentCount() > 0) {
+      getComponents()[0].requestFocus();
+    }
     else {
-      if (tablePanel != null) {
-        tablePanel.getTable().requestFocus();
-      }
-      else if (getComponentCount() > 0) {
-        getComponents()[0].requestFocus();
-      }
+      requestFocus();
     }
   }
 
@@ -1146,37 +1142,42 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * and CTR-F selects the table search field
    */
   private void setupKeyboardActions() {
-    final Control selectEditPanelControl = Controls.control(this::selectEditPanel, "EntityPanel.selectEditPanel");
-    final Control selectInputComponentControl = Controls.control(this::selectInputComponent, "EntityPanel.selectInputComponent");
-    final Control selectTablePanelControl = Controls.control(getTablePanel().getTable()::requestFocus, "EntityPanel.selectTablePanel");
-    final Control selectSearchFieldControl = Controls.control(getTablePanel().getTable().getSearchField()::requestFocus, "EntityPanel.selectSearchField");
+    final Control selectEditPanelControl =
+            Controls.control(this::selectEditPanel, "EntityPanel.selectEditPanel");
+    final Control selectInputComponentControl =
+            Controls.control(this::selectInputComponent, "EntityPanel.selectInputComponent");
+    final Control selectTablePanelControl =
+            Controls.control(getTablePanel().getTable()::requestFocus, "EntityPanel.selectTablePanel");
+    final Control selectSearchFieldControl =
+            Controls.control(getTablePanel().getTable().getSearchField()::requestFocus, "EntityPanel.selectSearchField");
     if (containsTablePanel()) {
-      final Control selectConditionPanelAction = Controls.control(getTablePanel()::selectConditionPanel, "EntityPanel.selectConditionPanel");
-      UiUtil.addKeyEvent(this, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+      final Control selectConditionPanelAction =
+              Controls.control(getTablePanel()::selectConditionPanel, "EntityPanel.selectConditionPanel");
+      addKeyEvent(this, KeyEvent.VK_T, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               selectTablePanelControl);
-      UiUtil.addKeyEvent(this, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+      addKeyEvent(this, KeyEvent.VK_F, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               selectSearchFieldControl);
       if (tablePanel.getConditionPanel() != null) {
-        UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+        addKeyEvent(this, KeyEvent.VK_S, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                 selectConditionPanelAction);
       }
       if (containsEditPanel()) {
-        UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+        addKeyEvent(editControlPanel, KeyEvent.VK_T, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                 selectTablePanelControl);
-        UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+        addKeyEvent(editControlPanel, KeyEvent.VK_F, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                 selectSearchFieldControl);
         if (tablePanel.getConditionPanel() != null) {
-          UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+          addKeyEvent(editControlPanel, KeyEvent.VK_S, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                   selectConditionPanelAction);
         }
       }
     }
     if (containsEditPanel()) {
-      UiUtil.addKeyEvent(this, KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+      addKeyEvent(this, KeyEvent.VK_E, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               selectEditPanelControl);
-      UiUtil.addKeyEvent(this, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+      addKeyEvent(this, KeyEvent.VK_I, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               selectInputComponentControl);
-      UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+      addKeyEvent(editControlPanel, KeyEvent.VK_I, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               selectInputComponentControl);
     }
   }
@@ -1269,10 +1270,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         @Override
         public void mouseReleased(final MouseEvent e) {
           if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-            setDetailPanelState(getDetailPanelState() == PanelState.DIALOG ? PanelState.EMBEDDED : PanelState.DIALOG);
+            setDetailPanelState(getDetailPanelState() == DIALOG ? EMBEDDED : DIALOG);
           }
           else if (e.getButton() == MouseEvent.BUTTON2) {
-            setDetailPanelState(getDetailPanelState() == PanelState.EMBEDDED ? PanelState.HIDDEN : PanelState.EMBEDDED);
+            setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
           }
         }
       });
@@ -1282,44 +1283,44 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void initializeResizing() {
-    UiUtil.addKeyEvent(this, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_UP, Direction.UP));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_DOWN, Direction.DOWN));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_RIGHT, Direction.RIGHT));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_LEFT, Direction.LEFT));
+    addKeyEvent(this, VK_UP, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
+    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
+    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
+    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
     if (containsEditPanel()) {
-      UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_UP, Direction.UP));
-      UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_DOWN, Direction.DOWN));
-      UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_RIGHT, Direction.RIGHT));
-      UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_LEFT, Direction.LEFT));
+      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
+      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
+      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
+      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
     }
   }
 
   private void initializeNavigation() {
-    UiUtil.addKeyEvent(this, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_UP, Direction.UP));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_DOWN, Direction.DOWN));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_RIGHT, Direction.RIGHT));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_LEFT, Direction.LEFT));
+    addKeyEvent(this, VK_UP, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, UP));
+    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, DOWN));
+    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, RIGHT));
+    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, LEFT));
     if (containsEditPanel()) {
-      UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_UP, Direction.UP));
-      UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_DOWN, Direction.DOWN));
-      UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_RIGHT, Direction.RIGHT));
-      UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_LEFT, Direction.LEFT));
+      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, UP));
+      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, DOWN));
+      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, RIGHT));
+      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, LEFT));
     }
   }
 
@@ -1332,7 +1333,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private ControlSet getDetailPanelControlSet() {
     if (!detailEntityPanels.isEmpty()) {
       final ControlSet controlSet = new ControlSet("");
-      controlSet.add(getDetailPanelControls(PanelState.EMBEDDED));
+      controlSet.add(getDetailPanelControls(EMBEDDED));
 
       return controlSet;
     }
@@ -1349,11 +1350,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private Control initializeTableDoubleClickAction() {
     return Controls.control(() -> {
       if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailPanelTabPane)) {
-        if (containsEditPanel() && getEditPanelState() == PanelState.HIDDEN) {
-          setEditPanelState(PanelState.DIALOG);
+        if (containsEditPanel() && getEditPanelState() == HIDDEN) {
+          setEditPanelState(DIALOG);
         }
-        else if (getDetailPanelState() == PanelState.HIDDEN) {
-          setDetailPanelState(PanelState.DIALOG);
+        else if (getDetailPanelState() == HIDDEN) {
+          setDetailPanelState(DIALOG);
         }
       }
     });
@@ -1388,25 +1389,25 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   //#############################################################################################
 
   private void selectEditPanel() {
-    if (getEditPanelState() == PanelState.HIDDEN) {
-      setEditPanelState(PanelState.EMBEDDED);
+    if (getEditPanelState() == HIDDEN) {
+      setEditPanelState(EMBEDDED);
     }
     getEditPanel().requestInitialFocus();
   }
 
   private void selectInputComponent() {
-    if (getEditPanelState() == PanelState.HIDDEN) {
-      setEditPanelState(PanelState.EMBEDDED);
+    if (getEditPanelState() == HIDDEN) {
+      setEditPanelState(EMBEDDED);
     }
     getEditPanel().selectInputComponent();
   }
 
   private void updateEditPanelState() {
-    if (editPanelState != PanelState.DIALOG) {
+    if (editPanelState != DIALOG) {
       disposeEditDialog();
     }
 
-    if (editPanelState == PanelState.EMBEDDED) {
+    if (editPanelState == EMBEDDED) {
       if (compactBase != null) {
         compactBase.add(editControlPanel, BorderLayout.NORTH);
       }
@@ -1414,7 +1415,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         add(editControlPanel, BorderLayout.NORTH);
       }
     }
-    else if (editPanelState == PanelState.HIDDEN) {
+    else if (editPanelState == HIDDEN) {
       if (compactBase != null && !detailEntityPanels.isEmpty()) {
         compactBase.remove(editControlPanel);
       }
@@ -1444,8 +1445,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
             caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES), false,
             Controls.control(() -> {
               //the dialog can be closed when embedding the panel, don't hide if that's the case
-              if (getDetailPanelState() != PanelState.EMBEDDED) {
-                setDetailPanelState(PanelState.HIDDEN);
+              if (getDetailPanelState() != EMBEDDED) {
+                setDetailPanelState(HIDDEN);
               }
             }));
     detailPanelDialog.setSize(size);
@@ -1470,7 +1471,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       dialogOwner = UiUtil.getParentWindow(this);
     }
     editPanelDialog = UiUtil.displayInDialog(dialogOwner, editControlPanel, caption, false, disposeEditDialogOnEscape,
-            Controls.control(() -> setEditPanelState(PanelState.HIDDEN)));
+            Controls.control(() -> setEditPanelState(HIDDEN)));
   }
 
   /**
@@ -1518,8 +1519,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     private final EntityPanel entityPanel;
     private final Direction direction;
 
-    private NavigateAction(final EntityPanel entityPanel, final String name, final Direction direction) {
-      super(name);
+    private NavigateAction(final EntityPanel entityPanel, final Direction direction) {
+      super("Navigate " + direction);
       this.entityPanel = entityPanel;
       this.direction = direction;
     }
@@ -1538,8 +1539,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           panel = entityPanel.getParentPanel();
           break;
         case DOWN:
-          if (entityPanel.getDetailPanelState() == PanelState.HIDDEN) {
-            entityPanel.setDetailPanelState(PanelState.EMBEDDED);
+          if (entityPanel.getDetailPanelState() == HIDDEN) {
+            entityPanel.setDetailPanelState(EMBEDDED);
           }
           panel = entityPanel.getSelectedChildPanel();
           break;
@@ -1558,8 +1559,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     private final EntityPanel panel;
     private final Direction direction;
 
-    private ResizeHorizontallyAction(final EntityPanel panel, final String action, final Direction direction) {
-      super(action);
+    private ResizeHorizontallyAction(final EntityPanel panel, final Direction direction) {
+      super("Resize " + direction);
       this.panel = panel;
       this.direction = direction;
     }
@@ -1577,8 +1578,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     private final EntityPanel panel;
     private final Direction direction;
 
-    private ResizeVerticallyAction(final EntityPanel panel, final String action, final Direction direction) {
-      super(action);
+    private ResizeVerticallyAction(final EntityPanel panel, final Direction direction) {
+      super("Resize " + direction);
       this.panel = panel;
       this.direction = direction;
     }

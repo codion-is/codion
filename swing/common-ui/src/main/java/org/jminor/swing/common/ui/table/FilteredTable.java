@@ -425,9 +425,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
-    final AbstractFilteredTableModel<R, C> tableModel = getModel();
-    final int index = tableModel.getColumnModel().getColumnIndexAtX(event.getX());
-    final TableColumn column = tableModel.getColumnModel().getColumn(index);
+    final SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
+    final int index = columnModel.getColumnIndexAtX(event.getX());
+    final TableColumn column = columnModel.getColumn(index);
     if (!columnFilterPanels.containsKey(column)) {
       columnFilterPanels.put(column, conditionPanelProvider.createColumnConditionPanel(column));
     }
