@@ -13,7 +13,7 @@ import org.jminor.framework.domain.Domain;
 import java.util.UUID;
 
 /**
- * Specifies a class resposible for providing a single {@link EntityConnection} instance.
+ * Specifies a class responsible for providing a single {@link EntityConnection} instance.
  * {@link #getConnection()} is guaranteed to return a healthy connection or throw an exception.
  */
 public interface EntityConnectionProvider {
@@ -44,7 +44,7 @@ public interface EntityConnectionProvider {
   PropertyValue<String> CLIENT_DOMAIN_CLASS = Configuration.stringValue("jminor.client.domainClass", null);
 
   /**
-   * Specifies whether the client should connect locally, remotely or via http,
+   * Specifies whether the client should connect locally, via rmi or http,
    * accepted values: local, remote, http<br>
    * Value type: String<br>
    * Default value: local
