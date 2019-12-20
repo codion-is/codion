@@ -5,7 +5,6 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Conjunction;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventDataListener;
@@ -98,7 +97,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /**
    * Controls mapped to their respective control codes
    */
-  private final Map<ControlCode, Control> controls = new EnumMap<ControlCode, Control>(ControlCode.class);
+  private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
 
   /**
    * Indicates whether the panel is active and ready to receive input
@@ -180,26 +179,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Prepares the UI.
-   * @param requestInitialFocus if true then the initial focus is set
-   * @param clearUI if true the UI is cleared.
-   * @see #clearModelValues()
-   */
-  public final void prepareUI(final boolean requestInitialFocus, final boolean clearUI) {
-    if (clearUI) {
-      clearModelValues();
-    }
-    if (requestInitialFocus) {
-      requestInitialFocus();
-    }
-  }
-
-  /**
-   * Clears the values from the underlying edit model
+   * Clears the underlying edit model and requests the initial focus.
    * @see EntityEditModel#setEntity(Entity)
+   * @see #requestInitialFocus()
    */
-  public final void clearModelValues() {
-    editModel.setEntity(null);
+  public final void clearAndRequestFocus() {
+    getEditModel().setEntity(null);
+    requestInitialFocus();
   }
 
   /**
@@ -281,7 +267,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
-    return Controls.control(() -> prepareUI(true, true), FrameworkMessages.get(FrameworkMessages.CLEAR),
+    return Controls.control(this::clearAndRequestFocus, FrameworkMessages.get(FrameworkMessages.CLEAR),
             getActiveObserver(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
@@ -325,23 +311,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
             States.aggregateState(Conjunction.AND, getActiveObserver(), insertUpdateState),
             FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_ADD_16));
-  }
-
-  /**
-   * Handles the given exception, which usually means simply logging it and displaying it to the user.
-   * @param throwable the exception to handle
-   */
-  public final void handleException(final Throwable throwable) {
-    LOG.error(throwable.getMessage(), throwable);
-    if (throwable instanceof ValidationException) {
-      handleException((ValidationException) throwable);
-    }
-    else if (throwable instanceof DatabaseException) {
-      handleException((DatabaseException) throwable);
-    }
-    else {
-      displayException(throwable, UiUtil.getParentWindow(this));
-    }
   }
 
   /** {@inheritDoc} */
@@ -389,8 +358,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
 
   /**
    * Initializes this EntityEditPanel UI.
-   * This method marks this panel as initialized which prevents it from running again, whether or not an exception occurs.
-   * @return this EntityPanel instance
+   * This method marks this panel as initialized which prevents it from running again,
+   * whether an exception occurs or not.
+   * @return this EntityEditPanel instance
    * @see #isPanelInitialized()
    */
   public final EntityEditPanel initializePanel() {
@@ -469,7 +439,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
           UiUtil.setWaitCursor(false, this);
         }
         if (clearAfterInsert) {
-          clearModelValues();
+          getEditModel().setEntity(null);
         }
         if (requestFocusAfterInsert) {
           requestInitialFocus(true);
@@ -605,29 +575,27 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * for overriding, called before insert/update
+   * Override to add UI level validation, called before insert/update
    * @throws ValidationException in case of a validation failure
    */
   protected void validateData() throws ValidationException {}
 
   /**
-   * Handles ValidationExceptions.
-   * By default displays the exception message to the user and requests focus for the component involved.
+   * Handles the given Exception by logging it and displaying the error message.
+   * In case of a {@link ValidationException} the exception message is displayed,
+   * after which the component involved receives the focus.
    * @param exception the exception to handle
    */
-  protected void handleException(final ValidationException exception) {
-    JOptionPane.showMessageDialog(this, exception.getMessage(), Messages.get(Messages.EXCEPTION),
-            JOptionPane.ERROR_MESSAGE);
-    requestComponentFocus((String) exception.getKey());
-  }
-
-  /**
-   * Handles DatabaseExceptions
-   * By default displays the exception message to the user.
-   * @param exception the exception to handle
-   */
-  protected void handleException(final DatabaseException exception) {
-    displayException(exception, UiUtil.getParentWindow(this));
+  protected void handleException(final Exception exception) {
+    LOG.error(exception.getMessage(), exception);
+    if (exception instanceof ValidationException) {
+      JOptionPane.showMessageDialog(this, exception.getMessage(),
+              Messages.get(Messages.EXCEPTION), JOptionPane.ERROR_MESSAGE);
+      requestComponentFocus((String) ((ValidationException) exception).getKey());
+    }
+    else {
+      displayException(exception, UiUtil.getParentWindow(this));
+    }
   }
 
   /**
@@ -852,7 +820,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
               connectionProvider.getDomain().getDefinition(panelProvider.getEntityId()).getCaption() :
               panelProvider.getCaption());
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      UiUtil.addInitialFocusHack(editPanel, new InitialFocusAction(editPanel));
+      UiUtil.addInitialFocusHack(editPanel, Controls.control(editPanel::requestInitialFocus));
       dialog.setVisible(true);
       if (pane.getValue() != null && pane.getValue().equals(0)) {
         final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
@@ -870,20 +838,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       }
       UiUtil.addKeyEvent(keyComponent, KeyEvent.VK_ADD, KeyEvent.CTRL_DOWN_MASK, this);
       UiUtil.addKeyEvent(keyComponent, KeyEvent.VK_PLUS, KeyEvent.CTRL_DOWN_MASK, this);
-    }
-  }
-
-  private static final class InitialFocusAction extends AbstractAction {
-
-    private final EntityEditPanel editPanel;
-
-    private InitialFocusAction(final EntityEditPanel editPanel) {
-      this.editPanel = editPanel;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      editPanel.requestInitialFocus();
     }
   }
 }

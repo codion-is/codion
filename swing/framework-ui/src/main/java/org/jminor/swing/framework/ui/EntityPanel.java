@@ -16,9 +16,6 @@ import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -74,8 +71,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private static final String ENTITY_MODEL_PARAM = "entityModel";
   private static final String MSG_DETAIL_TABLES = "detail_tables";
-
-  private static final Logger LOG = LoggerFactory.getLogger(EntityPanel.class);
 
   private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
 
@@ -631,7 +626,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       getParentPanel().setSelectedChildPanel(this);
     }
     initializePanel();
-    prepareUI(true, false);
+    requestInitialFocus();
   }
 
   /** {@inheritDoc} */
@@ -1008,20 +1003,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Prepares the UI, by clearing the input fields and setting the initial focus,
-   * if both parameters are set to false then there is no effect
-   * @param setInitialFocus if true the component defined as the initialFocusComponent
-   * gets the input focus, if none is defined the first child component of this EntityPanel is used,
-   * if no edit panel is available the table receives the focus
-   * @param clearUI if true the the input components are cleared
+   * Requests focus for this panel. If an edit panel is available and not hidden, the component
+   * defined as the initialFocusComponent gets the input focus.
+   * If no edit panel is available the table panel gets the focus, otherwise the first child
+   * component of this EntityPanel is used.
    * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
    */
-  public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
-    LOG.debug("{} prepareUI({}, {})", new Object[] {getEditModel().getEntityId(), setInitialFocus, clearUI});
+  public final void requestInitialFocus() {
     if (editPanel != null && editPanelState != PanelState.HIDDEN) {
-      editPanel.prepareUI(setInitialFocus, clearUI);
+      editPanel.requestInitialFocus();
     }
-    else if (setInitialFocus) {
+    else {
       if (tablePanel != null) {
         tablePanel.getTable().requestFocus();
       }
@@ -1399,7 +1391,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (getEditPanelState() == PanelState.HIDDEN) {
       setEditPanelState(PanelState.EMBEDDED);
     }
-    getEditPanel().prepareUI(true, false);
+    getEditPanel().requestInitialFocus();
   }
 
   private void selectInputComponent() {
@@ -1433,7 +1425,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     else {
       showEditDialog();
     }
-    prepareUI(true, false);
+    requestInitialFocus();
 
     revalidate();
   }

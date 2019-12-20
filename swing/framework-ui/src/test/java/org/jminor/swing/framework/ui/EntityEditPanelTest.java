@@ -45,7 +45,7 @@ public final class EntityEditPanelTest {
             TestDomain.EMP_NAME, "MARTIN");
     editModel.setEntity(martin);
     assertFalse(editModel.isEntityNew());
-    editPanel.prepareUI(true, true);
+    editPanel.clearAndRequestFocus();
     assertTrue(editModel.isEntityNew());
     assertEquals(7, editPanel.getComponentPropertyIds().size());
 

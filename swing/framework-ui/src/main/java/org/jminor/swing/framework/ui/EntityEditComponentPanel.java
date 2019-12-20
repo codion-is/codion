@@ -61,7 +61,7 @@ public class EntityEditComponentPanel extends JPanel {
           "org.jminor.swing.framework.ui.EntityEditPanel.transferFocusOnEnter", true);
 
   /**
-   * The edit model this edit panel is associated with
+   * The edit model these edit components are associated with
    */
   protected final SwingEntityEditModel editModel;
 
@@ -71,7 +71,7 @@ public class EntityEditComponentPanel extends JPanel {
   private final Map<String, JComponent> components = new HashMap<>();
 
   /**
-   * The component that should receive focus when the UI is prepared
+   * The component that should receive focus when the UI is initialized
    */
   private JComponent initialFocusComponent;
 
@@ -178,7 +178,9 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Sets the initial focus, if a initial focus component or component propertyId
    * has been set that component receives the focus, if not, or if that component
-   * is not focusable, this panel receives the focus
+   * is not focusable, this panel receives the focus.
+   * Note that if this panel is not visible nothing happens.
+   * @see #isVisible()
    * @see #setInitialFocusProperty
    * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
@@ -226,9 +228,7 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Associates the given input component with the given propertyId,
-   * preferably this should be called for components associated with
-   * properties.
+   * Associates the given input component with the given propertyId.
    * @param propertyId the propertyId
    * @param component the input component
    */
