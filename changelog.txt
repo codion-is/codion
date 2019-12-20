@@ -5495,3 +5495,6 @@
   EntityUiUtil.createInputComponent() bug fixed, now only creates NullableCheckBox for nullable boolean properties
   PropertyConditionPanel.PropertyInputFieldProvider refactored to use EntityUiUtil.createInputField()
   EntityUiUtil set transferFocusOnEnter functionality moved to EntityEditComponentPanel, EntityEditPanel.TRANSFER_FOCUS_ON_ENTER moved to EntityEditComponents
+  UiUtil.createFormattedField() no longer sets moveCaretToStartOnFocusGained() on the field
+  LocalDateTimeInputPanel now provides a calendar button, selects time element after date has been set via calendar
+  LocalDateInputPanel now sets the focus to the input field after date has been set via calendar

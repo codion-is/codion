@@ -74,9 +74,11 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
       currentValue = getTemporal();
     }
     catch (final DateTimeParseException ignored) {/*ignored*/}
-    final LocalDate newValue = UiUtil.getDateWithCalendar(currentValue, MESSAGES.getString("select_date"), getInputField());
+    final JFormattedTextField inputField = getInputField();
+    final LocalDate newValue = UiUtil.getDateWithCalendar(currentValue, MESSAGES.getString("select_date"), inputField);
     if (newValue != null) {
-      getInputField().setText(getFormatter().format(newValue));
+      inputField.setText(getFormatter().format(newValue));
+      inputField.requestFocusInWindow();
     }
   }
 }

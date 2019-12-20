@@ -550,7 +550,7 @@ public final class EntityUiUtil {
       return new LocalDateInputPanel(field, formatString, includeCalendarButton, enabledState);
     }
     else if (property.isTimestamp()) {
-      return new LocalDateTimeInputPanel(field, formatString, enabledState);
+      return new LocalDateTimeInputPanel(field, formatString, includeCalendarButton, enabledState);
     }
     else if (property.isTime()) {
       return new LocalTimeInputPanel(field, formatString, enabledState);

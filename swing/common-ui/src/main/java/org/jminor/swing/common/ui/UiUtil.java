@@ -594,7 +594,6 @@ public final class UiUtil {
       final JFormattedTextField formattedTextField =
               new JFormattedTextField(new FieldFormatter(mask, charsAsUpper, valueContainsLiteralCharacter));
       formattedTextField.setFocusLostBehavior(JFormattedTextField.COMMIT);
-      moveCaretToStartOnFocusGained(formattedTextField);
 
       return formattedTextField;
     }
