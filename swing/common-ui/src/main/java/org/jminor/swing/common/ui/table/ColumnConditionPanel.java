@@ -134,7 +134,8 @@ public class ColumnConditionPanel<C> extends JPanel {
   public ColumnConditionPanel(final ColumnConditionModel<C> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton, final InputFieldProvider inputFieldProvider,
                               final ConditionType... conditionTypes) {
-    this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton, inputFieldProvider.initializeInputField(true),
+    this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton,
+            inputFieldProvider.initializeInputField(true),
             inputFieldProvider.initializeInputField(false), conditionTypes);
   }
 

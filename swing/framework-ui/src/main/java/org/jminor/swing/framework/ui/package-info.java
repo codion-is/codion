@@ -4,7 +4,7 @@
  * {@link org.jminor.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}<br>
  * {@link org.jminor.swing.framework.ui.EntityApplicationPanel#PERSIST_ENTITY_PANELS}<br>
  * {@link org.jminor.swing.framework.ui.EntityApplicationPanel#TAB_PLACEMENT}<br>
- * {@link org.jminor.swing.framework.ui.EntityEditPanel#TRANSFER_FOCUS_ON_ENTER}<br>
+ * {@link org.jminor.swing.framework.ui.EntityEditComponentPanel#TRANSFER_FOCUS_ON_ENTER}<br>
  * {@link org.jminor.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE}<br>
  * {@link org.jminor.swing.framework.ui.EntityEditPanel#USE_SAVE_CONTROL}<br>
  * {@link org.jminor.swing.framework.ui.EntityPanel#USE_FOCUS_ACTIVATION}<br>

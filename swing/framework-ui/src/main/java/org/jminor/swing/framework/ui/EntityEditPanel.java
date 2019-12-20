@@ -63,16 +63,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
   /**
-   * Specifies whether focus should be transferred from components on enter,
-   * this does not work for editable combo boxes, combo boxes with the
-   * maximum match functionality enabled or text areas<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityEditPanel.transferFocusOnEnter", true);
-
-  /**
    * Indicates whether all entity panels should be enabled and receiving input by default<br>
    * Value type: Boolean<br>
    * Default value: false

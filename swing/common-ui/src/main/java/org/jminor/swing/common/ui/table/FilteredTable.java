@@ -64,7 +64,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A JTable implementation for {@link AbstractFilteredTableModel}.
  * @param <R> the type representing rows
- * @param <C> type type used to identify columns
+ * @param <C> the type used to identify columns
  * @param <T> the table model type
  */
 public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C>> extends JTable {
