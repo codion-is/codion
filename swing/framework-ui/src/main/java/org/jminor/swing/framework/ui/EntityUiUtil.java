@@ -374,9 +374,7 @@ public final class EntityUiUtil {
     comboBoxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
     ValueLinks.selectedItemValueLink(comboBox, value);
-    if (enabledState != null) {
-      UiUtil.linkToEnabledState(enabledState, comboBox);
-    }
+    linkToEnabledState(enabledState, comboBox);
     addComboBoxCompletion(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
 
@@ -409,9 +407,7 @@ public final class EntityUiUtil {
     requireNonNull(lookupModel, "lookupModel");
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
     Values.link(value, new LookupUIValue(lookupField.getModel()));
-    if (enabledState != null) {
-      UiUtil.linkToEnabledState(enabledState, lookupField);
-    }
+    linkToEnabledState(enabledState, lookupField);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
     UiUtil.selectAllOnFocusGained(lookupField);
 
@@ -462,13 +458,8 @@ public final class EntityUiUtil {
    */
   public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
                                                         final boolean sortItems, final StateObserver enabledState) {
-    final ItemComboBoxModel model;
-    if (sortItems) {
-      model = new ItemComboBoxModel(property.getValues());
-    }
-    else {
-      model = new ItemComboBoxModel(null, property.getValues());
-    }
+    final ItemComboBoxModel model = sortItems ?
+            new ItemComboBoxModel(property.getValues()) : new ItemComboBoxModel(null, property.getValues());
     final SteppedComboBox comboBox = createComboBox(property, value, model, enabledState);
     addComboBoxCompletion(comboBox);
 
@@ -505,9 +496,7 @@ public final class EntityUiUtil {
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
     ValueLinks.selectedItemValueLink(comboBox, value);
-    if (enabledState != null) {
-      UiUtil.linkToEnabledState(enabledState, comboBox);
-    }
+    linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
 
     return comboBox;
@@ -550,7 +539,7 @@ public final class EntityUiUtil {
       return new LocalDateInputPanel(field, formatString, includeCalendarButton, enabledState);
     }
     else if (property.isTimestamp()) {
-      return new LocalDateTimeInputPanel(field, formatString, enabledState);
+      return new LocalDateTimeInputPanel(field, formatString, includeCalendarButton, enabledState);
     }
     else if (property.isTime()) {
       return new LocalTimeInputPanel(field, formatString, enabledState);
@@ -629,9 +618,7 @@ public final class EntityUiUtil {
     if (property.getMaxLength() > 0) {
       ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentSizeFilter(property.getMaxLength()));
     }
-    if (enabledState != null) {
-      UiUtil.linkToEnabledState(enabledState, textArea);
-    }
+    linkToEnabledState(enabledState, textArea);
 
     ValueLinks.textValueLink(textArea, value, null, updateOnKeystroke);
     textArea.setToolTipText(property.getDescription());
@@ -674,8 +661,7 @@ public final class EntityUiUtil {
   public static JTextField createTextField(final Property property, final Value value,
                                            final String formatMaskString, final boolean updateOnKeystroke,
                                            final StateObserver enabledState) {
-    return createTextField(property, value, formatMaskString,
-            updateOnKeystroke, enabledState, false);
+    return createTextField(property, value, formatMaskString, updateOnKeystroke, enabledState, false);
   }
 
   /**
@@ -796,9 +782,7 @@ public final class EntityUiUtil {
   private static JTextField createTextField(final Property property, final StateObserver enabledState,
                                             final String formatMaskString, final boolean valueContainsLiteralCharacters) {
     final JTextField field = createTextField(property, formatMaskString, valueContainsLiteralCharacters);
-    if (enabledState != null) {
-      UiUtil.linkToEnabledState(enabledState, field);
-    }
+    linkToEnabledState(enabledState, field);
     field.setToolTipText(property.getDescription());
     if (property.getMaxLength() > 0 && field.getDocument() instanceof SizedDocument) {
       ((SizedDocument) field.getDocument()).setMaxLength(property.getMaxLength());
@@ -809,39 +793,31 @@ public final class EntityUiUtil {
 
   private static JTextField createTextField(final Property property, final String formatMaskString,
                                             final boolean valueContainsLiteralCharacters) {
-    final JTextField field;
     if (property.isInteger()) {
-      field = initializeIntField(property);
+      return initializeIntField(property);
     }
     else if (property.isDecimal()) {
-      field = initializeDecimalField(property);
+      return initializeDecimalField(property);
     }
     else if (property.isLong()) {
-      field = initializeLongField(property);
+      return initializeLongField(property);
     }
     else if (property.isTemporal()) {
-      field = UiUtil.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
+      return UiUtil.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
     }
     else if (property.isString()) {
-      field = initializeStringField(formatMaskString, valueContainsLiteralCharacters);
-    }
-    else {
-      throw new IllegalArgumentException("Creating text fields for property type: " + property.getType() + " is not implemented");
+      return initializeStringField(formatMaskString, valueContainsLiteralCharacters);
     }
 
-    return field;
+    throw new IllegalArgumentException("Creating text fields for property type: " + property.getType() + " is not implemented");
   }
 
   private static JTextField initializeStringField(final String formatMaskString, final boolean valueContainsLiteralCharacters) {
-    final JTextField field;
     if (formatMaskString == null) {
-      field = new JTextField(new SizedDocument(), "", 0);
-    }
-    else {
-      field = UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
+      return new JTextField(new SizedDocument(), "", 0);
     }
 
-    return field;
+    return UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
   }
 
   private static JTextField initializeDecimalField(final Property property) {
@@ -874,17 +850,16 @@ public final class EntityUiUtil {
   private static JCheckBox initializeCheckBox(final Property property, final Value value,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
     ValueLinks.toggleValueLink(checkBox.getModel(), value, false);
-    if (enabledState != null) {
-      UiUtil.linkToEnabledState(enabledState, checkBox);
-    }
-    if (property.getDescription() != null) {
-      checkBox.setToolTipText(property.getDescription());
-    }
-    else {
-      checkBox.setToolTipText(property.getCaption());
-    }
+    linkToEnabledState(enabledState, checkBox);
+    checkBox.setToolTipText(property.getDescription());
 
     return checkBox;
+  }
+
+  private static void linkToEnabledState(final StateObserver enabledState, final JComponent component) {
+    if (enabledState != null) {
+      UiUtil.linkToEnabledState(enabledState, component);
+    }
   }
 
   private static NumberFormat cloneFormat(final NumberFormat format) {
