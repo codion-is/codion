@@ -307,7 +307,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     });
     this.conditionPanel = conditionPanel;
     this.conditionScrollPane = conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
-    this.summaryScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel = new FilteredTableSummaryPanel(tableModel));
+    this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
+    this.summaryScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
     this.tablePanel.add(tableScrollPane, BorderLayout.CENTER);
     this.tablePanel.add(summaryScrollPane, BorderLayout.SOUTH);
     this.refreshToolBar = initializeRefreshToolBar();
@@ -1306,13 +1307,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   protected final InputProvider createEntityInputProvider(final ForeignKeyProperty foreignKeyProperty,
                                                           final Entity currentValue,
-                                                          final EntityEditModel editModel) {
+                                                          final SwingEntityEditModel editModel) {
     if (tableModel.getConnectionProvider().getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
-      return new EntityComboProvider(((SwingEntityEditModel) editModel).createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
+      return new EntityComboBoxInputProvider(editModel.createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
     }
-    else {
-      return new EntityLookupProvider(editModel.createForeignKeyLookupModel(foreignKeyProperty), currentValue);
-    }
+
+    return new EntityLookupFieldInputProvider(editModel.createForeignKeyLookupModel(foreignKeyProperty), currentValue);
   }
 
   /**
@@ -1424,7 +1424,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void copySelectedCell() {
-    final JTable table = getTable();
     final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
     UiUtil.setClipboard(value == null ? "" : value.toString());
   }

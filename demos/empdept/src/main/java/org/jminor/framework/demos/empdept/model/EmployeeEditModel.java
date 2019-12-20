@@ -8,7 +8,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Objects;
@@ -24,8 +24,8 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 
   /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
   @Override
-  public EntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
-    final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
+  public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
+    final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
     if (foreignKeyProperty.is(EmpDept.EMPLOYEE_MGR_FK)) {
       //Customize the null value so that it displays the chosen
       //text instead of the default '-' character

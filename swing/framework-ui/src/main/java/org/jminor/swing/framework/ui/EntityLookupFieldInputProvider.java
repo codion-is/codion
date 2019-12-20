@@ -13,14 +13,14 @@ import java.util.Collection;
  * A InputProvider implementation for Entity values based on a EntityLookupField.
  * @see EntityLookupField
  */
-public final class EntityLookupProvider extends AbstractInputProvider<Entity, EntityLookupField> {
+public final class EntityLookupFieldInputProvider extends AbstractInputProvider<Entity, EntityLookupField> {
 
   /**
    * Instantiates a new EntityLookupProvider
    * @param lookupModel the lookup model to base the lookup field on
    * @param initialValue the initial value
    */
-  public EntityLookupProvider(final EntityLookupModel lookupModel, final Entity initialValue) {
+  public EntityLookupFieldInputProvider(final EntityLookupModel lookupModel, final Entity initialValue) {
     super(createEntityLookupField(lookupModel, initialValue));
   }
 
@@ -28,6 +28,7 @@ public final class EntityLookupProvider extends AbstractInputProvider<Entity, En
   @Override
   public Entity getValue() {
     final Collection<Entity> selectedEntities = getInputComponent().getModel().getSelectedEntities();
+
     return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
   }
 

@@ -11,8 +11,8 @@ import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import java.util.Collection;
@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * A UI component based on the EntityComboBoxModel.
+ * A UI component based on the SwingEntityComboBoxModel.
  * @see EntityComboBoxModel
  */
 public final class EntityComboBox extends SteppedComboBox<Entity> {
@@ -29,11 +29,17 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   /**
    * Instantiates a new EntityComboBox
-   * @param model the EntityComboBoxModel
+   * @param model the SwingEntityComboBoxModel
    */
-  public EntityComboBox(final EntityComboBoxModel model) {
-    super((ComboBoxModel<Entity>) model);
+  public EntityComboBox(final SwingEntityComboBoxModel model) {
+    super(model);
     setComponentPopupMenu(initializePopupMenu());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public SwingEntityComboBoxModel getModel() {
+    return (SwingEntityComboBoxModel) super.getModel();
   }
 
   /**
@@ -43,12 +49,12 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    */
   public Control createForeignKeyFilterControl(final String foreignKeyPropertyId) {
     return Controls.control(() -> {
-      final Collection<Entity> current = ((EntityComboBoxModel) getModel()).getForeignKeyFilterEntities(foreignKeyPropertyId);
+      final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKeyPropertyId);
       final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKeyPropertyId),
               MESSAGES.getString("filter_by"), JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.QUESTION_MESSAGE, null, null, null);
       if (result != JOptionPane.OK_OPTION) {
-        ((EntityComboBoxModel) getModel()).setForeignKeyFilterEntities(foreignKeyPropertyId, current);
+        getModel().setForeignKeyFilterEntities(foreignKeyPropertyId, current);
       }
     }, null, null, null, 0, null, Images.loadImage(Images.IMG_FILTER_16));
   }
@@ -59,8 +65,9 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return an EntityComboBox for filtering this combo box
    */
   public EntityComboBox createForeignKeyFilterComboBox(final String foreignKeyPropertyId) {
-    final EntityComboBox comboBox = new EntityComboBox(((EntityComboBoxModel) getModel()).createForeignKeyFilterComboBoxModel(foreignKeyPropertyId));
+    final EntityComboBox comboBox = new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKeyPropertyId));
     MaximumMatch.enable(comboBox);
+
     return comboBox;
   }
 

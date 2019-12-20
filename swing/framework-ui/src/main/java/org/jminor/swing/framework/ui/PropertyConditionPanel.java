@@ -41,9 +41,8 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<ColumnPro
     if (model.getColumnIdentifier().isBoolean()) {
       return new ConditionType[] {ConditionType.LIKE};
     }
-    else {
-      return ConditionType.values();
-    }
+
+    return ConditionType.values();
   }
 
   private static final class PropertyInputFieldProvider implements InputFieldProvider {

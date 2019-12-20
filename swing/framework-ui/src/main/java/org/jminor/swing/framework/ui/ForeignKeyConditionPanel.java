@@ -6,11 +6,11 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.ForeignKeyConditionModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
+import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingForeignKeyConditionModel;
 
 import javax.swing.JComponent;
@@ -59,16 +59,15 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Foreign
 
     private JComponent initializeForeignKeyField() {
       if (model instanceof SwingForeignKeyConditionModel) {
-        final EntityComboBoxModel boxModel = ((SwingForeignKeyConditionModel) model).getEntityComboBoxModel();
+        final SwingEntityComboBoxModel boxModel = ((SwingForeignKeyConditionModel) model).getEntityComboBoxModel();
         boxModel.refresh();
         final EntityComboBox field = new EntityComboBox(boxModel);
         MaximumMatch.enable(field);
 
         return field;
       }
-      else {
-        return UiUtil.selectAllOnFocusGained(new EntityLookupField(((ForeignKeyConditionModel) model).getEntityLookupModel()));
-      }
+
+      return UiUtil.selectAllOnFocusGained(new EntityLookupField(((ForeignKeyConditionModel) model).getEntityLookupModel()));
     }
   }
 }

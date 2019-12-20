@@ -5524,3 +5524,5 @@
   LocalDateInputPanel now sets the focus to the input field after date has been set via calendar
   EntityUiUtil, minor refactoring
   EntityEditPanel refactored
+  EntityPanel refactored
+  swing.framework.ui code cleanup

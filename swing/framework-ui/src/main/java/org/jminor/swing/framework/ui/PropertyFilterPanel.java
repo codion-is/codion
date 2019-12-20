@@ -36,8 +36,7 @@ public final class PropertyFilterPanel extends ColumnConditionPanel<Property> {
     if (model.getColumnIdentifier().isBoolean()) {
       return new ConditionType[] {ConditionType.LIKE};
     }
-    else {
-      return ConditionType.values();
-    }
+
+    return ConditionType.values();
   }
 }

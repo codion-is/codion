@@ -1212,10 +1212,10 @@ public class EntityEditComponentPanel extends JPanel {
   protected final EntityComboBox createForeignKeyComboBox(final ForeignKeyProperty foreignKeyProperty,
                                                           final StateObserver enabledState) {
     final EntityComboBox comboBox = EntityUiUtil.createForeignKeyComboBox(foreignKeyProperty,
-            getEditModel().value(foreignKeyProperty.getPropertyId()), getEditModel().getForeignKeyComboBoxModel(foreignKeyProperty),
-            enabledState);
+            getEditModel().value(foreignKeyProperty.getPropertyId()),
+            getEditModel().getForeignKeyComboBoxModel(foreignKeyProperty), enabledState);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
-      //getEditor().getEditorComponent() only required because the combo box is editable, due AutoCompletion
+      //getEditor().getEditorComponent() only required because the combo box is editable, due to AutoCompletion
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
     }
     setComponent(foreignKeyProperty.getPropertyId(), comboBox);
