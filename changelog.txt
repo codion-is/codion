@@ -5501,3 +5501,4 @@
   EntityUiUtil, minor refactoring
   EntityEditPanel refactored
   EntityPanel refactored
+  swing.framework.ui code cleanup

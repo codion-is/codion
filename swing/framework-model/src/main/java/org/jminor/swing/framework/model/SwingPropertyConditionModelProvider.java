@@ -7,7 +7,6 @@ import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
-import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.PropertyConditionModelProvider;
 
 /**
@@ -21,7 +20,7 @@ public class SwingPropertyConditionModelProvider extends DefaultPropertyConditio
   public ColumnConditionModel<ForeignKeyProperty> initializeForeignKeyConditionModel(
           final ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
     if (connectionProvider.getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
-      final EntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(), connectionProvider);
+      final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(), connectionProvider);
       comboBoxModel.setNullValue(connectionProvider.getDomain().createToStringEntity(foreignKeyProperty.getForeignEntityId(), ""));
 
       return new SwingForeignKeyConditionModel(foreignKeyProperty, comboBoxModel);

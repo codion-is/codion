@@ -1307,13 +1307,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   protected final InputProvider createEntityInputProvider(final ForeignKeyProperty foreignKeyProperty,
                                                           final Entity currentValue,
-                                                          final EntityEditModel editModel) {
+                                                          final SwingEntityEditModel editModel) {
     if (tableModel.getConnectionProvider().getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
-      return new EntityComboProvider(((SwingEntityEditModel) editModel).createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
+      return new EntityComboBoxInputProvider(editModel.createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
     }
-    else {
-      return new EntityLookupProvider(editModel.createForeignKeyLookupModel(foreignKeyProperty), currentValue);
-    }
+
+    return new EntityLookupFieldInputProvider(editModel.createForeignKeyLookupModel(foreignKeyProperty), currentValue);
   }
 
   /**

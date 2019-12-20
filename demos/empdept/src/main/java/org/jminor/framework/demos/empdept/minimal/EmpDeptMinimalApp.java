@@ -13,8 +13,8 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.StringProvider;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
-import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
+import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModelProvider;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
@@ -102,9 +102,9 @@ public class EmpDeptMinimalApp {
      * so that is only shows managers.
      */
     @Override
-    public EntityComboBoxModel createForeignKeyComboBoxModel(
+    public SwingEntityComboBoxModel createForeignKeyComboBoxModel(
             final ForeignKeyProperty foreignKeyProperty) {
-      final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
+      final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
         comboBoxModel.setSelectConditionProvider(() -> Conditions.propertyCondition(
                 "job", ConditionType.LIKE, asList("MANAGER", "PRESIDENT")));

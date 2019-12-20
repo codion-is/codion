@@ -5,27 +5,27 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.DefaultForeignKeyConditionModel;
-import org.jminor.framework.model.EntityComboBoxModel;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
- * A {@link org.jminor.framework.model.ForeignKeyConditionModel} based around a {@link EntityComboBoxModel}
+ * A {@link org.jminor.framework.model.ForeignKeyConditionModel} based around a {@link SwingEntityComboBoxModel}
  */
 public final class SwingForeignKeyConditionModel extends DefaultForeignKeyConditionModel {
 
-  private final EntityComboBoxModel entityComboBoxModel;
+  private final SwingEntityComboBoxModel entityComboBoxModel;
 
   /**
    * Constructs a SwingForeignKeyConditionModel instance
    * @param property the property
-   * @param entityComboBoxModel a EntityComboBoxModel
+   * @param comboBoxModel a SwingEntityComboBoxModel
    */
   public SwingForeignKeyConditionModel(final ForeignKeyProperty property,
-                                       final EntityComboBoxModel entityComboBoxModel) {
+                                       final SwingEntityComboBoxModel comboBoxModel) {
     super(property);
-    this.entityComboBoxModel = entityComboBoxModel;
-    if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
+    this.entityComboBoxModel = Objects.requireNonNull(comboBoxModel, "comboBoxModel");
+    if (entityComboBoxModel.isCleared()) {
       entityComboBoxModel.setSelectedItem(getUpperBound());
     }
     bindComboBoxEvents();
@@ -43,7 +43,7 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
     entityComboBoxModel.clear();
   }
 
-  public EntityComboBoxModel getEntityComboBoxModel() {
+  public SwingEntityComboBoxModel getEntityComboBoxModel() {
     return entityComboBoxModel;
   }
 

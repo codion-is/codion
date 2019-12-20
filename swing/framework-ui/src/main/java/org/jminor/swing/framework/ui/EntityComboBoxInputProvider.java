@@ -4,31 +4,28 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.common.ui.input.AbstractInputProvider;
-
-import javax.swing.ComboBoxModel;
-import javax.swing.JComboBox;
+import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 /**
- * A InputProvider implementation for Entity values based on a JComboBox.
- * @see EntityComboBoxModel
+ * A InputProvider implementation for Entity values based on a {@link EntityComboBox}.
+ * @see SwingEntityComboBoxModel
  */
-public final class EntityComboProvider extends AbstractInputProvider<Entity, JComboBox<Entity>> {
+public final class EntityComboBoxInputProvider extends AbstractInputProvider<Entity, EntityComboBox> {
 
   /**
    * Instantiates a new input provider based on the EntityComboBoxModel class
    * @param comboBoxModel the combo box model
    * @param initialValue the initial value to display
    */
-  public EntityComboProvider(final EntityComboBoxModel comboBoxModel, final Entity initialValue) {
+  public EntityComboBoxInputProvider(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
     super(createComboBox(comboBoxModel, initialValue));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity getValue() {
-    return ((EntityComboBoxModel) getInputComponent().getModel()).getSelectedValue();
+    return getInputComponent().getModel().getSelectedValue();
   }
 
   /** {@inheritDoc} */
@@ -37,7 +34,7 @@ public final class EntityComboProvider extends AbstractInputProvider<Entity, JCo
     getInputComponent().setSelectedItem(value);
   }
 
-  private static JComboBox<Entity> createComboBox(final EntityComboBoxModel comboBoxModel, final Object currentValue) {
+  private static EntityComboBox createComboBox(final SwingEntityComboBoxModel comboBoxModel, final Object currentValue) {
     if (comboBoxModel.isCleared()) {
       comboBoxModel.refresh();
     }
@@ -45,6 +42,6 @@ public final class EntityComboProvider extends AbstractInputProvider<Entity, JCo
       comboBoxModel.setSelectedItem(currentValue);
     }
 
-    return new JComboBox<>((ComboBoxModel<Entity>) comboBoxModel);
+    return new EntityComboBox(comboBoxModel);
   }
 }

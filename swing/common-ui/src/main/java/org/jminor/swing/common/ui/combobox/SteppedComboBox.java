@@ -8,6 +8,7 @@ import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.plaf.metal.MetalComboBoxUI;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.util.Objects;
 
 /**
  * A JComboBox which automatically sets the popup width according to the largest value in the combo box.
@@ -21,10 +22,10 @@ public class SteppedComboBox<V> extends JComboBox<V> {
 
   /**
    * Instantiates a new SteppedComboBox.
-   * @param boxModel the combo box model
+   * @param model the combo box model
    */
-  public SteppedComboBox(final ComboBoxModel<V> boxModel) {
-    super(boxModel);
+  public SteppedComboBox(final ComboBoxModel<V> model) {
+    super(Objects.requireNonNull(model, "model"));
     initUI();
   }
 
@@ -36,7 +37,7 @@ public class SteppedComboBox<V> extends JComboBox<V> {
   }
 
   /**
-   * @return Value for property 'popupSize'.
+   * @return the popup size
    */
   public final Dimension getPopupSize() {
     final Dimension displaySize = ((SteppedComboBoxUI) getUI()).getDisplaySize();

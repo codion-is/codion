@@ -14,10 +14,10 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.UiValues;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 
@@ -84,7 +84,7 @@ public final class ClientUI {
 
     //create a combobox for selecting the album artist
     //based on a combobox model supplied by the edit model
-    final EntityComboBoxModel artistComboBoxModel =
+    final SwingEntityComboBoxModel artistComboBoxModel =
             editModel.getForeignKeyComboBoxModel(ALBUM_ARTIST_FK);
     EntityComboBox artistComboBox = new EntityComboBox(artistComboBoxModel);
     //limit the combo box width, due to long artist names

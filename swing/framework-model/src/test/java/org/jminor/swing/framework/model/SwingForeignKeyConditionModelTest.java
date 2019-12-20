@@ -12,7 +12,6 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
-import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.TestDomain;
 
@@ -47,7 +46,7 @@ public class SwingForeignKeyConditionModelTest {
 
   @Test
   public void getSearchEntitiesComboBoxModel() throws DatabaseException {
-    final EntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final SwingForeignKeyConditionModel conditionModel = new SwingForeignKeyConditionModel(
             DOMAIN.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK), comboBoxModel);
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");

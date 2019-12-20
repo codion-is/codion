@@ -12,7 +12,6 @@ import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.model.DefaultEntityEditModel;
-import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
 
 import java.util.Collection;
@@ -96,25 +95,25 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * Returns a {@link EntityComboBoxModel} for the given foreign key property. If one does not exist it is created.
+   * Returns a {@link SwingEntityComboBoxModel} for the given foreign key property. If one does not exist it is created.
    * @param foreignKeyPropertyId the ID of the foreign key property
-   * @return a {@link EntityComboBoxModel} based on the entity referenced by the given foreign key property
+   * @return a {@link SwingEntityComboBoxModel} based on the entity referenced by the given foreign key property
    * @see #createForeignKeyComboBoxModel(ForeignKeyProperty)
    */
-  public final EntityComboBoxModel getForeignKeyComboBoxModel(final String foreignKeyPropertyId) {
+  public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final String foreignKeyPropertyId) {
     requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
     return getForeignKeyComboBoxModel(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
   }
 
   /**
-   * Returns a {@link EntityComboBoxModel} for the given foreign key property. If one does not exist it is created.
+   * Returns a {@link SwingEntityComboBoxModel} for the given foreign key property. If one does not exist it is created.
    * @param foreignKeyProperty the foreign key property
-   * @return a {@link EntityComboBoxModel} based on the entity referenced by the given foreign key property
+   * @return a {@link SwingEntityComboBoxModel} based on the entity referenced by the given foreign key property
    * @see #createForeignKeyComboBoxModel(ForeignKeyProperty)
    */
-  public final EntityComboBoxModel getForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
+  public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKyProperty");
-    EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBoxModels.get(foreignKeyProperty.getPropertyId());
+    SwingEntityComboBoxModel comboBoxModel = (SwingEntityComboBoxModel) comboBoxModels.get(foreignKeyProperty.getPropertyId());
     if (comboBoxModel == null) {
       comboBoxModel = createForeignKeyComboBoxModel(foreignKeyProperty);
       comboBoxModels.put(foreignKeyProperty.getPropertyId(), comboBoxModel);
@@ -149,21 +148,21 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * Creates a default {@link EntityComboBoxModel} for the given property, override to provide
-   * a specific {@link EntityComboBoxModel} (filtered for example) for properties.
-   * This method is called when creating a {@link EntityComboBoxModel} for entity properties, both
+   * Creates a default {@link SwingEntityComboBoxModel} for the given property, override to provide
+   * a specific {@link SwingEntityComboBoxModel} (filtered for example) for properties.
+   * This method is called when creating a {@link SwingEntityComboBoxModel} for entity properties, both
    * for the edit fields used when editing a single record and the edit field used
    * when updating multiple records.
-   * This default implementation returns a sorted {@link EntityComboBoxModel} with the default nullValueItem
+   * This default implementation returns a sorted {@link SwingEntityComboBoxModel} with the default nullValueItem
    * if the underlying property is nullable
-   * @param foreignKeyProperty the foreign key property for which to create a {@link EntityComboBoxModel}
-   * @return a {@link EntityComboBoxModel} for the given property
+   * @param foreignKeyProperty the foreign key property for which to create a {@link SwingEntityComboBoxModel}
+   * @return a {@link SwingEntityComboBoxModel} for the given property
    * @see EntityEditModel#COMBO_BOX_NULL_VALUE_ITEM
    * @see Property#isNullable()
    */
-  public EntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
+  public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    final EntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(),
+    final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(),
             getConnectionProvider());
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
       model.setNullValue(getDomain().createToStringEntity(foreignKeyProperty.getForeignEntityId(),
@@ -200,7 +199,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
       for (final ForeignKeyProperty foreignKeyProperty :
               getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getPropertyId())) {
-          final EntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty);
+          final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty);
           for (final Entity inserted : entry.getValue()) {
             comboBoxModel.addItem(inserted);
           }
@@ -217,7 +216,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
       for (final ForeignKeyProperty foreignKeyProperty :
               getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getPropertyId())) {
-          final EntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty);
+          final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty);
           final Entity selectedEntity = comboBoxModel.getSelectedValue();
           for (final Entity deletedEntity : entry.getValue()) {
             comboBoxModel.removeItem(deletedEntity);

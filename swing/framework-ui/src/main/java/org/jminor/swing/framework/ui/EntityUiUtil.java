@@ -26,7 +26,6 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.DefaultEntityLookupModel;
-import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
@@ -48,6 +47,7 @@ import org.jminor.swing.common.ui.textfield.DocumentSizeFilter;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
+import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -175,7 +175,7 @@ public final class EntityUiUtil {
     if (singleSelection) {
       lookupModel.getMultipleSelectionEnabledValue().set(false);
     }
-    final InputProviderPanel inputPanel = new InputProviderPanel(lookupCaption, new EntityLookupProvider(lookupModel, null));
+    final InputProviderPanel inputPanel = new InputProviderPanel(lookupCaption, new EntityLookupFieldInputProvider(lookupModel, null));
     UiUtil.displayInDialog(dialogParent, inputPanel, dialogTitle, true, inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
       return lookupModel.getSelectedEntities();
@@ -351,10 +351,10 @@ public final class EntityUiUtil {
    * @param foreignKeyProperty the foreign key property on which entity to base the combobox
    * @param value the value to bind to the field
    * @param comboBoxModel the combo box model
-   * @return a EntityComboBox based on the given foreign key property
+   * @return a SwingEntityComboBox based on the given foreign key property
    */
   public static EntityComboBox createForeignKeyComboBox(final ForeignKeyProperty foreignKeyProperty,
-                                                        final Value value, final EntityComboBoxModel comboBoxModel) {
+                                                        final Value value, final SwingEntityComboBoxModel comboBoxModel) {
     return createForeignKeyComboBox(foreignKeyProperty, value, comboBoxModel, null);
   }
 
@@ -367,7 +367,7 @@ public final class EntityUiUtil {
    * @return a EntityComboBox based on the given foreign key property
    */
   public static EntityComboBox createForeignKeyComboBox(final ForeignKeyProperty foreignKeyProperty,
-                                                        final Value value, final EntityComboBoxModel comboBoxModel,
+                                                        final Value value, final SwingEntityComboBoxModel comboBoxModel,
                                                         final StateObserver enabledState) {
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     requireNonNull(comboBoxModel, "comboBoxModel");
