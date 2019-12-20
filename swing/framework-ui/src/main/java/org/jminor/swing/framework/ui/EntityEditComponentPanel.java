@@ -90,6 +90,10 @@ public class EntityEditComponentPanel extends JPanel {
    */
   private String afterInsertFocusPropertyId;
 
+  /**
+   * Instantiates a new EntityEditComponentPanel
+   * @param editModel the edit model
+   */
   protected EntityEditComponentPanel(final SwingEntityEditModel editModel) {
     this.editModel = requireNonNull(editModel, "editModel");
   }
