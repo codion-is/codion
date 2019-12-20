@@ -379,10 +379,6 @@ public final class EntityUiUtil {
     }
     addComboBoxCompletion(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
-    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
-      //getEditor().getEditorComponent() only required because the combo box is editable, due to addComboBoxCompletion() above
-      UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-    }
 
     return comboBox;
   }
@@ -412,9 +408,6 @@ public final class EntityUiUtil {
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     requireNonNull(lookupModel, "lookupModel");
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
-    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
-      lookupField.setTransferFocusOnEnter();
-    }
     Values.link(value, new LookupUIValue(lookupField.getModel()));
     if (enabledState != null) {
       UiUtil.linkToEnabledState(enabledState, lookupField);
@@ -516,10 +509,6 @@ public final class EntityUiUtil {
       UiUtil.linkToEnabledState(enabledState, comboBox);
     }
     comboBox.setToolTipText(property.getDescription());
-    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
-      UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-      UiUtil.transferFocusOnEnter(comboBox);
-    }
 
     return comboBox;
   }
@@ -558,12 +547,7 @@ public final class EntityUiUtil {
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, value,
             DateFormats.getDateMask(formatString), updateOnKeystroke, enabledState);
     if (property.isDate()) {
-      final LocalDateInputPanel panel = new LocalDateInputPanel(field, formatString, includeCalendarButton, enabledState);
-      if (panel.getCalendarButton() != null && EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
-        UiUtil.transferFocusOnEnter(panel.getCalendarButton());
-      }
-
-      return panel;
+      return new LocalDateInputPanel(field, formatString, includeCalendarButton, enabledState);
     }
     else if (property.isTimestamp()) {
       return new LocalDateTimeInputPanel(field, formatString, enabledState);
@@ -590,9 +574,6 @@ public final class EntityUiUtil {
     final JTextField field = createTextField(property, value, null, updateOnKeystroke);
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
     panel.setMaxLength(property.getMaxLength());
-    if (panel.getButton() != null && EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
-      UiUtil.transferFocusOnEnter(panel.getButton());//todo
-    }
 
     return panel;
   }
@@ -818,9 +799,6 @@ public final class EntityUiUtil {
     if (enabledState != null) {
       UiUtil.linkToEnabledState(enabledState, field);
     }
-    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
-      UiUtil.transferFocusOnEnter(field);
-    }
     field.setToolTipText(property.getDescription());
     if (property.getMaxLength() > 0 && field.getDocument() instanceof SizedDocument) {
       ((SizedDocument) field.getDocument()).setMaxLength(property.getMaxLength());
@@ -904,9 +882,6 @@ public final class EntityUiUtil {
     }
     else {
       checkBox.setToolTipText(property.getCaption());
-    }
-    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
-      UiUtil.transferFocusOnEnter(checkBox);
     }
 
     return checkBox;
