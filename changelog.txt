@@ -5498,3 +5498,4 @@
   UiUtil.createFormattedField() no longer sets moveCaretToStartOnFocusGained() on the field
   LocalDateTimeInputPanel now provides a calendar button, selects time element after date has been set via calendar
   LocalDateInputPanel now sets the focus to the input field after date has been set via calendar
+  EntityUiUtil, minor refactoring
