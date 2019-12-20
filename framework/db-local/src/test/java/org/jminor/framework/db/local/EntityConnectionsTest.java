@@ -19,7 +19,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -77,18 +76,19 @@ public class EntityConnectionsTest {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
 
     final List<Entity> source = sourceConnection.select(entitySelectCondition(TestDomain.T_DEPARTMENT));
-    final List<Entity.Key> dest = new ArrayList<>();
+
     final EventDataListener<Integer> progressReporter = currentProgress -> {};
-    EntityConnections.batchInsert(DESTINATION_CONNECTION, source, dest, 2, progressReporter);
+    final List<Entity.Key> dest = EntityConnections.batchInsert(DESTINATION_CONNECTION, source, 2, progressReporter);
     assertEquals(sourceConnection.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)),
             DESTINATION_CONNECTION.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)));
+    assertEquals(4, dest.size());
 
-    EntityConnections.batchInsert(DESTINATION_CONNECTION, emptyList(), null, 10, null);
+    EntityConnections.batchInsert(DESTINATION_CONNECTION, emptyList(), 10, null);
     DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_DEPARTMENT));
   }
 
   @Test
   public void batchInsertNegativeBatchSize() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> EntityConnections.batchInsert(null, null, null, -6, null));
+    assertThrows(IllegalArgumentException.class, () -> EntityConnections.batchInsert(null, null, -6, null));
   }
 }

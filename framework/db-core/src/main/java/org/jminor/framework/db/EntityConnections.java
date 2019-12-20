@@ -8,6 +8,8 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.framework.domain.Entity;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
@@ -36,7 +38,7 @@ public final class EntityConnections {
       if (!includePrimaryKeys) {
         entities.forEach(Entity::clearKeyValues);
       }
-      batchInsert(destination, entities, null, batchSize, null);
+      batchInsert(destination, entities, batchSize, null);
     }
   }
 
@@ -44,32 +46,30 @@ public final class EntityConnections {
    * Inserts the given entities, performing a commit after each {@code batchSize} number of inserts.
    * @param connection the entity connection to use when inserting
    * @param entities the entities to insert
-   * @param committed after the call this list will contain the primary keys of successfully inserted entities
    * @param batchSize the commit batch size
    * @param progressReporter if specified this will be used to report batch progress
+   * @return the primary keys of successfully inserted entities
    * @throws DatabaseException in case of an exception
    * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
-  public static void batchInsert(final EntityConnection connection, final List<Entity> entities,
-                                 final List<Entity.Key> committed, final int batchSize,
-                                 final EventDataListener<Integer> progressReporter) throws DatabaseException {
+  public static List<Entity.Key> batchInsert(final EntityConnection connection, final List<Entity> entities,
+                                             final int batchSize, final EventDataListener<Integer> progressReporter)
+          throws DatabaseException {
     if (batchSize <= 0) {
       throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
     }
     if (Util.nullOrEmpty(entities)) {
-      return;
+      return Collections.emptyList();
     }
-    int insertedCount = 0;
+    final List<Entity.Key> insertedKeys = new ArrayList<>();
     for (int i = 0; i < entities.size(); i += batchSize) {
       final List<Entity> insertBatch = entities.subList(i, Math.min(i + batchSize, entities.size()));
-      final List<Entity.Key> insertedKeys = connection.insert(insertBatch);
-      insertedCount += insertedKeys.size();
-      if (committed != null) {
-        committed.addAll(insertedKeys);
-      }
+      insertedKeys.addAll(connection.insert(insertBatch));
       if (progressReporter != null) {
-        progressReporter.eventOccurred(insertedCount);
+        progressReporter.eventOccurred(insertedKeys.size());
       }
     }
+
+    return insertedKeys;
   }
 }

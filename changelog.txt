@@ -5502,3 +5502,4 @@
   EntityEditPanel refactored
   EntityPanel refactored
   swing.framework.ui code cleanup
+  EntityConnections.batchInsert() now returns the inserted keys
