@@ -172,7 +172,7 @@ public final class World extends Domain {
             // end::denormalizedViewProperty[]
             // tag::blobProperty[]
             blobProperty(COUNTRY_FLAG, "Flag")
-                    .setLazyLoaded(true),
+                    .setEagerlyLoaded(true),
             // end::blobProperty[]
             columnProperty(COUNTRY_CODE2, Types.VARCHAR, "Code2")
                     .setNullable(false)

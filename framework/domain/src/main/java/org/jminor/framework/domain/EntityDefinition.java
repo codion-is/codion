@@ -17,7 +17,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -26,8 +25,8 @@ import java.util.function.Function;
 public interface EntityDefinition extends Serializable {
 
   /**
-   * Specifies that it should not be possible to define foreign keys referencing entities that have
-   * not been defined, this can be disabled in case of entities with circular references<br>
+   * Specifies whether it should be possible to define foreign keys referencing entities that have
+   * not been defined, this can be disabled in cases where entities with circular references<br>
    * Value type: Boolean<br>
    * Default value: true
    */
@@ -149,11 +148,6 @@ public interface EntityDefinition extends Serializable {
   Collection<String> getSearchPropertyIds();
 
   /**
-   * @return a Set containing all the properties in this entity
-   */
-  Set<Property> getPropertySet();
-
-  /**
    * @return a unmodifiable list view of the properties
    */
   List<Property> getProperties();
@@ -196,15 +190,15 @@ public interface EntityDefinition extends Serializable {
   /**
    * Returns the default select column properties used when selecting this entity type,
    * this does not include properties where {@link ColumnProperty#isSelectable()} returns false
-   * and {@link BlobProperty}s with {@link BlobProperty#isLazyLoaded()} returning false.
-   * @return a list containing the column properties to include in select queries
+   * and {@link BlobProperty}s with {@link BlobProperty#isEagerlyLoaded()} returning true.
+   * @return a list containing the default column properties to include in select queries
    */
   List<ColumnProperty> getSelectableColumnProperties();
 
   /**
    * @return a list containing all lazy loaded blob properties for this entity type
    */
-  List<BlobProperty> getLazyLoadedBlobProperties();
+  List<ColumnProperty> getLazyLoadedBlobProperties();
 
   /**
    * @return a list containing the non-column-based properties for this entity type
@@ -302,8 +296,8 @@ public interface EntityDefinition extends Serializable {
    * @return a list containing the writable column properties (properties that map to database columns) comprising
    * the entity identified by {@code entityId}
    */
-  List<ColumnProperty> getWritableColumnProperties(boolean includePrimaryKeyProperties,
-                                                   boolean includeNonUpdatable);
+  List<ColumnProperty> getWritableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
+
   /**
    * @return a list containing all updatable properties associated with the given entity id
    */

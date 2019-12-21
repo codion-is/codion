@@ -106,8 +106,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   /** {@inheritDoc} */
   @Override
   public String getConditionString(final ColumnProperty property) {
-    return createColumnPropertyConditionString(property, conditionType, getValues(),
-            nullCondition, caseSensitive);
+    return createColumnPropertyConditionString(property, conditionType, getValues(), nullCondition, caseSensitive);
   }
 
   /** {@inheritDoc} */

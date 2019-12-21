@@ -4,12 +4,13 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.db.valuemap.ValueMap;
+import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
-import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -75,21 +76,19 @@ public final class Entities {
   }
 
   /**
-   * Returns all {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
-   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}
+   * Returns all writable {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
+   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
+   * Note that lazily loaded blob values are not included in this comparison.
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
-   * @param includeReadOnlyProperties if true then readOnly properties are included in the comparison
    * @return the properties which values differ from the ones in the comparison entity
    */
-  public static List<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison,
-                                                                 final boolean includeReadOnlyProperties) {
-    //BLOB property values are not loaded, so we can't compare those
+  public static List<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
     return comparison.keySet().stream().filter(property ->
-            property instanceof ColumnProperty
-                    && (!property.isReadOnly() || includeReadOnlyProperties)
-                    && !property.isType(Types.BLOB)
-                    && isValueMissingOrModified(entity, comparison, property.getPropertyId()))
+            (property instanceof ColumnProperty ||
+                    (!property.isBlob() || (property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded())))
+                    && !property.isReadOnly()
+                    && isValueMissingOrModified(entity, comparison, property))
             .map(property -> (ColumnProperty) property).collect(toList());
   }
 
@@ -340,11 +339,21 @@ public final class Entities {
   /**
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
-   * @param propertyId the property to check
+   * @param property the property to check
    * @return true if the value is missing or the original value differs from the one in the comparison entity
    */
-  static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final String propertyId) {
-    return !entity.containsKey(propertyId) || !Objects.equals(comparison.get(propertyId), entity.getOriginal(propertyId));
+  static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final Property property) {
+    if (!entity.containsKey(property)) {
+      return true;
+    }
+
+    final Object originalValue = entity.getOriginal(property);
+    final Object comparisonValue = comparison.get(property);
+    if (property.isBlob()) {
+      return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);
+    }
+
+    return !Objects.equals(originalValue, comparisonValue);
   }
 
   private static Entity findAndRemove(final Entity.Key primaryKey, final ListIterator<Entity> iterator) {

@@ -9,7 +9,7 @@ final class DefaultBlobProperty extends DefaultColumnProperty implements BlobPro
 
   private static final long serialVersionUID = 1;
 
-  private boolean lazyLoaded = false;
+  private boolean eagerlyLoaded = false;
 
   DefaultBlobProperty(final String propertyId, final String caption) {
     super(propertyId, Types.BLOB, caption);
@@ -17,8 +17,8 @@ final class DefaultBlobProperty extends DefaultColumnProperty implements BlobPro
   }
 
   @Override
-  public boolean isLazyLoaded() {
-    return lazyLoaded;
+  public boolean isEagerlyLoaded() {
+    return eagerlyLoaded;
   }
 
   /**
@@ -44,8 +44,8 @@ final class DefaultBlobProperty extends DefaultColumnProperty implements BlobPro
     }
 
     @Override
-    public BlobProperty.Builder setLazyLoaded(final boolean lazyLoaded) {
-      blobProperty.lazyLoaded = lazyLoaded;
+    public BlobProperty.Builder setEagerlyLoaded(final boolean eagerlyLoaded) {
+      blobProperty.eagerlyLoaded = eagerlyLoaded;
       return this;
     }
   }

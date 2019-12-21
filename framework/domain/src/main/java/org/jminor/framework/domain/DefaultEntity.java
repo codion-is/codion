@@ -27,6 +27,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -854,7 +855,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   private static void validateProperties(final EntityDefinition definition, final Map<Property, Object> propertyValues) {
     if (propertyValues != null && !propertyValues.isEmpty()) {
-      final Set<Property> propertySet = definition.getPropertySet();
+      final Set<Property> propertySet = new HashSet<>(definition.getProperties());
       for (final Map.Entry<Property, Object> valueEntry : propertyValues.entrySet()) {
         final Property property = valueEntry.getKey();
         if (!property.getEntityId().equals(definition.getEntityId()) || !propertySet.contains(property)) {

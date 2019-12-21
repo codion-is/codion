@@ -835,7 +835,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
                   + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
         }
-        final List<ColumnProperty> modified = getModifiedColumnProperties(entity, current, false);
+        final List<ColumnProperty> modified = getModifiedColumnProperties(entity, current);
         if (!modified.isEmpty()) {
           throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
         }
@@ -962,6 +962,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try {
       logAccess("executePreparedUpdate", new Object[] {sqlStatement, statementValues});
       setParameterValues(statement, statementProperties, statementValues);
+
       return statement.executeUpdate();
     }
     catch (final SQLException e) {

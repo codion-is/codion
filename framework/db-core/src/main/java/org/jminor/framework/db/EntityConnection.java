@@ -117,7 +117,7 @@ public interface EntityConnection {
    * Deletes the entities according to the given primary keys.
    * Performs a commit unless a transaction is open.
    * @param entityKeys the primary keys of the entities to delete
-   * @return the number of deleted records
+   * @return the number of deleted rows
    * @throws DatabaseException in case of a database exception
    */
   int delete(List<Entity.Key> entityKeys) throws DatabaseException;
@@ -126,7 +126,7 @@ public interface EntityConnection {
    * Deletes the entities specified by the given condition.
    * Performs a commit unless a transaction is open.
    * @param condition the condition specifying the entities to delete
-   * @return the number of deleted records
+   * @return the number of deleted rows
    * @throws DatabaseException in case of a database exception
    */
   int delete(EntityCondition condition) throws DatabaseException;

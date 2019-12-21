@@ -156,10 +156,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   private final Map<String, Property> propertyMap;
   private final List<Property> properties;
-  private final Set<Property> propertySet;
   private final List<Property> visibleProperties;
   private final List<ColumnProperty> columnProperties;
-  private final List<BlobProperty> lazyLoadedBlobProperties;
+  private final List<ColumnProperty> lazyLoadedBlobProperties;
   private final List<ColumnProperty> selectableColumnProperties;
   private final List<ColumnProperty> primaryKeyProperties;
   private final Map<String, ColumnProperty> primaryKeyPropertyMap;
@@ -181,7 +180,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     this.caption = entityId;
     this.propertyMap = initializePropertyMap(entityId, propertyBuilders);
     this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
-    this.propertySet = new HashSet<>(propertyMap.values());
     this.visibleProperties = unmodifiableList(getVisibleProperties(propertyMap.values()));
     this.columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
     this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties(columnProperties);
@@ -469,12 +467,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /** {@inheritDoc} */
   @Override
-  public Set<Property> getPropertySet() {
-    return propertySet;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public List<Property> getProperties() {
     return properties;
   }
@@ -525,7 +517,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /** {@inheritDoc} */
   @Override
-  public List<BlobProperty> getLazyLoadedBlobProperties() {
+  public List<ColumnProperty> getLazyLoadedBlobProperties() {
     return lazyLoadedBlobProperties;
   }
 
@@ -683,10 +675,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
             .map(property -> (TransientProperty) property).collect(toList());
   }
 
-  private static List<BlobProperty> initializeLazyLoadedBlobProperties(final List<ColumnProperty> columnProperties) {
-    return columnProperties.stream().filter(property ->
-            property instanceof BlobProperty && ((BlobProperty) property).isLazyLoaded())
-            .map(property -> (BlobProperty) property).collect(toList());
+  private static List<ColumnProperty> initializeLazyLoadedBlobProperties(final List<ColumnProperty> columnProperties) {
+    return columnProperties.stream().filter(Property::isBlob).filter(property ->
+            !(property instanceof BlobProperty) || !((BlobProperty) property).isEagerlyLoaded()).collect(toList());
   }
 
   private static Map<String, List<DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
@@ -739,7 +730,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   private static List<ColumnProperty> getSelectableProperties(final List<ColumnProperty> columnProperties,
-                                                              final List<BlobProperty> lazyLoadedBlobProperties) {
+                                                              final List<ColumnProperty> lazyLoadedBlobProperties) {
     return columnProperties.stream().filter(property ->
             !lazyLoadedBlobProperties.contains(property)).filter(ColumnProperty::isSelectable).collect(toList());
   }
