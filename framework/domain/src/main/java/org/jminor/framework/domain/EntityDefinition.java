@@ -190,15 +190,15 @@ public interface EntityDefinition extends Serializable {
   /**
    * Returns the default select column properties used when selecting this entity type,
    * this does not include properties where {@link ColumnProperty#isSelectable()} returns false
-   * and {@link BlobProperty}s with {@link BlobProperty#isLazyLoaded()} returning false.
-   * @return a list containing the column properties to include in select queries
+   * and {@link BlobProperty}s with {@link BlobProperty#isEagerlyLoaded()} returning true.
+   * @return a list containing the default column properties to include in select queries
    */
   List<ColumnProperty> getSelectableColumnProperties();
 
   /**
    * @return a list containing all lazy loaded blob properties for this entity type
    */
-  List<BlobProperty> getLazyLoadedBlobProperties();
+  List<ColumnProperty> getLazyLoadedBlobProperties();
 
   /**
    * @return a list containing the non-column-based properties for this entity type

@@ -207,8 +207,12 @@ public class EntityTestUnit {
         return (long) getRandomInteger(property);
       case Types.VARCHAR:
         return getRandomString(property);
-      case Types.BLOB:
-        return getRandomBlob(1024);
+      case Types.BLOB: {
+        if ((property instanceof BlobProperty) && ((BlobProperty) property).isEagerlyLoaded()) {
+          return getRandomBlob(1024);
+        }
+        //fallthrough to null
+      }
       default:
         return null;
     }
@@ -363,14 +367,8 @@ public class EntityTestUnit {
           assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
                   && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
         }
-        else if (property.isBlob()) {
-          final BlobProperty blobProperty = (BlobProperty) property;
-          if (blobProperty.isLazyLoaded()) {
-            assertArrayEquals((byte[]) beforeUpdate, connection.readBlob(testEntity.getKey(), blobProperty.getPropertyId()), message);
-          }
-          else {
-            assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
-          }
+        else if (property.isBlob() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
+          assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
         }
         else {
           assertEquals(beforeUpdate, afterUpdate, message);

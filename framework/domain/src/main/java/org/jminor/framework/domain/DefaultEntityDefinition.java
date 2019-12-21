@@ -158,7 +158,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private final List<Property> properties;
   private final List<Property> visibleProperties;
   private final List<ColumnProperty> columnProperties;
-  private final List<BlobProperty> lazyLoadedBlobProperties;
+  private final List<ColumnProperty> lazyLoadedBlobProperties;
   private final List<ColumnProperty> selectableColumnProperties;
   private final List<ColumnProperty> primaryKeyProperties;
   private final Map<String, ColumnProperty> primaryKeyPropertyMap;
@@ -517,7 +517,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /** {@inheritDoc} */
   @Override
-  public List<BlobProperty> getLazyLoadedBlobProperties() {
+  public List<ColumnProperty> getLazyLoadedBlobProperties() {
     return lazyLoadedBlobProperties;
   }
 
@@ -675,10 +675,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
             .map(property -> (TransientProperty) property).collect(toList());
   }
 
-  private static List<BlobProperty> initializeLazyLoadedBlobProperties(final List<ColumnProperty> columnProperties) {
-    return columnProperties.stream().filter(property ->
-            property instanceof BlobProperty && ((BlobProperty) property).isLazyLoaded())
-            .map(property -> (BlobProperty) property).collect(toList());
+  private static List<ColumnProperty> initializeLazyLoadedBlobProperties(final List<ColumnProperty> columnProperties) {
+    return columnProperties.stream().filter(Property::isBlob).filter(property ->
+            !(property instanceof BlobProperty) || !((BlobProperty) property).isEagerlyLoaded()).collect(toList());
   }
 
   private static Map<String, List<DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
@@ -731,7 +730,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   private static List<ColumnProperty> getSelectableProperties(final List<ColumnProperty> columnProperties,
-                                                              final List<BlobProperty> lazyLoadedBlobProperties) {
+                                                              final List<ColumnProperty> lazyLoadedBlobProperties) {
     return columnProperties.stream().filter(property ->
             !lazyLoadedBlobProperties.contains(property)).filter(ColumnProperty::isSelectable).collect(toList());
   }

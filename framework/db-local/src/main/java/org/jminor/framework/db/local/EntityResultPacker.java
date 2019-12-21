@@ -7,7 +7,6 @@ import org.jminor.common.db.ResultPacker;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
-import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.Property;
@@ -74,9 +73,9 @@ final class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   private void addLazyLoadedBlobNullValues(final Map<Property, Object> values) {
-    final List<BlobProperty> lazyLoadedBlobProperties = definition.getLazyLoadedBlobProperties();
+    final List<ColumnProperty> lazyLoadedBlobProperties = definition.getLazyLoadedBlobProperties();
     for (int i = 0; i < lazyLoadedBlobProperties.size(); i++) {
-      final BlobProperty blobProperty = lazyLoadedBlobProperties.get(i);
+      final ColumnProperty blobProperty = lazyLoadedBlobProperties.get(i);
       if (!values.containsKey(blobProperty)) {
         values.put(blobProperty, null);
       }

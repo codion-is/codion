@@ -9,9 +9,9 @@ package org.jminor.framework.domain.property;
 public interface BlobProperty extends ColumnProperty {
 
   /**
-   * @return true if this value should not be loaded eagerly when selected
+   * @return true if this value should be loaded eagerly when selected
    */
-  boolean isLazyLoaded();
+  boolean isEagerlyLoaded();
 
   /**
    * Provides setters for BlobProperty properties
@@ -25,9 +25,9 @@ public interface BlobProperty extends ColumnProperty {
 
     /**
      * Specifies whether the value should be loaded eagerly when selected
-     * @param lazyLoaded if true then this value is not loaded automatically when selected
+     * @param eagerlyLoaded if true then this value is loaded automatically when entities are selected
      * @return this instance
      */
-    BlobProperty.Builder setLazyLoaded(boolean lazyLoaded);
+    BlobProperty.Builder setEagerlyLoaded(boolean eagerlyLoaded);
   }
 }

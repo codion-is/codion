@@ -116,9 +116,9 @@ public final class TestDomain extends Domain {
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100),
-            blobProperty(EMP_DATA_LAZY)
-                    .setLazyLoaded(true),
-            blobProperty(EMP_DATA))
+            columnProperty(EMP_DATA_LAZY, Types.BLOB),
+            blobProperty(EMP_DATA)
+                    .setEagerlyLoaded(true))
             .setStringProvider(new StringProvider(EMP_NAME))
             .setKeyGenerator(increment("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)

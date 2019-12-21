@@ -638,6 +638,39 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
+  public void optimisticLockingBlob() throws Exception {
+    final DefaultLocalEntityConnection baseConnection = initializeConnection();
+    final DefaultLocalEntityConnection optimisticConnection = initializeConnection();
+    optimisticConnection.setOptimisticLocking(true);
+    Entity updatedEmployee = null;
+    try {
+      final Random random = new Random();
+      final byte[] bytes = new byte[1024];
+      random.nextBytes(bytes);
+
+      final Entity employee = baseConnection.selectSingle(T_EMP, EMP_NAME, "BLAKE");
+      employee.put(EMP_DATA, bytes);
+      updatedEmployee = baseConnection.update(singletonList(employee)).get(0);
+
+      random.nextBytes(bytes);
+      employee.put(EMP_DATA, bytes);
+
+      try {
+        optimisticConnection.update(singletonList(employee));
+        fail("RecordModifiedException should have been thrown");
+      }
+      catch (final RecordModifiedException e) {
+        assertTrue(((Entity) e.getModifiedRow()).valuesEqual(updatedEmployee));
+        assertTrue(((Entity) e.getRow()).valuesEqual(employee));
+      }
+    }
+    finally {
+      baseConnection.disconnect();
+      optimisticConnection.disconnect();
+    }
+  }
+
+  @Test
   public void dualIterator() throws Exception {
     final DefaultLocalEntityConnection connection = initializeConnection();
     final ResultIterator<Entity> deptIterator = connection.iterator(entitySelectCondition(T_DEPARTMENT));
@@ -736,6 +769,7 @@ public class DefaultLocalEntityConnectionTest {
     scott.put(EMP_DATA_LAZY, lazyBytes);
     scott.put(EMP_DATA, bytes);
     connection.update(singletonList(scott));
+    scott.saveAll();
 
     byte[] lazyFromDb = connection.readBlob(scott.getKey(), EMP_DATA_LAZY);
     final byte[] fromDb = connection.readBlob(scott.getKey(), EMP_DATA);

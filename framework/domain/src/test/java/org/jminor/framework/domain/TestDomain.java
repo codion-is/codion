@@ -218,7 +218,7 @@ public final class TestDomain extends Domain {
               return name + " - " + department.getString(DEPARTMENT_NAME);
             }, EMP_NAME, EMP_DEPARTMENT_FK),
             blobProperty(EMP_DATA, "Data")
-                    .setLazyLoaded(true))
+                    .setEagerlyLoaded(true))
             .setKeyGenerator(increment("scott.emp", "empno"))
             .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .setStringProvider(new StringProvider(EMP_NAME))
