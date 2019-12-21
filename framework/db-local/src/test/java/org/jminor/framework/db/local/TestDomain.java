@@ -12,7 +12,6 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.KeyGenerator;
 import org.jminor.framework.domain.StringProvider;
-import org.jminor.framework.domain.property.Properties;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,6 +22,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static org.jminor.framework.domain.KeyGenerators.increment;
+import static org.jminor.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {
 
@@ -52,11 +52,11 @@ public final class TestDomain extends Domain {
 
   void department() {
     define(T_DEPARTMENT,
-            Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
+            primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
+            columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
+            columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
@@ -94,31 +94,31 @@ public final class TestDomain extends Domain {
 
   void employee() {
     define(T_EMP,
-            Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
-            Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
+            primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
+            columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
                     .setMaxLength(10).setNullable(false),
-            Properties.foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
-                    Properties.columnProperty(EMP_DEPARTMENT))
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
+                    columnProperty(EMP_DEPARTMENT))
                     .setNullable(false),
-            Properties.valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
+            valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
-            Properties.columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
+            columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
-            Properties.columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
+            columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2),
-            Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    Properties.columnProperty(EMP_MGR))
+            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
+                    columnProperty(EMP_MGR))
                     //not really soft, just for testing purposes
                     .setSoftReference(true),
-            Properties.columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
+            columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
                     .setNullable(false),
-            Properties.columnProperty(EMP_HIRETIME, Types.TIMESTAMP, EMP_HIRETIME),
-            Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
+            columnProperty(EMP_HIRETIME, Types.TIMESTAMP, EMP_HIRETIME),
+            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100),
-            Properties.blobProperty(EMP_DATA_LAZY)
+            blobProperty(EMP_DATA_LAZY)
                     .setLazyLoaded(true),
-            Properties.blobProperty(EMP_DATA))
+            blobProperty(EMP_DATA))
             .setStringProvider(new StringProvider(EMP_NAME))
             .setKeyGenerator(increment("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
@@ -146,8 +146,8 @@ public final class TestDomain extends Domain {
       }
     };
     define(T_UUID_TEST_DEFAULT,
-            Properties.primaryKeyProperty(UUID_TEST_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
-            Properties.columnProperty(UUID_TEST_DEFAULT_DATA, Types.VARCHAR, "Data"))
+            primaryKeyProperty(UUID_TEST_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
+            columnProperty(UUID_TEST_DEFAULT_DATA, Types.VARCHAR, "Data"))
             .setKeyGenerator(uuidKeyGenerator);
   }
 
@@ -163,8 +163,8 @@ public final class TestDomain extends Domain {
       }
     };
     define(T_UUID_TEST_NO_DEFAULT,
-            Properties.primaryKeyProperty(UUID_TEST_NO_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
-            Properties.columnProperty(UUID_TEST_NO_DEFAULT_DATA, Types.VARCHAR, "Data"))
+            primaryKeyProperty(UUID_TEST_NO_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
+            columnProperty(UUID_TEST_NO_DEFAULT_DATA, Types.VARCHAR, "Data"))
             .setKeyGenerator(uuidKeyGenerator);
   }
 
@@ -186,7 +186,7 @@ public final class TestDomain extends Domain {
 
   private void groupByQuery() {
     define(GROUP_BY_QUERY_ENTITY_ID, "scott.emp",
-            Properties.columnProperty("job", Types.VARCHAR)
+            columnProperty("job", Types.VARCHAR)
                     .setPrimaryKeyIndex(0)
                     .setGroupingColumn(true))
             .setHavingClause("job <> 'PRESIDENT'");
@@ -197,8 +197,8 @@ public final class TestDomain extends Domain {
 
   private void joinedQuery() {
     define(JOINED_QUERY_ENTITY_ID,
-            Properties.primaryKeyProperty("e.empno"),
-            Properties.columnProperty("d.deptno", Types.INTEGER))
+            primaryKeyProperty("e.empno"),
+            columnProperty("d.deptno", Types.INTEGER))
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
             .addConditionProvider(JOINED_QUERY_CONDITION_ID, (propetyIds, values) -> "d.deptno = 10");
   }
