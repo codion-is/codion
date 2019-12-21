@@ -75,19 +75,18 @@ public final class Entities {
   }
 
   /**
-   * Returns all {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
-   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}
+   * Returns all writable {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
+   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
+   * Note that blob values are not compared.
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
-   * @param includeReadOnlyProperties if true then readOnly properties are included in the comparison
    * @return the properties which values differ from the ones in the comparison entity
    */
-  public static List<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison,
-                                                                 final boolean includeReadOnlyProperties) {
+  public static List<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
     //BLOB property values are not loaded, so we can't compare those
     return comparison.keySet().stream().filter(property ->
             property instanceof ColumnProperty
-                    && (!property.isReadOnly() || includeReadOnlyProperties)
+                    && !property.isReadOnly()
                     && !property.isType(Types.BLOB)
                     && isValueMissingOrModified(entity, comparison, property.getPropertyId()))
             .map(property -> (ColumnProperty) property).collect(toList());
