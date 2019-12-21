@@ -445,17 +445,15 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final String getTableDataAsDelimitedString(final char delimiter) {
-    final List<String> headerValues = new ArrayList<>();
+    final List<String> header = new ArrayList<>();
     final List<Property> properties = new ArrayList<>();
     columns.forEach(entityTableColumn -> {
       final Property property = ((PropertyTableColumn) entityTableColumn).getProperty();
       properties.add(property);
-      headerValues.add(property.getCaption());
+      header.add(property.getCaption());
     });
 
-    final String[][] header = {headerValues.toArray(new String[0])};
-
-    return TextUtil.getDelimitedString(header, Entities.getStringValueArray(properties,
+    return TextUtil.getDelimitedString(header, Entities.getStringValueList(properties,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }

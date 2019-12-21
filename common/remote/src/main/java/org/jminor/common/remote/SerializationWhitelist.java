@@ -3,9 +3,6 @@
  */
 package org.jminor.common.remote;
 
-import org.jminor.common.FileUtil;
-import org.jminor.common.Util;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
 import static org.jminor.common.Util.nullOrEmpty;
 
 /**
@@ -58,8 +56,8 @@ public final class SerializationWhitelist {
       try {
         final File file = new File(whitelist);
         file.createNewFile();
-        FileUtil.writeFile(serialFilter.deserializedClasses.stream().map(Class::getName).sorted()
-                .collect(Collectors.joining(Util.LINE_SEPARATOR)), file);
+        Files.write(file.toPath(), serialFilter.deserializedClasses.stream()
+                .map(Class::getName).sorted().collect(toList()));
         LOG.debug("Serialization whitelist written: " + whitelist);
       }
       catch (final Exception e) {

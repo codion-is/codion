@@ -269,20 +269,20 @@ public final class Entities {
   }
 
   /**
-   * Creates a two dimensional array containing the values of the given properties for the given entities in string format.
+   * Creates a two dimensional list containing the values of the given properties for the given entities in string format.
    * @param properties the properties
    * @param entities the entities
-   * @return the values of the given properties from the given entities in a two dimensional array
+   * @return the values of the given properties from the given entities in a two dimensional list
    */
-  public static String[][] getStringValueArray(final List<? extends Property> properties, final List<Entity> entities) {
-    final String[][] data = new String[entities.size()][];
-    for (int i = 0; i < data.length; i++) {
-      final List<String> line = new ArrayList<>();
+  public static List<List<String>> getStringValueList(final List<? extends Property> properties,
+                                                      final List<Entity> entities) {
+    final List<List<String>> data = new ArrayList<>();
+    for (final Entity entity : entities) {
+      final List<String> line = new ArrayList<>(properties.size());
       for (final Property property : properties) {
-        line.add(entities.get(i).getAsString(property));
+        line.add(entity.getAsString(property));
       }
-
-      data[i] = line.toArray(new String[0]);
+      data.add(line);
     }
 
     return data;

@@ -558,18 +558,16 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final String getTableDataAsDelimitedString(final char delimiter) {
-    final List<String> headerValues = new ArrayList<>();
+    final List<String> header = new ArrayList<>();
     final List<Property> properties = new ArrayList<>();
     final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
       properties.add(property);
-      headerValues.add(property.getCaption());
+      header.add(property.getCaption());
     }
 
-    final String[][] header = {headerValues.toArray(new String[0])};
-
-    return TextUtil.getDelimitedString(header, Entities.getStringValueArray(properties,
+    return TextUtil.getDelimitedString(header, Entities.getStringValueList(properties,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }

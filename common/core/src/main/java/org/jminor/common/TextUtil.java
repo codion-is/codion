@@ -20,6 +20,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
@@ -64,13 +66,11 @@ public final class TextUtil {
     if (minLength > maxLength) {
       throw new IllegalArgumentException("Minimum length can not exceed maximum length");
     }
-    final StringBuilder sb = new StringBuilder();
     final int length = minLength == maxLength ? minLength : RANDOM.nextInt(maxLength - minLength) + minLength;
-    for (int i = 0; i < length; i++) {
-      sb.append(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length())));
-    }
 
-    return sb.toString();
+    return IntStream.range(0, length).mapToObj(i ->
+            String.valueOf(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length()))))
+            .collect(Collectors.joining());
   }
 
   /**
@@ -155,24 +155,20 @@ public final class TextUtil {
   }
 
   /**
-   * @param headers the headers
-   * @param data the data
-   * @param delimiter the delimiter
-   * @return a String comprised of the given headers and data with the given delimiter
+   * @param header the header
+   * @param lines the lines
+   * @param columnDelimiter the column delimiter
+   * @return a String comprised of the given header and lines with the given column delimiter
    */
-  public static String getDelimitedString(final String[][] headers, final String[][] data, final String delimiter) {
-    requireNonNull(headers, "headers");
-    requireNonNull(data, "data");
-    requireNonNull(delimiter, "delimiter");
+  public static String getDelimitedString(final List<String> header, final List<List<String>> lines,
+                                          final String columnDelimiter) {
+    requireNonNull(header, "header");
+    requireNonNull(lines, "lines");
+    requireNonNull(columnDelimiter, "delimiter");
     final StringBuilder contents = new StringBuilder();
-    for (final String[] header : headers) {
-      contents.append(String.join(delimiter, header)).append(Util.LINE_SEPARATOR);
-    }
-    for (final String[] line : data) {
-      contents.append(String.join(delimiter, line)).append(Util.LINE_SEPARATOR);
-    }
-    //remove the last line separator
-    contents.replace(contents.length() - Util.LINE_SEPARATOR.length(), contents.length(), "");
+    contents.append(String.join(columnDelimiter, header)).append(Util.LINE_SEPARATOR)
+            .append(lines.stream().map(line -> String.join(columnDelimiter, line))
+                    .collect(Collectors.joining(Util.LINE_SEPARATOR)));
 
     return contents.toString();
   }

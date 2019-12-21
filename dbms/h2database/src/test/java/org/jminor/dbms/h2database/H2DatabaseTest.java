@@ -3,7 +3,6 @@
  */
 package org.jminor.dbms.h2database;
 
-import org.jminor.common.FileUtil;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
@@ -12,10 +11,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class H2DatabaseTest {
@@ -62,8 +63,8 @@ public class H2DatabaseTest {
   public void multipleDatabases() throws DatabaseException, SQLException, IOException {
     final File file1 = File.createTempFile("h2db_test_1", ".sql");
     final File file2 = File.createTempFile("h2db_test_2", ".sql");
-    FileUtil.writeFile("create schema scott; create table scott.test1 (id int);", file1);
-    FileUtil.writeFile("create schema scott; create table scott.test2 (id int);", file2);
+    Files.write(file1.toPath(), singletonList("create schema scott; create table scott.test1 (id int);"));
+    Files.write(file2.toPath(), singletonList("create schema scott; create table scott.test2 (id int);"));
     final User user = new User("sa", null);
     final H2Database db1 = new H2Database("test1", file1.getAbsolutePath(), true);
     final H2Database db2 = new H2Database("test2", file2.getAbsolutePath(), true);
@@ -73,5 +74,7 @@ public class H2DatabaseTest {
     connection2.prepareCall("select id from scott.test2").executeQuery();
     connection1.close();
     connection2.close();
+    file1.delete();
+    file2.delete();
   }
 }
