@@ -17,7 +17,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -26,8 +25,8 @@ import java.util.function.Function;
 public interface EntityDefinition extends Serializable {
 
   /**
-   * Specifies that it should not be possible to define foreign keys referencing entities that have
-   * not been defined, this can be disabled in case of entities with circular references<br>
+   * Specifies whether it should be possible to define foreign keys referencing entities that have
+   * not been defined, this can be disabled in cases where entities with circular references<br>
    * Value type: Boolean<br>
    * Default value: true
    */
@@ -147,11 +146,6 @@ public interface EntityDefinition extends Serializable {
    * a default lookup for this entity type
    */
   Collection<String> getSearchPropertyIds();
-
-  /**
-   * @return a Set containing all the properties in this entity
-   */
-  Set<Property> getPropertySet();
 
   /**
    * @return a unmodifiable list view of the properties

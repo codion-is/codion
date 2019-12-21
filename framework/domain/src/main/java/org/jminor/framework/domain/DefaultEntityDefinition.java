@@ -156,7 +156,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   private final Map<String, Property> propertyMap;
   private final List<Property> properties;
-  private final Set<Property> propertySet;
   private final List<Property> visibleProperties;
   private final List<ColumnProperty> columnProperties;
   private final List<BlobProperty> lazyLoadedBlobProperties;
@@ -181,7 +180,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     this.caption = entityId;
     this.propertyMap = initializePropertyMap(entityId, propertyBuilders);
     this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
-    this.propertySet = new HashSet<>(propertyMap.values());
     this.visibleProperties = unmodifiableList(getVisibleProperties(propertyMap.values()));
     this.columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
     this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties(columnProperties);
@@ -465,12 +463,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
   @Override
   public List<ForeignKeyProperty> getForeignKeyProperties(final String columnPropertyId) {
     return columpPropertyForeignKeyProperties.computeIfAbsent(columnPropertyId, propertyId -> Collections.emptyList());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Set<Property> getPropertySet() {
-    return propertySet;
   }
 
   /** {@inheritDoc} */
