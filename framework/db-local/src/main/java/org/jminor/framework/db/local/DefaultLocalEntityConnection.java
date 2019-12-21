@@ -962,6 +962,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try {
       logAccess("executePreparedUpdate", new Object[] {sqlStatement, statementValues});
       setParameterValues(statement, statementProperties, statementValues);
+
       return statement.executeUpdate();
     }
     catch (final SQLException e) {

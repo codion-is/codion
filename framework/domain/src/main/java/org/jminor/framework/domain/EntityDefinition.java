@@ -296,8 +296,8 @@ public interface EntityDefinition extends Serializable {
    * @return a list containing the writable column properties (properties that map to database columns) comprising
    * the entity identified by {@code entityId}
    */
-  List<ColumnProperty> getWritableColumnProperties(boolean includePrimaryKeyProperties,
-                                                   boolean includeNonUpdatable);
+  List<ColumnProperty> getWritableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
+
   /**
    * @return a list containing all updatable properties associated with the given entity id
    */
