@@ -454,12 +454,12 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   /**
    * @param clientId the client ID
-   * @param status the new logging status
+   * @param loggingEnabled the new logging status
    */
-  final void setLoggingEnabled(final UUID clientId, final boolean status) {
+  final void setLoggingEnabled(final UUID clientId, final boolean loggingEnabled) {
     final AbstractRemoteEntityConnection connection = getConnection(clientId);
     if (connection != null) {
-      connection.setLoggingEnabled(status);
+      connection.setLoggingEnabled(loggingEnabled);
     }
   }
 

@@ -115,13 +115,13 @@ public final class FXUiUtil {
    * Displays a dialog for selecting one or more of the given values
    * @param values the values from which to choose
    * @param <T> the type of values
-   * @param single if true then only a single value can be selected
+   * @param singleSelection if true then only a single value can be selected
    * @return the selected values
    * @throws CancelException in case the user cancels the operation
    */
-  public static <T> List<T> selectValues(final List<T> values, final boolean single) {
+  public static <T> List<T> selectValues(final List<T> values, final boolean singleSelection) {
     final ListView<T> listView = new ListView<>(FXCollections.observableArrayList(values));
-    listView.getSelectionModel().setSelectionMode(single ? SelectionMode.SINGLE : SelectionMode.MULTIPLE);
+    listView.getSelectionModel().setSelectionMode(singleSelection ? SelectionMode.SINGLE : SelectionMode.MULTIPLE);
     final Dialog<List<T>> dialog = new Dialog<>();
     dialog.getDialogPane().setContent(listView);
     dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);

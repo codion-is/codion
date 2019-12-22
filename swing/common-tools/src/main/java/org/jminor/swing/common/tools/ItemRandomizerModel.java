@@ -94,9 +94,9 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   /** {@inheritDoc} */
   @Override
-  public final void setItemEnabled(final T item, final boolean value) {
-    getRandomItem(item).setEnabled(value);
-    enabledChangedEvent.fire(value);
+  public final void setItemEnabled(final T item, final boolean enabled) {
+    getRandomItem(item).setEnabled(enabled);
+    enabledChangedEvent.fire(enabled);
   }
 
   /** {@inheritDoc} */
