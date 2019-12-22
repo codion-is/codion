@@ -5512,4 +5512,4 @@
   EntityTestUnit.createRandomDouble() no longer performs rounding
   jminor.unittest.username and jminor.unittest.password properties replaced with jminor.test.user
   EntityTestUnit.getTestUser() removed, user constructor parameter added, by default jminor.test.user
-  Formats.getNonGroupingIntegerFormat() added
+  DefaultValueMap.handlePut() initialization parameter removed, unused

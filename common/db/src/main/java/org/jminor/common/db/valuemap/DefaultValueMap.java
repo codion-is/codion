@@ -91,7 +91,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (!initialization) {
       updateOriginalValue(key, newValue, previousValue);
     }
-    handlePut(key, newValue, previousValue, initialization);
+    handlePut(key, newValue, previousValue);
     if (valueChangedEvent != null) {
       notifyValueChange(key, newValue, previousValue, initialization);
     }
@@ -340,9 +340,8 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * @param key the key
    * @param value the value
    * @param previousValue the previous value
-   * @param initialization true if the value was being initialized
    */
-  protected void handlePut(final K key, final V value, final V previousValue, final boolean initialization) {/*Provided for subclasses*/}
+  protected void handlePut(final K key, final V value, final V previousValue) {/*Provided for subclasses*/}
 
   /**
    * Called after the value map has been cleared. This base implementation does nothing.

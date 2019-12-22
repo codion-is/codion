@@ -544,8 +544,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  protected void handlePut(final Property property, final Object value, final Object previousValue,
-                           final boolean initialization) {
+  protected void handlePut(final Property property, final Object value, final Object previousValue) {
     if (property instanceof ColumnProperty) {
       final ColumnProperty columnProperty = (ColumnProperty) property;
       if (columnProperty.isPrimaryKeyProperty()) {
