@@ -252,7 +252,7 @@ abstract class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isBlob() {
+  public final boolean isBlob() {
     return isType(Types.BLOB);
   }
 
@@ -264,7 +264,7 @@ abstract class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public String getEntityId() {
+  public final String getEntityId() {
     return entityId;
   }
 
@@ -300,7 +300,7 @@ abstract class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public boolean hasDefaultValue() {
+  public final boolean hasDefaultValue() {
     return !(this.defaultValueProvider instanceof NullDefaultValueProvider);
   }
 
@@ -312,7 +312,7 @@ abstract class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isNullable() {
+  public final boolean isNullable() {
     return nullable;
   }
 
@@ -378,7 +378,7 @@ abstract class DefaultProperty implements Property {
   @Override
   public final int getMaximumFractionDigits() {
     if (!(format instanceof NumberFormat)) {
-      throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
+      throw new IllegalStateException("Maximum fraction digits are only apply to numerical formats");
     }
 
     return ((NumberFormat) format).getMaximumFractionDigits();
@@ -386,12 +386,8 @@ abstract class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public String getCaption() {
-    if (caption == null) {
-      return propertyId;
-    }
-
-    return caption;
+  public final String getCaption() {
+    return caption == null ? propertyId : caption;
   }
 
   /** {@inheritDoc} */
@@ -437,7 +433,7 @@ abstract class DefaultProperty implements Property {
     return value;
   }
 
-  protected void setReadOnly(final boolean readOnly) {
+  protected final void setReadOnly(final boolean readOnly) {
     this.readOnly = readOnly;
   }
 
