@@ -13,7 +13,6 @@ import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.PropertyValue;
@@ -32,7 +31,7 @@ import java.util.Map;
 /**
  * Specifies a class for editing {@link Entity} instances.
  */
-public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Refreshable {
+public interface EntityEditModel extends Refreshable {
 
   /**
    * Specifies whether foreign key values should persist when the UI is cleared or be reset to null<br>
@@ -133,10 +132,28 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   boolean isNull(String propertyId);
 
   /**
+   * @param property the property
+   * @return true if the value of the given property is null
+   */
+  boolean isNull(Property property);
+
+  /**
    * @param propertyId the ID of the property
    * @return true if the value of the given property is not null
    */
   boolean isNotNull(String propertyId);
+
+  /**
+   * @param property the property
+   * @return true if the value of the given property is not null
+   */
+  boolean isNotNull(Property property);
+
+  /**
+   * @param property the property
+   * @return true if this value is allowed to be null in the underlying entity
+   */
+  boolean isNullable(Property property);
 
   /**
    * Sets the given value in the underlying value map
@@ -146,6 +163,13 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   void put(String propertyId, Object value);
 
   /**
+   * Sets the given value in the underlying value map
+   * @param property the property to associate the given value with
+   * @param value the value to associate with the given property
+   */
+  void put(Property property, Object value);
+
+  /**
    * Removes the given value from the underlying value map
    * @param propertyId the ID of the property
    * @return the value, if any
@@ -153,11 +177,25 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   Object remove(String propertyId);
 
   /**
+   * Removes the given value from the map
+   * @param property the property associated with the value to remove
+   * @return the value, if any
+   */
+  Object remove(Property property);
+
+  /**
    * Returns the value associated with the given property
    * @param propertyId the ID of the property
    * @return the value associated with the given property
    */
   Object get(String propertyId);
+
+  /**
+   * Returns the value associated with the given property in the underlying value map
+   * @param property the property of the value to retrieve
+   * @return the value associated with the given property
+   */
+  Object get(Property property);
 
   /**
    * Returns the value associated with the given propertyId assuming it
@@ -447,6 +485,60 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param values the entities
    */
   void setForeignKeyValues(List<Entity> values);
+
+  /**
+   * @return the validator
+   */
+  Entity.Validator getValidator();
+
+  /**
+   * Checks if the value associated with the given property is valid, throws a ValidationException if not
+   * @param property the property the value is associated with
+   * @throws ValidationException if the given value is not valid for the given property
+   */
+  void validate(Property property) throws ValidationException;
+
+  /**
+   * Validates the current state of the entity
+   * @throws ValidationException in case the entity is invalid
+   */
+  void validate() throws ValidationException;
+
+  /**
+   * Validates the current state of the given entity
+   * @param entity the entity to validate
+   * @throws ValidationException in case the entity is invalid
+   */
+  void validate(Entity entity) throws ValidationException;
+
+  /**
+   * Validates the given entities
+   * @param entities the entities to validate
+   * @throws ValidationException on finding the first invalid entity
+   */
+  void validate(Collection<Entity> entities) throws ValidationException;
+
+  /**
+   * Returns true if the value associated with the given key is valid, using the {@code validate} method
+   * @param key the key the value is associated with
+   * @return true if the value is valid
+   * @see #validate(Object)
+   * @see ValueMap.Validator#validate(ValueMap)
+   */
+  boolean isValid(Property key);
+
+  /**
+   * @return true if the underlying value map contains only valid values
+   * @see #getValidObserver()
+   */
+  boolean isValid();
+
+    /**
+   * @return a StateObserver indicating the valid status of the underlying value map
+   * @see #getValidator()
+   * @see #isValid()
+   */
+  StateObserver getValidObserver();
 
   /**
    * Returns a StateObserver responsible for indicating when and if any values in the underlying Entity are modified.

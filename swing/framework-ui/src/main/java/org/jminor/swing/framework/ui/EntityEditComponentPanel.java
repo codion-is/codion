@@ -24,7 +24,6 @@ import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
-import org.jminor.swing.common.ui.valuemap.ValueLinkValidators;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.ComboBoxModel;
@@ -391,7 +390,7 @@ public class EntityEditComponentPanel extends JPanel {
     final Property property = getEditModel().getEntityDefinition().getProperty(propertyId);
     final JTextArea textArea = EntityUiUtil.createTextArea(property,
             getEditModel().value(property.getPropertyId()), rows, columns, updateOnKeystroke, enabledState);
-    ValueLinkValidators.addValidator(property, textArea, getEditModel());
+    EntityComponentValidators.addValidator(property, textArea, getEditModel());
     setComponent(propertyId, textArea);
 
     return textArea;
@@ -680,10 +679,10 @@ public class EntityEditComponentPanel extends JPanel {
             getEditModel().value(property.getPropertyId()), maskString, updateOnKeystroke,
             enabledState, valueIncludesLiteralCharacters);
     if (property.isString() && maskString != null) {
-      ValueLinkValidators.addFormattedValidator(property, textField, getEditModel());
+      EntityComponentValidators.addFormattedValidator(property, textField, getEditModel());
     }
     else {
-      ValueLinkValidators.addValidator(property, textField, getEditModel());
+      EntityComponentValidators.addValidator(property, textField, getEditModel());
     }
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter(textField);

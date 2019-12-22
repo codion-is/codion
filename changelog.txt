@@ -5518,3 +5518,4 @@
   DefaultEntityKey.validateAndPrepare() now calls property.prepareValue() as well as validateType()
   DefaultProperty, a few methods missing the final keyword
   ValueMapEditModel.addValueSetListener() renamed to addValuePutListener()
+  ValueMapEditModel merged into EntityEditModel
