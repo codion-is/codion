@@ -5513,3 +5513,4 @@
   jminor.unittest.username and jminor.unittest.password properties replaced with jminor.test.user
   EntityTestUnit.getTestUser() removed, user constructor parameter added, by default jminor.test.user
   DefaultValueMap.handlePut() initialization parameter removed, unused
+  DefaultColumnConditionModel caseSensitive constructor parameter removed, unused
