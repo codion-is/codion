@@ -18,11 +18,13 @@ import org.jminor.framework.domain.property.DerivedProperty;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.domain.Entities.getModifiedEntities;
@@ -167,16 +169,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     columnProperty(CUSTOMER_SUPPORTREPID, Types.BIGINT)))
             .setKeyGenerator(automatic("chinook.customer"))
             .setOrderBy(orderBy().ascending(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME))
-            .setStringProvider(customer -> {
-              final StringBuilder builder =
-                      new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
-                              .append(", ").append(customer.getString(CUSTOMER_FIRSTNAME));
-              if (customer.isNotNull(CUSTOMER_EMAIL)) {
-                builder.append(" <").append(customer.getString(CUSTOMER_EMAIL)).append(">");
-              }
-
-              return builder.toString();
-            })
+            .setStringProvider(new CustomerStringProvider())
             .setSearchPropertyIds(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
             .setCaption("Customers");
   }
@@ -430,6 +423,21 @@ public final class ChinookImpl extends Domain implements Chinook {
       catch (final IOException e) {
         throw new RuntimeException(e);
       }
+    }
+  }
+
+  private static final class CustomerStringProvider implements Function<Entity, String>, Serializable {
+
+    @Override
+    public String apply(final Entity customer) {
+      final StringBuilder builder =
+              new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
+                      .append(", ").append(customer.getString(CUSTOMER_FIRSTNAME));
+      if (customer.isNotNull(CUSTOMER_EMAIL)) {
+        builder.append(" <").append(customer.getString(CUSTOMER_EMAIL)).append(">");
+      }
+
+      return builder.toString();
     }
   }
 }
