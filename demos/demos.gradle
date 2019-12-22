@@ -44,8 +44,7 @@ test {
     systemProperty "jminor.db.embedded", "true"
     systemProperty "jminor.db.embeddedInMemory", "true"
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.unittest.username", "scott"
-    systemProperty "jminor.unittest.password", "tiger"
+    systemProperty "jminor.test.user", "scott:tiger"
 }
 
 startScripts {

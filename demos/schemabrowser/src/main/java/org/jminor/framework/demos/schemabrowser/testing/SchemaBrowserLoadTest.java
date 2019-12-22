@@ -19,9 +19,8 @@ import static java.util.Collections.singletonList;
 
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final UsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> SCENARIO
           = new AbstractEntityUsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel>() {

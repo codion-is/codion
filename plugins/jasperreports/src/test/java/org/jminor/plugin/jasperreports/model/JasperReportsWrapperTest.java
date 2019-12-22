@@ -24,9 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JasperReportsWrapperTest {
 
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final String REPORT_PATH = "build/classes/reports/test/empdept_employees.jasper";
 

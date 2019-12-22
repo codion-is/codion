@@ -12,20 +12,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class AbstractEntityConnectionProviderTest {
 
-  private static final User USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final TestDomain DOMAIN = new TestDomain();
 
   @Test
   public void connectDisconnect() {
-    final EntityConnectionProvider provider = new TestProvider().setUser(USER);
+    final EntityConnectionProvider provider = new TestProvider().setUser(UNIT_TEST_USER);
     assertEquals("description", provider.getDescription());
     assertEquals("localhost", provider.getServerHostName());
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.getConnectionType());
     assertEquals(provider.getDomain(), DOMAIN);
-    assertEquals(USER, provider.getUser());
+    assertEquals(UNIT_TEST_USER, provider.getUser());
 
     final EntityConnection connection1 = provider.getConnection();
     assertTrue(provider.isConnectionValid());
@@ -41,7 +40,7 @@ public final class AbstractEntityConnectionProviderTest {
     final EntityConnection connection3 = provider.getConnection();
     assertNotEquals(connection2, connection3);
 
-    provider.setUser(USER);
+    provider.setUser(UNIT_TEST_USER);
     assertFalse(provider.isConnected());
     assertFalse(provider.isConnectionValid());
 

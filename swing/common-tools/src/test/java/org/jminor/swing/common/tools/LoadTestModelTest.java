@@ -15,9 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LoadTestModelTest {
 
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final LoadTestModel.UsageScenario SCENARIO = new LoadTestModel.AbstractUsageScenario("test") {
     int counter = 0;

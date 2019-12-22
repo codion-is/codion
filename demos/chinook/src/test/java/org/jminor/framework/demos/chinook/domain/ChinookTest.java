@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.demos.chinook.domain;
 
-import org.jminor.common.User;
-import org.jminor.common.model.CancelException;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.test.EntityTestUnit;
 
@@ -13,10 +11,6 @@ import org.junit.jupiter.api.Test;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class ChinookTest extends EntityTestUnit {
-
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public ChinookTest() {
     super(ChinookImpl.class.getName());
@@ -75,10 +69,5 @@ public class ChinookTest extends EntityTestUnit {
   @Test
   public void track() throws Exception {
     test(T_TRACK);
-  }
-
-  @Override
-  protected User getTestUser() throws CancelException {
-    return UNIT_TEST_USER;
   }
 }

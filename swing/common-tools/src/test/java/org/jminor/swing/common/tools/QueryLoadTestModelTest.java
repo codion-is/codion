@@ -18,9 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class QueryLoadTestModelTest {
 
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
           new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp where ename not like ?") {

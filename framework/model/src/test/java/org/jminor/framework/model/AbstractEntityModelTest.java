@@ -13,7 +13,6 @@ import org.jminor.common.event.EventListener;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 
 import org.junit.jupiter.api.Test;
@@ -36,12 +35,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
         EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
-  protected static final Domain DOMAIN = new TestDomain();
-
-  protected static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
-
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 
@@ -56,7 +51,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.refresh();
     final EntityEditModel deptEditModel = departmentModel.getEditModel();
     final TableModel deptTableModel = departmentModel.getTableModel();
-    final Entity.Key operationsKey = DOMAIN.key(TestDomain.T_DEPARTMENT, 40);//operations
+    final Entity.Key operationsKey = deptEditModel.getDomain().key(TestDomain.T_DEPARTMENT, 40);//operations
     deptTableModel.setSelectedByKey(singletonList(operationsKey));
 
     assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
@@ -277,7 +272,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    final Entity dept = DOMAIN.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept = departmentModel.getConnectionProvider().getDomain().entity(TestDomain.T_DEPARTMENT);
     dept.put(TestDomain.DEPARTMENT_ID, -42);
     dept.put(TestDomain.DEPARTMENT_NAME, "Name");
     dept.put(TestDomain.DEPARTMENT_LOCATION, "Loc");

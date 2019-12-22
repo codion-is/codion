@@ -152,8 +152,7 @@ configure(project.frameworkModules) {
         systemProperty "jminor.db.embedded", "true"
         systemProperty "jminor.db.embeddedInMemory", "true"
         systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
-        systemProperty "jminor.unittest.username", "scott"
-        systemProperty "jminor.unittest.password", "tiger"
+        systemProperty "jminor.test.user", "scott:tiger"
     }.dependsOn createServerKeystore
 }
 

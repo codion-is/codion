@@ -26,9 +26,8 @@ import static java.util.Arrays.asList;
 
 public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   public EmpDeptLoadTest() {
     super(UNIT_TEST_USER, asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),

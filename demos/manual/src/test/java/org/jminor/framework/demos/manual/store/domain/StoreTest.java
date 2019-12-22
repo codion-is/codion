@@ -3,18 +3,12 @@
  */
 package org.jminor.framework.demos.manual.store.domain;
 
-import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.CancelException;
 import org.jminor.framework.domain.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
 public final class StoreTest extends EntityTestUnit {
-
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public StoreTest() {
     super(Store.class.getName());
@@ -28,10 +22,5 @@ public final class StoreTest extends EntityTestUnit {
   @Test
   void customer() throws DatabaseException {
     test(Store.T_CUSTOMER);
-  }
-
-  @Override
-  protected User getTestUser() throws CancelException {
-    return UNIT_TEST_USER;
   }
 }
