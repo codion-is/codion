@@ -8,8 +8,8 @@ public final class DefaultEntityApplicationModelTest extends AbstractEntityAppli
 
   @Override
   protected DefaultEntityModelTest.TestEntityModel createDepartmentModel() {
-    final DefaultEntityModelTest.TestEntityModel deptModel = new DefaultEntityModelTest.TestEntityModel(new DefaultEntityModelTest.TestEntityEditModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER));
-    final DefaultEntityModelTest.TestEntityModel empModel = new DefaultEntityModelTest.TestEntityModel(new DefaultEntityModelTest.TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
+    final DefaultEntityModelTest.TestEntityModel deptModel = new DefaultEntityModelTest.TestEntityModel(new DefaultEntityModelTest.TestEntityEditModel(TestDomain.T_DEPARTMENT, getConnectionProvider()));
+    final DefaultEntityModelTest.TestEntityModel empModel = new DefaultEntityModelTest.TestEntityModel(new DefaultEntityModelTest.TestEntityEditModel(TestDomain.T_EMP, getConnectionProvider()));
     deptModel.addDetailModel(empModel);
     deptModel.addLinkedDetailModel(empModel);
 

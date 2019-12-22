@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.world.domain;
 
-import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.test.EntityTestUnit;
@@ -13,10 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 public final class WorldTest extends EntityTestUnit {
-
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public WorldTest() {
     super(World.class.getName());
@@ -72,10 +67,5 @@ public final class WorldTest extends EntityTestUnit {
     }
 
     return super.initializeReferenceEntity(entityId, foreignKeyEntities);
-  }
-
-  @Override
-  protected User getTestUser() {
-    return UNIT_TEST_USER;
   }
 }

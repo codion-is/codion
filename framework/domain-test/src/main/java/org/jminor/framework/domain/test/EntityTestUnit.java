@@ -3,13 +3,14 @@
  */
 package org.jminor.framework.domain.test;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.Item;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.valuemap.ValueProvider;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
@@ -53,9 +54,7 @@ public class EntityTestUnit {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityTestUnit.class);
 
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
+  public static PropertyValue<String> TEST_USER = Configuration.stringValue("jminor.test.user", null);
 
   private static final int MININUM_RANDOM_NUMBER = -10000000;
   private static final int MAXIMUM_RANDOM_NUMBER = 10000000;
@@ -65,17 +64,30 @@ public class EntityTestUnit {
   private static final String ENTITY_PARAM = "entity";
 
   private final String domainClass;
+  private final User user;
 
   private EntityConnection connection;
   private Domain domain;
 
   /**
    * Instantiates a new EntityTestUnit.
+   * The default database user is based on the {@link #TEST_USER} configuration value.
    * @param domainClass the name of the domain model class
    * @throws NullPointerException in case domainClass is null
    */
   public EntityTestUnit(final String domainClass) {
+    this(domainClass, initializeDefaultUser());
+  }
+
+  /**
+   * Instantiates a new EntityTestUnit.
+   * @param domainClass the name of the domain model class
+   * @param user the user to use when running the tests
+   * @throws NullPointerException in case domainClass or user is null
+   */
+  public EntityTestUnit(final String domainClass, final User user) {
     this.domainClass = requireNonNull(domainClass, "domainClass");
+    this.user = requireNonNull(user, "user");
   }
 
   /**
@@ -233,16 +245,7 @@ public class EntityTestUnit {
    */
   protected EntityConnectionProvider initializeConnectionProvider() {
     return EntityConnectionProviders.connectionProvider().setDomainClassName(domainClass)
-            .setClientTypeId(getClass().getName()).setUser(getTestUser());
-  }
-
-  /**
-   * Returns the database user to use when running the tests, this default implementation returns
-   * a user based on the "jminor.unittest.username" and "jminor.unittest.password" system properties.
-   * @return the db user to use when running the test
-   */
-  protected User getTestUser() {
-    return UNIT_TEST_USER;
+            .setClientTypeId(getClass().getName()).setUser(user);
   }
 
   /**
@@ -418,6 +421,15 @@ public class EntityTestUnit {
     }
   }
 
+  private static User initializeDefaultUser() {
+    final String testUser = TEST_USER.get();
+    if (testUser == null) {
+      throw new IllegalStateException("Required property not available: " + TEST_USER.getProperty());
+    }
+
+    return User.parseUser(testUser);
+  }
+
   private static void populateEntity(final Domain domain, final Entity entity, final Collection<ColumnProperty> properties,
                                      final ValueProvider<Property, Object> valueProvider) {
     for (final ColumnProperty property : properties) {
@@ -468,6 +480,6 @@ public class EntityTestUnit {
     final double min = property.getMin() == null ? MININUM_RANDOM_NUMBER : property.getMin();
     final double max = property.getMax() == null ? MAXIMUM_RANDOM_NUMBER : property.getMax();
 
-    return Util.roundDouble((RANDOM.nextDouble() * (max - min)) + min, property.getMaximumFractionDigits());
+    return RANDOM.nextDouble() * (max - min) + min;
   }
 }

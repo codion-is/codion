@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -572,7 +571,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyId());
     }
 
-    return prepareValue(property, property.validateType(value));
+    return property.prepareValue(property.validateType(value));
   }
 
   private void propagateForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
@@ -832,25 +831,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         }
       }
     }
-  }
-
-  /**
-   * Prepares the value according to the property configuration, such as rounding
-   * to the correct number of fraction digits in case of doubles
-   * @param property the property
-   * @param value the value to prepare
-   * @return the prepared value
-   */
-  private static Object prepareValue(final Property property, final Object value) {
-    if (value != null && property.isDouble()) {
-      return Util.roundDouble((Double) value, property.getMaximumFractionDigits());
-    }
-    if (value != null && property.isBigDecimal()) {
-      return ((BigDecimal) value).setScale(property.getMaximumFractionDigits(),
-              Property.BIG_DECIMAL_ROUNDING_MODE.get()).stripTrailingZeros();
-    }
-
-    return value;
   }
 
   private static void validateProperties(final EntityDefinition definition, final Map<Property, Object> propertyValues) {

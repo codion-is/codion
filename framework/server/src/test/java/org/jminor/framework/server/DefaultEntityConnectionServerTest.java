@@ -44,9 +44,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityConnectionServerTest {
 
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final User ADMIN_USER = new User("scott", "tiger".toCharArray());
   private static final Map<String, Object> CONNECTION_PARAMS =

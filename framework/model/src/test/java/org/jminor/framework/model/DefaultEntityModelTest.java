@@ -31,8 +31,8 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
   @Override
   protected TestEntityModel createDepartmentModel() {
-    final TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER));
-    final TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
+    final TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(TestDomain.T_DEPARTMENT, getConnectionProvider()));
+    final TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(TestDomain.T_EMP, getConnectionProvider()));
     deptModel.addDetailModel(empModel);
     deptModel.addLinkedDetailModel(empModel);
 
@@ -41,17 +41,17 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
   @Override
   protected TestEntityModel createDepartmentModelWithoutDetailModel() {
-    return new TestEntityModel(new TestEntityEditModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER));
+    return new TestEntityModel(new TestEntityEditModel(TestDomain.T_DEPARTMENT, getConnectionProvider()));
   }
 
   @Override
   protected TestEntityModel createEmployeeModel() {
-    return new TestEntityModel(new TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
+    return new TestEntityModel(new TestEntityEditModel(TestDomain.T_EMP, getConnectionProvider()));
   }
 
   @Override
   protected TestEntityEditModel createDepartmentEditModel() {
-    return new TestEntityEditModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    return new TestEntityEditModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
   }
 
   @Override

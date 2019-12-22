@@ -79,8 +79,8 @@ public final class TextUtilTest {
   @Test
   public void getDelimitedString() {
     final String result = "test\ttest2" + Util.LINE_SEPARATOR + "data1\tdata2" + Util.LINE_SEPARATOR + "data3\tdata4";
-    assertEquals(result, TextUtil.getDelimitedString(new String[][] {new String[] {"test", "test2"}},
-            new String[][] {new String[] {"data1", "data2"}, new String[] {"data3", "data4"}}, "\t"));
+    assertEquals(result, TextUtil.getDelimitedString(asList("test", "test2"),
+            asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
   }
 
   @Test

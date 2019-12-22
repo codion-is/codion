@@ -216,7 +216,7 @@ public final class EntitiesTest {
   }
 
   @Test
-  public void getStringValueArray() {
+  public void getStringValueList() {
     final Entity dept1 = domain.entity(TestDomain.T_DEPARTMENT);
     dept1.put(TestDomain.DEPARTMENT_ID, 1);
     dept1.put(TestDomain.DEPARTMENT_NAME, "name1");
@@ -226,14 +226,15 @@ public final class EntitiesTest {
     dept2.put(TestDomain.DEPARTMENT_NAME, "name2");
     dept2.put(TestDomain.DEPARTMENT_LOCATION, "loc2");
 
-    final String[][] strings =
-            Entities.getStringValueArray(domain.getDefinition(TestDomain.T_DEPARTMENT).getColumnProperties(), asList(dept1, dept2));
-    assertEquals("1", strings[0][0]);
-    assertEquals("name1", strings[0][1]);
-    assertEquals("loc1", strings[0][2]);
-    assertEquals("2", strings[1][0]);
-    assertEquals("name2", strings[1][1]);
-    assertEquals("loc2", strings[1][2]);
+    final List<List<String>> strings =
+            Entities.getStringValueList(domain.getDefinition(TestDomain.T_DEPARTMENT)
+                    .getColumnProperties(), asList(dept1, dept2));
+    assertEquals("1", strings.get(0).get(0));
+    assertEquals("name1", strings.get(0).get(1));
+    assertEquals("loc1", strings.get(0).get(2));
+    assertEquals("2", strings.get(1).get(0));
+    assertEquals("name2", strings.get(1).get(1));
+    assertEquals("loc2", strings.get(1).get(2));
   }
 
   @Test

@@ -34,9 +34,8 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicationModel> {
 
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final UsageScenario<ChinookApplicationModel> UPDATE_TOTALS =
           new AbstractEntityUsageScenario<ChinookApplicationModel>("updateTotals") {

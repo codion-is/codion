@@ -25,9 +25,8 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
 
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   public EmpDeptServletLoadTest(final User user) {
     super(user, asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),

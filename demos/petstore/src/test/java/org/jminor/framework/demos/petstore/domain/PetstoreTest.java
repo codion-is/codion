@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.demos.petstore.domain;
 
-import org.jminor.common.User;
-import org.jminor.common.model.CancelException;
 import org.jminor.framework.domain.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -12,10 +10,6 @@ import org.junit.jupiter.api.Test;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 public class PetstoreTest extends EntityTestUnit {
-
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public PetstoreTest() {
     super(Petstore.class.getName());
@@ -54,10 +48,5 @@ public class PetstoreTest extends EntityTestUnit {
   @Test
   public void tagItem() throws Exception {
     test(T_TAG_ITEM);
-  }
-
-  @Override
-  protected User getTestUser() throws CancelException {
-    return UNIT_TEST_USER;
   }
 }

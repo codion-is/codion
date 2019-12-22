@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.domain;
 
-import org.jminor.common.User;
-import org.jminor.common.model.CancelException;
 import org.jminor.framework.domain.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -13,10 +11,6 @@ import static org.jminor.framework.demos.empdept.domain.EmpDept.T_DEPARTMENT;
 import static org.jminor.framework.demos.empdept.domain.EmpDept.T_EMPLOYEE;
 
 public class EmpDeptTest extends EntityTestUnit {
-
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public EmpDeptTest() {
     super(EmpDept.class.getName());
@@ -30,10 +24,5 @@ public class EmpDeptTest extends EntityTestUnit {
   @Test
   public void employee() throws Exception {
     test(T_EMPLOYEE);
-  }
-
-  @Override
-  protected User getTestUser() throws CancelException {
-    return UNIT_TEST_USER;
   }
 }

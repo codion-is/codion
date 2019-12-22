@@ -33,10 +33,10 @@ public final class SwingEntityComboBoxModelTest {
 
   private static final Domain DOMAIN = new TestDomain();
 
+  private static final User UNIT_TEST_USER =
+          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
+          Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private final SwingEntityComboBoxModel comboBoxModel;
 
@@ -90,7 +90,7 @@ public final class SwingEntityComboBoxModelTest {
     empBox.setNullValue(connectionProvider.getDomain().createToStringEntity(TestDomain.T_EMP, "-"));
     empBox.refresh();
     assertEquals(17, empBox.getSize());
-    final SwingEntityComboBoxModel deptBox = (SwingEntityComboBoxModel) empBox.createForeignKeyFilterComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
+    final SwingEntityComboBoxModel deptBox = empBox.createForeignKeyFilterComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertEquals(1, empBox.getSize());
     final Entity.Key accountingKey = connectionProvider.getDomain().key(TestDomain.T_DEPARTMENT, 10);
     deptBox.setSelectedEntityByKey(accountingKey);

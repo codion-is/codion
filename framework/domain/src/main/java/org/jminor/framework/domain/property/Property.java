@@ -111,6 +111,14 @@ public interface Property extends Serializable {
   Object validateType(Object value);
 
   /**
+   * Prepares the value according to the property configuration, such as rounding
+   * to the correct number of fraction digits in case of doubles
+   * @param value the value to prepare
+   * @return the prepared value
+   */
+  Object prepareValue(Object value);
+
+  /**
    * @param propertyId the property ID
    * @return true if this property is of the given type
    */

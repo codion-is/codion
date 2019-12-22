@@ -16,6 +16,7 @@ import java.util.Properties;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class PropertyStoreTest {
@@ -31,7 +32,7 @@ public final class PropertyStoreTest {
             .append("int.property3=44").append(Util.LINE_SEPARATOR)
             .append("double.property=3.14").append(Util.LINE_SEPARATOR)
             .append("boolean.property=true");
-    FileUtil.writeFile(configBuilder.toString(), configFile);
+    Files.write(configFile.toPath(), singletonList(configBuilder.toString()));
     final PropertyStore store = new PropertyStore(configFile);
 
     final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");

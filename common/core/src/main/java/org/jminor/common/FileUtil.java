@@ -4,21 +4,17 @@
 package org.jminor.common;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for working with files
@@ -63,41 +59,6 @@ public final class FileUtil {
       }
 
       return lines;
-    }
-  }
-
-  /**
-   * @param headers any headers to write first
-   * @param data the data
-   * @param delimiter the delimiter
-   * @param file the file to write to
-   * @throws IOException in case of an exception
-   */
-  public static void writeDelimitedFile(final String[][] headers, final String[][] data, final String delimiter,
-                                        final File file) throws IOException {
-    writeFile(TextUtil.getDelimitedString(headers, data, delimiter), file);
-  }
-
-  /**
-   * @param contents the contents to write to the file, overwriting the contents
-   * @param file the file
-   * @throws IOException in case of an exception
-   */
-  public static void writeFile(final String contents, final File file) throws IOException {
-    writeFile(contents, file, false);
-  }
-
-  /**
-   * @param contents the contents to write to the file
-   * @param file the file
-   * @param append if true the contents are appended, otherwise overwritten
-   * @throws IOException in case of an exception
-   */
-  public static void writeFile(final String contents, final File file, final boolean append) throws IOException {
-    requireNonNull(contents, "contents");
-    requireNonNull(file, "file");
-    try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, append))) {
-      writer.write(contents);
     }
   }
 

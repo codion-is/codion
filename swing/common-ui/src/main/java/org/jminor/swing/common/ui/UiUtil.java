@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.DateFormats;
-import org.jminor.common.FileUtil;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
@@ -99,6 +98,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -108,6 +108,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -2118,7 +2119,9 @@ public final class UiUtil {
       closeControl = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
       closeControl.setDescription(MESSAGES.getString("close_dialog"));
       closeControl.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
-      saveControl = Controls.control(() -> FileUtil.writeFile(detailsArea.getText(), selectFileToSave(detailsArea, null, null)),
+      saveControl = Controls.control(() ->
+                      Files.write(selectFileToSave(detailsArea, null, null).toPath(),
+                              Arrays.asList(detailsArea.getText().split("\\r?\\n"))),
               MESSAGES.getString("save"));
       saveControl.setDescription(MESSAGES.getString("save_error_log"));
       saveControl.setMnemonic(MESSAGES.getString("save_mnemonic").charAt(0));
