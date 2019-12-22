@@ -22,11 +22,11 @@ public class DefaultValueMapEditModelTest {
   public void test() throws Exception {
     final AtomicInteger anyValueChangeCounter = new AtomicInteger();
     final AtomicInteger valueChangeCounter = new AtomicInteger();
-    final AtomicInteger valueSetCounter = new AtomicInteger();
+    final AtomicInteger valuePutCounter = new AtomicInteger();
 
     final EventDataListener<ValueChange<String, ?>> anyValueChangeListener = data -> anyValueChangeCounter.incrementAndGet();
     final EventDataListener<ValueChange<String, ?>> valueChangeListener = data -> valueChangeCounter.incrementAndGet();
-    final EventDataListener<ValueChange<String, ?>> valueSetListener = data -> valueSetCounter.incrementAndGet();
+    final EventDataListener<ValueChange<String, ?>> valuePutListener = data -> valuePutCounter.incrementAndGet();
 
     final String testAttribute = "test";
 
@@ -42,7 +42,7 @@ public class DefaultValueMapEditModelTest {
 
     model.getValueObserver().addDataListener(anyValueChangeListener);
     model.addValueListener(testAttribute, valueChangeListener);
-    model.addValueSetListener(testAttribute, valueSetListener);
+    model.addValuePutListener(testAttribute, valuePutListener);
 
     model.put(testAttribute, 1);
     model.validate();
@@ -50,12 +50,12 @@ public class DefaultValueMapEditModelTest {
     assertTrue(model.isValid());
     assertTrue(model.isValid(testAttribute));
     assertTrue(model.getValidObserver().get());
-    assertEquals(1, valueSetCounter.get());
+    assertEquals(1, valuePutCounter.get());
     assertEquals(1, valueChangeCounter.get());
     assertEquals(1, anyValueChangeCounter.get());
 
     model.put(testAttribute, 1);
-    assertEquals(1, valueSetCounter.get());
+    assertEquals(1, valuePutCounter.get());
     assertEquals(1, valueChangeCounter.get());
     assertEquals(1, anyValueChangeCounter.get());
 
@@ -70,7 +70,7 @@ public class DefaultValueMapEditModelTest {
     assertThrows(ValidationException.class, model::validate);
     assertThrows(ValidationException.class, () -> model.validate(testAttribute));
 
-    assertEquals(2, valueSetCounter.get());
+    assertEquals(2, valuePutCounter.get());
     assertEquals(2, valueChangeCounter.get());
     assertEquals(2, anyValueChangeCounter.get());
     assertTrue(model.isNull(testAttribute));
@@ -79,7 +79,7 @@ public class DefaultValueMapEditModelTest {
     final String nameAttribute = "name";
 
     model.put(nameAttribute, "Name");
-    assertEquals(2, valueSetCounter.get());
+    assertEquals(2, valuePutCounter.get());
     assertEquals(2, valueChangeCounter.get());
     assertEquals(3, anyValueChangeCounter.get());
 
@@ -89,6 +89,6 @@ public class DefaultValueMapEditModelTest {
     assertNull(model.remove(nameAttribute));
 
     model.removeValueListener(testAttribute, valueChangeListener);
-    model.removeValueSetListener(testAttribute, valueSetListener);
+    model.removeValuePutListener(testAttribute, valuePutListener);
   }
 }

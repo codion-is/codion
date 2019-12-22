@@ -662,14 +662,14 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueSetListener(final String propertyId, final EventDataListener listener) {
-    removeValueSetListener(getEntityDefinition().getProperty(propertyId), listener);
+  public final void removeValuePutListener(final String propertyId, final EventDataListener listener) {
+    removeValuePutListener(getEntityDefinition().getProperty(propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueSetListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
-    addValueSetListener(getEntityDefinition().getProperty(propertyId), listener);
+  public final void addValuePutListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
+    addValuePutListener(getEntityDefinition().getProperty(propertyId), listener);
   }
 
   /** {@inheritDoc} */

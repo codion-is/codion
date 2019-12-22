@@ -28,17 +28,17 @@ public interface ValueMapEditModel<K, V> {
 
   /**
    * Adds a listener notified each time the value associated with the given key is set via
-   * {@link ValueMapEditModel#put(Object, Object)}, note that this event is only fired when the the value changes
+   * {@link ValueMapEditModel#put(Object, Object)}, note that this event is only fired when the value changes
    * @param key the key for which to monitor value changes
-   * @param listener a listener notified each time the value of {@code key} is set via this model
+   * @param listener a listener notified each time the value of {@code key} is put via this model
    */
-  void addValueSetListener(K key, EventDataListener<ValueChange<K, V>> listener);
+  void addValuePutListener(K key, EventDataListener<ValueChange<K, V>> listener);
 
   /**
    * @param key the key
    * @param listener the listener to remove
    */
-  void removeValueSetListener(K key, EventDataListener listener);
+  void removeValuePutListener(K key, EventDataListener listener);
 
   /**
    * Adds a listener notified each time the value associated with the given key changes

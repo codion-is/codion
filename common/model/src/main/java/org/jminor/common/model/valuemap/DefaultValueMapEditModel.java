@@ -48,9 +48,9 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   private final State validState = States.state();
 
   /**
-   * Holds events signaling value changes made via the ui
+   * Holds events signaling value changes made via {@link #put(Object, Object)}
    */
-  private final Map<K, Event<ValueChange<K, V>>> valueSetEventMap = new HashMap<>();
+  private final Map<K, Event<ValueChange<K, V>>> valuePutEventMap = new HashMap<>();
 
   /**
    * Holds events signaling value changes made via the model or ui
@@ -185,15 +185,15 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueSetListener(final K key, final EventDataListener<ValueChange<K, V>> listener) {
-    getValueSetEvent(key).addDataListener(listener);
+  public final void addValuePutListener(final K key, final EventDataListener<ValueChange<K, V>> listener) {
+    getValuePutEvent(key).addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueSetListener(final K key, final EventDataListener listener) {
-    if (valueSetEventMap.containsKey(key)) {
-      valueSetEventMap.get(key).removeDataListener(listener);
+  public final void removeValuePutListener(final K key, final EventDataListener listener) {
+    if (valuePutEventMap.containsKey(key)) {
+      valuePutEventMap.get(key).removeDataListener(listener);
     }
   }
 
@@ -224,11 +224,11 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
    * @param event the event describing the value change
    */
   private void notifyValueChange(final K key, final ValueChange<K, V> event) {
-    getValueSetEvent(key).fire(event);
+    getValuePutEvent(key).fire(event);
   }
 
-  private Event<ValueChange<K, V>> getValueSetEvent(final K key) {
-    return valueSetEventMap.computeIfAbsent(key, k -> Events.event());
+  private Event<ValueChange<K, V>> getValuePutEvent(final K key) {
+    return valuePutEventMap.computeIfAbsent(key, k -> Events.event());
   }
 
   private Event<ValueChange<K, V>> getValueChangeEvent(final K key) {

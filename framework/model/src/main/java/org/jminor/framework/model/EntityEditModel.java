@@ -500,13 +500,13 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the given property is set via this model
    */
-  void addValueSetListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
+  void addValuePutListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
 
   /**
    * @param propertyId the propertyId
    * @param listener the listener to remove
    */
-  void removeValueSetListener(String propertyId, EventDataListener listener);
+  void removeValuePutListener(String propertyId, EventDataListener listener);
 
   /**
    * Adds a listener notified each time the value associated with the given key changes
