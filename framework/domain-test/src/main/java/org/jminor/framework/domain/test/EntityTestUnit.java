@@ -54,7 +54,7 @@ public class EntityTestUnit {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityTestUnit.class);
 
-  public static PropertyValue<String> TEST_USER = Configuration.stringValue("jminor.test.user", null);
+  public static final PropertyValue<String> TEST_USER = Configuration.stringValue("jminor.test.user", null);
 
   private static final int MININUM_RANDOM_NUMBER = -10000000;
   private static final int MAXIMUM_RANDOM_NUMBER = 10000000;
