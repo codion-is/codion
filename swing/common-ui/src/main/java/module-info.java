@@ -12,6 +12,5 @@ module org.jminor.swing.common.ui {
   exports org.jminor.swing.common.ui.reports;
   exports org.jminor.swing.common.ui.table;
   exports org.jminor.swing.common.ui.textfield;
-  exports org.jminor.swing.common.ui.valuemap;
   exports org.jminor.swing.common.ui.worker;
 }
