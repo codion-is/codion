@@ -403,9 +403,9 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public void setLoggingEnabled(final UUID clientId, final boolean status) {
-    LOG.info("setLoggingEnabled({}, {})", clientId, status);
-    server.setLoggingEnabled(clientId, status);
+  public void setLoggingEnabled(final UUID clientId, final boolean loggingEnabled) {
+    LOG.info("setLoggingEnabled({}, {})", clientId, loggingEnabled);
+    server.setLoggingEnabled(clientId, loggingEnabled);
   }
 
   /** {@inheritDoc} */

@@ -233,8 +233,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /** {@inheritDoc} */
   @Override
-  public final void setScenarioEnabled(final String scenarioName, final boolean value) {
-    scenarioChooser.setItemEnabled(getUsageScenario(scenarioName), value);
+  public final void setScenarioEnabled(final String scenarioName, final boolean enabled) {
+    scenarioChooser.setItemEnabled(getUsageScenario(scenarioName), enabled);
   }
 
   /** {@inheritDoc} */

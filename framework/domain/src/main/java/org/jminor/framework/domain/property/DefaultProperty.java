@@ -443,7 +443,8 @@ abstract class DefaultProperty implements Property {
 
   private Format initializeDefaultFormat() {
     if (isNumerical()) {
-      final NumberFormat numberFormat = Formats.getNonGroupingNumberFormat(isInteger());
+      final NumberFormat numberFormat = isInteger() || isLong() ?
+              Formats.getNonGroupingIntegerFormat() : Formats.getNonGroupingNumberFormat();
       if (isBigDecimal()) {
         ((DecimalFormat) numberFormat).setParseBigDecimal(true);
       }

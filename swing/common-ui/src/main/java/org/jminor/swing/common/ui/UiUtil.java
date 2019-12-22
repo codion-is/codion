@@ -313,28 +313,28 @@ public final class UiUtil {
    * Displays a file selection dialog for selecting an existing file or directory
    * @param dialogParent the dialog parent
    * @param startDir the start directory, user.home if not specified
-   * @param files if true then files are displayed, otherwise only directories
+   * @param filesOnly if true then files are displayed, otherwise only directories
    * @param dialogTitle the dialog title
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
-  public static File selectFileOrDirectory(final JComponent dialogParent, final String startDir, final boolean files,
+  public static File selectFileOrDirectory(final JComponent dialogParent, final String startDir, final boolean filesOnly,
                                            final String dialogTitle) {
-    return selectFilesOrDirectories(dialogParent, startDir, files, false, dialogTitle).get(0);
+    return selectFilesOrDirectories(dialogParent, startDir, filesOnly, false, dialogTitle).get(0);
   }
 
   /**
    * Displays a file selection dialog for selecting files or directories
    * @param dialogParent the dialog parent
    * @param startDir the start directory, user.home if not specified
-   * @param files if true then files are displayed, otherwise only directories
+   * @param filesOnly if true then files are displayed, otherwise only directories
    * @param multiSelection if true then the dialog will allow selection of multiple items
    * @param dialogTitle the dialog title
    * @return a List containing the selected files, contains at least one file
    * @throws CancelException in case the user cancels or no files are selected
    */
   public static synchronized List<File> selectFilesOrDirectories(final JComponent dialogParent, final String startDir,
-                                                                 final boolean files, final boolean multiSelection,
+                                                                 final boolean filesOnly, final boolean multiSelection,
                                                                  final String dialogTitle) {
     if (fileChooserOpen == null) {
       try {
@@ -345,7 +345,7 @@ public final class UiUtil {
         setWaitCursor(false, dialogParent);
       }
     }
-    if (files) {
+    if (filesOnly) {
       fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_ONLY);
     }
     else {

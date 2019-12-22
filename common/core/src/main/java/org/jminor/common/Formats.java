@@ -24,15 +24,17 @@ public final class Formats {
    * @return a NumberFormat instance with grouping disabled
    */
   public static NumberFormat getNonGroupingNumberFormat() {
-    return getNonGroupingNumberFormat(false);
+    final NumberFormat format = NumberFormat.getNumberInstance();
+    format.setGroupingUsed(false);
+
+    return format;
   }
 
   /**
-   * @param integerFormat if true an integer based number format is returned
-   * @return a NumberFormat instance with grouping disabled
+   * @return a Integer NumberFormat instance with grouping disabled
    */
-  public static NumberFormat getNonGroupingNumberFormat(final boolean integerFormat) {
-    final NumberFormat format = integerFormat ? NumberFormat.getIntegerInstance() : NumberFormat.getNumberInstance();
+  public static NumberFormat getNonGroupingIntegerFormat() {
+    final NumberFormat format = NumberFormat.getIntegerInstance();
     format.setGroupingUsed(false);
 
     return format;

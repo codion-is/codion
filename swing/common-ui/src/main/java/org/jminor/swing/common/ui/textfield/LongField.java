@@ -16,7 +16,7 @@ public final class LongField extends NumberField {
    * Instantiates a new LongField.
    */
   public LongField() {
-    this(Formats.getNonGroupingNumberFormat(true));
+    this(Formats.getNonGroupingIntegerFormat());
   }
 
   /**
@@ -24,7 +24,7 @@ public final class LongField extends NumberField {
    * @param columns the number of columns
    */
   public LongField(final int columns) {
-    this(Formats.getNonGroupingNumberFormat(true), columns);
+    this(Formats.getNonGroupingIntegerFormat(), columns);
   }
 
   /**
