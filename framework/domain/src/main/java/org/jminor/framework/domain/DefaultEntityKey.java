@@ -192,7 +192,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
 
   @Override
   protected Object validateAndPrepare(final ColumnProperty property, final Object value) {
-    return property.validateType(value);
+    return property.prepareValue(property.validateType(value));
   }
 
   @Override
