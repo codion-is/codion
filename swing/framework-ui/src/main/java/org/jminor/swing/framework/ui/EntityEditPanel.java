@@ -781,8 +781,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     private final List<Entity> lastInsertedEntities = new ArrayList<>();
 
     private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
-      this(comboBox, panelProvider, ((EntityComboBoxModel) comboBox.getModel()).getConnectionProvider(), insertedEntities -> {
-        final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBox.getModel();
+      this(comboBox, panelProvider, comboBox.getModel().getConnectionProvider(), insertedEntities -> {
+        final EntityComboBoxModel comboBoxModel = comboBox.getModel();
         final Entity item = insertedEntities.get(0);
         comboBoxModel.addItem(item);
         comboBoxModel.setSelectedItem(item);

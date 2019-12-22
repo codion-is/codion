@@ -54,14 +54,16 @@ public class EntityTestUnit {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityTestUnit.class);
 
-  public static PropertyValue<String> TEST_USER = Configuration.stringValue("jminor.test.user", null);
+  /**
+   * Specifies the database user to use when running domain unit tests.
+   */
+  public static final PropertyValue<String> TEST_USER = Configuration.stringValue("jminor.test.user", null);
 
   private static final int MININUM_RANDOM_NUMBER = -10000000;
   private static final int MAXIMUM_RANDOM_NUMBER = 10000000;
   private static final int MAXIMUM_RANDOM_STRING_LENGTH = 10;
   private static final int SELECT_FETCH_COUNT = 10;
   private static final Random RANDOM = new Random();
-  private static final String ENTITY_PARAM = "entity";
 
   private final String domainClass;
   private final User user;
@@ -179,7 +181,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
   public static void randomize(final Domain domain, final Entity entity, final Map<String, Entity> foreignKeyEntities) {
-    requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(entity, "entity");
     populateEntity(domain, entity,
             domain.getDefinition(entity.getEntityId()).getWritableColumnProperties(false, true),
             property -> getRandomValue(property, foreignKeyEntities));
@@ -219,12 +221,8 @@ public class EntityTestUnit {
         return (long) getRandomInteger(property);
       case Types.VARCHAR:
         return getRandomString(property);
-      case Types.BLOB: {
-        if ((property instanceof BlobProperty) && ((BlobProperty) property).isEagerlyLoaded()) {
-          return getRandomBlob(1024);
-        }
-        //fallthrough to null
-      }
+      case Types.BLOB:
+        return getRandomBlob(property);
       default:
         return null;
     }
@@ -449,6 +447,14 @@ public class EntityTestUnit {
     final int length = property.getMaxLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaxLength();
 
     return TextUtil.createRandomString(length, length);
+  }
+
+  private static byte[] getRandomBlob(final Property property) {
+    if ((property instanceof BlobProperty) && ((BlobProperty) property).isEagerlyLoaded()) {
+      return getRandomBlob(1024);
+    }
+
+    return null;
   }
 
   private static byte[] getRandomBlob(final int numberOfBytes) {
