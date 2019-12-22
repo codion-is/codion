@@ -429,7 +429,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /**
    * @param obj the object to compare with
-   * @return true if the given object is an Entity and it´s primary key is equal to this ones
+   * @return true if the given object is an Entity and its primary key is equal to this ones
    */
   @Override
   public boolean equals(final Object obj) {
