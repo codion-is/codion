@@ -5539,3 +5539,7 @@
   DefaultValueMap.handlePut() initialization parameter removed, unused
   DefaultColumnConditionModel caseSensitive constructor parameter removed, unused
   EntityDefinition.getPropertySet() reintroduced, quite important, performance wise
+  DefaultEntityKey.validateAndPrepare() now calls property.prepareValue() as well as validateType()
+  DefaultProperty, a few methods missing the final keyword
+  ValueMapEditModel.addValueSetListener() renamed to addValuePutListener()
+  ValueMapEditModel merged into EntityEditModel

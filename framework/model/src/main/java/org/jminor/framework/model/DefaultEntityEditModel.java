@@ -15,7 +15,6 @@ import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
-import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
@@ -42,6 +41,7 @@ import java.util.Objects;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.common.db.valuemap.ValueChanges.valueChange;
 import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.jminor.framework.domain.Entities.mapToOriginalPrimaryKey;
 
@@ -61,11 +61,12 @@ import static org.jminor.framework.domain.Entities.mapToOriginalPrimaryKey;
  * panel.initializePanel();
  * </pre>
  */
-public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Property, Object> implements EntityEditModel {
+public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
 
   private static final String ENTITIES = "entities";
+  private static final String PROPERTY = "property";
 
   private final Event<List<Entity>> beforeInsertEvent = Events.event();
   private final Event<List<Entity>> afterInsertEvent = Events.event();
@@ -86,9 +87,9 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
           insertEnabledState.getReversedObserver(), updateEnabledState.getReversedObserver(), deleteEnabledState.getReversedObserver());
 
   /**
-   * The ID of the entity this edit model is based on
+   * The Entity being edited by this model
    */
-  private final String entityId;
+  private final Entity entity;
 
   /**
    * The {@link EntityConnectionProvider} instance to use
@@ -110,6 +111,26 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * @see #setEntity(org.jminor.framework.domain.Entity)
    */
   private final Event<Entity> entitySetEvent = Events.event();
+
+  /**
+   * The validator used by this edit model
+   */
+  private final Entity.Validator validator;
+
+  /**
+   * A state indicating whether the entity being edited is in a valid state according the validator
+   */
+  private final State validState = States.state();
+
+  /**
+   * Holds events signaling value changes made via {@link #put(Object, Object)}
+   */
+  private final Map<String, Event<ValueChange<Property, Object>>> valuePutEventMap = new HashMap<>();
+
+  /**
+   * Holds events signaling value changes in the underlying {@link Entity}
+   */
+  private final Map<String, Event<ValueChange<Property, Object>>> valueChangeEventMap = new HashMap<>();
 
   /**
    * A state indicating whether the entity being edited is new
@@ -148,10 +169,11 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider, final Entity.Validator validator) {
-    super(connectionProvider.getDomain().entity(entityId), validator);
-    this.entityId = entityId;
+  public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider,
+                                final Entity.Validator validator) {
+    this.entity = connectionProvider.getDomain().entity(entityId);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+    this.validator = validator;
     setReadOnly(getEntityDefinition().isReadOnly());
     bindEventsInternal();
   }
@@ -165,20 +187,19 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final EntityDefinition getEntityDefinition() {
-    return getDomain().getDefinition(entityId);
+    return getDomain().getDefinition(entity.getEntityId());
   }
 
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return getClass().toString() + ", " + entityId;
+    return getClass().toString() + ", " + entity.getEntityId();
   }
 
   /** {@inheritDoc} */
   @Override
   public Object getDefaultValue(final Property property) {
     if (isValuePersistent(property)) {
-      final Entity entity = (Entity) getValueMap();
       if (property instanceof ForeignKeyProperty) {
         return entity.getForeignKey((ForeignKeyProperty) property);
       }
@@ -261,8 +282,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public EventObserver<ValueChange<Property, Object>> getValueObserver(final String propertyId) {
-    return getValueObserver(getEntityDefinition().getProperty(propertyId));
+  public final EventObserver<ValueChange<Property, Object>> getValueObserver(final String propertyId) {
+    return getValueChangeEvent(requireNonNull(propertyId, PROPERTY)).getObserver();
   }
 
   /** {@inheritDoc} */
@@ -326,7 +347,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final String getEntityId() {
-    return entityId;
+    return entity.getEntityId();
   }
 
   /** {@inheritDoc} */
@@ -427,14 +448,118 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
+  public final Object get(final Property property) {
+    return entity.get(property);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void put(final Property property, final Object value) {
+    requireNonNull(property, PROPERTY);
+    final boolean initialization = !entity.containsKey(property);
+    final Object previousObjectalue = entity.put(property, value);
+    if (!Objects.equals(value, previousObjectalue)) {
+      notifyValueChange(property.getPropertyId(), valueChange(property, value, previousObjectalue, initialization));
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Object remove(final Property property) {
+    requireNonNull(property, PROPERTY);
+    Object value = null;
+    if (entity.containsKey(property)) {
+      value = entity.remove(property);
+      notifyValueChange(property.getPropertyId(), valueChange(property, null, value));
+    }
+
+    return value;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isNullable(final Property property) {
+    return validator.isNullable(entity, property);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isNull(final String propertyId) {
     return isNull(getEntityDefinition().getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
+  public final boolean isNull(final Property property) {
+    return entity.isNull(property);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isNotNull(final String propertyId) {
     return !isNull(propertyId);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isNotNull(final Property property) {
+    return !isNull(property);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final StateObserver getValidObserver() {
+    return validState.getObserver();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isValid() {
+    return validState.get();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void validate(final Property property) throws ValidationException {
+    validator.validate(entity, property);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void validate() throws ValidationException {
+    validate(entity);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void validate(final Entity entity) throws ValidationException {
+    validate(singletonList(entity));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void validate(final Collection<Entity> entities) throws ValidationException {
+    for (final Entity entityToValidate : entities) {
+      validator.validate(entityToValidate);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isValid(final Property property) {
+    try {
+      validator.validate(entity, requireNonNull(property, PROPERTY));
+      return true;
+    }
+    catch (final ValidationException e) {
+      return false;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Entity.Validator getValidator() {
+    return validator;
   }
 
   /** {@inheritDoc} */
@@ -610,13 +735,13 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final Entity getDefaultEntity() {
-    return getDomain().defaultEntity(entityId, defaultValueProvider);
+    return getDomain().defaultEntity(entity.getEntityId(), defaultValueProvider);
   }
 
   /** {@inheritDoc} */
   @Override
   public final ValueCollectionProvider<Object> getValueProvider(final Property property) {
-    return new PropertyValueProvider(connectionProvider, entityId, property.getPropertyId());
+    return new PropertyValueProvider(connectionProvider, entity.getEntityId(), property.getPropertyId());
   }
 
   /** {@inheritDoc} */
@@ -662,26 +787,30 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueSetListener(final String propertyId, final EventDataListener listener) {
-    removeValueSetListener(getEntityDefinition().getProperty(propertyId), listener);
+  public final void removeValuePutListener(final String propertyId, final EventDataListener listener) {
+    if (valuePutEventMap.containsKey(propertyId)) {
+      valuePutEventMap.get(propertyId).removeDataListener(listener);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueSetListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
-    addValueSetListener(getEntityDefinition().getProperty(propertyId), listener);
+  public final void addValuePutListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
+    getValuePutEvent(propertyId).addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeValueListener(final String propertyId, final EventDataListener listener) {
-    removeValueListener(getEntityDefinition().getProperty(propertyId), listener);
+    if (valueChangeEventMap.containsKey(propertyId)) {
+      valueChangeEventMap.get(propertyId).removeDataListener(listener);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addValueListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
-    addValueListener(getEntityDefinition().getProperty(propertyId), listener);
+    getValueChangeEvent(propertyId).addDataListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -820,7 +949,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * @return the actual {@link Entity} instance being edited
    */
   protected final Entity getEntity() {
-    return (Entity) getValueMap();
+    return entity;
   }
 
   /**
@@ -965,11 +1094,33 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     return !Objects.equals(get(property), getDefaultValue(property));
   }
 
+  private Event<ValueChange<Property, Object>> getValuePutEvent(final String propertyId) {
+    return valuePutEventMap.computeIfAbsent(propertyId, k -> Events.event());
+  }
+
+  private Event<ValueChange<Property, Object>> getValueChangeEvent(final String propertyId) {
+    return valueChangeEventMap.computeIfAbsent(propertyId, k -> Events.event());
+  }
+
+  /**
+   * Notifies that the value associated with the given property has changed using the given event
+   * @param propertyId the property
+   * @param event the event describing the value change
+   */
+  private void notifyValueChange(final String propertyId, final ValueChange<Property, Object> event) {
+    getValuePutEvent(propertyId).fire(event);
+  }
+
   private void bindEventsInternal() {
     afterDeleteEvent.addListener(entitiesChangedEvent);
     afterInsertEvent.addListener(entitiesChangedEvent);
     afterUpdateEvent.addListener(entitiesChangedEvent);
-    getEntity().addValueListener(valueChange -> {
+    entity.addValueListener(valueChange -> {
+      validState.set(validator.isValid(entity));
+      final Event<ValueChange<Property, Object>> valueChangeEvent = valueChangeEventMap.get(valueChange.getKey().getPropertyId());
+      if (valueChangeEvent != null) {
+        valueChangeEvent.fire(valueChange);
+      }
       primaryKeyNullState.set(getEntity().isKeyNull());
       entityNewState.set(isEntityNew());
     });
