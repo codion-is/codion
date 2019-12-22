@@ -34,12 +34,19 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
-  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
+
+  private final EntityConnectionProvider connectionProvider;
 
   protected final List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.getDomain());
 
-  protected final TableModel testModel = createTestTableModel();
+  protected final TableModel testModel;
+
+  protected AbstractEntityTableModelTest() {
+    connectionProvider = CONNECTION_PROVIDER;
+    testModel = createTestTableModel();
+  }
 
   @Test
   public void setSelectedByKey() {
@@ -325,6 +332,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   public void setColumns() {
     final TableModel empModel = createEmployeeTableModel();
     empModel.setColumns(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT_FK, TestDomain.EMP_HIREDATE);
+  }
+
+  protected final EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
   }
 
   /**

@@ -19,9 +19,9 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
 
   @Override
   protected FXEntityModel createDepartmentModel() {
-    final FXEntityModel entityModel = new FXEntityModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    final FXEntityModel entityModel = new FXEntityModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
     new EntityTableView(entityModel.getTableModel());
-    final FXEntityModel employeeModel = new FXEntityModel(new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
+    final FXEntityModel employeeModel = new FXEntityModel(new FXEntityEditModel(TestDomain.T_EMP, getConnectionProvider()));
     employeeModel.getEditModel().refreshDataModels();
     final FXEntityListModel employeeListModel = employeeModel.getTableModel();
     new EntityTableView(employeeListModel);
@@ -37,7 +37,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
 
   @Override
   protected FXEntityModel createDepartmentModelWithoutDetailModel() {
-    final FXEntityModel model = new FXEntityModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    final FXEntityModel model = new FXEntityModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
     new EntityTableView(model.getTableModel());
 
     return model;
@@ -45,12 +45,12 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
 
   @Override
   protected FXEntityEditModel createDepartmentEditModel() {
-    return new FXEntityEditModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    return new FXEntityEditModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
   }
 
   @Override
   protected FXEntityListModel createEmployeeTableModel() {
-    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, getConnectionProvider());
     new EntityTableView(listModel);
 
     return listModel;
@@ -58,7 +58,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
 
   @Override
   protected FXEntityListModel createDepartmentTableModel() {
-    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
     new EntityTableView(listModel);
 
     return listModel;
@@ -66,7 +66,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
 
   @Override
   protected FXEntityModel createEmployeeModel() {
-    final FXEntityModel model = new FXEntityModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    final FXEntityModel model = new FXEntityModel(TestDomain.T_EMP, getConnectionProvider());
     new EntityTableView(model.getTableModel());
 
     return model;

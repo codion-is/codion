@@ -23,13 +23,13 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createTestTableModel() {
-    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER) {
+    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_DETAIL, getConnectionProvider()) {
       @Override
       protected List<Entity> performQuery() {
         return testEntities;
       }
     };
-    listModel.setEditModel(new FXEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER));
+    listModel.setEditModel(new FXEntityEditModel(TestDomain.T_DETAIL, getConnectionProvider()));
     final ListView<Entity> listView = new ListView<>(listModel);
     listModel.setSelectionModel(listView.getSelectionModel());
 
@@ -38,17 +38,17 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createMasterTableModel() {
-    return new FXEntityListModel(TestDomain.T_MASTER, CONNECTION_PROVIDER);
+    return new FXEntityListModel(TestDomain.T_MASTER, getConnectionProvider());
   }
 
   @Override
   protected FXEntityListModel createDetailTableModel() {
-    return new FXEntityListModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
+    return new FXEntityListModel(TestDomain.T_DETAIL, getConnectionProvider());
   }
 
   @Override
   protected FXEntityListModel createEmployeeTableModelWithoutEditModel() {
-    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, getConnectionProvider());
     new EntityTableView(listModel);
 
     return listModel;
@@ -75,11 +75,11 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityEditModel createDepartmentEditModel() {
-    return new FXEntityEditModel(TestDomain.T_MASTER, CONNECTION_PROVIDER);
+    return new FXEntityEditModel(TestDomain.T_MASTER, getConnectionProvider());
   }
 
   @Override
   protected FXEntityEditModel createDetailEditModel() {
-    return new FXEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
+    return new FXEntityEditModel(TestDomain.T_DETAIL, getConnectionProvider());
   }
 }

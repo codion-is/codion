@@ -40,8 +40,15 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 
-  protected final Model departmentModel = createDepartmentModel();
+  private final EntityConnectionProvider connectionProvider;
   private int eventCount = 0;
+
+  protected final Model departmentModel;
+
+  protected AbstractEntityModelTest() {
+    connectionProvider = CONNECTION_PROVIDER;
+    departmentModel = createDepartmentModel();
+  }
 
   @Test
   public void testUpdatePrimaryKey() throws DatabaseException, ValidationException {
@@ -277,7 +284,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     dept.put(TestDomain.DEPARTMENT_NAME, "Name");
     dept.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
 
-    final Entity emp = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 8);
+    final Entity emp = connectionProvider.getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 8);
     emp.clearKeyValues();
     emp.put(TestDomain.EMP_NAME, "NewName");
 
@@ -289,6 +296,10 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     model.getEditModel().delete(asList(dept, emp));
 
     assertFalse(model.getTableModel().contains(dept, true));
+  }
+
+  protected final EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
   }
 
   /**

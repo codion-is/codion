@@ -23,12 +23,18 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
-  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
+
+  private final EntityConnectionProvider connectionProvider;
+
+  protected AbstractEntityApplicationModelTest() {
+    this.connectionProvider = CONNECTION_PROVIDER;
+  }
 
   @Test
   public void test() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
     final DefaultEntityModel deptModel = createDepartmentModel();
     model.addEntityModels(deptModel);
     assertNotNull(model.getEntityModel(TestDomain.T_DEPARTMENT));
@@ -55,19 +61,19 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void loginNullUser() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
     assertThrows(NullPointerException.class, () -> model.login(null));
   }
 
   @Test
   public void getEntityModelByEntityIDNotFound() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
     assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
   public void getEntityModelByEntityId() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
     final Model departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
     assertEquals(departmentModel, model.getEntityModel(TestDomain.T_DEPARTMENT));
@@ -75,13 +81,13 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void getEntityModelByClassNotFound() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
     assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(EntityModel.class));
   }
 
   @Test
   public void getEntityModelByClass() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
     final Model departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
     assertEquals(departmentModel, model.getEntityModel(departmentModel.getClass()));
@@ -89,7 +95,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void containsEntityModel() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
     final Model departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
 
@@ -111,7 +117,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     final Model empModel = deptModel.getDetailModel(TestDomain.T_EMP);
     deptModel.addLinkedDetailModel(empModel);
 
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
     model.addEntityModel(deptModel);
 
     assertFalse(model.containsUnsavedData());
@@ -134,6 +140,10 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
     deptModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, name);
     assertFalse(model.containsUnsavedData());
+  }
+
+  protected final EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
   }
 
   /**
