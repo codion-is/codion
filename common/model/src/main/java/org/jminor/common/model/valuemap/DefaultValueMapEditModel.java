@@ -43,7 +43,7 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   private final ValueMap.Validator validator;
 
   /**
-   * A state indicating whether or not the entity being edited is in a valid state according the the validator
+   * A state indicating whether the entity being edited is in a valid state according the validator
    */
   private final State validState = States.state();
 
@@ -53,7 +53,7 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   private final Map<K, Event<ValueChange<K, V>>> valuePutEventMap = new HashMap<>();
 
   /**
-   * Holds events signaling value changes made via the model or ui
+   * Holds events signaling value changes in the underlying {@link ValueMap}
    */
   private final Map<K, Event<ValueChange<K, V>>> valueChangeEventMap = new HashMap<>();
 
