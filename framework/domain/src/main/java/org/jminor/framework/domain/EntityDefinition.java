@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -151,6 +152,11 @@ public interface EntityDefinition extends Serializable {
    * @return a unmodifiable list view of the properties
    */
   List<Property> getProperties();
+
+  /**
+   * @return a Set containing all the properties in this entity
+   */
+  Set<Property> getPropertySet();
 
   /**
    * @return true if this entity contains any properties which values are derived from other properties

@@ -5514,3 +5514,4 @@
   EntityTestUnit.getTestUser() removed, user constructor parameter added, by default jminor.test.user
   DefaultValueMap.handlePut() initialization parameter removed, unused
   DefaultColumnConditionModel caseSensitive constructor parameter removed, unused
+  EntityDefinition.getPropertySet() reintroduced, quite important, performance wise
