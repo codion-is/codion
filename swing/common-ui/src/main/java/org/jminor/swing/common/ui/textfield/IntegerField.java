@@ -16,7 +16,7 @@ public final class IntegerField extends NumberField {
    * Constructs a new IntegerField.
    */
   public IntegerField() {
-    this(Formats.getNonGroupingNumberFormat(true));
+    this(Formats.getNonGroupingIntegerFormat());
   }
 
   /**
@@ -24,7 +24,7 @@ public final class IntegerField extends NumberField {
    * @param columns the number of columns
    */
   public IntegerField(final int columns) {
-    this(Formats.getNonGroupingNumberFormat(true), columns);
+    this(Formats.getNonGroupingIntegerFormat(), columns);
   }
 
   /**
