@@ -5508,3 +5508,5 @@
   BlobProperty.isLazyLoaded() now isEagerlyLoaded(), blob properties lazily loaded by default
   Entities.getModifiedColumnProperties() now includes eagerly loaded blob properties
   FileUtil and TextUtil trimming
+  DefaultEntity.prepareValue() moved to DefaultProperty
+  EntityTestUnit.createRandomDouble() no longer performs rounding

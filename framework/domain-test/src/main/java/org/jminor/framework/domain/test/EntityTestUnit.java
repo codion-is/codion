@@ -6,7 +6,6 @@ package org.jminor.framework.domain.test;
 import org.jminor.common.Item;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.valuemap.ValueProvider;
@@ -468,6 +467,6 @@ public class EntityTestUnit {
     final double min = property.getMin() == null ? MININUM_RANDOM_NUMBER : property.getMin();
     final double max = property.getMax() == null ? MAXIMUM_RANDOM_NUMBER : property.getMax();
 
-    return Util.roundDouble((RANDOM.nextDouble() * (max - min)) + min, property.getMaximumFractionDigits());
+    return RANDOM.nextDouble() * (max - min) + min;
   }
 }

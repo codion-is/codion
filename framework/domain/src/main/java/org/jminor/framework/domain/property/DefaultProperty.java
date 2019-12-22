@@ -4,6 +4,7 @@
 package org.jminor.framework.domain.property;
 
 import org.jminor.common.Formats;
+import org.jminor.common.Util;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -417,6 +418,20 @@ abstract class DefaultProperty implements Property {
     if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + typeClass +
               " expected for property " + this + " in entity " + entityId + ", got: " + value.getClass());
+    }
+
+    return value;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Object prepareValue(final Object value) {
+    if (value instanceof Double) {
+      return Util.roundDouble((Double) value, getMaximumFractionDigits());
+    }
+    if (value instanceof BigDecimal) {
+      return ((BigDecimal) value).setScale(getMaximumFractionDigits(),
+              Property.BIG_DECIMAL_ROUNDING_MODE.get()).stripTrailingZeros();
     }
 
     return value;
