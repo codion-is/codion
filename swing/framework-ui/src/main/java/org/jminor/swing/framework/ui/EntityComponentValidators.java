@@ -107,7 +107,7 @@ public final class EntityComponentValidators {
     }
 
     protected boolean isNull() {
-      return editModel.isNull(property);
+      return editModel.isNull(property.getPropertyId());
     }
 
     /**
@@ -122,6 +122,18 @@ public final class EntityComponentValidators {
      */
     protected final String getDefaultToolTip() {
       return defaultToolTip;
+    }
+
+    protected void setToolTipText(final String validationMessage) {
+      if (validationMessage == null) {
+        component.setToolTipText(defaultToolTip);
+      }
+      else if (nullOrEmpty(defaultToolTip)) {
+        component.setToolTipText(validationMessage);
+      }
+      else {
+        component.setToolTipText(validationMessage + ": " + defaultToolTip);
+      }
     }
 
     /**
@@ -170,12 +182,12 @@ public final class EntityComponentValidators {
 
     @Override
     protected void validate() {
-      final boolean enabled = getComponent().isEnabled();
+      final JComponent component = getComponent();
+      final boolean enabled = component.isEnabled();
       final String validationMessage = getValidationMessage();
-      getComponent().setBackground(validationMessage == null ?
+      component.setBackground(validationMessage == null ?
               (enabled ? VALID_ENABLED_BACKGROUND_COLOR : VALID_DISABLED_BACKGROUND_COLOR) : invalidBackgroundColor);
-      getComponent().setToolTipText(validationMessage == null ? getDefaultToolTip() :
-              (!nullOrEmpty(getDefaultToolTip()) ? getDefaultToolTip() + ": " : "") + validationMessage);
+      setToolTipText(validationMessage);
     }
   }
 
@@ -194,33 +206,15 @@ public final class EntityComponentValidators {
       final JTextComponent textComponent = (JTextComponent) getComponent();
       final boolean enabled = textComponent.isEnabled();
       final boolean stringEqualsMask = textComponent.getText().equals(maskString);
-      final boolean validInput = !isNull() || (stringEqualsMask && isNullable());
+      final boolean validInputString = !isNull() || (stringEqualsMask && isNullable());
       final String validationMessage = getValidationMessage();
-      if (validInput && validationMessage == null) {
+      if (validInputString && validationMessage == null) {
         textComponent.setBackground(enabled ? VALID_ENABLED_BACKGROUND_COLOR : VALID_DISABLED_BACKGROUND_COLOR);
       }
       else {
         textComponent.setBackground(getInvalidBackgroundColor());
       }
-      if (validationMessage != null) {
-        textComponent.setToolTipText(validationMessage);
-      }
-
-      final String defaultToolTip = getDefaultToolTip();
-      final String tooltip;
-      if (validationMessage == null) {
-        tooltip = defaultToolTip;
-      }
-      else {
-        if (nullOrEmpty(defaultToolTip)) {
-          tooltip = validationMessage;
-        }
-        else {
-          tooltip = validationMessage + ": " + defaultToolTip;
-        }
-      }
-
-      textComponent.setToolTipText(tooltip);
+      setToolTipText(validationMessage);
     }
   }
 }

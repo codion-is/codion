@@ -132,22 +132,10 @@ public interface EntityEditModel extends Refreshable {
   boolean isNull(String propertyId);
 
   /**
-   * @param property the property
-   * @return true if the value of the given property is null
-   */
-  boolean isNull(Property property);
-
-  /**
    * @param propertyId the ID of the property
    * @return true if the value of the given property is not null
    */
   boolean isNotNull(String propertyId);
-
-  /**
-   * @param property the property
-   * @return true if the value of the given property is not null
-   */
-  boolean isNotNull(Property property);
 
   /**
    * @param property the property
@@ -522,7 +510,7 @@ public interface EntityEditModel extends Refreshable {
    * Returns true if the value associated with the given key is valid, using the {@code validate} method
    * @param key the key the value is associated with
    * @return true if the value is valid
-   * @see #validate(Object)
+   * @see #validate(Property)
    * @see ValueMap.Validator#validate(ValueMap)
    */
   boolean isValid(Property key);
@@ -588,7 +576,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Adds a listener notified each time the value associated with the given property is set via
-   * {@link ValueMapEditModel#put(Object, Object)}, note that this event is only fired when the the value changes
+   * {@link #put(Property, Object)}, note that this event is only fired when the the value changes
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the given property is set via this model
    */

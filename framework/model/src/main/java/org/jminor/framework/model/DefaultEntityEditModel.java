@@ -485,25 +485,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final boolean isNull(final String propertyId) {
-    return isNull(getEntityDefinition().getProperty(propertyId));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isNull(final Property property) {
-    return entity.isNull(property);
+    return entity.isNull(propertyId);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean isNotNull(final String propertyId) {
-    return !isNull(propertyId);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isNotNull(final Property property) {
-    return !isNull(property);
+    return !entity.isNull(propertyId);
   }
 
   /** {@inheritDoc} */

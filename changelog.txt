@@ -5521,3 +5521,5 @@
   ValueMapEditModel merged into EntityEditModel
   EntityEditPanel.handleException() now public
   EntityEditComponents.requestInitialFocus(afterInsert) refactored
+  EntityEditModel, redundant methods removed
+  EntityComponentValidators refactored
