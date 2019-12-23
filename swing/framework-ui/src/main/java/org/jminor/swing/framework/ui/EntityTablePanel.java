@@ -15,18 +15,21 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.DialogExceptionHandler;
@@ -111,6 +114,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
@@ -1672,6 +1676,71 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION : (table.getSelectedRow() + 1) * table.getRowHeight();
 
     return new Point(x, y);
+  }
+
+  /**
+   * A {@link EntityLookupField.SelectionProvider} implementation based on {@link EntityTablePanel}
+   */
+  public static final class TableSelectionProvider implements EntityLookupField.SelectionProvider {
+
+    private final EntityTablePanel tablePanel;
+    private final Control selectControl;
+
+    /**
+     * @param model the {@link EntityLookupModel}
+     */
+    public TableSelectionProvider(final EntityLookupModel model) {
+      final SwingEntityTableModel tableModel = new SwingEntityTableModel(model.getEntityId(), model.getConnectionProvider()) {
+        @Override
+        protected List<Entity> performQuery() {
+          return emptyList();
+        }
+      };
+      this.tablePanel = new EntityTablePanel(tableModel);
+      this.selectControl = control(() -> {
+        model.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
+        UiUtil.getParentDialog(tablePanel).dispose();
+      }, Messages.get(Messages.OK));
+      final JTable table = tablePanel.getTable();
+      table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+      final String enterActionKey = "EntityLookupField.enter";
+      table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
+      table.getActionMap().put(enterActionKey, selectControl);
+      final Collection<ColumnProperty> lookupProperties = model.getLookupProperties();
+      tableModel.getColumnModel().setColumns(lookupProperties.toArray(new Property[0]));
+      tableModel.getSortModel().setSortingDirective((Property) tableModel.getColumnModel().getColumn(0).getIdentifier(),
+              SortingDirective.ASCENDING, false);
+      tablePanel.setIncludeConditionPanel(false);
+      tablePanel.setIncludePopupMenu(false);
+      tablePanel.setIncludeSouthPanel(false);
+      tablePanel.getTable().setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
+              ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
+      tablePanel.setTableDoubleClickAction(selectControl);
+      tablePanel.initializePanel();
+    }
+
+    /**
+     * @return the underlying EntityTablePanel
+     */
+    public EntityTablePanel getTablePanel() {
+      return tablePanel;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public JComponent getSelectionComponent(final List<Entity> entities) {
+      tablePanel.getTableModel().clear();
+      tablePanel.getTableModel().addEntities(entities, false, false);
+      tablePanel.getTable().scrollRectToVisible(tablePanel.getTable().getCellRect(0, 0, true));
+
+      return tablePanel;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Control getSelectControl() {
+      return selectControl;
+    }
   }
 
   private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Property> {

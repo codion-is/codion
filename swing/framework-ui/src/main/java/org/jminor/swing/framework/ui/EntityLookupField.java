@@ -7,13 +7,11 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
@@ -25,7 +23,6 @@ import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -38,9 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
@@ -52,13 +47,11 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
 
@@ -424,71 +417,6 @@ public final class EntityLookupField extends JTextField {
       list.scrollRectToVisible(list.getCellBounds(0, 0));
 
       return list;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Control getSelectControl() {
-      return selectControl;
-    }
-  }
-
-  /**
-   * A {@link SelectionProvider} implementation based on {@link EntityTablePanel}
-   */
-  public static final class TableSelectionProvider implements SelectionProvider {
-
-    private final EntityTablePanel tablePanel;
-    private final Control selectControl;
-
-    /**
-     * @param model the {@link EntityLookupModel}
-     */
-    public TableSelectionProvider(final EntityLookupModel model) {
-      final SwingEntityTableModel tableModel = new SwingEntityTableModel(model.getEntityId(), model.getConnectionProvider()) {
-        @Override
-        protected List<Entity> performQuery() {
-          return emptyList();
-        }
-      };
-      this.tablePanel = new EntityTablePanel(tableModel);
-      this.selectControl = Controls.control(() -> {
-        model.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
-        UiUtil.getParentDialog(tablePanel).dispose();
-      }, Messages.get(Messages.OK));
-      final JTable table = tablePanel.getTable();
-      table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-      final String enterActionKey = "EntityLookupField.enter";
-      table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
-      table.getActionMap().put(enterActionKey, selectControl);
-      final Collection<ColumnProperty> lookupProperties = model.getLookupProperties();
-      tableModel.getColumnModel().setColumns(lookupProperties.toArray(new Property[0]));
-      tableModel.getSortModel().setSortingDirective((Property) tableModel.getColumnModel().getColumn(0).getIdentifier(),
-              SortingDirective.ASCENDING, false);
-      tablePanel.setIncludeConditionPanel(false);
-      tablePanel.setIncludePopupMenu(false);
-      tablePanel.setIncludeSouthPanel(false);
-      tablePanel.getTable().setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
-              ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
-      tablePanel.setTableDoubleClickAction(selectControl);
-      tablePanel.initializePanel();
-    }
-
-    /**
-     * @return the underlying EntityTablePanel
-     */
-    public EntityTablePanel getTablePanel() {
-      return tablePanel;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public JComponent getSelectionComponent(final List<Entity> entities) {
-      tablePanel.getTableModel().clear();
-      tablePanel.getTableModel().addEntities(entities, false, false);
-      tablePanel.getTable().scrollRectToVisible(tablePanel.getTable().getCellRect(0, 0, true));
-
-      return tablePanel;
     }
 
     /** {@inheritDoc} */

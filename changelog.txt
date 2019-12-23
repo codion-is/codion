@@ -5523,3 +5523,4 @@
   EntityEditComponents.requestInitialFocus(afterInsert) refactored
   EntityEditModel, redundant methods removed
   EntityComponentValidators refactored
+  EntityLookupField.TableSelectionProvider moved to EntityTablePanel, reducing cyclical dependencies in framework.ui

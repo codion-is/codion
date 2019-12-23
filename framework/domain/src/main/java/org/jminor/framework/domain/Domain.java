@@ -456,7 +456,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
       throw new IllegalArgumentException("Procedure not found: " + procedureId);
     }
 
-    return (Procedure) operation;
+    return (Procedure<C>) operation;
   }
 
   /**
@@ -473,7 +473,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
       throw new IllegalArgumentException("Function not found: " + functionId);
     }
 
-    return (Function) operation;
+    return (Function<C>) operation;
   }
 
   /**
@@ -601,8 +601,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
         final String beanProperty = property.getBeanProperty();
         Class typeClass = property.getTypeClass();
         if (property instanceof ForeignKeyProperty) {
-          typeClass = getDefinition(((ForeignKeyProperty) property)
-                  .getForeignEntityId()).getBeanClass();
+          typeClass = getDefinition(((ForeignKeyProperty) property).getForeignEntityId()).getBeanClass();
         }
         if (beanProperty != null && typeClass != null) {
           final Method getter = Util.getGetMethod(typeClass, beanProperty, beanClass);

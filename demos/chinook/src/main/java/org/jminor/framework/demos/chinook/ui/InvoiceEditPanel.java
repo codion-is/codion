@@ -11,6 +11,7 @@ import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityLookupField;
 import org.jminor.swing.framework.ui.EntityPanel;
+import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -74,8 +75,8 @@ public class InvoiceEditPanel extends EntityEditPanel {
   }
 
   private void configureCustomerLookup(final EntityLookupField customerField) {
-    final EntityLookupField.TableSelectionProvider customerSelectionProvider =
-            new EntityLookupField.TableSelectionProvider(customerField.getModel());
+    final EntityTablePanel.TableSelectionProvider customerSelectionProvider =
+            new EntityTablePanel.TableSelectionProvider(customerField.getModel());
     final SwingEntityTableModel tableModel = customerSelectionProvider.getTablePanel().getTableModel();
     tableModel.setColumns(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME, CUSTOMER_EMAIL);
     tableModel.getSortModel().setSortingDirective((Property) tableModel.getColumnModel().getColumn(0).getIdentifier(),

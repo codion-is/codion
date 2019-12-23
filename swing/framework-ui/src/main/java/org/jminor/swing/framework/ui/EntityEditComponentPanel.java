@@ -933,7 +933,7 @@ public class EntityEditComponentPanel extends JPanel {
     if (maximumMatch) {
       MaximumMatch.enable(comboBox);
     }
-    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
+    if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
       transferFocusOnEnter(comboBox);
     }
@@ -1039,7 +1039,7 @@ public class EntityEditComponentPanel extends JPanel {
                                                           final StateObserver enabledState) {
     final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, getEditModel().value(property.getPropertyId()),
             sortItems, enabledState);
-    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
+    if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) box.getEditor().getEditorComponent());
       transferFocusOnEnter(box);
     }
