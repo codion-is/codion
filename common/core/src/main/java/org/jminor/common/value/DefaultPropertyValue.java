@@ -19,7 +19,7 @@ final class DefaultPropertyValue<V> extends AbstractObservableValue<V> implement
   private final Method getMethod;
   private Method setMethod;
 
-  DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class valueClass,
+  DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<V> valueClass,
                        final EventObserver<V> changeEvent) {
     if (nullOrEmpty(propertyName)) {
       throw new IllegalArgumentException("propertyName is null or an empty string");
