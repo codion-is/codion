@@ -15,21 +15,18 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.DialogExceptionHandler;
@@ -95,11 +92,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
 import java.math.BigDecimal;
 import java.sql.Types;
@@ -114,7 +107,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
@@ -220,7 +212,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
 
-  private final Event<MouseEvent> tableDoubleClickedEvent = Events.event();
   private final Event<Boolean> conditionPanelVisibilityChangedEvent = Events.event();
   private final Event<Boolean> summaryPanelVisibleChangedEvent = Events.event();
 
@@ -257,11 +248,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final List<ControlSet> additionalPopupControlSets = new ArrayList<>();
   private final List<ControlSet> additionalToolBarControlSets = new ArrayList<>();
-
-  /**
-   * the action performed when the table is double clicked
-   */
-  private Action tableDoubleClickAction;
 
   /**
    * specifies whether to include the south panel
@@ -331,20 +317,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final SwingEntityTableModel getTableModel() {
     return tableModel;
-  }
-
-  /**
-   * @param doubleClickAction the action to perform when a double click is performed on the table, null for no double click action
-   */
-  public final void setTableDoubleClickAction(final Action doubleClickAction) {
-    this.tableDoubleClickAction = doubleClickAction;
-  }
-
-  /**
-   * @return the Action performed when the table receives a double click
-   */
-  public final Action getTableDoubleClickAction() {
-    return tableDoubleClickAction;
   }
 
   /**
@@ -797,20 +769,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * @param listener a listener notified each time the table is double clicked
-   */
-  public final void addTableDoubleClickListener(final EventDataListener<MouseEvent> listener) {
-    tableDoubleClickedEvent.addDataListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public final void removeTableDoubleClickListener(final EventDataListener listener) {
-    tableDoubleClickedEvent.removeDataListener(listener);
-  }
-
-  /**
    * Displays a dialog with the entities depending on the given entities.
    * @param entities the entities for which to display dependencies
    * @param connectionProvider the connection provider
@@ -953,7 +911,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     model.getEditModel().setReadOnly(true);
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.initializePanel();
-    entityTablePanel.addTableDoubleClickListener(mouseEvent -> {
+    entityTablePanel.getTable().addDoubleClickListener(mouseEvent -> {
       if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
         okControl.actionPerformed(null);
       }
@@ -1381,27 +1339,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return null;
   }
 
-  /**
-   * Initialize the MouseListener for the table component handling double click.
-   * Double clicking invokes the action returned by {@link #getTableDoubleClickAction()}
-   * with the JTable as the ActionEvent source
-   * @return the MouseListener for the table
-   * @see #getTableDoubleClickAction()
-   */
-  private MouseListener initializeTableMouseListener() {
-    return new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if (e.getClickCount() == 2) {
-          if (tableDoubleClickAction != null) {
-            tableDoubleClickAction.actionPerformed(new ActionEvent(getTable(), -1, "doubleClick"));
-          }
-          tableDoubleClickedEvent.fire(e);
-        }
-      }
-    };
-  }
-
   private void setupControls() {
     if (includeDeleteSelectedControl()) {
       setControl(DELETE_SELECTED, getDeleteSelectedControl());
@@ -1552,7 +1489,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void initializeTable() {
     table.putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
-    table.addMouseListener(initializeTableMouseListener());
     tableModel.getColumnModel().getAllColumns().forEach(column -> {
       final Property property = (Property) column.getIdentifier();
       column.setCellRenderer(initializeTableCellRenderer(property));
@@ -1676,71 +1612,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION : (table.getSelectedRow() + 1) * table.getRowHeight();
 
     return new Point(x, y);
-  }
-
-  /**
-   * A {@link EntityLookupField.SelectionProvider} implementation based on {@link EntityTablePanel}
-   */
-  public static final class TableSelectionProvider implements EntityLookupField.SelectionProvider {
-
-    private final EntityTablePanel tablePanel;
-    private final Control selectControl;
-
-    /**
-     * @param model the {@link EntityLookupModel}
-     */
-    public TableSelectionProvider(final EntityLookupModel model) {
-      final SwingEntityTableModel tableModel = new SwingEntityTableModel(model.getEntityId(), model.getConnectionProvider()) {
-        @Override
-        protected List<Entity> performQuery() {
-          return emptyList();
-        }
-      };
-      this.tablePanel = new EntityTablePanel(tableModel);
-      this.selectControl = control(() -> {
-        model.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
-        UiUtil.getParentDialog(tablePanel).dispose();
-      }, Messages.get(Messages.OK));
-      final JTable table = tablePanel.getTable();
-      table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-      final String enterActionKey = "EntityLookupField.enter";
-      table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
-      table.getActionMap().put(enterActionKey, selectControl);
-      final Collection<ColumnProperty> lookupProperties = model.getLookupProperties();
-      tableModel.getColumnModel().setColumns(lookupProperties.toArray(new Property[0]));
-      tableModel.getSortModel().setSortingDirective((Property) tableModel.getColumnModel().getColumn(0).getIdentifier(),
-              SortingDirective.ASCENDING, false);
-      tablePanel.setIncludeConditionPanel(false);
-      tablePanel.setIncludePopupMenu(false);
-      tablePanel.setIncludeSouthPanel(false);
-      tablePanel.getTable().setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
-              ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
-      tablePanel.setTableDoubleClickAction(selectControl);
-      tablePanel.initializePanel();
-    }
-
-    /**
-     * @return the underlying EntityTablePanel
-     */
-    public EntityTablePanel getTablePanel() {
-      return tablePanel;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public JComponent getSelectionComponent(final List<Entity> entities) {
-      tablePanel.getTableModel().clear();
-      tablePanel.getTableModel().addEntities(entities, false, false);
-      tablePanel.getTable().scrollRectToVisible(tablePanel.getTable().getCellRect(0, 0, true));
-
-      return tablePanel;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Control getSelectControl() {
-      return selectControl;
-    }
   }
 
   private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Property> {

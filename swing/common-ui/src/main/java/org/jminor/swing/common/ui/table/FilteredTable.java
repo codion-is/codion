@@ -4,6 +4,9 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.TextUtil;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.RowColumn;
@@ -17,6 +20,7 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -50,6 +54,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -98,6 +103,16 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * The text field used for entering the search condition
    */
   private final JTextField searchField;
+
+  /**
+   * Fired each time the table is double clicked
+   */
+  private final Event<MouseEvent> doubleClickedEvent = Events.event();
+
+  /**
+   * the action performed when the table is double clicked
+   */
+  private Action doubleClickAction;
 
   /**
    * If true then sorting via the table header is enabled
@@ -149,6 +164,21 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public JTextField getSearchField() {
     return searchField;
+  }
+
+  /**
+   * @param doubleClickAction the action to perform when a double click is performed on the table,
+   * null for no double click action
+   */
+  public final void setDoubleClickAction(final Action doubleClickAction) {
+    this.doubleClickAction = doubleClickAction;
+  }
+
+  /**
+   * @return the Action performed when the table receives a double click
+   */
+  public final Action getDoubleClickAction() {
+    return doubleClickAction;
   }
 
   /**
@@ -320,6 +350,20 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   /**
+   * @param listener a listener notified each time the table is double clicked
+   */
+  public final void addDoubleClickListener(final EventDataListener<MouseEvent> listener) {
+    doubleClickedEvent.addDataListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public final void removeDoubleClickListener(final EventDataListener listener) {
+    doubleClickedEvent.removeDataListener(listener);
+  }
+
+  /**
    * Creates a JTextField for searching through this table.
    * @return a search field
    */
@@ -478,6 +522,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void bindEvents() {
+    addMouseListener(initializeTableMouseListener());
     tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
       if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
         scrollToCoordinate(selected, getSelectedColumn(), false, false);
@@ -492,6 +537,27 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
             new MoveSelectedColumnAction(this, true));
     UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
             new MoveSelectedColumnAction(this, false));
+  }
+
+  /**
+   * Initialize the MouseListener for the table component handling double click.
+   * Double clicking invokes the action returned by {@link #getDoubleClickAction()}
+   * with this table as the ActionEvent source
+   * @return the MouseListener for the table
+   * @see #getDoubleClickAction()
+   */
+  private MouseListener initializeTableMouseListener() {
+    return new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent e) {
+        if (e.getClickCount() == 2) {
+          if (doubleClickAction != null) {
+            doubleClickAction.actionPerformed(new ActionEvent(this, -1, "doubleClick"));
+          }
+          doubleClickedEvent.fire(e);
+        }
+      }
+    };
   }
 
   private static void setSelected(final List<JCheckBox> checkBoxes, final boolean selected) {
