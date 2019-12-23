@@ -185,7 +185,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   public final void requestInitialFocus() {
     if (isVisible()) {
-      requestInitialFocus(false);
+      requestFocus(getInitialFocusComponent());
     }
   }
 
@@ -1353,10 +1353,13 @@ public class EntityEditComponentPanel extends JPanel {
     return getInitialFocusComponent();
   }
 
-  protected final void requestInitialFocus(final boolean afterInsert) {
-    final JComponent focusComponent = afterInsert ? getAfterInsertFocusComponent() : getInitialFocusComponent();
-    if (focusComponent != null && focusComponent.isFocusable()) {
-      focusComponent.requestFocus();
+  protected final void requestAfterInsertFocus() {
+    requestFocus(getAfterInsertFocusComponent());
+  }
+
+  private void requestFocus(final JComponent component) {
+    if (component != null && component.isFocusable()) {
+      component.requestFocus();
     }
     else {
       requestFocus();

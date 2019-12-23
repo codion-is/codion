@@ -313,6 +313,24 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_ADD_16));
   }
 
+  /**
+   * Handles the given Exception by logging it and displaying the error message.
+   * In case of a {@link ValidationException} the exception message is displayed,
+   * after which the component involved receives the focus.
+   * @param exception the exception to handle
+   */
+  public void handleException(final Exception exception) {
+    LOG.error(exception.getMessage(), exception);
+    if (exception instanceof ValidationException) {
+      JOptionPane.showMessageDialog(this, exception.getMessage(),
+              Messages.get(Messages.EXCEPTION), JOptionPane.ERROR_MESSAGE);
+      requestComponentFocus((String) ((ValidationException) exception).getKey());
+    }
+    else {
+      displayException(exception, UiUtil.getParentWindow(this));
+    }
+  }
+
   /** {@inheritDoc} */
   @Override
   public final void displayException(final Throwable throwable, final Window dialogParent) {
@@ -442,7 +460,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
           getEditModel().setEntity(null);
         }
         if (requestFocusAfterInsert) {
-          requestInitialFocus(true);
+          requestAfterInsertFocus();
         }
         return true;
       }
@@ -521,7 +539,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
         finally {
           UiUtil.setWaitCursor(false, this);
         }
-        requestInitialFocus(false);
+        requestInitialFocus();
 
         return true;
       }
@@ -579,24 +597,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @throws ValidationException in case of a validation failure
    */
   protected void validateData() throws ValidationException {}
-
-  /**
-   * Handles the given Exception by logging it and displaying the error message.
-   * In case of a {@link ValidationException} the exception message is displayed,
-   * after which the component involved receives the focus.
-   * @param exception the exception to handle
-   */
-  protected void handleException(final Exception exception) {
-    LOG.error(exception.getMessage(), exception);
-    if (exception instanceof ValidationException) {
-      JOptionPane.showMessageDialog(this, exception.getMessage(),
-              Messages.get(Messages.EXCEPTION), JOptionPane.ERROR_MESSAGE);
-      requestComponentFocus((String) ((ValidationException) exception).getKey());
-    }
-    else {
-      displayException(exception, UiUtil.getParentWindow(this));
-    }
-  }
 
   /**
    * Called before a insert is performed, the default implementation simply returns true

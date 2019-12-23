@@ -5519,3 +5519,5 @@
   DefaultProperty, a few methods missing the final keyword
   ValueMapEditModel.addValueSetListener() renamed to addValuePutListener()
   ValueMapEditModel merged into EntityEditModel
+  EntityEditPanel.handleException() now public
+  EntityEditComponents.requestInitialFocus(afterInsert) refactored
