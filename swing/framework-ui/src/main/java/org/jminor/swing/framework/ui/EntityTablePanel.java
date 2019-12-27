@@ -899,7 +899,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param dialogTitle the dialog title
    * @param preferredSize the preferred size of the dialog
    * @return a Collection containing the selected entities
-   * @throws CancelException in case the user cancels the operation
+   * @throws CancelException in case the user cancels the operation or selects no entities
    */
   public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final Container dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle,
@@ -912,10 +912,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       selected.addAll(lookupModel.getSelectionModel().getSelectedItems());
       dialog.dispose();
     }, Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    final Control cancelControl = control(() -> {
-      selected.add(null);//hack to indicate cancel
-      dialog.dispose();
-    }, Messages.get(Messages.CANCEL), null, null, Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
+    final Control cancelControl = control(dialog::dispose,
+            Messages.get(Messages.CANCEL), null, null, Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
 
     final SwingEntityModel model = new SwingEntityModel(lookupModel);
     model.getEditModel().setReadOnly(true);
@@ -941,7 +939,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         JOptionPane.showMessageDialog(getParentWindow(entityTablePanel),
                 FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
       }
-    }, FrameworkMessages.get(FrameworkMessages.SEARCH), null, null, FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0));
+    }, FrameworkMessages.get(FrameworkMessages.SEARCH), null, null,
+            FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0));
 
     final JButton okButton = new JButton(okControl);
     final JButton cancelButton = new JButton(cancelControl);
@@ -967,7 +966,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     dialog.setResizable(true);
     dialog.setVisible(true);
 
-    if (selected.isEmpty() || (selected.size() == 1 && selected.contains(null))) {
+    if (selected.isEmpty()) {
       throw new CancelException();
     }
 
