@@ -24,32 +24,18 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.DialogExceptionHandler;
-import org.jminor.swing.common.ui.LocalDateInputPanel;
-import org.jminor.swing.common.ui.LocalDateTimeInputPanel;
-import org.jminor.swing.common.ui.LocalTimeInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
-import org.jminor.swing.common.ui.input.BigDecimalInputProvider;
-import org.jminor.swing.common.ui.input.BlobInputProvider;
-import org.jminor.swing.common.ui.input.BooleanInputProvider;
-import org.jminor.swing.common.ui.input.DoubleInputProvider;
-import org.jminor.swing.common.ui.input.InputProvider;
 import org.jminor.swing.common.ui.input.InputProviderPanel;
-import org.jminor.swing.common.ui.input.IntegerInputProvider;
-import org.jminor.swing.common.ui.input.LongInputProvider;
-import org.jminor.swing.common.ui.input.TemporalInputProvider;
-import org.jminor.swing.common.ui.input.TextInputProvider;
-import org.jminor.swing.common.ui.input.ValueListInputProvider;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
 import org.jminor.swing.common.ui.table.FilteredTable;
@@ -94,11 +80,6 @@ import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
-import java.math.BigDecimal;
-import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -223,6 +204,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final JScrollPane tableScrollPane;
 
+  private final EntityInputProviders inputProviders;
+
   private final EntityTableConditionPanel conditionPanel;
 
   private final JScrollPane conditionScrollPane;
@@ -288,6 +271,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param conditionPanel the condition panel
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableConditionPanel conditionPanel) {
+    this(tableModel, new EntityInputProviders(), conditionPanel);
+  }
+
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
+   * @param inputProviders the input providers for this table panel
+   * @param conditionPanel the condition panel
+   */
+  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityInputProviders inputProviders,
+                          final EntityTableConditionPanel conditionPanel) {
     this.tableModel = tableModel;
     this.table = initializeTable(tableModel);
     this.tableScrollPane = new JScrollPane(table);
@@ -295,6 +289,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       tableScrollPane.getHorizontalScrollBar().setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
       revalidate();
     });
+    this.inputProviders = requireNonNull(inputProviders, "inputProviders");
     this.conditionPanel = conditionPanel;
     this.conditionScrollPane = conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
     this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
@@ -574,7 +569,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
-   * @see #getInputProvider(Property, java.util.List)
+   * @see EntityInputProviders#getInputProvider(Property, SwingEntityEditModel, Object)
    */
   public final void updateSelectedEntities(final Property propertyToUpdate) {
     if (tableModel.getSelectionModel().isSelectionEmpty()) {
@@ -582,8 +577,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     final List<Entity> selectedEntities = tableModel.getDomain().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
+    final Collection values = Entities.getDistinctValues(propertyToUpdate.getPropertyId(), selectedEntities);
+    final Object initialValue = values.size() == 1 ? values.iterator().next() : null;
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
-            getInputProvider(propertyToUpdate, selectedEntities));
+            inputProviders.getInputProvider(propertyToUpdate, tableModel.getEditModel(), initialValue));
     UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
             inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
@@ -1210,69 +1207,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected String[] getConfirmDeleteMessages() {
     return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
             FrameworkMessages.get(FrameworkMessages.DELETE)};
-  }
-
-  /**
-   * Provides value input components for multiple entity update, override to supply
-   * specific InputValueProvider implementations for properties.
-   * Remember to return with a call to super.getInputProvider() after handling your case.
-   * @param property the property for which to get the InputProvider
-   * @param toUpdate the entities that are about to be updated
-   * @return the InputProvider handling input for {@code property}
-   * @see #updateSelectedEntities(Property)
-   */
-  protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
-    final Collection values = Entities.getDistinctValues(property.getPropertyId(), toUpdate);
-    final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
-    if (property instanceof ForeignKeyProperty) {
-      return createEntityInputProvider((ForeignKeyProperty) property, (Entity) currentValue, tableModel.getEditModel());
-    }
-    if (property instanceof ValueListProperty) {
-      return new ValueListInputProvider(currentValue, ((ValueListProperty) property).getValues());
-    }
-    switch (property.getType()) {
-      case Types.BOOLEAN:
-        return new BooleanInputProvider((Boolean) currentValue);
-      case Types.DATE:
-        return new TemporalInputProvider<>(new LocalDateInputPanel((LocalDate) currentValue, property.getDateTimeFormatPattern()));
-      case Types.TIMESTAMP:
-        return new TemporalInputProvider<>(new LocalDateTimeInputPanel((LocalDateTime) currentValue, property.getDateTimeFormatPattern()));
-      case Types.TIME:
-        return new TemporalInputProvider<>(new LocalTimeInputPanel((LocalTime) currentValue, property.getDateTimeFormatPattern()));
-      case Types.DOUBLE:
-        return new DoubleInputProvider((Double) currentValue);
-      case Types.DECIMAL:
-        return new BigDecimalInputProvider((BigDecimal) currentValue);
-      case Types.INTEGER:
-        return new IntegerInputProvider((Integer) currentValue);
-      case Types.BIGINT:
-        return new LongInputProvider((Long) currentValue);
-      case Types.CHAR:
-        return new TextInputProvider(property.getCaption(), (String) currentValue, 1);
-      case Types.VARCHAR:
-        return new TextInputProvider(property.getCaption(), (String) currentValue, property.getMaxLength());
-      case Types.BLOB:
-        return new BlobInputProvider();
-      default:
-        throw new IllegalArgumentException("No InputProvider implementation available for property: " + property + " (type: " + property.getType() + ")");
-    }
-  }
-
-  /**
-   * Creates a InputProvider for the given foreign key property
-   * @param foreignKeyProperty the property
-   * @param currentValue the current value to initialize the InputProvider with
-   * @param editModel the edit model involved in the updating
-   * @return a Entity InputProvider
-   */
-  protected final InputProvider createEntityInputProvider(final ForeignKeyProperty foreignKeyProperty,
-                                                          final Entity currentValue,
-                                                          final SwingEntityEditModel editModel) {
-    if (tableModel.getConnectionProvider().getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
-      return new EntityComboBoxInputProvider(editModel.createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
-    }
-
-    return new EntityLookupFieldInputProvider(editModel.createForeignKeyLookupModel(foreignKeyProperty), currentValue);
   }
 
   /**
