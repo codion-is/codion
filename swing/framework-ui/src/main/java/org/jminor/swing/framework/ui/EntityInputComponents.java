@@ -61,7 +61,7 @@ public final class EntityInputComponents {
 
   /**
    * Identifies the completion mode MaximumMatch
-   * @see EntityUiUtil#COMBO_BOX_COMPLETION_MODE
+   * @see EntityInputComponents#COMBO_BOX_COMPLETION_MODE
    */
   public static final String COMPLETION_MODE_MAXIMUM_MATCH = "max";
 
@@ -76,7 +76,7 @@ public final class EntityInputComponents {
 
   /**
    * Identifies the completion mode AutoCompletion
-   * @see EntityUiUtil#COMBO_BOX_COMPLETION_MODE
+   * @see EntityInputComponents#COMBO_BOX_COMPLETION_MODE
    */
   public static final String COMPLETION_MODE_AUTOCOMPLETE = "auto";
   /**
