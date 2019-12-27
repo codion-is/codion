@@ -59,7 +59,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<ColumnPro
         return null;//no lower bound field required for booleans
       }
 
-      final JComponent component = EntityUiUtil.createInputComponent(model.getColumnIdentifier(),
+      final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(),
               isUpperBound ? model.getUpperBoundValue() : model.getLowerBoundValue());
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import java.awt.Dimension;
@@ -88,6 +89,11 @@ public class UiUtilTest {
     final JTextField textField = new JTextField();
     UiUtil.setPreferredWidth(textField, 42);
     assertEquals(new Dimension(42, textField.getPreferredSize().height), textField.getPreferredSize());
+    final JComboBox box = new JComboBox();
+    box.setPreferredSize(new Dimension(10, 10));
+    UiUtil.setPreferredWidth(box, 42);
+    assertEquals(10, box.getPreferredSize().height);
+    assertEquals(42, box.getPreferredSize().width);
   }
 
   @Test

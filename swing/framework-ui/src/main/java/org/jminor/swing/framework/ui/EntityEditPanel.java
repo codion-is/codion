@@ -41,7 +41,6 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -759,9 +758,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
 
   private void bindEventsInternal() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(() ->
-                    EntityUiUtil.showEntityMenu(editModel.getEntityCopy(), EntityEditPanel.this,
-                            new Point(0, 0), editModel.getConnectionProvider()), "EntityEditPanel.showEntityMenu"));
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(this::showEntityMenu,
+                    "EntityEditPanel.showEntityMenu"));
     editModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityEditPanel.this));
     editModel.addAfterRefreshListener(() -> UiUtil.setWaitCursor(false, EntityEditPanel.this));
     editModel.addConfirmSetEntityObserver(confirmationState -> {
@@ -770,6 +768,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       confirmationState.set(result == JOptionPane.YES_OPTION);
     });
+  }
+
+  private void showEntityMenu() {
+    new EntityPopupMenu(editModel.getEntityCopy(), editModel.getConnectionProvider()).show(this, 0, 0);
   }
 
   private static final class InsertEntityAction extends AbstractAction {

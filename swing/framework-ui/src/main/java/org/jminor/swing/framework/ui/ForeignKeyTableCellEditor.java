@@ -30,11 +30,11 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor {
     final String foreignEntityId = foreignKeyProperty.getForeignEntityId();
 
     if (connectionProvider.getDomain().getDefinition(foreignEntityId).isSmallDataset()) {
-      return EntityUiUtil.createForeignKeyComboBox(foreignKeyProperty, getCellValue(),
+      return EntityInputComponents.createForeignKeyComboBox(foreignKeyProperty, getCellValue(),
               new SwingEntityComboBoxModel(foreignEntityId, connectionProvider));
     }
 
-    return EntityUiUtil.createForeignKeyLookupField(foreignKeyProperty, getCellValue(),
+    return EntityInputComponents.createForeignKeyLookupField(foreignKeyProperty, getCellValue(),
             new DefaultEntityLookupModel(foreignEntityId, connectionProvider));
   }
 }

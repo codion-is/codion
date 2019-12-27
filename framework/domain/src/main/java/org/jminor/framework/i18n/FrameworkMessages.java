@@ -62,8 +62,6 @@ public final class FrameworkMessages {
   public static final String CONFIRM_INSERT = "confirm_insert";
   public static final String SHOW = "show";
   public static final String NO_RESULTS_FROM_CONDITION = "no_results_from_condition";
-  public static final String SET_LOG_LEVEL = "set_log_level";
-  public static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";
   public static final String SEARCH = "search";
   public static final String SEARCH_MNEMONIC = "search_mnemonic";
 

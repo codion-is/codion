@@ -6,6 +6,7 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.Configuration;
 import org.jminor.common.CredentialsProvider;
 import org.jminor.common.Item;
+import org.jminor.common.LoggerProxy;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
@@ -42,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -87,6 +89,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
@@ -101,9 +104,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName(), Locale.getDefault());
 
-  private static final String MSG_SELECT_LOOK_AND_FEEL = "select_look_and_feel";
-  private static final String MSG_HELP = "help";
-  private static final String MSG_ABOUT = "about";
+  private static final String SET_LOG_LEVEL = "set_log_level";
+  private static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";
+  private static final String SELECT_LOOK_AND_FEEL = "select_look_and_feel";
+  private static final String HELP = "help";
+  private static final String ABOUT = "about";
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
@@ -148,7 +153,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final String applicationLookAndFeelProperty;
   private final String applicationFontSizeProperty;
 
-  private final ApplicationFrameProvider frameProvider;
+  private final Supplier<JFrame> frameProvider;
   private final List<EntityPanelProvider> entityPanelProviders = new ArrayList<>();
   private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<>();
   private final List<EntityPanel> entityPanels = new ArrayList<>();
@@ -174,7 +179,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     this(JFrame::new);
   }
 
-  public EntityApplicationPanel(final ApplicationFrameProvider frameProvider) {
+  public EntityApplicationPanel(final Supplier<JFrame> frameProvider) {
     this.frameProvider = frameProvider;
     this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
@@ -305,7 +310,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows a dialog for setting the logging level
    */
   public final void setLoggingLevel() {
-    EntityUiUtil.setLoggingLevel(this);
+    final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
+    if (loggerProxy == null) {
+      throw new RuntimeException("No LoggerProxy implementation available");
+    }
+    final DefaultComboBoxModel model = new DefaultComboBoxModel(loggerProxy.getLogLevels().toArray());
+    model.setSelectedItem(loggerProxy.getLogLevel());
+    JOptionPane.showMessageDialog(this, new JComboBox(model),
+            resourceBundle.getString(SET_LOG_LEVEL), JOptionPane.QUESTION_MESSAGE);
+    loggerProxy.setLogLevel(model.getSelectedItem());
+
   }
 
   /**
@@ -332,7 +346,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     lookAndFeelComboBox.setSelectedItem(UIManager.getLookAndFeel().getClass().getName());
 
     final int option = JOptionPane.showOptionDialog(this, lookAndFeelComboBox,
-            resourceBundle.getString(MSG_SELECT_LOOK_AND_FEEL), JOptionPane.OK_CANCEL_OPTION,
+            resourceBundle.getString(SELECT_LOOK_AND_FEEL), JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (option == JOptionPane.OK_OPTION) {
       PreferencesUtil.putUserPreference(applicationLookAndFeelProperty, (String) lookAndFeelComboBox.getSelectedItem());
@@ -537,7 +551,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final JOptionPane pane = new JOptionPane(getHelpPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
-            resourceBundle.getString(MSG_HELP));
+            resourceBundle.getString(HELP));
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     UiUtil.resizeWindow(dialog, HELP_DIALOG_SCREEN_SIZE_RATIO, MINIMUM_HELP_WINDOW_SIZE);
     dialog.setLocationRelativeTo(this);
@@ -554,7 +568,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final JOptionPane pane = new JOptionPane(getAboutPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
-            resourceBundle.getString(MSG_ABOUT));
+            resourceBundle.getString(ABOUT));
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
     dialog.setLocationRelativeTo(this);
@@ -696,7 +710,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the ControlSet specifying the items in the 'Help' menu
    */
   protected ControlSet getHelpControlSet() {
-    final ControlSet controlSet = new ControlSet(resourceBundle.getString(MSG_HELP),
+    final ControlSet controlSet = new ControlSet(resourceBundle.getString(HELP),
             resourceBundle.getString("help_mnemonic").charAt(0));
     controlSet.add(createHelpControl());
     controlSet.addSeparator();
@@ -720,8 +734,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected final Control createLoggingLevelControl() {
     final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_LOGGING);
     final Control setLoggingLevel = Controls.control(this::setLoggingLevel,
-            FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
-    setLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
+            resourceBundle.getString(SET_LOG_LEVEL));
+    setLoggingLevel.setDescription(resourceBundle.getString(SET_LOG_LEVEL_DESC));
     setLoggingLevel.setIcon(setLoggingIcon);
 
     return setLoggingLevel;
@@ -752,7 +766,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return a Control for selecting the application look and feel
    */
   protected final Control createSelectLookAndFeelControl() {
-    return Controls.control(this::selectLookAndFeel, resourceBundle.getString(MSG_SELECT_LOOK_AND_FEEL));
+    return Controls.control(this::selectLookAndFeel, resourceBundle.getString(SELECT_LOOK_AND_FEEL));
   }
 
   /**
@@ -774,14 +788,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return a Control for viewing information about the application
    */
   protected final Control createAboutControl() {
-    return Controls.control(this::displayAbout, resourceBundle.getString(MSG_ABOUT) + "...", null, null);
+    return Controls.control(this::displayAbout, resourceBundle.getString(ABOUT) + "...", null, null);
   }
 
   /**
    * @return a Control for displaying the help
    */
   protected final Control createHelpControl() {
-    return Controls.control(this::displayHelp, resourceBundle.getString(MSG_HELP) + "...", null, null);
+    return Controls.control(this::displayHelp, resourceBundle.getString(HELP) + "...", null, null);
   }
 
   /**
@@ -1152,7 +1166,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected final JFrame prepareFrame(final String title, final boolean maximize,
                                       final boolean showMenuBar, final Dimension size,
                                       final ImageIcon applicationIcon, final boolean setVisible) {
-    final JFrame frame = frameProvider.getApplicationFrame();
+    final JFrame frame = frameProvider.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     frame.setIconImage(applicationIcon.getImage());
     frame.addWindowListener(new WindowAdapter() {
@@ -1503,15 +1517,5 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
       return false;
     }
-  }
-
-  /**
-   * Provides the JFrame instance to use for the application
-   */
-  public interface ApplicationFrameProvider {
-    /**
-     * @return the application frame
-     */
-    JFrame getApplicationFrame();
   }
 }
