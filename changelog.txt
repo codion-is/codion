@@ -5526,3 +5526,4 @@
   EntityLookupField.TableSelectionProvider moved to EntityTablePanel, reducing cyclical dependencies in framework.ui
   EntityTablePanel, tableDoubleClickAction and related things moved to FilteredTable
   EntityTablePanel.TableSelectionProvider moved back to EntityLookupField, no more cyclical dependency
+  EntityInputComponents utility class split from EntityUiUtil
