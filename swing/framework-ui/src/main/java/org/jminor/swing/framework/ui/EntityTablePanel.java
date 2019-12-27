@@ -1031,9 +1031,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       popupMenu.show(table, location.x, location.y);
     }, "EntityTablePanel.showPopupMenu"));
     UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            control(() -> EntityUiUtil.showEntityMenu(tableModel.getSelectionModel().getSelectedItem(),
-                    EntityTablePanel.this, getPopupLocation(table), tableModel.getConnectionProvider()),
-                    "EntityTablePanel.showEntityMenu"));
+            control(this::showEntityMenu,"EntityTablePanel.showEntityMenu"));
   }
 
   /**
@@ -1537,6 +1535,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       if (controls.size() > 0) {
         popupControls.add(controls);
       }
+    }
+  }
+
+  private void showEntityMenu() {
+    final Entity selected = tableModel.getSelectionModel().getSelectedItem();
+    if (selected != null) {
+      final Point location = getPopupLocation(table);
+      new EntityPopupMenu(tableModel.getConnectionProvider().getDomain().copyEntity(selected),
+              tableModel.getConnectionProvider()).show(this, location.x, location.y);
     }
   }
 
