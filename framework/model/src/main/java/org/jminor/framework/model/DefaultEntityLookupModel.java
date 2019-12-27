@@ -16,7 +16,6 @@ import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.PropertyCondition;
 import org.jminor.framework.domain.Entity;
@@ -39,8 +38,7 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.framework.db.condition.Conditions.conditionSet;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.*;
 
 /**
  * A default EntityLookupModel implementation
@@ -79,7 +77,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   private final Value<String> searchStringValue = Values.value("");
   private final Value<String> multipleItemSeparatorValue = Values.value(",");
-  private final Value<Boolean> multipleSelectionEnabledValue = Values.value(true);
+  private final Value<Boolean> multipleSelectionEnabledValue = Values.value(true, false);
 
   private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
   private Condition.Provider additionalConditionProvider;
@@ -312,7 +310,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       final LookupSettings lookupSettings = propertyLookupSettings.get(lookupProperty);
       for (final String rawLookupText : lookupTexts) {
         final String lookupText = prepareLookupText(rawLookupText, lookupSettings);
-        final PropertyCondition condition = Conditions.propertyCondition(lookupProperty.getPropertyId(),
+        final PropertyCondition condition = propertyCondition(lookupProperty.getPropertyId(),
                 ConditionType.LIKE, lookupText).setCaseSensitive(lookupSettings.getCaseSensitiveValue().get());
         baseCondition.add(condition);
       }
