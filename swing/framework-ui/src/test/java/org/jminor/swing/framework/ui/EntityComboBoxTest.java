@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Date: 17.4.2010
  * Time: 12:06:44
  */
-public class EntityComboBoxInputProviderTest {
+public class EntityComboBoxTest {
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -27,11 +27,11 @@ public class EntityComboBoxInputProviderTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void test() throws Exception {
+  public void inputProvider() throws Exception {
     final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "OPERATIONS");
-    final EntityComboBoxInputProvider provider = new EntityComboBoxInputProvider(model, operations);
+    final EntityComboBox.InputProvider provider = new EntityComboBox.InputProvider(model, operations);
 
     assertNotNull(provider.getValue());
 

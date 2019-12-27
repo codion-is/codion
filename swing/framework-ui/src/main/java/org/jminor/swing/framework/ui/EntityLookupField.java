@@ -11,10 +11,13 @@ import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.common.value.Values;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.framework.model.DefaultEntityLookupModel;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import org.jminor.swing.common.ui.SwingMessages;
@@ -23,6 +26,8 @@ import org.jminor.swing.common.ui.UiValues;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.input.AbstractInputProvider;
+import org.jminor.swing.common.ui.input.InputProviderPanel;
 import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
@@ -178,6 +183,53 @@ public final class EntityLookupField extends JTextField {
     UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, transferFocusAction);
     UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, transferFocusBackwardAction);
     return this;
+  }
+
+  /**
+   * Performs a lookup for the given entity type, using a EntityLookupField displayed
+   * in a dialog, using the default search properties for the given entityId.
+   * @param entityId the entityId of the entity to perform a lookup for
+   * @param connectionProvider the connection provider
+   * @param singleSelection if true only a single entity can be selected
+   * @param dialogParent the component serving as the dialog parent
+   * @param lookupCaption the caption for the lookup field, used as a caption for the dialog as well
+   * @return the selected entities or an empty collection in case no entity was selected
+   * @see EntityLookupField
+   * @see EntityDefinition#getSearchProperties()
+   */
+  public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
+                                                  final boolean singleSelection, final JComponent dialogParent,
+                                                  final String lookupCaption) {
+    return lookupEntities(entityId, connectionProvider, singleSelection, dialogParent, lookupCaption, lookupCaption);
+  }
+
+  /**
+   * Performs a lookup for the given entity type, using a EntityLookupField displayed
+   * in a dialog, using the default search properties for the given entityId.
+   * @param entityId the entityId of the entity to perform a lookup for
+   * @param connectionProvider the connection provider
+   * @param singleSelection if true only a single entity can be selected
+   * @param dialogParent the component serving as the dialog parent
+   * @param lookupCaption the caption for the lookup field
+   * @param dialogTitle the title to display on the dialog
+   * @return the selected entities or an empty collection in case no entity was selected
+   * @see EntityLookupField
+   * @see EntityDefinition#getSearchProperties()
+   */
+  public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
+                                                  final boolean singleSelection, final JComponent dialogParent,
+                                                  final String lookupCaption, final String dialogTitle) {
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
+    lookupModel.getMultipleSelectionEnabledValue().set(!singleSelection);
+    final InputProviderPanel inputPanel = new InputProviderPanel(lookupCaption,
+            new InputProvider(lookupModel, null));
+    UiUtil.displayInDialog(dialogParent, inputPanel, dialogTitle, true,
+            inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
+    if (inputPanel.isInputAccepted()) {
+      return lookupModel.getSelectedEntities();
+    }
+
+    return emptyList();
   }
 
   private void selectEntities(final List<Entity> entities) {
@@ -492,6 +544,43 @@ public final class EntityLookupField extends JTextField {
     @Override
     public Control getSelectControl() {
       return selectControl;
+    }
+  }
+
+  /**
+   * A InputProvider implementation for Entity values based on a EntityLookupField.
+   * @see EntityLookupField
+   */
+  public static final class InputProvider extends AbstractInputProvider<Entity, EntityLookupField> {
+
+    /**
+     * Instantiates a new EntityLookupProvider
+     * @param lookupModel the lookup model to base the lookup field on
+     * @param initialValue the initial value
+     */
+    public InputProvider(final EntityLookupModel lookupModel, final Entity initialValue) {
+      super(createEntityLookupField(lookupModel, initialValue));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Entity getValue() {
+      final Collection<Entity> selectedEntities = getInputComponent().getModel().getSelectedEntities();
+
+      return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setValue(final Entity value) {
+      getInputComponent().getModel().setSelectedEntity(value);
+    }
+
+    private static EntityLookupField createEntityLookupField(final EntityLookupModel lookupModel, final Entity initialValue) {
+      final EntityLookupField field = new EntityLookupField(lookupModel, false);
+      lookupModel.setSelectedEntity(initialValue);
+
+      return field;
     }
   }
 }

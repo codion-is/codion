@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * Date: 17.4.2010
  * Time: 12:06:44
  */
-public class EntityLookupFieldInputProviderTest {
+public class EntityLookupFieldTest {
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -29,9 +29,9 @@ public class EntityLookupFieldInputProviderTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void test() throws Exception {
+  public void inputProvider() throws Exception {
     final EntityLookupModel model = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    final EntityLookupFieldInputProvider provider = new EntityLookupFieldInputProvider(model, null);
+    final EntityLookupField.InputProvider provider = new EntityLookupField.InputProvider(model, null);
 
     assertNull(provider.getValue());
 
