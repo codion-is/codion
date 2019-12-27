@@ -90,6 +90,8 @@ public final class EntityInputComponents {
   private static final String FOREIGN_KEY_PROPERTY_PARAM_NAME = "foreignKeyProperty";
   private static final int BOOLEAN_COMBO_BOX_POPUP_WIDTH = 40;
 
+  private EntityInputComponents() {}
+
   /**
    * @param property the property for which to create the input component
    * @param value the value to bind to the field

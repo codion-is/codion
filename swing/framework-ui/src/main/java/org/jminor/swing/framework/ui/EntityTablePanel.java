@@ -83,10 +83,12 @@ import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -231,6 +233,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final List<ControlSet> additionalPopupControlSets = new ArrayList<>();
   private final List<ControlSet> additionalToolBarControlSets = new ArrayList<>();
+  private final Set<Property> excludeFromUpdateMenu = new HashSet<>();
 
   /**
    * specifies whether to include the south panel
@@ -312,6 +315,16 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final SwingEntityTableModel getTableModel() {
     return tableModel;
+  }
+
+  /**
+   * Specifies that the given property should be excluded from the update selected entities menu.
+   * @param property the property to exclude from the update menu
+   * @throws IllegalStateException in case the panel has already been initialized
+   */
+  public final void excludeFromUpdateMenu(final Property property) {
+    checkIfInitialized();
+    excludeFromUpdateMenu.add(property);
   }
 
   /**
@@ -489,7 +502,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * underlying entity, for performing an update on the selected entities
    * @see #initializePanel()
    * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
-   * @see #includeUpdateSelectedProperty(Property)
+   * @see #excludeFromUpdateMenu(Property)
    * @see EntityEditModel#getUpdateEnabledObserver()
    */
   public ControlSet getUpdateSelectedControlSet() {
@@ -503,7 +516,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
-      if (includeUpdateSelectedProperty(property)) {
+      if (!excludeFromUpdateMenu.contains(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
         controlSet.add(control(() -> updateSelectedEntities(property), caption, enabled));
       }
@@ -788,10 +801,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
    * @return a static EntityTablePanel showing the given entities
    */
-  public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
-                                                              final EntityConnectionProvider connectionProvider) {
+  public static EntityTablePanel createReadOnlyEntityTablePanel(final Collection<Entity> entities,
+                                                                final EntityConnectionProvider connectionProvider) {
     if (Util.nullOrEmpty(entities)) {
-      throw new IllegalArgumentException("Cannot create a static EntityTablePanel without the entities");
+      throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entities.iterator().next().getEntityId(), connectionProvider) {
@@ -815,7 +828,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static EntityTablePanel createEntityTablePanel(final Collection<Entity> entities,
                                                         final EntityConnectionProvider connectionProvider) {
     if (Util.nullOrEmpty(entities)) {
-      throw new IllegalArgumentException("Cannot create a static EntityTablePanel without the entities");
+      throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
     final String entityId = entities.iterator().next().getEntityId();
@@ -957,9 +970,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (selected.isEmpty() || (selected.size() == 1 && selected.contains(null))) {
       throw new CancelException();
     }
-    else {
-      return selected;
-    }
+
+    return selected;
   }
 
   /**
@@ -1163,16 +1175,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Override to exclude properties from the update selected menu.
-   * @param property the property
-   * @return true if the given property should be included in the update selected menu.
-   * @see #getUpdateSelectedControlSet()
-   */
-  protected boolean includeUpdateSelectedProperty(final Property property) {
-    return true;
-  }
-
-  /**
    * Handles ValidationExceptions.
    * By default displays the exception message to the user.
    * @param exception the exception to handle
@@ -1356,7 +1358,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    final ActionMap actionMap = table.getActionMap();//todo
+    final ActionMap actionMap = table.getActionMap();
 
     inputMap.put(keyStroke, "EntityTablePanel.refreshControl");
     actionMap.put("EntityTablePanel.refreshControl", refresh);

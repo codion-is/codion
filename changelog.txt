@@ -5530,3 +5530,4 @@
   EntityPopupMenu split from EntityUiUtil
   EntityInputProviders refactored from EntityTablePanel
   EntityUiUtil renamed to EntityLookup
+  EntityTablePanel.includeUpdateSelectedProperty(property) replaced with excludeFromUpdateMenu(property)
