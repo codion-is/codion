@@ -17,11 +17,11 @@ import java.util.Collection;
 import static java.util.Collections.emptyList;
 
 /**
- * A static utility class concerned with UI related tasks.
+ * A static utility class for entity lookups.
  */
-public final class EntityUiUtil {
+public final class EntityLookup {
 
-  private EntityUiUtil() {}
+  private EntityLookup() {}
 
   /**
    * Performs a lookup for the given entity type, using a EntityLookupField displayed
@@ -31,7 +31,7 @@ public final class EntityUiUtil {
    * @param singleSelection if true only a single entity can be selected
    * @param dialogParent the component serving as the dialog parent
    * @param lookupCaption the caption for the lookup field, used as a caption for the dialog as well
-   * @return the selected entities or an empty collection in case a selection was not performed
+   * @return the selected entities or an empty collection in case no entity was selected
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
@@ -50,7 +50,7 @@ public final class EntityUiUtil {
    * @param dialogParent the component serving as the dialog parent
    * @param lookupCaption the caption for the lookup field
    * @param dialogTitle the title to display on the dialog
-   * @return the selected entities or an empty collection in case a selection was not performed
+   * @return the selected entities or an empty collection in case no entity was selected
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
@@ -58,11 +58,11 @@ public final class EntityUiUtil {
                                                   final boolean singleSelection, final JComponent dialogParent,
                                                   final String lookupCaption, final String dialogTitle) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
-    if (singleSelection) {
-      lookupModel.getMultipleSelectionEnabledValue().set(false);
-    }
-    final InputProviderPanel inputPanel = new InputProviderPanel(lookupCaption, new EntityLookupFieldInputProvider(lookupModel, null));
-    UiUtil.displayInDialog(dialogParent, inputPanel, dialogTitle, true, inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
+    lookupModel.getMultipleSelectionEnabledValue().set(!singleSelection);
+    final InputProviderPanel inputPanel = new InputProviderPanel(lookupCaption,
+            new EntityLookupFieldInputProvider(lookupModel, null));
+    UiUtil.displayInDialog(dialogParent, inputPanel, dialogTitle, true,
+            inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
       return lookupModel.getSelectedEntities();
     }
