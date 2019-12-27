@@ -193,11 +193,11 @@ public final class EntityLookupField extends JTextField {
    * @param singleSelection if true only a single entity can be selected
    * @param dialogParent the component serving as the dialog parent
    * @param lookupCaption the caption for the lookup field, used as a caption for the dialog as well
-   * @return the selected entities or an empty collection in case no entity was selected
+   * @return the selected entities or an empty list in case no entity was selected
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
+  public static List<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,
                                                   final String lookupCaption) {
     return lookupEntities(entityId, connectionProvider, singleSelection, dialogParent, lookupCaption, lookupCaption);
@@ -212,11 +212,11 @@ public final class EntityLookupField extends JTextField {
    * @param dialogParent the component serving as the dialog parent
    * @param lookupCaption the caption for the lookup field
    * @param dialogTitle the title to display on the dialog
-   * @return the selected entities or an empty collection in case no entity was selected
+   * @return the selected entities or an empty list in case no entity was selected
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
+  public static List<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,
                                                   final String lookupCaption, final String dialogTitle) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
@@ -565,7 +565,7 @@ public final class EntityLookupField extends JTextField {
     /** {@inheritDoc} */
     @Override
     public Entity getValue() {
-      final Collection<Entity> selectedEntities = getInputComponent().getModel().getSelectedEntities();
+      final List<Entity> selectedEntities = getInputComponent().getModel().getSelectedEntities();
 
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }

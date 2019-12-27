@@ -33,8 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static java.util.Collections.singletonList;
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static org.jminor.common.Util.nullOrEmpty;
@@ -47,7 +46,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
 
-  private final Event<Collection<Entity>> selectedEntitiesChangedEvent = Events.event();
+  private final Event<List<Entity>> selectedEntitiesChangedEvent = Events.event();
   private final State searchStringRepresentsSelectedState = States.state(true);
 
   /**
@@ -63,7 +62,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * The selected entities
    */
-  private final Collection<Entity> selectedEntities = new ArrayList<>();
+  private final List<Entity> selectedEntities = new ArrayList<>();
 
   /**
    * The EntityConnectionProvider instance used by this EntityLookupModel
@@ -160,7 +159,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public void setSelectedEntities(final Collection<Entity> entities) {
+  public void setSelectedEntities(final List<Entity> entities) {
     if (nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
@@ -173,13 +172,13 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       this.selectedEntities.addAll(entities);
     }
     refreshSearchText();
-    selectedEntitiesChangedEvent.fire(unmodifiableCollection(selectedEntities));
+    selectedEntitiesChangedEvent.fire(unmodifiableList(selectedEntities));
   }
 
   /** {@inheritDoc} */
   @Override
-  public Collection<Entity> getSelectedEntities() {
-    return unmodifiableCollection(selectedEntities);
+  public List<Entity> getSelectedEntities() {
+    return unmodifiableList(selectedEntities);
   }
 
   @Override
@@ -284,7 +283,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public void addSelectedEntitiesListener(final EventDataListener<Collection<Entity>> listener) {
+  public void addSelectedEntitiesListener(final EventDataListener<List<Entity>> listener) {
     selectedEntitiesChangedEvent.addDataListener(listener);
   }
 
@@ -341,7 +340,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     multipleItemSeparatorValue.addListener(this::refreshSearchText);
   }
 
-  private String toString(final Collection<Entity> entities) {
+  private String toString(final List<Entity> entities) {
     return entities.stream().map(toStringProvider).collect(joining(multipleItemSeparatorValue.get()));
   }
 

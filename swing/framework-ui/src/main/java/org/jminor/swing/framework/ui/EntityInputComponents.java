@@ -50,7 +50,7 @@ import javax.swing.text.AbstractDocument;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Collection;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -794,7 +794,7 @@ public final class EntityInputComponents {
 
     @Override
     public Entity get() {
-      final Collection<Entity> selectedEntities = lookupModel.getSelectedEntities();
+      final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 

@@ -8,6 +8,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static java.util.Collections.emptyList;
@@ -118,11 +119,11 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     addUpperBoundListener(() -> {
       if (!isUpdatingModel()) {
         final Object upperBound = getUpperBound();
-        if (upperBound instanceof Entity) {
-          entityLookupModel.setSelectedEntities(singletonList((Entity) upperBound));
+        if (upperBound == null || upperBound instanceof Entity) {
+          entityLookupModel.setSelectedEntity((Entity) upperBound);
         }
         else {
-          entityLookupModel.setSelectedEntities((Collection<Entity>) upperBound);
+          entityLookupModel.setSelectedEntities(new ArrayList<>((Collection<Entity>) upperBound));
         }
       }
     });

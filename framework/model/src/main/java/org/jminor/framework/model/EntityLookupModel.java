@@ -35,7 +35,7 @@ public interface EntityLookupModel {
   /**
    * @return an unmodifiable view of the selected entities
    */
-  Collection<Entity> getSelectedEntities();
+  List<Entity> getSelectedEntities();
 
   /**
    * Sets the given entity as the selected entity
@@ -48,7 +48,7 @@ public interface EntityLookupModel {
    * @param entities the entities to set as selected
    * @throws IllegalArgumentException if this lookup model does not allow multiple selections and entities.size() is larger than 1
    */
-  void setSelectedEntities(Collection<Entity> entities);
+  void setSelectedEntities(List<Entity> entities);
 
   /**
    * @return a string describing this lookup model, by default a comma separated list of search property names
@@ -135,7 +135,7 @@ public interface EntityLookupModel {
   /**
    * @param listener a listener to be notified each time the selected entities are changed
    */
-  void addSelectedEntitiesListener(EventDataListener<Collection<Entity>> listener);
+  void addSelectedEntitiesListener(EventDataListener<List<Entity>> listener);
 
   /**
    * @return a StateObserver indicating whether or not the search string represents the selected entities

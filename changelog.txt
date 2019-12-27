@@ -5533,3 +5533,4 @@
   EntityTablePanel.includeUpdateSelectedProperty(property) replaced with excludeFromUpdateMenu(property)
   EntityLookupFieldInputProvider and EntityComboBoxInputProvider made inner classes of their respective component classes and renamed to InputProvider
   EntityLookup.lookupEntities() moved to EntityLookupField, EntityLookup removed
+  EntityLookupModel, selectedEntities changed from Collection to List

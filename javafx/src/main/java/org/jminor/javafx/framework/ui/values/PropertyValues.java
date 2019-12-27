@@ -28,7 +28,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
-import java.util.Collection;
+import java.util.List;
 
 import static org.jminor.common.Util.nullOrEmpty;
 
@@ -470,7 +470,7 @@ public final class PropertyValues {
 
     @Override
     public Entity get() {
-      final Collection<Entity> selected = lookupModel.getSelectedEntities();
+      final List<Entity> selected = lookupModel.getSelectedEntities();
 
       return selected.isEmpty() ? null : selected.iterator().next();
     }
@@ -481,7 +481,7 @@ public final class PropertyValues {
     }
   }
 
-  private static final class EntityLookupMultiValue extends AbstractValue<Collection<Entity>> {
+  private static final class EntityLookupMultiValue extends AbstractValue<List<Entity>> {
 
     private final EntityLookupModel lookupModel;
 
@@ -491,12 +491,12 @@ public final class PropertyValues {
     }
 
     @Override
-    public void set(final Collection<Entity> value) {
+    public void set(final List<Entity> value) {
       lookupModel.setSelectedEntities(value);
     }
 
     @Override
-    public Collection<Entity> get() {
+    public List<Entity> get() {
       return lookupModel.getSelectedEntities();
     }
 
