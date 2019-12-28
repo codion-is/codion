@@ -5536,3 +5536,4 @@
   EntityLookupModel, selectedEntities changed from Collection to List
   EntityTablePanel and EntityEditPanel handleException() refactored
   EntitySelectionDialog extracted from EntityTablePanel
+  EntityEditModel.addValuePutListener() renamed to addValueEditListener()
