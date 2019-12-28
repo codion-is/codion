@@ -83,7 +83,7 @@ public final class DefaultEntityLookupModelTest {
   @Test
   public void setMultipleSelectionNotEnabled() {
     lookupModel.getMultipleSelectionEnabledValue().set(false);
-    final Collection<Entity> entities = asList(DOMAIN.entity(TestDomain.T_EMP), DOMAIN.entity(TestDomain.T_EMP));
+    final List<Entity> entities = asList(DOMAIN.entity(TestDomain.T_EMP), DOMAIN.entity(TestDomain.T_EMP));
     assertThrows(IllegalArgumentException.class, () -> lookupModel.setSelectedEntities(entities));
   }
 

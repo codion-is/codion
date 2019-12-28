@@ -5554,3 +5554,10 @@
   EntityPopupMenu split from EntityUiUtil
   EntityInputProviders refactored from EntityTablePanel
   EntityUiUtil renamed to EntityLookup
+  EntityTablePanel.includeUpdateSelectedProperty(property) replaced with excludeFromUpdateMenu(property)
+  EntityLookupFieldInputProvider and EntityComboBoxInputProvider made inner classes of their respective component classes and renamed to InputProvider
+  EntityLookup.lookupEntities() moved to EntityLookupField, EntityLookup removed
+  EntityLookupModel, selectedEntities changed from Collection to List
+  EntityTablePanel and EntityEditPanel handleException() refactored
+  EntitySelectionDialog extracted from EntityTablePanel
+  EntityEditModel.addValuePutListener() renamed to addValueEditListener()

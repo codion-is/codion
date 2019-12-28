@@ -313,21 +313,39 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Handles the given Exception by logging it and displaying the error message.
-   * In case of a {@link ValidationException} the exception message is displayed,
-   * after which the component involved receives the focus.
-   * @param exception the exception to handle
+   * Handles the given exception. If the referential error handling is {@link EntityTablePanel.ReferentialIntegrityErrorHandling#DEPENDENCIES}, the dependencies of the given entity are displayed
+   * to the user, otherwise {@link #handleException(Exception)} is called.
+   * @param exception the exception
+   * @param entity the entity causing the exception
+   * @see #setReferentialIntegrityErrorHandling(EntityTablePanel.ReferentialIntegrityErrorHandling)
    */
-  public void handleException(final Exception exception) {
-    LOG.error(exception.getMessage(), exception);
-    if (exception instanceof ValidationException) {
-      JOptionPane.showMessageDialog(this, exception.getMessage(),
-              Messages.get(Messages.EXCEPTION), JOptionPane.ERROR_MESSAGE);
-      requestComponentFocus((String) ((ValidationException) exception).getKey());
+  public void handleReferentialIntegrityException(final ReferentialIntegrityException exception,
+                                                  final Entity entity) {
+    if (referentialIntegrityErrorHandling == EntityTablePanel.ReferentialIntegrityErrorHandling.DEPENDENCIES) {
+      EntityTablePanel.showDependenciesDialog(singletonList(entity), editModel.getConnectionProvider(), this);
     }
     else {
-      displayException(exception, UiUtil.getParentWindow(this));
+      handleException(exception);
     }
+  }
+
+  /**
+   * Displays the exception message after which the component involved receives the focus.
+   * @param exception the exception
+   */
+  public void handleValidationException(final ValidationException exception) {
+    JOptionPane.showMessageDialog(this, exception.getMessage(),
+            Messages.get(Messages.EXCEPTION), JOptionPane.ERROR_MESSAGE);
+    requestComponentFocus((String) exception.getKey());
+  }
+
+  /**
+   * Handles the given exception, simply displays the error message to the user by default.
+   * @param exception the exception to handle
+   * @see #displayException(Throwable, Window)
+   */
+  public void handleException(final Exception exception) {
+    displayException(exception, UiUtil.getParentWindow(this));
   }
 
   /** {@inheritDoc} */
@@ -464,8 +482,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
         return true;
       }
     }
-    catch (final Exception ex) {
-      handleException(ex);
+    catch (final ValidationException e) {
+      LOG.debug(e.getMessage(), e);
+      handleValidationException(e);
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      handleException(e);
     }
 
     return false;
@@ -499,15 +522,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       }
     }
     catch (final ReferentialIntegrityException e) {
-      if (referentialIntegrityErrorHandling == EntityTablePanel.ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-        EntityTablePanel.showDependenciesDialog(singletonList(editModel.getEntityCopy()),
-                editModel.getConnectionProvider(), this);
-      }
-      else {
-        handleException(e);
-      }
+      LOG.debug(e.getMessage(), e);
+      handleReferentialIntegrityException(e, editModel.getEntityCopy());
     }
     catch (final Exception ex) {
+      LOG.error(ex.getMessage(), ex);
       handleException(ex);
     }
 
@@ -543,7 +562,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
         return true;
       }
     }
+    catch (final ValidationException e) {
+      LOG.debug(e.getMessage(), e);
+      handleValidationException(e);
+    }
     catch (final Exception ex) {
+      LOG.error(ex.getMessage(), ex);
       handleException(ex);
     }
 

@@ -8,13 +8,11 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.CancelException;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.common.value.PropertyValue;
@@ -41,7 +39,6 @@ import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
 import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.common.ui.table.FilteredTableSummaryPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import org.slf4j.Logger;
@@ -53,7 +50,6 @@ import javax.swing.BorderFactory;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -64,7 +60,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -72,7 +67,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -83,12 +77,13 @@ import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
 import static org.jminor.swing.common.ui.UiUtil.setWaitCursor;
@@ -231,6 +226,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final List<ControlSet> additionalPopupControlSets = new ArrayList<>();
   private final List<ControlSet> additionalToolBarControlSets = new ArrayList<>();
+  private final Set<Property> excludeFromUpdateMenu = new HashSet<>();
 
   /**
    * specifies whether to include the south panel
@@ -312,6 +308,16 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final SwingEntityTableModel getTableModel() {
     return tableModel;
+  }
+
+  /**
+   * Specifies that the given property should be excluded from the update selected entities menu.
+   * @param property the property to exclude from the update menu
+   * @throws IllegalStateException in case the panel has already been initialized
+   */
+  public final void excludeFromUpdateMenu(final Property property) {
+    checkIfInitialized();
+    excludeFromUpdateMenu.add(property);
   }
 
   /**
@@ -487,12 +493,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * and {@link EntityEditModel#getUpdateEnabledObserver()} is enabled.
    * @return a control set containing a set of controls, one for each updatable property in the
    * underlying entity, for performing an update on the selected entities
-   * @see #initializePanel()
    * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
-   * @see #includeUpdateSelectedProperty(Property)
+   * @see #excludeFromUpdateMenu(Property)
    * @see EntityEditModel#getUpdateEnabledObserver()
    */
-  public ControlSet getUpdateSelectedControlSet() {
+  public final ControlSet getUpdateSelectedControlSet() {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
@@ -503,7 +508,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
-      if (includeUpdateSelectedProperty(property)) {
+      if (!excludeFromUpdateMenu.contains(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
         controlSet.add(control(() -> updateSelectedEntities(property), caption, enabled));
       }
@@ -590,6 +595,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         tableModel.update(selectedEntities);
       }
       catch (final Exception e) {
+        LOG.error(e.getMessage(), e);
         handleException(e);
       }
       finally {
@@ -612,7 +618,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
               tableModel.getConnectionProvider().getConnection()
                       .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
       if (!dependencies.isEmpty()) {
-        showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this, MESSAGES.getString("dependent_records_found"));
+        showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
+                MESSAGES.getString("dependent_records_found"));
       }
       else {
         JOptionPane.showMessageDialog(this, MESSAGES.getString("none_found"),
@@ -620,6 +627,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       }
     }
     catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
       handleException(e);
     }
     finally {
@@ -644,15 +652,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       }
     }
     catch (final ReferentialIntegrityException e) {
-      if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-        showDependenciesDialog(tableModel.getSelectionModel().getSelectedItems(),
-                tableModel.getConnectionProvider(), this);
-      }
-      else {
-        handleException(e);
-      }
+      LOG.debug(e.getMessage(), e);
+      handleReferentialIntegrityException(e, tableModel.getSelectionModel().getSelectedItems());
     }
     catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
       handleException(e);
     }
   }
@@ -667,20 +671,29 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Handles the given exception, which usually means simply displaying it to the user
-   * @param throwable the exception to handle
+   * Handles the given exception. If the referential error handling is {@link EntityTablePanel.ReferentialIntegrityErrorHandling#DEPENDENCIES}, the dependencies of the given entity are displayed
+   * to the user, otherwise {@link #handleException(Exception)} is called.
+   * @param exception the exception
+   * @param entity the entity causing the exception
+   * @see #setReferentialIntegrityErrorHandling(EntityTablePanel.ReferentialIntegrityErrorHandling)
    */
-  public final void handleException(final Throwable throwable) {
-    LOG.error(throwable.getMessage(), throwable);
-    if (throwable instanceof ValidationException) {
-      handleException((ValidationException) throwable);
-    }
-    else if (throwable instanceof DatabaseException) {
-      handleException((DatabaseException) throwable);
+  public void handleReferentialIntegrityException(final ReferentialIntegrityException exception,
+                                                  final List<Entity> entities) {
+    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
+      showDependenciesDialog(entities, tableModel.getConnectionProvider(), this);
     }
     else {
-      displayException(throwable, getParentWindow(this));
+      handleException(exception);
     }
+  }
+
+  /**
+   * Handles the given exception, simply displays the error message to the user by default.
+   * @param exception the exception to handle
+   * @see #displayException(Throwable, Window)
+   */
+  public void handleException(final Exception exception) {
+    displayException(exception, getParentWindow(this));
   }
 
   /** {@inheritDoc} */
@@ -788,10 +801,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
    * @return a static EntityTablePanel showing the given entities
    */
-  public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
-                                                              final EntityConnectionProvider connectionProvider) {
+  public static EntityTablePanel createReadOnlyEntityTablePanel(final Collection<Entity> entities,
+                                                                final EntityConnectionProvider connectionProvider) {
     if (Util.nullOrEmpty(entities)) {
-      throw new IllegalArgumentException("Cannot create a static EntityTablePanel without the entities");
+      throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entities.iterator().next().getEntityId(), connectionProvider) {
@@ -815,7 +828,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static EntityTablePanel createEntityTablePanel(final Collection<Entity> entities,
                                                         final EntityConnectionProvider connectionProvider) {
     if (Util.nullOrEmpty(entities)) {
-      throw new IllegalArgumentException("Cannot create a static EntityTablePanel without the entities");
+      throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
     final String entityId = entities.iterator().next().getEntityId();
@@ -862,104 +875,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tablePanel.initializePanel();
 
     return tablePanel;
-  }
-
-  /**
-   * Displays a entity table in a dialog for selecting one or more entities
-   * @param lookupModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param singleSelection if true then only a single item can be selected
-   * @param dialogTitle the dialog title
-   * @return a Collection containing the selected entities
-   * @throws CancelException in case the user cancels the operation
-   */
-  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final Container dialogOwner,
-                                                  final boolean singleSelection, final String dialogTitle) {
-    return selectEntities(lookupModel, dialogOwner, singleSelection, dialogTitle, null);
-  }
-
-  /**
-   * Displays a entity table in a dialog for selecting one or more entities
-   * @param lookupModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param singleSelection if true then only a single item can be selected
-   * @param dialogTitle the dialog title
-   * @param preferredSize the preferred size of the dialog
-   * @return a Collection containing the selected entities
-   * @throws CancelException in case the user cancels the operation
-   */
-  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final Container dialogOwner,
-                                                  final boolean singleSelection, final String dialogTitle,
-                                                  final Dimension preferredSize) {
-    requireNonNull(lookupModel, "lookupModel");
-    final Collection<Entity> selected = new ArrayList<>();
-    final JDialog dialog = new JDialog(dialogOwner instanceof Window ? (Window) dialogOwner : getParentWindow(dialogOwner), dialogTitle);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final Control okControl = control(() -> {
-      selected.addAll(lookupModel.getSelectionModel().getSelectedItems());
-      dialog.dispose();
-    }, Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    final Control cancelControl = control(() -> {
-      selected.add(null);//hack to indicate cancel
-      dialog.dispose();
-    }, Messages.get(Messages.CANCEL), null, null, Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
-
-    final SwingEntityModel model = new SwingEntityModel(lookupModel);
-    model.getEditModel().setReadOnly(true);
-    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
-    entityTablePanel.initializePanel();
-    entityTablePanel.getTable().addDoubleClickListener(mouseEvent -> {
-      if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
-        okControl.actionPerformed(null);
-      }
-    });
-    entityTablePanel.setConditionPanelVisible(true);
-    if (singleSelection) {
-      entityTablePanel.getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
-
-    final Control searchControl = control(() -> {
-      lookupModel.refresh();
-      if (lookupModel.getRowCount() > 0) {
-        lookupModel.getSelectionModel().setSelectedIndexes(singletonList(0));
-        entityTablePanel.getTable().requestFocusInWindow();
-      }
-      else {
-        JOptionPane.showMessageDialog(getParentWindow(entityTablePanel),
-                FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
-      }
-    }, FrameworkMessages.get(FrameworkMessages.SEARCH), null, null, FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0));
-
-    final JButton okButton = new JButton(okControl);
-    final JButton cancelButton = new JButton(cancelControl);
-    final JButton searchButton = new JButton(searchControl);
-    UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
-    entityTablePanel.getTable().getInputMap(
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    dialog.setLayout(new BorderLayout());
-    if (preferredSize != null) {
-      entityTablePanel.setPreferredSize(preferredSize);
-    }
-    dialog.add(entityTablePanel, BorderLayout.CENTER);
-    final JPanel buttonPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.RIGHT));
-    buttonPanel.add(searchButton);
-    buttonPanel.add(okButton);
-    buttonPanel.add(cancelButton);
-    dialog.getRootPane().setDefaultButton(okButton);
-    dialog.add(buttonPanel, BorderLayout.SOUTH);
-    dialog.pack();
-    dialog.setLocationRelativeTo(dialogOwner);
-    dialog.setModal(true);
-    dialog.setResizable(true);
-    dialog.setVisible(true);
-
-    if (selected.isEmpty() || (selected.size() == 1 && selected.contains(null))) {
-      throw new CancelException();
-    }
-    else {
-      return selected;
-    }
   }
 
   /**
@@ -1163,34 +1078,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Override to exclude properties from the update selected menu.
-   * @param property the property
-   * @return true if the given property should be included in the update selected menu.
-   * @see #getUpdateSelectedControlSet()
-   */
-  protected boolean includeUpdateSelectedProperty(final Property property) {
-    return true;
-  }
-
-  /**
-   * Handles ValidationExceptions.
-   * By default displays the exception message to the user.
-   * @param exception the exception to handle
-   */
-  protected void handleException(final ValidationException exception) {
-    displayException(exception, getParentWindow(this));
-  }
-
-  /**
-   * Handles DatabaseExceptions
-   * By default displays the exception message to the user.
-   * @param exception the exception to handle
-   */
-  protected void handleException(final DatabaseException exception) {
-    displayException(exception, getParentWindow(this));
-  }
-
-  /**
    * Called before a delete is performed, if true is returned the delete action is performed otherwise it is canceled
    * @return true if the delete action should be performed
    */
@@ -1356,7 +1243,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    final ActionMap actionMap = table.getActionMap();//todo
+    final ActionMap actionMap = table.getActionMap();
 
     inputMap.put(keyStroke, "EntityTablePanel.refreshControl");
     actionMap.put("EntityTablePanel.refreshControl", refresh);
@@ -1550,7 +1437,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static Point getPopupLocation(final JTable table) {
     final int x = table.getBounds().getLocation().x + POPUP_LOCATION_X_OFFSET;
-    final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION : (table.getSelectedRow() + 1) * table.getRowHeight();
+    final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION :
+            (table.getSelectedRow() + 1) * table.getRowHeight();
 
     return new Point(x, y);
   }

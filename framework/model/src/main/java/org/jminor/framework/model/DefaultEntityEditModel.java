@@ -123,9 +123,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final State validState = States.state();
 
   /**
-   * Holds events signaling value changes made via {@link #put(Object, Object)}
+   * Holds events signaling value changes made via {@link #put(Property, Object)} or {@link #remove(Property)}
    */
-  private final Map<String, Event<ValueChange<Property, Object>>> valuePutEventMap = new HashMap<>();
+  private final Map<String, Event<ValueChange<Property, Object>>> valueEditEventMap = new HashMap<>();
 
   /**
    * Holds events signaling value changes in the underlying {@link Entity}
@@ -457,9 +457,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final void put(final Property property, final Object value) {
     requireNonNull(property, PROPERTY);
     final boolean initialization = !entity.containsKey(property);
-    final Object previousObjectalue = entity.put(property, value);
-    if (!Objects.equals(value, previousObjectalue)) {
-      notifyValueChange(property.getPropertyId(), valueChange(property, value, previousObjectalue, initialization));
+    final Object previousValue = entity.put(property, value);
+    if (!Objects.equals(value, previousValue)) {
+      getValueEditEvent(property.getPropertyId()).fire(valueChange(property, value, previousValue, initialization));
     }
   }
 
@@ -470,7 +470,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     Object value = null;
     if (entity.containsKey(property)) {
       value = entity.remove(property);
-      notifyValueChange(property.getPropertyId(), valueChange(property, null, value));
+      getValueEditEvent(property.getPropertyId()).fire(valueChange(property, null, value));
     }
 
     return value;
@@ -775,16 +775,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValuePutListener(final String propertyId, final EventDataListener listener) {
-    if (valuePutEventMap.containsKey(propertyId)) {
-      valuePutEventMap.get(propertyId).removeDataListener(listener);
+  public final void removeValueEditListener(final String propertyId, final EventDataListener listener) {
+    if (valueEditEventMap.containsKey(propertyId)) {
+      valueEditEventMap.get(propertyId).removeDataListener(listener);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addValuePutListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
-    getValuePutEvent(propertyId).addDataListener(listener);
+  public final void addValueEditListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
+    getValueEditEvent(propertyId).addDataListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -1082,21 +1082,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return !Objects.equals(get(property), getDefaultValue(property));
   }
 
-  private Event<ValueChange<Property, Object>> getValuePutEvent(final String propertyId) {
-    return valuePutEventMap.computeIfAbsent(propertyId, k -> Events.event());
+  private Event<ValueChange<Property, Object>> getValueEditEvent(final String propertyId) {
+    return valueEditEventMap.computeIfAbsent(propertyId, k -> Events.event());
   }
 
   private Event<ValueChange<Property, Object>> getValueChangeEvent(final String propertyId) {
     return valueChangeEventMap.computeIfAbsent(propertyId, k -> Events.event());
-  }
-
-  /**
-   * Notifies that the value associated with the given property has changed using the given event
-   * @param propertyId the property
-   * @param event the event describing the value change
-   */
-  private void notifyValueChange(final String propertyId, final ValueChange<Property, Object> event) {
-    getValuePutEvent(propertyId).fire(event);
   }
 
   private void bindEventsInternal() {
@@ -1146,7 +1137,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     private EditModelValue(final EntityEditModel editModel, final String propertyId) {
       this.editModel = editModel;
       this.propertyId = propertyId;
-      this.editModel.getValueObserver(propertyId).addDataListener(valueChange -> fireChangeEvent(get()));
+      this.editModel.addValueListener(propertyId, valueChange -> fireChangeEvent(get()));
     }
 
     @Override

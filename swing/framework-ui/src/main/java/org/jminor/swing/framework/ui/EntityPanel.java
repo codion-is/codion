@@ -49,8 +49,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static java.awt.event.InputEvent.ALT_DOWN_MASK;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.swing.common.ui.UiUtil.addKeyEvent;
@@ -1283,22 +1282,22 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void initializeResizing() {
-    addKeyEvent(this, VK_UP, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+    addKeyEvent(this, VK_UP, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
-    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
-    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
-    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
     if (containsEditPanel()) {
-      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
-      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
-      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
-      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
     }
   }

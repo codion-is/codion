@@ -44,7 +44,7 @@ public final class EntitiesTutorial {
     public static final String ARTIST_NAME = "name";
 
     //string constants for the table entityId ('T_' prefix),
-    //and a propertyId for each column one for the foreign key relation
+    //and a propertyId for each column and one for the foreign key relation
     public static final String T_ALBUM = "chinook.album";
     public static final String ALBUM_ALBUMID = "albumid";
     public static final String ALBUM_TITLE = "title";

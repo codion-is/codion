@@ -575,23 +575,26 @@ public interface EntityEditModel extends Refreshable {
   EventObserver<ValueChange<Property, Object>> getValueObserver(String propertyId);
 
   /**
-   * Adds a listener notified each time the value associated with the given property is set via
-   * {@link #put(Property, Object)}, note that this event is only fired when the the value changes
-   * @param propertyId the ID of the property for which to monitor value changes
-   * @param listener a listener notified each time the value of the given property is set via this model
+   * Adds a listener notified each time the value associated with the given property is edited via
+   * {@link #put(Property, Object)} or {@link #remove(Property)}, note that this event is only fired
+   * when the value actually changes.
+   * @param propertyId the ID of the property for which to monitor value edits
+   * @param listener a listener notified each time the value of the given property is edited via this model
    */
-  void addValuePutListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
+  void addValueEditListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
 
   /**
    * @param propertyId the propertyId
    * @param listener the listener to remove
    */
-  void removeValuePutListener(String propertyId, EventDataListener listener);
+  void removeValueEditListener(String propertyId, EventDataListener listener);
 
   /**
-   * Adds a listener notified each time the value associated with the given key changes
+   * Adds a listener notified each time the value associated with the given key changes, either
+   * via editing or when the active entity is set.
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the property identified by {@code propertyId} changes
+   * @see #setEntity(Entity)
    */
   void addValueListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
 
@@ -603,6 +606,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * @param listener a listener notified each time the entity is set
+   * @see #setEntity(Entity)
    */
   void addEntitySetListener(EventDataListener<Entity> listener);
 

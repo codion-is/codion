@@ -39,7 +39,8 @@ public class EntityInputProviders {
    * @param initialValue the initial value to display
    * @return the InputProvider handling input for {@code property}
    */
-  public InputProvider getInputProvider(final Property property, final SwingEntityEditModel editModel, final Object initialValue) {
+  public InputProvider getInputProvider(final Property property, final SwingEntityEditModel editModel,
+                                        final Object initialValue) {
     if (property instanceof ForeignKeyProperty) {
       return createEntityInputProvider((ForeignKeyProperty) property, editModel, (Entity) initialValue);
     }
@@ -81,12 +82,12 @@ public class EntityInputProviders {
    * @param initialValue the current value to initialize the InputProvider with
    * @return a Entity InputProvider
    */
-  protected InputProvider<Entity, ?> createEntityInputProvider(final ForeignKeyProperty foreignKeyProperty,
-                                                               final SwingEntityEditModel editModel, final Entity initialValue) {
+  protected InputProvider createEntityInputProvider(final ForeignKeyProperty foreignKeyProperty,
+                                                    final SwingEntityEditModel editModel, final Entity initialValue) {
     if (editModel.getConnectionProvider().getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
-      return new EntityComboBoxInputProvider(editModel.createForeignKeyComboBoxModel(foreignKeyProperty), initialValue);
+      return new EntityComboBox.InputProvider(editModel.createForeignKeyComboBoxModel(foreignKeyProperty), initialValue);
     }
 
-    return new EntityLookupFieldInputProvider(editModel.createForeignKeyLookupModel(foreignKeyProperty), initialValue);
+    return new EntityLookupField.InputProvider(editModel.createForeignKeyLookupModel(foreignKeyProperty), initialValue);
   }
 }

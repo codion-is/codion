@@ -50,7 +50,7 @@ import javax.swing.text.AbstractDocument;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Collection;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -89,6 +89,8 @@ public final class EntityInputComponents {
   private static final String VALUE_PARAM_NAME = "value";
   private static final String FOREIGN_KEY_PROPERTY_PARAM_NAME = "foreignKeyProperty";
   private static final int BOOLEAN_COMBO_BOX_POPUP_WIDTH = 40;
+
+  private EntityInputComponents() {}
 
   /**
    * @param property the property for which to create the input component
@@ -792,7 +794,7 @@ public final class EntityInputComponents {
 
     @Override
     public Entity get() {
-      final Collection<Entity> selectedEntities = lookupModel.getSelectedEntities();
+      final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 

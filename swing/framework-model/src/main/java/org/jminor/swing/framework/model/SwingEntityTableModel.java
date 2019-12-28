@@ -70,7 +70,7 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
  *
  * tableModel.setEditModel(editModel);
  *
- * EntityTablePanel panel = new EntityTablePanel(model);
+ * EntityTablePanel panel = new EntityTablePanel(tableModel);
  * </pre>
  */
 public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
@@ -506,7 +506,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final void deleteSelected() throws DatabaseException {
     if (!isDeleteEnabled()) {
-      throw new IllegalStateException("Deleting is not allowed via this table model");
+      throw new IllegalStateException("Deleting is not enabled in this table model");
     }
     editModel.delete(getSelectionModel().getSelectedItems());
   }
@@ -516,10 +516,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities, "entities");
     if (!isUpdateEnabled()) {
-      throw new IllegalStateException("Updating is not allowed via this table model");
+      throw new IllegalStateException("Updating is not enabled in this table model");
     }
     if (entities.size() > 1 && !batchUpdateEnabled) {
-      throw new IllegalStateException("Batch update of entities is not allowed!");
+      throw new IllegalStateException("Batch update of entities is not enabled!");
     }
     editModel.update(entities);
   }
@@ -657,6 +657,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * Override to bind events using the edit model, called after the edit model has been set
+   * @see #getEditModel()
    */
   protected void bindEditModelEvents() {/*Provided for subclasses*/}
 
