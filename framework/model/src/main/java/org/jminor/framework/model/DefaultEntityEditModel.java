@@ -457,9 +457,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final void put(final Property property, final Object value) {
     requireNonNull(property, PROPERTY);
     final boolean initialization = !entity.containsKey(property);
-    final Object previousObjectalue = entity.put(property, value);
-    if (!Objects.equals(value, previousObjectalue)) {
-      notifyValueChange(property.getPropertyId(), valueChange(property, value, previousObjectalue, initialization));
+    final Object previousValue = entity.put(property, value);
+    if (!Objects.equals(value, previousValue)) {
+      getValuePutEvent(property.getPropertyId()).fire(valueChange(property, value, previousValue, initialization));
     }
   }
 
@@ -470,7 +470,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     Object value = null;
     if (entity.containsKey(property)) {
       value = entity.remove(property);
-      notifyValueChange(property.getPropertyId(), valueChange(property, null, value));
+      getValuePutEvent(property.getPropertyId()).fire(valueChange(property, null, value));
     }
 
     return value;
@@ -1088,15 +1088,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private Event<ValueChange<Property, Object>> getValueChangeEvent(final String propertyId) {
     return valueChangeEventMap.computeIfAbsent(propertyId, k -> Events.event());
-  }
-
-  /**
-   * Notifies that the value associated with the given property has changed using the given event
-   * @param propertyId the property
-   * @param event the event describing the value change
-   */
-  private void notifyValueChange(final String propertyId, final ValueChange<Property, Object> event) {
-    getValuePutEvent(propertyId).fire(event);
   }
 
   private void bindEventsInternal() {
