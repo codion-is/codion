@@ -8,7 +8,6 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
@@ -500,12 +499,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * and {@link EntityEditModel#getUpdateEnabledObserver()} is enabled.
    * @return a control set containing a set of controls, one for each updatable property in the
    * underlying entity, for performing an update on the selected entities
-   * @see #initializePanel()
    * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
    * @see #excludeFromUpdateMenu(Property)
    * @see EntityEditModel#getUpdateEnabledObserver()
    */
-  public ControlSet getUpdateSelectedControlSet() {
+  public final ControlSet getUpdateSelectedControlSet() {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
@@ -603,6 +601,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         tableModel.update(selectedEntities);
       }
       catch (final Exception e) {
+        LOG.error(e.getMessage(), e);
         handleException(e);
       }
       finally {
@@ -625,7 +624,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
               tableModel.getConnectionProvider().getConnection()
                       .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
       if (!dependencies.isEmpty()) {
-        showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this, MESSAGES.getString("dependent_records_found"));
+        showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
+                MESSAGES.getString("dependent_records_found"));
       }
       else {
         JOptionPane.showMessageDialog(this, MESSAGES.getString("none_found"),
@@ -633,6 +633,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       }
     }
     catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
       handleException(e);
     }
     finally {
@@ -657,15 +658,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       }
     }
     catch (final ReferentialIntegrityException e) {
-      if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-        showDependenciesDialog(tableModel.getSelectionModel().getSelectedItems(),
-                tableModel.getConnectionProvider(), this);
-      }
-      else {
-        handleException(e);
-      }
+      LOG.debug(e.getMessage(), e);
+      handleReferentialIntegrityException(e, tableModel.getSelectionModel().getSelectedItems());
     }
     catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
       handleException(e);
     }
   }
@@ -680,20 +677,29 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Handles the given exception, which usually means simply displaying it to the user
-   * @param throwable the exception to handle
+   * Handles the given exception. If the referential error handling is {@link EntityTablePanel.ReferentialIntegrityErrorHandling#DEPENDENCIES}, the dependencies of the given entity are displayed
+   * to the user, otherwise {@link #handleException(Exception)} is called.
+   * @param exception the exception
+   * @param entity the entity causing the exception
+   * @see #setReferentialIntegrityErrorHandling(EntityTablePanel.ReferentialIntegrityErrorHandling)
    */
-  public final void handleException(final Throwable throwable) {
-    LOG.error(throwable.getMessage(), throwable);
-    if (throwable instanceof ValidationException) {
-      handleException((ValidationException) throwable);
-    }
-    else if (throwable instanceof DatabaseException) {
-      handleException((DatabaseException) throwable);
+  public void handleReferentialIntegrityException(final ReferentialIntegrityException exception,
+                                                  final List<Entity> entities) {
+    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
+      showDependenciesDialog(entities, tableModel.getConnectionProvider(), this);
     }
     else {
-      displayException(throwable, getParentWindow(this));
+      handleException(exception);
     }
+  }
+
+  /**
+   * Handles the given exception, simply displays the error message to the user by default.
+   * @param exception the exception to handle
+   * @see #displayException(Throwable, Window)
+   */
+  public void handleException(final Exception exception) {
+    displayException(exception, getParentWindow(this));
   }
 
   /** {@inheritDoc} */
@@ -1174,24 +1180,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Handles ValidationExceptions.
-   * By default displays the exception message to the user.
-   * @param exception the exception to handle
-   */
-  protected void handleException(final ValidationException exception) {
-    displayException(exception, getParentWindow(this));
-  }
-
-  /**
-   * Handles DatabaseExceptions
-   * By default displays the exception message to the user.
-   * @param exception the exception to handle
-   */
-  protected void handleException(final DatabaseException exception) {
-    displayException(exception, getParentWindow(this));
-  }
-
-  /**
    * Called before a delete is performed, if true is returned the delete action is performed otherwise it is canceled
    * @return true if the delete action should be performed
    */
@@ -1551,7 +1539,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static Point getPopupLocation(final JTable table) {
     final int x = table.getBounds().getLocation().x + POPUP_LOCATION_X_OFFSET;
-    final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION : (table.getSelectedRow() + 1) * table.getRowHeight();
+    final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION :
+            (table.getSelectedRow() + 1) * table.getRowHeight();
 
     return new Point(x, y);
   }
