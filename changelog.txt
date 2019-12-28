@@ -5535,3 +5535,4 @@
   EntityLookup.lookupEntities() moved to EntityLookupField, EntityLookup removed
   EntityLookupModel, selectedEntities changed from Collection to List
   EntityTablePanel and EntityEditPanel handleException() refactored
+  EntitySelectionDialog extracted from EntityTablePanel

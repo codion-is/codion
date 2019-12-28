@@ -13,7 +13,6 @@ import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.CancelException;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.common.value.PropertyValue;
@@ -40,7 +39,6 @@ import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
 import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.common.ui.table.FilteredTableSummaryPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import org.slf4j.Logger;
@@ -52,7 +50,6 @@ import javax.swing.BorderFactory;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -63,7 +60,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -71,7 +67,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -89,7 +84,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
 import static org.jminor.swing.common.ui.UiUtil.setWaitCursor;
@@ -881,102 +875,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tablePanel.initializePanel();
 
     return tablePanel;
-  }
-
-  /**
-   * Displays a entity table in a dialog for selecting one or more entities
-   * @param lookupModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param singleSelection if true then only a single item can be selected
-   * @param dialogTitle the dialog title
-   * @return a Collection containing the selected entities
-   * @throws CancelException in case the user cancels the operation
-   */
-  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final Container dialogOwner,
-                                                  final boolean singleSelection, final String dialogTitle) {
-    return selectEntities(lookupModel, dialogOwner, singleSelection, dialogTitle, null);
-  }
-
-  /**
-   * Displays a entity table in a dialog for selecting one or more entities
-   * @param lookupModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param singleSelection if true then only a single item can be selected
-   * @param dialogTitle the dialog title
-   * @param preferredSize the preferred size of the dialog
-   * @return a Collection containing the selected entities
-   * @throws CancelException in case the user cancels the operation or selects no entities
-   */
-  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final Container dialogOwner,
-                                                  final boolean singleSelection, final String dialogTitle,
-                                                  final Dimension preferredSize) {
-    requireNonNull(lookupModel, "lookupModel");
-    final Collection<Entity> selected = new ArrayList<>();
-    final JDialog dialog = new JDialog(dialogOwner instanceof Window ? (Window) dialogOwner : getParentWindow(dialogOwner), dialogTitle);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final Control okControl = control(() -> {
-      selected.addAll(lookupModel.getSelectionModel().getSelectedItems());
-      dialog.dispose();
-    }, Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    final Control cancelControl = control(dialog::dispose,
-            Messages.get(Messages.CANCEL), null, null, Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
-
-    final SwingEntityModel model = new SwingEntityModel(lookupModel);
-    model.getEditModel().setReadOnly(true);
-    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
-    entityTablePanel.initializePanel();
-    entityTablePanel.getTable().addDoubleClickListener(mouseEvent -> {
-      if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
-        okControl.actionPerformed(null);
-      }
-    });
-    entityTablePanel.setConditionPanelVisible(true);
-    if (singleSelection) {
-      entityTablePanel.getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
-
-    final Control searchControl = control(() -> {
-      lookupModel.refresh();
-      if (lookupModel.getRowCount() > 0) {
-        lookupModel.getSelectionModel().setSelectedIndexes(singletonList(0));
-        entityTablePanel.getTable().requestFocusInWindow();
-      }
-      else {
-        JOptionPane.showMessageDialog(getParentWindow(entityTablePanel),
-                FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
-      }
-    }, FrameworkMessages.get(FrameworkMessages.SEARCH), null, null,
-            FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0));
-
-    final JButton okButton = new JButton(okControl);
-    final JButton cancelButton = new JButton(cancelControl);
-    final JButton searchButton = new JButton(searchControl);
-    UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
-    entityTablePanel.getTable().getInputMap(
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    dialog.setLayout(new BorderLayout());
-    if (preferredSize != null) {
-      entityTablePanel.setPreferredSize(preferredSize);
-    }
-    dialog.add(entityTablePanel, BorderLayout.CENTER);
-    final JPanel buttonPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.RIGHT));
-    buttonPanel.add(searchButton);
-    buttonPanel.add(okButton);
-    buttonPanel.add(cancelButton);
-    dialog.getRootPane().setDefaultButton(okButton);
-    dialog.add(buttonPanel, BorderLayout.SOUTH);
-    dialog.pack();
-    dialog.setLocationRelativeTo(dialogOwner);
-    dialog.setModal(true);
-    dialog.setResizable(true);
-    dialog.setVisible(true);
-
-    if (selected.isEmpty()) {
-      throw new CancelException();
-    }
-
-    return selected;
   }
 
   /**
