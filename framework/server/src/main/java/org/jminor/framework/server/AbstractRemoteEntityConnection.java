@@ -19,6 +19,9 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.property.ColumnProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -245,7 +249,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       this.remoteClient = remoteClient;
       this.connectionPool = connectionPool;
       this.database = database;
-      this.methodLogger = LocalEntityConnections.createLogger(domain);
+      this.methodLogger = new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(),
+            false, new EntityArgumentStringProvider(domain));
       this.methodLogger.setEnabled(loggingEnabled);
       this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();
       try {
@@ -469,6 +474,54 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       thread.setDaemon(true);
 
       return thread;
+    }
+  }
+
+  /**
+   * An implementation tailored for EntityConnections.
+   */
+  private static final class EntityArgumentStringProvider extends MethodLogger.DefaultArgumentStringProvider {
+
+    private final EntityDefinition.Provider definitionProvider;
+
+    private EntityArgumentStringProvider(final EntityDefinition.Provider definitionProvider) {
+      this.definitionProvider = definitionProvider;
+    }
+
+    @Override
+    protected String toString(final Object object) {
+      if (object instanceof Entity) {
+        return getEntityParameterString((Entity) object);
+      }
+      else if (object instanceof Entity.Key) {
+        return getEntityKeyParameterString((Entity.Key) object);
+      }
+
+      return super.toString(object);
+    }
+
+    private String getEntityParameterString(final Entity entity) {
+      final StringBuilder builder = new StringBuilder(entity.getEntityId()).append(" {");
+      final List<ColumnProperty> columnProperties = definitionProvider.getDefinition(entity.getEntityId()).getColumnProperties();
+      for (int i = 0; i < columnProperties.size(); i++) {
+        final ColumnProperty property = columnProperties.get(i);
+        final boolean modified = entity.isModified(property);
+        if (property.isPrimaryKeyProperty() || modified) {
+          final StringBuilder valueString = new StringBuilder();
+          if (modified) {
+            valueString.append(entity.getOriginal(property)).append("->");
+          }
+          valueString.append(entity.get(property.getPropertyId()));
+          builder.append(property.getPropertyId()).append(":").append(valueString).append(",");
+        }
+      }
+      builder.deleteCharAt(builder.length() - 1);
+
+      return builder.append("}").toString();
+    }
+
+    private String getEntityKeyParameterString(final Entity.Key argument) {
+      return argument.getEntityId() + " {" + argument.toString() + "}";
     }
   }
 }
