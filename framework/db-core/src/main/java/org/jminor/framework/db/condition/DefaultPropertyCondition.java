@@ -191,7 +191,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   }
 
   private static String getInList(final String columnIdentifier, final String valuePlaceholder, final int valueCount, final boolean not) {
-    final StringBuilder stringBuilder = new StringBuilder("(").append(columnIdentifier).append(not ? NOT_IN_PREFIX : IN_PREFIX);
+    final StringBuilder stringBuilder = new StringBuilder(columnIdentifier).append(not ? NOT_IN_PREFIX : IN_PREFIX);
     int cnt = 1;
     for (int i = 0; i < valueCount; i++) {
       stringBuilder.append(valuePlaceholder);
@@ -203,7 +203,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
         stringBuilder.append(", ");
       }
     }
-    stringBuilder.append("))");
+    stringBuilder.append(")");
 
     return stringBuilder.toString();
   }

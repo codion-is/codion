@@ -71,11 +71,11 @@ public final class WhereConditionTest {
     department2.put(TestDomain.DEPARTMENT_ID, 11);
     condition = whereCondition(entityCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, asList(department, department2)), empDefinition);
-    assertEquals("(deptno in (?, ?))", condition.getWhereClause());
+    assertEquals("deptno in (?, ?)", condition.getWhereClause());
 
     condition = whereCondition(entityCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, ConditionType.NOT_LIKE, asList(department, department2)), empDefinition);
-    assertEquals("(deptno not in (?, ?))", condition.getWhereClause());
+    assertEquals("deptno not in (?, ?)", condition.getWhereClause());
   }
 
   @Test

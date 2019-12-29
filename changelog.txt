@@ -5539,3 +5539,4 @@
   EntityEditModel.addValuePutListener() renamed to addValueEditListener()
   SerializationWhitelist refactored
   LocalEntityConnections.createLogger() removed, EntityArgumentStringProvider moved to AbstractRemoteEntityConnection and refactored
+  DefaultPropertyCondition, superfluous parenthesis removed from in clause

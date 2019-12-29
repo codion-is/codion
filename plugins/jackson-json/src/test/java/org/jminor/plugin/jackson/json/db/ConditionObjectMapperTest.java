@@ -55,7 +55,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(condition.getPropertyIds(), readCondition.getPropertyIds());
     assertEquals(condition.getValues(), readCondition.getValues());
 
-    assertEquals("((deptno not in (?, ?)) and ename = ? and (empno >= ? and empno <= ?) and comm is not null)",
+    assertEquals("(deptno not in (?, ?) and ename = ? and (empno >= ? and empno <= ?) and comm is not null)",
             Conditions.whereCondition(entityCondition, domain.getDefinition(TestDomain.T_EMP)).getWhereClause());
   }
 
