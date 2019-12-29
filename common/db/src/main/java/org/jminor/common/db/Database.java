@@ -89,36 +89,43 @@ public interface Database {
   int DEFAULT_LOGIN_TIMEOUT = 2;
 
   /**
-   * @return the name of the dbms in use
+   * Returns the database type this {@link Database} represents.
+   * @return the database type
    */
   Type getType();
 
   /**
+   * Returns the name of the host this database is running on.
    * @return the database host name
    */
   String getHost();
 
   /**
-   * @return the database port
+   * Returns the port number this database is running on.
+   * @return the database port number
    */
   Integer getPort();
 
   /**
+   * Returns the database service id or database name.
    * @return the database service id
    */
   String getSid();
 
   /**
+   * Returns true if this database is an embedded one
    * @return true if this database is an embedded one
    */
   boolean isEmbedded();
 
   /**
+   * Sets the string to append to the connection URL.
    * @param urlAppend a string to append to the connection URL
    */
   void setUrlAppend(String urlAppend);
 
   /**
+   * Returns the string to append to the connection URL.
    * @return the string to append to the connection URL
    */
   String getUrlAppend();
@@ -132,6 +139,7 @@ public interface Database {
   String getAutoIncrementQuery(String idSource);
 
   /**
+   * Returns a query string for selecting the next value from the given sequence.
    * @param sequenceName the name of the sequence
    * @return a query for selecting the next value from the given sequence
    * @throws UnsupportedOperationException in case the underlying database does not support sequences
@@ -140,9 +148,10 @@ public interface Database {
   String getSequenceQuery(String sequenceName);
 
   /**
+   * Returns the database url for this database, based on system properties
    * @param connectionProperties the connection properties, used primarily to provide
    * embedded databases with user info for authentication purposes
-   * @return the database url of the active database, based on system properties
+   * @return the database url for this database, based on system properties
    */
   String getURL(Properties connectionProperties);
 
@@ -166,17 +175,19 @@ public interface Database {
   void shutdownEmbedded(Properties connectionProperties);
 
   /**
-   * @return true if the dbms supports the Java 6 jdbc call Connection.isValid()
+   * Returns true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}.
+   * @return true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}
    */
   boolean supportsIsValid();
 
   /**
-   * @return true if the dbms supports the 'select for update' syntax
+   * Returns true if this database supports the 'select for update' syntax
+   * @return true if this database supports the 'select for update' syntax
    */
   boolean supportsSelectForUpdate();
 
   /**
-   * Returns true if the dbms supports the select for update NOWAIT option
+   * Returns true if this database supports the select for update NOWAIT option
    * @return true if NOWAIT is supported for select for update
    */
   boolean supportsNowait();
@@ -199,18 +210,21 @@ public interface Database {
   String getErrorMessage(SQLException exception);
 
   /**
+   * Returns true if this exception represents a login credentials failure
    * @param exception the exception
    * @return true if this exception represents a login credentials failure
    */
   boolean isAuthenticationException(SQLException exception);
 
   /**
+   * Returns true if this exception is a referential integrity exception
    * @param exception the exception
    * @return true if this exception is a referential integrity exception
    */
   boolean isReferentialIntegrityException(SQLException exception);
 
   /**
+   * Returns true if this exception is a unique key exception
    * @param exception the exception
    * @return true if this exception is a unique key exception
    */
@@ -234,6 +248,7 @@ public interface Database {
   Connection createConnection(User user) throws DatabaseException;
 
   /**
+   * Returns the name of the driver class
    * @return the name of the driver class
    */
   String getDriverClassName();

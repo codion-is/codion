@@ -674,7 +674,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Handles the given exception. If the referential error handling is {@link EntityTablePanel.ReferentialIntegrityErrorHandling#DEPENDENCIES}, the dependencies of the given entity are displayed
    * to the user, otherwise {@link #handleException(Exception)} is called.
    * @param exception the exception
-   * @param entity the entity causing the exception
+   * @param entities the entities causing the exception
    * @see #setReferentialIntegrityErrorHandling(EntityTablePanel.ReferentialIntegrityErrorHandling)
    */
   public void handleReferentialIntegrityException(final ReferentialIntegrityException exception,
