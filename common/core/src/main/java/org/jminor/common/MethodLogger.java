@@ -195,7 +195,7 @@ public final class MethodLogger {
         return "";
       }
       if (object.getClass().isArray()) {
-        return "[" + toString((Object[]) object) + "]";
+        return toString((Object[]) object);
       }
       if (object instanceof Collection) {
         return "[" + toString(((Collection) object).toArray()) + "]";
