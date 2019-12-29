@@ -260,6 +260,7 @@ public final class TextUtil {
   }
 
   /**
+   * Parses and trims the given comma separated string.
    * @param commaSeparatedValues a String with comma separated values
    * @return the trimmed values
    */
