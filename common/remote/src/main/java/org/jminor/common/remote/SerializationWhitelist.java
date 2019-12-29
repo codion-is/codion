@@ -41,7 +41,7 @@ public final class SerializationWhitelist {
    */
   public static void configureSerializationWhitelist(final String whitelistFile, final boolean dryRun) {
     if (!nullOrEmpty(whitelistFile)) {
-      sun.misc.ObjectInputFilter.Config.setSerialFilter(dryRun ?
+      ObjectInputFilter.Config.setSerialFilter(dryRun ?
               new SerializationFilterDryRun(whitelistFile) : new SerializationFilter(whitelistFile));
       LOG.debug("Serialization filter whitelist set: " + whitelistFile + " (dry run: " + dryRun + ")");
     }
@@ -52,7 +52,7 @@ public final class SerializationWhitelist {
    * @return true if a dry-run is active.
    */
   public static boolean isSerializationDryRunActive() {
-    return sun.misc.ObjectInputFilter.Config.getSerialFilter() instanceof SerializationFilterDryRun;
+    return ObjectInputFilter.Config.getSerialFilter() instanceof SerializationFilterDryRun;
   }
 
   /**
@@ -60,7 +60,7 @@ public final class SerializationWhitelist {
    * If dry-run was not active this method has no effect.
    */
   public static void writeDryRunWhitelist() {
-    final sun.misc.ObjectInputFilter serialFilter = sun.misc.ObjectInputFilter.Config.getSerialFilter();
+    final ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
     if (serialFilter instanceof SerializationFilterDryRun) {
       ((SerializationFilterDryRun) serialFilter).writeToFile();
     }
