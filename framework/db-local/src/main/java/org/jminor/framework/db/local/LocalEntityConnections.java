@@ -25,7 +25,7 @@ public final class LocalEntityConnections {
   private LocalEntityConnections() {}
 
   /**
-   * Constructs a new EntityConnection instance
+   * Constructs a new LocalEntityConnection instance
    * @param domain the domain model
    * @param database the Database instance
    * @param user the user used for connecting to the database
@@ -42,7 +42,7 @@ public final class LocalEntityConnections {
   }
 
   /**
-   * Constructs a new EntityConnection instance
+   * Constructs a new LocalEntityConnection instance
    * @param domain the domain model
    * @param database the Database instance
    * @param connection the connection object to base the entity connection on, it is assumed to be in a valid state
