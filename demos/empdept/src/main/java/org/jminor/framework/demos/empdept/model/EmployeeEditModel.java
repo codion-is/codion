@@ -43,8 +43,8 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 
   //keep event bindings in one place
   private void bindEvents() {
-    //Refresh the manager ComboBoxModel when an employee is either added or updated,
-    //in case a new manager got hired or promoted
+    //Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
+    //in case a new manager got hired, fired or promoted
     addEntitiesChangedListener(() -> getForeignKeyComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh());
     //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
     //this filtering happens each time the department value is changed, either when an employee is

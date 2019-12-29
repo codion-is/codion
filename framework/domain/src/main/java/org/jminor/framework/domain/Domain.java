@@ -443,6 +443,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   }
 
   /**
+   * Retrievs the procedure with the given id.
    * @param <C> the type of the database connection this procedure requires
    * @param procedureId the procedure id
    * @return the procedure
@@ -460,6 +461,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   }
 
   /**
+   * Retrievs the function with the given id.
    * @param <C> the type of the database connection this function requires
    * @param functionId the function id
    * @return the function
@@ -494,6 +496,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   }
 
   /**
+   * Retrievs the Domain with the given id.
    * @param domainId the id of the domain for which to retrieve the entity definitions
    * @return the domain instance registered for the given domainId
    * @throws IllegalArgumentException in case the domain has not been registered

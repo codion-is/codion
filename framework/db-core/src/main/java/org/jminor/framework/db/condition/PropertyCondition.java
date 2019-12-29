@@ -23,6 +23,7 @@ public interface PropertyCondition extends Condition {
   ConditionType getConditionType();
 
   /**
+   * Returns the condition string represented by this condition
    * @param property the underlying property
    * @return the condition string
    */

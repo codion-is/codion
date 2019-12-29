@@ -10,6 +10,7 @@ import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -180,23 +181,35 @@ public final class MethodLogger {
   public static class DefaultArgumentStringProvider implements Function<Object, String> {
 
     @Override
-    public String apply(final Object object) {
+    public final String apply(final Object object) {
+      return toString(object);
+    }
+
+    /**
+     * Returns a String representation of the given object.
+     * @param object the object
+     * @return a String representation of the given object
+     */
+    protected String toString(final Object object) {
       if (object == null) {
         return "";
       }
       if (object.getClass().isArray()) {
         return toString((Object[]) object);
       }
+      if (object instanceof Collection) {
+        return "[" + toString(((Collection) object).toArray()) + "]";
+      }
 
       return object.toString();
     }
 
-    protected static String toString(final Object[] arguments) {
-      if (arguments == null || arguments.length == 0) {
+    private String toString(final Object[] arguments) {
+      if (arguments.length == 0) {
         return "";
       }
 
-      return stream(arguments).map(Object::toString).collect(joining(", "));
+      return stream(arguments).map(this::toString).collect(joining(", "));
     }
   }
 
