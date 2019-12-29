@@ -5537,3 +5537,4 @@
   EntityTablePanel and EntityEditPanel handleException() refactored
   EntitySelectionDialog extracted from EntityTablePanel
   EntityEditModel.addValuePutListener() renamed to addValueEditListener()
+  SerializationWhitelist refactored

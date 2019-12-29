@@ -64,7 +64,8 @@ import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.common.remote.SerializationWhitelist.writeSerializationWhitelist;
+import static org.jminor.common.remote.SerializationWhitelist.isSerializationDryRunActive;
+import static org.jminor.common.remote.SerializationWhitelist.writeDryRunWhitelist;
 
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
@@ -525,8 +526,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
     catch (final NoSuchObjectException ignored) {/*ignored*/}
     UnicastRemoteObject.unexportObject(serverAdmin, true);
-    if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-      writeSerializationWhitelist(SERIALIZATION_FILTER_WHITELIST.get());
+    if (OBJECT_INPUT_FILTER_ON_CLASSPATH && isSerializationDryRunActive()) {
+      writeDryRunWhitelist();
     }
   }
 
