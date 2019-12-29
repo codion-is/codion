@@ -12,6 +12,7 @@ import java.io.ObjectInputFilter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -107,19 +108,16 @@ public final class SerializationWhitelist {
 
     SerializationFilter(final String whitelistFile) {
       try (final Stream<String> stream = Files.lines(Paths.get(whitelistFile))) {
-        stream.collect(toSet()).forEach(whitelistItem -> {
-          if (whitelistItem.endsWith(WILDCARD)) {
-            allowedWildcardClassnames.add(whitelistItem.substring(0, whitelistItem.length() - 1));
-          }
-          else {
-            allowedClassnames.add(whitelistItem);
-          }
-        });
+        addWhitelistItems(stream.collect(toSet()));
       }
       catch (final IOException e) {
         LOG.error("Unable to read serialization whitelist: " + whitelistFile);
         throw new RuntimeException(e);
       }
+    }
+
+    SerializationFilter(final Collection<String> whitelistItems) {
+      addWhitelistItems(whitelistItems);
     }
 
     @Override
@@ -139,6 +137,17 @@ public final class SerializationWhitelist {
       LOG.debug("Serialization rejected: " + classname);
 
       return Status.REJECTED;
+    }
+
+    private void addWhitelistItems(final Collection<String> whitelistItems) {
+      whitelistItems.forEach(whitelistItem -> {
+        if (whitelistItem.endsWith(WILDCARD)) {
+          allowedWildcardClassnames.add(whitelistItem.substring(0, whitelistItem.length() - 1));
+        }
+        else {
+          allowedClassnames.add(whitelistItem);
+        }
+      });
     }
 
     private boolean allowWildcard(final String classname) {
