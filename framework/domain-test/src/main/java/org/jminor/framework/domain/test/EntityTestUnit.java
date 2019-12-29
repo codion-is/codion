@@ -156,7 +156,7 @@ public class EntityTestUnit {
    * @return a Entity instance containing randomized values, based on the property definitions
    */
   public static Entity createRandomEntity(final Domain domain, final String entityId, final Map<String, Entity> referenceEntities) {
-    return createEntity(domain, entityId, property -> getRandomValue(property, referenceEntities));
+    return createEntity(domain, entityId, property -> createRandomValue(property, referenceEntities));
   }
 
   /**
@@ -184,15 +184,16 @@ public class EntityTestUnit {
     requireNonNull(entity, "entity");
     populateEntity(domain, entity,
             domain.getDefinition(entity.getEntityId()).getWritableColumnProperties(false, true),
-            property -> getRandomValue(property, foreignKeyEntities));
+            property -> createRandomValue(property, foreignKeyEntities));
   }
 
   /**
+   * Creates a random value for the given property.
    * @param property the property
    * @param referenceEntities entities referenced by the given property
    * @return a random value
    */
-  public static Object getRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
+  public static Object createRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
     requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
       return getReferenceEntity((ForeignKeyProperty) property, referenceEntities);

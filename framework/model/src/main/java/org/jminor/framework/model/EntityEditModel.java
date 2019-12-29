@@ -584,6 +584,7 @@ public interface EntityEditModel extends Refreshable {
   void addValueEditListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
 
   /**
+   * Removes the given listener.
    * @param propertyId the propertyId
    * @param listener the listener to remove
    */
@@ -599,6 +600,7 @@ public interface EntityEditModel extends Refreshable {
   void addValueListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
 
   /**
+   * Removes the given listener.
    * @param propertyId the ID of the property for which to remove the listener
    * @param listener the listener to remove
    */
@@ -611,6 +613,7 @@ public interface EntityEditModel extends Refreshable {
   void addEntitySetListener(EventDataListener<Entity> listener);
 
   /**
+   * Removes the given listener.
    * @param listener the listener to remove
    */
   void removeEntitySetListener(EventDataListener listener);
@@ -621,6 +624,7 @@ public interface EntityEditModel extends Refreshable {
   void addBeforeInsertListener(EventDataListener<List<Entity>> listener);
 
   /**
+   * Removes the given listener.
    * @param listener a listener to remove
    */
   void removeBeforeInsertListener(EventDataListener listener);
@@ -631,6 +635,7 @@ public interface EntityEditModel extends Refreshable {
   void addAfterInsertListener(EventDataListener<List<Entity>> listener);
 
   /**
+   * Removes the given listener.
    * @param listener a listener to remove
    */
   void removeAfterInsertListener(EventDataListener listener);
@@ -641,6 +646,7 @@ public interface EntityEditModel extends Refreshable {
   void addBeforeUpdateListener(EventDataListener<Map<Entity.Key, Entity>> listener);
 
   /**
+   * Removes the given listener.
    * @param listener a listener to remove
    */
   void removeBeforeUpdateListener(EventDataListener listener);
@@ -653,6 +659,7 @@ public interface EntityEditModel extends Refreshable {
   void addAfterUpdateListener(EventDataListener<Map<Entity.Key, Entity>> listener);
 
   /**
+   * Removes the given listener.
    * @param listener a listener to remove
    */
   void removeAfterUpdateListener(EventDataListener listener);
@@ -663,6 +670,7 @@ public interface EntityEditModel extends Refreshable {
   void addBeforeDeleteListener(EventDataListener<List<Entity>> listener);
 
   /**
+   * Removes the given listener.
    * @param listener a listener to remove
    */
   void removeBeforeDeleteListener(EventDataListener listener);
@@ -673,6 +681,7 @@ public interface EntityEditModel extends Refreshable {
   void addAfterDeleteListener(EventDataListener<List<Entity>> listener);
 
   /**
+   * Removes the given listener.
    * @param listener a listener to remove
    */
   void removeAfterDeleteListener(EventDataListener listener);
@@ -683,6 +692,7 @@ public interface EntityEditModel extends Refreshable {
   void addBeforeRefreshListener(EventListener listener);
 
   /**
+   * Removes the given listener.
    * @param listener a listener to remove
    */
   void removeBeforeRefreshListener(EventListener listener);
@@ -693,6 +703,7 @@ public interface EntityEditModel extends Refreshable {
   void addAfterRefreshListener(EventListener listener);
 
   /**
+   * Removes the given listener.
    * @param listener a listener to remove
    */
   void removeAfterRefreshListener(EventListener listener);
@@ -704,6 +715,7 @@ public interface EntityEditModel extends Refreshable {
   void addEntitiesChangedListener(EventListener listener);
 
   /**
+   * Removes the given listener.
    * @param listener a listener to remove
    */
   void removeEntitiesChangedListener(EventListener listener);
@@ -714,6 +726,7 @@ public interface EntityEditModel extends Refreshable {
   void addConfirmSetEntityObserver(EventDataListener<State> listener);
 
   /**
+   * Removes the given listener.
    * @param listener a listener to remove
    */
   void removeConfirmSetEntityObserver(EventDataListener listener);

@@ -135,8 +135,9 @@ public interface ColumnProperty extends Property {
     C toColumnValue(T value);
 
     /**
-     * @param columnValue the SQL value to translate from
-     * @return the value of SQL {@code columnValue}
+     * Translates the given sql column value into a property value.
+     * @param columnValue the sql value to translate from
+     * @return the value of sql {@code columnValue}
      */
     T fromColumnValue(C columnValue);
   }
