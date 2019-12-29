@@ -22,66 +22,76 @@ public final class Properties {
   private Properties() {}
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance.
    * @param propertyId the property ID
-   * @return a new column property
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder columnProperty(final String propertyId) {
     return columnProperty(propertyId, Types.INTEGER);
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance.
    * @param propertyId the property ID
-   * @param type the property type
-   * @return a new column property
+   * @param type the property sql data type
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder columnProperty(final String propertyId, final int type) {
     return columnProperty(propertyId, type, null);
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance.
    * @param propertyId the property ID
-   * @param type the property type
-   * @param caption the caption
-   * @return a new column property
+   * @param type the property sql data type
+   * @param caption the property caption
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder columnProperty(final String propertyId, final int type, final String caption) {
     return new DefaultColumnProperty(propertyId, type, caption).builder();
   }
 
   /**
+   * A convenience method for creating a new {@link ColumnProperty.Builder} instance,
+   * with the primary key index set to 0.
    * @param propertyId the property ID
-   * @return a new primary key property with index 0
+   * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
   public static ColumnProperty.Builder primaryKeyProperty(final String propertyId) {
     return primaryKeyProperty(propertyId, Types.INTEGER);
   }
 
   /**
+   * A convenience method for creating a new {@link ColumnProperty.Builder} instance,
+   * with the primary key index set to 0.
    * @param propertyId the property ID
-   * @param type the property type
-   * @return a new primary key property with index 0
+   * @param type the property sql data type
+   * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
   public static ColumnProperty.Builder primaryKeyProperty(final String propertyId, final int type) {
     return primaryKeyProperty(propertyId, type, null);
   }
 
   /**
+   * A convenience method for creating a new {@link ColumnProperty.Builder} instance,
+   * with the primary key index set to 0.
    * @param propertyId the property ID
-   * @param type the property type
-   * @param caption the caption
-   * @return a new primary key property with index 0
+   * @param type the property sql data type
+   * @param caption the property caption
+   * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
   public static ColumnProperty.Builder primaryKeyProperty(final String propertyId, final int type, final String caption) {
     return columnProperty(propertyId, type, caption).setPrimaryKeyIndex(0);
   }
 
   /**
-   * Instantiates a {@link ForeignKeyProperty}
+   * Instantiates a {@link ForeignKeyProperty.Builder} instance.
    * @param propertyId the property ID
    * @param caption the caption
    * @param foreignEntityId the ID of the entity referenced by this foreign key
-   * @param columnPropertyBuilder the underlying column property comprising this foreign key
-   * @return a new foreign key property
+   * @param columnPropertyBuilder the {@link ColumnProperty.Builder} for the underlying
+   * column property comprising this foreign key relation
+   * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final String propertyId, final String caption,
                                                               final String foreignEntityId,
@@ -90,12 +100,14 @@ public final class Properties {
   }
 
   /**
-   * Instantiates a {@link ForeignKeyProperty}
-   * @param propertyId the property ID, note that this is not a column name
-   * @param caption the property caption
+   * Instantiates a {@link ForeignKeyProperty.Builder} instance.
+   * @param propertyId the property ID
+   * @param caption the caption
    * @param foreignEntityId the ID of the entity referenced by this foreign key
-   * @param columnPropertyBuilders the underlying column properties comprising this foreign key
-   * @return a new foreign key property
+   * @param columnPropertyBuilders a List containing the {@link ColumnProperty.Builder}s for the underlying
+   * column properties comprising this foreign key relation, in the same order as the column properties
+   * they reference appear in the the referenced entities primary key
+   * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final String propertyId, final String caption,
                                                               final String foreignEntityId,
@@ -104,12 +116,13 @@ public final class Properties {
   }
 
   /**
-   * @param propertyId the ID of the property, this should not be a column name since this property does not
-   * map to a table column
-   * @param foreignKeyPropertyId the ID of the foreign key property from which entity value this property gets its value
-   * @param property the property from which this property gets its value
+   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a
+   * entity referenced via a foreign key.
+   * @param propertyId the ID of the property
+   * @param foreignKeyPropertyId the ID of the foreign key property from which this property gets its value
+   * @param property the property from the referenced entity, from which this property gets its value
    * @param caption the caption of this property
-   * @return a new denormalized view property
+   * @return a new {@link TransientProperty.Builder}
    */
   public static TransientProperty.Builder denormalizedViewProperty(final String propertyId, final String foreignKeyPropertyId,
                                                                    final Property property, final String caption) {
@@ -123,12 +136,14 @@ public final class Properties {
   }
 
   /**
+   * Instantiates a {@link TransientProperty.Builder} instance, which value is derived from
+   * or more linked property values.
    * @param propertyId the property ID
-   * @param type the property type
+   * @param type the property sql data type
    * @param caption the caption
-   * @param valueProvider the object responsible for providing the derived value
-   * @param linkedPropertyIds the IDs of the properties on whose value this property derives its value
-   * @return a new derived property
+   * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
+   * @param linkedPropertyIds the IDs of the properties from which this property derives its value
+   * @return a new {@link TransientProperty.Builder}
    * @throws IllegalArgumentException in case no linked property IDs are provided
    */
   public static TransientProperty.Builder derivedProperty(final String propertyId, final int type, final String caption,
@@ -138,37 +153,39 @@ public final class Properties {
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from
+   * a entity referenced by a foreign key.
    * @param propertyId the property ID, in case of database properties this should be the underlying column name
-   * @param foreignKeyPropertyId the ID of the foreign key property which references the entity which owns
-   * the denormalized property
+   * @param foreignKeyPropertyId the ID of the foreign key reference which owns the property which value to mirror
    * @param denormalizedProperty the property from which this property should get its value
-   * @return a new denormalized property
+   * @return a new {@link ColumnProperty.Builder}
    */
-  public static Property.Builder denormalizedProperty(final String propertyId, final String foreignKeyPropertyId,
-                                                      final Property denormalizedProperty) {
+  public static ColumnProperty.Builder denormalizedProperty(final String propertyId, final String foreignKeyPropertyId,
+                                                            final Property denormalizedProperty) {
     return denormalizedProperty(propertyId, foreignKeyPropertyId, denormalizedProperty, null);
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from
+   * a entity referenced by a foreign key.
    * @param propertyId the property ID, in case of database properties this should be the underlying column name
-   * @param foreignKeyPropertyId the ID of the foreign key property which references the entity which owns
-   * the denormalized property
+   * @param foreignKeyPropertyId the ID of the foreign key reference which owns the property which value to mirror
    * @param denormalizedProperty the property from which this property should get its value
-   * @param caption the caption if this property
-   * @return a new denormalized property
+   * @param caption the property caption
+   * @return a new {@link ColumnProperty.Builder}
    */
-  public static Property.Builder denormalizedProperty(final String propertyId, final String foreignKeyPropertyId,
-                                                      final Property denormalizedProperty, final String caption) {
+  public static ColumnProperty.Builder denormalizedProperty(final String propertyId, final String foreignKeyPropertyId,
+                                                            final Property denormalizedProperty, final String caption) {
     return new DefaultDenormalizedProperty(propertyId, foreignKeyPropertyId, denormalizedProperty, caption).builder();
   }
 
   /**
-   * @param propertyId the property ID, since SubqueryProperties do not map to underlying table columns,
-   * the property ID should not be column name, only be unique for this entity
-   * @param type the data type of this property
-   * @param caption the caption of this property
+   * Creates a new {@link ColumnProperty.Builder} instance, based on a sub-query.
+   * @param propertyId the property ID
+   * @param type the property sql data type
+   * @param caption the property caption
    * @param subquery the sql query
-   * @return a new subquery property
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder subqueryProperty(final String propertyId, final int type, final String caption,
                                                         final String subquery) {
@@ -176,13 +193,13 @@ public final class Properties {
   }
 
   /**
-   * @param propertyId the property ID, since SubqueryProperties do not map to underlying table columns,
-   * the property ID should not be column name, only be unique for this entity
-   * @param type the data type of this property
-   * @param caption the caption of this property
+   * Creates a new {@link ColumnProperty.Builder} instance, based on a sub-query.
+   * @param propertyId the property ID
+   * @param type the property sql data type
+   * @param caption the property caption
    * @param subquery the sql query
-   * @param columnType the actual column type
-   * @return a new subquery property
+   * @param columnType the actual column sql type in case it differs from the property sql data type
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder subqueryProperty(final String propertyId, final int type, final String caption,
                                                         final String subquery, final int columnType) {
@@ -190,11 +207,12 @@ public final class Properties {
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, based on the given items.
    * @param propertyId the property ID
-   * @param type the data type of this property
+   * @param type the property sql data type
    * @param caption the property caption
-   * @param validItems all allowed values for this property
-   * @return a new value list property
+   * @param validItems the Items representing all the valid values for this property
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder valueListProperty(final String propertyId, final int type, final String caption,
                                                          final List<Item> validItems) {
@@ -202,21 +220,21 @@ public final class Properties {
   }
 
   /**
-   * @param propertyId the property ID, since TransientProperties do not map to underlying table columns,
-   * the property ID should not be column name, only be unique for this entity
-   * @param type the data type of this property
-   * @return a new transient property
+   * Creates a new {@link TransientProperty.Builder} instance, which does not map to an underlying table column.
+   * @param propertyId the property ID
+   * @param type the property sql data type
+   * @return a new {@link TransientProperty.Builder}
    */
   public static TransientProperty.Builder transientProperty(final String propertyId, final int type) {
     return transientProperty(propertyId, type, null);
   }
 
   /**
-   * @param propertyId the property ID, since TransientProperties do not map to underlying table columns,
-   * the property ID should not be column name, only be unique for this entity
-   * @param type the data type of this property
-   * @param caption the caption of this property
-   * @return a new transient property
+   * Creates a new {@link TransientProperty.Builder} instance, which does not map to an underlying table column.
+   * @param propertyId the property ID
+   * @param type the property sql data type
+   * @param caption the property caption
+   * @return a new {@link TransientProperty.Builder}
    */
   public static TransientProperty.Builder transientProperty(final String propertyId, final int type,
                                                             final String caption) {
@@ -224,11 +242,12 @@ public final class Properties {
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance representing a Boolean value.
    * @param propertyId the property ID
-   * @param columnType the data type of the underlying column
+   * @param columnType the sql data type of the underlying column
    * @param trueValue the value representing 'true' in the underlying column
    * @param falseValue the value representing 'false' in the underlying column
-   * @return a new boolean property
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder booleanProperty(final String propertyId, final int columnType,
                                                        final Object trueValue, final Object falseValue) {
@@ -236,118 +255,132 @@ public final class Properties {
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance representing a Boolean value.
    * @param propertyId the property ID
-   * @param columnType the data type of the underlying column
-   * @param caption the caption of this property
+   * @param columnType the sql data type of the underlying column
+   * @param caption the property caption
    * @param trueValue the value representing 'true' in the underlying column
    * @param falseValue the value representing 'false' in the underlying column
-   * @return a new boolean property
+   * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder booleanProperty(final String propertyId, final int columnType,
-                                                       final String caption,
+  public static ColumnProperty.Builder booleanProperty(final String propertyId, final int columnType, final String caption,
                                                        final Object trueValue, final Object falseValue) {
     return new DefaultColumnProperty(propertyId, Types.BOOLEAN, caption, columnType).builder()
             .setValueConverter(booleanValueConverter(trueValue, falseValue));
   }
 
   /**
+   * Creates a new {@link BlobProperty.Builder} instance.
    * @param propertyId the property id
-   * @return a new blob property
+   * @return a new {@link BlobProperty.Builder}
    */
   public static BlobProperty.Builder blobProperty(final String propertyId) {
     return blobProperty(propertyId, null);
   }
 
   /**
+   * Creates a new {@link BlobProperty.Builder} instance.
    * @param propertyId the property id
-   * @param caption the caption
-   * @return a new blob property
+   * @param caption the property caption
+   * @return a new {@link BlobProperty.Builder}
    */
   public static BlobProperty.Builder blobProperty(final String propertyId, final String caption) {
     return new DefaultBlobProperty(propertyId, caption).builder();
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was inserted.
    * @param propertyId the property ID
-   * @return a new audit insert time property
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder auditInsertTimeProperty(final String propertyId) {
     return auditInsertTimeProperty(propertyId, null);
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was inserted.
    * @param propertyId the property ID
-   * @param caption the caption
-   * @return a new audit insert time property
+   * @param caption the property caption
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder auditInsertTimeProperty(final String propertyId, final String caption) {
     return new DefaultAuditTimeProperty(propertyId, INSERT, caption).builder();
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was updated.
    * @param propertyId the property ID
-   * @return a new audit update time property
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder auditUpdateTimeProperty(final String propertyId) {
     return auditUpdateTimeProperty(propertyId, null);
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was updated.
    * @param propertyId the property ID
-   * @param caption the caption
-   * @return a new audit update time property
+   * @param caption the property caption
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder auditUpdateTimeProperty(final String propertyId, final String caption) {
     return new DefaultAuditTimeProperty(propertyId, UPDATE, caption).builder();
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who inserted a record.
    * @param propertyId the property ID
-   * @return a new audit insert user property
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder auditInsertUserProperty(final String propertyId) {
     return auditInsertUserProperty(propertyId, null);
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who inserted a record.
    * @param propertyId the property ID
-   * @param caption the caption
-   * @return a new audit insert user property
+   * @param caption the property caption
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder auditInsertUserProperty(final String propertyId, final String caption) {
     return new DefaultAuditUserProperty(propertyId, INSERT, caption).builder();
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who updated a record.
    * @param propertyId the property ID
-   * @return a new audit update user property
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder auditUpdateUserProperty(final String propertyId) {
     return auditUpdateUserProperty(propertyId, null);
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who updated a record.
    * @param propertyId the property ID
-   * @param caption the caption
-   * @return a new audit update user property
+   * @param caption the property caption
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder auditUpdateUserProperty(final String propertyId, final String caption) {
     return new DefaultAuditUserProperty(propertyId, UPDATE, caption).builder();
   }
 
   /**
+   * Creates a new {@link ColumnProperty.Builder} instance, for use in a foreign key,
+   * mirroring a property which already exists as part of a different foreign key.
    * @param propertyId the property ID
-   * @return a new mirror property
+   * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder mirrorProperty(final String propertyId) {
     return new DefaultMirrorProperty(propertyId).builder();
   }
 
   /**
+   * Creates a new {@link ColumnProperty.ValueConverter} instance for converting a column value
+   * representing a boolean value to and from an actual Boolean.
    * @param trueValue the value used to represent 'true' in the underlying database, can be null
    * @param falseValue the value used to represent 'false' in the underlying database, can be null
    * @param <T> the type of the value used to represent a boolean
-   * @return a value converter which converts an underlying database representation
+   * @return a value converter for converting an underlying database representation
    * of a boolean value into an actual Boolean
    */
   public static <T> ColumnProperty.ValueConverter<Boolean, T> booleanValueConverter(final T trueValue, final T falseValue) {
