@@ -210,6 +210,7 @@ public final class Util {
   }
 
   /**
+   * Returns a String containing all system properties, written by the given {@link PropertyWriter}.
    * @param propertyWriter for specific property formatting or exclusions
    * @return a String containing all system properties, one per line
    */
@@ -332,6 +333,7 @@ public final class Util {
   }
 
   /**
+   * Returns the {@link Method} representing the setter for the given property in the given class.
    * @param valueType the class of the value for the given property
    * @param property the name of the property for which to retrieve the set method
    * @param valueOwner an instance
@@ -343,6 +345,7 @@ public final class Util {
   }
 
   /**
+   * Returns the {@link Method} representing the setter for the given property in the given class.
    * @param valueType the class of the value for the given property
    * @param property the name of the property for which to retrieve the set method
    * @param ownerClass the class
@@ -359,6 +362,7 @@ public final class Util {
   }
 
   /**
+   * Returns the {@link Method} representing the getter for the given property in the given class.
    * @param valueType the class of the value for the given property
    * @param property the name of the property for which to retrieve the get method
    * @param valueOwner an instance
@@ -370,6 +374,7 @@ public final class Util {
   }
 
   /**
+   * Returns the {@link Method} representing the getter for the given property in the given class.
    * @param valueType the class of the value for the given property
    * @param property the name of the property for which to retrieve the get method
    * @param ownerClass the class

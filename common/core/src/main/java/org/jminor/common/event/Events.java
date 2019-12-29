@@ -21,6 +21,7 @@ public final class Events {
   }
 
   /**
+   * Instantiates a {@link EventListener} causing the given {@link EventDataListener} to be fired with null data on each occurrence.
    * @param listener the data listener
    * @return a {@link EventListener} causing the given {@link EventDataListener} to be fired with null data on each occurrence
    */
@@ -29,6 +30,7 @@ public final class Events {
   }
 
   /**
+   * Instantiates a {@link EventDataListener} causing the given {@link EventListener} to be fired on each occurrence.
    * @param <T> the type of data propagated to listeners on event firing
    * @param listener the listener
    * @return a {@link EventDataListener} causing the given {@link EventListener} to be fired on each occurrence

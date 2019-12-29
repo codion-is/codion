@@ -11,6 +11,7 @@ import java.sql.SQLException;
 public final class UniqueConstraintException extends DatabaseException {
 
   /**
+   * Instantiates a new {@link UniqueConstraintException}
    * @param cause the underlying cause
    * @param message the error message
    */

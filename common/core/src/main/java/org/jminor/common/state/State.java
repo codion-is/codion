@@ -20,12 +20,14 @@ import org.jminor.common.Conjunction;
 public interface State extends StateObserver {
 
   /**
+   * Sets the value of this {@link State}.
    * @param value the new active state of this State instance
    */
   void set(boolean value);
 
   /**
-   * @return an StateObserver notified each time the state changes
+   * Returns a StateObserver notified each time the state changes
+   * @return a StateObserver notified each time the state changes
    */
   StateObserver getObserver();
 
@@ -36,16 +38,19 @@ public interface State extends StateObserver {
   interface AggregateState extends State {
 
     /**
+     * Returns the {@link Conjunction} used when aggregating the states.
      * @return the type of this aggregate state
      */
     Conjunction getConjunction();
 
     /**
+     * Adds a state to this aggregate state
      * @param state the state to add to this aggregate state
      */
     void addState(StateObserver state);
 
     /**
+     * Removes a state from this aggregate state
      * @param state the state to remove from this aggregate state
      */
     void removeState(StateObserver state);

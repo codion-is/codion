@@ -84,9 +84,10 @@ public final class TextUtil {
   }
 
   /**
-   * @param <T> the comparison type
-   * @return a Comparator which compares the string representations of the objects
+   * Creates a Comparator which compares the string representations of the objects
    * using the default Collator, taking spaces into account.
+   * @param <T> the type of the objects to compare
+   * @return a space aware collator
    * @see #DEFAULT_COLLATOR_LANGUAGE
    */
   public static <T> Comparator<T> getSpaceAwareCollator() {
@@ -94,10 +95,12 @@ public final class TextUtil {
   }
 
   /**
-   * @param <T> the comparison type
-   * @param locale the collator locale
-   * @return a Comparator which compares the string representations of the objects
+   * Creates a Comparator which compares the string representations of the objects
    * using the default Collator, taking spaces into account.
+   * @param <T> the type of the objects to compare
+   * @param locale the collator locale
+   * @return a space aware collator
+   * @see #DEFAULT_COLLATOR_LANGUAGE
    */
   public static <T> Comparator<T> getSpaceAwareCollator(final Locale locale) {
     return new ComparatorSansSpace<>(locale);
@@ -155,10 +158,11 @@ public final class TextUtil {
   }
 
   /**
+   * Creates a delimited string from the given input lists.
    * @param header the header
    * @param lines the lines
    * @param columnDelimiter the column delimiter
-   * @return a String comprised of the given header and lines with the given column delimiter
+   * @return a String comprised of the given header and lines using the given column delimiter
    */
   public static String getDelimitedString(final List<String> header, final List<List<String>> lines,
                                           final String columnDelimiter) {
