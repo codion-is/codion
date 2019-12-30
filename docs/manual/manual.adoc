@@ -10,6 +10,8 @@ include::{dir-manual}/domain-model.adoc[]
 
 include::{dir-manual}/entity-connection.adoc[]
 
+include::{dir-manual}/entity-connection-provider.adoc[]
+
 include::{dir-manual}/conditions.adoc[]
 
 include::{dir-manual}/model.adoc[]

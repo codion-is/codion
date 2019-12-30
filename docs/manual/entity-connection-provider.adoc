@@ -1,0 +1,32 @@
+= EntityConnectionProvider
+:dir-source-chinook: ../../demos/chinook/src/main/java
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+
+In most cases *EntityConnections* are retrieved from a {url-javadoc}/org/jminor/framework/db/EntityConnectionProvider.html[EntityConnectionProvider], which is responsible for establishing a connection to the underlying database. The *EntityConnectionProvider* class is central to the framework and is a common constructor parameter to classes requiring database access.
+
+== LocalEntityConnectionProvider
+
+Provides connections based on a local JDBC connection.
+
+[source,java,indent=0]
+----
+include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=local]
+----
+
+== RemoteEntityConnectionProvider
+
+Provides connections based on a remote RMI connection.
+
+[source,java,indent=0]
+----
+include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=remote]
+----
+
+== HttpEntityConnectionProvider
+
+Provides connections based on a remote HTTP connection.
+
+[source,java,indent=0]
+----
+include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=http]
+----

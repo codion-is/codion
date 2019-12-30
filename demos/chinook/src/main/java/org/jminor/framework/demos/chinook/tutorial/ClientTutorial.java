@@ -132,6 +132,6 @@ public final class ClientTutorial {
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Chinook.class.getName());
     new ApplicationPanel().startApplication("Artists and Albums", null, false,
-            getScreenSizeRatio(0.5), new User("scott", "tiger".toCharArray()));
+            getScreenSizeRatio(0.5), User.parseUser("scott:tiger"));
   }
 }

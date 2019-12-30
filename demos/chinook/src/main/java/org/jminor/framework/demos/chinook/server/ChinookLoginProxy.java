@@ -31,7 +31,7 @@ public final class ChinookLoginProxy implements LoginProxy {
    * The actual user used to connect to the database
    */
   private static final User DATABASE_USER =
-          new User("scott", "tiger".toCharArray());
+          User.parseUser("scott:tiger");
 
   /**
    * Manages the database connection used to lookup users
