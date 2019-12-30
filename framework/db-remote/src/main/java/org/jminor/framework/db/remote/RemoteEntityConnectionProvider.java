@@ -40,6 +40,25 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private boolean truststoreResolved = false;
 
   private String serverHostName;
+  private Integer serverPort;
+  private Integer registryPort;
+
+  /**
+   * Instantiates a new unconfigured {@link RemoteEntityConnectionProvider}.
+   */
+  public RemoteEntityConnectionProvider() {}
+
+  /**
+   * Instantiates a new {@link RemoteEntityConnectionProvider}.
+   * @param serverHostName the server host name
+   * @param serverPort the server port, -1 if no specific port is required
+   * @param registryPort the registry port
+   */
+  public RemoteEntityConnectionProvider(final String serverHostName, final Integer serverPort, final Integer registryPort) {
+    this.serverHostName = serverHostName;
+    this.serverPort = serverPort;
+    this.registryPort = registryPort;
+  }
 
   /** {@inheritDoc} */
   @Override
@@ -59,9 +78,14 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     return serverInfo.getServerName() + "@" + serverHostName;
   }
 
-  /** {@inheritDoc} */
-  @Override
+  /**
+   * @return the name of the host of the server providing the connection
+   */
   public String getServerHostName() {
+    if (serverHostName == null) {
+      serverHostName = Server.SERVER_HOST_NAME.get();
+    }
+
     return serverHostName;
   }
 
@@ -128,14 +152,27 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    serverHostName = Server.SERVER_HOST_NAME.get();
-    Integer serverPort = Server.SERVER_PORT.get();
-    if (serverPort == null) {
-      serverPort = -1;
-    }
-    final int registryPort = Server.REGISTRY_PORT.get();
-    this.server = Servers.getServer(serverHostName, Server.SERVER_NAME_PREFIX.get(), registryPort, serverPort);
+    this.server = Servers.getServer(getServerHostName(), Server.SERVER_NAME_PREFIX.get(), getRegistryPort(), getServerPort());
     this.serverInfo = this.server.getServerInfo();
+  }
+
+  private Integer getServerPort() {
+    if (serverPort == null) {
+      serverPort = Server.SERVER_PORT.get();
+      if (serverPort == null) {
+        serverPort = -1;
+      }
+    }
+
+    return serverPort;
+  }
+
+  private Integer getRegistryPort() {
+    if (registryPort == null) {
+      registryPort = Server.REGISTRY_PORT.get();
+    }
+
+    return registryPort;
   }
 
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {

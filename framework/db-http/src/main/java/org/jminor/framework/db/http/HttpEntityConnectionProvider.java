@@ -84,8 +84,9 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
     return getServerHostName();
   }
 
-  /** {@inheritDoc} */
-  @Override
+  /**
+   * @return the name of the host of the server providing the connection
+   */
   public String getServerHostName() {
     if (serverHostName == null) {
       serverHostName = HTTP_CLIENT_HOST_NAME.get();

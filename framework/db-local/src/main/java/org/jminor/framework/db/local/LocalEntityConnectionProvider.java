@@ -76,12 +76,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  public String getServerHostName() {
-    return getDatabase().getHost();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   protected LocalEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());

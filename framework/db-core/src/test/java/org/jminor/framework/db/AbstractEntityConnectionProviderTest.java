@@ -21,7 +21,6 @@ public final class AbstractEntityConnectionProviderTest {
   public void connectDisconnect() {
     final EntityConnectionProvider provider = new TestProvider().setUser(UNIT_TEST_USER);
     assertEquals("description", provider.getDescription());
-    assertEquals("localhost", provider.getServerHostName());
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.getConnectionType());
     assertEquals(provider.getDomain(), DOMAIN);
     assertEquals(UNIT_TEST_USER, provider.getUser());
@@ -92,11 +91,6 @@ public final class AbstractEntityConnectionProviderTest {
     @Override
     public String getDescription() {
       return "description";
-    }
-
-    @Override
-    public String getServerHostName() {
-      return "localhost";
     }
   }
 }

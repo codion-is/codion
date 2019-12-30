@@ -5540,3 +5540,4 @@
   SerializationWhitelist refactored
   LocalEntityConnections.createLogger() removed, EntityArgumentStringProvider moved to AbstractRemoteEntityConnection and refactored
   DefaultPropertyCondition, superfluous parenthesis removed from in clause
+  EntityConnectionProvider.getServerHostName() removed, added to HttpEntityConnectionProvider and RemoteEntityConnectionProvider (along with getServerPort() and getRegistryPort())
