@@ -13,3 +13,5 @@ include::{dir-technical}/database.adoc[]
 include::{dir-technical}/server.adoc[]
 
 include::{dir-technical}/server-monitor.adoc[]
+
+include::{dir-technical}/modules.adoc[]

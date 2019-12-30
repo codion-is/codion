@@ -1,0 +1,827 @@
+= Modules
+:dir-root: ../../
+:imagesdir: ../images
+
+== Common
+
+Common classes used throughout the framework.
+
+[discrete]
+=== jminor-common-core
+
+.Dependency graph
+[%collapsible]
+====
+image::common/core/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}common/core/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-common-db
+
+.Dependency graph
+[%collapsible]
+====
+image::common/db/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}common/db/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-common-model
+
+.Dependency graph
+[%collapsible]
+====
+image::common/model/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}common/model/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-common-remote
+
+.Dependency graph
+[%collapsible]
+====
+image::common/remote/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}common/remote/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-common-remote-http
+
+.Dependency graph
+[%collapsible]
+====
+image::common/remote-http/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}common/remote-http/build/reports/project/dependencies.txt[]
+----
+====
+
+== DBMS
+
+Database specific implementation classes.
+
+[discrete]
+=== jminor-dbms-derby
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/derby/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/dbms/derby/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-dbms-h2database
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/h2database/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/dbms/h2database/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-dbms-hsqldb
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/hsqldb/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/dbms/hsqldb/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-dbms-mysql
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/mysql/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/dbms/mysql/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-dbms-oracle
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/oracle/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/dbms/oracle/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-dbms-postgresql
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/postgresql/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/dbms/postgresql/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-dbms-sqlite
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/sqlite/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/dbms/sqlite/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-dbms-sqlserver
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/sqlserver/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/dbms/sqlserver/build/reports/project/dependencies.txt[]
+----
+====
+
+== Framework
+
+The framework itself.
+
+[discrete]
+=== jminor-framework-db-core
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/db-core/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/framework/db-core/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-framework-db-http
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/db-http/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/framework/db-http/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-framework-db-local
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/db-local/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/framework/db-local/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-framework-db-remote
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/db-remote/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/framework/db-remote/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-framework-domain
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/domain/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/framework/domain/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-framework-domain-test
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/domain-test/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/framework/domain-test/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-framework-model
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/model/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/framework/model/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-framework-server
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/server/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/framework/server/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-framework-servlet
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/servlet/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/framework/servlet/build/reports/project/dependencies.txt[]
+----
+====
+
+== Swing
+
+Swing client implementation.
+
+[discrete]
+=== jminor-swing-common-model
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/common-model/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/swing/common-model/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-swing-common-ui
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/common-ui/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/swing/common-ui/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-swing-common-tools
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/common-tools/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/swing/common-tools/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-swing-common-tools-ui
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/common-tools-ui/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/swing/common-tools-ui/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-swing-framework-model
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-model/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/swing/framework-model/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-swing-framework-ui
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-ui/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/swing/framework-ui/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-swing-framework-ui-test
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-ui-test/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/swing/framework-ui-test/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-swing-framework-tools
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-tools/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/swing/framework-tools/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-swing-framework-tools-ui
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-tools-ui/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/swing/framework-tools-ui/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+=== jminor-swing-framework-server-monitor
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-server-monitor/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/swing/framework-server-monitor/build/reports/project/dependencies.txt[]
+----
+====
+
+== JavaFX
+
+JavaFX client implementation (still quite experimental).
+
+[discrete]
+=== jminor-javafx-framework
+
+.Dependency graph
+[%collapsible]
+====
+image::javafx/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/javafx/build/reports/project/dependencies.txt[]
+----
+====
+
+== Plugins
+
+=== Logging
+
+[discrete]
+==== jminor-plugin-jul-proxy
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/jul-proxy/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/jul-proxy/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+==== jminor-plugin-log4j-proxy
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/log4j-proxy/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/log4j-proxy/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+==== jminor-plugin-logback-proxy
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/logback-proxy/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/logback-proxy/build/reports/project/dependencies.txt[]
+----
+====
+
+=== Connection pools
+
+[discrete]
+==== jminor-plugin-hikari-pool
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/hikari-pool/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/hikari-pool/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+==== jminor-plugin-tomcat-pool
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/tomcat-pool/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/tomcat-pool/build/reports/project/dependencies.txt[]
+----
+====
+
+=== Reporting
+
+[discrete]
+==== jminor-plugin-jasperreports
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/jasperreports/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/jasperreports/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+==== jminor-plugin-nextreports
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/nextreports/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/nextreports/build/reports/project/dependencies.txt[]
+----
+====
+
+=== JSON
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/jackson-json/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+[discrete]
+==== jminor-plugin-jackson-json
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/jackson-json/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+==== jminor-plugin-json
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/json/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/json/build/reports/project/dependencies.txt[]
+----
+====
+
+=== Other
+
+[discrete]
+==== jminor-plugin-credentials-server
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/credentials-server/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/credentials-server/build/reports/project/dependencies.txt[]
+----
+====
+
+[discrete]
+==== jminor-plugin-imagepanel
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/imagepanel/build/reports/dependency-graph/dependency-graph.png[]
+====
+
+.Dependencies
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-root}/plugins/imagepanel/build/reports/project/dependencies.txt[]
+----
+====
