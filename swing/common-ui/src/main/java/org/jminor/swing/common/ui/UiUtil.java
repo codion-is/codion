@@ -154,7 +154,7 @@ public final class UiUtil {
 
   /**
    * A square dimension which sides are the same as the preferred height of a JTextField.
-   * This comes in handy when f.ex. adding "..." lookup buttons next to text fields.
+   * This comes in handy for example when adding "..." lookup buttons next to text fields.
    */
   public static final Dimension DIMENSION_TEXT_FIELD_SQUARE = new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
   private static final int DEFAULT_HOR_VERT_GAP = 5;

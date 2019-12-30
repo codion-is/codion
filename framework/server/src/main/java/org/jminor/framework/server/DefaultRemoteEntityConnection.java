@@ -85,7 +85,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public Domain getDomain() throws RemoteException {
+  public Domain getDomain() {
     synchronized (connectionProxy) {
       return connectionProxy.getDomain();
     }

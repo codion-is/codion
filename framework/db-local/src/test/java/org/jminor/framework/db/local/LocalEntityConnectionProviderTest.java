@@ -22,10 +22,8 @@ public class LocalEntityConnectionProviderTest {
   @Test
   public void test() {
     final Database database = Databases.getInstance();
-    final EntityConnectionProvider provider = new LocalEntityConnectionProvider(database).setUser(UNIT_TEST_USER)
-            .setDomainClassName(TestDomain.class.getName());
-
-    assertEquals(database.getHost(), provider.getServerHostName());
+    final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(database);
+    provider.setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 
     final EntityConnection firstConnection = provider.getConnection();
     assertNotNull(firstConnection);

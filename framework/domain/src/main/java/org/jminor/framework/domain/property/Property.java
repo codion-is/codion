@@ -411,7 +411,7 @@ public interface Property extends Serializable {
      * @return this instance
      * @throws NullPointerException in case format is null
      * @throws IllegalArgumentException in case the format does not fit the property type,
-     * f.ex. NumberFormat is expected for numerical properties
+     * NumberFormat for example is expected for numerical properties
      */
     Property.Builder setFormat(Format format);
 

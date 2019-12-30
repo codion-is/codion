@@ -212,7 +212,7 @@ public final class EntitiesTutorial {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())
                     .setDomainClassName(Chinook.class.getName())
-                    .setUser(new User("scott", "tiger".toCharArray()));
+                    .setUser(User.parseUser("scott:tiger"));
 
     selectingEntities(connectionProvider);
 

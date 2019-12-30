@@ -143,6 +143,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.impl.ChinookImpl");
     new ChinookAppPanel().startApplication("Chinook", null, false,
-            UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray()));
+            UiUtil.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
   }
 }

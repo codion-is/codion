@@ -79,11 +79,6 @@ public interface EntityConnectionProvider {
   String getDescription();
 
   /**
-   * @return the name of the host providing the connection
-   */
-  String getServerHostName();
-
-  /**
    * @return true if a connection has been established, note that this does not check if the actual
    * connection is valid, only that one has been established.
    * @see #isConnectionValid()
