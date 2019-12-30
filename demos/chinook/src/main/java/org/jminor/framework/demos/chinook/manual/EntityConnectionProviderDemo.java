@@ -8,7 +8,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.remote.Server;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.http.HttpEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnection;
@@ -23,8 +22,8 @@ import java.sql.Connection;
 
 public class EntityConnectionProviderDemo {
 
-  // tag::local[]
   static void localConnectionProvider() {
+    // tag::local[]
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
     Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
@@ -45,15 +44,13 @@ public class EntityConnectionProviderDemo {
     Connection connection = databaseConnection.getConnection();
 
     connectionProvider.disconnect();
+    // end::local[]
   }
-  // end::local[]
 
-  // tag::remote[]
   static void remoteConnectionProvider() throws DatabaseException {
-    Server.SERVER_HOST_NAME.set("localhost");
-
+    // tag::remote[]
     RemoteEntityConnectionProvider connectionProvider =
-            new RemoteEntityConnectionProvider();
+            new RemoteEntityConnectionProvider("localhost", -1, 1099);
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
     connectionProvider.setUser(User.parseUser("scott:tiger"));
@@ -67,15 +64,13 @@ public class EntityConnectionProviderDemo {
     Entity track = entityConnection.selectSingle(domain.key(Chinook.T_TRACK, 42L));
 
     connectionProvider.disconnect();
+    // end::remote[]
   }
-  // end::remote[]
 
-  // tag::http[]
   static void httpConnectionProvider() throws DatabaseException {
-    HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.set("localhost");
-
+    // tag::http[]
     HttpEntityConnectionProvider connectionProvider =
-            new HttpEntityConnectionProvider();
+            new HttpEntityConnectionProvider("localhost", 8080, false);
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
     connectionProvider.setClientTypeId(EntityConnectionProviderDemo.class.getSimpleName());
@@ -88,6 +83,6 @@ public class EntityConnectionProviderDemo {
     entityConnection.selectSingle(domain.key(Chinook.T_TRACK, 42L));
 
     connectionProvider.disconnect();
+    // end::http[]
   }
-  // end::http[]
 }

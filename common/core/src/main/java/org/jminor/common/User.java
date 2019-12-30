@@ -80,7 +80,7 @@ public final class User implements Serializable {
   }
 
   /**
-   * Parses a User from a string, containing the username and password with a ':' as delimiter, f.ex. "user:pass".
+   * Parses a User from a string, containing the username and password with a ':' as delimiter, i.e. "user:pass".
    * Both username and password must be non-empty.
    * @param userPassword the username and password string
    * @return a User with the given username and password

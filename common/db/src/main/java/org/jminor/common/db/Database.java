@@ -163,7 +163,7 @@ public interface Database {
    * This method is usually used in {@code getURL()} and {@code onDisconnect()}.
    * @param connectionProperties the connection properties
    * @return an authentication string to append to the connection url,
-   * f.ex. user=scott;password=tiger, null if none is required
+   * for example user=scott;password=tiger, null if none is required
    */
   String getAuthenticationInfo(Properties connectionProperties);
 
