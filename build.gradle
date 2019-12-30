@@ -59,6 +59,7 @@ configure(project.frameworkModules) {
     apply plugin: 'maven-publish'
     apply plugin: 'com.github.ben-manes.versions'
     apply plugin: 'org.javamodularity.moduleplugin'
+    apply plugin: 'project-report'
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -179,8 +180,6 @@ configure(project.frameworkModules) {
     }.dependsOn createServerKeystore
 }
 
-apply plugin: 'project-report'
-
 asciidoctor {
     sourceDir = file('docs')
     //so asciidoc include works in intellij, relative path
@@ -199,10 +198,6 @@ asciidoctor {
     }
     //possible code changes
     outputs.upToDateWhen { false }
-}
-
-htmlDependencyReport {
-    projects = frameworkModules
 }
 
 task combinedJavadoc(type: Javadoc) {

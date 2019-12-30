@@ -1,0 +1,428 @@
+= Modules
+:dir-root: ../../
+:imagesdir: ../images
+
+== Common
+
+Common classes used throughout the framework.
+
+[discrete]
+=== jminor-common-core
+
+.Dependency graph
+[%collapsible]
+====
+image::common/core/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-common-db
+
+.Dependency graph
+[%collapsible]
+====
+image::common/db/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-common-model
+
+.Dependency graph
+[%collapsible]
+====
+image::common/model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-common-remote
+
+.Dependency graph
+[%collapsible]
+====
+image::common/remote/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-common-remote-http
+
+.Dependency graph
+[%collapsible]
+====
+image::common/remote-http/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+== DBMS
+
+Database specific implementation classes.
+
+[discrete]
+=== jminor-dbms-derby
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/derby/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-dbms-h2database
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/h2database/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-dbms-hsqldb
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/hsqldb/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-dbms-mysql
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/mysql/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-dbms-oracle
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/oracle/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-dbms-postgresql
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/postgresql/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-dbms-sqlite
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/sqlite/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-dbms-sqlserver
+
+.Dependency graph
+[%collapsible]
+====
+image::dbms/sqlserver/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+== Framework
+
+The framework itself.
+
+[discrete]
+=== jminor-framework-db-core
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/db-core/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-framework-db-http
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/db-http/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-framework-db-local
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/db-local/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-framework-db-remote
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/db-remote/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-framework-domain
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/domain/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-framework-domain-test
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/domain-test/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-framework-model
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-framework-server
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/server/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-framework-servlet
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/servlet/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+== Swing
+
+Swing client implementation.
+
+[discrete]
+=== jminor-swing-common-model
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/common-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-swing-common-ui
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/common-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-swing-common-tools
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/common-tools/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-swing-common-tools-ui
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/common-tools-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-swing-framework-model
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-swing-framework-ui
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-swing-framework-ui-test
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-ui-test/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-swing-framework-tools
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-tools/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-swing-framework-tools-ui
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-tools-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-swing-framework-server-monitor
+
+.Dependency graph
+[%collapsible]
+====
+image::swing/framework-server-monitor/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+== JavaFX
+
+JavaFX client implementation (still quite experimental).
+
+[discrete]
+=== jminor-javafx-framework
+
+.Dependency graph
+[%collapsible]
+====
+image::javafx/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+== Plugins
+
+=== Logging
+
+[discrete]
+==== jminor-plugin-jul-proxy
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/jul-proxy/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+==== jminor-plugin-log4j-proxy
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/log4j-proxy/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+==== jminor-plugin-logback-proxy
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/logback-proxy/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+=== Connection pools
+
+[discrete]
+==== jminor-plugin-hikari-pool
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/hikari-pool/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+==== jminor-plugin-tomcat-pool
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/tomcat-pool/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+=== Reporting
+
+[discrete]
+==== jminor-plugin-jasperreports
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/jasperreports/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+==== jminor-plugin-nextreports
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/nextreports/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+=== JSON
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/jackson-json/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+==== jminor-plugin-json
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/json/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+=== Other
+
+[discrete]
+==== jminor-plugin-credentials-server
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/credentials-server/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+==== jminor-plugin-imagepanel
+
+.Dependency graph
+[%collapsible]
+====
+image::plugins/imagepanel/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====

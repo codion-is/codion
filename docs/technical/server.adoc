@@ -70,6 +70,15 @@ A whitelist can be created during a server dry-run by adding the following syste
 jminor.server.serializationFilterDryRun=true
 ----
 
+.Example whitelist
+[%collapsible]
+====
+[source,java]
+----
+include::{dir-source}/src/main/security/serialization-whitelist.txt[]
+----
+====
+
 == Configuration
 
 === Example configuration file
