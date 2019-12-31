@@ -30,7 +30,7 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
     super("Employee Server", serverPort, serverAdminPort, registryPort, database,
             false, -1, null, null,
             null, null, null, true,
-            600000, null, new User("scott", "tiger".toCharArray()));
+            600000, null, User.parseUser("scott:tiger"));
   }
 
   @Override

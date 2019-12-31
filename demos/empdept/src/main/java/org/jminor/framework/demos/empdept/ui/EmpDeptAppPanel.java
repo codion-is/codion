@@ -80,7 +80,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.empdept.domain.EmpDept");
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false,
-            UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray()));
+            UiUtil.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
   }
 
   public static final class EmpDeptApplicationModel extends SwingEntityApplicationModel {

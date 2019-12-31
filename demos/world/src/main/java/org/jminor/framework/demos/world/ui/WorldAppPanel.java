@@ -57,7 +57,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
     NumberField.DISABLE_GROUPING.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.world.domain.World");
     new WorldAppPanel().startApplication("World", null, false, UiUtil.getScreenSizeRatio(0.8),
-            new User("scott", "tiger".toCharArray()));
+            User.parseUser("scott:tiger"));
   }
 
   public static final class WorldAppModel extends SwingEntityApplicationModel {

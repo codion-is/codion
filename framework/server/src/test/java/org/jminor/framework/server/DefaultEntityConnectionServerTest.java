@@ -47,7 +47,7 @@ public class DefaultEntityConnectionServerTest {
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static final User ADMIN_USER = new User("scott", "tiger".toCharArray());
+  private static final User ADMIN_USER = User.parseUser("scott:tiger");
   private static final Map<String, Object> CONNECTION_PARAMS =
           Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, "TestDomain");
   private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;

@@ -26,7 +26,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
   @Override
   protected User getDefaultUser() {
-    return new User("scott", "tiger".toCharArray());
+    return User.parseUser("scott:tiger");
   }
 
   @Override

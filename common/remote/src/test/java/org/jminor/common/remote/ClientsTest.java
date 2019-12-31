@@ -16,7 +16,7 @@ public final class ClientsTest {
 
   @Test
   public void clientUtil() {
-    final User user = new User("scott", "tiger".toCharArray());
+    final User user = User.parseUser("scott:tiger");
     final UUID uuid = UUID.randomUUID();
     final ConnectionRequest request = Clients.connectionRequest(user, uuid, "test");
     assertEquals(user, request.getUser());
