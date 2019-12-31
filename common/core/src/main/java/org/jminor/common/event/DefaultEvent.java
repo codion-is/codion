@@ -6,7 +6,7 @@ package org.jminor.common.event;
 final class DefaultEvent<T> implements Event<T> {
 
   private final Object lock = new Object();
-  private DefaultObserver<T> observer;
+  private DefaultEventObserver<T> observer;
 
   @Override
   public void onEvent() {
@@ -30,7 +30,7 @@ final class DefaultEvent<T> implements Event<T> {
   public EventObserver<T> getObserver() {
     synchronized (lock) {
       if (observer == null) {
-        observer = new DefaultObserver<>();
+        observer = new DefaultEventObserver<>();
       }
 
       return observer;
