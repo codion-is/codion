@@ -340,7 +340,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
       return performQuery();
     }
     finally {
-      refreshDoneEvent.fire();
+      refreshDoneEvent.onEvent();
     }
   }
 
@@ -397,7 +397,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final class InsertListener implements EventDataListener<List<Entity>> {
 
     @Override
-    public void eventOccurred(final List<Entity> inserted) {
+    public void onEvent(final List<Entity> inserted) {
       inserted.forEach(SwingEntityComboBoxModel.this::addItem);
     }
   }
@@ -405,7 +405,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final class UpdateListener implements EventDataListener<Map<Entity.Key, Entity>> {
 
     @Override
-    public void eventOccurred(final Map<Entity.Key, Entity> updated) {
+    public void onEvent(final Map<Entity.Key, Entity> updated) {
       final Domain domainModel = getConnectionProvider().getDomain();
       updated.forEach((key, entity) -> replaceItem(domainModel.entity(key), entity));
     }
@@ -414,7 +414,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final class DeleteListener implements EventDataListener<List<Entity>> {
 
     @Override
-    public void eventOccurred(final List<Entity> deleted) {
+    public void onEvent(final List<Entity> deleted) {
       deleted.forEach(SwingEntityComboBoxModel.this::removeItem);
     }
   }
@@ -428,7 +428,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
 
     @Override
-    public void eventOccurred() {
+    public void onEvent() {
       foreignKeyModel.forceRefresh();
     }
   }

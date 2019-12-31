@@ -97,7 +97,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     itemList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     itemList.addListSelectionListener(e -> {
       handleSelectionChanged();
-      selectedItemChangedEvent.fire();
+      selectedItemChangedEvent.onEvent();
     });
     setLayout(UiUtil.createBorderLayout());
     add(new JScrollPane(itemList), BorderLayout.CENTER);

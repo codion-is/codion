@@ -235,7 +235,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
     if (linkedDetailModels.add(detailModel)) {
-      linkedDetailModelAddedEvent.fire(detailModel);
+      linkedDetailModelAddedEvent.onEvent(detailModel);
     }
   }
 
@@ -246,7 +246,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
     if (linkedDetailModels.remove(detailModel)) {
-      linkedDetailModelRemovedEvent.fire(detailModel);
+      linkedDetailModelRemovedEvent.onEvent(detailModel);
     }
   }
 
@@ -313,7 +313,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     try {
       LOG.debug("{} refreshing", this);
       isRefreshing = true;
-      refreshStartedEvent.fire();
+      refreshStartedEvent.onEvent();
       if (containsTableModel()) {
         tableModel.refresh();
       }
@@ -321,7 +321,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
     finally {
       isRefreshing = false;
-      refreshDoneEvent.fire();
+      refreshDoneEvent.onEvent();
       LOG.debug("{} done refreshing", this);
     }
   }

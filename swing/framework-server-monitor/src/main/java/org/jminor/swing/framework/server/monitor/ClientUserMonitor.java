@@ -171,7 +171,7 @@ public final class ClientUserMonitor {
    */
   public void setConnectionTimeout(final int timeout) throws RemoteException {
     server.setConnectionTimeout(timeout * THOUSAND);
-    connectionTimeoutChangedEvent.fire(timeout);
+    connectionTimeoutChangedEvent.onEvent(timeout);
   }
 
   /**

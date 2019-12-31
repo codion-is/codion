@@ -319,7 +319,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
     if (this.warningTime != warningTime) {
       this.warningTime = warningTime;
-      warningTimeChangedEvent.fire(this.warningTime);
+      warningTimeChangedEvent.onEvent(this.warningTime);
     }
   }
 
@@ -355,7 +355,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.applicationBatchSize = applicationBatchSize;
-    applicationBatchSizeChangedEvent.fire(this.applicationBatchSize);
+    applicationBatchSizeChangedEvent.onEvent(this.applicationBatchSize);
   }
 
   /** {@inheritDoc} */
@@ -366,7 +366,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       synchronized (applications) {
         applications.push(runner);
       }
-      applicationCountChangedEvent.fire();
+      applicationCountChangedEvent.onEvent();
 
       executor.execute(runner);
     }
@@ -390,7 +390,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   @Override
   public final void setPaused(final boolean value) {
     this.paused = value;
-    pausedChangedEvent.fire(this.paused);
+    pausedChangedEvent.onEvent(this.paused);
   }
 
   /** {@inheritDoc} */
@@ -403,7 +403,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   @Override
   public final void setCollectChartData(final boolean value) {
     this.collectChartData = value;
-    collectChartDataChangedEvent.fire(this.collectChartData);
+    collectChartDataChangedEvent.onEvent(this.collectChartData);
   }
 
   /** {@inheritDoc} */
@@ -426,7 +426,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
         Thread.currentThread().interrupt();
       }
     }
-    exitingDoneEvent.fire();
+    exitingDoneEvent.onEvent();
   }
 
   /** {@inheritDoc} */
@@ -443,7 +443,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.maximumThinkTime = maximumThinkTime;
-    maximumThinkTimeChangedEvent.fire(this.maximumThinkTime);
+    maximumThinkTimeChangedEvent.onEvent(this.maximumThinkTime);
   }
 
   /** {@inheritDoc} */
@@ -460,7 +460,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.minimumThinkTime = minimumThinkTime;
-    minimumThinkTimeChangedEvent.fire(this.minimumThinkTime);
+    minimumThinkTimeChangedEvent.onEvent(this.minimumThinkTime);
   }
 
   /** {@inheritDoc} */
@@ -477,7 +477,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.loginDelayFactor = loginDelayFactor;
-    loginDelayFactorChangedEvent.fire(this.loginDelayFactor);
+    loginDelayFactorChangedEvent.onEvent(this.loginDelayFactor);
   }
 
   /** {@inheritDoc} */
@@ -566,7 +566,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     synchronized (applications) {
       applications.pop().stop();
     }
-    applicationCountChangedEvent.fire(applications.size());
+    applicationCountChangedEvent.onEvent(applications.size());
   }
 
   private ItemRandomizer<UsageScenario> initializeScenarioChooser() {

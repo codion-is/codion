@@ -459,7 +459,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     final boolean initialization = !entity.containsKey(property);
     final Object previousValue = entity.put(property, value);
     if (!Objects.equals(value, previousValue)) {
-      getValueEditEvent(property.getPropertyId()).fire(valueChange(property, value, previousValue, initialization));
+      getValueEditEvent(property.getPropertyId()).onEvent(valueChange(property, value, previousValue, initialization));
     }
   }
 
@@ -470,7 +470,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     Object value = null;
     if (entity.containsKey(property)) {
       value = entity.remove(property);
-      getValueEditEvent(property.getPropertyId()).fire(valueChange(property, null, value));
+      getValueEditEvent(property.getPropertyId()).onEvent(valueChange(property, null, value));
     }
 
     return value;
@@ -662,11 +662,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void refresh() {
     try {
-      beforeRefreshEvent.fire();
+      beforeRefreshEvent.onEvent();
       refreshDataModels();
     }
     finally {
-      afterRefreshEvent.fire();
+      afterRefreshEvent.onEvent();
     }
   }
 
@@ -992,7 +992,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #addBeforeInsertListener(EventDataListener)
    */
   protected final void fireBeforeInsertEvent(final List<Entity> entities) {
-    beforeInsertEvent.fire(entities);
+    beforeInsertEvent.onEvent(entities);
   }
 
   /**
@@ -1001,7 +1001,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #addAfterInsertListener(EventDataListener)
    */
   protected final void fireAfterInsertEvent(final List<Entity> insertedEntities) {
-    afterInsertEvent.fire(insertedEntities);
+    afterInsertEvent.onEvent(insertedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyInserted(insertedEntities);
     }
@@ -1013,7 +1013,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #addBeforeUpdateListener(EventDataListener)
    */
   protected final void fireBeforeUpdateEvent(final Map<Entity.Key, Entity> entitiesToUpdate) {
-    beforeUpdateEvent.fire(entitiesToUpdate);
+    beforeUpdateEvent.onEvent(entitiesToUpdate);
   }
 
   /**
@@ -1022,7 +1022,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #addAfterUpdateListener(EventDataListener)
    */
   protected final void fireAfterUpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
-    afterUpdateEvent.fire(updatedEntities);
+    afterUpdateEvent.onEvent(updatedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyUpdated(updatedEntities);
     }
@@ -1034,7 +1034,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #addBeforeDeleteListener(EventDataListener)
    */
   protected final void fireBeforeDeleteEvent(final List<Entity> deleteEvent) {
-    beforeDeleteEvent.fire(deleteEvent);
+    beforeDeleteEvent.onEvent(deleteEvent);
   }
 
   /**
@@ -1043,7 +1043,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #addAfterDeleteListener(EventDataListener)
    */
   protected final void fireAfterDeleteEvent(final List<Entity> deletedEntities) {
-    afterDeleteEvent.fire(deletedEntities);
+    afterDeleteEvent.onEvent(deletedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyDeleted(deletedEntities);
     }
@@ -1065,7 +1065,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private boolean isSetEntityAllowed() {
     if (warnAboutUnsavedData && containsUnsavedData()) {
       final State confirmation = States.state(true);
-      confirmSetEntityEvent.fire(confirmation);
+      confirmSetEntityEvent.onEvent(confirmation);
 
       return confirmation.get();
     }
@@ -1075,7 +1075,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private void doSetEntity(final Entity entity) {
     getEntity().setAs(entity == null ? getDefaultEntity() : entity);
-    entitySetEvent.fire(entity);
+    entitySetEvent.onEvent(entity);
   }
 
   private boolean valueModified(final Property property) {
@@ -1098,7 +1098,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       validState.set(validator.isValid(entity));
       final Event<ValueChange<Property, Object>> valueChangeEvent = valueChangeEventMap.get(valueChange.getKey().getPropertyId());
       if (valueChangeEvent != null) {
-        valueChangeEvent.fire(valueChange);
+        valueChangeEvent.onEvent(valueChange);
       }
       primaryKeyNullState.set(getEntity().isKeyNull());
       entityNewState.set(isEntityNew());

@@ -9,30 +9,21 @@ final class DefaultEvent<T> implements Event<T> {
   private DefaultObserver<T> observer;
 
   @Override
-  public void fire() {
-    fire(null);
+  public void onEvent() {
+    onEvent(null);
   }
 
   @Override
-  public void fire(final T data) {
+  public void onEvent(final T data) {
     if (observer != null && observer.hasListeners()) {
       for (final EventListener listener : observer.getEventListeners()) {
-        listener.eventOccurred();
+        listener.onEvent();
       }
       for (final EventDataListener<T> dataListener : observer.getEventDataListeners()) {
-        dataListener.eventOccurred(data);
+        dataListener.onEvent(data);
       }
     }
-  }
 
-  @Override
-  public void eventOccurred() {
-    eventOccurred(null);
-  }
-
-  @Override
-  public void eventOccurred(final T data) {
-    fire(data);
   }
 
   @Override

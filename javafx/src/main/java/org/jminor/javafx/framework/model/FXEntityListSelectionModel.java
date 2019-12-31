@@ -348,15 +348,15 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
         selectionEmptyState.set(selectionModel.isEmpty());
         singleSelectionState.set(getSelectedIndexes().size() == 1);
         multipleSelectionState.set(!selectionEmptyState.get() && !singleSelectionState.get());
-        selectionChangedEvent.fire();
-        selectedItemChangedEvent.fire(getSelectedItem());
-        selectedItemsChangedEvent.fire(getSelectedItems());
+        selectionChangedEvent.onEvent();
+        selectedItemChangedEvent.onEvent(getSelectedItem());
+        selectedItemsChangedEvent.onEvent(getSelectedItems());
       });
       selectionModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
         final int newSelectedIndex = newValue.intValue();
         if (selectedIndex != newSelectedIndex) {
           selectedIndex = newSelectedIndex;
-          selectedIndexChangedEvent.fire(selectedIndex);
+          selectedIndexChangedEvent.onEvent(selectedIndex);
         }
       });
     }
@@ -365,10 +365,10 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
         final int newSelectedIndex = newValue.intValue();
         if (selectedIndex != newSelectedIndex) {
           selectedIndex = newSelectedIndex;
-          selectionChangedEvent.fire();
-          selectedIndexChangedEvent.fire(selectedIndex);
-          selectedItemChangedEvent.fire(getSelectedItem());
-          selectedItemsChangedEvent.fire(getSelectedItems());
+          selectionChangedEvent.onEvent();
+          selectedIndexChangedEvent.onEvent(selectedIndex);
+          selectedItemChangedEvent.onEvent(getSelectedItem());
+          selectedItemsChangedEvent.onEvent(getSelectedItems());
         }
       });
     }

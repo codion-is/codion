@@ -159,11 +159,11 @@ public final class EntityGeneratorModel {
   private void bindEvents() {
     tableModel.getSelectionModel().addSelectedItemsListener(selected -> {
       try {
-        refreshStartedEvent.fire();
+        refreshStartedEvent.onEvent();
         generateDefinitions(selected);
       }
       finally {
-        refreshEndedEvent.fire();
+        refreshEndedEvent.onEvent();
       }
     });
     Runtime.getRuntime().addShutdownHook(new Thread(this::exit));

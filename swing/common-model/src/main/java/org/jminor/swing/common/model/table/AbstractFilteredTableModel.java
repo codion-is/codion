@@ -218,13 +218,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void refresh() {
     try {
-      refreshStartedEvent.fire();
+      refreshStartedEvent.onEvent();
       final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
       doRefresh();
       selectionModel.setSelectedItems(selectedItems);
     }
     finally {
-      refreshDoneEvent.fire();
+      refreshDoneEvent.onEvent();
     }
   }
 
@@ -237,7 +237,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       visibleItems.clear();
       fireTableRowsDeleted(0, size - 1);
     }
-    tableModelClearedEvent.fire();
+    tableModelClearedEvent.onEvent();
   }
 
   /** {@inheritDoc} */
@@ -306,7 +306,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     sortModel.sort(visibleItems);
     fireTableRowsUpdated(0, visibleItems.size());
     selectionModel.setSelectedItems(selectedItems);
-    sortEvent.fire();
+    sortEvent.onEvent();
   }
 
   /** {@inheritDoc} */
@@ -327,7 +327,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     sortModel.sort(visibleItems);
     fireTableDataChanged();
     selectionModel.setSelectedItems(selectedItems);
-    filterEvent.fire();
+    filterEvent.onEvent();
   }
 
   /** {@inheritDoc} */
@@ -568,14 +568,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   private void bindEventsInternal() {
-    addTableModelListener(e -> tableDataChangedEvent.fire());
+    addTableModelListener(e -> tableDataChangedEvent.onEvent());
     for (final ColumnConditionModel conditionModel : columnModel.getColumnFilterModels()) {
       conditionModel.addConditionStateListener(this::filterContents);
     }
     sortModel.addSortingStateChangedListener(this::sort);
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
-        rowsDeletedEvent.fire(asList(e.getFirstRow(), e.getLastRow()));
+        rowsDeletedEvent.onEvent(asList(e.getFirstRow(), e.getLastRow()));
       }
     });
   }

@@ -26,7 +26,7 @@ public final class Events {
    * @return a {@link EventListener} causing the given {@link EventDataListener} to be fired with null data on each occurrence
    */
   public static EventListener listener(final EventDataListener listener) {
-    return () -> listener.eventOccurred(null);
+    return () -> listener.onEvent(null);
   }
 
   /**
@@ -37,6 +37,6 @@ public final class Events {
    * @return a {@link EventDataListener} causing the given {@link EventListener} to be fired on each occurrence
    */
   public static <T> EventDataListener<T> dataListener(final EventListener listener) {
-    return data -> listener.eventOccurred();
+    return data -> listener.onEvent();
   }
 }

@@ -11,5 +11,5 @@ public interface EventListener {
   /**
    * Called when the event occurs.
    */
-  void eventOccurred();
+  void onEvent();
 }

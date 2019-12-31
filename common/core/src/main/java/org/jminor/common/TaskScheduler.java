@@ -112,7 +112,7 @@ public final class TaskScheduler {
         start();
       }
     }
-    intervalChangedEvent.fire(interval);
+    intervalChangedEvent.onEvent(interval);
   }
 
   /**

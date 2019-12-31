@@ -58,7 +58,7 @@ public class IntegerValueLinkTest {
 
   public void setIntegerValue(final Integer integerValue) {
     this.integerValue = integerValue;
-    integerValueChangedEvent.fire(this.integerValue);
+    integerValueChangedEvent.onEvent(this.integerValue);
   }
 
   public int getIntValue() {
@@ -67,6 +67,6 @@ public class IntegerValueLinkTest {
 
   public void setIntValue(final int intValue) {
     this.intValue = intValue;
-    intValueChangedEvent.fire(this.intValue);
+    intValueChangedEvent.onEvent(this.intValue);
   }
 }

@@ -58,7 +58,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
     requireNonNull(summary, "summary");
     if (!this.summary.equals(summary)) {
       this.summary = summary;
-      summaryChangedEvent.fire(this.summary);
+      summaryChangedEvent.onEvent(this.summary);
     }
   }
 

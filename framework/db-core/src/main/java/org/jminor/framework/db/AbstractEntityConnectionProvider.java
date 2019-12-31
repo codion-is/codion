@@ -262,6 +262,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
     entityConnection = connect();
     domain = entityConnection.getDomain().registerDomain();
-    onConnectEvent.fire();
+    onConnectEvent.onEvent();
   }
 }

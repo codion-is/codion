@@ -27,12 +27,12 @@ public final class EventState {
     // add a listener notified each time the event occurs
     eventObserver.addListener(() -> System.out.println("Event occurred"));
 
-    event.fire();//output: 'Event occurred'
+    event.onEvent();//output: 'Event occurred'
 
     // data can be propagated by adding a EventDataListener
     eventObserver.addDataListener(data -> System.out.println("Event: " + data));
 
-    event.fire("info");//output: 'Event: info'
+    event.onEvent("info");//output: 'Event: info'
 
     // Event extends EventObserver so listeneres can be added
     // directly without referring to the EventObserver

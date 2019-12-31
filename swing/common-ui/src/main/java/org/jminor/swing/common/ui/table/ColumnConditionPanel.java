@@ -458,7 +458,7 @@ public class ColumnConditionPanel<C> extends JPanel {
       @Override
       public void focusGained(final FocusEvent e) {
         if (!e.isTemporary()) {
-          focusGainedEvent.fire(conditionModel.getColumnIdentifier());
+          focusGainedEvent.onEvent(conditionModel.getColumnIdentifier());
         }
       }
     };

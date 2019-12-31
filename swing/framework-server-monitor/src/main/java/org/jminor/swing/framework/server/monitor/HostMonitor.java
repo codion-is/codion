@@ -110,12 +110,12 @@ public final class HostMonitor {
 
   private void addServer(final ServerMonitor serverMonitor) {
     serverMonitors.add(serverMonitor);
-    serverAddedEvent.fire(serverMonitor);
+    serverAddedEvent.onEvent(serverMonitor);
   }
 
   private void removeServer(final ServerMonitor serverMonitor) {
     serverMonitors.remove(serverMonitor);
-    serverRemovedEvent.fire(serverMonitor);
+    serverRemovedEvent.onEvent(serverMonitor);
   }
 
   private boolean containsServerMonitor(final UUID serverId) {

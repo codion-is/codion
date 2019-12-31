@@ -286,7 +286,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final Window parent = getParentWindow();
     if (parent != null) {
       parent.setAlwaysOnTop(value);
-      alwaysOnTopChangedEvent.fire(value);
+      alwaysOnTopChangedEvent.onEvent(value);
     }
   }
 
@@ -515,7 +515,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     try {
-      onExitEvent.fire();
+      onExitEvent.onEvent();
     }
     catch (final CancelException e) {
       throw e;
@@ -1334,7 +1334,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         }
         this.frameTitle = getFrameTitle(frameCaption, connectionProvider);
         final JFrame frame = prepareFrame(this.frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
-        this.applicationStartedEvent.fire();
+        this.applicationStartedEvent.onEvent();
         LOG.info(this.frameTitle + ", application started successfully, " + connectionProvider.getUser().getUsername()
                 + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
         return frame;

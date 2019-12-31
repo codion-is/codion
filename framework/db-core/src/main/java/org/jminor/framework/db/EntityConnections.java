@@ -66,7 +66,7 @@ public final class EntityConnections {
       final List<Entity> insertBatch = entities.subList(i, Math.min(i + batchSize, entities.size()));
       insertedKeys.addAll(connection.insert(insertBatch));
       if (progressReporter != null) {
-        progressReporter.eventOccurred(insertedKeys.size());
+        progressReporter.onEvent(insertedKeys.size());
       }
     }
 

@@ -41,7 +41,7 @@ public final class SwingPropertyComboBoxModelTest {
   @Test
   public void test() {
     assertEquals(0, comboBoxModel.getSize());
-    refreshEvent.fire();
+    refreshEvent.onEvent();
     assertTrue(comboBoxModel.getSize() > 0);
   }
 }

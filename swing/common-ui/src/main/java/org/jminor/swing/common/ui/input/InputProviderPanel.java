@@ -139,7 +139,7 @@ public final class InputProviderPanel<T, K extends JComponent> extends JPanel im
   private JButton createButton(final String caption, final String mnemonic, final int option) {
     final JButton button = new JButton(Controls.control(() -> {
       buttonValue = option;
-      buttonClickedEvent.fire(option);
+      buttonClickedEvent.onEvent(option);
     }, caption));
     button.setMnemonic(mnemonic.charAt(0));
 

@@ -126,7 +126,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       }
       connectionHandler.disconnect();
     }
-    disconnectedEvent.fire(this);
+    disconnectedEvent.onEvent(this);
   }
 
   /**

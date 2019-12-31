@@ -172,7 +172,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       this.selectedEntities.addAll(entities);
     }
     refreshSearchText();
-    selectedEntitiesChangedEvent.fire(unmodifiableList(selectedEntities));
+    selectedEntitiesChangedEvent.onEvent(unmodifiableList(selectedEntities));
   }
 
   /** {@inheritDoc} */

@@ -28,7 +28,7 @@ public class ValuesTest {
   public void setIntegerValue(final Integer integerValue) {
     if (!Objects.equals(this.integerValue, integerValue)) {
       this.integerValue = integerValue;
-      integerValueChange.fire(integerValue);
+      integerValueChange.onEvent(integerValue);
     }
   }
 

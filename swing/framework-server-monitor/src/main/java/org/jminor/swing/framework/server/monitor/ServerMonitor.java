@@ -195,7 +195,7 @@ public final class ServerMonitor {
    */
   public void setConnectionLimit(final int value) throws RemoteException {
     server.setConnectionLimit(value);
-    connectionLimitChangedEvent.fire(value);
+    connectionLimitChangedEvent.onEvent(value);
   }
 
   /**
@@ -223,7 +223,7 @@ public final class ServerMonitor {
    */
   public void setLoggingLevel(final Object level) throws RemoteException {
     server.setLoggingLevel(level);
-    loggingLevelChangedEvent.fire(level);
+    loggingLevelChangedEvent.onEvent(level);
   }
 
   /**
@@ -338,7 +338,7 @@ public final class ServerMonitor {
       server.shutdown();
     }
     catch (final RemoteException ignored) {/*ignored*/}
-    serverShutDownEvent.fire();
+    serverShutDownEvent.onEvent();
   }
 
   /**
@@ -429,7 +429,7 @@ public final class ServerMonitor {
         addThreadStatistics(time, server.getThreadStatistics());
         addGCInfo(server.getGcEvents(lastStatisticsUpdateTime));
         lastStatisticsUpdateTime = time;
-        statisticsUpdatedEvent.fire();
+        statisticsUpdatedEvent.onEvent();
       }
     }
     catch (final RemoteException ignored) {/*ignored*/}

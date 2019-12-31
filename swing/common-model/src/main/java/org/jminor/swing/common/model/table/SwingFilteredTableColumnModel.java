@@ -94,7 +94,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
       hiddenColumns.remove(columnIdentifier);
       addColumn(column);
       moveColumn(getColumnCount() - 1, 0);
-      columnShownEvent.fire((C) column.getIdentifier());
+      columnShownEvent.onEvent((C) column.getIdentifier());
     }
   }
 
@@ -105,7 +105,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
       final TableColumn column = getTableColumn(columnIdentifier);
       removeColumn(column);
       hiddenColumns.put((C) column.getIdentifier(), column);
-      columnHiddenEvent.fire((C) column.getIdentifier());
+      columnHiddenEvent.onEvent((C) column.getIdentifier());
     }
   }
 

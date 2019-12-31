@@ -68,7 +68,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   public void incrementWeight(final T item) {
     final RandomItem randomItem = getRandomItem(item);
     randomItem.incrementWeight();
-    weightsChangedEvent.fire(randomItem.getWeight());
+    weightsChangedEvent.onEvent(randomItem.getWeight());
   }
 
   /** {@inheritDoc} */
@@ -76,14 +76,14 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   public void decrementWeight(final T item) {
     final RandomItem randomItem = getRandomItem(item);
     randomItem.decrementWeight();
-    weightsChangedEvent.fire(randomItem.getWeight());
+    weightsChangedEvent.onEvent(randomItem.getWeight());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setWeight(final T item, final int weight) {
     getRandomItem(item).setWeight(weight);
-    weightsChangedEvent.fire(weight);
+    weightsChangedEvent.onEvent(weight);
   }
 
   /** {@inheritDoc} */
@@ -96,7 +96,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   @Override
   public final void setItemEnabled(final T item, final boolean enabled) {
     getRandomItem(item).setEnabled(enabled);
-    enabledChangedEvent.fire(enabled);
+    enabledChangedEvent.onEvent(enabled);
   }
 
   /** {@inheritDoc} */
@@ -186,7 +186,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
    * Notifies this model that the item weights have changed.
    */
   protected final void fireWeightsChangedEvent() {
-    weightsChangedEvent.fire();
+    weightsChangedEvent.onEvent();
   }
 
   /**

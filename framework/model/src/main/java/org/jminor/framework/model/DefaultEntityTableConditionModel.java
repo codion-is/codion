@@ -244,7 +244,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     if (this.simpleConditionString.length() != 0) {
       setConditionString(this.simpleConditionString);
     }
-    simpleConditionStringChangedEvent.fire(this.simpleConditionString);
+    simpleConditionStringChangedEvent.onEvent(this.simpleConditionString);
   }
 
   /** {@inheritDoc} */
@@ -253,7 +253,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final Conjunction previousConjunction = getConjunction();
     try {
       setConjunction(Conjunction.OR);
-      simpleSearchPerformedEvent.fire();
+      simpleSearchPerformedEvent.onEvent();
     }
     finally {
       setConjunction(previousConjunction);
@@ -320,7 +320,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     for (final ColumnConditionModel conditionModel : propertyConditionModels.values()) {
       conditionModel.addConditionStateListener(() -> {
         conditionStateChangedState.set(!rememberedConditionState.equals(getConditionModelState()));
-        conditionStateChangedEvent.fire();
+        conditionStateChangedEvent.onEvent();
       });
     }
   }

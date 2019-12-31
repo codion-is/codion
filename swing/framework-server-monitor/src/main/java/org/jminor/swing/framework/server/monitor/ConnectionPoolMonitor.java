@@ -254,7 +254,7 @@ public final class ConnectionPoolMonitor {
    */
   public void setCollectFineGrainedStatistics(final boolean value) {
     connectionPool.setCollectFineGrainedStatistics(value);
-    collectFineGrainedStatisticsChangedEvent.fire(value);
+    collectFineGrainedStatisticsChangedEvent.onEvent(value);
   }
 
   /**
@@ -321,6 +321,6 @@ public final class ConnectionPoolMonitor {
       this.fineGrainedStatisticsCollection.addSeries(fineGrainedInUseSeries);
       this.fineGrainedStatisticsCollection.addSeries(fineGrainedWaitingSeries);
     }
-    statisticsUpdatedEvent.fire();
+    statisticsUpdatedEvent.onEvent();
   }
 }

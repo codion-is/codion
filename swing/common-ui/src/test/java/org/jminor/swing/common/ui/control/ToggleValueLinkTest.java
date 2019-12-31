@@ -36,6 +36,6 @@ public class ToggleValueLinkTest {
 
   public void setBooleanValue(final boolean booleanValue) {
     this.booleanValue = booleanValue;
-    booleanValueChangedEvent.fire();
+    booleanValueChangedEvent.onEvent();
   }
 }

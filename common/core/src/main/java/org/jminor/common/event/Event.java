@@ -14,22 +14,11 @@ package org.jminor.common.event;
  * observer.addListener(this::doSomething);
  * observer.addDataListener(this::handleBoolean);
  *
- * event.fire(true);
+ * event.onEvent(true);
  * </pre>
  * @param <T> the type of data propagated with this event
  */
 public interface Event<T> extends EventListener, EventDataListener<T>, EventObserver<T> {
-
-  /**
-   * Notifies all listeners that this event has occurred
-   */
-  void fire();
-
-  /**
-   * Notifies all listeners that this event has occurred
-   * @param data information to propagate to listeners when notifying
-   */
-  void fire(T data);
 
   /**
    * @return an observer notified each time this event fires
