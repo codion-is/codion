@@ -4,12 +4,12 @@
 package org.jminor.common.event;
 
 /**
- * An event listener
+ * An event listener.
  */
 public interface EventListener {
 
   /**
-   * Called when an event this listener is registered for occurs
+   * Called when the event occurs.
    */
   void eventOccurred();
 }
