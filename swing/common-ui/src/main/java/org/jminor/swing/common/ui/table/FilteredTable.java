@@ -170,14 +170,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param doubleClickAction the action to perform when a double click is performed on the table,
    * null for no double click action
    */
-  public final void setDoubleClickAction(final Action doubleClickAction) {
+  public void setDoubleClickAction(final Action doubleClickAction) {
     this.doubleClickAction = doubleClickAction;
   }
 
   /**
    * @return the Action performed when the table receives a double click
    */
-  public final Action getDoubleClickAction() {
+  public Action getDoubleClickAction() {
     return doubleClickAction;
   }
 
@@ -352,14 +352,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * @param listener a listener notified each time the table is double clicked
    */
-  public final void addDoubleClickListener(final EventDataListener<MouseEvent> listener) {
+  public void addDoubleClickListener(final EventDataListener<MouseEvent> listener) {
     doubleClickedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeDoubleClickListener(final EventDataListener listener) {
+  public void removeDoubleClickListener(final EventDataListener listener) {
     doubleClickedEvent.removeDataListener(listener);
   }
 
@@ -554,7 +554,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
           if (doubleClickAction != null) {
             doubleClickAction.actionPerformed(new ActionEvent(this, -1, "doubleClick"));
           }
-          doubleClickedEvent.fire(e);
+          doubleClickedEvent.onEvent(e);
         }
       }
     };

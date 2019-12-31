@@ -94,7 +94,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     addPropertyChangeListener(changeEvent -> {
       if (changeEvent.getPropertyName().equals(STATE_PROPERTY) && changeEvent.getNewValue().equals(StateValue.DONE)) {
         try {
-          successListener.eventOccurred(get());
+          successListener.onEvent(get());
         }
         catch (final InterruptedException e) {
           handleInterruptedException(e);

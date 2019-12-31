@@ -65,6 +65,6 @@ public class TextValueLinkTest {
 
   public void setStringValue(final String stringValue) {
     this.stringValue = stringValue;
-    stringValueChangedEvent.fire();
+    stringValueChangedEvent.onEvent();
   }
 }

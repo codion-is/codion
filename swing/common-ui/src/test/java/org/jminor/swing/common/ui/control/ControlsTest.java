@@ -23,7 +23,7 @@ public final class ControlsTest {
 
   public void setValue(final boolean value) {
     this.value = value;
-    valueChangeEvent.fire(value);
+    valueChangeEvent.onEvent(value);
   }
 
   public boolean isValue() {
@@ -32,7 +32,7 @@ public final class ControlsTest {
 
   public void setNullableValue(final Boolean value) {
     this.value = value;
-    valueChangeEvent.fire(value);
+    valueChangeEvent.onEvent(value);
   }
 
   public Boolean isNullableValue() {

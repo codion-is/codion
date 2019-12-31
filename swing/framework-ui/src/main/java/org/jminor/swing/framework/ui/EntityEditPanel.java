@@ -851,7 +851,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       if (pane.getValue() != null && pane.getValue().equals(0)) {
         final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
         if (insertPerformed && !lastInsertedEntities.isEmpty()) {
-          insertListener.eventOccurred(lastInsertedEntities);
+          insertListener.onEvent(lastInsertedEntities);
         }
       }
       component.requestFocusInWindow();

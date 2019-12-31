@@ -16,7 +16,7 @@ import java.util.Map;
 public final class TestLoginProxy implements LoginProxy {
 
   private final Map<String, String> users = new HashMap<>();
-  private final User databaseUser = new User("scott", "tiger".toCharArray());
+  private final User databaseUser = User.parseUser("scott:tiger");
 
   public TestLoginProxy() {
     users.put("scott", "tiger");

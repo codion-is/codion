@@ -260,7 +260,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
     setUpperBound(null);
     setLowerBound(null);
     setConditionType(ConditionType.LIKE);
-    conditionModelClearedEvent.fire();
+    conditionModelClearedEvent.onEvent();
   }
 
   /** {@inheritDoc} */

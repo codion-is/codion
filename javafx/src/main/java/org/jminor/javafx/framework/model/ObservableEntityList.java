@@ -89,7 +89,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
       selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
     }
     setAll(performQuery());
-    refreshEvent.fire();
+    refreshEvent.onEvent();
     if (selectedItems != null) {
       selectionModel.setSelectedItems(selectedItems);
     }
@@ -250,7 +250,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   @Override
   public final void filterContents() {
     filteredList.setPredicate(entity -> includeCondition == null || includeCondition.test(entity));
-    filteringDoneEvent.fire();
+    filteringDoneEvent.onEvent();
   }
 
   /** {@inheritDoc} */

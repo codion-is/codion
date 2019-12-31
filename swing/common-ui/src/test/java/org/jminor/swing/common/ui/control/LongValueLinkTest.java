@@ -58,7 +58,7 @@ public class LongValueLinkTest {
 
   public void setLongValue(final Long longValue) {
     this.longValue = longValue;
-    longValueChangedEvent.fire(this.longValue);
+    longValueChangedEvent.onEvent(this.longValue);
   }
 
   public long getLongPrimitiveValue() {
@@ -67,6 +67,6 @@ public class LongValueLinkTest {
 
   public void setLongPrimitiveValue(final long longPrimitiveValue) {
     this.longPrimitiveValue = longPrimitiveValue;
-    longPrimitiveValueChangedEvent.fire(this.longPrimitiveValue);
+    longPrimitiveValueChangedEvent.onEvent(this.longPrimitiveValue);
   }
 }

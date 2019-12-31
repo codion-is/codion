@@ -42,7 +42,7 @@ public final class EmployeeServerTest {
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
 
     final EmployeeService employeeService = remoteServer.connect(
-            Clients.connectionRequest(new User("scott", "tiger".toCharArray()),
+            Clients.connectionRequest(User.parseUser("scott:tiger"),
                     UUID.randomUUID(), "EmployeeServerTest"));
 
     final List<Entity> employees = employeeService.getEmployees();

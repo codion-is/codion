@@ -80,7 +80,7 @@ public class DoubleValueLinkTest {
 
   public void setDoubleValue(final Double doubleValue) {
     this.doubleValue = doubleValue;
-    doubleValueChangedEvent.fire();
+    doubleValueChangedEvent.onEvent();
   }
 
   public double getDoublePrimitiveValue() {
@@ -89,6 +89,6 @@ public class DoubleValueLinkTest {
 
   public void setDoublePrimitiveValue(final double doublePrimitiveValue) {
     this.doublePrimitiveValue = doublePrimitiveValue;
-    doublePrimitiveValueValueChangedEvent.fire();
+    doublePrimitiveValueValueChangedEvent.onEvent();
   }
 }

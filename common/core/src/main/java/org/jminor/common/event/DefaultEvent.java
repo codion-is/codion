@@ -6,40 +6,31 @@ package org.jminor.common.event;
 final class DefaultEvent<T> implements Event<T> {
 
   private final Object lock = new Object();
-  private DefaultObserver<T> observer;
+  private DefaultEventObserver<T> observer;
 
   @Override
-  public void fire() {
-    fire(null);
+  public void onEvent() {
+    onEvent(null);
   }
 
   @Override
-  public void fire(final T data) {
+  public void onEvent(final T data) {
     if (observer != null && observer.hasListeners()) {
       for (final EventListener listener : observer.getEventListeners()) {
-        listener.eventOccurred();
+        listener.onEvent();
       }
       for (final EventDataListener<T> dataListener : observer.getEventDataListeners()) {
-        dataListener.eventOccurred(data);
+        dataListener.onEvent(data);
       }
     }
-  }
 
-  @Override
-  public void eventOccurred() {
-    eventOccurred(null);
-  }
-
-  @Override
-  public void eventOccurred(final T data) {
-    fire(data);
   }
 
   @Override
   public EventObserver<T> getObserver() {
     synchronized (lock) {
       if (observer == null) {
-        observer = new DefaultObserver<>();
+        observer = new DefaultEventObserver<>();
       }
 
       return observer;

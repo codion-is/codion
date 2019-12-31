@@ -277,11 +277,11 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
       final int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {
         selectedIndex = minSelIndex;
-        selectedIndexChangedEvent.fire(selectedIndex);
-        selectedItemChangedEvent.fire(getSelectedItem());
+        selectedIndexChangedEvent.onEvent(selectedIndex);
+        selectedItemChangedEvent.onEvent(getSelectedItem());
       }
-      selectionChangedEvent.fire();
-      selectedItemsChangedEvent.fire(getSelectedItems());
+      selectionChangedEvent.onEvent();
+      selectedItemsChangedEvent.onEvent(getSelectedItems());
     }
   }
 

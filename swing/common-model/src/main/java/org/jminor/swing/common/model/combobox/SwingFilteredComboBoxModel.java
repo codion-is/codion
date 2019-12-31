@@ -144,7 +144,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
       }
     }
     finally {
-      filteringDoneEvent.fire();
+      filteringDoneEvent.onEvent();
     }
   }
 
@@ -331,7 +331,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     if (!Objects.equals(selectedItem, toSelect) && allowSelectionChange(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
-      selectionChangedEvent.fire(selectedItem);
+      selectionChangedEvent.onEvent(selectedItem);
     }
   }
 

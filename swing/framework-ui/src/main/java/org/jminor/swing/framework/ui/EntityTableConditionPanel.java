@@ -109,7 +109,7 @@ public final class EntityTableConditionPanel extends JPanel {
     else {
       layoutPanel(value);
     }
-    advancedChangedEvent.fire(value);
+    advancedChangedEvent.onEvent(value);
   }
 
   /**

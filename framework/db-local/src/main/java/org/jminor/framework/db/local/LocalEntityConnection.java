@@ -19,7 +19,7 @@ import org.jminor.framework.domain.Entity;
  * Domain domain = new Domain();
  * EntityConditions conditions = new EntityConditions(domain);
  * Database database = new H2Database("pathToDb");
- * User user = new User("scott", "tiger".toCharArray());
+ * User user = User.parseUser("scott:tiger");
  *
  * EntityConnection connection = LocalEntityConnections.createConnection(domain, database, user);
  *

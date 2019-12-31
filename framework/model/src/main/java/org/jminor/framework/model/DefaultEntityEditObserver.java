@@ -70,7 +70,7 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
     mapToEntityId(insertedEntities).forEach((entityId, inserted) -> {
       final WeakObserver<List<Entity>> event = insertEvents.get(entityId);
       if (event != null) {
-        event.fire(inserted);
+        event.onEvent(inserted);
       }
     });
   }
@@ -85,7 +85,7 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
       updated.forEach(entry -> updateMap.put(entry.getKey(), entry.getValue()));
       final WeakObserver<Map<Entity.Key, Entity>> event = updateEvents.get(entityId);
       if (event != null) {
-        event.fire(updateMap);
+        event.onEvent(updateMap);
       }
     });
   }
@@ -97,7 +97,7 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
     mapToEntityId(deletedEntities).forEach((entityId, entities) -> {
       final WeakObserver<List<Entity>> event = deleteEvents.get(entityId);
       if (event != null) {
-        event.fire(entities);
+        event.onEvent(entities);
       }
     });
   }
@@ -118,7 +118,7 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
 
     private final List<WeakReference<EventDataListener<T>>> dataListeners = new ArrayList<>();
 
-    private synchronized void fire(final T data) {
+    private synchronized void onEvent(final T data) {
       requireNonNull(data);
       final Iterator<WeakReference<EventDataListener<T>>> iterator = dataListeners.iterator();
       while (iterator.hasNext()) {
@@ -127,7 +127,7 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
           iterator.remove();
         }
         else {
-          listener.eventOccurred(data);
+          listener.onEvent(data);
         }
       }
     }

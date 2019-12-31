@@ -48,7 +48,7 @@ public class EntityServletServerTest {
           User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
-  private static final User ADMIN_USER = new User("scott", "tiger".toCharArray());
+  private static final User ADMIN_USER = User.parseUser("scott:tiger");
   private static String SERVER_BASEURL;
 
   private static DefaultEntityConnectionServer server;

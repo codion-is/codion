@@ -12,15 +12,14 @@ import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.framework.demos.manual.store.model.CustomerEditModel;
 import org.jminor.framework.domain.Entity;
 
-public class Misc {
+public final class Misc {
 
   public static void main(String[] args) throws DatabaseException, ValidationException {
-    //Initialize a database connection provider using
-    //the credentials scott/tiger and application identifier StoreMisc
+    // tag::editModel[]
     EntityConnectionProvider connectionProvider =
             EntityConnectionProviders.connectionProvider()
                     .setDomainClassName(Store.class.getName())
-                    .setUser(new User("scott", "tiger".toCharArray()))
+                    .setUser(User.parseUser("scott:tiger"))
                     .setClientTypeId("StoreMisc");
 
     CustomerEditModel editModel =
@@ -43,5 +42,6 @@ public class Misc {
 
     //deletes the active entity
     editModel.delete();
+    // end::editModel[]
   }
 }

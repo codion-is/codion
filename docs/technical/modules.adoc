@@ -1,5 +1,5 @@
 = Modules
-:dir-root: ../../
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
 :imagesdir: ../images
 
 == Common
@@ -8,6 +8,10 @@ Common classes used throughout the framework.
 
 [discrete]
 === jminor-common-core
+
+{url-javadoc}/org/jminor/common/event/package-summary.html[org.jminor.common.event]
+{url-javadoc}/org/jminor/common/state/package-summary.html[org.jminor.common.state]
+{url-javadoc}/org/jminor/common/value/package-summary.html[org.jminor.common.value]
 
 .Dependency graph
 [%collapsible]

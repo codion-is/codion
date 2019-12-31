@@ -22,7 +22,7 @@ public final class CredentialsServerTest {
     final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 
     System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
-    final User scott = new User("scott", "tiger".toCharArray());
+    final User scott = User.parseUser("scott:tiger");
     final CredentialsServer server = new CredentialsServer(54321, 900, 50);
 
     UUID token = UUID.randomUUID();

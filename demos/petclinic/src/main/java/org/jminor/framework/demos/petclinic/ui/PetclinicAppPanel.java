@@ -86,6 +86,6 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.petclinic.domain.impl.ClinicImpl");
     new PetclinicAppPanel().startApplication("Petclinic", null, false,
-            UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray()));
+            UiUtil.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
   }
 }

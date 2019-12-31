@@ -11,7 +11,7 @@ import java.util.Set;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultObserver<T> implements EventObserver<T> {
+final class DefaultEventObserver<T> implements EventObserver<T> {
 
   private final Object lock = new Object();
   private Set<EventListener> listeners;

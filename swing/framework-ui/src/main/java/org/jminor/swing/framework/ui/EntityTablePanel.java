@@ -386,7 +386,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         refreshToolBar.setVisible(visible);
       }
       revalidate();
-      conditionPanelVisibilityChangedEvent.fire(visible);
+      conditionPanelVisibilityChangedEvent.onEvent(visible);
     }
   }
 
@@ -451,7 +451,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     summaryScrollPane.setVisible(visible);
     revalidate();
-    summaryPanelVisibleChangedEvent.fire(visible);
+    summaryPanelVisibleChangedEvent.onEvent(visible);
   }
 
   /**

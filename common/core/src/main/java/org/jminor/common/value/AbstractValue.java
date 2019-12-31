@@ -27,6 +27,6 @@ public abstract class AbstractValue<V> extends AbstractObservableValue<V> {
    * @param value the new value
    */
   protected final void fireChangeEvent(final V value) {
-    changeEvent.fire(value);
+    changeEvent.onEvent(value);
   }
 }

@@ -491,11 +491,11 @@ public final class UiUtil {
       returnTime.setTime(cal.getTime());
       final JButton okButton = new JButton(Controls.control(() -> {
         returnTime.setTimeInMillis(((Calendar) getCalendar.invoke(calendarPanel)).getTimeInMillis());
-        closeEvent.fire();
+        closeEvent.onEvent();
       }, Messages.get(Messages.OK)));
       final Control cancelControl = Controls.control(() -> {
         cancel.set(true);
-        closeEvent.fire();
+        closeEvent.onEvent();
       }, Messages.get(Messages.CANCEL));
       final JButton cancelButton = new JButton(cancelControl);
       final JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 5));
@@ -1128,7 +1128,7 @@ public final class UiUtil {
    * @param closeObserver the dialog will be closed when this observer notifies
    * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
    * the dialog is closed, using the State info object to signal confirmation, the dialog
-   * will only be closed if that state is active after a call to {@link EventDataListener#eventOccurred(Object)}
+   * will only be closed if that state is active after a call to {@link EventDataListener#onEvent(Object)}
    * @return the dialog
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
@@ -1144,7 +1144,7 @@ public final class UiUtil {
    * @param closeObserver the dialog will be closed when this observer notifies
    * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
    * the dialog is closed, using the State info object to signal confirmation, the dialog
-   * will only be closed if that state is active after a call to {@link EventDataListener#eventOccurred(Object)}
+   * will only be closed if that state is active after a call to {@link EventDataListener#onEvent(Object)}
    * @return the dialog
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
@@ -1178,7 +1178,7 @@ public final class UiUtil {
     }
     else {
       final State confirmClose = States.state();
-      confirmCloseListener.eventOccurred(confirmClose);
+      confirmCloseListener.onEvent(confirmClose);
       if (confirmClose.get()) {
         dialog.dispose();
       }

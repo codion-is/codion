@@ -27,7 +27,7 @@ public class EntityServerMonitorTest {
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static final User ADMIN_USER = new User("scott", "tiger".toCharArray());
+  private static final User ADMIN_USER = User.parseUser("scott:tiger");
   private static Server<?, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 

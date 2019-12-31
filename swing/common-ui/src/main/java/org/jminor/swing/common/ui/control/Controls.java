@@ -300,7 +300,7 @@ public final class Controls {
    * @return a control which fires the given event
    */
   public static Control eventControl(final Event<ActionEvent> event) {
-    return control(event::fire);
+    return control(event::onEvent);
   }
 
   private static final class CommandControl extends Control {

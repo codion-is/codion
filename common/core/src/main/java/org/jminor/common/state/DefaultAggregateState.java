@@ -116,7 +116,7 @@ final class DefaultAggregateState extends DefaultState implements State.Aggregat
     }
 
     @Override
-    public void eventOccurred(final Boolean newValue) {
+    public void onEvent(final Boolean newValue) {
       ((DefaultStateObserver) getObserver()).notifyObservers(getPreviousState(state, !newValue), get());
     }
 

@@ -99,7 +99,7 @@ public class DateValueLinkTest {
 
   public void setTimestamp(final LocalDateTime timestamp) {
     this.timestamp = timestamp;
-    timestampValueChangedEvent.fire();
+    timestampValueChangedEvent.onEvent();
   }
 
   public LocalDate getDate() {
@@ -108,7 +108,7 @@ public class DateValueLinkTest {
 
   public void setDate(final LocalDate dateValue) {
     this.dateValue = dateValue;
-    dateValueChangedEvent.fire();
+    dateValueChangedEvent.onEvent();
   }
 
   public LocalTime getTime() {
@@ -117,6 +117,6 @@ public class DateValueLinkTest {
 
   public void setTime(final LocalTime timeValue) {
     this.timeValue = timeValue;
-    timeValueChangedEvent.fire();
+    timeValueChangedEvent.onEvent();
   }
 }

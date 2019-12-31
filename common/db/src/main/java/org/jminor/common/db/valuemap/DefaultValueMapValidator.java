@@ -61,7 +61,7 @@ public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements Va
   /** {@inheritDoc} */
   @Override
   public final void revalidate() {
-    revalidateEvent.fire();
+    revalidateEvent.onEvent();
   }
 
   /** {@inheritDoc} */

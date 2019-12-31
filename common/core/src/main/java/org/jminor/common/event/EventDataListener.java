@@ -5,13 +5,13 @@ package org.jminor.common.event;
 
 /**
  * An event listener receiving some data on each event occurrence
- * @param <T> the data type provided by the event this listener is registered for
+ * @param <T> the type of data propagated with the event.
  */
 public interface EventDataListener<T> {
 
   /**
-   * Called when an event this listener is registered for occurs
-   * @param data information relating to the event
+   * Called when the event occurs.
+   * @param data information relating to the event.
    */
-  void eventOccurred(T data);
+  void onEvent(T data);
 }

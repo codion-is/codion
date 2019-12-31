@@ -36,6 +36,6 @@ public class SelectedItemValueLinkTest {
 
   public void setSelectedItem(final String selectedItem) {
     this.selectedItem = selectedItem;
-    selectedItemChangedEvent.fire();
+    selectedItemChangedEvent.onEvent();
   }
 }

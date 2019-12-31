@@ -4,7 +4,7 @@
 package org.jminor.common.event;
 
 /**
- * A factory class for Event objects.
+ * A factory class for Event instances.
  * @see Event
  */
 public final class Events {
@@ -26,16 +26,17 @@ public final class Events {
    * @return a {@link EventListener} causing the given {@link EventDataListener} to be fired with null data on each occurrence
    */
   public static EventListener listener(final EventDataListener listener) {
-    return () -> listener.eventOccurred(null);
+    return () -> listener.onEvent(null);
   }
 
   /**
    * Instantiates a {@link EventDataListener} causing the given {@link EventListener} to be fired on each occurrence.
+   * Note that any event data will get discarded along the way.
    * @param <T> the type of data propagated to listeners on event firing
    * @param listener the listener
    * @return a {@link EventDataListener} causing the given {@link EventListener} to be fired on each occurrence
    */
   public static <T> EventDataListener<T> dataListener(final EventListener listener) {
-    return data -> listener.eventOccurred();
+    return data -> listener.onEvent();
   }
 }

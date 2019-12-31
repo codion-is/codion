@@ -333,11 +333,11 @@ public final class EntityLookupField extends JTextField {
    */
   private void showEmptyResultMessage() {
     final Event closeEvent = Events.event();
-    final JButton okButton = new JButton(Controls.control(closeEvent::fire, Messages.get(Messages.OK)));
+    final JButton okButton = new JButton(Controls.control(closeEvent::onEvent, Messages.get(Messages.OK)));
     UiUtil.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true,
             Controls.control(() -> {
               okButton.doClick();
-              closeEvent.fire();
+              closeEvent.onEvent();
             }, "EntityLookupField.emptyResultOK"));
     final JPanel buttonPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.CENTER));
     buttonPanel.add(okButton);

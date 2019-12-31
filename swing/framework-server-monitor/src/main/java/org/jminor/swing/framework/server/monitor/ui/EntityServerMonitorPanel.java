@@ -89,7 +89,7 @@ public final class EntityServerMonitorPanel extends JPanel {
    */
   public void setAlwaysOnTop(final boolean value) {
     monitorFrame.setAlwaysOnTop(value);
-    alwaysOnTopChangedEvent.fire(value);
+    alwaysOnTopChangedEvent.onEvent(value);
   }
 
   public void runJConsole() throws IOException {

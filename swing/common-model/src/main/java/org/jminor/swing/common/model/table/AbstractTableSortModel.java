@@ -104,7 +104,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
         sortingStates.put(columnIdentifier, new DefaultSortingState(directive, state.getPriority()));
       }
     }
-    sortingStateChangedEvent.fire();
+    sortingStateChangedEvent.onEvent();
   }
 
   /** {@inheritDoc} */

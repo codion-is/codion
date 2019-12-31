@@ -5565,3 +5565,5 @@
   LocalEntityConnections.createLogger() removed, EntityArgumentStringProvider moved to AbstractRemoteEntityConnection and refactored
   DefaultPropertyCondition, superfluous parenthesis removed from in clause
   EntityConnectionProvider.getServerHostName() removed, added to HttpEntityConnectionProvider and RemoteEntityConnectionProvider (along with getServerPort() and getRegistryPort())
+  Event.fire() removed, EventListener and EventDataListener.eventOccurred() renamed to onEvent()
+  DefaultObserver renamed to DefaultEventObserver, for consistency

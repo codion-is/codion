@@ -17,12 +17,12 @@ public class EventsTest {
     final AtomicInteger counter = new AtomicInteger();
     final EventListener listener = counter::incrementAndGet;
     event.addListener(listener);
-    event.fire();
-    assertEquals(1, counter.get(), "EventListener should have been notified on .fire()");
-    event.eventOccurred();
-    assertEquals(2, counter.get(), "EventListener should have been notified on .eventOccurred");
+    event.onEvent();
+    assertEquals(1, counter.get(), "EventListener should have been notified on onEvent()");
+    event.onEvent();
+    assertEquals(2, counter.get(), "EventListener should have been notified on onEvent()");
     event.removeListener(listener);
-    event.fire();
+    event.onEvent();
     assertEquals(2, counter.get(), "Removed EventListener should not have been notified");
     Events.listener(Events.dataListener(listener));
   }

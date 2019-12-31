@@ -94,7 +94,7 @@ public final class ClientInstanceMonitor {
    */
   public void setLoggingEnabled(final boolean status) throws RemoteException {
     server.setLoggingEnabled(remoteClient.getClientId(), status);
-    loggingStatusChangedEvent.fire(status);
+    loggingStatusChangedEvent.onEvent(status);
   }
 
   /**

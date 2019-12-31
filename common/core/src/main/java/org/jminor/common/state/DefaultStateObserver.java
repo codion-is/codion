@@ -65,7 +65,7 @@ final class DefaultStateObserver implements StateObserver {
     synchronized (lock) {
       if (previousValue != newValue) {
         if (stateChangedEvent != null) {
-          stateChangedEvent.fire(newValue);
+          stateChangedEvent.onEvent(newValue);
         }
         if (reversedStateObserver != null) {
           reversedStateObserver.notifyObservers(newValue, previousValue);

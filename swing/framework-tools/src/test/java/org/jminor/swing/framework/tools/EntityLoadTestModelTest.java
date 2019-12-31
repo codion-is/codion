@@ -30,7 +30,7 @@ public class EntityLoadTestModelTest {
 
   private static final String CONNECTION_TYPE_BEFORE_TEST = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
 
-  private static final User ADMIN_USER = new User("scott", "tiger".toCharArray());
+  private static final User ADMIN_USER = User.parseUser("scott:tiger");
   private static Server<?, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
