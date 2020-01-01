@@ -59,7 +59,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
             getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
     for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       if (containsComboBoxModel(foreignKeyProperty.getPropertyId())) {
-        getForeignKeyComboBoxModel(foreignKeyProperty.getPropertyId()).refresh();
+        final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty.getPropertyId());
+        foreignKeyValues.forEach(foreignKeyValue -> comboBoxModel.replaceItem(foreignKeyValue, foreignKeyValue));
       }
     }
   }
