@@ -520,7 +520,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       return builder.append("}").toString();
     }
 
-    private String getEntityKeyParameterString(final Entity.Key argument) {
+    private static String getEntityKeyParameterString(final Entity.Key argument) {
       return argument.getEntityId() + " {" + argument.toString() + "}";
     }
   }

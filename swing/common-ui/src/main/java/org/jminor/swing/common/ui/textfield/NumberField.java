@@ -352,7 +352,7 @@ public class NumberField extends JTextField {
       return count(newNumber, symbols.getGroupingSeparator()) - count(currentNumber, symbols.getGroupingSeparator());
     }
 
-    private int count(final String string, final char groupingSeparator) {
+    private static int count(final String string, final char groupingSeparator) {
       int counter = 0;
       for (final char c : string.toCharArray()) {
         if (c == groupingSeparator) {
