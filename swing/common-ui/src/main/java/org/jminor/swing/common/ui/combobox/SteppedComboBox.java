@@ -26,7 +26,7 @@ public class SteppedComboBox<V> extends JComboBox<V> {
    */
   public SteppedComboBox(final ComboBoxModel<V> model) {
     super(Objects.requireNonNull(model, "model"));
-    initUI();
+    setUI(new SteppedComboBoxUI());
   }
 
   /**
@@ -54,10 +54,6 @@ public class SteppedComboBox<V> extends JComboBox<V> {
     else {
       super.requestFocus();
     }
-  }
-
-  private void initUI() {
-    setUI(new SteppedComboBoxUI());
   }
 
   private static final class SteppedComboBoxUI extends MetalComboBoxUI {

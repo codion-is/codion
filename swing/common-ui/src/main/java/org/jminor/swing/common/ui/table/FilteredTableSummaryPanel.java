@@ -19,7 +19,7 @@ public final class FilteredTableSummaryPanel extends AbstractTableColumnSyncPane
   private final FilteredTableModel tableModel;
 
   /**
-   * Instantiates a new EntityTableSummaryPanel
+   * Instantiates a new FilteredTableSummaryPanel
    * @param tableModel the table model
    */
   public FilteredTableSummaryPanel(final AbstractFilteredTableModel tableModel) {
@@ -31,9 +31,7 @@ public final class FilteredTableSummaryPanel extends AbstractTableColumnSyncPane
   /** {@inheritDoc} */
   @Override
   protected JPanel initializeColumnPanel(final TableColumn column) {
-    final ColumnSummaryModel summaryModel = tableModel.getColumnSummaryModel(column.getIdentifier());
-
-    return initializeColumnSummaryPanel(summaryModel);
+    return initializeColumnSummaryPanel(tableModel.getColumnSummaryModel(column.getIdentifier()));
   }
 
   /**

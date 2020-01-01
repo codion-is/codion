@@ -9,6 +9,7 @@ import org.jminor.common.event.EventListener;
 class DefaultState implements State {
 
   private final Object lock = new Object();
+
   private DefaultStateObserver observer;
   private boolean value;
 
