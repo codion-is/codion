@@ -57,7 +57,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -667,7 +666,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @throws java.awt.print.PrinterException in case of a print exception
    */
   public final void printTable() throws PrinterException {
-    getTable().print();
+    table.print();
   }
 
   /**
@@ -903,13 +902,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Initializes the south panel, override and return null for no south panel.
-   * @return the south panel, or null if no south panel should be used
+   * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
     final JPanel centerPanel = new JPanel(UiUtil.createBorderLayout());
-    final JTextField searchField = table.getSearchField();
     final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    searchFieldPanel.add(searchField);
+    searchFieldPanel.add(table.getSearchField());
     centerPanel.add(statusMessageLabel, BorderLayout.CENTER);
     centerPanel.add(searchFieldPanel, BorderLayout.WEST);
     final JPanel panel = new JPanel(new BorderLayout());
@@ -920,30 +918,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     return panel;
-  }
-
-  /**
-   * Adds a popup menu to {@code table}, null or an empty ControlSet mean no popup menu
-   * @param table the table
-   * @param popupControls a ControlSet specifying the controls in the popup menu
-   */
-  protected final void setTablePopupMenu(final JTable table, final ControlSet popupControls) {
-    if (popupControls == null || popupControls.size() == 0) {
-      return;
-    }
-
-    final JPopupMenu popupMenu = ControlProvider.createPopupMenu(popupControls);
-    table.setComponentPopupMenu(popupMenu);
-    table.getTableHeader().setComponentPopupMenu(popupMenu);
-    if (table.getParent() != null) {
-      ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
-    }
-    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, control(() -> {
-      final Point location = getPopupLocation(table);
-      popupMenu.show(table, location.x, location.y);
-    }, "EntityTablePanel.showPopupMenu"));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            control(this::showEntityMenu,"EntityTablePanel.showEntityMenu"));
   }
 
   /**
@@ -1170,7 +1144,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     setControl(CLEAR, getClearControl());
     setControl(REFRESH, getRefreshControl());
-    setControl(SELECT_COLUMNS, getTable().getSelectColumnsControl());
+    setControl(SELECT_COLUMNS, table.getSelectColumnsControl());
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
     setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
     if (includeConditionPanel && conditionPanel != null) {
@@ -1286,23 +1260,22 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void bindPanelEvents() {
     if (includeDeleteSelectedControl()) {
-      UiUtil.addKeyEvent(getTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
+      UiUtil.addKeyEvent(table, KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
     final EventListener statusListener = () -> SwingUtilities.invokeLater(EntityTablePanel.this::updateStatusMessage);
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
     tableModel.addFilteringListener(statusListener);
     tableModel.addTableDataChangedListener(statusListener);
 
-    tableModel.getConditionModel().getPropertyConditionModels().forEach(conditionModel ->
-            conditionModel.addConditionStateListener(() -> SwingUtilities.invokeLater(() -> {
-              getTable().getTableHeader().repaint();
-              getTable().repaint();
-            })));
+    tableModel.getConditionModel().addConditionStateListener(() -> SwingUtilities.invokeLater(() -> {
+      table.getTableHeader().repaint();
+      table.repaint();
+    }));
     if (conditionPanel != null) {
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
     }
     if (tableModel.hasEditModel()) {
-      tableModel.getEditModel().addEntitiesChangedListener(() -> SwingUtilities.invokeLater(getTable()::repaint));
+      tableModel.getEditModel().addEntitiesChangedListener(() -> SwingUtilities.invokeLater(table::repaint));
     }
   }
 
@@ -1314,9 +1287,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       column.setCellEditor(initializeTableCellEditor(property));
       column.setResizable(true);
     });
-    final JTableHeader header = getTable().getTableHeader();
+    final JTableHeader header = table.getTableHeader();
     final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
-    final Font defaultFont = getTable().getFont();
+    final Font defaultFont = table.getFont();
     final Font searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
     header.setDefaultRenderer((table, value, isSelected, hasFocus, row, column) -> {
       final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
@@ -1333,8 +1306,28 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     });
     header.setFocusable(false);
     if (includePopupMenu) {
-      setTablePopupMenu(getTable(), getPopupControls(additionalPopupControlSets));
+      addTablePopupMenu();
     }
+  }
+
+  private void addTablePopupMenu() {
+    final ControlSet popupControls = getPopupControls(additionalPopupControlSets);
+    if (popupControls == null || popupControls.size() == 0) {
+      return;
+    }
+
+    final JPopupMenu popupMenu = ControlProvider.createPopupMenu(popupControls);
+    table.setComponentPopupMenu(popupMenu);
+    table.getTableHeader().setComponentPopupMenu(popupMenu);
+    if (table.getParent() != null) {
+      ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
+    }
+    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, control(() -> {
+      final Point location = getPopupLocation(table);
+      popupMenu.show(table, location.x, location.y);
+    }, "EntityTablePanel.showPopupMenu"));
+    UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
+            control(this::showEntityMenu,"EntityTablePanel.showEntityMenu"));
   }
 
   private void checkIfInitialized() {

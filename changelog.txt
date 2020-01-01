@@ -5548,3 +5548,4 @@
   EntityEditModel.isValuePersistent() renamed to isPersistValue()
   SwingEntityEditModel.replaceForeignKeyValues() now uses replaceItem() instead of refreshing combo box models
   DefaultForeignKeyConditionModel, superfluous toString() override removed, DefaultEntityTableConditionModel.boundToString() now handles Entity values
+  EntityTablePanel.setTablePopupMenu() renamed to addTablePopupMenu() and made private
