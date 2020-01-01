@@ -431,7 +431,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final Object get(final String propertyId) {
-    return get(getEntityDefinition().getProperty(propertyId));
+    return entity.get(propertyId);
   }
 
   /** {@inheritDoc} */
