@@ -5543,3 +5543,5 @@
   EntityConnectionProvider.getServerHostName() removed, added to HttpEntityConnectionProvider and RemoteEntityConnectionProvider (along with getServerPort() and getRegistryPort())
   Event.fire() removed, EventListener and EventDataListener.eventOccurred() renamed to onEvent()
   DefaultObserver renamed to DefaultEventObserver, for consistency
+  DefaultGroup renamed to DefaultStateGroup, for consistency, some minor refactoring
+  DefaultState now only notifies listeners on set when a listener has been previously added

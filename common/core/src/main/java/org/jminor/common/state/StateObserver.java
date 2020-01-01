@@ -16,7 +16,7 @@ public interface StateObserver extends EventObserver<Boolean> {
   boolean get();
 
   /**
-   * @return A StateObserver object that is always the reverse of the parent state
+   * @return A StateObserver instance that is always the reverse of this StateObserver
    */
   StateObserver getReversedObserver();
 }
