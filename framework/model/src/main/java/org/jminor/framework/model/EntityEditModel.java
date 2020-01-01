@@ -144,21 +144,21 @@ public interface EntityEditModel extends Refreshable {
   boolean isNullable(Property property);
 
   /**
-   * Sets the given value in the underlying value map
+   * Sets the given value in the underlying Entity
    * @param propertyId the ID of the property to associate the given value with
    * @param value the value to associate with the given property
    */
   void put(String propertyId, Object value);
 
   /**
-   * Sets the given value in the underlying value map
+   * Sets the given value in the underlying Entity
    * @param property the property to associate the given value with
    * @param value the value to associate with the given property
    */
   void put(Property property, Object value);
 
   /**
-   * Removes the given value from the underlying value map
+   * Removes the given value from the underlying Entity
    * @param propertyId the ID of the property
    * @return the value, if any
    */
@@ -179,7 +179,7 @@ public interface EntityEditModel extends Refreshable {
   Object get(String propertyId);
 
   /**
-   * Returns the value associated with the given property in the underlying value map
+   * Returns the value associated with the given property in the underlying Entity
    * @param property the property of the value to retrieve
    * @return the value associated with the given property
    */
@@ -516,20 +516,20 @@ public interface EntityEditModel extends Refreshable {
   boolean isValid(Property key);
 
   /**
-   * @return true if the underlying value map contains only valid values
+   * @return true if the underlying Entity contains only valid values
    * @see #getValidObserver()
    */
   boolean isValid();
 
-    /**
-   * @return a StateObserver indicating the valid status of the underlying value map
+  /**
+   * @return a StateObserver indicating the valid status of the underlying Entity.
    * @see #getValidator()
    * @see #isValid()
    */
   StateObserver getValidObserver();
 
   /**
-   * Returns a StateObserver responsible for indicating when and if any values in the underlying Entity are modified.
+   * Returns a StateObserver responsible for indicating when and if any values in the underlying Entity have been modified.
    * @return a StateObserver indicating the modified state of this edit model
    * @see #isModified()
    * @see ValueMap#getModifiedObserver()
