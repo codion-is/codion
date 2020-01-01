@@ -280,10 +280,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.tableModel = tableModel;
     this.table = initializeTable(tableModel);
     this.tableScrollPane = new JScrollPane(table);
-    this.tableScrollPane.getViewport().addChangeListener(e -> {
-      tableScrollPane.getHorizontalScrollBar().setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
-      revalidate();
-    });
     this.inputProviders = requireNonNull(inputProviders, "inputProviders");
     this.conditionPanel = conditionPanel;
     this.conditionScrollPane = conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
