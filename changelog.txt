@@ -5545,3 +5545,4 @@
   DefaultObserver renamed to DefaultEventObserver, for consistency
   DefaultGroup renamed to DefaultStateGroup, for consistency, some minor refactoring
   DefaultState now only notifies listeners on set when a listener has been previously added
+  EntityEditModel.isValuePersistent() renamed to isPersistValue()

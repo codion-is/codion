@@ -12,8 +12,8 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 
   public VetSpecialtyEditModel(final EntityConnectionProvider connectionProvider) {
     super(T_VET_SPECIALTY, connectionProvider);
-    setValuePersistent(VET_SPECIALTY_VET_FK, false);
-    setValuePersistent(VET_SPECIALTY_SPECIALTY_FK, false);
+    setPersistValue(VET_SPECIALTY_VET_FK, false);
+    setPersistValue(VET_SPECIALTY_SPECIALTY_FK, false);
   }
 
   @Override

@@ -343,16 +343,24 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Returns the default value for the given property, used when initializing a new default entity for this edit model.
    * This method is only called for properties that are non-denormalized and are not part of a foreign key.
-   * If the default value of a property should be the last value used, call {@link #setValuePersistent(String, boolean)}
-   * with {@code true} for the given property or override {@link #isValuePersistent} so that it
+   * If the default value of a property should be the last value used, call {@link #setPersistValue(String, boolean)}
+   * with {@code true} for the given property or override {@link #isPersistValue} so that it
    * returns {@code true} for that property in case the value should persist.
    * @param property the property
    * @return the default value for the property
    * @see Property.Builder#setDefaultValue(Object)
-   * @see #setValuePersistent(String, boolean)
-   * @see #isValuePersistent(Property)
+   * @see #setPersistValue(String, boolean)
+   * @see #isPersistValue(Property)
    */
   Object getDefaultValue(Property property);
+
+  /**
+   * Returns true if values based on this property should be available for lookup via this EditModel.
+   * This means displaying all the distinct property values to the user, allowing her to select one.
+   * @param property the property
+   * @return true if value lookup should be enabled for this property
+   */
+  boolean isLookupEnabled(Property property);
 
   /**
    * Returns true if the last available value for this property should be used when initializing
@@ -364,23 +372,15 @@ public interface EntityEditModel extends Refreshable {
    * @return true if the given field value should be reset when the model is cleared
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  boolean isValuePersistent(Property property);
-
-  /**
-   * Returns true if values based on this property should be available for lookup via this EditModel.
-   * This means displaying all the distinct property values to the user, allowing her to select one.
-   * @param property the property
-   * @return true if value lookup should be enabled for this property
-   */
-  boolean isLookupEnabled(Property property);
+  boolean isPersistValue(Property property);
 
   /**
    * @param propertyId the property ID
-   * @param persistValueOnClear true if this model should persist the value of the given property on clear
+   * @param persistValue true if this model should persist the value of the given property on clear
    * @return this edit model instance
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  EntityEditModel setValuePersistent(String propertyId, boolean persistValueOnClear);
+  EntityEditModel setPersistValue(String propertyId, boolean persistValue);
 
   /**
    * Performs a insert on the active entity, sets the primary key values of the active entity
