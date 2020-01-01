@@ -443,15 +443,15 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void setValuePersistent() throws Exception {
+  public void setPersistValue() throws Exception {
     final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
     employeeEditModel.setEntity(king);
     assertNotNull(employeeEditModel.get(TestDomain.EMP_JOB));
-    employeeEditModel.setValuePersistent(TestDomain.EMP_JOB, true);
+    employeeEditModel.setPersistValue(TestDomain.EMP_JOB, true);
     employeeEditModel.setEntity(null);
     assertNotNull(employeeEditModel.get(TestDomain.EMP_JOB));
     employeeEditModel.setEntity(king);
-    employeeEditModel.setValuePersistent(TestDomain.EMP_JOB, false);
+    employeeEditModel.setPersistValue(TestDomain.EMP_JOB, false);
     employeeEditModel.setEntity(null);
     assertNull(employeeEditModel.get(TestDomain.EMP_JOB));
   }
@@ -459,7 +459,7 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void containsUnsavedData() throws DatabaseException {
     employeeEditModel.setWarnAboutUnsavedData(true);
-    employeeEditModel.setValuePersistent(TestDomain.EMP_DEPARTMENT_FK, false);
+    employeeEditModel.setPersistValue(TestDomain.EMP_DEPARTMENT_FK, false);
 
     final EventDataListener<State> alwaysConfirmListener = data -> data.set(true);
     final EventDataListener<State> alwaysDenyListener = data -> data.set(false);

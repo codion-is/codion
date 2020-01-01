@@ -199,7 +199,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public Object getDefaultValue(final Property property) {
-    if (isValuePersistent(property)) {
+    if (isPersistValue(property)) {
       if (property instanceof ForeignKeyProperty) {
         return entity.getForeignKey((ForeignKeyProperty) property);
       }
@@ -246,7 +246,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isValuePersistent(final Property property) {
+  public boolean isPersistValue(final Property property) {
     if (persistentValues.containsKey(property.getPropertyId())) {
       return persistentValues.get(property.getPropertyId());
     }
@@ -256,7 +256,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityEditModel setValuePersistent(final String propertyId, final boolean persistValue) {
+  public final EntityEditModel setPersistValue(final String propertyId, final boolean persistValue) {
     persistentValues.put(propertyId, persistValue);
     return this;
   }
@@ -431,7 +431,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final Object get(final String propertyId) {
-    return get(getEntityDefinition().getProperty(propertyId));
+    return entity.get(propertyId);
   }
 
   /** {@inheritDoc} */

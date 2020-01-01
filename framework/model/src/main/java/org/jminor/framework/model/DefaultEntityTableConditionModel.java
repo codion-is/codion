@@ -17,6 +17,7 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -25,11 +26,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static org.jminor.framework.db.condition.Conditions.conditionSet;
 import static org.jminor.framework.db.condition.Conditions.propertyCondition;
 
@@ -342,7 +343,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
    * @return a String representing the current state of the condition models
    */
   private String getConditionModelState() {
-    return getPropertyConditionModels().stream().map(DefaultEntityTableConditionModel::toString).collect(Collectors.joining());
+    return propertyConditionModels.values().stream().map(DefaultEntityTableConditionModel::toString).collect(joining());
   }
 
   private void initializeFilterModels(final String entityId, final PropertyFilterModelProvider filterModelProvider) {
@@ -406,6 +407,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       for (final Object obj : (Collection) object) {
         stringBuilder.append(boundToString(obj));
       }
+    }
+    else if (object instanceof Entity) {
+      stringBuilder.append(((Entity) object).getKey());
     }
     else {
       stringBuilder.append(object);

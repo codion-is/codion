@@ -67,7 +67,7 @@ public final class KeyGenerators {
     return new AutomaticKeyGenerator(valueSource);
   }
 
-  private static abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
+  private abstract static class AbstractQueriedKeyGenerator implements KeyGenerator {
 
     protected final void queryAndSet(final Entity entity, final ColumnProperty keyProperty,
                                      final DatabaseConnection connection) throws SQLException {
