@@ -5547,3 +5547,4 @@
   DefaultState now only notifies listeners on set when a listener has been previously added
   EntityEditModel.isValuePersistent() renamed to isPersistValue()
   SwingEntityEditModel.replaceForeignKeyValues() now uses replaceItem() instead of refreshing combo box models
+  DefaultForeignKeyConditionModel, superfluous toString() override removed, DefaultEntityTableConditionModel.boundToString() now handles Entity values

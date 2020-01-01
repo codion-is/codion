@@ -50,8 +50,6 @@ public class DefaultForeignKeyConditionModelTest {
     assertTrue(searchEntities.contains(sales));
     assertTrue(searchEntities.contains(accounting));
 
-    assertEquals("dept_fkLIKEdeptno:30deptno:10null", conditionModel.toString());
-
     conditionModel.setUpperBound(null);
     assertTrue(lookupModel.getSelectedEntities().isEmpty());
     conditionModel.setUpperBound(sales);

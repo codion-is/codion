@@ -48,19 +48,6 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
-    final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyId());
-    if (isEnabled()) {
-      stringBuilder.append(getConditionType());
-      stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
-      stringBuilder.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
-    }
-
-    return stringBuilder.toString();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final EntityLookupModel getEntityLookupModel() {
     return entityLookupModel;
   }
@@ -90,20 +77,6 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
 
   protected final void setUpdatingModel(final boolean updatingModel) {
     this.updatingModel = updatingModel;
-  }
-
-  private static String toString(final Object object) {
-    final StringBuilder stringBuilder = new StringBuilder();
-    if (object instanceof Collection) {
-      for (final Object obj : (Collection) object) {
-        stringBuilder.append(toString(obj));
-      }
-    }
-    else {
-      stringBuilder.append(((Entity) object).getKey().toString());
-    }
-
-    return stringBuilder.toString();
   }
 
   private void bindLookupModelEvents() {
