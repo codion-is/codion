@@ -42,8 +42,8 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    */
   public NullableToggleButtonModel(final Boolean initialState) {
     this.buttonState = Values.value(initialState);
+    displayState(initialState);
     bindEvents();
-    displayState();
   }
 
   /**
@@ -126,16 +126,16 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
   }
 
   private void bindEvents() {
-    buttonState.addDataListener(value -> {
-      displayState();
+    buttonState.addDataListener(state -> {
+      displayState(state);
       fireStateChanged();
       fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED,this,
-              value == null ? NULL : (value ?  ItemEvent.SELECTED : ItemEvent.DESELECTED)));
+              state == null ? NULL : (state ?  ItemEvent.SELECTED : ItemEvent.DESELECTED)));
     });
   }
 
-  private void displayState() {
-    super.setArmed(buttonState.get() == null);
-    super.setPressed(buttonState.get() == null);
+  private void displayState(final Boolean state) {
+    super.setArmed(state == null);
+    super.setPressed(state == null);
   }
 }

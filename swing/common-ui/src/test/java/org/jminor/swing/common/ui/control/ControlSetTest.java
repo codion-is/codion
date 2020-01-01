@@ -5,6 +5,7 @@ package org.jminor.swing.common.ui.control;
 
 import org.junit.jupiter.api.Test;
 
+import static org.jminor.common.Util.nullOrEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ControlSetTest {
@@ -17,15 +18,15 @@ public class ControlSetTest {
     set.add(null);
     set.addAt(null, 0);
     set.remove(null);
-    assertTrue(set.hasName());
-    assertFalse(set.hasIcon());
+    assertFalse(nullOrEmpty(set.getName()));
+    assertNull(set.getIcon());
     assertEquals("set", set.getName());
     set = new ControlSet();
-    assertFalse(set.hasName());
+    assertTrue(nullOrEmpty(set.getName()));
     assertEquals("", set.getName());
     set = new ControlSet(two);
     set.setName("set");
-    assertTrue(set.hasName());
+    assertFalse(nullOrEmpty(set.getName()));
     assertEquals("set", set.getName());
     set.addAt(one, 0);
     set.addSeparatorAt(1);

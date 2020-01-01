@@ -152,9 +152,9 @@ class CompletionDocument extends PlainDocument {
     return one.toUpperCase().startsWith(two.toUpperCase());
   }
 
-  protected static String normalize(final String str) {
+  protected static String normalize(final String string) {
     //http://stackoverflow.com/a/4225698/317760
-    return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+    return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
   }
 
   private final class MatchKeyAdapter extends KeyAdapter {

@@ -84,6 +84,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
 import static org.jminor.swing.common.ui.UiUtil.setWaitCursor;
 import static org.jminor.swing.common.ui.control.Controls.control;
@@ -1359,11 +1360,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static void addAdditionalControls(final ControlSet popupControls, final List<ControlSet> additionalPopupControlSets) {
     additionalPopupControlSets.forEach(controlSet -> {
-      if (controlSet.hasName()) {
-        popupControls.add(controlSet);
+      if (nullOrEmpty(controlSet.getName())) {
+        popupControls.addAll(controlSet);
       }
       else {
-        popupControls.addAll(controlSet);
+        popupControls.add(controlSet);
       }
       popupControls.addSeparator();
     });

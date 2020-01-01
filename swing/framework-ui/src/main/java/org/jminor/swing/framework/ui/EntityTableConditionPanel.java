@@ -61,7 +61,7 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param tableModel the table model
    */
   public EntityTableConditionPanel(final SwingEntityTableModel tableModel) {
-    this(tableModel, initializeAdvancedConditionPanel(tableModel), initializeSimpleConditionPanel(tableModel.getConditionModel()));
+    this(tableModel, new ConditionColumnSyncPanel(tableModel), initializeSimpleConditionPanel(tableModel.getConditionModel()));
   }
 
   /**
@@ -266,34 +266,38 @@ public final class EntityTableConditionPanel extends JPanel {
     return panel;
   }
 
-  private static AbstractTableColumnSyncPanel initializeAdvancedConditionPanel(final SwingEntityTableModel tableModel) {
-    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel()) {
-      @Override
-      protected JPanel initializeColumnPanel(final TableColumn column) {
-        final Property property = (Property) column.getIdentifier();
-        if (tableModel.getConditionModel().containsPropertyConditionModel(property.getPropertyId())) {
-          return initializeConditionPanel(tableModel.getConditionModel().getPropertyConditionModel(property.getPropertyId()));
-        }
+  private static final class ConditionColumnSyncPanel extends AbstractTableColumnSyncPanel {
 
-        return new JPanel();
-      }
-    };
-    panel.setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
-    panel.resetPanel();
+    private final EntityTableConditionModel conditionModel;
 
-    return panel;
-  }
-
-  /**
-   * Initializes a ColumnConditionPanel for the given model
-   * @param propertyConditionModel the {@link ColumnConditionModel} for which to create a condition panel
-   * @return a ColumnConditionPanel based on the given model
-   */
-  private static ColumnConditionPanel initializeConditionPanel(final ColumnConditionModel propertyConditionModel) {
-    if (propertyConditionModel instanceof ForeignKeyConditionModel) {
-      return new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel, true, false);
+    private ConditionColumnSyncPanel(final SwingEntityTableModel tableModel) {
+      super(tableModel.getColumnModel());
+      this.conditionModel = tableModel.getConditionModel();
+      setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
+      resetPanel();
     }
 
-    return new PropertyConditionPanel(propertyConditionModel, true, false);
+    @Override
+    protected JPanel initializeColumnPanel(final TableColumn column) {
+      final Property property = (Property) column.getIdentifier();
+      if (conditionModel.containsPropertyConditionModel(property.getPropertyId())) {
+        return initializeConditionPanel(conditionModel.getPropertyConditionModel(property.getPropertyId()));
+      }
+
+      return new JPanel();
+    }
+
+    /**
+     * Initializes a ColumnConditionPanel for the given model
+     * @param propertyConditionModel the {@link ColumnConditionModel} for which to create a condition panel
+     * @return a ColumnConditionPanel based on the given model
+     */
+    private static ColumnConditionPanel initializeConditionPanel(final ColumnConditionModel propertyConditionModel) {
+      if (propertyConditionModel instanceof ForeignKeyConditionModel) {
+        return new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel, true, false);
+      }
+
+      return new PropertyConditionPanel(propertyConditionModel, true, false);
+    }
   }
 }

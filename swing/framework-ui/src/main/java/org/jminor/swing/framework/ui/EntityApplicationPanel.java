@@ -1373,16 +1373,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return initializeTree(getDependencyTreeModel());
   }
 
-  private JScrollPane initializeTree(final TreeModel treeModel) {
-    final JTree tree = new JTree(treeModel);
-    tree.setShowsRootHandles(true);
-    tree.setToggleClickCount(1);
-    tree.setRootVisible(false);
-    UiUtil.expandAll(tree, new TreePath(tree.getModel().getRoot()), true);
-
-    return new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-  }
-
   private void setParentWindowTitle(final String title) {
     final Window parentWindow = UiUtil.getParentWindow(this);
     if (parentWindow instanceof JFrame) {
@@ -1428,6 +1418,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       LOG.debug("Invalid UUID authentication token");
       return null;
     }
+  }
+
+  private static JScrollPane initializeTree(final TreeModel treeModel) {
+    final JTree tree = new JTree(treeModel);
+    tree.setShowsRootHandles(true);
+    tree.setToggleClickCount(1);
+    tree.setRootVisible(false);
+    UiUtil.expandAll(tree, new TreePath(tree.getModel().getRoot()), true);
+
+    return new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   }
 
   private static DefaultTreeModel createApplicationTree(final Collection<? extends HierarchyPanel> entityPanels) {

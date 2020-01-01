@@ -55,7 +55,7 @@ public class NumberField extends JTextField {
    * Set whether or not grouping will be used in this field.
    * @param groupingUsed true if grouping should be used false otherwise
    */
-  public void setGroupingUsed(final boolean groupingUsed) {
+  public final void setGroupingUsed(final boolean groupingUsed) {
     ((NumberDocument) getDocument()).getFormat().setGroupingUsed(groupingUsed);
   }
 
@@ -102,7 +102,7 @@ public class NumberField extends JTextField {
    * @param groupingSeparator the grouping separator
    * @throws IllegalArgumentException in case both separators are the same character
    */
-  public void setSeparators(final char decimalSeparator, final char groupingSeparator) {
+  public final void setSeparators(final char decimalSeparator, final char groupingSeparator) {
     ((NumberDocument) getDocument()).setSeparators(decimalSeparator, groupingSeparator);
   }
 
@@ -352,7 +352,7 @@ public class NumberField extends JTextField {
       return count(newNumber, symbols.getGroupingSeparator()) - count(currentNumber, symbols.getGroupingSeparator());
     }
 
-    private int count(final String string, final char groupingSeparator) {
+    private static int count(final String string, final char groupingSeparator) {
       int counter = 0;
       for (final char c : string.toCharArray()) {
         if (c == groupingSeparator) {

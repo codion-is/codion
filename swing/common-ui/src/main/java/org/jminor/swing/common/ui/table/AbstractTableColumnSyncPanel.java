@@ -81,7 +81,6 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
       basePanel.add(getColumnPanels().get(columnEnumeration.nextElement()));
     }
     basePanel.add(verticalFiller);
-
     syncPanelWidths();
     repaint();
   }
@@ -112,8 +111,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
 
   private void syncPanelWidths() {
     for (final TableColumn column : columns) {
-      final JPanel panel = columnPanels.get(column);
-      syncPanelWidth(panel, column);
+      syncPanelWidth(columnPanels.get(column), column);
     }
   }
 

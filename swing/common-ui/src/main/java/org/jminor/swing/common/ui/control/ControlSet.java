@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.jminor.common.Util.nullOrEmpty;
-
 /**
  * A set of Actions/Controls, includes separators.
  */
@@ -224,20 +222,6 @@ public final class ControlSet extends Control {
    */
   public void addSeparatorAt(final int index) {
     actions.add(index, null);
-  }
-
-  /**
-   * @return true if this control set has a name
-   */
-  public boolean hasName() {
-    return !nullOrEmpty(getName());
-  }
-
-  /**
-   * @return true if this control set has an icon
-   */
-  public boolean hasIcon() {
-    return getIcon() != null;
   }
 
   /**

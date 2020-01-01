@@ -48,7 +48,7 @@ public final class InputProviderPanel<T, K extends JComponent> extends JPanel im
     this.inputProvider = inputProvider;
     this.okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
     this.cancelButton = createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION);
-    initUI(caption);
+    initializeUI(caption);
   }
 
   /**
@@ -115,7 +115,7 @@ public final class InputProviderPanel<T, K extends JComponent> extends JPanel im
     buttonClickedEvent.removeDataListener(listener);
   }
 
-  private void initUI(final String caption) {
+  private void initializeUI(final String caption) {
     setLayout(UiUtil.createBorderLayout());
     if (caption != null) {
       setBorder(BorderFactory.createTitledBorder(caption));
