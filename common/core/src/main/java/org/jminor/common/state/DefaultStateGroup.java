@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-final class DefaultGroup implements State.Group {
+final class DefaultStateGroup implements State.Group {
 
   private final List<WeakReference<State>> members = new ArrayList<>();
 
-  public DefaultGroup(final State... states) {
+  public DefaultStateGroup(final State... states) {
     if (states != null) {
       for (final State state : states) {
         addState(state);
@@ -39,12 +39,12 @@ final class DefaultGroup implements State.Group {
     synchronized (members) {
       final ListIterator<WeakReference<State>> iterator = members.listIterator();
       while (iterator.hasNext()) {
-        final State referredState = iterator.next().get();
-        if (referredState == null) {//remove this dead weak reference
+        final State memberState = iterator.next().get();
+        if (memberState == null) {//remove this dead weak reference
           iterator.remove();
         }
-        else if (state.get() && !state.equals(referredState)) {
-          referredState.set(false);
+        else if (state.get() && memberState != state) {
+          memberState.set(false);
         }
       }
     }

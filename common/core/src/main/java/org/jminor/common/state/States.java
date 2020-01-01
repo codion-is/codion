@@ -48,6 +48,6 @@ public final class States {
    * @see State.Group
    */
   public static State.Group group(final State... states) {
-    return new DefaultGroup(states);
+    return new DefaultStateGroup(states);
   }
 }

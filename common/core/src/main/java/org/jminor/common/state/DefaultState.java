@@ -9,7 +9,7 @@ import org.jminor.common.event.EventListener;
 class DefaultState implements State {
 
   private final Object lock = new Object();
-  private StateObserver observer;
+  private DefaultStateObserver observer;
   private boolean value;
 
   DefaultState() {
@@ -31,7 +31,9 @@ class DefaultState implements State {
       if (this.value != value) {
         final boolean previousValue = this.value;
         this.value = value;
-        ((DefaultStateObserver) getObserver()).notifyObservers(previousValue, value);
+        if (observer != null) {
+          observer.notifyObservers(previousValue, value);
+        }
       }
     }
   }
