@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static java.util.Arrays.stream;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static org.jminor.common.Util.nullOrEmpty;
 
@@ -42,19 +43,19 @@ public final class MethodLogger {
    * @param enabled true if this logger should be enabled
    */
   public MethodLogger(final int maxSize, final boolean enabled) {
-    this(maxSize, enabled, new DefaultArgumentStringProvider());
+    this(maxSize, enabled, new ArgumentToString());
   }
 
   /**
    * Instantiates a new MethodLogger.
    * @param maxSize the maximum log size
    * @param enabled true if this logger should be enabled
-   * @param argumentStringProvider the ArgumentStringProvider
+   * @param argumentStringProvider responsible for providing String representations of method arguments
    */
   public MethodLogger(final int maxSize, final boolean enabled, final Function<Object, String> argumentStringProvider) {
     this.maxSize = maxSize;
     this.enabled = enabled;
-    this.argumentStringProvider = argumentStringProvider;
+    this.argumentStringProvider = requireNonNull(argumentStringProvider);
   }
 
   /**
@@ -148,37 +149,9 @@ public final class MethodLogger {
   }
 
   /**
-   * Appends  the given log entries to the log
-   * @param log the log
-   * @param entry the log entry to append
-   * @param indentationLevel the indentation to use for the given log entries
-   */
-  public static void appendLogEntry(final StringBuilder log, final Entry entry, final int indentationLevel) {
-    if (entry != null) {
-      log.append(entry.toString(indentationLevel)).append("\n");
-      appendLogEntries(log, entry.getSubLog(), indentationLevel + 1);
-    }
-  }
-
-  /**
-   * Appends the given log entries to the log
-   * @param log the log
-   * @param entries the List containing the entries to append
-   * @param indentationLevel the indentation to use for the given log entries
-   */
-  public static void appendLogEntries(final StringBuilder log, final List<Entry> entries, final int indentationLevel) {
-    if (entries != null) {
-      for (final MethodLogger.Entry entry : entries) {
-        log.append(entry.toString(indentationLevel)).append("\n");
-        appendLogEntries(log, entry.getSubLog(), indentationLevel + 1);
-      }
-    }
-  }
-
-  /**
    * Provides String represenations of method arguments.
    */
-  public static class DefaultArgumentStringProvider implements Function<Object, String> {
+  public static class ArgumentToString implements Function<Object, String> {
 
     @Override
     public final String apply(final Object object) {
@@ -321,11 +294,20 @@ public final class MethodLogger {
     }
 
     /**
+     * Appends this logger entry along with any sub-entries to the given StringBuilder.
+     * @param builder the StringBuilder to append to.
+     */
+    public void append(final StringBuilder builder) {
+      builder.append(toString(0)).append("\n");
+      appendLogEntries(builder, getSubLog(), 1);
+    }
+
+    /**
      * Returns a string representation of this log entry.
      * @param indentation the number of tab indents to prefix the string with
      * @return a string representation of this log entry
      */
-    public String toString(final int indentation) {
+    private String toString(final int indentation) {
       final String indentString = indentation > 0 ? TextUtil.padString("", indentation, '\t', TextUtil.Alignment.RIGHT) : "";
       final StringBuilder stringBuilder = new StringBuilder();
       final LocalDateTime accessDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(accessTime), TimeZone.getDefault().toZoneId());
@@ -386,6 +368,21 @@ public final class MethodLogger {
      */
     private void setExitMessage(final String exitMessage) {
       this.exitMessage = exitMessage;
+    }
+
+    /**
+     * Appends the given log entries to the log
+     * @param log the log
+     * @param entries the List containing the entries to append
+     * @param indentationLevel the indentation to use for the given log entries
+     */
+    private static void appendLogEntries(final StringBuilder log, final List<Entry> entries, final int indentationLevel) {
+      if (entries != null) {
+        for (final MethodLogger.Entry entry : entries) {
+          log.append(entry.toString(indentationLevel)).append("\n");
+          appendLogEntries(log, entry.getSubLog(), indentationLevel + 1);
+        }
+      }
     }
 
     private static String getStackTrace(final Throwable exception) {

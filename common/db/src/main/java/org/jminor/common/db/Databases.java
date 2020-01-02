@@ -146,7 +146,7 @@ public final class Databases {
               .append(values);
     }
     else {
-      logMessage.append(entry.toString(1));
+      entry.append(logMessage);
     }
     if (exception != null) {
       logMessage.append("\n").append(" [Exception: ").append(exception.getMessage()).append("]");

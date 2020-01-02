@@ -250,7 +250,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       this.connectionPool = connectionPool;
       this.database = database;
       this.methodLogger = new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(),
-            false, new EntityArgumentStringProvider(domain));
+            false, new EntityArgumentToString(domain));
       this.methodLogger.setEnabled(loggingEnabled);
       this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();
       try {
@@ -304,7 +304,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
         if (methodLogger.isEnabled()) {
           final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
           final StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
-          MethodLogger.appendLogEntry(messageBuilder, entry, 0);
+          entry.append(messageBuilder);
           LOG.info(messageBuilder.toString());
         }
         MDC.remove(LOG_IDENTIFIER_PROPERTY);
@@ -480,27 +480,27 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   /**
    * An implementation tailored for EntityConnections.
    */
-  private static final class EntityArgumentStringProvider extends MethodLogger.DefaultArgumentStringProvider {
+  private static final class EntityArgumentToString extends MethodLogger.ArgumentToString {
 
     private final EntityDefinition.Provider definitionProvider;
 
-    private EntityArgumentStringProvider(final EntityDefinition.Provider definitionProvider) {
+    private EntityArgumentToString(final EntityDefinition.Provider definitionProvider) {
       this.definitionProvider = definitionProvider;
     }
 
     @Override
     protected String toString(final Object object) {
       if (object instanceof Entity) {
-        return getEntityParameterString((Entity) object);
+        return entityToString((Entity) object);
       }
       else if (object instanceof Entity.Key) {
-        return getEntityKeyParameterString((Entity.Key) object);
+        return entityKeyToString((Entity.Key) object);
       }
 
       return super.toString(object);
     }
 
-    private String getEntityParameterString(final Entity entity) {
+    private String entityToString(final Entity entity) {
       final StringBuilder builder = new StringBuilder(entity.getEntityId()).append(" {");
       final List<ColumnProperty> columnProperties = definitionProvider.getDefinition(entity.getEntityId()).getColumnProperties();
       for (int i = 0; i < columnProperties.size(); i++) {
@@ -520,8 +520,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       return builder.append("}").toString();
     }
 
-    private static String getEntityKeyParameterString(final Entity.Key argument) {
-      return argument.getEntityId() + " {" + argument.toString() + "}";
+    private static String entityKeyToString(final Entity.Key key) {
+      return key.getEntityId() + " {" + key.toString() + "}";
     }
   }
 }

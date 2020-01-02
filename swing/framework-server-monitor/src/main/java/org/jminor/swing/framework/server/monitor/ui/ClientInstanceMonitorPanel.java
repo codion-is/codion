@@ -69,7 +69,9 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     if (model != null) {
       final ClientLog serverLog = model.getLog();
       if (serverLog != null) {
-        MethodLogger.appendLogEntries(log, serverLog.getEntries(), 0);
+        for (final MethodLogger.Entry entry : serverLog.getEntries()) {
+          entry.append(log);
+        }
       }
       else {
         log.append("Disconnected!");
