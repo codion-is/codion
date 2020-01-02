@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
@@ -387,31 +388,31 @@ public final class ClientUserMonitor {
     }
 
     private static List<TableColumn> createUserHistoryColumns() {
-      final TableColumn username = new TableColumn(USERNAME_COLUMN);
-      username.setIdentifier(USERNAME_COLUMN);
-      username.setHeaderValue("Username");
-      final TableColumn clientType = new TableColumn(CLIENT_TYPE_COLUMN);
-      clientType.setIdentifier(CLIENT_TYPE_COLUMN);
-      clientType.setHeaderValue("Client type");
-      final TableColumn clientVersion = new TableColumn(CLIENT_VERSION_COLUMN);
-      clientVersion.setIdentifier(CLIENT_VERSION_COLUMN);
-      clientVersion.setHeaderValue("Client version");
-      final TableColumn frameworkVersion = new TableColumn(FRAMEWORK_VERSION_COLUMN);
-      frameworkVersion.setIdentifier(FRAMEWORK_VERSION_COLUMN);
-      frameworkVersion.setHeaderValue("Framework version");
-      final TableColumn host = new TableColumn(CLIENT_HOST_COLUMN);
-      host.setIdentifier(CLIENT_HOST_COLUMN);
-      host.setHeaderValue("Host");
-      final TableColumn lastSeen = new TableColumn(LAST_SEEN_COLUMN);
-      lastSeen.setIdentifier(LAST_SEEN_COLUMN);
-      lastSeen.setHeaderValue("Last seen");
-      lastSeen.setCellRenderer(new LastSeenRenderer());
-      final TableColumn connectionCount = new TableColumn(CONNECTION_COUNT_COLUMN);
-      connectionCount.setIdentifier(CONNECTION_COUNT_COLUMN);
-      connectionCount.setHeaderValue("Connections");
-
-      return asList(username, clientType, clientVersion, frameworkVersion, host, lastSeen, connectionCount);
+      return asList(
+              createColumn(USERNAME_COLUMN, "Username"),
+              createColumn(CLIENT_TYPE_COLUMN, "Client type"),
+              createColumn(CLIENT_VERSION_COLUMN, "Client version"),
+              createColumn(FRAMEWORK_VERSION_COLUMN, "Framework version"),
+              createColumn(CLIENT_HOST_COLUMN, "Host"),
+              createColumn(LAST_SEEN_COLUMN, "Last seen", new LastSeenRenderer()),
+              createColumn(CONNECTION_COUNT_COLUMN, "Connections"));
     }
+  }
+
+  private static TableColumn createColumn(final Integer identifier, final String headerValue) {
+    return createColumn(identifier, headerValue, null);
+  }
+
+  private static TableColumn createColumn(final Integer identifier, final String headerValue,
+                                          final TableCellRenderer cellRenderer) {
+    final TableColumn column = new TableColumn(identifier);
+    column.setIdentifier(identifier);
+    column.setHeaderValue(headerValue);
+    if (cellRenderer != null) {
+      column.setCellRenderer(cellRenderer);
+    }
+
+    return column;
   }
 
   private static final class LastSeenRenderer extends DefaultTableCellRenderer {
