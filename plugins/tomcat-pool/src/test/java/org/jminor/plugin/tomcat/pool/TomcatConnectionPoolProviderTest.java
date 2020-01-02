@@ -23,9 +23,9 @@ public class TomcatConnectionPoolProviderTest {
             new H2Database("TomcatConnectionPoolProviderTest.test", System.getProperty("jminor.db.initScript")));
     pool.setCollectFineGrainedStatistics(true);
     assertTrue(pool.isCollectFineGrainedStatistics());
-    pool.returnConnection(pool.getConnection());
-    pool.returnConnection(pool.getConnection());
-    pool.returnConnection(pool.getConnection());
+    pool.getConnection().close();
+    pool.getConnection().close();
+    pool.getConnection().close();
     pool.close();
   }
 }

@@ -74,14 +74,6 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     }
 
     @Override
-    public void returnConnection(final Connection connection) {
-      try {
-        connection.close();
-      }
-      catch (final SQLException ignored) {/*ignored*/}
-    }
-
-    @Override
     public void close() {
       try {
         getPool().shutdown();

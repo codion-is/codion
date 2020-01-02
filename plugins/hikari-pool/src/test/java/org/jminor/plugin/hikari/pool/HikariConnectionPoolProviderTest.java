@@ -24,9 +24,9 @@ public class HikariConnectionPoolProviderTest {
             new H2Database("HikariConnectionPoolProviderTest.test", System.getProperty("jminor.db.initScript")));
     pool.setCollectFineGrainedStatistics(true);
     assertTrue(pool.isCollectFineGrainedStatistics());
-    pool.returnConnection(pool.getConnection());
-    pool.returnConnection(pool.getConnection());
-    pool.returnConnection(pool.getConnection());
+    pool.getConnection().close();
+    pool.getConnection().close();
+    pool.getConnection().close();
     pool.getStatistics(startTime).getFineGrainedStatistics();
     pool.close();
   }

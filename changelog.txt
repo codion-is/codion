@@ -5552,3 +5552,4 @@
   EntityTablePanel, removed apparently redundant horizontal scroll bar visibility event binding
   MethodLogger.appendLogEntry() replaced with MethodLogger.Entry.append(StringBuilder), some refactoring
   MethodLogger argument handling improved
+  ConnectionPool.returnConnection() removed

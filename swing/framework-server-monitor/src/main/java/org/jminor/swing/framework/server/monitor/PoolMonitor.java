@@ -260,9 +260,6 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void returnConnection(final Connection connection) {/*Not required*/}
-
-    @Override
     public Connection getConnection() {return null;}
 
     @Override

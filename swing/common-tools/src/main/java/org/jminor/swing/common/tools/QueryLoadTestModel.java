@@ -134,7 +134,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
       }
       finally {
         if (connection != null) {
-          application.pool.returnConnection(connection);
+          Databases.closeSilently(connection);
         }
         Databases.closeSilently(resultSet);
         Databases.closeSilently(statement);

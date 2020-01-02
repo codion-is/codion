@@ -7,6 +7,7 @@ import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolException;
@@ -382,7 +383,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     private void returnConnectionToPool() {
       final Connection connection = poolEntityConnection.getDatabaseConnection().getConnection();
       if (connection != null) {
-        connectionPool.returnConnection(connection);
+        Databases.closeSilently(connection);
         poolEntityConnection.getDatabaseConnection().setConnection(null);
       }
     }
