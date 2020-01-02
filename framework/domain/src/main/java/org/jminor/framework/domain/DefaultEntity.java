@@ -82,6 +82,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param definitionProvider the domain model
    * @param values the initial values, may be null
    * @param originalValues the original values, may be null
+   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
   DefaultEntity(final EntityDefinition.Provider definitionProvider, final String entityId,
                 final Map<Property, Object> values, final Map<Property, Object> originalValues) {
@@ -94,14 +95,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param definitionProvider the domain model
    * @param values the initial values, may be null
    * @param originalValues the original values, may be null
+   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
   DefaultEntity(final EntityDefinition.Provider definitionProvider, final EntityDefinition definition,
                 final Map<Property, Object> values, final Map<Property, Object> originalValues) {
-    super(values, originalValues);
+    super(validateProperties(definition, values), validateProperties(definition, originalValues));
     this.definitionProvider = requireNonNull(definitionProvider, "definitionProvider");
-    this.definition = requireNonNull(definition, "definition");
-    validateProperties(definition, values);
-    validateProperties(definition, originalValues);
+    this.definition = definition;
   }
 
   /** {@inheritDoc} */
@@ -831,7 +831,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
   }
 
-  private static void validateProperties(final EntityDefinition definition, final Map<Property, Object> propertyValues) {
+  private static Map<Property, Object> validateProperties(final EntityDefinition definition,
+                                                          final Map<Property, Object> propertyValues) {
+    requireNonNull(definition, "definition");
     if (propertyValues != null && !propertyValues.isEmpty()) {
       final Set<Property> propertySet = definition.getPropertySet();
       for (final Map.Entry<Property, Object> valueEntry : propertyValues.entrySet()) {
@@ -842,6 +844,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         property.validateType(valueEntry.getValue());
       }
     }
+
+    return propertyValues;
   }
 
   private static Map<Property, Object> createValueMap(final Key key) {
