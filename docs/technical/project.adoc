@@ -59,4 +59,4 @@ NOTE: The client handles server restarts gracefully, you can try shutting down t
 
 == Code quality
 
-http://darri.myftp.org:9001/dashboard?id=org.jminor[Sonarqube]
+http://darri.myftp.org:9001/dashboard?id=org.jminor[SonarQube]
