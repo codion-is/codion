@@ -12,6 +12,7 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 
+import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -223,7 +224,7 @@ public final class ConnectionPoolMonitor {
   /**
    * @return the dataset for the connection check out time
    */
-  public YIntervalSeriesCollection getCheckOutTimeCollection() {
+  public IntervalXYDataset getCheckOutTimeCollection() {
     return checkOutTimeCollection;
   }
 
