@@ -27,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
 
 /**
- * A utility class for working with text, such as sorting a reading from files
+ * A utility class for working with text, such as sorting and reading from files
  */
 public final class TextUtil {
 

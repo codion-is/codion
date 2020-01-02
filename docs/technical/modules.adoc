@@ -136,21 +136,30 @@ image::dbms/sqlserver/build/reports/dependency-graph/dependency-graph.svg[opts=i
 The framework itself.
 
 [discrete]
+=== jminor-framework-domain
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/domain/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== jminor-framework-domain-test
+
+.Dependency graph
+[%collapsible]
+====
+image::framework/domain-test/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
 === jminor-framework-db-core
 
 .Dependency graph
 [%collapsible]
 ====
 image::framework/db-core/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-[discrete]
-=== jminor-framework-db-http
-
-.Dependency graph
-[%collapsible]
-====
-image::framework/db-http/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
@@ -172,21 +181,12 @@ image::framework/db-remote/build/reports/dependency-graph/dependency-graph.svg[o
 ====
 
 [discrete]
-=== jminor-framework-domain
+=== jminor-framework-db-http
 
 .Dependency graph
 [%collapsible]
 ====
-image::framework/domain/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-[discrete]
-=== jminor-framework-domain-test
-
-.Dependency graph
-[%collapsible]
-====
-image::framework/domain-test/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::framework/db-http/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
