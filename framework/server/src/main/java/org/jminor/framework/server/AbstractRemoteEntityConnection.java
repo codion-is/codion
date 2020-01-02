@@ -490,6 +490,12 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
     @Override
     protected String toString(final Object object) {
+      if (object == null) {
+        return "null";
+      }
+      if (object instanceof String) {
+        return "'" + object + "'";
+      }
       if (object instanceof Entity) {
         return entityToString((Entity) object);
       }
