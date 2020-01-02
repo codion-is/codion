@@ -5553,3 +5553,5 @@
   MethodLogger.appendLogEntry() replaced with MethodLogger.Entry.append(StringBuilder), some refactoring
   MethodLogger argument handling improved
   ConnectionPool.returnConnection() removed
+  ConnectionPoolProvider javadoc improved
+  ChinookLoginProxy now uses a ConnectionPool
