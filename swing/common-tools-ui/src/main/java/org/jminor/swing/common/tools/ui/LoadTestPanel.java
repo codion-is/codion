@@ -286,18 +286,27 @@ public final class LoadTestPanel extends JPanel {
     final ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
     memoryUsageChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
+    final JFreeChart systemLoadChart = ChartFactory.createXYStepChart(null,
+            null, null, loadTestModel.getSystemLoadDataset(), PlotOrientation.VERTICAL, true, true, false);
+    setColors(systemLoadChart);
+    systemLoadChart.getXYPlot().getRangeAxis().setRange(0, 100);
+    final ChartPanel systemLoadChartPanel = new ChartPanel(systemLoadChart);
+    systemLoadChartPanel.setBorder(BorderFactory.createEtchedBorder());
+
     usageScenarioChartPanel.setBorder(BorderFactory.createTitledBorder("Scenarios run per second"));
     thinkTimeChartPanel.setBorder(BorderFactory.createTitledBorder("Think time (ms)"));
     numberOfApplicationsChartPanel.setBorder(BorderFactory.createTitledBorder("Application count"));
     memoryUsageChartPanel.setBorder(BorderFactory.createTitledBorder("Memory usage (MB)"));
+    systemLoadChartPanel.setBorder(BorderFactory.createTitledBorder("System load"));
     failureChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario failure rate (%)"));
 
     final JTabbedPane twoTab = new JTabbedPane();
     twoTab.addTab("Scenarios run", usageScenarioChartPanel);
     twoTab.addTab("Failed runs", failureChartPanel);
 
-    final JPanel bottomPanel = new JPanel(new GridLayout(1, 3, COMPONENT_GAP, COMPONENT_GAP));
+    final JPanel bottomPanel = new JPanel(new GridLayout(1, 4, COMPONENT_GAP, COMPONENT_GAP));
     bottomPanel.add(memoryUsageChartPanel);
+    bottomPanel.add(systemLoadChartPanel);
     bottomPanel.add(thinkTimeChartPanel);
     bottomPanel.add(numberOfApplicationsChartPanel);
 
