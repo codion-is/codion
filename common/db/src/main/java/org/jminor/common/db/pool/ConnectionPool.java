@@ -15,21 +15,15 @@ import java.sql.Connection;
 public interface ConnectionPool {
 
   /**
-   * Fetches a connection from the pool.
+   * Fetches a connection from the pool. Close the connection to return it to the pool.
    * @return a database connection retrieved from the pool
    * @throws ConnectionPoolException.NoConnectionAvailable in case the maximum check out time is exceeded
    * @throws DatabaseException in case of a database exception
    * @throws IllegalStateException if the pool is closed
    * @see #setMaximumCheckOutTime(int)
+   * @see Connection#close()
    */
   Connection getConnection() throws DatabaseException;
-
-  /**
-   * Return the given connection to the pool.
-   * If the pool has been closed the connection is disconnected and discarded.
-   * @param connection the database connection to return to the pool
-   */
-  void returnConnection(Connection connection);
 
   /**
    * @return the underlying database

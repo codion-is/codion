@@ -202,6 +202,6 @@ public class MethodLoggerTest {
     logger.logExit("three2");
     logger.logExit("two2");
     logger.logExit("one");
-    MethodLogger.appendLogEntry(new StringBuilder(), logger.getEntries().get(0), 0);
+    logger.getEntries().get(0).append(new StringBuilder());
   }
 }

@@ -4,8 +4,7 @@
 package org.jminor.common.event;
 
 /**
- * A event class.
- * Listeners are notified in the order they were added.
+ * An event class. Listeners are notified in the order they were added.
  * <pre>
  * Event&lt;Boolean&gt; event = Events.event();
  *
