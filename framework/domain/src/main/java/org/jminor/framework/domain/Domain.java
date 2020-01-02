@@ -122,6 +122,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @param values the values
    * @param originalValues the original values
    * @return a new {@link Entity} instance
+   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
   public final Entity entity(final String entityId, final Map<Property, Object> values,
                              final Map<Property, Object> originalValues) {
@@ -134,6 +135,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @param values the values
    * @param originalValues the original values
    * @return a new {@link Entity} instance
+   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
   public final Entity entity(final EntityDefinition entityDefinition, final Map<Property, Object> values,
                              final Map<Property, Object> originalValues) {

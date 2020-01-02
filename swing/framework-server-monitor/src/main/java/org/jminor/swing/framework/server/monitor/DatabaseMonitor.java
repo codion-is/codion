@@ -7,6 +7,7 @@ import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.Database;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -92,7 +93,7 @@ public final class DatabaseMonitor {
   /**
    * @return the graph series collection for the number of queries
    */
-  public XYSeriesCollection getQueriesPerSecondCollection() {
+  public XYDataset getQueriesPerSecondCollection() {
     return queriesPerSecondCollection;
   }
 

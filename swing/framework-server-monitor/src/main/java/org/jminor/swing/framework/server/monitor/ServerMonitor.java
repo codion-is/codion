@@ -15,6 +15,7 @@ import org.jminor.common.remote.Server;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
@@ -229,42 +230,42 @@ public final class ServerMonitor {
   /**
    * @return the connection request dataset
    */
-  public XYSeriesCollection getConnectionRequestsDataset() {
+  public XYDataset getConnectionRequestsDataset() {
     return connectionRequestsPerSecondCollection;
   }
 
   /**
    * @return the memory usage dataset
    */
-  public XYSeriesCollection getMemoryUsageDataset() {
+  public XYDataset getMemoryUsageDataset() {
     return memoryUsageCollection;
   }
 
   /**
    * @return the system load dataset
    */
-  public XYSeriesCollection getSystemLoadDataset() {
+  public XYDataset getSystemLoadDataset() {
     return systemLoadCollection;
   }
 
   /**
    * @return the connection count dataset
    */
-  public XYSeriesCollection getConnectionCountDataset() {
+  public XYDataset getConnectionCountDataset() {
     return connectionCountCollection;
   }
 
   /**
    * @return the garbage collection event dataset
    */
-  public XYSeriesCollection getGcEventsDataset() {
+  public XYDataset getGcEventsDataset() {
     return gcEventsCollection;
   }
 
   /**
    * @return the thread count dataset
    */
-  public XYSeriesCollection getThreadCountDataset() {
+  public XYDataset getThreadCountDataset() {
     return threadCountCollection;
   }
 

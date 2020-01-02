@@ -6,8 +6,8 @@ package org.jminor.swing.common.tools;
 import org.jminor.common.User;
 import org.jminor.common.event.EventObserver;
 
+import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.YIntervalSeriesCollection;
 
 import java.util.Collection;
 import java.util.List;
@@ -188,7 +188,7 @@ public interface LoadTest {
    * @return a dataset plotting the average scenario duration
    * @param name the scenario name
    */
-  YIntervalSeriesCollection getScenarioDurationDataset(String name);
+  IntervalXYDataset getScenarioDurationDataset(String name);
 
   /**
    * @return a dataset plotting the think time
@@ -209,6 +209,11 @@ public interface LoadTest {
    * @return a dataset plotting the memory usage of this load test model
    */
   XYDataset getMemoryUsageDataset();
+
+  /**
+   * @return a dataset plotting the system load of this load test model
+   */
+  XYDataset getSystemLoadDataset();
 
   /**
    * @return a dataset plotting the failure rate of each usage scenario

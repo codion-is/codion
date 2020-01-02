@@ -11,6 +11,8 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 
+import org.jfree.data.xy.IntervalXYDataset;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.xy.YIntervalSeries;
@@ -18,6 +20,7 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -47,6 +50,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   private static final long NANO_IN_MILLI = 1000000;
   private static final double THOUSAND = 1000d;
+  private static final double HUNDRED = 100d;
 
   private final Event<Boolean> pausedChangedEvent = Events.event();
   private final Event<Boolean> collectChartDataChangedEvent = Events.event();
@@ -98,6 +102,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private final Collection<XYSeries> usageSeries = new ArrayList<>();
   private final Map<String, YIntervalSeries> durationSeries = new HashMap<>();
   private final Collection<XYSeries> failureSeries = new ArrayList<>();
+  private final XYSeries systemLoadSeries = new XYSeries("System Load");
+  private final XYSeries processLoadSeries = new XYSeries("Process Load");
+  private final XYSeriesCollection systemLoadCollection = new XYSeriesCollection();
 
   /**
    * Constructs a new LoadTestModel.
@@ -245,7 +252,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /** {@inheritDoc} */
   @Override
-  public final YIntervalSeriesCollection getScenarioDurationDataset(final String name) {
+  public final IntervalXYDataset getScenarioDurationDataset(final String name) {
     final YIntervalSeriesCollection scenarioDurationCollection = new YIntervalSeriesCollection();
     scenarioDurationCollection.addSeries(durationSeries.get(name));
 
@@ -254,32 +261,38 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /** {@inheritDoc} */
   @Override
-  public final XYSeriesCollection getThinkTimeDataset() {
+  public final XYDataset getThinkTimeDataset() {
     return thinkTimeCollection;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final XYSeriesCollection getNumberOfApplicationsDataset() {
+  public final XYDataset getNumberOfApplicationsDataset() {
     return numberOfApplicationsCollection;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final XYSeriesCollection getUsageScenarioDataset() {
+  public final XYDataset getUsageScenarioDataset() {
     return usageScenarioCollection;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final XYSeriesCollection getUsageScenarioFailureDataset() {
+  public final XYDataset getUsageScenarioFailureDataset() {
     return scenarioFailureCollection;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final XYSeriesCollection getMemoryUsageDataset() {
+  public final XYDataset getMemoryUsageDataset() {
     return memoryUsageCollection;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final XYDataset getSystemLoadDataset() {
+    return systemLoadCollection;
   }
 
   /** {@inheritDoc} */
@@ -585,6 +598,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
     memoryUsageCollection.addSeries(maxMemoryCollection);
     memoryUsageCollection.addSeries(allocatedMemoryCollection);
     memoryUsageCollection.addSeries(usedMemoryCollection);
+    systemLoadCollection.addSeries(systemLoadSeries);
+    systemLoadCollection.addSeries(processLoadSeries);
     usageScenarioCollection.addSeries(scenariosRunSeries);
     for (final UsageScenario usageScenario : this.usageScenarios) {
       final XYSeries series = new XYSeries(usageScenario.getName());
@@ -608,6 +623,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
     allocatedMemoryCollection.add(time, Util.getAllocatedMemory() / THOUSAND);
     usedMemoryCollection.add(time, Util.getUsedMemory() / THOUSAND);
     maxMemoryCollection.add(time, Util.getMaxMemory() / THOUSAND);
+    systemLoadSeries.add(time, getSystemCpuLoad() * HUNDRED);
+    processLoadSeries.add(time, getProcessCpuLoad() * HUNDRED);
     scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());
     warningTimeSeries.add(time, warningTime);
     for (final XYSeries series : usageSeries) {
@@ -621,6 +638,14 @@ public abstract class LoadTestModel<T> implements LoadTest {
     for (final XYSeries series : failureSeries) {
       series.add(time, counter.getScenarioFailureRate((String) series.getKey()));
     }
+  }
+
+  private static double getSystemCpuLoad() {
+    return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
+  }
+
+  private static double getProcessCpuLoad() {
+    return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
   }
 
   private static final class ApplicationRunner<T> implements Runnable {
