@@ -5558,3 +5558,4 @@
   LoadTestModel, system load graph added
   ServerMonitor, chart interfaces used as return values instead of concrete classes
   Copyright updated
+  ClientUserMonitorPanel bug fixed, did not add table to JScrollPane, which prevented the header from displaying
