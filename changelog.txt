@@ -5584,3 +5584,4 @@
   Copyright updated
   ClientUserMonitorPanel bug fixed, did not add table to JScrollPane, which prevented the header from displaying
   Jekyll configuration removed from docs, not used
+0.13.0
