@@ -68,6 +68,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A JTable implementation for {@link AbstractFilteredTableModel}.
+ * Note that for the table header to display you must add this table to a JScrollPane.
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
  * @param <T> the table model type
