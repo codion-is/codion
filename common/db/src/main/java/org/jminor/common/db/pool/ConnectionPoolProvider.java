@@ -28,6 +28,7 @@ public interface ConnectionPoolProvider {
   /**
    * Returns the {@link ConnectionPoolProvider} implementation found by the {@link ServiceLoader}
    * of the given type.
+   * @param classname the classname of the required connection pool provider
    * @return a {@link ConnectionPoolProvider} implementation of the given type from the {@link ServiceLoader}.
    * @throws IllegalStateException in case no such {@link ConnectionPoolProvider} implementation is available.
    */
