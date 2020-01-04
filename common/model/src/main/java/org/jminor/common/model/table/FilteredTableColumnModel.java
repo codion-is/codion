@@ -10,10 +10,11 @@ import java.util.List;
 
 /**
  * A TableColumnModel handling hidden columns
+ * @param <R> the type of rows
  * @param <C> the type of column identifier
  * @param <T> the type representing table columns
  */
-public interface FilteredTableColumnModel<C, T> {
+public interface FilteredTableColumnModel<R, C, T> {
 
   /**
    * @return all columns in this model, both hidden and visible
@@ -73,12 +74,12 @@ public interface FilteredTableColumnModel<C, T> {
    * @param columnIdentifier the column identifier
    * @return the ColumnConditionModel at the given column index
    */
-  ColumnConditionModel<C> getColumnFilterModel(C columnIdentifier);
+  ColumnConditionModel<R, C> getColumnFilterModel(C columnIdentifier);
 
   /**
    * @return the ColumnFilterModel instances
    */
-  Collection<ColumnConditionModel<C>> getColumnFilterModels();
+  Collection<ColumnConditionModel<R, C>> getColumnFilterModels();
 
   /**
    * @param listener a listener to be notified each time a column is hidden

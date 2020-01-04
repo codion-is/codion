@@ -93,12 +93,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * Provides filter panels
    */
-  private final ColumnConditionPanelProvider<C> conditionPanelProvider;
+  private final ColumnConditionPanelProvider<R, C> conditionPanelProvider;
 
   /**
    * the property filter panels
    */
-  private final Map<TableColumn, ColumnConditionPanel<C>> columnFilterPanels = new HashMap<>();
+  private final Map<TableColumn, ColumnConditionPanel<R, C>> columnFilterPanels = new HashMap<>();
 
   /**
    * The text field used for entering the search condition
@@ -144,7 +144,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param tableModel the table model
    * @param conditionPanelProvider the column condition panel provider
    */
-  public FilteredTable(final T tableModel, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
+  public FilteredTable(final T tableModel, final ColumnConditionPanelProvider<R, C> conditionPanelProvider) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
             (ListSelectionModel) tableModel.getSelectionModel());
     this.tableModel = tableModel;
@@ -231,7 +231,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Shows a dialog for selecting which columns to show/hide
    */
   public void selectColumns() {
-    final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
+    final SwingFilteredTableColumnModel<R, C> columnModel = tableModel.getColumnModel();
     final List<TableColumn> allColumns = new ArrayList<>(columnModel.getAllColumns());
     allColumns.sort(new Comparator<TableColumn>() {
       private final Collator collator = Collator.getInstance();
@@ -451,7 +451,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void bindFilterIndicatorEvents(final TableColumn column) {
-    final ColumnConditionModel<C> model = getModel().getColumnModel().getColumnFilterModel((C) column.getIdentifier());
+    final ColumnConditionModel<R, C> model = getModel().getColumnModel().getColumnFilterModel((C) column.getIdentifier());
     if (model != null) {
       model.addConditionStateListener(() -> SwingUtilities.invokeLater(() -> {
         if (model.isEnabled()) {
@@ -470,7 +470,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
-    final SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
+    final SwingFilteredTableColumnModel<R, C> columnModel = getModel().getColumnModel();
     final int index = columnModel.getColumnIndexAtX(event.getX());
     final TableColumn column = columnModel.getColumn(index);
     if (!columnFilterPanels.containsKey(column)) {

@@ -5561,3 +5561,4 @@
   ClientUserMonitorPanel bug fixed, did not add table to JScrollPane, which prevented the header from displaying
   Jekyll configuration removed from docs, not used
 0.13.0
+  FilteredTableColumnModel, added <R> generic parameter for row type, related refactoring

@@ -16,8 +16,6 @@ import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 
 import java.text.Format;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -26,9 +24,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default ColumnConditionModel model implementation.
+ * @param <R> the type of the rows
  * @param <K> the type of the column identifier
  */
-public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
+public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R, K> {
 
   private final Value<Object> upperBoundValue = Values.value();
   private final Value<Object> lowerBoundValue = Values.value();
@@ -379,8 +378,8 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean include(final Object object) {
-    return !enabledState.get() || include(getComparable(object));
+  public final boolean include(final R row) {
+    return !enabledState.get() || include(getComparable(row));
   }
 
   /** {@inheritDoc} */
@@ -409,15 +408,12 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   }
 
   /**
-   * @param object the object
-   * @return a Comparable representing the given object
+   * This default implementation simply returns the row, assuming it is a Comparable instance.
+   * @param row the row
+   * @return a Comparable from the given row to compare with this condition model's value.
    */
-  protected Comparable getComparable(final Object object) {
-    if (object instanceof LocalDateTime) {
-      return ((LocalDateTime) object).truncatedTo(ChronoUnit.MINUTES);
-    }
-
-    return (Comparable) object;
+  protected Comparable getComparable(final R row) {
+    return (Comparable) row;
   }
 
   private Object getBoundValue(final Object upperBound) {

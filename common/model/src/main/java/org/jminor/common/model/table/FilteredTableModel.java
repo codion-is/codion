@@ -126,7 +126,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
   /**
    * @return the TableColumnModel used by this TableModel
    */
-  FilteredTableColumnModel<C, T> getColumnModel();
+  FilteredTableColumnModel<R, C, T> getColumnModel();
 
   /**
    * @param columnIdentifier the column identifier

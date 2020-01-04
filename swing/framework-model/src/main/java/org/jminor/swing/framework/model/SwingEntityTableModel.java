@@ -808,7 +808,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   private void applyColumnPreferences(final org.json.JSONObject preferences) {
-    final SwingFilteredTableColumnModel<Property> columnModel = getColumnModel();
+    final SwingFilteredTableColumnModel<Entity, Property> columnModel = getColumnModel();
     for (final TableColumn column : Collections.list(columnModel.getColumns())) {
       final Property property = (Property) column.getIdentifier();
       if (columnModel.containsColumn(property)) {
@@ -835,16 +835,16 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   public static class DefaultEntityTableSortModel extends AbstractTableSortModel<Entity, Property> {
 
-    private final Domain domain;
+    private final EntityDefinition.Provider definitionProvider;
 
     /**
      * Instantiates a new DefaultEntityTableSortModel
      * @param domain the underlying entities
      * @param entityId the entity ID
      */
-    public DefaultEntityTableSortModel(final Domain domain, final String entityId) {
-      super(initializeColumns(domain, entityId));
-      this.domain = domain;
+    public DefaultEntityTableSortModel(final EntityDefinition.Provider definitionProvider, final String entityId) {
+      super(initializeColumns(definitionProvider.getDefinition(entityId).getVisibleProperties()));
+      this.definitionProvider = definitionProvider;
     }
 
     /** {@inheritDoc} */
@@ -857,7 +857,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     @Override
     protected Comparator initializeColumnComparator(final Property property) {
       if (property instanceof ForeignKeyProperty) {
-        return domain.getDefinition(((ForeignKeyProperty) property).getForeignEntityId()).getComparator();
+        return definitionProvider.getDefinition(((ForeignKeyProperty) property).getForeignEntityId()).getComparator();
       }
 
       return super.initializeColumnComparator(property);
@@ -865,19 +865,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
     /** {@inheritDoc} */
     @Override
-    protected final Comparable getComparable(final Entity entity, final Property property) {
-      return (Comparable) entity.get(property);
+    protected final Comparable getComparable(final Entity row, final Property property) {
+      return (Comparable) row.get(property);
     }
 
-    private static List<TableColumn> initializeColumns(final Domain domain, final String entityId) {
-      int modelIndex = 0;
-      final List<Property> visibleProperties = domain.getDefinition(entityId).getVisibleProperties();
-      if (visibleProperties.isEmpty()) {
-        throw new IllegalStateException("No visible properties defined for entity: " + entityId);
-      }
+    private static List<TableColumn> initializeColumns(final List<Property> visibleProperties) {
       final List<TableColumn> columns = new ArrayList<>(visibleProperties.size());
       for (final Property property : visibleProperties) {
-        final TableColumn column = new TableColumn(modelIndex++);
+        final TableColumn column = new TableColumn(columns.size());
         column.setIdentifier(property);
         column.setHeaderValue(property.getCaption());
         if (property.getPreferredColumnWidth() > 0) {

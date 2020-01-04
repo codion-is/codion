@@ -5,6 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 
@@ -19,7 +20,7 @@ public interface PropertyConditionModelProvider {
    * @return a {@link ColumnConditionModel} for the given property, null if searching
    * should not be allowed for this property
    */
-  ColumnConditionModel<ColumnProperty> initializePropertyConditionModel(ColumnProperty property);
+  ColumnConditionModel<Entity, ColumnProperty> initializePropertyConditionModel(ColumnProperty property);
 
   /**
    * Initializes a {@link ColumnConditionModel} for the given property
@@ -28,6 +29,6 @@ public interface PropertyConditionModelProvider {
    * @return a {@link ColumnConditionModel} for the given property, null if searching
    * should not be allowed for this property
    */
-  ColumnConditionModel<ForeignKeyProperty> initializeForeignKeyConditionModel(
+  ColumnConditionModel<Entity, ForeignKeyProperty> initializeForeignKeyConditionModel(
           ForeignKeyProperty property, EntityConnectionProvider connectionProvider);
 }

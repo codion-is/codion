@@ -123,7 +123,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void removeItems(final int fromIndex, final int toIndex) {}
     @Override
-    public FilteredTableColumnModel<Property, Object> getColumnModel() {return null;}
+    public FilteredTableColumnModel<Entity, Property, Object> getColumnModel() {return null;}
     @Override
     public ColumnSummaryModel getColumnSummaryModel(final Property columnIdentifier) {return null;}
     @Override

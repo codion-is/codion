@@ -11,6 +11,7 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.StateObserver;
 import org.jminor.framework.db.condition.Condition;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.property.Property;
 
@@ -117,7 +118,7 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return a Collection containing the PropertyConditionModels available in this table condition model
    */
-  Collection<ColumnConditionModel<? extends Property>> getPropertyConditionModels();
+  Collection<ColumnConditionModel<Entity, ? extends Property>> getPropertyConditionModels();
 
   /**
    * @param propertyId the id of the property for which to retrieve the {@link ColumnConditionModel}
@@ -125,7 +126,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @throws IllegalArgumentException in case no condition model is found
    * @see #containsPropertyConditionModel(String)
    */
-  ColumnConditionModel<? extends Property> getPropertyConditionModel(String propertyId);
+  ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(String propertyId);
 
   /**
    * Clears the search state of all PropertyConditionModels, disables them and
@@ -136,14 +137,14 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return a Collection containing the filter models available in this table condition model
    */
-  Collection<ColumnConditionModel<Property>> getPropertyFilterModels();
+  Collection<ColumnConditionModel<Entity, Property>> getPropertyFilterModels();
 
   /**
    * The PropertyFilterModel associated with the property identified by {@code propertyId}
    * @param propertyId the id of the property for which to retrieve the PropertyFilterModel
    * @return the PropertyFilterModel for the property with id {@code propertyId}, null if none is found
    */
-  ColumnConditionModel<Property> getPropertyFilterModel(String propertyId);
+  ColumnConditionModel<Entity, Property> getPropertyFilterModel(String propertyId);
 
   /**
    * @param propertyId column propertyId

@@ -32,7 +32,7 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void testSetBounds() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setAutoEnable(false);
     assertFalse(model.isAutoEnable());
     model.addUpperBoundListener(upperBoundListener);
@@ -88,7 +88,7 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void testConditionType() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.addConditionTypeListener(conditionTypeListener);
     assertEquals(ConditionType.LIKE, model.getConditionType());
     model.setConditionType(ConditionType.LESS_THAN);
@@ -106,7 +106,7 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void test() throws Exception {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     assertTrue(model.isAutoEnable());
     model.setUpperBound("test");
     assertTrue(model.isEnabled());
@@ -142,35 +142,35 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void setUpperBoundLocked() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setUpperBound("test"));
   }
 
   @Test
   public void setLowerBoundLocked() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setLowerBound("test"));
   }
 
   @Test
   public void setEnabledLocked() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setEnabled(true));
   }
 
   @Test
   public void setConditionTypeLocked() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setConditionType(ConditionType.NOT_LIKE));
   }
 
   @Test
   public void include() {
-    final DefaultColumnConditionModel<String> conditionModel = new DefaultColumnConditionModel<>("test", Integer.class, "%");
+    final DefaultColumnConditionModel<String, String> conditionModel = new DefaultColumnConditionModel<>("test", Integer.class, "%");
     conditionModel.setUpperBound(10);
     conditionModel.setConditionType(ConditionType.LIKE);
     assertFalse(conditionModel.include(9));
@@ -217,7 +217,7 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void multiConditionString() {
-    final DefaultColumnConditionModel<String> conditionModel = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> conditionModel = new DefaultColumnConditionModel<>("test", String.class, "%");
 
     final Collection<String> strings = asList("abc", "def");
     conditionModel.setUpperBound(strings);

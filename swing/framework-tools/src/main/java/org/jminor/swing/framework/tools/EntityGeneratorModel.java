@@ -351,12 +351,12 @@ public final class EntityGeneratorModel {
         }
 
         @Override
-        protected Comparable getComparable(final Table rowObject, final Integer columnIdentifier) {
+        protected Comparable getComparable(final Table row, final Integer columnIdentifier) {
           if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {
-            return rowObject.getSchemaName();
+            return row.getSchemaName();
           }
           else {
-            return rowObject.getTableName();
+            return row.getTableName();
           }
         }
       }, asList(new DefaultColumnConditionModel<>(0, String.class, "%"),

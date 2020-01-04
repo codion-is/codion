@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,50 +34,64 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public final class AbstractFilteredTableModelTest {
 
-  private static final String[] ITEMS = {"a", "b", "c", "d", "e"};
+  private static final List<String> A = singletonList("a");
+  private static final List<String> B = singletonList("b");
+  private static final List<String> C = singletonList("c");
+  private static final List<String> D = singletonList("d");
+  private static final List<String> E = singletonList("e");
+  private static final List<String> F = singletonList("f");
+  private static final List<String> G = singletonList("g");
+  private static final List<String> NULL = singletonList(null);
+  private static final List<List<String>> ITEMS = asList(A, B, C, D, E);
 
   private TestAbstractFilteredTableModel tableModel;
 
-  public static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
+  private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
-    private TestAbstractFilteredTableModel(final AbstractTableSortModel<String, Integer> sortModel,
-                                           final List<ColumnConditionModel<Integer>> columnFilterModels) {
+    private TestAbstractFilteredTableModel(final AbstractTableSortModel<List<String>, Integer> sortModel,
+                                           final List<ColumnConditionModel<List<String>, Integer>> columnFilterModels) {
       super(sortModel, columnFilterModels);
     }
 
     @Override
     protected void doRefresh() {
       clear();
-      addItems(asList(ITEMS), true, true);
+      addItems(ITEMS, true, true);
     }
 
     @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
-      return getItemAt(rowIndex);
+      return getItemAt(rowIndex).get(columnIndex);
     }
 
-    public void addItemsAt(final List<String> items, final int index) {
+    public void addItemsAt(final List<List<String>> items, final int index) {
       addItems(items, index, false);
     }
   }
 
-  public static TestAbstractFilteredTableModel createTestModel() {
+  private static TestAbstractFilteredTableModel createTestModel() {
     return createTestModel(null);
   }
 
-  public static TestAbstractFilteredTableModel createTestModel(final Comparator<String> customComparator) {
+  private static TestAbstractFilteredTableModel createTestModel(final Comparator<String> customComparator) {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnConditionModel<Integer> filterModel = new DefaultColumnConditionModel<>(0, String.class, "%");
-    return new TestAbstractFilteredTableModel(new AbstractTableSortModel<String, Integer>(singletonList(column)) {
+    final ColumnConditionModel<List<String>, Integer> filterModel =
+            new DefaultColumnConditionModel<List<String>, Integer>(0, String.class, "%") {
+      @Override
+      protected Comparable getComparable(final List<String> row) {
+        return row.get(0);
+      }
+    };
+    return new TestAbstractFilteredTableModel(new AbstractTableSortModel<List<String>, Integer>(singletonList(column)) {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
         return String.class;
       }
 
       @Override
-      protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
-        return rowObject;
+      protected Comparable getComparable(final List<String> row, final Integer columnIdentifier) {
+        return row.get(columnIdentifier);
       }
 
       @Override
@@ -103,30 +118,30 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void filterContents() {
     tableModel.refresh();
-    tableModel.setIncludeCondition(item -> !item.equals("b") && !item.equals("f"));
-    assertFalse(tableModel.contains("b", false));
-    assertTrue(tableModel.contains("b", true));
-    tableModel.addItemsAt(singletonList("f"), 0);
+    tableModel.setIncludeCondition(item -> !item.equals(B) && !item.equals(F));
+    assertFalse(tableModel.contains(B, false));
+    assertTrue(tableModel.contains(B, true));
+    tableModel.addItemsAt(Collections.singletonList(F), 0);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
-    assertFalse(tableModel.contains("f", false));
-    assertTrue(tableModel.contains("f", true));
+    assertFalse(tableModel.contains(F, false));
+    assertTrue(tableModel.contains(F, true));
     tableModel.setIncludeCondition(null);
-    assertTrue(tableModel.contains("b", false));
-    assertTrue(tableModel.contains("f", false));
+    assertTrue(tableModel.contains(B, false));
+    assertTrue(tableModel.contains(F, false));
   }
 
   @Test
   public void addItemsAt() {
     tableModel.refresh();
-    tableModel.addItemsAt(asList("f", "g"), 2);
-    assertEquals(2, tableModel.indexOf("f"));
-    assertEquals(3, tableModel.indexOf("g"));
-    assertEquals(4, tableModel.indexOf("c"));
+    tableModel.addItemsAt(asList(F, G), 2);
+    assertEquals(2, tableModel.indexOf(F));
+    assertEquals(3, tableModel.indexOf(G));
+    assertEquals(4, tableModel.indexOf(C));
   }
 
   @Test
-  public void nullColumnModel() {
-    assertThrows(NullPointerException.class, () -> new AbstractFilteredTableModel<String, Integer>(null, null) {
+  public void nullSortModel() {
+    assertThrows(NullPointerException.class, () -> new AbstractFilteredTableModel<String, Integer>(null) {
       @Override
       protected void doRefresh() {}
 
@@ -166,17 +181,17 @@ public final class AbstractFilteredTableModelTest {
     tableModel.refresh();
     assertEquals(1, events.get());
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
-    tableModel.removeItem("b");
+    tableModel.removeItem(B);
     assertEquals(3, events.get());
-    assertFalse(tableModel.contains("b", false));
-    assertTrue(tableModel.contains("a", true));
-    tableModel.removeItem("a");
+    assertFalse(tableModel.contains(B, false));
+    assertTrue(tableModel.contains(A, true));
+    tableModel.removeItem(A);
     assertEquals(4, events.get());
-    assertFalse(tableModel.contains("a", true));
-    tableModel.removeItems(asList("d", "e"));
+    assertFalse(tableModel.contains(A, true));
+    tableModel.removeItems(asList(D, E));
     assertEquals(4, events.get());//no change when removing filtered items
-    assertFalse(tableModel.contains("d", false));
-    assertFalse(tableModel.contains("e", false));
+    assertFalse(tableModel.contains(D, false));
+    assertFalse(tableModel.contains(E, false));
     tableModel.removeTableDataChangedListener(listener);
   }
 
@@ -189,11 +204,11 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(1, events.get());
     tableModel.removeItems(1, 3);
     assertEquals(2, events.get());
-    assertTrue(tableModel.contains("a", true));
-    assertFalse(tableModel.contains("b", true));
-    assertFalse(tableModel.contains("c", true));
-    assertTrue(tableModel.contains("d", true));
-    assertTrue(tableModel.contains("e", true));
+    assertTrue(tableModel.contains(A, true));
+    assertFalse(tableModel.contains(B, true));
+    assertFalse(tableModel.contains(C, true));
+    assertTrue(tableModel.contains(D, true));
+    assertTrue(tableModel.contains(E, true));
     tableModel.removeTableDataChangedListener(listener);
   }
 
@@ -235,12 +250,12 @@ public final class AbstractFilteredTableModelTest {
               }
 
               @Override
-              protected Comparable getComparable(final Row rowObject, final Integer columnIdentifier) {
+              protected Comparable getComparable(final Row row, final Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
-                  return rowObject.id;
+                  return row.id;
                 }
 
-                return rowObject.value;
+                return row.value;
               }
             }, null) {
       @Override
@@ -332,12 +347,12 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void customSorting() {
-    final AbstractFilteredTableModel<String, Integer> tableModel = createTestModel(Comparator.reverseOrder());
+    final AbstractFilteredTableModel<List<String>, Integer> tableModel = createTestModel(Comparator.reverseOrder());
     tableModel.refresh();
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
-    assertEquals("e", tableModel.getItemAt(0));
+    assertEquals(E, tableModel.getItemAt(0));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
-    assertEquals("a", tableModel.getItemAt(0));
+    assertEquals(A, tableModel.getItemAt(0));
   }
 
   @Test
@@ -349,35 +364,35 @@ public final class AbstractFilteredTableModelTest {
     tableModel.refresh();
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals(SortingDirective.DESCENDING, tableModel.getSortModel().getSortingState(0).getDirective());
-    assertEquals("e", tableModel.getItemAt(0));
+    assertEquals(E, tableModel.getItemAt(0));
     assertEquals(1, actionsPerformed.get());
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals(SortingDirective.ASCENDING, tableModel.getSortModel().getSortingState(0).getDirective());
-    assertEquals("a", tableModel.getItemAt(0));
+    assertEquals(A, tableModel.getItemAt(0));
     assertEquals(0, tableModel.getSortModel().getSortingState(0).getPriority());
     assertEquals(2, actionsPerformed.get());
 
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     tableModel.refresh();
-    assertEquals("a", tableModel.getItemAt(4));
-    assertEquals("e", tableModel.getItemAt(0));
+    assertEquals(A, tableModel.getItemAt(4));
+    assertEquals(E, tableModel.getItemAt(0));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
 
-    final List<String> items = new ArrayList<>();
-    items.add(null);
+    final List<List<String>> items = new ArrayList<>();
+    items.add(NULL);
     tableModel.addItems(items, true, false);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
-    assertEquals(0, tableModel.indexOf(null));
+    assertEquals(0, tableModel.indexOf(NULL));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
-    assertEquals(tableModel.getRowCount() - 1, tableModel.indexOf(null));
+    assertEquals(tableModel.getRowCount() - 1, tableModel.indexOf(NULL));
 
     tableModel.refresh();
-    items.add(null);
+    items.add(NULL);
     tableModel.addItems(items, true, false);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
-    assertEquals(0, tableModel.indexOf(null));
+    assertEquals(0, tableModel.indexOf(NULL));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
-    assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(null));
+    assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(NULL));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.UNSORTED, false);
     tableModel.removeSortListener(listener);
   }
@@ -449,7 +464,7 @@ public final class AbstractFilteredTableModelTest {
     final AtomicInteger events = new AtomicInteger();
     final EventListener listener = events::incrementAndGet;
     final EventDataListener dataListener = Events.dataListener(listener);
-    final SwingTableSelectionModel<String> selectionModel = (SwingTableSelectionModel<String>) tableModel.getSelectionModel();
+    final SwingTableSelectionModel<List<String>> selectionModel = (SwingTableSelectionModel<List<String>>) tableModel.getSelectionModel();
     selectionModel.addSelectedIndexListener(dataListener);
     selectionModel.addSelectionChangedListener(listener);
     selectionModel.addSelectedItemListener(dataListener);
@@ -502,15 +517,15 @@ public final class AbstractFilteredTableModelTest {
     assertFalse(selectionModel.getMultipleSelectionObserver().get());
     assertEquals(0, selectionModel.getSelectedItems().size());
 
-    selectionModel.setSelectedItem(ITEMS[0]);
+    selectionModel.setSelectedItem(ITEMS.get(0));
     assertFalse(selectionModel.getMultipleSelectionObserver().get());
-    assertEquals(ITEMS[0], selectionModel.getSelectedItem());
+    assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
     assertEquals(0, selectionModel.getSelectedIndex());
     assertEquals(1, selectionModel.getSelectionCount());
     assertFalse(selectionModel.isSelectionEmpty());
     selectionModel.addSelectedIndex(1);
     assertTrue(selectionModel.getMultipleSelectionObserver().get());
-    assertEquals(ITEMS[0], selectionModel.getSelectedItem());
+    assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
     assertEquals(asList(0, 1), selectionModel.getSelectedIndexes());
     assertEquals(0, selectionModel.getSelectedIndex());
     selectionModel.addSelectedIndex(4);
@@ -551,25 +566,25 @@ public final class AbstractFilteredTableModelTest {
     selectionModel.removeSelectedIndex(4);
     assertEquals(-1, selectionModel.getMinSelectionIndex());
 
-    selectionModel.addSelectedItem(ITEMS[0]);
+    selectionModel.addSelectedItem(ITEMS.get(0));
     assertEquals(1, selectionModel.getSelectionCount());
     assertEquals(0, selectionModel.getMinSelectionIndex());
-    selectionModel.addSelectedItems(asList(ITEMS[1], ITEMS[2]));
+    selectionModel.addSelectedItems(asList(ITEMS.get(1), ITEMS.get(2)));
     assertEquals(3, selectionModel.getSelectionCount());
     assertEquals(0, selectionModel.getMinSelectionIndex());
-    selectionModel.removeSelectedItem(ITEMS[1]);
+    selectionModel.removeSelectedItem(ITEMS.get(1));
     assertEquals(2, selectionModel.getSelectionCount());
     assertEquals(0, selectionModel.getMinSelectionIndex());
-    selectionModel.removeSelectedItem(ITEMS[2]);
+    selectionModel.removeSelectedItem(ITEMS.get(2));
     assertEquals(1, selectionModel.getSelectionCount());
     assertEquals(0, selectionModel.getMinSelectionIndex());
-    selectionModel.addSelectedItems(asList(ITEMS[1], ITEMS[2]));
+    selectionModel.addSelectedItems(asList(ITEMS.get(1), ITEMS.get(2)));
     assertEquals(3, selectionModel.getSelectionCount());
     assertEquals(0, selectionModel.getMinSelectionIndex());
-    selectionModel.addSelectedItem(ITEMS[4]);
+    selectionModel.addSelectedItem(ITEMS.get(4));
     assertEquals(4, selectionModel.getSelectionCount());
     assertEquals(0, selectionModel.getMinSelectionIndex());
-    tableModel.removeItem(ITEMS[0]);
+    tableModel.removeItem(ITEMS.get(0));
     assertEquals(3, selectionModel.getSelectionCount());
     assertEquals(0, selectionModel.getMinSelectionIndex());
 
@@ -590,7 +605,7 @@ public final class AbstractFilteredTableModelTest {
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
     //test selection and filtering together
-    final SwingTableSelectionModel<String> selectionModel = (SwingTableSelectionModel<String>) tableModel.getSelectionModel();
+    final SwingTableSelectionModel<List<String>> selectionModel = (SwingTableSelectionModel<List<String>>) tableModel.getSelectionModel();
     tableModel.getSelectionModel().addSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
 
@@ -599,21 +614,21 @@ public final class AbstractFilteredTableModelTest {
 
     selectionModel.setSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
-    assertEquals(ITEMS[2], selectionModel.getSelectedItem());
+    assertEquals(ITEMS.get(2), selectionModel.getSelectedItem());
 
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
-    assertEquals(ITEMS[2], selectionModel.getSelectedItem());
+    assertEquals(ITEMS.get(2), selectionModel.getSelectedItem());
     assertEquals(2, selectionModel.getMinSelectionIndex());
 
     tableModel.getSelectionModel().setSelectedIndexes(singletonList(0));
-    assertEquals(ITEMS[0], selectionModel.getSelectedItem());
+    assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals(4, selectionModel.getMinSelectionIndex());
 
     assertEquals(singletonList(4), selectionModel.getSelectedIndexes());
-    assertEquals(ITEMS[0], selectionModel.getSelectedItem());
+    assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
     assertEquals(4, selectionModel.getMinSelectionIndex());
-    assertEquals(ITEMS[0], selectionModel.getSelectedItem());
+    assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
   }
 
   @Test
@@ -627,7 +642,7 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(singletonList(0), tableModel.getSelectionModel().getSelectedIndexes());
     tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
     assertEquals(0, ((SwingTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
-    assertEquals(ITEMS[3], tableModel.getSelectionModel().getSelectedItem());
+    assertEquals(ITEMS.get(3), tableModel.getSelectionModel().getSelectedItem());
   }
 
   @Test
@@ -646,11 +661,11 @@ public final class AbstractFilteredTableModelTest {
   public void filterAndRemove() {
     tableModel.refresh();
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
-    assertTrue(tableModel.contains("b", true));
-    tableModel.removeItem("b");
-    assertFalse(tableModel.contains("b", true));
-    tableModel.removeItem("a");
-    assertFalse(tableModel.contains("a", true));
+    assertTrue(tableModel.contains(B, true));
+    tableModel.removeItem(B);
+    assertFalse(tableModel.contains(B, true));
+    tableModel.removeItem(A);
+    assertFalse(tableModel.contains(A, true));
   }
 
   @Test
@@ -664,14 +679,14 @@ public final class AbstractFilteredTableModelTest {
     assertNotNull(tableModel.getIncludeCondition());
 
     //test filters
-    assertTrue(tableModel.contains("b", false));
+    assertTrue(tableModel.contains(B, false));
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
     assertEquals(2, done.get());
-    assertTrue(tableModel.isVisible("a"));
-    assertFalse(tableModel.isVisible("b"));
-    assertTrue(tableModel.isFiltered("d"));
-    assertFalse(tableModel.contains("b", false));
-    assertTrue(tableModel.contains("b", true));
+    assertTrue(tableModel.isVisible(A));
+    assertFalse(tableModel.isVisible(B));
+    assertTrue(tableModel.isFiltered(D));
+    assertFalse(tableModel.contains(B, false));
+    assertTrue(tableModel.contains(B, true));
     assertTrue(tableModel.getColumnModel().getColumnFilterModel(0).isEnabled());
     assertEquals(4, tableModel.getFilteredItemCount());
     assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
@@ -698,7 +713,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("b");
     final int rowCount = tableModel.getRowCount();
-    tableModel.addItems(singletonList("x"), true, false);
+    tableModel.addItems(singletonList(singletonList("x")), true, false);
     assertEquals(rowCount, tableModel.getRowCount());
 
     tableModel.removeFilteringListener(listener);
@@ -734,10 +749,10 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(String.class, tableModel.getColumnClass(0));
   }
 
-  private static boolean tableModelContainsAll(final String[] strings, final boolean includeFiltered,
-                                               final AbstractFilteredTableModel<String, Integer> model) {
-    for (final String string : strings) {
-      if (!model.contains(string, includeFiltered)) {
+  private static boolean tableModelContainsAll(final List<List<String>> rows, final boolean includeFiltered,
+                                               final AbstractFilteredTableModel<List<String>, Integer> model) {
+    for (final List<String> row : rows) {
+      if (!model.contains(row, includeFiltered)) {
         return false;
       }
     }

@@ -61,9 +61,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A UI implementation for ColumnConditionModel
+ * @param <R> the type of rows
  * @param <C> the type of objects used to identify columns
  */
-public class ColumnConditionPanel<C> extends JPanel {
+public class ColumnConditionPanel<R, C> extends JPanel {
 
   public static final int DEFAULT_FIELD_COLUMNS = 4;
 
@@ -72,7 +73,7 @@ public class ColumnConditionPanel<C> extends JPanel {
   /**
    * The ColumnConditionModel this ColumnConditionPanel represents
    */
-  private final ColumnConditionModel<C> conditionModel;
+  private final ColumnConditionModel<R, C> conditionModel;
 
   /**
    * The search types allowed in this model
@@ -106,7 +107,7 @@ public class ColumnConditionPanel<C> extends JPanel {
    * @param includeToggleEnabledButton if true an activation button is included
    * @param includeToggleAdvancedConditionButton if true an advanced toggle button is included
    */
-  public ColumnConditionPanel(final ColumnConditionModel<C> conditionModel, final boolean includeToggleEnabledButton,
+  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton) {
     this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton, ConditionType.values());
   }
@@ -118,7 +119,7 @@ public class ColumnConditionPanel<C> extends JPanel {
    * @param includeToggleAdvancedConditionButton if true an advanced toggle button is include
    * @param conditionTypes the search types available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<C> conditionModel, final boolean includeToggleEnabledButton,
+  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton, final ConditionType... conditionTypes) {
     this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton, new DefaultInputFieldProvider(conditionModel), conditionTypes);
   }
@@ -131,7 +132,7 @@ public class ColumnConditionPanel<C> extends JPanel {
    * @param inputFieldProvider the input field provider
    * @param conditionTypes the search types available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<C> conditionModel, final boolean includeToggleEnabledButton,
+  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton, final InputFieldProvider inputFieldProvider,
                               final ConditionType... conditionTypes) {
     this(conditionModel, includeToggleEnabledButton, includeToggleAdvancedConditionButton,
@@ -148,7 +149,7 @@ public class ColumnConditionPanel<C> extends JPanel {
    * @param lowerBoundField the lower bound input field
    * @param conditionTypes the search types available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<C> conditionModel, final boolean includeToggleEnabledButton,
+  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton, final JComponent upperBoundField,
                               final JComponent lowerBoundField, final ConditionType... conditionTypes) {
     requireNonNull(conditionModel, "conditionModel");
@@ -181,7 +182,7 @@ public class ColumnConditionPanel<C> extends JPanel {
   /**
    * @return the condition model this panel uses
    */
-  public final ColumnConditionModel<C> getConditionModel() {
+  public final ColumnConditionModel<R, C> getModel() {
     return this.conditionModel;
   }
 
