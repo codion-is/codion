@@ -8,6 +8,9 @@ import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.state.StateObserver;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -320,6 +323,32 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Object remove(String propertyId);
 
   /**
+   * @return a StateObserver indicating if one or more values in this Entity have been modified.
+   */
+  StateObserver getModifiedObserver();
+
+  /**
+   * Returns an EventObserver notified each time a value changes, with a {@link ValueChange} argument.
+   * @return an EventObserver notified when a value changes.
+   * @see ValueChange
+   */
+  EventObserver<ValueChange> getValueObserver();
+
+  /**
+   * Adds a listener notified each time a value changes
+   * Adding the same listener multiple times has no effect.
+   * @param valueListener the listener
+   * @see ValueChange
+   */
+  void addValueListener(EventDataListener<ValueChange> valueListener);
+
+  /**
+   * Removes the given value listener if it has been registered with this Entity.
+   * @param valueListener the listener to remove
+   */
+  void removeValueListener(EventDataListener valueListener);
+
+  /**
    * A class representing a primary key.
    */
   interface Key extends ValueMap<ColumnProperty, Object>, Serializable {
@@ -454,5 +483,31 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return a query condition string
      */
     String getConditionString(List<String> propertyIds, List values);
+  }
+
+  /**
+   * Represents a change in a {@link Entity} value.
+   */
+  interface ValueChange {
+
+    /**
+     * @return the Property associated with the changed value
+     */
+    Property getProperty();
+
+    /**
+     * @return the previous value
+     */
+    Object getPreviousValue();
+
+    /**
+     * @return the current value
+     */
+    Object getCurrentValue();
+
+    /**
+     * @return true if the property had no associated value prior to this value change
+     */
+    boolean isInitialization();
   }
 }

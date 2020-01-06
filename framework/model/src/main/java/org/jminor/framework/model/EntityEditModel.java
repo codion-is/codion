@@ -5,7 +5,6 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -572,7 +571,7 @@ public interface EntityEditModel extends Refreshable {
    * @param propertyId the ID of the property for which to retrieve the event
    * @return an EventObserver notified when the value of the given property changes
    */
-  EventObserver<ValueChange<Property, Object>> getValueObserver(String propertyId);
+  EventObserver<Entity.ValueChange> getValueObserver(String propertyId);
 
   /**
    * Adds a listener notified each time the value associated with the given property is edited via
@@ -581,7 +580,7 @@ public interface EntityEditModel extends Refreshable {
    * @param propertyId the ID of the property for which to monitor value edits
    * @param listener a listener notified each time the value of the given property is edited via this model
    */
-  void addValueEditListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
+  void addValueEditListener(String propertyId, EventDataListener<Entity.ValueChange> listener);
 
   /**
    * Removes the given listener.
@@ -597,7 +596,7 @@ public interface EntityEditModel extends Refreshable {
    * @param listener a listener notified each time the value of the property identified by {@code propertyId} changes
    * @see #setEntity(Entity)
    */
-  void addValueListener(String propertyId, EventDataListener<ValueChange<Property, Object>> listener);
+  void addValueListener(String propertyId, EventDataListener<Entity.ValueChange> listener);
 
   /**
    * Removes the given listener.

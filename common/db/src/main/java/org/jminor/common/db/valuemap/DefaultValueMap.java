@@ -4,13 +4,6 @@
 package org.jminor.common.db.valuemap;
 
 import org.jminor.common.Util;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.event.Events;
-import org.jminor.common.state.State;
-import org.jminor.common.state.StateObserver;
-import org.jminor.common.state.States;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,7 +14,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.db.valuemap.ValueChanges.valueChange;
 
 /**
  * A default ValueMap implementation.
@@ -40,11 +32,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * Holds the original value for keys which values have changed since they were first set.
    */
   private Map<K, V> originalValues;
-
-  /**
-   * Fired when a value changes, null until initialized by a call to getValueChangedEvent().
-   */
-  private Event<ValueChange<K, V>> valueChangedEvent;
 
   private static final int MAGIC_NUMBER = 23;
 
@@ -92,9 +79,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
       updateOriginalValue(key, newValue, previousValue);
     }
     handlePut(key, newValue, previousValue);
-    if (valueChangedEvent != null) {
-      notifyValueChange(key, newValue, previousValue, initialization);
-    }
+    valueChanged(key, newValue, previousValue, initialization);
 
     return previousValue;
   }
@@ -152,9 +137,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (values.containsKey(key)) {
       final V value = values.remove(key);
       removeOriginalValue(key);
-      if (valueChangedEvent != null) {
-        notifyValueChange(key, null, value, false);
-      }
+      valueChanged(key, null, value, false);
 
       return value;
     }
@@ -237,7 +220,9 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
         }
       }
     }
-    notifyInitialized(affectedKeys);
+    for (final K key : affectedKeys) {
+      valueChanged(key, values.get(key), null, true);
+    }
   }
 
   /** {@inheritDoc} */
@@ -274,37 +259,8 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     originalValues = null;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final void addValueListener(final EventDataListener<ValueChange<K, V>> valueListener) {
-    getValueObserver().addDataListener(valueListener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeValueListener(final EventDataListener valueListener) {
-    if (valueChangedEvent != null) {
-      valueChangedEvent.removeDataListener(valueListener);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final StateObserver getModifiedObserver() {
-    final State state = States.state(isModified());
-    getValueObserver().addDataListener(valueChange -> state.set(isModified()));
-
-    return state.getObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EventObserver<ValueChange<K, V>> getValueObserver() {
-    return getValueChangedEvent().getObserver();
-  }
-
   /**
-   * Validates the value for the given key
+   * Validates the value for the given key, note that this default implementation does nothing, provided for subclasses.
    * @param key the key
    * @param value the value to validate
    * @return the value
@@ -314,10 +270,15 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     return value;
   }
 
-  protected final void notifyValueChange(final K key, final V currentValue, final V previousValue,
-                                         final boolean initialization) {
-    valueChangedEvent.onEvent(valueChange(key, currentValue, previousValue, initialization));
-  }
+  /**
+   * Called when a value changes, note that this default implementation does nothing, provided for subclasses.
+   * @param key the key of the value that is changing
+   * @param currentValue the new value
+   * @param previousValue the previous value, if any
+   * @param initialization true if the value is being initialized, that is, no previous value exists
+   */
+  protected void valueChanged(final K key, final V currentValue, final V previousValue,
+                              final boolean initialization) {}
 
   protected final void setOriginalValue(final K key, final V previousValue) {
     if (originalValues == null) {
@@ -348,11 +309,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    */
   protected void handleClear() {/*Provided for subclasses*/}
 
-  /**
-   * Called after the valueChangeEvent has been initialized, via the first call to {@link #getValueChangedEvent()}
-   */
-  protected void handleValueChangedEventInitialized() {/*Provided for subclasses*/}
-
   private void updateOriginalValue(final K key, final V value, final V previousValue) {
     final boolean modified = isModified(key);
     if (modified && Objects.equals(getOriginal(key), value)) {
@@ -361,23 +317,5 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     else if (!modified) {//only the first original value is kept
       setOriginalValue(key, previousValue);
     }
-  }
-
-  private void notifyInitialized(final Set<K> valueKeys) {
-    if (valueChangedEvent != null) {
-      for (final K key : valueKeys) {
-        final V value = values.get(key);
-        valueChangedEvent.onEvent(valueChange(key, value, null, true));
-      }
-    }
-  }
-
-  private Event<ValueChange<K, V>> getValueChangedEvent() {
-    if (valueChangedEvent == null) {
-      valueChangedEvent = Events.event();
-      handleValueChangedEventInitialized();
-    }
-
-    return valueChangedEvent;
   }
 }

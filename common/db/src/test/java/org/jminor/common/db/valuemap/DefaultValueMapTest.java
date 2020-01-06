@@ -5,13 +5,11 @@ package org.jminor.common.db.valuemap;
 
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
-import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,18 +50,6 @@ public class DefaultValueMapTest {
     assertEquals(0, map.size());
 
     final ValueMap<String, Integer> valueMap = new DefaultValueMap<>();
-
-    final EventDataListener<ValueChange<String, Integer>> valueListener = valueChange -> {
-      assertEquals(attr1, valueChange.getKey());
-      valueChange.toString();
-      valueChange.getPreviousValue();
-      valueChange.getCurrentValue();
-      valueChange.isInitialization();
-    };
-    valueMap.addValueListener(valueListener);
-
-    valueMap.getModifiedObserver();
-    valueMap.getValueObserver();
 
     assertFalse(valueMap.containsKey(attr1));
     assertTrue(valueMap.originalKeySet().isEmpty());
@@ -124,27 +110,6 @@ public class DefaultValueMapTest {
     valueMap.saveAll();
     assertFalse(valueMap.isModified());
     assertFalse(valueMap.isModified(attr1));
-
-    valueMap.removeValueListener(valueListener);
-    valueMap.removeValueListener(null);
-  }
-
-  @Test
-  public void valueChangeInitialization() {
-    ValueMap<String, String> valueMap = new DefaultValueMap<>();
-
-    valueMap.addValueListener(valueChange -> assertTrue(valueChange.isInitialization()));
-    valueMap.put("one", "one");
-    valueMap.put("two", "two");
-
-    final Map<String, String> values = new HashMap<>();
-    values.put("one", "one");
-    values.put("two", "two");
-
-    valueMap = new DefaultValueMap<>(values, null);
-    valueMap.addValueListener(valueChange -> assertFalse(valueChange.isInitialization()));
-    valueMap.put("one", "two");
-    valueMap.put("two", "three");
   }
 
   @Test
@@ -154,7 +119,6 @@ public class DefaultValueMapTest {
     final String three = "three";
 
     final ValueMap<String, String> dest = new DefaultValueMap<>();
-    dest.getValueObserver();
 
     final ValueMap<String, String> source = new DefaultValueMap<>();
     source.put(one, "1");
@@ -185,8 +149,6 @@ public class DefaultValueMapTest {
   public void equals() {
     final ValueMap<String, Integer> mapOne = new DefaultValueMap<>();
     final ValueMap<String, Integer> mapTwo = new DefaultValueMap<>();
-    mapOne.getValueObserver();
-    mapTwo.getValueObserver();
 
     final String one = "one";
     final String two = "two";

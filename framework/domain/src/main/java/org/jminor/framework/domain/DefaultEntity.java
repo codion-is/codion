@@ -5,6 +5,13 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.ValueMap;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.Events;
+import org.jminor.common.state.State;
+import org.jminor.common.state.StateObserver;
+import org.jminor.common.state.States;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -33,6 +40,7 @@ import java.util.Set;
 
 import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.framework.domain.ValueChanges.valueChange;
 
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
@@ -66,6 +74,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * The primary key of this entity
    */
   private Key key;
+
+  /**
+   * Fired when a value changes, null until initialized by a call to getValueChangedEvent().
+   */
+  private Event<ValueChange> valueChangedEvent;
 
   /**
    * Instantiates a new DefaultEntity
@@ -521,24 +534,39 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  protected void handleClear() {
-    key = null;
-    referencedKeyCache = null;
-    toString = null;
+  public void addValueListener(final EventDataListener<ValueChange> valueListener) {
+    getValueObserver().addDataListener(valueListener);
   }
 
   /** {@inheritDoc} */
   @Override
-  protected void handleValueChangedEventInitialized() {
-    if (definition.hasDerivedProperties()) {
-      addValueListener(valueChange -> {
-        final Collection<DerivedProperty> derivedProperties = definition.getDerivedProperties(valueChange.getKey().getPropertyId());
-        for (final DerivedProperty derivedProperty : derivedProperties) {
-          final Object derivedValue = getDerivedValue(derivedProperty);
-          notifyValueChange(derivedProperty, derivedValue, derivedValue, false);
-        }
-      });
+  public void removeValueListener(final EventDataListener valueListener) {
+    if (valueChangedEvent != null) {
+      valueChangedEvent.removeDataListener(valueListener);
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public StateObserver getModifiedObserver() {
+    final State state = States.state(isModified());
+    getValueObserver().addDataListener(valueChange -> state.set(isModified()));
+
+    return state.getObserver();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public EventObserver<ValueChange> getValueObserver() {
+    return getValueChangedEvent().getObserver();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected void handleClear() {
+    key = null;
+    referencedKeyCache = null;
+    toString = null;
   }
 
   /** {@inheritDoc} */
@@ -570,6 +598,28 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     return property.prepareValue(property.validateType(value));
+  }
+
+  /**
+   * Called when a value changes.
+   * @param key the key of the value that is changing
+   * @param currentValue the new value
+   * @param previousValue the previous value, if any
+   * @param initialization true if the value is being initialized, that is, no previous value exists
+   * @see #addValueListener(EventDataListener)
+   */
+  @Override
+  protected void valueChanged(final Property key, final Object currentValue, final Object previousValue, final boolean initialization) {
+    if (valueChangedEvent != null) {
+      valueChangedEvent.onEvent(valueChange(key, currentValue, previousValue, initialization));
+      if (definition.hasDerivedProperties()) {
+        final Collection<DerivedProperty> derivedProperties = definition.getDerivedProperties(key.getPropertyId());
+        for (final DerivedProperty derivedProperty : derivedProperties) {
+          final Object derivedValue = getDerivedValue(derivedProperty);
+          valueChangedEvent.onEvent(valueChange(derivedProperty, derivedValue, derivedValue, false));
+        }
+      }
+    }
   }
 
   private void propagateForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
@@ -780,6 +830,14 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     return false;
+  }
+
+  private Event<ValueChange> getValueChangedEvent() {
+    if (valueChangedEvent == null) {
+      valueChangedEvent = Events.event();
+    }
+
+    return valueChangedEvent;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

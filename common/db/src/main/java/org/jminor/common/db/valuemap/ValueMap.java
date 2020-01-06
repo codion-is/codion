@@ -4,10 +4,7 @@
 package org.jminor.common.db.valuemap;
 
 import org.jminor.common.db.valuemap.exception.ValidationException;
-import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.state.StateObserver;
 
 import java.util.Set;
 
@@ -142,32 +139,6 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * This value map will be unmodified after a call to this method.
    */
   void saveAll();
-
-  /**
-   * @return a StateObserver indicating if one or more values in this value map have been modified.
-   */
-  StateObserver getModifiedObserver();
-
-  /**
-   * Returns an EventObserver notified each time a value changes, with a {@link ValueChange} argument.
-   * @return an EventObserver notified when a value changes.
-   * @see ValueChange
-   */
-  EventObserver<ValueChange<K, V>> getValueObserver();
-
-  /**
-   * Adds a listener notified each time a value changes
-   * Adding the same listener multiple times has no effect.
-   * @param valueListener the listener
-   * @see ValueChange
-   */
-  void addValueListener(EventDataListener<ValueChange<K, V>> valueListener);
-
-  /**
-   * Removes the given value listener if it has been registered with this value map.
-   * @param valueListener the listener to remove
-   */
-  void removeValueListener(EventDataListener valueListener);
 
   /**
    * A validator for ValueMaps
