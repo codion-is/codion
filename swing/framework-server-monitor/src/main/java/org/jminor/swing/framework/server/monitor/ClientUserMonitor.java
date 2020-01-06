@@ -213,7 +213,7 @@ public final class ClientUserMonitor {
   private final class UserHistoryTableModel extends AbstractFilteredTableModel<UserInfo, Integer> {
 
     private UserHistoryTableModel() {
-      super(new UserHistoryTableSortModel(), null);
+      super(new UserHistoryTableSortModel());
     }
 
     @Override
@@ -374,15 +374,15 @@ public final class ClientUserMonitor {
     }
 
     @Override
-    protected Comparable getComparable(final UserInfo rowObject, final Integer columnIdentifier) {
+    protected Comparable getComparable(final UserInfo row, final Integer columnIdentifier) {
       switch (columnIdentifier) {
-        case USERNAME_COLUMN: return rowObject.getUser().getUsername();
-        case CLIENT_TYPE_COLUMN: return rowObject.getClientTypeId();
-        case CLIENT_VERSION_COLUMN: return rowObject.getClientVersion();
-        case FRAMEWORK_VERSION_COLUMN: return rowObject.getFrameworkVersion();
-        case CLIENT_HOST_COLUMN: return rowObject.getClientHost();
-        case LAST_SEEN_COLUMN: return rowObject.getLastSeen();
-        case CONNECTION_COUNT_COLUMN: return rowObject.getConnectionCount();
+        case USERNAME_COLUMN: return row.getUser().getUsername();
+        case CLIENT_TYPE_COLUMN: return row.getClientTypeId();
+        case CLIENT_VERSION_COLUMN: return row.getClientVersion();
+        case FRAMEWORK_VERSION_COLUMN: return row.getFrameworkVersion();
+        case CLIENT_HOST_COLUMN: return row.getClientHost();
+        case LAST_SEEN_COLUMN: return row.getLastSeen();
+        case CONNECTION_COUNT_COLUMN: return row.getConnectionCount();
         default: throw new IllegalArgumentException(columnIdentifier.toString());
       }
     }

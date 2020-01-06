@@ -5,6 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 
@@ -15,13 +16,13 @@ import javax.swing.SwingConstants;
 /**
  * A column condition panel based on the Property class.
  */
-public final class PropertyConditionPanel extends ColumnConditionPanel<ColumnProperty> {
+public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, ColumnProperty> {
 
   /**
    * Instantiates a new PropertyConditionPanel.
    * @param model the model to base this panel on
    */
-  public PropertyConditionPanel(final ColumnConditionModel<ColumnProperty> model) {
+  public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty> model) {
     this(model, false, false);
   }
 
@@ -31,13 +32,13 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<ColumnPro
    * @param includeToggleEnabledButton if true an activation button is included
    * @param includeToggleAdvancedConditionButton if true an advanced toggle button is included
    */
-  public PropertyConditionPanel(final ColumnConditionModel<ColumnProperty> model,
+  public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty> model,
                                 final boolean includeToggleEnabledButton, final boolean includeToggleAdvancedConditionButton) {
     super(model, includeToggleEnabledButton, includeToggleAdvancedConditionButton,
             new PropertyInputFieldProvider(model), getConditionTypes(model));
   }
 
-  private static ConditionType[] getConditionTypes(final ColumnConditionModel<ColumnProperty> model) {
+  private static ConditionType[] getConditionTypes(final ColumnConditionModel<Entity, ColumnProperty> model) {
     if (model.getColumnIdentifier().isBoolean()) {
       return new ConditionType[] {ConditionType.LIKE};
     }
@@ -47,9 +48,9 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<ColumnPro
 
   private static final class PropertyInputFieldProvider implements InputFieldProvider {
 
-    private final ColumnConditionModel<ColumnProperty> model;
+    private final ColumnConditionModel<Entity, ColumnProperty> model;
 
-    private PropertyInputFieldProvider(final ColumnConditionModel<ColumnProperty> model) {
+    private PropertyInputFieldProvider(final ColumnConditionModel<Entity, ColumnProperty> model) {
       this.model = model;
     }
 

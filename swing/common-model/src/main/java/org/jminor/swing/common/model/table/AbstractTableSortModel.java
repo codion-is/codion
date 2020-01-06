@@ -120,13 +120,12 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   /**
-   * Returns a Comparable instance for the given rowObject and columnIdentifier, used when sorting
-   * @param rowObject the object representing a given row
+   * Returns a Comparable instance for the given row and columnIdentifier, used when sorting
+   * @param row the object representing a given row
    * @param columnIdentifier the column identifier
    * @return a Comparable for the given row and column
-   * @see #sort(java.util.List)
    */
-  protected abstract Comparable getComparable(R rowObject, C columnIdentifier);
+  protected abstract Comparable getComparable(R row, C columnIdentifier);
 
   /**
    * Initializes a comparator used when sorting by the give column,

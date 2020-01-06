@@ -28,9 +28,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A TableColumnModel handling hidden columns
+ * @param <R> the table model row type
  * @param <C> the type of column identifier
  */
-public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C, TableColumn> {
+public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel implements FilteredTableColumnModel<R, C, TableColumn> {
 
   private final Event<C> columnHiddenEvent = Events.event();
   private final Event<C> columnShownEvent = Events.event();
@@ -48,7 +49,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
   /**
    * The ColumnConditionModels used for filtering
    */
-  private final Map<C, ColumnConditionModel<C>> columnFilterModels = new HashMap<>();
+  private final Map<C, ColumnConditionModel<R, C>> columnFilterModels = new HashMap<>();
 
   /**
    * Caches the column indexes in the model
@@ -62,7 +63,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
    * @param columnFilterModels the filter models if any
    */
   public SwingFilteredTableColumnModel(final List<TableColumn> columns,
-                                       final Collection<? extends ColumnConditionModel<C>> columnFilterModels) {
+                                       final Collection<? extends ColumnConditionModel<R, C>> columnFilterModels) {
     if (columns == null || columns.isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
@@ -73,7 +74,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
       addColumn(column);
     }
     if (columnFilterModels != null) {
-      for (final ColumnConditionModel<C> columnFilterModel : columnFilterModels) {
+      for (final ColumnConditionModel<R, C> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
       }
     }
@@ -141,34 +142,36 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
 
   /** {@inheritDoc} */
   @Override
-  public final TableColumn getTableColumn(final C identifier) {
-    requireNonNull(identifier, "identifier");
+  public final TableColumn getTableColumn(final C columnIdentifier) {
+    requireNonNull(columnIdentifier, "columnIdentifier");
     for (final TableColumn column : columns) {
-      if (identifier.equals(column.getIdentifier())) {
+      if (columnIdentifier.equals(column.getIdentifier())) {
         return column;
       }
     }
 
-    throw new IllegalArgumentException("Column not found: " + identifier);
+    throw new IllegalArgumentException("Column not found: " + columnIdentifier);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean containsColumn(final C identifier) {
-    requireNonNull(identifier, "identifier");
+  public final boolean containsColumn(final C columnIdentifier) {
+    requireNonNull(columnIdentifier, "columnIdentifier");
 
-    return columns.stream().anyMatch(column -> identifier.equals(column.getIdentifier()));
+    return columns.stream().anyMatch(column -> columnIdentifier.equals(column.getIdentifier()));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final ColumnConditionModel<C> getColumnFilterModel(final C columnIdentifier) {
+  public final ColumnConditionModel<R, C> getColumnFilterModel(final C columnIdentifier) {
+    requireNonNull(columnIdentifier, "columnIdentifier");
+
     return columnFilterModels.get(columnIdentifier);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<ColumnConditionModel<C>> getColumnFilterModels() {
+  public final Collection<ColumnConditionModel<R, C>> getColumnFilterModels() {
     return columnFilterModels.values();
   }
 

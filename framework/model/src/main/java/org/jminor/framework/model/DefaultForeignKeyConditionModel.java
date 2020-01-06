@@ -17,7 +17,7 @@ import static java.util.Collections.singletonList;
 /**
  * A default ForeignKeyConditionModel implementation.
  */
-public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel<ForeignKeyProperty>
+public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel<Entity, ForeignKeyProperty>
         implements ForeignKeyConditionModel {
 
   private final EntityLookupModel entityLookupModel;

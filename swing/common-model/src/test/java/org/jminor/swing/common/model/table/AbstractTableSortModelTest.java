@@ -86,8 +86,8 @@ public class AbstractTableSortModelTest {
       }
 
       @Override
-      protected Comparable getComparable(final ArrayList rowObject, final Integer columnIdentifier) {
-        return rowObject.toString();
+      protected Comparable getComparable(final ArrayList row, final Integer columnIdentifier) {
+        return row.toString();
       }
     };
     final List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
@@ -136,14 +136,14 @@ public class AbstractTableSortModelTest {
     }
 
     @Override
-    protected Comparable getComparable(final Row rowObject, final Integer columnIdentifier) {
+    protected Comparable getComparable(final Row row, final Integer columnIdentifier) {
       switch (columnIdentifier) {
         case 0:
-          return rowObject.firstValue;
+          return row.firstValue;
         case 1:
-          return rowObject.secondValue.toString();
+          return row.secondValue.toString();
         case 2:
-          return rowObject.thirdValue;
+          return row.thirdValue;
         default:
           return null;
       }

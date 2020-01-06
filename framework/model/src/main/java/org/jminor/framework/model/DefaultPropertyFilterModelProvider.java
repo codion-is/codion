@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.Property;
 
 /**
@@ -13,7 +14,7 @@ public class DefaultPropertyFilterModelProvider implements PropertyFilterModelPr
 
   /** {@inheritDoc} */
   @Override
-  public ColumnConditionModel<Property> initializePropertyFilterModel(final Property property) {
+  public ColumnConditionModel<Entity, Property> initializePropertyFilterModel(final Property property) {
     return new DefaultPropertyFilterModel(property);
   }
 }

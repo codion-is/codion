@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.Property;
 
 /**
@@ -16,5 +17,5 @@ public interface PropertyFilterModelProvider {
    * @param property the Property for which to initialize a ColumnConditionModel
    * @return a ColumnConditionModel for the given property
    */
-  ColumnConditionModel<Property> initializePropertyFilterModel(Property property);
+  ColumnConditionModel<Entity, Property> initializePropertyFilterModel(Property property);
 }

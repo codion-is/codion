@@ -13,7 +13,7 @@ import java.util.Collection;
 /**
  * A condition model based on foreign key properties, using one or more {@link Entity} instances as condition values.
  */
-public interface ForeignKeyConditionModel extends ColumnConditionModel<ForeignKeyProperty>, Refreshable {
+public interface ForeignKeyConditionModel extends ColumnConditionModel<Entity, ForeignKeyProperty>, Refreshable {
 
   /**
    * @return the EntityLookupModel used by this ForeignKeyConditionModel, if any

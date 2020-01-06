@@ -311,7 +311,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void noVisibleColumns() {
-    assertThrows(IllegalStateException.class, this::createMasterTableModel);
+    assertThrows(IllegalArgumentException.class, this::createMasterTableModel);
   }
 
   @Test

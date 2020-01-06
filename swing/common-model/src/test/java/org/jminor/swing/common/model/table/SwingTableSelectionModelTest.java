@@ -27,11 +27,11 @@ public class SwingTableSelectionModelTest {
       }
 
       @Override
-      protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
-        return rowObject;
+      protected Comparable getComparable(final String row, final Integer columnIdentifier) {
+        return row;
       }
     };
-    final AbstractFilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(sortModel, null) {
+    final AbstractFilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(sortModel) {
       @Override
       protected void doRefresh() {
         clear();

@@ -77,7 +77,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The TableColumnModel
    */
-  private final SwingFilteredTableColumnModel<C> columnModel;
+  private final SwingFilteredTableColumnModel<R, C> columnModel;
 
   /**
    * The sort model
@@ -102,11 +102,20 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * Instantiates a new table model.
    * @param sortModel the sort model to use
+   * @throws NullPointerException in case {@code sortModel} is null
+   */
+  public AbstractFilteredTableModel(final TableSortModel<R, C, TableColumn> sortModel) {
+    this(sortModel, null);
+  }
+
+  /**
+   * Instantiates a new table model.
+   * @param sortModel the sort model to use
    * @param columnFilterModels the column filter models
-   * @throws NullPointerException in case {@code columnModel} is null
+   * @throws NullPointerException in case {@code sortModel} is null
    */
   public AbstractFilteredTableModel(final TableSortModel<R, C, TableColumn> sortModel,
-                                    final Collection<? extends ColumnConditionModel<C>> columnFilterModels) {
+                                    final Collection<? extends ColumnConditionModel<R, C>> columnFilterModels) {
     this.sortModel = requireNonNull(sortModel, "sortModel");
     this.columnModel = new SwingFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
     this.selectionModel = new SwingTableSelectionModel<>(this);
@@ -406,7 +415,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final SwingFilteredTableColumnModel<C> getColumnModel() {
+  public final SwingFilteredTableColumnModel<R, C> getColumnModel() {
     return columnModel;
   }
 
@@ -621,9 +630,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private static final class DefaultIncludeCondition<R, C> implements Predicate<R> {
 
-    private final Collection<? extends ColumnConditionModel<C>> columnFilters;
+    private final Collection<? extends ColumnConditionModel<R, C>> columnFilters;
 
-    private DefaultIncludeCondition(final Collection<? extends ColumnConditionModel<C>> columnFilters) {
+    private DefaultIncludeCondition(final Collection<? extends ColumnConditionModel<R, C>> columnFilters) {
       this.columnFilters = columnFilters;
     }
 

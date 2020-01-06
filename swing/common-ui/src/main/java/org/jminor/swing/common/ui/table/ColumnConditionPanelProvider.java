@@ -7,14 +7,15 @@ import javax.swing.table.TableColumn;
 
 /**
  * Responsible for creating {@link ColumnConditionPanel}s
+ * @param <R> the row type
  * @param <C> the type used as column identifier
  */
-public interface ColumnConditionPanelProvider<C> {
+public interface ColumnConditionPanelProvider<R, C> {
 
   /**
    * Creates a ColumnConditionPanel for the given column
    * @param column the column
    * @return a ColumnConditionPanel
    */
-  ColumnConditionPanel<C> createColumnConditionPanel(TableColumn column);
+  ColumnConditionPanel<R, C> createColumnConditionPanel(TableColumn column);
 }

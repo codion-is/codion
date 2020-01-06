@@ -17,9 +17,10 @@ import java.text.Format;
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
  * as well as relevant events and states.
+ * @param <R> the type of rows
  * @param <C> the type of objects used to identify columns
  */
-public interface ColumnConditionModel<C> {
+public interface ColumnConditionModel<R, C> {
 
   /**
    * Specifies whether wildcards are automatically added to string conditions<br>
@@ -86,10 +87,10 @@ public interface ColumnConditionModel<C> {
   String getDateTimeFormatPattern();
 
   /**
-   * @param object the object
-   * @return true if the object should be included or if this model is not enabled
+   * @param row the row
+   * @return true if the row should be included or if this model is not enabled
    */
-  boolean include(Object object);
+  boolean include(R row);
 
   /**
    * Sets the automatic wildcard type.

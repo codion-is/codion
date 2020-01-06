@@ -1433,7 +1433,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return new Point(x, y);
   }
 
-  private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Property> {
+  private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Entity, Property> {
 
     private final SwingEntityTableModel tableModel;
 
@@ -1442,7 +1442,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     @Override
-    public ColumnConditionPanel<Property> createColumnConditionPanel(final TableColumn column) {
+    public ColumnConditionPanel<Entity, Property> createColumnConditionPanel(final TableColumn column) {
       return new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
               ((Property) column.getIdentifier()).getPropertyId()), true, true);
     }
