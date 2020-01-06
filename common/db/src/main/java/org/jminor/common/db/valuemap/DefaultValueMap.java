@@ -78,7 +78,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (!initialization) {
       updateOriginalValue(key, newValue, previousValue);
     }
-    handlePut(key, newValue, previousValue);
+    valuePut(key, newValue, previousValue);
     valueChanged(key, newValue, previousValue, initialization);
 
     return previousValue;
@@ -271,6 +271,14 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   }
 
   /**
+   * Called after a value has been put. This base implementation does nothing, provided for subclasses.
+   * @param key the key
+   * @param value the value
+   * @param previousValue the previous value
+   */
+  protected void valuePut(final K key, final V value, final V previousValue) {/*Provided for subclasses*/}
+
+  /**
    * Called when a value changes, note that this default implementation does nothing, provided for subclasses.
    * @param key the key of the value that is changing
    * @param currentValue the new value
@@ -278,7 +286,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * @param initialization true if the value is being initialized, that is, no previous value exists
    */
   protected void valueChanged(final K key, final V currentValue, final V previousValue,
-                              final boolean initialization) {}
+                              final boolean initialization) {/*Provided for subclasses*/}
 
   protected final void setOriginalValue(final K key, final V previousValue) {
     if (originalValues == null) {
@@ -295,14 +303,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
       }
     }
   }
-
-  /**
-   * Called after a value has been put. This base implementation does nothing.
-   * @param key the key
-   * @param value the value
-   * @param previousValue the previous value
-   */
-  protected void handlePut(final K key, final V value, final V previousValue) {/*Provided for subclasses*/}
 
   /**
    * Called after the value map has been cleared. This base implementation does nothing.

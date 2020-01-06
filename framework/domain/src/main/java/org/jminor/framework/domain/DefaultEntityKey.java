@@ -181,18 +181,18 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
-  protected void handlePut(final ColumnProperty property, final Object value, final Object previousValue) {
+  protected Object validateAndPrepare(final ColumnProperty property, final Object value) {
+    return property.prepareValue(property.validateType(value));
+  }
+
+  @Override
+  protected void valuePut(final ColumnProperty property, final Object value, final Object previousValue) {
     if (singleIntegerKey) {
       setHashCode((Integer) value);
     }
     else {
       hashCodeDirty = true;
     }
-  }
-
-  @Override
-  protected Object validateAndPrepare(final ColumnProperty property, final Object value) {
-    return property.prepareValue(property.validateType(value));
   }
 
   @Override

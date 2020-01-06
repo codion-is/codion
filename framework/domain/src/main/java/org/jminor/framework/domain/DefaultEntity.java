@@ -552,7 +552,20 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  protected void handlePut(final Property property, final Object value, final Object previousValue) {
+  protected Object validateAndPrepare(final Property property, final Object value) {
+    if (property instanceof DerivedProperty) {
+      throw new IllegalArgumentException("Can not set the value of a derived property");
+    }
+    if (property instanceof ValueListProperty && value != null && !((ValueListProperty) property).isValid(value)) {
+      throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyId());
+    }
+
+    return property.prepareValue(property.validateType(value));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected void valuePut(final Property property, final Object value, final Object previousValue) {
     if (property instanceof ColumnProperty) {
       final ColumnProperty columnProperty = (ColumnProperty) property;
       if (columnProperty.isPrimaryKeyProperty()) {
@@ -568,33 +581,20 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
-  protected Object validateAndPrepare(final Property property, final Object value) {
-    if (property instanceof DerivedProperty) {
-      throw new IllegalArgumentException("Can not set the value of a derived property");
-    }
-    if (property instanceof ValueListProperty && value != null && !((ValueListProperty) property).isValid(value)) {
-      throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyId());
-    }
-
-    return property.prepareValue(property.validateType(value));
-  }
-
   /**
    * Called when a value changes.
-   * @param key the key of the value that is changing
+   * @param property the property of the value that is changing
    * @param currentValue the new value
    * @param previousValue the previous value, if any
    * @param initialization true if the value is being initialized, that is, no previous value exists
    * @see #addValueListener(EventDataListener)
    */
   @Override
-  protected void valueChanged(final Property key, final Object currentValue, final Object previousValue, final boolean initialization) {
+  protected void valueChanged(final Property property, final Object currentValue, final Object previousValue, final boolean initialization) {
     if (valueChangedEvent != null) {
-      valueChangedEvent.onEvent(valueChange(key, currentValue, previousValue, initialization));
+      valueChangedEvent.onEvent(valueChange(property, currentValue, previousValue, initialization));
       if (definition.hasDerivedProperties()) {
-        final Collection<DerivedProperty> derivedProperties = definition.getDerivedProperties(key.getPropertyId());
+        final Collection<DerivedProperty> derivedProperties = definition.getDerivedProperties(property.getPropertyId());
         for (final DerivedProperty derivedProperty : derivedProperties) {
           final Object derivedValue = getDerivedValue(derivedProperty);
           valueChangedEvent.onEvent(valueChange(derivedProperty, derivedValue, derivedValue, false));
