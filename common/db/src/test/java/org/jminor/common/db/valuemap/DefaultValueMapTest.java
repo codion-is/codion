@@ -186,7 +186,7 @@ public class DefaultValueMapTest {
   }
 
   @Test
-  public void clear() {
+  public void removeAll() {
     final String one = "one";
     final String two = "two";
     final String three = "three";
@@ -201,7 +201,7 @@ public class DefaultValueMapTest {
     assertTrue(map.isModified());
     assertTrue(map.isModified(two));
 
-    map.clear();
+    map.setAs(null);
 
     assertTrue(map.values().isEmpty());
     assertTrue(map.keySet().isEmpty());

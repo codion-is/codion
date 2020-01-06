@@ -147,16 +147,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final void clear() {
-    values.clear();
-    if (originalValues != null) {
-      originalValues = null;
-    }
-    handleClear();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final int size() {
     return values.size();
   }
@@ -260,6 +250,17 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   }
 
   /**
+   * Silently removes all values from this map, as in, removes the values without firing value change events.
+   * super.clear() must be called when overriding.
+   */
+  protected void clear() {
+    values.clear();
+    if (originalValues != null) {
+      originalValues = null;
+    }
+  }
+
+  /**
    * Validates the value for the given key, note that this default implementation does nothing, provided for subclasses.
    * @param key the key
    * @param value the value to validate
@@ -303,11 +304,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
       }
     }
   }
-
-  /**
-   * Called after the value map has been cleared. This base implementation does nothing.
-   */
-  protected void handleClear() {/*Provided for subclasses*/}
 
   private void updateOriginalValue(final K key, final V value, final V previousValue) {
     final boolean modified = isModified(key);

@@ -544,7 +544,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  protected void handleClear() {
+  protected void clear() {
+    super.clear();
     key = null;
     referencedKeyCache = null;
     toString = null;

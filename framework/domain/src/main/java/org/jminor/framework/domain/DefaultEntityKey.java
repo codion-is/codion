@@ -181,6 +181,13 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
+  protected void clear() {
+    super.clear();
+    cachedHashCode = null;
+    hashCodeDirty = true;
+  }
+
+  @Override
   protected Object validateAndPrepare(final ColumnProperty property, final Object value) {
     return property.prepareValue(property.validateType(value));
   }
@@ -193,12 +200,6 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
     else {
       hashCodeDirty = true;
     }
-  }
-
-  @Override
-  protected void handleClear() {
-    cachedHashCode = null;
-    hashCodeDirty = true;
   }
 
   private void setHashCode(final Integer value) {
