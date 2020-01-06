@@ -4,7 +4,6 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.db.valuemap.DefaultValueMap;
-import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
@@ -41,7 +40,7 @@ import java.util.Set;
 
 import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.db.valuemap.ValueChanges.valueChange;
+import static org.jminor.framework.domain.ValueChanges.valueChange;
 
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
@@ -79,7 +78,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * Fired when a value changes, null until initialized by a call to getValueChangedEvent().
    */
-  private Event<ValueChange<Property, Object>> valueChangedEvent;
+  private Event<ValueChange> valueChangedEvent;
 
   /**
    * Instantiates a new DefaultEntity
@@ -535,7 +534,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public void addValueListener(final EventDataListener<ValueChange<Property, Object>> valueListener) {
+  public void addValueListener(final EventDataListener<ValueChange> valueListener) {
     getValueObserver().addDataListener(valueListener);
   }
 
@@ -558,7 +557,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public EventObserver<ValueChange<Property, Object>> getValueObserver() {
+  public EventObserver<ValueChange> getValueObserver() {
     return getValueChangedEvent().getObserver();
   }
 
@@ -833,7 +832,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return false;
   }
 
-  private Event<ValueChange<Property, Object>> getValueChangedEvent() {
+  private Event<ValueChange> getValueChangedEvent() {
     if (valueChangedEvent == null) {
       valueChangedEvent = Events.event();
     }

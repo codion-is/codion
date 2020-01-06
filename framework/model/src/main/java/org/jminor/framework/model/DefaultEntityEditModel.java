@@ -6,7 +6,6 @@ package org.jminor.framework.model;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.UpdateException;
-import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -41,9 +40,9 @@ import java.util.Objects;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.db.valuemap.ValueChanges.valueChange;
 import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.jminor.framework.domain.Entities.mapToOriginalPrimaryKey;
+import static org.jminor.framework.domain.ValueChanges.valueChange;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -125,12 +124,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds events signaling value changes made via {@link #put(Property, Object)} or {@link #remove(Property)}
    */
-  private final Map<String, Event<ValueChange<Property, Object>>> valueEditEventMap = new HashMap<>();
+  private final Map<String, Event<Entity.ValueChange>> valueEditEventMap = new HashMap<>();
 
   /**
    * Holds events signaling value changes in the underlying {@link Entity}
    */
-  private final Map<String, Event<ValueChange<Property, Object>>> valueChangeEventMap = new HashMap<>();
+  private final Map<String, Event<Entity.ValueChange>> valueChangeEventMap = new HashMap<>();
 
   /**
    * A state indicating whether the entity being edited is new
@@ -282,7 +281,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ValueChange<Property, Object>> getValueObserver(final String propertyId) {
+  public final EventObserver<Entity.ValueChange> getValueObserver(final String propertyId) {
     return getValueChangeEvent(requireNonNull(propertyId, PROPERTY)).getObserver();
   }
 
@@ -783,7 +782,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueEditListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
+  public final void addValueEditListener(final String propertyId, final EventDataListener<Entity.ValueChange> listener) {
     getValueEditEvent(propertyId).addDataListener(listener);
   }
 
@@ -797,7 +796,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
+  public final void addValueListener(final String propertyId, final EventDataListener<Entity.ValueChange> listener) {
     getValueChangeEvent(propertyId).addDataListener(listener);
   }
 
@@ -1082,11 +1081,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return !Objects.equals(get(property), getDefaultValue(property));
   }
 
-  private Event<ValueChange<Property, Object>> getValueEditEvent(final String propertyId) {
+  private Event<Entity.ValueChange> getValueEditEvent(final String propertyId) {
     return valueEditEventMap.computeIfAbsent(propertyId, k -> Events.event());
   }
 
-  private Event<ValueChange<Property, Object>> getValueChangeEvent(final String propertyId) {
+  private Event<Entity.ValueChange> getValueChangeEvent(final String propertyId) {
     return valueChangeEventMap.computeIfAbsent(propertyId, k -> Events.event());
   }
 
@@ -1096,7 +1095,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     afterUpdateEvent.addListener(entitiesChangedEvent);
     entity.addValueListener(valueChange -> {
       validState.set(validator.isValid(entity));
-      final Event<ValueChange<Property, Object>> valueChangeEvent = valueChangeEventMap.get(valueChange.getKey().getPropertyId());
+      final Event<Entity.ValueChange> valueChangeEvent = valueChangeEventMap.get(valueChange.getProperty().getPropertyId());
       if (valueChangeEvent != null) {
         valueChangeEvent.onEvent(valueChange);
       }

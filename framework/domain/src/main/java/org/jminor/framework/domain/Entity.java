@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
@@ -333,7 +332,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @return an EventObserver notified when a value changes.
    * @see ValueChange
    */
-  EventObserver<ValueChange<Property, Object>> getValueObserver();
+  EventObserver<ValueChange> getValueObserver();
 
   /**
    * Adds a listener notified each time a value changes
@@ -341,7 +340,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @param valueListener the listener
    * @see ValueChange
    */
-  void addValueListener(EventDataListener<ValueChange<Property, Object>> valueListener);
+  void addValueListener(EventDataListener<ValueChange> valueListener);
 
   /**
    * Removes the given value listener if it has been registered with this Entity.
@@ -484,5 +483,31 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return a query condition string
      */
     String getConditionString(List<String> propertyIds, List values);
+  }
+
+  /**
+   * Represents a change in a {@link Entity} value.
+   */
+  interface ValueChange {
+
+    /**
+     * @return the Property associated with the changed value
+     */
+    Property getProperty();
+
+    /**
+     * @return the previous value
+     */
+    Object getPreviousValue();
+
+    /**
+     * @return the current value
+     */
+    Object getCurrentValue();
+
+    /**
+     * @return true if the property had no associated value prior to this value change
+     */
+    boolean isInitialization();
   }
 }

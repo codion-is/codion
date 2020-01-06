@@ -362,31 +362,31 @@ public class DefaultEntityTest {
   }
 
   @Test
-  public void setStringValueInt() {
+  public void putStringValueInt() {
     final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, 1));
   }
 
   @Test
-  public void setStringValueDouble() {
+  public void putStringValueDouble() {
     final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, 1d));
   }
 
   @Test
-  public void setStringValueBoolean() {
+  public void putStringValueBoolean() {
     final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, false));
   }
 
   @Test
-  public void setStringValueChar() {
+  public void putStringValueChar() {
     final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, 'c'));
   }
 
   @Test
-  public void setStringValueEntity() {
+  public void putStringValueEntity() {
     final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);
@@ -395,46 +395,46 @@ public class DefaultEntityTest {
   }
 
   @Test
-  public void setStringValueDate() {
+  public void putStringValueDate() {
     final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, LocalDate.now()));
   }
 
   @Test
-  public void setStringValueTimestamp() {
+  public void putStringValueTimestamp() {
     final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, LocalDateTime.now()));
   }
 
   @Test
-  public void setDoubleValueString() {
+  public void putDoubleValueString() {
     final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_SALARY, "test"));
   }
 
   @Test
-  public void setDenormalizedViewValue() {
+  public void putDenormalizedViewValue() {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertThrows(IllegalArgumentException.class, () -> testEntity.put(TestDomain.DETAIL_MASTER_NAME, "hello"));
   }
 
   @Test
-  public void setDenormalizedValue() {
+  public void putDenormalizedValue() {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertThrows(IllegalArgumentException.class, () -> testEntity.put(TestDomain.DETAIL_MASTER_CODE, 2));
   }
 
   @Test
-  public void setIntegerKeyString() {
+  public void putIntegerKeyString() {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertThrows(IllegalArgumentException.class, () -> testEntity.put(TestDomain.DETAIL_ID, "hello"));
   }
 
   @Test
-  public void setValue() {
+  public void putValue() {
     final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);
 
@@ -457,7 +457,7 @@ public class DefaultEntityTest {
     assertEquals(employee.get(TestDomain.EMP_NAME), "noname");
 
     employee.addValueListener(valueChange -> {
-      if (valueChange.getKey().equals(TestDomain.EMP_DEPARTMENT_FK)) {
+      if (valueChange.getProperty().getPropertyId().equals(TestDomain.EMP_DEPARTMENT_FK)) {
         assertTrue(employee.isNull(TestDomain.EMP_DEPARTMENT_FK));
         assertTrue(employee.isNull(TestDomain.EMP_DEPARTMENT));
       }

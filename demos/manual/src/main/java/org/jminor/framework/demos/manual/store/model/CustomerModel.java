@@ -20,7 +20,7 @@ public class CustomerModel extends SwingEntityModel {
             System.out.println("Refresh is about to start"));
 
     getEditModel().addValueListener(Store.CUSTOMER_ADDRESS_FK, valueChange ->
-            System.out.println("Property " + valueChange.getKey() +
+            System.out.println("Property " + valueChange.getProperty() +
                     " changed from " + valueChange.getPreviousValue() +
                     " to " + valueChange.getCurrentValue()));
   }

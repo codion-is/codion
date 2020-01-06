@@ -5563,3 +5563,4 @@
 0.13.0
   FilteredTableColumnModel, added <R> generic parameter for row type, related refactoring
   ValueMap valueListener() functionality moved to Entity
+  ValueChanges moved to framework.domain, generics removed
