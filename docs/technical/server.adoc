@@ -7,10 +7,9 @@
 
 * Firewall friendly; uses one way communications without callbacks and can be configured to serve on a single fixed port
 * Integrated web server for serving Web Start applications and files, based on Jetty
-* All user authentication left to the database
-* Comprehensive administration and monitoring facilities
-* Featherweight server
-* Moderate memory and CPU usage
+* All user authentication left to the database by default
+* Comprehensive administration and monitoring facilities via the <<server-monitor.adoc#_server_monitor, ServerMonitor>>
+* Featherweight server with moderate memory and CPU usage
 
 == Security
 

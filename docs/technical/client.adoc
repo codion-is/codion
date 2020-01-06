@@ -1,5 +1,6 @@
 = Client
 :dir-technical: ../technical
+:dir-source: ../../demos/chinook/src/main/java
 
 == Features
 
@@ -16,7 +17,6 @@
 * Detailed logging of client actions
 
 == Architecture
-:dir-source: ../../demos/chinook/src/main/java
 
 === UI
 
