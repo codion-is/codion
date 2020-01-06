@@ -839,7 +839,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
     /**
      * Instantiates a new DefaultEntityTableSortModel
-     * @param domain the underlying entities
+     * @param definitionProvider the domain entity definition provider
      * @param entityId the entity ID
      */
     public DefaultEntityTableSortModel(final EntityDefinition.Provider definitionProvider, final String entityId) {
