@@ -169,7 +169,7 @@ public class DefaultEntityTest {
 
     final ForeignKeyProperty foreignKeyProperty =
             DOMAIN.getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(
-            TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+                    TestDomain.COMPOSITE_DETAIL_MASTER_FK);
     final Entity.Key referencedKey = detail.getReferencedKey(foreignKeyProperty);
     final Entity.Key cachedKey = detail.getReferencedKey(foreignKeyProperty);
 
