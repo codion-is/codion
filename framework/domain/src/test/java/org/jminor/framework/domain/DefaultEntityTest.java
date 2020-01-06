@@ -5,6 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.FileUtil;
 import org.jminor.common.Util;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
@@ -142,15 +143,15 @@ public class DefaultEntityTest {
 
     entity.put(TestDomain.MASTER_ID, -55L);
     //the id is not updatable as it is part of the primary key, which is not updatable by default
-    assertFalse(entity.getModifiedObserver().get());
+    assertFalse(entity.isModified());
     entity.save(TestDomain.MASTER_ID);
-    assertFalse(entity.getModifiedObserver().get());
+    assertFalse(entity.isModified());
 
     entity.put(TestDomain.MASTER_NAME, newName);
-    assertTrue(entity.getModifiedObserver().get());
+    assertTrue(entity.isModified());
     entity.revert(TestDomain.MASTER_NAME);
     assertEquals(masterName, entity.get(TestDomain.MASTER_NAME));
-    assertFalse(entity.getModifiedObserver().get());
+    assertFalse(entity.isModified());
 
     entity.put(TestDomain.MASTER_NAME, newName);
     assertTrue(entity.isModified());
@@ -456,13 +457,16 @@ public class DefaultEntityTest {
     employee.put(TestDomain.EMP_NAME, "noname");
     assertEquals(employee.get(TestDomain.EMP_NAME), "noname");
 
-    employee.addValueListener(valueChange -> {
+    final EventDataListener<Entity.ValueChange> valueListener = valueChange -> {
       if (valueChange.getProperty().getPropertyId().equals(TestDomain.EMP_DEPARTMENT_FK)) {
         assertTrue(employee.isNull(TestDomain.EMP_DEPARTMENT_FK));
         assertTrue(employee.isNull(TestDomain.EMP_DEPARTMENT));
       }
-    });
+    };
+    employee.addValueListener(valueListener);
     employee.put(TestDomain.EMP_DEPARTMENT_FK, null);
+
+    employee.removeValueListener(valueListener);
   }
 
   @Test

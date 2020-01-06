@@ -7,11 +7,7 @@ import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
-import org.jminor.common.state.State;
-import org.jminor.common.state.StateObserver;
-import org.jminor.common.state.States;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -535,7 +531,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public void addValueListener(final EventDataListener<ValueChange> valueListener) {
-    getValueObserver().addDataListener(valueListener);
+    getValueChangedEvent().addDataListener(valueListener);
   }
 
   /** {@inheritDoc} */
@@ -544,21 +540,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (valueChangedEvent != null) {
       valueChangedEvent.removeDataListener(valueListener);
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public StateObserver getModifiedObserver() {
-    final State state = States.state(isModified());
-    getValueObserver().addDataListener(valueChange -> state.set(isModified()));
-
-    return state.getObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public EventObserver<ValueChange> getValueObserver() {
-    return getValueChangedEvent().getObserver();
   }
 
   /** {@inheritDoc} */
