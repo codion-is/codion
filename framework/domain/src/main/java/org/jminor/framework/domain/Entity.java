@@ -9,7 +9,6 @@ import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventObserver;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -320,13 +319,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @return the previous value mapped to the given key
    */
   Object remove(String propertyId);
-
-  /**
-   * Returns an EventObserver notified each time a value changes, with a {@link ValueChange} argument.
-   * @return an EventObserver notified when a value changes.
-   * @see ValueChange
-   */
-  EventObserver<ValueChange> getValueObserver();
 
   /**
    * Adds a listener notified each time a value changes

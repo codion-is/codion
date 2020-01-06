@@ -5,6 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.FileUtil;
 import org.jminor.common.Util;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
@@ -456,13 +457,16 @@ public class DefaultEntityTest {
     employee.put(TestDomain.EMP_NAME, "noname");
     assertEquals(employee.get(TestDomain.EMP_NAME), "noname");
 
-    employee.addValueListener(valueChange -> {
+    final EventDataListener<Entity.ValueChange> valueListener = valueChange -> {
       if (valueChange.getProperty().getPropertyId().equals(TestDomain.EMP_DEPARTMENT_FK)) {
         assertTrue(employee.isNull(TestDomain.EMP_DEPARTMENT_FK));
         assertTrue(employee.isNull(TestDomain.EMP_DEPARTMENT));
       }
-    });
+    };
+    employee.addValueListener(valueListener);
     employee.put(TestDomain.EMP_DEPARTMENT_FK, null);
+
+    employee.removeValueListener(valueListener);
   }
 
   @Test

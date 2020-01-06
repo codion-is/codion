@@ -5565,3 +5565,4 @@
   ValueMap valueListener() functionality moved to Entity
   ValueChanges moved to framework.domain, generics removed
   Entity.getModifiedObserver() removed, moved to DefaultEntityEditModel
+  Entity.getValueObserver() removed
