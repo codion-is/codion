@@ -336,14 +336,14 @@ public class DefaultEntityTest {
   }
 
   @Test
-  public void clear() {
+  public void removeAll() {
     final Entity referencedEntityValue = DOMAIN.entity(TestDomain.T_MASTER);
     Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     testEntity.put(TestDomain.DETAIL_STRING, "TestString");
     assertTrue(testEntity.isModified());
 
-    testEntity.clear();
+    testEntity.setAs(null);
     assertTrue(testEntity.getKey().isNull());
     assertTrue(testEntity.isKeyNull());
     assertFalse(testEntity.containsKey(TestDomain.DETAIL_DATE));

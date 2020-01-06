@@ -181,13 +181,10 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
-  protected void handlePut(final ColumnProperty property, final Object value, final Object previousValue) {
-    if (singleIntegerKey) {
-      setHashCode((Integer) value);
-    }
-    else {
-      hashCodeDirty = true;
-    }
+  protected void clear() {
+    super.clear();
+    cachedHashCode = null;
+    hashCodeDirty = true;
   }
 
   @Override
@@ -196,9 +193,13 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
-  protected void handleClear() {
-    cachedHashCode = null;
-    hashCodeDirty = true;
+  protected void valuePut(final ColumnProperty property, final Object value, final Object previousValue) {
+    if (singleIntegerKey) {
+      setHashCode((Integer) value);
+    }
+    else {
+      hashCodeDirty = true;
+    }
   }
 
   private void setHashCode(final Integer value) {
