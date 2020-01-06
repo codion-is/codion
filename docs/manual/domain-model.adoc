@@ -302,7 +302,7 @@ The {url-javadoc}/org/jminor/framework/domain/StringProvider.html[StringProvider
 include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[tags=address]
 ----
 
-For more complex toString() implementations you can implement a custom {url-javadoc}/org/jminor/framework/domain/Entity.ToString.html[Entity.ToString].
+For more complex toString() implementations you can implement a custom *Function<Entity, String>*.
 
 [source,java,indent=0]
 ----
