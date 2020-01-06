@@ -78,6 +78,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Event afterRefreshEvent = Events.event();
   private final Event<State> confirmSetEntityEvent = Events.event();
 
+  private final State entityModifiedState = States.state();
   private final State primaryKeyNullState = States.state(true);
   private final State insertEnabledState = States.state(true);
   private final State updateEnabledState = States.state(true);
@@ -399,13 +400,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public StateObserver getModifiedObserver() {
-    return getEntity().getModifiedObserver();
+    return entityModifiedState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean isModified() {
-    return getModifiedObserver().get();
+    return entity.isModified();
   }
 
   /** {@inheritDoc} */
@@ -1094,12 +1095,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     afterInsertEvent.addListener(entitiesChangedEvent);
     afterUpdateEvent.addListener(entitiesChangedEvent);
     entity.addValueListener(valueChange -> {
+      entityModifiedState.set(entity.isModified());
       validState.set(validator.isValid(entity));
       final Event<Entity.ValueChange> valueChangeEvent = valueChangeEventMap.get(valueChange.getProperty().getPropertyId());
       if (valueChangeEvent != null) {
         valueChangeEvent.onEvent(valueChange);
       }
-      primaryKeyNullState.set(getEntity().isKeyNull());
+      primaryKeyNullState.set(entity.isKeyNull());
       entityNewState.set(isEntityNew());
     });
   }
