@@ -1,6 +1,6 @@
 = Database
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:dir-manual: ../manual
 
 == Database layer
 
-The JMinor database layer is extremely thin, it doesn't perform any joins and provides no access to DBMS specific funtionality except primary key generation via {url-javadoc}/org/jminor/framework/domain/Entity.KeyGenerator.html[KeyGenerator] strategies. The framework provides implementations for the most common strategies, sequences (with or without triggers) and auto increment columns.
+The JMinor database layer is extremely thin, it doesn't perform any joins and provides no access to DBMS specific funtionality except primary key generation via <<{dir-manual}/manual.adoc#_keygenerator, KeyGenerator>> strategies. The framework provides implementations for the most common strategies, sequences (with or without triggers) and auto increment columns.

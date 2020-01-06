@@ -1,5 +1,4 @@
 = Project
-:dir-manual: ../manual
 
 == Building
 
