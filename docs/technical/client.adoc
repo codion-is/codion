@@ -1,5 +1,4 @@
 = Client
-:dir-technical: ../technical
 :dir-source: ../../demos/chinook/src/main/java
 
 == Features
