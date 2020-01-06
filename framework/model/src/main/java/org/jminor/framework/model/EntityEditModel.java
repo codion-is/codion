@@ -531,7 +531,6 @@ public interface EntityEditModel extends Refreshable {
    * Returns a StateObserver responsible for indicating when and if any values in the underlying Entity have been modified.
    * @return a StateObserver indicating the modified state of this edit model
    * @see #isModified()
-   * @see ValueMap#getModifiedObserver()
    */
   StateObserver getModifiedObserver();
 
