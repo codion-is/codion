@@ -71,8 +71,9 @@ public interface FilteredTableColumnModel<R, C, T> {
   C getColumnIdentifier(int modelColumnIndex);
 
   /**
+   * Returns the {@link ColumnConditionModel} for the column with the given identifier.
    * @param columnIdentifier the column identifier
-   * @return the ColumnConditionModel at the given column index
+   * @return the ColumnConditionModel for the column with the given identifier, null if none exists.
    */
   ColumnConditionModel<R, C> getColumnFilterModel(C columnIdentifier);
 

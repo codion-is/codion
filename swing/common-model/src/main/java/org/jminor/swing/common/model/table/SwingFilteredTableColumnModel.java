@@ -33,6 +33,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel implements FilteredTableColumnModel<R, C, TableColumn> {
 
+  private static final String COLUMN_IDENTIFIER = "columnIdentifier";
+
   private final Event<C> columnHiddenEvent = Events.event();
   private final Event<C> columnShownEvent = Events.event();
 
@@ -143,7 +145,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   /** {@inheritDoc} */
   @Override
   public final TableColumn getTableColumn(final C columnIdentifier) {
-    requireNonNull(columnIdentifier, "columnIdentifier");
+    requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
     for (final TableColumn column : columns) {
       if (columnIdentifier.equals(column.getIdentifier())) {
         return column;
@@ -156,7 +158,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   /** {@inheritDoc} */
   @Override
   public final boolean containsColumn(final C columnIdentifier) {
-    requireNonNull(columnIdentifier, "columnIdentifier");
+    requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
 
     return columns.stream().anyMatch(column -> columnIdentifier.equals(column.getIdentifier()));
   }
@@ -164,7 +166,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   /** {@inheritDoc} */
   @Override
   public final ColumnConditionModel<R, C> getColumnFilterModel(final C columnIdentifier) {
-    requireNonNull(columnIdentifier, "columnIdentifier");
+    requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
 
     return columnFilterModels.get(columnIdentifier);
   }
