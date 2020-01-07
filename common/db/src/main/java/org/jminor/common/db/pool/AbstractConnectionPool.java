@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * A default base implementation of ConnectionPool, handling the collection of statistics
+ * A default base implementation of the ConnectionPool wrapper, handling the collection of statistics
  * @param <T> the type representing the actual pool object
  */
 public abstract class AbstractConnectionPool<T> implements ConnectionPool {

@@ -47,9 +47,9 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
               new Properties(), user.getUsername(), String.valueOf(user.getPassword()));
       config.setJdbcUrl(database.getURL(null));
       config.setUsername(user.getUsername());
-      config.setMaximumPoolSize(8);
-      config.setMinimumIdle(4);
-      config.setIdleTimeout(60000);
+      config.setMaximumPoolSize(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
+      config.setMinimumIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());
+      config.setIdleTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get());
       config.setJdbcUrl(database.getURL(null));
       config.setDataSource(Util.initializeProxy(DataSource.class, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
               handleInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));

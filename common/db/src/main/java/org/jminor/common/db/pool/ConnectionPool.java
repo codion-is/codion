@@ -3,16 +3,39 @@
  */
 package org.jminor.common.db.pool;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.value.PropertyValue;
 
 import java.sql.Connection;
 
 /**
- * Defines a simple connection pool.
+ * A connection pool wrapper, providing statistics from the underlying pool and allowing some configuration.
  */
 public interface ConnectionPool {
+
+  /**
+   * Specifies the default maximum connection pool size.
+   * Value type: Integer<br>
+   * Default value: 8
+   */
+  PropertyValue<Integer> DEFAULT_MAXIMUM_POOL_SIZE = Configuration.integerValue("jminor.db.pool.defaultMaximumPoolSize", 8);
+
+  /**
+   * Specifies the default minimum connection pool size.
+   * Value type: Integer<br>
+   * Default value: 4
+   */
+  PropertyValue<Integer> DEFAULT_MINIMUM_POOL_SIZE = Configuration.integerValue("jminor.db.pool.defaultMinimumPoolSize", 4);
+
+  /**
+   * Specifies the default idle timeout in milliseconds.
+   * Value type: Integer<br>
+   * Default value: 60.000
+   */
+  PropertyValue<Integer> DEFAULT_IDLE_TIMEOUT = Configuration.integerValue("jminor.db.pool.defaultIdleTimeout", 60000);
 
   /**
    * Fetches a connection from the pool. Close the connection to return it to the pool.
