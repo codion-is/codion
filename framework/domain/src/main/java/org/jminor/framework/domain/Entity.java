@@ -482,14 +482,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     Property getProperty();
 
     /**
+     * @return the new value
+     */
+    Object getValue();
+
+    /**
      * @return the previous value
      */
     Object getPreviousValue();
-
-    /**
-     * @return the current value
-     */
-    Object getCurrentValue();
 
     /**
      * @return true if the property had no associated value prior to this value change

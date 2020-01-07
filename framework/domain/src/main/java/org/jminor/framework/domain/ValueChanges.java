@@ -48,7 +48,7 @@ public final class ValueChanges {
     /**
      * The new value
      */
-    private final Object currentValue;
+    private final Object value;
 
     /**
      * The old value
@@ -63,14 +63,14 @@ public final class ValueChanges {
     /**
      * Instantiates a new DefaultValueChange
      * @param property the Property associated with the value
-     * @param currentValue the current value
+     * @param value the new value
      * @param previousValue the previous value
      * @param initialization true if the value is being initialized
      */
-    private DefaultValueChange(final Property property, final Object currentValue, final Object previousValue,
+    private DefaultValueChange(final Property property, final Object value, final Object previousValue,
                                final boolean initialization) {
       this.property = requireNonNull(property, "key");
-      this.currentValue = currentValue;
+      this.value = value;
       this.previousValue = previousValue;
       this.initialization = initialization;
     }
@@ -81,13 +81,13 @@ public final class ValueChanges {
     }
 
     @Override
-    public Object getPreviousValue() {
-      return previousValue;
+    public Object getValue() {
+      return value;
     }
 
     @Override
-    public Object getCurrentValue() {
-      return currentValue;
+    public Object getPreviousValue() {
+      return previousValue;
     }
 
     @Override
@@ -98,10 +98,10 @@ public final class ValueChanges {
     @Override
     public String toString() {
       if (initialization) {
-        return property + ": " + currentValue;
+        return property + ": " + value;
       }
       else {
-        return property + ": " + previousValue + " -> " + currentValue;
+        return property + ": " + previousValue + " -> " + value;
       }
     }
   }

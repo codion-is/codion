@@ -5568,3 +5568,4 @@
   Entity.getValueObserver() removed
   DefaultValueMap.handlePut() renamed to valuePut(), for consistency
   ValueMap.clear(), removed DefaultValueMap.clear() now protected, handleClear() removed, subclasses now override clear() instead
+  Entity.ValueChange.getCurrentValue() renamed to getValue()

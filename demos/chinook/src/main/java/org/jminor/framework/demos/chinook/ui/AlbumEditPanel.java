@@ -74,7 +74,7 @@ public class AlbumEditPanel extends EntityEditPanel {
     editModel.addEntitySetListener(album ->
             imagePanel.setImage(album == null ? null : (BufferedImage) album.get(ALBUM_COVER_IMAGE)));
     editModel.addValueEditListener(ALBUM_COVER, valueChange ->
-            imagePanel.setImage(valueChange.getCurrentValue() == null ? null : (BufferedImage) editModel.get(ALBUM_COVER_IMAGE)));
+            imagePanel.setImage(valueChange.getValue() == null ? null : (BufferedImage) editModel.get(ALBUM_COVER_IMAGE)));
 
     return coverBasePanel;
   }
