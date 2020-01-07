@@ -12,7 +12,6 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
-import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
@@ -278,12 +277,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final StateObserver getInsertEnabledObserver() {
     return insertEnabledState.getObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EventObserver<Entity.ValueChange> getValueObserver(final String propertyId) {
-    return getValueChangeEvent(requireNonNull(propertyId, PROPERTY)).getObserver();
   }
 
   /** {@inheritDoc} */

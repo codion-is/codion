@@ -10,7 +10,6 @@ import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
-import org.jminor.common.event.EventObserver;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
@@ -565,12 +564,6 @@ public interface EntityEditModel extends Refreshable {
    * @see #setInsertEnabled(boolean)
    */
   StateObserver getInsertEnabledObserver();
-
-  /**
-   * @param propertyId the ID of the property for which to retrieve the event
-   * @return an EventObserver notified when the value of the given property changes
-   */
-  EventObserver<Entity.ValueChange> getValueObserver(String propertyId);
 
   /**
    * Adds a listener notified each time the value associated with the given property is edited via
