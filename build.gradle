@@ -30,7 +30,7 @@ ext {
     javaxActivationVersion = '1.2.0'
     junitVersion = '5.5.2'
     //jasperreports
-    jasperReportsVersion = '6.10.0'
+    jasperReportsVersion = '6.11.0'
     commonsLoggingVersion = '1.2'
     commonsDigesterVersion = '2.1'
     commonsCollectionsVersion = '4.4'
