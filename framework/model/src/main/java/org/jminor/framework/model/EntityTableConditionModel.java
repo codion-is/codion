@@ -121,6 +121,7 @@ public interface EntityTableConditionModel extends Refreshable {
   Collection<ColumnConditionModel<Entity, ? extends Property>> getPropertyConditionModels();
 
   /**
+   * Returns the {@link ColumnConditionModel} associated with the given property.
    * @param propertyId the id of the property for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} associated with the property identified by {@code propertyId}
    * @throws IllegalArgumentException in case no condition model is found

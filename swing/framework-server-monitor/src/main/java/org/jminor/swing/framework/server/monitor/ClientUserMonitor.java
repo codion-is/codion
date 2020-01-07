@@ -397,22 +397,22 @@ public final class ClientUserMonitor {
               createColumn(LAST_SEEN_COLUMN, "Last seen", new LastSeenRenderer()),
               createColumn(CONNECTION_COUNT_COLUMN, "Connections"));
     }
-  }
 
-  private static TableColumn createColumn(final Integer identifier, final String headerValue) {
-    return createColumn(identifier, headerValue, null);
-  }
-
-  private static TableColumn createColumn(final Integer identifier, final String headerValue,
-                                          final TableCellRenderer cellRenderer) {
-    final TableColumn column = new TableColumn(identifier);
-    column.setIdentifier(identifier);
-    column.setHeaderValue(headerValue);
-    if (cellRenderer != null) {
-      column.setCellRenderer(cellRenderer);
+    private static TableColumn createColumn(final Integer identifier, final String headerValue) {
+      return createColumn(identifier, headerValue, null);
     }
 
-    return column;
+    private static TableColumn createColumn(final Integer identifier, final String headerValue,
+                                            final TableCellRenderer cellRenderer) {
+      final TableColumn column = new TableColumn(identifier);
+      column.setIdentifier(identifier);
+      column.setHeaderValue(headerValue);
+      if (cellRenderer != null) {
+        column.setCellRenderer(cellRenderer);
+      }
+
+      return column;
+    }
   }
 
   private static final class LastSeenRenderer extends DefaultTableCellRenderer {

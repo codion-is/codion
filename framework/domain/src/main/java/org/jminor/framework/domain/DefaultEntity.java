@@ -598,7 +598,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         final Collection<DerivedProperty> derivedProperties = definition.getDerivedProperties(property.getPropertyId());
         for (final DerivedProperty derivedProperty : derivedProperties) {
           final Object derivedValue = getDerivedValue(derivedProperty);
-          valueChangedEvent.onEvent(valueChange(derivedProperty, derivedValue, derivedValue, false));
+          valueChangedEvent.onEvent(valueChange(derivedProperty, derivedValue, derivedValue));
         }
       }
     }
