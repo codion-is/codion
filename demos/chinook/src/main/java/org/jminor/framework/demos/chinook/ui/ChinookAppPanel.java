@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static org.jminor.swing.common.ui.UiUtil.runWithProgressBar;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
 
@@ -120,17 +121,23 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   @Override
+  protected Version getClientVersion() {
+    return new Version(0, 1, 0);
+  }
+
+  @Override
   protected ControlSet getToolsControlSet() {
     final ControlSet tools = super.getToolsControlSet();
     tools.addSeparator();
-    tools.add(Controls.control(getModel()::updateInvoiceTotals, "Update invoice totals"));
+    tools.add(Controls.control(this::updateInvoiceTotals, "Update invoice totals"));
 
     return tools;
   }
 
-  @Override
-  protected Version getClientVersion() {
-    return new Version(0, 1, 0);
+  private void updateInvoiceTotals() {
+    runWithProgressBar(this, "Updating totals...",
+            "Totals updated", "Updating totals failed",
+            getModel()::updateInvoiceTotals);
   }
 
   public static void main(final String[] args) throws CancelException {

@@ -1653,10 +1653,10 @@ public final class UiUtil {
                                         final Control.Command task, final Runnable onSuccess,
                                         final Consumer<Throwable> onException, final JPanel northPanel,
                                         final ControlSet buttonControls) {
-    final ProgressWorker.DialogOwnerProvider dialogOwnerProvider = () -> getParentWindow(dialogParent);
-    final ProgressWorker worker = new ProgressWorker(dialogOwnerProvider, progressBarTitle, true, northPanel, buttonControls) {
+    final Window dialogOwner = getParentWindow(dialogParent);
+    final ProgressWorker worker = new ProgressWorker(dialogOwner, progressBarTitle, true, northPanel, buttonControls) {
       @Override
-      protected Object performBackgroundWork() throws Exception {
+      protected Object doInBackground() throws Exception {
         task.perform();
         return null;
       }
@@ -1667,7 +1667,7 @@ public final class UiUtil {
             onException.accept(exception);
           }
           else {
-            showExceptionDialog(dialogOwnerProvider.getDialogOwner(), Messages.get(Messages.EXCEPTION), exception);
+            showExceptionDialog(dialogOwner, Messages.get(Messages.EXCEPTION), exception);
           }
         }
       }
