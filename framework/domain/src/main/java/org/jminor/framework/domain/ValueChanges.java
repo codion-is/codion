@@ -8,37 +8,37 @@ import org.jminor.framework.domain.property.Property;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Factory class for {@link Entity.ValueChange} instances
+ * Factory class for {@link ValueChange} instances
  */
 public final class ValueChanges {
 
   private ValueChanges() {}
 
   /**
-   * Returns a new {@link Entity.ValueChange} instance
+   * Returns a new {@link ValueChange} instance
    * @param property the Property associated with the value
    * @param currentValue the current value
    * @param previousValue the previous value
-   * @return a new {@link Entity.ValueChange} instance
+   * @return a new {@link ValueChange} instance
    */
-  public static Entity.ValueChange valueChange(final Property property, final Object currentValue, final Object previousValue) {
+  public static ValueChange valueChange(final Property property, final Object currentValue, final Object previousValue) {
     return valueChange(property, currentValue, previousValue, false);
   }
 
   /**
-   * Returns a new {@link Entity.ValueChange} instance
+   * Returns a new {@link ValueChange} instance
    * @param property the Property associated with the value
    * @param currentValue the current value
    * @param previousValue the previous value
    * @param initialization true if the value was being initialized
-   * @return a new {@link Entity.ValueChange} instance
+   * @return a new {@link ValueChange} instance
    */
-  public static Entity.ValueChange valueChange(final Property property, final Object currentValue, final Object previousValue,
-                                               final boolean initialization) {
+  public static ValueChange valueChange(final Property property, final Object currentValue, final Object previousValue,
+                                        final boolean initialization) {
     return new DefaultValueChange(property, currentValue, previousValue, initialization);
   }
 
-  private static final class DefaultValueChange implements Entity.ValueChange {
+  private static final class DefaultValueChange implements ValueChange {
 
     /**
      * The Property identifying the changed value

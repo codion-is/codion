@@ -470,30 +470,4 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      */
     String getConditionString(List<String> propertyIds, List values);
   }
-
-  /**
-   * Represents a change in a {@link Entity} value.
-   */
-  interface ValueChange {
-
-    /**
-     * @return the Property associated with the changed value
-     */
-    Property getProperty();
-
-    /**
-     * @return the new value
-     */
-    Object getValue();
-
-    /**
-     * @return the previous value
-     */
-    Object getPreviousValue();
-
-    /**
-     * @return true if the property had no associated value prior to this value change
-     */
-    boolean isInitialization();
-  }
 }

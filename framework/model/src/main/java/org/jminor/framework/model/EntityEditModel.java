@@ -19,6 +19,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.ValueChange;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -572,7 +573,7 @@ public interface EntityEditModel extends Refreshable {
    * @param propertyId the ID of the property for which to monitor value edits
    * @param listener a listener notified each time the value of the given property is edited via this model
    */
-  void addValueEditListener(String propertyId, EventDataListener<Entity.ValueChange> listener);
+  void addValueEditListener(String propertyId, EventDataListener<ValueChange> listener);
 
   /**
    * Removes the given listener.
@@ -588,7 +589,7 @@ public interface EntityEditModel extends Refreshable {
    * @param listener a listener notified each time the value of the property identified by {@code propertyId} changes
    * @see #setEntity(Entity)
    */
-  void addValueListener(String propertyId, EventDataListener<Entity.ValueChange> listener);
+  void addValueListener(String propertyId, EventDataListener<ValueChange> listener);
 
   /**
    * Removes the given listener.
