@@ -5596,3 +5596,4 @@
   EntityEditModel.getValueObserver() removed, unused
   ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE, DEFAULT_MINIMUM_POOL_SIZE and DEFAULT_IDLE_TIMEOUT configuration values added
   Entity.ValueChange moved up to package level
+  ProgressWorker refactored
