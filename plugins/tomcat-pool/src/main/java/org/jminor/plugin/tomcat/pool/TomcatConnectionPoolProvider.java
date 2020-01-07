@@ -44,6 +44,10 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     //JMinor does not validate connections coming from a connection pool
     pp.setTestOnBorrow(true);
     pp.setValidator(new ConnectionValidator(database));
+    pp.setMaxActive(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
+    pp.setMaxIdle(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
+    pp.setMinIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());
+    pp.setSuspectTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get() / 1000);
 
     return new DataSource(pp);
   }
