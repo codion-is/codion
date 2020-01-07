@@ -23,6 +23,7 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.ValueChange;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -124,12 +125,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds events signaling value changes made via {@link #put(Property, Object)} or {@link #remove(Property)}
    */
-  private final Map<String, Event<Entity.ValueChange>> valueEditEventMap = new HashMap<>();
+  private final Map<String, Event<ValueChange>> valueEditEventMap = new HashMap<>();
 
   /**
    * Holds events signaling value changes in the underlying {@link Entity}
    */
-  private final Map<String, Event<Entity.ValueChange>> valueChangeEventMap = new HashMap<>();
+  private final Map<String, Event<ValueChange>> valueChangeEventMap = new HashMap<>();
 
   /**
    * A state indicating whether the entity being edited is new
@@ -776,7 +777,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueEditListener(final String propertyId, final EventDataListener<Entity.ValueChange> listener) {
+  public final void addValueEditListener(final String propertyId, final EventDataListener<ValueChange> listener) {
     getValueEditEvent(propertyId).addDataListener(listener);
   }
 
@@ -790,7 +791,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final String propertyId, final EventDataListener<Entity.ValueChange> listener) {
+  public final void addValueListener(final String propertyId, final EventDataListener<ValueChange> listener) {
     getValueChangeEvent(propertyId).addDataListener(listener);
   }
 
@@ -1075,11 +1076,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return !Objects.equals(get(property), getDefaultValue(property));
   }
 
-  private Event<Entity.ValueChange> getValueEditEvent(final String propertyId) {
+  private Event<ValueChange> getValueEditEvent(final String propertyId) {
     return valueEditEventMap.computeIfAbsent(propertyId, k -> Events.event());
   }
 
-  private Event<Entity.ValueChange> getValueChangeEvent(final String propertyId) {
+  private Event<ValueChange> getValueChangeEvent(final String propertyId) {
     return valueChangeEventMap.computeIfAbsent(propertyId, k -> Events.event());
   }
 
@@ -1090,7 +1091,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     entity.addValueListener(valueChange -> {
       entityModifiedState.set(entity.isModified());
       validState.set(validator.isValid(entity));
-      final Event<Entity.ValueChange> valueChangeEvent = valueChangeEventMap.get(valueChange.getProperty().getPropertyId());
+      final Event<ValueChange> valueChangeEvent = valueChangeEventMap.get(valueChange.getProperty().getPropertyId());
       if (valueChangeEvent != null) {
         valueChangeEvent.onEvent(valueChange);
       }
