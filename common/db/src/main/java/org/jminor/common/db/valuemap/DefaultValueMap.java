@@ -119,10 +119,13 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     return otherMap.keySet().stream().noneMatch(key -> !containsKey(key) || !Objects.equals(otherMap.get(key), get(key)));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Creates a hash code based on the values in this ValueMap
+   * @return a hash code based on the values in this ValueMap
+   */
   @Override
   public int hashCode() {
-    return MAGIC_NUMBER + values().stream().filter(Objects::nonNull).mapToInt(Object::hashCode).sum();
+    return MAGIC_NUMBER + values.values().stream().filter(Objects::nonNull).mapToInt(Object::hashCode).sum();
   }
 
   /** {@inheritDoc} */

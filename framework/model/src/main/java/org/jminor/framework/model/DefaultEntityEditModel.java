@@ -6,7 +6,6 @@ package org.jminor.framework.model;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.UpdateException;
-import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
@@ -40,7 +39,6 @@ import java.util.Objects;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.jminor.framework.domain.Entities.mapToOriginalPrimaryKey;
 import static org.jminor.framework.domain.ValueChanges.valueChange;
 
@@ -722,12 +720,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final ValueCollectionProvider<Object> getValueProvider(final Property property) {
-    return new PropertyValueProvider(connectionProvider, entity.getEntityId(), property.getPropertyId());
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final <V> Value<V> value(final String propertyId) {
     return new EditModelValue<>(this, propertyId);
   }
@@ -1098,30 +1090,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       primaryKeyNullState.set(entity.isKeyNull());
       entityNewState.set(isEntityNew());
     });
-  }
-
-  static final class PropertyValueProvider implements ValueCollectionProvider<Object> {
-
-    private final EntityConnectionProvider connectionProvider;
-    private final String entityId;
-    private final String propertyId;
-
-    private PropertyValueProvider(final EntityConnectionProvider connectionProvider, final String entityId,
-                                  final String propertyId) {
-      this.connectionProvider = connectionProvider;
-      this.entityId = entityId;
-      this.propertyId = propertyId;
-    }
-
-    @Override
-    public Collection<Object> values() {
-      try {
-        return connectionProvider.getConnection().selectValues(propertyId, entityCondition(entityId));
-      }
-      catch (final DatabaseException e) {
-        throw new RuntimeException(e);
-      }
-    }
   }
 
   private static final class EditModelValue<V> extends AbstractValue<V> {

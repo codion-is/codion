@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityEditModelTest {
@@ -224,9 +223,6 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.addAfterRefreshListener(listener);
 
     assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityId());
-    assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectValues(TestDomain.EMP_JOB,
-            entityCondition(TestDomain.T_EMP)),
-            employeeEditModel.getValueProvider(jobProperty).values());
 
     employeeEditModel.refresh();
     assertTrue(employeeEditModel.isEntityNew());

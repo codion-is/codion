@@ -7,7 +7,6 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventObserver;
@@ -121,6 +120,7 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
@@ -1272,12 +1272,13 @@ public final class UiUtil {
    * Adds a CTRL-SPACE action the the given text field for displaying a lookup dialog showing the values provided
    * by the given value provider
    * @param textField the text field
-   * @param valueCollectionProvider provides the values for the lookup dialog
+   * @param valueProvider provides the values for the lookup dialog
+   * @param <T> the type of values being looked up
    */
-  public static void addLookupDialog(final JTextField textField, final ValueCollectionProvider valueCollectionProvider) {
-    requireNonNull(valueCollectionProvider);
+  public static <T> void addLookupDialog(final JTextField textField, final Supplier<Collection<T>> valueProvider) {
+    requireNonNull(valueProvider);
     addKeyEvent(textField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, Controls.control(() -> {
-      final Object value = selectValue(textField, valueCollectionProvider.values());
+      final Object value = selectValue(textField, valueProvider.get());
       if (value != null) {
         textField.setText(value.toString());
       }

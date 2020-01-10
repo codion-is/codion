@@ -5,7 +5,6 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.Refreshable;
@@ -200,14 +199,6 @@ public interface EntityEditModel extends Refreshable {
    * @param foreignKeyValues the new foreign key entities
    */
   void replaceForeignKeyValues(String foreignKeyEntityId, Collection<Entity> foreignKeyValues);
-
-  /**
-   * Initializes a value provider for the given property, useful for adding lookup
-   * functionality to input fields for example.
-   * @param property the property
-   * @return a value provider for the given property
-   */
-  ValueCollectionProvider getValueProvider(Property property);
 
   /**
    * Instantiates a new Value based on the value identified by {@code propertyId} in this edit model

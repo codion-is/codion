@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db.valuemap;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Set;
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProvider<V> {
+public interface ValueMap<K, V> extends ValueProvider<K, V> {
 
   /**
    * Maps the given value to the given key, returning the old value if any.
@@ -69,6 +70,12 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @return true if a value is mapped to this key
    */
   boolean containsKey(K key);
+
+  /**
+   * Retrieves the values contained in this ValueMap.
+   * @return a collection containing the values in this ValueMap
+   */
+  Collection<V> values();
 
   /**
    * @return an unmodifiable view of the keys mapping the values in this ValueMap
