@@ -5,8 +5,8 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.DateFormats;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.operation.AbstractProcedure;
-import org.jminor.common.db.operation.Operation;
+import org.jminor.common.db.operation.AbstractDatabaseProcedure;
+import org.jminor.common.db.operation.DatabaseOperation;
 import org.jminor.common.event.EventListener;
 import org.jminor.framework.domain.exception.LengthValidationException;
 import org.jminor.framework.domain.exception.NullValidationException;
@@ -599,7 +599,7 @@ public class DomainTest {
 
   @Test
   public void addOperationExisting() {
-    final Operation operation = new AbstractProcedure<DatabaseConnection>("operationId", "test") {
+    final DatabaseOperation operation = new AbstractDatabaseProcedure<DatabaseConnection>("operationId", "test") {
       @Override
       public void execute(final DatabaseConnection databaseConnection, final Object... arguments) {}
     };

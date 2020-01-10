@@ -5,8 +5,8 @@ package org.jminor.framework.demos.chinook.domain.impl;
 
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.operation.AbstractFunction;
-import org.jminor.common.db.operation.AbstractProcedure;
+import org.jminor.common.db.operation.AbstractDatabaseFunction;
+import org.jminor.common.db.operation.AbstractDatabaseProcedure;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
@@ -342,7 +342,7 @@ public final class ChinookImpl extends Domain implements Chinook {
     addOperation(new RaisePriceFunction());
   }
 
-  private static final class UpdateTotalsProcedure extends AbstractProcedure<LocalEntityConnection> {
+  private static final class UpdateTotalsProcedure extends AbstractDatabaseProcedure<LocalEntityConnection> {
 
     private UpdateTotalsProcedure() {
       super(P_UPDATE_TOTALS, "Update invoice totals");
@@ -373,7 +373,7 @@ public final class ChinookImpl extends Domain implements Chinook {
     }
   }
 
-  private static final class RaisePriceFunction extends AbstractFunction<LocalEntityConnection> {
+  private static final class RaisePriceFunction extends AbstractDatabaseFunction<LocalEntityConnection> {
 
     private RaisePriceFunction() {
       super(F_RAISE_PRICE, "Raise track prices");

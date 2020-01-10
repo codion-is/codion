@@ -9,7 +9,7 @@ import org.jminor.common.db.exception.DatabaseException;
  * A database procedure
  * @param <C> the connection type required by this procedure
  */
-public interface Procedure<C> extends Operation {
+public interface DatabaseProcedure<C> extends DatabaseOperation {
 
   /**
    * Executes this procedure with the given connection

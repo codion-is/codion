@@ -11,7 +11,7 @@ import java.util.List;
  * A database function
  * @param <C> the connection type required by this function
  */
-public interface Function<C> extends Operation {
+public interface DatabaseFunction<C> extends DatabaseOperation {
 
   /**
    * Executes this function with the given connection

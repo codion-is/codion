@@ -6,7 +6,7 @@ package org.jminor.common.db.operation;
 /**
  * A database operation
  */
-public interface Operation {
+public interface DatabaseOperation {
 
   /**
    * @return this operations ID

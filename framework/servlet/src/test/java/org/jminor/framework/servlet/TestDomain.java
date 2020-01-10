@@ -5,8 +5,8 @@ package org.jminor.framework.servlet;
 
 import org.jminor.common.Item;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.operation.AbstractFunction;
-import org.jminor.common.db.operation.AbstractProcedure;
+import org.jminor.common.db.operation.AbstractDatabaseFunction;
+import org.jminor.common.db.operation.AbstractDatabaseProcedure;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.StringProvider;
@@ -92,12 +92,12 @@ public final class TestDomain extends Domain {
   public static final String PROCEDURE_ID = "procedureId";
 
   void operations() {
-    addOperation(new AbstractProcedure<EntityConnection>(PROCEDURE_ID, "Test Procedure") {
+    addOperation(new AbstractDatabaseProcedure<EntityConnection>(PROCEDURE_ID, "Test Procedure") {
       @Override
       public void execute(final EntityConnection connection, final Object... objects) throws DatabaseException {}
     });
 
-    addOperation(new AbstractFunction<EntityConnection>(FUNCTION_ID, "Test Function") {
+    addOperation(new AbstractDatabaseFunction<EntityConnection>(FUNCTION_ID, "Test Function") {
       @Override
       public List execute(final EntityConnection connection, final Object... objects) throws DatabaseException {
         return emptyList();
