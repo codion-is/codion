@@ -46,7 +46,7 @@ public final class EntityLookupField extends TextField {
     setPromptText(Messages.get(Messages.SEARCH_FIELD_HINT));
     tooltipProperty().setValue(new Tooltip(model.getDescription()));
     setOnKeyPressed(new LookupKeyHandler());
-    focusedProperty().addListener((observable, oldValue, newValue) -> handleFocusChanged(newValue));
+    focusedProperty().addListener((observable, oldValue, newValue) -> onFocusChanged(newValue));
     updateColors();
   }
 
@@ -119,7 +119,7 @@ public final class EntityLookupField extends TextField {
 //    setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
   }
 
-  private void handleFocusChanged(final Boolean hasFocus) {
+  private void onFocusChanged(final Boolean hasFocus) {
     if (!hasFocus) {
       if (getText().length() == 0) {
         getModel().setSelectedEntity(null);
@@ -137,23 +137,23 @@ public final class EntityLookupField extends TextField {
     public void handle(final KeyEvent event) {
       switch (event.getCode()) {
         case ESCAPE:
-          handleEscape();
+          onEscape();
           break;
         case ENTER:
-          handleEnter();
+          onEnter();
           break;
         default:
           break;
       }
     }
 
-    private void handleEnter() {
+    private void onEnter() {
       if (!model.getSearchStringRepresentsSelectedObserver().get()) {
         performLookup(true);
       }
     }
 
-    private void handleEscape() {
+    private void onEscape() {
       if (model.getSearchStringRepresentsSelectedObserver().getReversedObserver().get()) {
         model.refreshSearchText();
         selectAll();

@@ -96,7 +96,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
     itemList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     itemList.addListSelectionListener(e -> {
-      handleSelectionChanged();
+      onSelectionChanged();
       selectedItemChangedEvent.onEvent();
     });
     setLayout(UiUtil.createBorderLayout());
@@ -104,7 +104,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     add(configPanel, BorderLayout.SOUTH);
   }
 
-  private void handleSelectionChanged() {
+  private void onSelectionChanged() {
     configPanel.removeAll();
     for (final ItemRandomizer.RandomItem<T> item : getSelectedItems()) {
       configPanel.add(initializeWeightPanel(item));

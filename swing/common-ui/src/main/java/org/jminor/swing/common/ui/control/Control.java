@@ -185,24 +185,24 @@ public class Control extends AbstractAction {
     /**
      * Creates a separator
      */
-    void handleSeparator();
+    void onSeparator();
 
     /**
      * Creates a component based on the given control
      * @param control the control
      */
-    void handleControl(Control control);
+    void onControl(Control control);
 
     /**
      * Creates a component based on the given control set
      * @param controlSet the control set
      */
-    void handleControlSet(ControlSet controlSet);
+    void onControlSet(ControlSet controlSet);
 
     /**
      * Creates a component base on the given action
      * @param action the action
      */
-    void handleAction(Action action);
+    void onAction(Action action);
   }
 }

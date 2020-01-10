@@ -653,7 +653,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     return getEntityDefinition().getOrderBy();
   }
 
-  protected void handleDelete(final List<Entity> deletedEntities) {/*Provided for subclasses*/}
+  protected void onDelete(final List<Entity> deletedEntities) {/*Provided for subclasses*/}
 
   /**
    * Override to bind events using the edit model, called after the edit model has been set
@@ -684,14 +684,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   private void bindEventsInternal() {
-    getColumnModel().addColumnHiddenListener(this::handleColumnHidden);
+    getColumnModel().addColumnHiddenListener(this::onColumnHidden);
     conditionModel.addSimpleConditionListener(this::refresh);
   }
 
   private void bindEditModelEventsInternal() {
-    editModel.addAfterInsertListener(this::handleInsert);
-    editModel.addAfterUpdateListener(this::handleUpdate);
-    editModel.addAfterDeleteListener(this::handleDeleteInternal);
+    editModel.addAfterInsertListener(this::onInsert);
+    editModel.addAfterUpdateListener(this::onUpdate);
+    editModel.addAfterDeleteListener(this::onDeleteInternal);
     editModel.addAfterRefreshListener(this::refresh);
     editModel.addEntitySetListener(data -> {
       if (data == null && !getSelectionModel().isSelectionEmpty()) {
@@ -711,7 +711,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     });
   }
 
-  private void handleInsert(final List<Entity> insertedEntities) {
+  private void onInsert(final List<Entity> insertedEntities) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
       final List<Entity> entitiesToAdd = insertedEntities.stream().filter(entity ->
@@ -730,7 +730,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  private void handleUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+  private void onUpdate(final Map<Entity.Key, Entity> updatedEntities) {
     replaceEntitiesByKey(new HashMap<>(updatedEntities));
   }
 
@@ -759,14 +759,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  private void handleDeleteInternal(final List<Entity> deletedEntities) {
+  private void onDeleteInternal(final List<Entity> deletedEntities) {
     if (removeEntitiesOnDelete) {
       removeItems(deletedEntities);
     }
-    handleDelete(deletedEntities);
+    onDelete(deletedEntities);
   }
 
-  private void handleColumnHidden(final Property property) {
+  private void onColumnHidden(final Property property) {
     //disable the condition model for the column to be hidden, to prevent confusion
     conditionModel.setEnabled(property.getPropertyId(), false);
   }

@@ -141,7 +141,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void disconnect() {
     try {
-      handleResponse(execute(createHttpPost("disconnect")));
+      onResponse(execute(createHttpPost("disconnect")));
       connectionManager.shutdown();
       httpClient.close();
       closed = true;
@@ -156,7 +156,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public boolean isTransactionOpen() {
     try {
-      return handleResponse(execute(createHttpPost("isTransactionOpen")));
+      return onResponse(execute(createHttpPost("isTransactionOpen")));
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -168,7 +168,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void beginTransaction() {
     try {
-      handleResponse(execute(createHttpPost("beginTransaction")));
+      onResponse(execute(createHttpPost("beginTransaction")));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -183,7 +183,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void rollbackTransaction() {
     try {
-      handleResponse(execute(createHttpPost("rollbackTransaction")));
+      onResponse(execute(createHttpPost("rollbackTransaction")));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -198,7 +198,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void commitTransaction() {
     try {
-      handleResponse(execute(createHttpPost("commitTransaction")));
+      onResponse(execute(createHttpPost("commitTransaction")));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -246,7 +246,7 @@ final class HttpEntityConnection implements EntityConnection {
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      return handleResponse(execute(createHttpPost("insert", entities)));
+      return onResponse(execute(createHttpPost("insert", entities)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -262,7 +262,7 @@ final class HttpEntityConnection implements EntityConnection {
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      return handleResponse(execute(createHttpPost("update", entities)));
+      return onResponse(execute(createHttpPost("update", entities)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -278,7 +278,7 @@ final class HttpEntityConnection implements EntityConnection {
   public int delete(final List<Entity.Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
-      return handleResponse(execute(createHttpPost("deleteByKey", keys)));
+      return onResponse(execute(createHttpPost("deleteByKey", keys)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -294,7 +294,7 @@ final class HttpEntityConnection implements EntityConnection {
   public int delete(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return handleResponse(execute(createHttpPost("delete", condition)));
+      return onResponse(execute(createHttpPost("delete", condition)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -311,7 +311,7 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(propertyId);
     Objects.requireNonNull(condition);
     try {
-      return handleResponse(execute(createHttpPost(createURIBuilder("values")
+      return onResponse(execute(createHttpPost(createURIBuilder("values")
               .addParameter(PROPERTY_ID_PARAM, propertyId), condition)));
     }
     catch (final DatabaseException e) {
@@ -354,7 +354,7 @@ final class HttpEntityConnection implements EntityConnection {
   public List<Entity> select(final List<Entity.Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
-      return handleResponse(execute(createHttpPost("selectByKey", keys)));
+      return onResponse(execute(createHttpPost("selectByKey", keys)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -370,7 +370,7 @@ final class HttpEntityConnection implements EntityConnection {
   public List<Entity> select(final EntitySelectCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
-      return handleResponse(execute(createHttpPost("select", condition)));
+      return onResponse(execute(createHttpPost("select", condition)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -393,7 +393,7 @@ final class HttpEntityConnection implements EntityConnection {
   public Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
-      return handleResponse(execute(createHttpPost("dependencies", entities)));
+      return onResponse(execute(createHttpPost("dependencies", entities)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -409,7 +409,7 @@ final class HttpEntityConnection implements EntityConnection {
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return handleResponse(execute(createHttpPost("count", condition)));
+      return onResponse(execute(createHttpPost("count", condition)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -425,7 +425,7 @@ final class HttpEntityConnection implements EntityConnection {
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportWrapper, "reportWrapper");
     try {
-      return handleResponse(execute(createHttpPost("report", reportWrapper)));
+      return onResponse(execute(createHttpPost("report", reportWrapper)));
     }
     catch (final ReportException | DatabaseException e) {
       throw e;
@@ -444,7 +444,7 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(blobPropertyId, "blobPropertyId");
     Objects.requireNonNull(blobData, "blobData");
     try {
-      handleResponse(execute(createHttpPost("writeBlob", asList(primaryKey, blobPropertyId, blobData))));
+      onResponse(execute(createHttpPost("writeBlob", asList(primaryKey, blobPropertyId, blobData))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -461,7 +461,7 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobPropertyId, "blobPropertyId");
     try {
-      return handleResponse(execute(createHttpPost("readBlob", asList(primaryKey, blobPropertyId))));
+      return onResponse(execute(createHttpPost("readBlob", asList(primaryKey, blobPropertyId))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -474,7 +474,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   private Domain initializeDomain() {
     try {
-      return handleResponse(execute(createHttpPost("getDomain")));
+      return onResponse(execute(createHttpPost("getDomain")));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -487,7 +487,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   private List executeOperation(final String path, final String operationIdParam, final String operationId,
                                 final Object... arguments) throws Exception {
-    return handleResponse(execute(createHttpPost(createURIBuilder(path)
+    return onResponse(execute(createHttpPost(createURIBuilder(path)
                     .addParameter(operationIdParam, operationId),
             Util.notNull(arguments) ? asList(arguments) : emptyList())));
   }
@@ -541,7 +541,7 @@ final class HttpEntityConnection implements EntityConnection {
     return post;
   }
 
-  private static <T> T handleResponse(final CloseableHttpResponse closeableHttpResponse) throws Exception {
+  private static <T> T onResponse(final CloseableHttpResponse closeableHttpResponse) throws Exception {
     try (final CloseableHttpResponse response = closeableHttpResponse) {
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       response.getEntity().writeTo(outputStream);

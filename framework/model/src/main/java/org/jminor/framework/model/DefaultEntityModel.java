@@ -368,7 +368,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (containsTableModel()) {
       tableModel.setForeignKeyConditionValues(foreignKeyProperty, foreignKeyValues);
     }
-    handleInitialization(foreignKeyProperty, foreignKeyValues);
+    onInitialization(foreignKeyProperty, foreignKeyValues);
   }
 
   /** {@inheritDoc} */
@@ -445,7 +445,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param foreignKeyProperty the foreign key referring to the master model doing the initialization
    * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model
    */
-  protected void handleInitialization(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
+  protected void onInitialization(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
     if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
       editModel.put(foreignKeyProperty, foreignKeyValues.get(0));
     }
@@ -476,7 +476,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param insertedEntities the inserted entities
    * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
-  protected final void handleMasterInsert(final List<Entity> insertedEntities) {
+  protected final void onMasterInsert(final List<Entity> insertedEntities) {
     editModel.addForeignKeyValues(insertedEntities);
     editModel.setForeignKeyValues(insertedEntities);
     if (containsTableModel() && searchOnMasterInsert) {
@@ -492,14 +492,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Replaces the updated master entities wherever they are referenced
    * @param updatedEntities the updated entities
    */
-  protected final void handleMasterUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+  protected final void onMasterUpdate(final Map<Entity.Key, Entity> updatedEntities) {
     editModel.replaceForeignKeyValues(masterModel.getEntityId(), updatedEntities.values());
     if (containsTableModel()) {
       tableModel.replaceForeignKeyValues(masterModel.getEntityId(), updatedEntities.values());
     }
   }
 
-  protected final void handleMasterDelete(final List<Entity> deletedEntities) {
+  protected final void onMasterDelete(final List<Entity> deletedEntities) {
     editModel.removeForeignKeyValues(deletedEntities);
   }
 
@@ -540,11 +540,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     linkedDetailModelAddedEvent.addListener(initializer);
     linkedDetailModelRemovedEvent.addListener(initializer);
     editModel.addAfterInsertListener(insertEvent ->
-            detailModels.forEach(detailModel -> detailModel.handleMasterInsert(insertEvent)));
+            detailModels.forEach(detailModel -> detailModel.onMasterInsert(insertEvent)));
     editModel.addAfterUpdateListener(updateEvent ->
-            detailModels.forEach(detailModel -> detailModel.handleMasterUpdate(updateEvent)));
+            detailModels.forEach(detailModel -> detailModel.onMasterUpdate(updateEvent)));
     editModel.addAfterDeleteListener(deleteEvent ->
-            detailModels.forEach(detailModel -> detailModel.handleMasterDelete(deleteEvent)));
+            detailModels.forEach(detailModel -> detailModel.onMasterDelete(deleteEvent)));
     if (containsTableModel()) {
       getTableModel().addSelectionChangedListener(initializer);
     }

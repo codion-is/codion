@@ -60,7 +60,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
   public EntityApplicationView(final String applicationTitle, final String iconFileName) {
     this.applicationTitle = applicationTitle;
     this.iconFileName = iconFileName;
-    Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> handleException((Exception) throwable));
+    Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> onException((Exception) throwable));
   }
 
   /**
@@ -137,7 +137,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
       stage.show();
     }
     catch (final Exception e) {
-      handleException(e);
+      onException(e);
       stage.close();
     }
   }
@@ -248,7 +248,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
    */
   protected abstract M initializeApplicationModel(EntityConnectionProvider connectionProvider);
 
-  private static void handleException(final Exception e) {
+  private static void onException(final Exception e) {
     if (e instanceof CancelException) {
       return;
     }

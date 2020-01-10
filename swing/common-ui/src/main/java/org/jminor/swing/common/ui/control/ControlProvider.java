@@ -187,12 +187,12 @@ public final class ControlProvider {
     }
 
     @Override
-    public void handleSeparator() {
+    public void onSeparator() {
       panel.add(new JLabel());
     }
 
     @Override
-    public void handleControl(final Control control) {
+    public void onControl(final Control control) {
       if (control instanceof Controls.ToggleControl) {
         panel.add(createCheckBox((Controls.ToggleControl) control));
       }
@@ -202,7 +202,7 @@ public final class ControlProvider {
     }
 
     @Override
-    public void handleControlSet(final ControlSet controlSet) {
+    public void onControlSet(final ControlSet controlSet) {
       if (vertical) {
         createVerticalButtonPanel(panel, controlSet);
       }
@@ -212,7 +212,7 @@ public final class ControlProvider {
     }
 
     @Override
-    public void handleAction(final Action action) {
+    public void onAction(final Action action) {
       panel.add(new JButton(action));
     }
   }
@@ -250,12 +250,12 @@ public final class ControlProvider {
     }
 
     @Override
-    public void handleSeparator() {
+    public void onSeparator() {
       menu.addSeparator();
     }
 
     @Override
-    public void handleControl(final Control control) {
+    public void onControl(final Control control) {
       if (control instanceof Controls.ToggleControl) {
         menu.add(createCheckBoxMenuItem((Controls.ToggleControl) control));
       }
@@ -265,14 +265,14 @@ public final class ControlProvider {
     }
 
     @Override
-    public void handleControlSet(final ControlSet controlSet) {
+    public void onControlSet(final ControlSet controlSet) {
       final MenuControlIterator mv = new MenuControlIterator(controlSet);
       iterate(mv, controlSet);
       menu.add(mv.menu);
     }
 
     @Override
-    public void handleAction(final Action action) {
+    public void onAction(final Action action) {
       menu.add(action);
     }
   }
@@ -292,12 +292,12 @@ public final class ControlProvider {
     }
 
     @Override
-    public void handleSeparator() {
+    public void onSeparator() {
       toolbar.addSeparator();
     }
 
     @Override
-    public void handleControl(final Control control) {
+    public void onControl(final Control control) {
       if (control instanceof Controls.ToggleControl) {
         toolbar.add(createToggleButton((Controls.ToggleControl) control, includeCaption));
       }
@@ -307,12 +307,12 @@ public final class ControlProvider {
     }
 
     @Override
-    public void handleControlSet(final ControlSet controlSet) {
+    public void onControlSet(final ControlSet controlSet) {
       iterate(new ToolBarControlIterator(toolbar), controlSet);
     }
 
     @Override
-    public void handleAction(final Action action) {
+    public void onAction(final Action action) {
       toolbar.add(action);
     }
   }
@@ -369,16 +369,16 @@ public final class ControlProvider {
     requireNonNull(controlSet, "controlSet");
     for (final Action action : controlSet.getActions()) {
       if (action == null) {
-        controlIterator.handleSeparator();
+        controlIterator.onSeparator();
       }
       else if (action instanceof ControlSet) {
-        controlIterator.handleControlSet((ControlSet) action);
+        controlIterator.onControlSet((ControlSet) action);
       }
       else if (action instanceof Control) {
-        controlIterator.handleControl((Control) action);
+        controlIterator.onControl((Control) action);
       }
       else {
-        controlIterator.handleAction(action);
+        controlIterator.onAction(action);
       }
     }
   }

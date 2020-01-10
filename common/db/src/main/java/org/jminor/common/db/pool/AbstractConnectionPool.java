@@ -169,8 +169,8 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
    * @throws IllegalAccessException in case of illegal access
    * @throws InvocationTargetException in case of invocation exception
    */
-  protected final Object handleInvocation(final Database database, final User user, final DataSource dataSource,
-                                          final Method dataSourceMethod, final Object[] dataSourceArgs)
+  protected final Object onInvocation(final Database database, final User user, final DataSource dataSource,
+                                      final Method dataSourceMethod, final Object[] dataSourceArgs)
           throws DatabaseException, IllegalAccessException, InvocationTargetException {
     if ("getConnection".equals(dataSourceMethod.getName())) {
       final Connection connection = database.createConnection(user);

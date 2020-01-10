@@ -516,7 +516,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     });
   }
 
-  private void handleInsert(final List<Entity> insertedEntities) {
+  private void onInsert(final List<Entity> insertedEntities) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
       final List<Entity> entitiesToAdd = insertedEntities.stream().filter(entity ->
@@ -535,11 +535,11 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  private void handleUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+  private void onUpdate(final Map<Entity.Key, Entity> updatedEntities) {
     replaceEntitiesByKey(new HashMap<>(updatedEntities));
   }
 
-  private void handleDelete(final List<Entity> deletedEntities) {
+  private void onDelete(final List<Entity> deletedEntities) {
     if (removeEntitiesOnDelete) {
       removeAll(deletedEntities);
     }
@@ -615,9 +615,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private void bindEditModelEvents() {
-    getEditModel().addAfterInsertListener(this::handleInsert);
-    getEditModel().addAfterUpdateListener(this::handleUpdate);
-    getEditModel().addAfterDeleteListener(this::handleDelete);
+    getEditModel().addAfterInsertListener(this::onInsert);
+    getEditModel().addAfterUpdateListener(this::onUpdate);
+    getEditModel().addAfterDeleteListener(this::onDelete);
     getEditModel().addAfterRefreshListener(this::refresh);
     getEditModel().addEntitySetListener(entity -> {
       if (entity == null && selectionModelHasBeenSet() && !getSelectionModel().isSelectionEmpty()) {

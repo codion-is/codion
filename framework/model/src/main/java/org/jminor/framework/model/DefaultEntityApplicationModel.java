@@ -58,7 +58,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     requireNonNull(user, "user");
     connectionProvider.setUser(user);
     refresh();
-    handleLogin();
+    onLogin();
   }
 
   /** {@inheritDoc} */
@@ -66,7 +66,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   public final void logout() {
     connectionProvider.setUser(null);
     clear();
-    handleLogout();
+    onLogout();
   }
 
   /** {@inheritDoc} */
@@ -202,13 +202,13 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
    * Called after a logout has been performed.
    * Override to add a logout handler.
    */
-  protected void handleLogout() {/*For subclasses*/}
+  protected void onLogout() {/*For subclasses*/}
 
   /**
    * Called after a login has been performed
    * Override to add a login handler.
    */
-  protected void handleLogin() {/*For subclasses*/}
+  protected void onLogin() {/*For subclasses*/}
 
   private void checkConnectionValidity() {
     connectionValidState.set(connectionProvider.isConnectionValid());

@@ -592,7 +592,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       }
       catch (final Exception e) {
         LOG.error(e.getMessage(), e);
-        handleException(e);
+        onException(e);
       }
       finally {
         setWaitCursor(false, this);
@@ -624,7 +624,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      handleException(e);
+      onException(e);
     }
     finally {
       setWaitCursor(false, this);
@@ -649,11 +649,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     catch (final ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      handleReferentialIntegrityException(e, tableModel.getSelectionModel().getSelectedItems());
+      onReferentialIntegrityException(e, tableModel.getSelectionModel().getSelectedItems());
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      handleException(e);
+      onException(e);
     }
   }
 
@@ -668,18 +668,18 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Handles the given exception. If the referential error handling is {@link EntityTablePanel.ReferentialIntegrityErrorHandling#DEPENDENCIES}, the dependencies of the given entity are displayed
-   * to the user, otherwise {@link #handleException(Exception)} is called.
+   * to the user, otherwise {@link #onException(Exception)} is called.
    * @param exception the exception
    * @param entities the entities causing the exception
    * @see #setReferentialIntegrityErrorHandling(EntityTablePanel.ReferentialIntegrityErrorHandling)
    */
-  public void handleReferentialIntegrityException(final ReferentialIntegrityException exception,
-                                                  final List<Entity> entities) {
+  public void onReferentialIntegrityException(final ReferentialIntegrityException exception,
+                                              final List<Entity> entities) {
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
       showDependenciesDialog(entities, tableModel.getConnectionProvider(), this);
     }
     else {
-      handleException(exception);
+      onException(exception);
     }
   }
 
@@ -688,7 +688,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param exception the exception to handle
    * @see #displayException(Throwable, Window)
    */
-  public void handleException(final Exception exception) {
+  public void onException(final Exception exception) {
     displayException(exception, getParentWindow(this));
   }
 

@@ -1340,12 +1340,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         return frame;
       }
       catch (final Throwable exception) {
-        handleStartupException(startupDialog, connectionProvider, exception);
+        onStartupException(startupDialog, connectionProvider, exception);
       }
     }
   }
 
-  private void handleStartupException(final JDialog startupDialog, final EntityConnectionProvider connectionProvider, final Throwable e) {
+  private void onStartupException(final JDialog startupDialog, final EntityConnectionProvider connectionProvider, final Throwable e) {
     try {
       if (connectionProvider != null) {
         connectionProvider.disconnect();

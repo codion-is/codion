@@ -314,18 +314,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
 
   /**
    * Handles the given exception. If the referential error handling is {@link EntityTablePanel.ReferentialIntegrityErrorHandling#DEPENDENCIES}, the dependencies of the given entity are displayed
-   * to the user, otherwise {@link #handleException(Exception)} is called.
+   * to the user, otherwise {@link #onException(Exception)} is called.
    * @param exception the exception
    * @param entity the entity causing the exception
    * @see #setReferentialIntegrityErrorHandling(EntityTablePanel.ReferentialIntegrityErrorHandling)
    */
-  public void handleReferentialIntegrityException(final ReferentialIntegrityException exception,
-                                                  final Entity entity) {
+  public void onReferentialIntegrityException(final ReferentialIntegrityException exception,
+                                              final Entity entity) {
     if (referentialIntegrityErrorHandling == EntityTablePanel.ReferentialIntegrityErrorHandling.DEPENDENCIES) {
       EntityTablePanel.showDependenciesDialog(singletonList(entity), editModel.getConnectionProvider(), this);
     }
     else {
-      handleException(exception);
+      onException(exception);
     }
   }
 
@@ -333,7 +333,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * Displays the exception message after which the component involved receives the focus.
    * @param exception the exception
    */
-  public void handleValidationException(final ValidationException exception) {
+  public void onValidationException(final ValidationException exception) {
     JOptionPane.showMessageDialog(this, exception.getMessage(),
             Messages.get(Messages.EXCEPTION), JOptionPane.ERROR_MESSAGE);
     requestComponentFocus(exception.getPropertyId());
@@ -344,7 +344,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @param exception the exception to handle
    * @see #displayException(Throwable, Window)
    */
-  public void handleException(final Exception exception) {
+  public void onException(final Exception exception) {
     displayException(exception, UiUtil.getParentWindow(this));
   }
 
@@ -484,11 +484,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     }
     catch (final ValidationException e) {
       LOG.debug(e.getMessage(), e);
-      handleValidationException(e);
+      onValidationException(e);
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      handleException(e);
+      onException(e);
     }
 
     return false;
@@ -523,11 +523,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     }
     catch (final ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      handleReferentialIntegrityException(e, editModel.getEntityCopy());
+      onReferentialIntegrityException(e, editModel.getEntityCopy());
     }
     catch (final Exception ex) {
       LOG.error(ex.getMessage(), ex);
-      handleException(ex);
+      onException(ex);
     }
 
     return false;
@@ -564,11 +564,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     }
     catch (final ValidationException e) {
       LOG.debug(e.getMessage(), e);
-      handleValidationException(e);
+      onValidationException(e);
     }
     catch (final Exception ex) {
       LOG.error(ex.getMessage(), ex);
-      handleException(ex);
+      onException(ex);
     }
 
     return false;

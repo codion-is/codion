@@ -11,7 +11,7 @@ package org.jminor.common.event;
  * EventObserver&lt;Boolean&gt; observer = event.getObserver();
  *
  * observer.addListener(this::doSomething);
- * observer.addDataListener(this::handleBoolean);
+ * observer.addDataListener(this::onBoolean);
  *
  * event.onEvent(true);
  * </pre>

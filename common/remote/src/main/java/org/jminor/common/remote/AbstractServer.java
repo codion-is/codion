@@ -299,14 +299,14 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     sharedLoginProxies.forEach(AbstractServer::closeLoginProxy);
     loginProxies.values().forEach(AbstractServer::closeLoginProxy);
 
-    handleShutdown();
+    onShutdown();
   }
 
   /**
    * Called after shutdown has finished, for subclasses
    * @throws RemoteException in case of an exception
    */
-  protected void handleShutdown() throws RemoteException {/*Provided for subclasses*/}
+  protected void onShutdown() throws RemoteException {/*Provided for subclasses*/}
 
   /**
    * Establishes the actual client connection.
