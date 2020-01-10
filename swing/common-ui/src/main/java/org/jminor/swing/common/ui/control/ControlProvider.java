@@ -23,8 +23,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import java.awt.GridLayout;
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
+import java.util.function.Consumer;
 
 /**
  * Provides UI controls based on the Control class and its descendants.
@@ -34,33 +33,15 @@ public final class ControlProvider {
   private ControlProvider() {}
 
   /**
-   * Creates a vertically laid out panel of buttons from a control set and adds it to the panel
-   * @param panel the panel
-   * @param controlSet the control set
-   */
-  public static void createVerticalButtonPanel(final JPanel panel, final ControlSet controlSet) {
-    panel.add(createVerticalButtonPanel(controlSet));
-  }
-
-  /**
    * Creates a vertically laid out panel of buttons from a control set
    * @param controlSet the control set
    * @return the button panel
    */
   public static JPanel createVerticalButtonPanel(final ControlSet controlSet) {
     final JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
-    iterate(new ButtonControlIterator(panel, true), controlSet);
+    controlSet.getActions().forEach(new ButtonControlHandler(panel, true));
 
     return panel;
-  }
-
-  /**
-   * Creates a horizontally laid out panel of buttons from a control set and adds it to the panel
-   * @param panel the panel
-   * @param controlSet the control set
-   */
-  public static void createHorizontalButtonPanel(final JPanel panel, final ControlSet controlSet) {
-    panel.add(createHorizontalButtonPanel(controlSet));
   }
 
   /**
@@ -70,7 +51,7 @@ public final class ControlProvider {
    */
   public static JPanel createHorizontalButtonPanel(final ControlSet controlSet) {
     final JPanel panel = new JPanel(new GridLayout(1, 0, 5, 5));
-    iterate(new ButtonControlIterator(panel, false), controlSet);
+    controlSet.getActions().forEach(new ButtonControlHandler(panel, false));
 
     return panel;
   }
@@ -90,10 +71,10 @@ public final class ControlProvider {
    * @return a menu based on the given controls
    */
   public static JMenu createMenu(final ControlSet controlSet) {
-    final MenuControlIterator iterator = new MenuControlIterator(controlSet);
-    iterate(iterator, controlSet);
+    final MenuControlHandler controlHandler = new MenuControlHandler(controlSet);
+    controlSet.getActions().forEach(controlHandler);
 
-    return iterator.getMenu();
+    return controlHandler.menu;
   }
 
   /**
@@ -101,10 +82,10 @@ public final class ControlProvider {
    * @return a check box menu item based on the control
    */
   public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleControl toggleControl) {
-    final JCheckBoxMenuItem box = new JCheckBoxMenuItem(toggleControl);
-    box.setModel(toggleControl.getButtonModel());
+    final JCheckBoxMenuItem item = new JCheckBoxMenuItem(toggleControl);
+    item.setModel(toggleControl.getButtonModel());
 
-    return box;
+    return item;
   }
 
   /**
@@ -112,31 +93,32 @@ public final class ControlProvider {
    * @return a radio button menu item based on the control
    */
   public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleControl toggleControl) {
-    final JRadioButtonMenuItem box = new JRadioButtonMenuItem(toggleControl);
-    box.setModel(toggleControl.getButtonModel());
+    final JRadioButtonMenuItem item = new JRadioButtonMenuItem(toggleControl);
+    item.setModel(toggleControl.getButtonModel());
 
-    return box;
+    return item;
   }
 
   /**
+   * Creates a JToolBar populated with the given controls.
    * @param controlSet the controls
    * @param orientation the toolbar orientation
    * @return a toolbar based on the given controls
    */
   public static JToolBar createToolBar(final ControlSet controlSet, final int orientation) {
     final JToolBar toolBar = new JToolBar(orientation);
-    createToolBar(toolBar, controlSet);
+    populateToolBar(toolBar, controlSet);
 
     return toolBar;
   }
 
   /**
-   * Adds the given controls to the given tool bar
+   * Adds the given controls to the given tool bar.
    * @param toolBar the toolbar to add the controls to
    * @param controlSet the controls
    */
-  public static void createToolBar(final JToolBar toolBar, final ControlSet controlSet) {
-    iterate(new ToolBarControlIterator(toolBar), controlSet);
+  public static void populateToolBar(final JToolBar toolBar, final ControlSet controlSet) {
+    controlSet.getActions().forEach(new ToolBarControlHandler(toolBar));
   }
 
   /**
@@ -144,12 +126,10 @@ public final class ControlProvider {
    * @return a menu bar based on the given controls
    */
   public static JMenuBar createMenuBar(final List<ControlSet> controlSets) {
-    final JMenuBar menubar = new JMenuBar();
-    for (final ControlSet set : controlSets) {
-      addControlSetToMenuBar(menubar, set);
-    }
+    final JMenuBar menuBar = new JMenuBar();
+    controlSets.forEach(controlSet -> populateMenuBar(menuBar, controlSet));
 
-    return menubar;
+    return menuBar;
   }
 
   /**
@@ -157,12 +137,10 @@ public final class ControlProvider {
    * @return a menu bar based on the given controls
    */
   public static JMenuBar createMenuBar(final ControlSet controlSet) {
-    final JMenuBar menubar = new JMenuBar();
-    for (final ControlSet set : controlSet.getControlSets()) {
-      addControlSetToMenuBar(menubar, set);
-    }
+    final JMenuBar menuBar = new JMenuBar();
+    controlSet.getControlSets().forEach(subControlSet -> populateMenuBar(menuBar, subControlSet));
 
-    return menubar;
+    return menuBar;
   }
 
   /**
@@ -170,18 +148,60 @@ public final class ControlProvider {
    * @param controlSet the controls
    * @return the menu bar with the added controls
    */
-  public static JMenuBar addControlSetToMenuBar(final JMenuBar menuBar, final ControlSet controlSet) {
+  public static JMenuBar populateMenuBar(final JMenuBar menuBar, final ControlSet controlSet) {
     menuBar.add(createMenu(controlSet));
 
     return menuBar;
   }
 
-  private static final class ButtonControlIterator implements Control.Iterator {
+  private static abstract class ControlHandler implements Consumer<Action> {
+
+    @Override
+    public final void accept(final Action action) {
+      if (action == null) {
+        onSeparator();
+      }
+      else if (action instanceof ControlSet) {
+        onControlSet((ControlSet) action);
+      }
+      else if (action instanceof Control) {
+        onControl((Control) action);
+      }
+      else {
+        onAction(action);
+      }
+    }
+
+    /**
+     * Creates a separator
+     */
+    abstract void onSeparator();
+
+    /**
+     * Creates a component based on the given control
+     * @param control the control
+     */
+    abstract void onControl(Control control);
+
+    /**
+     * Creates a component based on the given control set
+     * @param controlSet the control set
+     */
+    abstract void onControlSet(ControlSet controlSet);
+
+    /**
+     * Creates a component base on the given action
+     * @param action the action
+     */
+    abstract void onAction(Action action);
+  }
+
+  private static final class ButtonControlHandler extends ControlHandler {
 
     private final JPanel panel;
     private final boolean vertical;
 
-    private ButtonControlIterator(final JPanel panel, final boolean vertical) {
+    private ButtonControlHandler(final JPanel panel, final boolean vertical) {
       this.panel = panel;
       this.vertical = vertical;
     }
@@ -203,12 +223,7 @@ public final class ControlProvider {
 
     @Override
     public void onControlSet(final ControlSet controlSet) {
-      if (vertical) {
-        createVerticalButtonPanel(panel, controlSet);
-      }
-      else {
-        createHorizontalButtonPanel(panel, controlSet);
-      }
+      panel.add(vertical ? createVerticalButtonPanel(controlSet) : createHorizontalButtonPanel(controlSet));
     }
 
     @Override
@@ -217,11 +232,11 @@ public final class ControlProvider {
     }
   }
 
-  private static final class MenuControlIterator implements Control.Iterator {
+  private static final class MenuControlHandler extends ControlHandler {
 
     private final JMenu menu;
 
-    private MenuControlIterator(final ControlSet controlSet) {
+    private MenuControlHandler(final ControlSet controlSet) {
       menu = new JMenu(controlSet.getName());
       final String description = controlSet.getDescription();
       if (description != null) {
@@ -242,13 +257,6 @@ public final class ControlProvider {
       }
     }
 
-    /**
-     * @return the JMenu
-     */
-    public JMenu getMenu() {
-      return menu;
-    }
-
     @Override
     public void onSeparator() {
       menu.addSeparator();
@@ -266,9 +274,9 @@ public final class ControlProvider {
 
     @Override
     public void onControlSet(final ControlSet controlSet) {
-      final MenuControlIterator iterator = new MenuControlIterator(controlSet);
-      iterate(iterator, controlSet);
-      menu.add(iterator.menu);
+      final MenuControlHandler controlHandler = new MenuControlHandler(controlSet);
+      controlSet.getActions().forEach(controlHandler);
+      menu.add(controlHandler.menu);
     }
 
     @Override
@@ -277,16 +285,16 @@ public final class ControlProvider {
     }
   }
 
-  private static final class ToolBarControlIterator implements Control.Iterator {
+  private static final class ToolBarControlHandler extends ControlHandler {
 
     private final JToolBar toolbar;
     private final boolean includeCaption;
 
-    private ToolBarControlIterator(final JToolBar owner) {
+    private ToolBarControlHandler(final JToolBar owner) {
       this(owner, true);
     }
 
-    private ToolBarControlIterator(final JToolBar owner, final boolean includeCaption) {
+    private ToolBarControlHandler(final JToolBar owner, final boolean includeCaption) {
       this.toolbar = owner;
       this.includeCaption = includeCaption;
     }
@@ -308,7 +316,7 @@ public final class ControlProvider {
 
     @Override
     public void onControlSet(final ControlSet controlSet) {
-      iterate(new ToolBarControlIterator(toolbar), controlSet);
+      controlSet.getActions().forEach(new ToolBarControlHandler(toolbar));
     }
 
     @Override
@@ -357,29 +365,5 @@ public final class ControlProvider {
     toggleButton.setText(includeCaption ? toggleControl.getName() : null);
 
     return toggleButton;
-  }
-
-  /**
-   * Iterates the given control set using the given control iterator
-   * @param controlIterator the control iterator
-   * @param controlSet the control set
-   */
-  private static void iterate(final Control.Iterator controlIterator, final ControlSet controlSet) {
-    requireNonNull(controlIterator, "controlIterator");
-    requireNonNull(controlSet, "controlSet");
-    for (final Action action : controlSet.getActions()) {
-      if (action == null) {
-        controlIterator.onSeparator();
-      }
-      else if (action instanceof ControlSet) {
-        controlIterator.onControlSet((ControlSet) action);
-      }
-      else if (action instanceof Control) {
-        controlIterator.onControl((Control) action);
-      }
-      else {
-        controlIterator.onAction(action);
-      }
-    }
   }
 }

@@ -44,7 +44,6 @@ import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.InputMap;
@@ -950,9 +949,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     toolbarControls.add(controlMap.get(MOVE_SELECTION_DOWN));
     additionalToolBarControlSets.forEach(controlSet -> {
       toolbarControls.addSeparator();
-      for (final Action action : controlSet.getActions()) {
-        toolbarControls.add(action);
-      }
+      controlSet.getActions().forEach(toolbarControls::add);
     });
 
     return toolbarControls;

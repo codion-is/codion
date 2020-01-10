@@ -167,33 +167,4 @@ public class Control extends AbstractAction {
      */
     void perform() throws Exception;
   }
-
-  /**
-   * Used when handling sets of Controls.
-   */
-  public interface Iterator {
-
-    /**
-     * Creates a separator
-     */
-    void onSeparator();
-
-    /**
-     * Creates a component based on the given control
-     * @param control the control
-     */
-    void onControl(Control control);
-
-    /**
-     * Creates a component based on the given control set
-     * @param controlSet the control set
-     */
-    void onControlSet(ControlSet controlSet);
-
-    /**
-     * Creates a component base on the given action
-     * @param action the action
-     */
-    void onAction(Action action);
-  }
 }

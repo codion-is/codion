@@ -16,7 +16,7 @@ public class ControlSetTest {
     final Control two = new Control("two");
     ControlSet set = new ControlSet("set", one, two);
     set.add(null);
-    set.addAt(null, 0);
+    set.addAt(0, null);
     set.remove(null);
     assertFalse(nullOrEmpty(set.getName()));
     assertNull(set.getIcon());
@@ -28,7 +28,7 @@ public class ControlSetTest {
     set.setName("set");
     assertFalse(nullOrEmpty(set.getName()));
     assertEquals("set", set.getName());
-    set.addAt(one, 0);
+    set.addAt(0, one);
     set.addSeparatorAt(1);
 
     assertEquals(one, set.get(0));
