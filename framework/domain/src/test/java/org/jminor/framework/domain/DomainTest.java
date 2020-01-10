@@ -5,12 +5,13 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.DateFormats;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.operation.AbstractProcedure;
-import org.jminor.common.db.operation.Operation;
-import org.jminor.common.db.valuemap.exception.LengthValidationException;
-import org.jminor.common.db.valuemap.exception.NullValidationException;
-import org.jminor.common.db.valuemap.exception.RangeValidationException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.db.operation.AbstractDatabaseProcedure;
+import org.jminor.common.db.operation.DatabaseOperation;
+import org.jminor.common.event.EventListener;
+import org.jminor.framework.domain.exception.LengthValidationException;
+import org.jminor.framework.domain.exception.NullValidationException;
+import org.jminor.framework.domain.exception.RangeValidationException;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -28,6 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -402,7 +404,7 @@ public class DomainTest {
     }
     catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(TestDomain.EMP_DEPARTMENT_FK, e.getKey());
+      assertEquals(TestDomain.EMP_DEPARTMENT_FK, e.getPropertyId());
     }
     emp.put(TestDomain.EMP_DEPARTMENT, 1);
     try {
@@ -418,7 +420,7 @@ public class DomainTest {
     }
     catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(TestDomain.EMP_SALARY, e.getKey());
+      assertEquals(TestDomain.EMP_SALARY, e.getPropertyId());
     }
   }
 
@@ -449,6 +451,19 @@ public class DomainTest {
     assertThrows(RangeValidationException.class, () -> validator.validate(emp));
     emp.put(TestDomain.EMP_COMMISSION, 2100d);
     assertThrows(RangeValidationException.class, () -> validator.validate(emp));
+  }
+
+  @Test
+  public void revalidate() {
+    final AtomicInteger counter = new AtomicInteger();
+    final DefaultEntityValidator validator = new DefaultEntityValidator();
+    final EventListener listener = counter::incrementAndGet;
+    validator.addRevalidationListener(listener);
+    validator.revalidate();
+    assertEquals(1, counter.get());
+    validator.removeRevalidationListener(listener);
+    validator.revalidate();
+    assertEquals(1, counter.get());
   }
 
   @Test
@@ -584,7 +599,7 @@ public class DomainTest {
 
   @Test
   public void addOperationExisting() {
-    final Operation operation = new AbstractProcedure<DatabaseConnection>("operationId", "test") {
+    final DatabaseOperation operation = new AbstractDatabaseProcedure<DatabaseConnection>("operationId", "test") {
       @Override
       public void execute(final DatabaseConnection databaseConnection, final Object... arguments) {}
     };
@@ -604,7 +619,7 @@ public class DomainTest {
 
   @Test
   public void defaultEntity() {
-    final Entity detail = domain.defaultEntity(TestDomain.T_DETAIL, key -> null);
+    final Entity detail = domain.defaultEntity(TestDomain.T_DETAIL, property -> null);
     assertFalse(detail.containsKey(TestDomain.DETAIL_DOUBLE));//columnHasDefaultValue
     assertFalse(detail.containsKey(TestDomain.DETAIL_DATE));//columnHasDefaultValue
     assertTrue(detail.containsKey(TestDomain.DETAIL_BOOLEAN_NULLABLE));//columnHasDefaultValue && property.hasDefaultValue

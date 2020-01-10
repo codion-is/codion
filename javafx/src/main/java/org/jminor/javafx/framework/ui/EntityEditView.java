@@ -6,11 +6,11 @@ package org.jminor.javafx.framework.ui;
 import org.jminor.common.Conjunction;
 import org.jminor.common.Item;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
@@ -363,7 +363,7 @@ public abstract class EntityEditView extends BorderPane {
     }
     catch (final ValidationException e) {
       FXUiUtil.showExceptionDialog(e);
-      controls.get(e.getKey()).requestFocus();
+      controls.get(e.getPropertyId()).requestFocus();
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -379,7 +379,7 @@ public abstract class EntityEditView extends BorderPane {
       }
       catch (final ValidationException e) {
         FXUiUtil.showExceptionDialog(e);
-        controls.get(e.getKey()).requestFocus();
+        controls.get(e.getPropertyId()).requestFocus();
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);

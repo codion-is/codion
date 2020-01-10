@@ -6,9 +6,6 @@ package org.jminor.framework.model;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.UpdateException;
-import org.jminor.common.db.valuemap.ValueCollectionProvider;
-import org.jminor.common.db.valuemap.ValueProvider;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
@@ -24,6 +21,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.ValueChange;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -37,10 +35,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.db.condition.Conditions.entityCondition;
 import static org.jminor.framework.domain.Entities.mapToOriginalPrimaryKey;
 import static org.jminor.framework.domain.ValueChanges.valueChange;
 
@@ -139,9 +137,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final State entityNewState = States.state(true);
 
   /**
-   * Provides the values when a default entity is created
+   * Provides the default value for properties when a default entity is created
    */
-  private final ValueProvider<Property, Object> defaultValueProvider = this::getDefaultValue;
+  private final Function<Property, Object> defaultValueProvider = this::getDefaultValue;
 
   /**
    * Specifies whether this edit model should warn about unsaved data
@@ -722,12 +720,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final ValueCollectionProvider<Object> getValueProvider(final Property property) {
-    return new PropertyValueProvider(connectionProvider, entity.getEntityId(), property.getPropertyId());
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final <V> Value<V> value(final String propertyId) {
     return new EditModelValue<>(this, propertyId);
   }
@@ -1098,30 +1090,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       primaryKeyNullState.set(entity.isKeyNull());
       entityNewState.set(isEntityNew());
     });
-  }
-
-  static final class PropertyValueProvider implements ValueCollectionProvider<Object> {
-
-    private final EntityConnectionProvider connectionProvider;
-    private final String entityId;
-    private final String propertyId;
-
-    private PropertyValueProvider(final EntityConnectionProvider connectionProvider, final String entityId,
-                                  final String propertyId) {
-      this.connectionProvider = connectionProvider;
-      this.entityId = entityId;
-      this.propertyId = propertyId;
-    }
-
-    @Override
-    public Collection<Object> values() {
-      try {
-        return connectionProvider.getConnection().selectValues(propertyId, entityCondition(entityId));
-      }
-      catch (final DatabaseException e) {
-        throw new RuntimeException(e);
-      }
-    }
   }
 
   private static final class EditModelValue<V> extends AbstractValue<V> {

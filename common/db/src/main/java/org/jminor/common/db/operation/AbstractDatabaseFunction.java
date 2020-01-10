@@ -7,14 +7,14 @@ package org.jminor.common.db.operation;
  * A base Function implementation
  * @param <C> the connection type to use when executing this function
  */
-public abstract class AbstractFunction<C> extends AbstractOperation implements Function<C> {
+public abstract class AbstractDatabaseFunction<C> extends AbstractDatabaseOperation implements DatabaseFunction<C> {
 
   /**
-   * Instantiates a new AbstractFunction.
+   * Instantiates a new AbstractDatabaseFunction.
    * @param id the function ID
    * @param name the function name
    */
-  public AbstractFunction(final String id, final String name) {
+  public AbstractDatabaseFunction(final String id, final String name) {
     super(id, name);
   }
 }

@@ -5,10 +5,9 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Util;
-import org.jminor.common.db.operation.Function;
-import org.jminor.common.db.operation.Operation;
-import org.jminor.common.db.operation.Procedure;
-import org.jminor.common.db.valuemap.ValueProvider;
+import org.jminor.common.db.operation.DatabaseFunction;
+import org.jminor.common.db.operation.DatabaseOperation;
+import org.jminor.common.db.operation.DatabaseProcedure;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -55,7 +55,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
 
   private final String domainId;
   private final DefaultEntityDefinitionProvider definitionProvider = new DefaultEntityDefinitionProvider();
-  private final transient Map<String, Operation> databaseOperations = new HashMap<>();
+  private final transient Map<String, DatabaseOperation> databaseOperations = new HashMap<>();
 
   private Map<Class, EntityDefinition> beanEntities;
   private Map<String, Map<String, BeanProperty>> beanProperties;
@@ -149,30 +149,30 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * If a {@link ColumnProperty}s underlying column has a default value the property is
    * skipped unless the property itself has a default value, which then overrides the columns default value.
    * @param entityId the entity id
-   * @param valueProvider the value provider
+   * @param valueProvider provides the default value for a given property
    * @return the populated entity
    * @see ColumnProperty.Builder#setColumnHasDefaultValue(boolean)
    * @see ColumnProperty.Builder#setDefaultValue(Object)
    */
-  public final Entity defaultEntity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
+  public final Entity defaultEntity(final String entityId, final Function<Property, Object> valueProvider) {
     final Entity entity = entity(entityId);
     final EntityDefinition entityDefinition = getDefinition(entityId);
     final Collection<ColumnProperty> columnProperties = entityDefinition.getColumnProperties();
     for (final ColumnProperty property : columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        entity.put(property, valueProvider.get(property));
+        entity.put(property, valueProvider.apply(property));
       }
     }
     final Collection<TransientProperty> transientProperties = entityDefinition.getTransientProperties();
     for (final TransientProperty transientProperty : transientProperties) {
       if (!(transientProperty instanceof DerivedProperty)) {
-        entity.put(transientProperty, valueProvider.get(transientProperty));
+        entity.put(transientProperty, valueProvider.apply(transientProperty));
       }
     }
     final Collection<ForeignKeyProperty> foreignKeyProperties = entityDefinition.getForeignKeyProperties();
     for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      entity.put(foreignKeyProperty, valueProvider.get(foreignKeyProperty));
+      entity.put(foreignKeyProperty, valueProvider.apply(foreignKeyProperty));
     }
     entity.saveAll();
 
@@ -435,7 +435,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @param operation the operation to add
    * @throws IllegalArgumentException in case an operation with the same id has already been added
    */
-  public final void addOperation(final Operation operation) {
+  public final void addOperation(final DatabaseOperation operation) {
     checkIfDeserialized();
     if (databaseOperations.containsKey(operation.getId())) {
       throw new IllegalArgumentException("Operation already defined: " + databaseOperations.get(operation.getId()).getName());
@@ -451,15 +451,15 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return the procedure
    * @throws IllegalArgumentException in case the procedure is not found
    */
-  public final <C> Procedure<C> getProcedure(final String procedureId) {
+  public final <C> DatabaseProcedure<C> getProcedure(final String procedureId) {
     requireNonNull(procedureId, "procedureId");
     checkIfDeserialized();
-    final Operation operation = databaseOperations.get(procedureId);
+    final DatabaseOperation operation = databaseOperations.get(procedureId);
     if (operation == null) {
       throw new IllegalArgumentException("Procedure not found: " + procedureId);
     }
 
-    return (Procedure<C>) operation;
+    return (DatabaseProcedure<C>) operation;
   }
 
   /**
@@ -469,15 +469,15 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return the function
    * @throws IllegalArgumentException in case the function is not found
    */
-  public final <C> Function<C> getFunction(final String functionId) {
+  public final <C> DatabaseFunction<C> getFunction(final String functionId) {
     requireNonNull(functionId, "functionId");
     checkIfDeserialized();
-    final Operation operation = databaseOperations.get(functionId);
+    final DatabaseOperation operation = databaseOperations.get(functionId);
     if (operation == null) {
       throw new IllegalArgumentException("Function not found: " + functionId);
     }
 
-    return (Function<C>) operation;
+    return (DatabaseFunction<C>) operation;
   }
 
   /**

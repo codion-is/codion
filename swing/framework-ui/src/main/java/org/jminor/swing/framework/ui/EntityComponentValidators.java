@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.model.EntityEditModel;
 

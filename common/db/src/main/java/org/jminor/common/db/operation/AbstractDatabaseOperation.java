@@ -6,7 +6,7 @@ package org.jminor.common.db.operation;
 /**
  * A base Operation implementation
  */
-public abstract class AbstractOperation implements Operation {
+public abstract class AbstractDatabaseOperation implements DatabaseOperation {
 
   private final String id;
   private final String name;
@@ -16,7 +16,7 @@ public abstract class AbstractOperation implements Operation {
    * @param id a unique operation ID
    * @param name the operation name
    */
-  public AbstractOperation(final String id, final String name) {
+  public AbstractDatabaseOperation(final String id, final String name) {
     this.id = id;
     this.name = name;
   }

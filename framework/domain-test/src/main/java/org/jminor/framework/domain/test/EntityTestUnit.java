@@ -9,7 +9,6 @@ import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -41,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Function;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -165,7 +165,9 @@ public class EntityTestUnit {
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
    */
-  public static Entity createEntity(final Domain domain, final String entityId, final ValueProvider<Property, Object> valueProvider) {
+  public static Entity createEntity(final Domain domain, final String entityId, final Function<Property, Object> valueProvider) {
+    requireNonNull(domain);
+    requireNonNull(entityId);
     final Entity entity = domain.entity(entityId);
     populateEntity(domain, entity, domain.getDefinition(entityId).getWritableColumnProperties(
             !domain.getDefinition(entityId).isKeyGenerated(), true), valueProvider);
@@ -181,7 +183,8 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
   public static void randomize(final Domain domain, final Entity entity, final Map<String, Entity> foreignKeyEntities) {
-    requireNonNull(entity, "entity");
+    requireNonNull(domain);
+    requireNonNull(entity);
     populateEntity(domain, entity,
             domain.getDefinition(entity.getEntityId()).getWritableColumnProperties(false, true),
             property -> createRandomValue(property, foreignKeyEntities));
@@ -430,14 +433,15 @@ public class EntityTestUnit {
   }
 
   private static void populateEntity(final Domain domain, final Entity entity, final Collection<ColumnProperty> properties,
-                                     final ValueProvider<Property, Object> valueProvider) {
+                                     final Function<Property, Object> valueProvider) {
+    requireNonNull(valueProvider, "valueProvider");
     for (final ColumnProperty property : properties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()) {
-        entity.put(property, valueProvider.get(property));
+        entity.put(property, valueProvider.apply(property));
       }
     }
     for (final ForeignKeyProperty property : domain.getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
-      final Object value = valueProvider.get(property);
+      final Object value = valueProvider.apply(property);
       if (value != null) {
         entity.put(property, value);
       }

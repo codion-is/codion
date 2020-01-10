@@ -6,7 +6,6 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.Configuration;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.state.State;
@@ -15,6 +14,7 @@ import org.jminor.common.state.States;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
@@ -336,7 +336,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public void handleValidationException(final ValidationException exception) {
     JOptionPane.showMessageDialog(this, exception.getMessage(),
             Messages.get(Messages.EXCEPTION), JOptionPane.ERROR_MESSAGE);
-    requestComponentFocus((String) exception.getKey());
+    requestComponentFocus(exception.getPropertyId());
   }
 
   /**

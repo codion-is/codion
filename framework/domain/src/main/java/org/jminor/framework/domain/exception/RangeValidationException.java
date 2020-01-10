@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.valuemap.exception;
+package org.jminor.framework.domain.exception;
 
 /**
  * An exception used to indicate that a value associated with
@@ -11,11 +11,11 @@ public class RangeValidationException extends ValidationException {
 
   /**
    * Instantiates a new RangeValidationException
-   * @param key the key
+   * @param propertyId the propertyId
    * @param value the value that is out of range
    * @param message the message
    */
-  public RangeValidationException(final Object key, final Object value, final String message) {
-    super(key, value, message);
+  public RangeValidationException(final String propertyId, final Object value, final String message) {
+    super(propertyId, value, message);
   }
 }

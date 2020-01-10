@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
@@ -12,6 +11,7 @@ import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.jminor.framework.db.condition.Conditions.entityCondition;
 
@@ -21,7 +21,7 @@ import static org.jminor.framework.db.condition.Conditions.entityCondition;
  */
 public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> {
 
-  private final ValueCollectionProvider<T> valueProvider;
+  private final Supplier<Collection<T>> valueProvider;
 
   /**
    * @param entityId the ID of the underlying entity
@@ -46,7 +46,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
    * @param valueProvider provides the values to show in this combo box model
    * @param nullValue the value to use to represent a null value
    */
-  public SwingPropertyComboBoxModel(final ValueCollectionProvider<T> valueProvider, final T nullValue) {
+  public SwingPropertyComboBoxModel(final Supplier<Collection<T>> valueProvider, final T nullValue) {
     super(nullValue);
     this.valueProvider = valueProvider;
   }
@@ -54,6 +54,6 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
   /** {@inheritDoc} */
   @Override
   protected final List<T> initializeContents() {
-    return new ArrayList<>(valueProvider.values());
+    return new ArrayList<>(valueProvider.get());
   }
 }

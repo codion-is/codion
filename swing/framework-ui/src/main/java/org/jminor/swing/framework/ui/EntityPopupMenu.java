@@ -5,10 +5,10 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.TextUtil;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;

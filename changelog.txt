@@ -5599,3 +5599,9 @@
   ProgressWorker refactored
   DefaultEntityModel.fire... methods renamed to notify...
   AbstractValue.fireChangeEvent() renamed to notifyValueChange()
+  ValueMap.Validator removed, merged into Entity.Validator
+  common.db.valuemap.exceptions package moved to framework.domain
+  EntityEditModel.getValueProvider() removed
+  ValueCollectionProvider removed
+  ValueProvider removed, replaced with Function
+  Operation renamed to DatabaseOperation, Function to DatabaseFunction and Procedure to DatabaseProcedure (to prevent collision with java.util.function.Function)

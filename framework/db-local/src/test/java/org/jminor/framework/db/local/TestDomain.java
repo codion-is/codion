@@ -5,8 +5,8 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.Item;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.operation.AbstractFunction;
-import org.jminor.common.db.operation.AbstractProcedure;
+import org.jminor.common.db.operation.AbstractDatabaseFunction;
+import org.jminor.common.db.operation.AbstractDatabaseProcedure;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -169,11 +169,11 @@ public final class TestDomain extends Domain {
   }
 
   private void operations() {
-    addOperation(new AbstractProcedure<EntityConnection>(PROCEDURE_ID, "executeProcedure") {
+    addOperation(new AbstractDatabaseProcedure<EntityConnection>(PROCEDURE_ID, "executeProcedure") {
       @Override
       public void execute(final EntityConnection connection, final Object... arguments) {}
     });
-    addOperation(new AbstractFunction<EntityConnection>(FUNCTION_ID, "executeFunction") {
+    addOperation(new AbstractDatabaseFunction<EntityConnection>(FUNCTION_ID, "executeFunction") {
       @Override
       public List execute(final EntityConnection connection, final Object... arguments) {
         return null;

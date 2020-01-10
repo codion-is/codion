@@ -3,9 +3,7 @@
  */
 package org.jminor.common.db.valuemap;
 
-import org.jminor.common.db.valuemap.exception.ValidationException;
-import org.jminor.common.event.EventListener;
-
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -18,7 +16,14 @@ import java.util.Set;
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProvider<V> {
+public interface ValueMap<K, V> {
+
+  /**
+   * Retrieves the value mapped to the given key
+   * @param key the key
+   * @return the value mapped to the given key, null if no such mapping exists
+   */
+  V get(K key);
 
   /**
    * Maps the given value to the given key, returning the old value if any.
@@ -72,6 +77,12 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @return true if a value is mapped to this key
    */
   boolean containsKey(K key);
+
+  /**
+   * Retrieves the values contained in this ValueMap.
+   * @return a collection containing the values in this ValueMap
+   */
+  Collection<V> values();
 
   /**
    * @return an unmodifiable view of the keys mapping the values in this ValueMap
@@ -133,58 +144,4 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * This value map will be unmodified after a call to this method.
    */
   void saveAll();
-
-  /**
-   * A validator for ValueMaps
-   * @param <K> the type identifying the keys in the value map
-   * @param <V> the value map type
-   */
-  interface Validator<K, V extends ValueMap<K, ?>> {
-
-    /**
-     * @param valueMap the value map
-     * @param key the key
-     * @return true if this value is allowed to be null in the given value map
-     */
-    boolean isNullable(V valueMap, K key);
-
-    /**
-     * @param valueMap the value map
-     * @return true if the given value map contains only valid values
-     */
-    boolean isValid(V valueMap);
-
-    /**
-     * Checks if the values in the given value map are valid
-     * @param valueMap the value map
-     * @throws ValidationException in case of an invalid value
-     */
-    void validate(V valueMap) throws ValidationException;
-
-    /**
-     * Checks if the value associated with the give key is valid, throws a ValidationException if not
-     * @param valueMap the value map to validate
-     * @param key the key the value is associated with
-     * @throws ValidationException if the given value is not valid for the given key
-     */
-    void validate(V valueMap, K key) throws ValidationException;
-
-    /**
-     * Notifies all re-validation listeners that a re-validation is called for, for example
-     * due to modified validation settings
-     * @see #addRevalidationListener(EventListener)
-     */
-    void revalidate();
-
-    /**
-     * @param listener a listener notified each time a re-validation of all values is required, for example
-     * when the underlying validation settings have changed
-     */
-    void addRevalidationListener(EventListener listener);
-
-    /**
-     * @param listener a listener to remove
-     */
-    void removeRevalidationListener(EventListener listener);
-  }
 }

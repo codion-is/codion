@@ -5,7 +5,6 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.TextUtil;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
@@ -19,6 +18,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.OrderBy;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
