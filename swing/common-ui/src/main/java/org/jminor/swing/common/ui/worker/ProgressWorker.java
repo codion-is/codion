@@ -15,7 +15,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -73,7 +72,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
                         final boolean indeterminate, final JPanel dialogNorthPanel, final ControlSet buttonControls) {
     this.progressDialog = new ProgressDialog(dialogOwner, progressMessage,
             indeterminate ? NO_PROGRESS : MAX_PROGRESS, dialogNorthPanel, buttonControls);
-    addPropertyChangeListener(new ProgressListener());
+    addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
   /**
@@ -87,14 +86,18 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     return this;
   }
 
-  /**
-   * Displays exception information in a dialog if the exception is not a {@link CancelException}.
-   * Override for customized error handling.
-   * @param throwable the exception to handle
-   */
-  protected void handleException(final Throwable throwable) {
-    if (!(throwable instanceof CancelException)) {
-      DefaultDialogExceptionHandler.getInstance().displayException(throwable, progressDialog.getOwner());
+  @Override
+  protected final void done() {
+    progressDialog.setVisible(false);
+    progressDialog.dispose();
+    try {
+      onSuccessEvent.onEvent(get());
+    }
+    catch (final InterruptedException e) {
+      onInterruptedException(e);
+    }
+    catch (final ExecutionException e) {
+      onException(e.getCause());
     }
   }
 
@@ -103,47 +106,30 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * By default the current thread is interrupted.
    * @param exception the exception
    */
-  protected void handleInterruptedException(final InterruptedException exception) {
+  protected void onInterruptedException(final InterruptedException exception) {
     Thread.currentThread().interrupt();
+  }
+
+  /**
+   * Handles any exceptions other than {@link InterruptedException}, occurring during background work.
+   * This default implementation displays the exception information in a dialog, unless the
+   * exception is a {@link CancelException}, then it returns silently.
+   * Override for customized error handling.
+   * @param throwable the exception to handle
+   */
+  protected void onException(final Throwable throwable) {
+    DefaultDialogExceptionHandler.getInstance().displayException(throwable, progressDialog.getOwner());
   }
 
   @Override
   protected final void process(final List<Void> chunks) {/*Prevent overriding*/}
 
-  @Override
-  protected final void done() {/*Prevent overriding*/}
-
-  private final class ProgressListener implements PropertyChangeListener {
-
-    @Override
-    public void propertyChange(final PropertyChangeEvent changeEvent) {
-      SwingUtilities.invokeLater(() -> {
-        if ("state".equals(changeEvent.getPropertyName())) {
-          handleStateChange((StateValue) changeEvent.getNewValue());
-        }
-        else if ("progress".equals(changeEvent.getPropertyName())) {
-          progressDialog.getProgressModel().setValue((Integer) changeEvent.getNewValue());
-        }
-      });
+  private void onPropertyChangeEvent(final PropertyChangeEvent changeEvent) {
+    if ("state".equals(changeEvent.getPropertyName()) && StateValue.STARTED.equals(changeEvent.getNewValue())) {
+      SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
     }
-
-    private void handleStateChange(final StateValue stateValue) {
-      if (stateValue.equals(StateValue.STARTED)) {
-        progressDialog.setVisible(true);
-      }
-      else if (stateValue.equals(StateValue.DONE)) {
-        progressDialog.setVisible(false);
-        progressDialog.dispose();
-        try {
-          onSuccessEvent.onEvent(get());
-        }
-        catch (final InterruptedException e) {
-          handleInterruptedException(e);
-        }
-        catch (final ExecutionException e) {
-          handleException(e.getCause());
-        }
-      }
+    else if ("progress".equals(changeEvent.getPropertyName())) {
+      SwingUtilities.invokeLater(() -> progressDialog.getProgressModel().setValue((Integer) changeEvent.getNewValue()));
     }
   }
 }
