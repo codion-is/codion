@@ -211,7 +211,7 @@ public final class ControlSet extends Control {
    * Adds a separator to this control set
    */
   public void addSeparator() {
-    add(null);
+    actions.add(null);
   }
 
   /**
@@ -219,7 +219,7 @@ public final class ControlSet extends Control {
    * @param index the index
    */
   public void addSeparatorAt(final int index) {
-    addAt(index, (Action) null);
+    actions.add(index, (Action) null);
   }
 
   /**
