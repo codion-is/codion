@@ -20,6 +20,7 @@ import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.worker.ProgressWorker;
@@ -2089,7 +2090,7 @@ public final class UiUtil {
     private JButton copyButton;
     private JButton emailButton;
     //controls
-    private Controls.ToggleControl detailsControl;
+    private ToggleControl detailsControl;
     private Control closeControl;
     private Control printControl;
     private Control saveControl;

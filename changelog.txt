@@ -5582,3 +5582,4 @@
   ValueProvider removed, replaced with Function
   Operation renamed to DatabaseOperation, Function to DatabaseFunction and Procedure to DatabaseProcedure (to prevent collision with java.util.function.Function)
   EntityEditView.requestComponentFocus() added
+  ToggleControl moved up to package level

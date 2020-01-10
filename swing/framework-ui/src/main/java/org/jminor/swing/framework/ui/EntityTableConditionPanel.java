@@ -19,6 +19,7 @@ import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
@@ -53,7 +54,7 @@ public final class EntityTableConditionPanel extends JPanel {
   private final JPanel advancedConditionPanel;
   private final JPanel simpleConditionPanel;
 
-  private final Controls.ToggleControl conditionRequiredControl;
+  private final ToggleControl conditionRequiredControl;
 
   /**
    * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on

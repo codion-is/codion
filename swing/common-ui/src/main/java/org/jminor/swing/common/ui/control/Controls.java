@@ -18,7 +18,6 @@ import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -325,42 +324,6 @@ public final class Controls {
       catch (final Exception ex) {
         throw new RuntimeException(ex);
       }
-    }
-  }
-
-  /**
-   * A Control for toggling a button model
-   */
-  public static final class ToggleControl extends Control {
-
-    private final ButtonModel buttonModel;
-
-    /**
-     * @param name the name
-     * @param buttonModel the button model
-     * @param enabledObserver an observer indicating when this control should be enabled
-     */
-    private ToggleControl(final String name, final ButtonModel buttonModel, final StateObserver enabledObserver) {
-      super(name, enabledObserver);
-      this.buttonModel = buttonModel;
-      if (enabledObserver != null) {
-        enabledObserver.addDataListener(buttonModel::setEnabled);
-        buttonModel.setEnabled(enabledObserver.get());
-      }
-      addPropertyChangeListener(this::onPropertyChange);
-    }
-
-    private void onPropertyChange(final PropertyChangeEvent changeEvent) {
-      if (MNEMONIC_KEY.equals(changeEvent.getPropertyName())) {
-        buttonModel.setMnemonic((Integer) changeEvent.getNewValue());
-      }
-    }
-
-    /**
-     * @return the button model
-     */
-    public ButtonModel getButtonModel() {
-      return buttonModel;
     }
   }
 }
