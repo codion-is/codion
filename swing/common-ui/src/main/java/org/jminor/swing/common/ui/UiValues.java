@@ -309,7 +309,7 @@ public final class UiValues {
         document.addDocumentListener(new DocumentAdapter() {
           @Override
           public void contentsChanged(final DocumentEvent e) {
-            fireChangeEvent(get());
+            notifyValueChange(get());
           }
         });
       }
@@ -318,7 +318,7 @@ public final class UiValues {
           @Override
           public void focusLost(final FocusEvent e) {
             if (!e.isTemporary()) {
-              fireChangeEvent(get());
+              notifyValueChange(get());
             }
           }
         });
@@ -416,7 +416,7 @@ public final class UiValues {
         numberField.getDocument().addDocumentListener(new DocumentAdapter() {
           @Override
           public void contentsChanged(final DocumentEvent e) {
-            fireChangeEvent(get());
+            notifyValueChange(get());
           }
         });
       }
@@ -425,7 +425,7 @@ public final class UiValues {
           @Override
           public void focusLost(final FocusEvent e) {
             if (!e.isTemporary()) {
-              fireChangeEvent(get());
+              notifyValueChange(get());
             }
           }
         });
@@ -569,7 +569,7 @@ public final class UiValues {
 
     private ToggleUIValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
-      buttonModel.addItemListener(e -> fireChangeEvent(get()));
+      buttonModel.addItemListener(e -> notifyValueChange(get()));
     }
 
     @Override
@@ -593,7 +593,7 @@ public final class UiValues {
 
     private NullableToggleUIValue(final NullableToggleButtonModel buttonModel) {
       this.buttonModel = buttonModel;
-      buttonModel.addStateListener(value -> fireChangeEvent(get()));
+      buttonModel.addStateListener(value -> notifyValueChange(get()));
     }
 
     @Override
@@ -619,7 +619,7 @@ public final class UiValues {
       this.comboBox = comboBox;
       comboBox.addItemListener(e -> {
         if (e.getStateChange() == ItemEvent.SELECTED) {
-          fireChangeEvent(get());
+          notifyValueChange(get());
         }
       });
     }
@@ -648,7 +648,7 @@ public final class UiValues {
 
     private SpinnerUIValue(final SpinnerNumberModel spinnerModel) {
       this.spinnerModel = spinnerModel;
-      this.spinnerModel.addChangeListener(e -> fireChangeEvent(get()));
+      this.spinnerModel.addChangeListener(e -> notifyValueChange(get()));
     }
 
     @Override
@@ -667,7 +667,7 @@ public final class UiValues {
 
     public BoundedRangeUIValue(final BoundedRangeModel rangeModel) {
       this.rangeModel = rangeModel;
-      this.rangeModel.addChangeListener(e -> fireChangeEvent(get()));
+      this.rangeModel.addChangeListener(e -> notifyValueChange(get()));
     }
 
     @Override
