@@ -11,7 +11,6 @@ import org.jminor.swing.common.tools.LoadTest;
 import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
-import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
@@ -227,17 +226,14 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JButton initializeAddRemoveApplicationButton(final boolean add) {
-    final JButton button = new JButton(new Control(add ? "+" : "-") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (add) {
-          loadTestModel.addApplicationBatch();
-        }
-        else {
-          loadTestModel.removeApplicationBatch();
-        }
+    final JButton button = new JButton(Controls.control(() -> {
+      if (add) {
+        loadTestModel.addApplicationBatch();
       }
-    });
+      else {
+        loadTestModel.removeApplicationBatch();
+      }
+    }, add ? "+" : "-"));
     button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
     button.setMargin(new Insets(COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP));
     button.setToolTipText(add ? "Add application batch" : "Remove application batch");

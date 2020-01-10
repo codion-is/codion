@@ -18,6 +18,7 @@ import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -346,6 +347,13 @@ public final class Controls {
         enabledObserver.addDataListener(buttonModel::setEnabled);
         buttonModel.setEnabled(enabledObserver.get());
       }
+      addPropertyChangeListener(this::onPropertyChange);
+    }
+
+    private void onPropertyChange(final PropertyChangeEvent changeEvent) {
+      if (MNEMONIC_KEY.equals(changeEvent.getPropertyName())) {
+        buttonModel.setMnemonic((Integer) changeEvent.getNewValue());
+      }
     }
 
     /**
@@ -353,12 +361,6 @@ public final class Controls {
      */
     public ButtonModel getButtonModel() {
       return buttonModel;
-    }
-
-    @Override
-    protected ToggleControl doSetMnemonic(final int mnemonic) {
-      this.buttonModel.setMnemonic(mnemonic);
-      return (ToggleControl) super.doSetMnemonic(mnemonic);
     }
   }
 }
