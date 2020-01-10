@@ -41,7 +41,7 @@ public class DefaultEntityValidator implements Entity.Validator {
 
   private final boolean performNullValidation;
 
-  private transient final Event revalidateEvent = Events.event();
+  private final transient Event revalidateEvent = Events.event();
 
   /**
    * Instantiates a new {@link Entity.Validator}

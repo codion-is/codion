@@ -118,10 +118,10 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     @Override
     public void propertyChange(final PropertyChangeEvent changeEvent) {
       SwingUtilities.invokeLater(() -> {
-        if (changeEvent.getPropertyName().equals("state")) {
+        if ("state".equals(changeEvent.getPropertyName())) {
           handleStateChange((StateValue) changeEvent.getNewValue());
         }
-        else if (changeEvent.getPropertyName().equals("progress")) {
+        else if ("progress".equals(changeEvent.getPropertyName())) {
           progressDialog.getProgressModel().setValue((Integer) changeEvent.getNewValue());
         }
       });
