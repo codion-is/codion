@@ -363,7 +363,7 @@ public abstract class EntityEditView extends BorderPane {
     }
     catch (final ValidationException e) {
       FXUiUtil.showExceptionDialog(e);
-      controls.get(e.getPropertyId()).requestFocus();
+      requestComponentFocus(e.getPropertyId());
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -379,7 +379,7 @@ public abstract class EntityEditView extends BorderPane {
       }
       catch (final ValidationException e) {
         FXUiUtil.showExceptionDialog(e);
-        controls.get(e.getPropertyId()).requestFocus();
+        requestComponentFocus(e.getPropertyId());
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);
@@ -395,6 +395,13 @@ public abstract class EntityEditView extends BorderPane {
       catch (final DatabaseException e) {
         throw new RuntimeException(e);
       }
+    }
+  }
+
+  private void requestComponentFocus(final String propertyId) {
+    final Control control = controls.get(propertyId);
+    if (control != null) {
+      control.requestFocus();
     }
   }
 
