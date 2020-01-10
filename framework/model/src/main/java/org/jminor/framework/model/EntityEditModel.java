@@ -6,7 +6,6 @@ package org.jminor.framework.model;
 import org.jminor.common.Configuration;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
-import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
@@ -510,7 +509,7 @@ public interface EntityEditModel extends Refreshable {
    * @param key the key the value is associated with
    * @return true if the value is valid
    * @see #validate(Property)
-   * @see ValueMap.Validator#validate(ValueMap)
+   * @see Entity.Validator#validate(Entity)
    */
   boolean isValid(Property key);
 

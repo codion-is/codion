@@ -3,11 +3,13 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.valuemap.DefaultValueMapValidator;
 import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.Events;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -27,7 +29,7 @@ import java.util.ResourceBundle;
  * @see Property.Builder#setMax(double)
  * @see Property.Builder#setMaxLength(int)
  */
-public class DefaultEntityValidator extends DefaultValueMapValidator<Property, Entity> implements Entity.Validator {
+public class DefaultEntityValidator implements Entity.Validator {
 
   private static final long serialVersionUID = 1;
 
@@ -38,6 +40,8 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<Property, E
   private static final String VALUE_REQUIRED_KEY = "property_value_is_required";
 
   private final boolean performNullValidation;
+
+  private transient final Event revalidateEvent = Events.event();
 
   /**
    * Instantiates a new {@link Entity.Validator}
@@ -52,6 +56,18 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<Property, E
    */
   public DefaultEntityValidator(final boolean performNullValidation) {
     this.performNullValidation = performNullValidation;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isValid(final Entity entity) {
+    try {
+      validate(entity);
+      return true;
+    }
+    catch (final ValidationException e) {
+      return false;
+    }
   }
 
   /**
@@ -151,7 +167,7 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<Property, E
 
   /** {@inheritDoc} */
   @Override
-  public void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException {
+  public final void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (entity.isNull(property)) {
@@ -164,6 +180,24 @@ public class DefaultEntityValidator extends DefaultValueMapValidator<Property, E
       throw new LengthValidationException(property.getPropertyId(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_long") + " " + maxLength);
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void revalidate() {
+    revalidateEvent.onEvent();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addRevalidationListener(final EventListener listener) {
+    revalidateEvent.addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeRevalidationListener(final EventListener listener) {
+    revalidateEvent.removeListener(listener);
   }
 
   private static boolean isNonGeneratedPrimaryKeyProperty(final Entity entity, final Property property) {

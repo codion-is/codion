@@ -9,6 +9,7 @@ import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -418,7 +419,35 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * Responsible for providing validation for entities.
    */
-  interface Validator extends ValueMap.Validator<Property, Entity>, Serializable {
+  interface Validator extends Serializable {
+
+    /**
+     * @param valueMap the value map
+     * @param key the key
+     * @return true if this value is allowed to be null in the given value map
+     */
+    boolean isNullable(Entity valueMap, Property key);
+
+    /**
+     * @param entity the entity
+     * @return true if the given entity contains only valid values
+     */
+    boolean isValid(Entity entity);
+
+    /**
+     * Checks if the values in the given entity are valid
+     * @param entity the entity
+     * @throws ValidationException in case of an invalid value
+     */
+    void validate(Entity entity) throws ValidationException;
+
+    /**
+     * Checks if the value associated with the give property is valid, throws a ValidationException if not
+     * @param entity the entity to validate
+     * @param property the property the value is associated with
+     * @throws ValidationException if the given value is not valid for the given property
+     */
+    void validate(Entity entity, Property property) throws ValidationException;
 
     /**
      * Validates the given Entity objects.
@@ -455,6 +484,24 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @see Property.Builder#setMaxLength(int)
      */
     void performLengthValidation(Entity entity, Property property) throws LengthValidationException;
+
+    /**
+     * Notifies all re-validation listeners that a re-validation is called for, for example
+     * due to modified validation settings
+     * @see #addRevalidationListener(EventListener)
+     */
+    void revalidate();
+
+    /**
+     * @param listener a listener notified each time a re-validation of all values is required, for example
+     * when the underlying validation settings have changed
+     */
+    void addRevalidationListener(EventListener listener);
+
+    /**
+     * @param listener a listener to remove
+     */
+    void removeRevalidationListener(EventListener listener);
   }
 
   /**

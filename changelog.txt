@@ -5575,3 +5575,4 @@
   ProgressWorker refactored
   DefaultEntityModel.fire... methods renamed to notify...
   AbstractValue.fireChangeEvent() renamed to notifyValueChange()
+  ValueMap.Validator removed, merged into Entity.Validator

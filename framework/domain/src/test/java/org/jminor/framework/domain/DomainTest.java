@@ -11,6 +11,7 @@ import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.common.event.EventListener;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -28,6 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -449,6 +451,19 @@ public class DomainTest {
     assertThrows(RangeValidationException.class, () -> validator.validate(emp));
     emp.put(TestDomain.EMP_COMMISSION, 2100d);
     assertThrows(RangeValidationException.class, () -> validator.validate(emp));
+  }
+
+  @Test
+  public void revalidate() {
+    final AtomicInteger counter = new AtomicInteger();
+    final DefaultEntityValidator validator = new DefaultEntityValidator();
+    final EventListener listener = counter::incrementAndGet;
+    validator.addRevalidationListener(listener);
+    validator.revalidate();
+    assertEquals(1, counter.get());
+    validator.removeRevalidationListener(listener);
+    validator.revalidate();
+    assertEquals(1, counter.get());
   }
 
   @Test
