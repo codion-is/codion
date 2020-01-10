@@ -4,12 +4,12 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.db.valuemap.ValueMap;
-import org.jminor.common.db.valuemap.exception.LengthValidationException;
-import org.jminor.common.db.valuemap.exception.NullValidationException;
-import org.jminor.common.db.valuemap.exception.RangeValidationException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
+import org.jminor.framework.domain.exception.LengthValidationException;
+import org.jminor.framework.domain.exception.NullValidationException;
+import org.jminor.framework.domain.exception.RangeValidationException;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;

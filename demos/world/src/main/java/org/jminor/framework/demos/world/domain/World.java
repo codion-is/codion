@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.demos.world.domain;
 
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.DefaultEntityValidator;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.Property;
 

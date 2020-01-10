@@ -4,10 +4,10 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;

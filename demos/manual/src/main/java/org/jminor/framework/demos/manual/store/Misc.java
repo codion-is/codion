@@ -5,12 +5,12 @@ package org.jminor.framework.demos.manual.store;
 
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.framework.demos.manual.store.model.CustomerEditModel;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.exception.ValidationException;
 
 public final class Misc {
 

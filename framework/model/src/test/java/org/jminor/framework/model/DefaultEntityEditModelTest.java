@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.UpdateException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.CancelException;
@@ -18,6 +17,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -292,9 +292,9 @@ public final class DefaultEntityEditModelTest {
       fail("Validation should fail on invalid commission value");
     }
     catch (final ValidationException e) {
-      assertEquals(TestDomain.EMP_COMMISSION, e.getKey());
+      assertEquals(TestDomain.EMP_COMMISSION, e.getPropertyId());
       assertEquals(50d, e.getValue());
-      final Property property = DOMAIN.getDefinition(TestDomain.T_EMP).getProperty((String) e.getKey());
+      final Property property = DOMAIN.getDefinition(TestDomain.T_EMP).getProperty(e.getPropertyId());
       assertTrue(e.getMessage().contains(property.toString()));
       assertTrue(e.getMessage().contains(property.getMin().toString()));
     }

@@ -7,11 +7,11 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.operation.AbstractProcedure;
 import org.jminor.common.db.operation.Operation;
-import org.jminor.common.db.valuemap.exception.LengthValidationException;
-import org.jminor.common.db.valuemap.exception.NullValidationException;
-import org.jminor.common.db.valuemap.exception.RangeValidationException;
-import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.event.EventListener;
+import org.jminor.framework.domain.exception.LengthValidationException;
+import org.jminor.framework.domain.exception.NullValidationException;
+import org.jminor.framework.domain.exception.RangeValidationException;
+import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -404,7 +404,7 @@ public class DomainTest {
     }
     catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(TestDomain.EMP_DEPARTMENT_FK, e.getKey());
+      assertEquals(TestDomain.EMP_DEPARTMENT_FK, e.getPropertyId());
     }
     emp.put(TestDomain.EMP_DEPARTMENT, 1);
     try {
@@ -420,7 +420,7 @@ public class DomainTest {
     }
     catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(TestDomain.EMP_SALARY, e.getKey());
+      assertEquals(TestDomain.EMP_SALARY, e.getPropertyId());
     }
   }
 

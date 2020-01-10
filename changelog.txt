@@ -5576,3 +5576,4 @@
   DefaultEntityModel.fire... methods renamed to notify...
   AbstractValue.fireChangeEvent() renamed to notifyValueChange()
   ValueMap.Validator removed, merged into Entity.Validator
+  common.db.valuemap.exceptions package moved to framework.domain
