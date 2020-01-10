@@ -78,7 +78,7 @@ public class ProgressDialog extends JDialog {
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
     }
-    add(getProgressBar(), BorderLayout.CENTER);
+    add(progressBar, BorderLayout.CENTER);
     if (buttonControls != null) {
       final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
       southPanel.add(initializeButtonPanel(buttonControls));
@@ -86,10 +86,6 @@ public class ProgressDialog extends JDialog {
     }
     pack();
     UiUtil.centerWindow(this);
-  }
-
-  protected final JProgressBar getProgressBar() {
-    return progressBar;
   }
 
   private static JProgressBar initializeProgressBar(final int maxProgress) {

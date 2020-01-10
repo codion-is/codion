@@ -12,7 +12,7 @@ import org.jminor.common.Conjunction;
  *
  * StateObserver observer = state.getObserver();
  *
- * observer.getChangeObserver().addDataListener(this::handleStateChange);
+ * observer.getChangeObserver().addDataListener(this::onStateChange);
  *
  * state.set(true);
  * </pre>

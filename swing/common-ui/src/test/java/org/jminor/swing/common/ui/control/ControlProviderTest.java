@@ -16,11 +16,12 @@ import javax.swing.JToolBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.jminor.swing.common.ui.control.Controls.toggleControl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ControlProviderTest {
 
-  private ControlSet set;
+  private ControlSet controlSet;
   private boolean booleanValue;
   private Object selectedValue;
 
@@ -42,28 +43,30 @@ public class ControlProviderTest {
 
   @BeforeEach
   public void setUp() {
-    set = new ControlSet("hello");
-    set.add(new Control("one"));
-    set.add(new Control("two"));
-    set.add(Controls.toggleControl(this, "booleanValue", "three", Events.event()));
+    controlSet = new ControlSet("hello");
+    controlSet.add(new Control("one"));
+    controlSet.add(new Control("two"));
+    controlSet.add(toggleControl(this, "booleanValue", "three", Events.event()));
   }
 
   @Test
   public void createCheckBox() {
-    final JCheckBox box = ControlProvider.createCheckBox(Controls.toggleControl(this, "booleanValue", "Test", Events.event()));
+    final JCheckBox box = ControlProvider.createCheckBox(toggleControl(this, "booleanValue",
+            "Test", Events.event()));
     assertEquals("Test", box.getText());
   }
 
   @Test
   public void createCheckBoxMenuItem() {
-    final JMenuItem item = ControlProvider.createCheckBoxMenuItem(Controls.toggleControl(this, "booleanValue", "Test", Events.event()));
+    final JMenuItem item = ControlProvider.createCheckBoxMenuItem(toggleControl(this, "booleanValue",
+            "Test", Events.event()));
     assertEquals("Test", item.getText());
   }
 
   @Test
   public void createMenuBar() {
     final ControlSet base = new ControlSet();
-    base.add(set);
+    base.add(controlSet);
 
     final JMenuBar menu = ControlProvider.createMenuBar(base);
     assertEquals(1, menu.getMenuCount());
@@ -73,7 +76,7 @@ public class ControlProviderTest {
     assertEquals("three", menu.getMenu(0).getItem(2).getText());
 
     final List<ControlSet> sets = new ArrayList<>();
-    sets.add(set);
+    sets.add(controlSet);
     sets.add(base);
     ControlProvider.createMenuBar(sets);
   }
@@ -81,29 +84,27 @@ public class ControlProviderTest {
   @Test
   public void createPopupMenu() {
     final ControlSet base = new ControlSet();
-    base.add(set);
+    base.add(controlSet);
 
     ControlProvider.createPopupMenu(base);
   }
 
   @Test
   public void createHorizontalButtonPanel() {
-    ControlProvider.createHorizontalButtonPanel(set);
+    ControlProvider.createHorizontalButtonPanel(controlSet);
     final JPanel base = new JPanel();
-    ControlProvider.createHorizontalButtonPanel(base, set);
+    base.add(ControlProvider.createHorizontalButtonPanel(controlSet));
   }
 
   @Test
   public void createVerticalButtonPanel() {
-    ControlProvider.createVerticalButtonPanel(set);
+    ControlProvider.createVerticalButtonPanel(controlSet);
     final JPanel base = new JPanel();
-    ControlProvider.createVerticalButtonPanel(base, set);
+    base.add(ControlProvider.createVerticalButtonPanel(controlSet));
   }
 
   @Test
   public void createToolBar() {
-    final JToolBar bar = ControlProvider.createToolBar(set, JToolBar.VERTICAL);
-    final JToolBar barTwo = new JToolBar();
-    ControlProvider.createToolBar(barTwo, set);
+    ControlProvider.createToolBar(controlSet, JToolBar.VERTICAL);
   }
 }

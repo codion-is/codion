@@ -80,7 +80,7 @@ public class Control extends AbstractAction {
    * @return the description
    */
   public final String getDescription() {
-    return (String) this.getValue(javax.swing.Action.SHORT_DESCRIPTION);
+    return (String) super.getValue(javax.swing.Action.SHORT_DESCRIPTION);
   }
 
   /**
@@ -88,7 +88,7 @@ public class Control extends AbstractAction {
    * @return this control instance
    */
   public final Control setDescription(final String description) {
-    this.putValue(javax.swing.Action.SHORT_DESCRIPTION, description);
+    super.putValue(Action.SHORT_DESCRIPTION, description);
     return this;
   }
 
@@ -96,7 +96,7 @@ public class Control extends AbstractAction {
    * @return the name
    */
   public final String getName() {
-    return (String) this.getValue(NAME);
+    return (String) super.getValue(NAME);
   }
 
   /**
@@ -104,7 +104,7 @@ public class Control extends AbstractAction {
    * @return this Control instance
    */
   public final Control setName(final String name) {
-    this.putValue(NAME, name);
+    super.putValue(NAME, name);
     return this;
   }
 
@@ -120,14 +120,15 @@ public class Control extends AbstractAction {
    * @return this Control instance
    */
   public final Control setMnemonic(final int key) {
-    return doSetMnemonic(key);
+    super.putValue(MNEMONIC_KEY, key);
+    return this;
   }
 
   /**
    * @return the mnemonic, 0 if none is specified
    */
   public final int getMnemonic() {
-    final Integer mnemonic = (Integer) this.getValue(MNEMONIC_KEY);
+    final Integer mnemonic = (Integer) super.getValue(MNEMONIC_KEY);
     return mnemonic == null ? 0 : mnemonic;
   }
 
@@ -136,7 +137,7 @@ public class Control extends AbstractAction {
    * @return this Control instance
    */
   public final Control setKeyStroke(final KeyStroke ks) {
-    this.putValue(ACCELERATOR_KEY, ks);
+    super.putValue(ACCELERATOR_KEY, ks);
     return this;
   }
 
@@ -145,7 +146,7 @@ public class Control extends AbstractAction {
    * @return this Control instance
    */
   public final Control setIcon(final Icon icon) {
-    this.putValue(SMALL_ICON, icon);
+    super.putValue(SMALL_ICON, icon);
     return this;
   }
 
@@ -157,16 +158,6 @@ public class Control extends AbstractAction {
   }
 
   /**
-   * Sets the mnemonic key, if overridden remember to call super.doSetMnemonic()
-   * @param mnemonic the mnemonic key
-   * @return this Control instance
-   */
-  protected Control doSetMnemonic(final int mnemonic) {
-    this.putValue(MNEMONIC_KEY, mnemonic);
-    return this;
-  }
-
-  /**
    * A simple command interface, allowing for Controls based on method references
    */
   public interface Command {
@@ -175,34 +166,5 @@ public class Control extends AbstractAction {
      * @throws Exception in case of an exception
      */
     void perform() throws Exception;
-  }
-
-  /**
-   * Used when handling sets of Controls.
-   */
-  public interface Iterator {
-
-    /**
-     * Creates a separator
-     */
-    void handleSeparator();
-
-    /**
-     * Creates a component based on the given control
-     * @param control the control
-     */
-    void handleControl(Control control);
-
-    /**
-     * Creates a component based on the given control set
-     * @param controlSet the control set
-     */
-    void handleControlSet(ControlSet controlSet);
-
-    /**
-     * Creates a component base on the given action
-     * @param action the action
-     */
-    void handleAction(Action action);
   }
 }

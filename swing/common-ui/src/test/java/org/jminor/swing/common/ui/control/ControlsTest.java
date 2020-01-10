@@ -41,7 +41,7 @@ public final class ControlsTest {
 
   @Test
   public void toggleControl() {
-    final Controls.ToggleControl control = Controls.toggleControl(this, "value", "test", valueChangeEvent.getObserver());
+    final ToggleControl control = Controls.toggleControl(this, "value", "test", valueChangeEvent.getObserver());
     control.getButtonModel().setSelected(true);
     assertTrue(value);
     control.getButtonModel().setSelected(false);
@@ -50,7 +50,7 @@ public final class ControlsTest {
     assertTrue(control.getButtonModel().isSelected());
 
     final Value<Boolean> nullableValue = Values.value(true);
-    final Controls.ToggleControl nullableControl = Controls.toggleControl(nullableValue);
+    final ToggleControl nullableControl = Controls.toggleControl(nullableValue);
     assertTrue(nullableControl.getButtonModel() instanceof NullableToggleButtonModel);
     assertTrue(nullableControl.getButtonModel().isSelected());
     nullableValue.set(false);
@@ -59,7 +59,7 @@ public final class ControlsTest {
     assertNull(((NullableToggleButtonModel) nullableControl.getButtonModel()).getState());
 
     final Value<Boolean> nonNullableValue = Values.value(true, false);
-    final Controls.ToggleControl nonNullableControl = Controls.toggleControl(nonNullableValue);
+    final ToggleControl nonNullableControl = Controls.toggleControl(nonNullableValue);
     assertFalse(nonNullableControl.getButtonModel() instanceof NullableToggleButtonModel);
     assertTrue(nonNullableControl.getButtonModel().isSelected());
     nonNullableValue.set(false);
@@ -76,7 +76,7 @@ public final class ControlsTest {
   @Test
   public void stateToggleControl() {
     final State enabledState = States.state(false);
-    final Controls.ToggleControl control = Controls.toggleControl(state, "stateToggleControl", enabledState);
+    final ToggleControl control = Controls.toggleControl(state, "stateToggleControl", enabledState);
     assertFalse(control.isEnabled());
     assertFalse(control.getButtonModel().isEnabled());
     enabledState.set(true);
@@ -101,7 +101,7 @@ public final class ControlsTest {
 
   @Test
   public void nullableToggleControl() {
-    final Controls.ToggleControl toggleControl = Controls.toggleControl(this, "nullableValue", "nullable", valueChangeEvent, null, true);
+    final ToggleControl toggleControl = Controls.toggleControl(this, "nullableValue", "nullable", valueChangeEvent, null, true);
     final NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) toggleControl.getButtonModel();
     buttonModel.setState(null);
     assertNull(value);

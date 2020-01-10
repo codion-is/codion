@@ -10,7 +10,9 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A set of Actions/Controls, includes separators.
@@ -127,14 +129,14 @@ public final class ControlSet extends Control {
    */
   public List<ControlSet> getControlSets() {
     return actions.stream().filter(control -> control instanceof ControlSet)
-            .map(control -> (ControlSet) control).collect(Collectors.toList());
+            .map(control -> (ControlSet) control).collect(toList());
   }
 
   /**
-   * @return the actions in this set
+   * @return an unmodifiable view of the actions in this set
    */
   public List<Action> getActions() {
-    return actions;
+    return unmodifiableList(actions);
   }
 
   /**
@@ -143,21 +145,17 @@ public final class ControlSet extends Control {
    * @param action the action to add
    */
   public void add(final Action action) {
-    if (action != null) {
-      actions.add(action);
-    }
+    actions.add(action);
   }
 
   /**
    * Adds the given action to this ControlSet at the specified index,
    * adding a null action has the same effect as addSeparator()
-   * @param action the action to add at the specified index
    * @param index the index
+   * @param action the action to add at the specified index
    */
-  public void addAt(final Action action, final int index) {
-    if (action != null) {
-      actions.add(index, action);
-    }
+  public void addAt(final int index, final Action action) {
+    actions.add(index, action);
   }
 
   /**
@@ -200,10 +198,10 @@ public final class ControlSet extends Control {
   }
 
   /**
-   * @param controlSet the control set to add at the specified index
    * @param index the index
+   * @param controlSet the control set to add at the specified index
    */
-  public void addAt(final ControlSet controlSet, final int index) {
+  public void addAt(final int index, final ControlSet controlSet) {
     if (controlSet != null) {
       actions.add(index, controlSet);
     }
@@ -213,7 +211,7 @@ public final class ControlSet extends Control {
    * Adds a separator to this control set
    */
   public void addSeparator() {
-    actions.add(null);
+    add(null);
   }
 
   /**
@@ -221,7 +219,7 @@ public final class ControlSet extends Control {
    * @param index the index
    */
   public void addSeparatorAt(final int index) {
-    actions.add(index, null);
+    addAt(index, (Action) null);
   }
 
   /**

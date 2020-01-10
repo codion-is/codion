@@ -11,9 +11,9 @@ import org.jminor.swing.common.tools.LoadTest;
 import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
-import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.IntegerField;
@@ -90,7 +90,7 @@ public final class LoadTestPanel extends JPanel {
     this.pluginPanel = pluginPanel;
     this.scenarioPanel = initializeScenarioPanel();
     initializeUI();
-    handleScenarioSelected();
+    onScenarioSelected();
   }
 
   /**
@@ -167,7 +167,7 @@ public final class LoadTestPanel extends JPanel {
   private ItemRandomizerPanel initializeScenarioPanel() {
     final ItemRandomizerPanel<LoadTestModel.UsageScenario> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
     panel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
-    panel.addSelectedItemListener(this::handleScenarioSelected);
+    panel.addSelectedItemListener(this::onScenarioSelected);
 
     return panel;
   }
@@ -227,17 +227,14 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JButton initializeAddRemoveApplicationButton(final boolean add) {
-    final JButton button = new JButton(new Control(add ? "+" : "-") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (add) {
-          loadTestModel.addApplicationBatch();
-        }
-        else {
-          loadTestModel.removeApplicationBatch();
-        }
+    final JButton button = new JButton(Controls.control(() -> {
+      if (add) {
+        loadTestModel.addApplicationBatch();
       }
-    });
+      else {
+        loadTestModel.removeApplicationBatch();
+      }
+    }, add ? "+" : "-"));
     button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
     button.setMargin(new Insets(COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP));
     button.setToolTipText(add ? "Add application batch" : "Remove application batch");
@@ -347,7 +344,7 @@ public final class LoadTestPanel extends JPanel {
     ((JSpinner.DefaultEditor) warningTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
     warningTimeSpinner.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final Controls.ToggleControl pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
+    final ToggleControl pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
     pauseControl.setMnemonic('P');
 
     final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(4, 2, true, false);
@@ -366,7 +363,7 @@ public final class LoadTestPanel extends JPanel {
     return thinkTimePanel;
   }
 
-  private void handleScenarioSelected() {
+  private void onScenarioSelected() {
     scenarioBase.removeAll();
     for (final Object selectedItem : scenarioPanel.getSelectedItems()) {
       final ItemRandomizer.RandomItem<LoadTest.UsageScenario> item = (ItemRandomizer.RandomItem<LoadTest.UsageScenario>) selectedItem;

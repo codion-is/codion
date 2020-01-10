@@ -326,39 +326,4 @@ public final class Controls {
       }
     }
   }
-
-  /**
-   * A Control for toggling a button model
-   */
-  public static final class ToggleControl extends Control {
-
-    private final ButtonModel buttonModel;
-
-    /**
-     * @param name the name
-     * @param buttonModel the button model
-     * @param enabledObserver an observer indicating when this control should be enabled
-     */
-    private ToggleControl(final String name, final ButtonModel buttonModel, final StateObserver enabledObserver) {
-      super(name, enabledObserver);
-      this.buttonModel = buttonModel;
-      if (enabledObserver != null) {
-        enabledObserver.addDataListener(buttonModel::setEnabled);
-        buttonModel.setEnabled(enabledObserver.get());
-      }
-    }
-
-    /**
-     * @return the button model
-     */
-    public ButtonModel getButtonModel() {
-      return buttonModel;
-    }
-
-    @Override
-    protected ToggleControl doSetMnemonic(final int mnemonic) {
-      this.buttonModel.setMnemonic(mnemonic);
-      return (ToggleControl) super.doSetMnemonic(mnemonic);
-    }
-  }
 }

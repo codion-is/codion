@@ -52,7 +52,7 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
       config.setIdleTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get());
       config.setJdbcUrl(database.getURL(null));
       config.setDataSource(Util.initializeProxy(DataSource.class, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
-              handleInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
+              onInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
       setPool(new HikariPool(config));
     }
 

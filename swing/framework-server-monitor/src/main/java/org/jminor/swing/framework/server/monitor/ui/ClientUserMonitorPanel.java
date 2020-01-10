@@ -152,14 +152,14 @@ public final class ClientUserMonitorPanel extends JPanel {
         model.setMaintenanceInterval((Integer) maintenanceBox.getSelectedItem());
       }
       catch (final RemoteException ex) {
-        handleException(ex);
+        onException(ex);
       }
     });
 
     return maintenanceBox;
   }
 
-  private void handleException(final Exception exception) {
+  private void onException(final Exception exception) {
     UiUtil.showExceptionDialog(UiUtil.getParentWindow(this),
             Messages.get(Messages.EXCEPTION), exception.getMessage(), exception);
   }

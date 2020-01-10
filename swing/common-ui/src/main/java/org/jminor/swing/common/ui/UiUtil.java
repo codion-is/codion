@@ -20,6 +20,7 @@ import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.worker.ProgressWorker;
@@ -1646,7 +1647,7 @@ public final class UiUtil {
    * @param progressBarTitle the progress bar title
    * @param task the task to run
    * @param onSuccess executed on the EDT after a successful run
-   * @param onException the exception handler
+   * @param onException the exception handler, may be null
    * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
    * @param buttonControls if specified these controls will be displayed as buttons, useful for adding a cancel action
    */
@@ -1662,7 +1663,7 @@ public final class UiUtil {
         return null;
       }
       @Override
-      protected void handleException(final Throwable exception) {
+      protected void onException(final Throwable exception) {
         if (!(exception instanceof CancelException)) {
           if (onException != null) {
             onException.accept(exception);
@@ -2089,7 +2090,7 @@ public final class UiUtil {
     private JButton copyButton;
     private JButton emailButton;
     //controls
-    private Controls.ToggleControl detailsControl;
+    private ToggleControl detailsControl;
     private Control closeControl;
     private Control printControl;
     private Control saveControl;

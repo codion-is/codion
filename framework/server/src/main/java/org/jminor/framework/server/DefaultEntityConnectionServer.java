@@ -509,8 +509,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   /** {@inheritDoc} */
   @Override
-  protected final void handleShutdown() throws RemoteException {
-    super.handleShutdown();
+  protected final void onShutdown() throws RemoteException {
+    super.onShutdown();
     connectionMaintenanceScheduler.stop();
     ConnectionPools.closeConnectionPools();
     auxiliaryServers.forEach(DefaultEntityConnectionServer::stopAuxiliaryServer);
