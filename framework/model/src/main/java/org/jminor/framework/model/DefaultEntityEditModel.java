@@ -556,7 +556,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
     doSetEntity(insertedEntities.get(0));
 
-    fireAfterInsertEvent(unmodifiableList(insertedEntities));
+    notifyAfterInsert(unmodifiableList(insertedEntities));
 
     return insertedEntities.get(0);
   }
@@ -570,7 +570,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
     final List<Entity> insertedEntities = insertEntities(entities);
 
-    fireAfterInsertEvent(unmodifiableList(insertedEntities));
+    notifyAfterInsert(unmodifiableList(insertedEntities));
 
     return insertedEntities;
   }
@@ -604,7 +604,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       return emptyList();
     }
 
-    fireBeforeUpdateEvent(unmodifiableMap(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities))));
+    notifyBeforeUpdate(unmodifiableMap(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities))));
     validate(modifiedEntities);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
@@ -613,7 +613,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       doSetEntity(updatedEntities.get(index));
     }
 
-    fireAfterUpdateEvent(unmodifiableMap(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(updatedEntities))));
+    notifyAfterUpdate(unmodifiableMap(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(updatedEntities))));
 
     return updatedEntities;
   }
@@ -640,14 +640,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
     LOG.debug("{} - delete {}", this, entities.toString());
 
-    fireBeforeDeleteEvent(unmodifiableList(entities));
+    notifyBeforeDelete(unmodifiableList(entities));
 
     final List<Entity> deleted = doDelete(entities);
     if (deleted.contains(getEntity())) {
       doSetEntity(null);
     }
 
-    fireAfterDeleteEvent(unmodifiableList(deleted));
+    notifyAfterDelete(unmodifiableList(deleted));
 
     return deleted;
   }
@@ -985,7 +985,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entities the entities about to be inserted
    * @see #addBeforeInsertListener(EventDataListener)
    */
-  protected final void fireBeforeInsertEvent(final List<Entity> entities) {
+  protected final void notifyBeforeInsert(final List<Entity> entities) {
     beforeInsertEvent.onEvent(entities);
   }
 
@@ -994,7 +994,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param insertedEntities the inserted entities
    * @see #addAfterInsertListener(EventDataListener)
    */
-  protected final void fireAfterInsertEvent(final List<Entity> insertedEntities) {
+  protected final void notifyAfterInsert(final List<Entity> insertedEntities) {
     afterInsertEvent.onEvent(insertedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyInserted(insertedEntities);
@@ -1006,7 +1006,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entitiesToUpdate the entities about to be updated
    * @see #addBeforeUpdateListener(EventDataListener)
    */
-  protected final void fireBeforeUpdateEvent(final Map<Entity.Key, Entity> entitiesToUpdate) {
+  protected final void notifyBeforeUpdate(final Map<Entity.Key, Entity> entitiesToUpdate) {
     beforeUpdateEvent.onEvent(entitiesToUpdate);
   }
 
@@ -1015,7 +1015,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param updatedEntities the updated entities
    * @see #addAfterUpdateListener(EventDataListener)
    */
-  protected final void fireAfterUpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
+  protected final void notifyAfterUpdate(final Map<Entity.Key, Entity> updatedEntities) {
     afterUpdateEvent.onEvent(updatedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyUpdated(updatedEntities);
@@ -1027,7 +1027,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param deleteEvent the entities about to be deleted
    * @see #addBeforeDeleteListener(EventDataListener)
    */
-  protected final void fireBeforeDeleteEvent(final List<Entity> deleteEvent) {
+  protected final void notifyBeforeDelete(final List<Entity> deleteEvent) {
     beforeDeleteEvent.onEvent(deleteEvent);
   }
 
@@ -1036,7 +1036,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param deletedEntities the deleted entities
    * @see #addAfterDeleteListener(EventDataListener)
    */
-  protected final void fireAfterDeleteEvent(final List<Entity> deletedEntities) {
+  protected final void notifyAfterDelete(final List<Entity> deletedEntities) {
     afterDeleteEvent.onEvent(deletedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyDeleted(deletedEntities);
@@ -1050,7 +1050,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
     LOG.debug("{} - insert {}", this, entities.toString());
 
-    fireBeforeInsertEvent(unmodifiableList(entities));
+    notifyBeforeInsert(unmodifiableList(entities));
     validate(entities);
 
     return connectionProvider.getConnection().select(doInsert(entities));

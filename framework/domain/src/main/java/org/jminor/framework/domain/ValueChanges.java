@@ -69,7 +69,7 @@ public final class ValueChanges {
      */
     private DefaultValueChange(final Property property, final Object value, final Object previousValue,
                                final boolean initialization) {
-      this.property = requireNonNull(property, "key");
+      this.property = requireNonNull(property, "property");
       this.value = value;
       this.previousValue = previousValue;
       this.initialization = initialization;
