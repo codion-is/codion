@@ -5574,3 +5574,4 @@
   Entity.ValueChange moved up to package level
   ProgressWorker refactored
   DefaultEntityModel.fire... methods renamed to notify...
+  AbstractValue.fireChangeEvent() renamed to notifyValueChange()

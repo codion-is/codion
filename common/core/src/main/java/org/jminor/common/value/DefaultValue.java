@@ -20,7 +20,7 @@ final class DefaultValue<V> extends AbstractValue<V> {
     final V actualValue = value == null ? nullValue : value;
     if (!Objects.equals(this.value, actualValue)) {
       this.value = actualValue;
-      fireChangeEvent(this.value);
+      notifyValueChange(this.value);
     }
   }
 

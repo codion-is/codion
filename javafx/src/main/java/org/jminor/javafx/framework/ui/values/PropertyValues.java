@@ -355,7 +355,7 @@ public final class PropertyValues {
     public DefaultStringValue(final StringProperty stringProperty, final StringConverter<V> converter) {
       this.stringProperty = stringProperty;
       this.converter = converter;
-      this.stringProperty.addListener((observable, oldValue, newValue) -> fireChangeEvent(get()));
+      this.stringProperty.addListener((observable, oldValue, newValue) -> notifyValueChange(get()));
     }
 
     @Override
@@ -385,7 +385,7 @@ public final class PropertyValues {
 
     public BooleanPropertyValue(final BooleanProperty booleanProperty) {
       this.booleanProperty = booleanProperty;
-      this.booleanProperty.addListener((observable, oldValue, newValue) -> fireChangeEvent(newValue));
+      this.booleanProperty.addListener((observable, oldValue, newValue) -> notifyValueChange(newValue));
     }
 
     @Override
@@ -410,7 +410,7 @@ public final class PropertyValues {
 
     public SelectedValue(final SingleSelectionModel<V> selectionModel) {
       this.selectionModel = selectionModel;
-      this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> fireChangeEvent(newValue));
+      this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> notifyValueChange(newValue));
     }
 
     @Override
@@ -435,7 +435,7 @@ public final class PropertyValues {
 
     public SelectedItemValue(final SelectionModel<Item> selectionModel) {
       this.selectionModel = selectionModel;
-      selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> fireChangeEvent(newValue.getValue()));
+      selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> notifyValueChange(newValue.getValue()));
     }
 
     @Override
@@ -460,7 +460,7 @@ public final class PropertyValues {
 
     private EntityLookupSingleValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(selected -> fireChangeEvent(get()));
+      this.lookupModel.addSelectedEntitiesListener(selected -> notifyValueChange(get()));
     }
 
     @Override
@@ -487,7 +487,7 @@ public final class PropertyValues {
 
     private EntityLookupMultiValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(this::fireChangeEvent);
+      this.lookupModel.addSelectedEntitiesListener(this::notifyValueChange);
     }
 
     @Override

@@ -336,7 +336,7 @@ public final class PropertyStore {
           properties.setProperty(property, encoder.apply(newValue));
           System.setProperty(property, properties.getProperty(property));
         }
-        fireChangeEvent(this.value);
+        notifyValueChange(this.value);
       }
     }
 

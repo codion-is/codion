@@ -1132,7 +1132,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     private EditModelValue(final EntityEditModel editModel, final String propertyId) {
       this.editModel = editModel;
       this.propertyId = propertyId;
-      this.editModel.addValueListener(propertyId, valueChange -> fireChangeEvent(get()));
+      this.editModel.addValueListener(propertyId, valueChange -> notifyValueChange(get()));
     }
 
     @Override

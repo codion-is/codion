@@ -26,7 +26,7 @@ public abstract class AbstractValue<V> extends AbstractObservableValue<V> {
    * has changed or at least that it may have changed
    * @param value the new value
    */
-  protected final void fireChangeEvent(final V value) {
+  protected final void notifyValueChange(final V value) {
     changeEvent.onEvent(value);
   }
 }
