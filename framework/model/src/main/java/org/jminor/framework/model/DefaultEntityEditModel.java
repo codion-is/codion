@@ -6,7 +6,6 @@ package org.jminor.framework.model;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.UpdateException;
-import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
@@ -36,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -137,9 +137,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final State entityNewState = States.state(true);
 
   /**
-   * Provides the values when a default entity is created
+   * Provides the default value for properties when a default entity is created
    */
-  private final ValueProvider<Property, Object> defaultValueProvider = this::getDefaultValue;
+  private final Function<Property, Object> defaultValueProvider = this::getDefaultValue;
 
   /**
    * Specifies whether this edit model should warn about unsaved data

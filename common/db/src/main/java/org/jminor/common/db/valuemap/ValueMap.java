@@ -16,7 +16,14 @@ import java.util.Set;
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueMap<K, V> extends ValueProvider<K, V> {
+public interface ValueMap<K, V> {
+
+  /**
+   * Retrieves the value mapped to the given key
+   * @param key the key
+   * @return the value mapped to the given key, null if no such mapping exists
+   */
+  V get(K key);
 
   /**
    * Maps the given value to the given key, returning the old value if any.

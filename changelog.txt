@@ -5579,3 +5579,4 @@
   common.db.valuemap.exceptions package moved to framework.domain
   EntityEditModel.getValueProvider() removed
   ValueCollectionProvider removed
+  ValueProvider removed, replaced with Function

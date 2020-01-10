@@ -8,7 +8,6 @@ import org.jminor.common.Util;
 import org.jminor.common.db.operation.Function;
 import org.jminor.common.db.operation.Operation;
 import org.jminor.common.db.operation.Procedure;
-import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -149,30 +148,30 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * If a {@link ColumnProperty}s underlying column has a default value the property is
    * skipped unless the property itself has a default value, which then overrides the columns default value.
    * @param entityId the entity id
-   * @param valueProvider the value provider
+   * @param valueProvider provides the default value for a given property
    * @return the populated entity
    * @see ColumnProperty.Builder#setColumnHasDefaultValue(boolean)
    * @see ColumnProperty.Builder#setDefaultValue(Object)
    */
-  public final Entity defaultEntity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
+  public final Entity defaultEntity(final String entityId, final java.util.function.Function<Property, Object> valueProvider) {
     final Entity entity = entity(entityId);
     final EntityDefinition entityDefinition = getDefinition(entityId);
     final Collection<ColumnProperty> columnProperties = entityDefinition.getColumnProperties();
     for (final ColumnProperty property : columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        entity.put(property, valueProvider.get(property));
+        entity.put(property, valueProvider.apply(property));
       }
     }
     final Collection<TransientProperty> transientProperties = entityDefinition.getTransientProperties();
     for (final TransientProperty transientProperty : transientProperties) {
       if (!(transientProperty instanceof DerivedProperty)) {
-        entity.put(transientProperty, valueProvider.get(transientProperty));
+        entity.put(transientProperty, valueProvider.apply(transientProperty));
       }
     }
     final Collection<ForeignKeyProperty> foreignKeyProperties = entityDefinition.getForeignKeyProperties();
     for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      entity.put(foreignKeyProperty, valueProvider.get(foreignKeyProperty));
+      entity.put(foreignKeyProperty, valueProvider.apply(foreignKeyProperty));
     }
     entity.saveAll();
 
