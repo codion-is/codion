@@ -5,12 +5,13 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.value.PropertyValue;
-import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.HierarchyPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -52,7 +53,7 @@ import java.util.stream.Collectors;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.swing.common.ui.UiUtil.addKeyEvent;
+import static org.jminor.swing.common.ui.KeyEvents.addKeyEvent;
 import static org.jminor.swing.framework.ui.EntityPanel.Direction.*;
 import static org.jminor.swing.framework.ui.EntityPanel.PanelState.*;
 
@@ -1440,7 +1441,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
-    detailPanelDialog = UiUtil.displayInDialog(EntityPanel.this, detailPanelTabbedPane,
+    detailPanelDialog = Dialogs.displayInDialog(EntityPanel.this, detailPanelTabbedPane,
             caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES), false,
             Controls.control(() -> {
               //the dialog can be closed when embedding the panel, don't hide if that's the case
@@ -1469,7 +1470,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (CENTER_APPLICATION_DIALOGS.get()) {
       dialogOwner = UiUtil.getParentWindow(this);
     }
-    editPanelDialog = UiUtil.displayInDialog(dialogOwner, editControlPanel, caption, false, disposeEditDialogOnEscape,
+    editPanelDialog = Dialogs.displayInDialog(dialogOwner, editControlPanel, caption, false, disposeEditDialogOnEscape,
             Controls.control(() -> setEditPanelState(HIDDEN)));
   }
 

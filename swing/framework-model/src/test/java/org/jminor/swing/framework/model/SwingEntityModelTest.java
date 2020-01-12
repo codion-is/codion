@@ -10,7 +10,7 @@ import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.model.AbstractEntityModelTest;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.TestDomain;
-import org.jminor.swing.common.ui.ValueLinks;
+import org.jminor.swing.common.ui.value.ValueLinks;
 
 import org.junit.jupiter.api.Test;
 

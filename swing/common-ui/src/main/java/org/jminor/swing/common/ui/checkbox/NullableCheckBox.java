@@ -5,18 +5,19 @@ package org.jminor.swing.common.ui.checkbox;
 
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 
+import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.ActionMapUIResource;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.swing.common.ui.control.Controls.control;
 
 /**
  * A JCheckBox implementation, which allows null values, via {@link NullableToggleButtonModel}.
@@ -60,7 +61,12 @@ public class NullableCheckBox extends JCheckBox {
       }
     });
     final ActionMap actions = new ActionMapUIResource();
-    actions.put("pressed", control(model::nextState));
+    actions.put("pressed", new AbstractAction() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        model.nextState();
+      }
+    });
     actions.put("released", null);
     SwingUtilities.replaceUIActionMap(this, actions);
   }

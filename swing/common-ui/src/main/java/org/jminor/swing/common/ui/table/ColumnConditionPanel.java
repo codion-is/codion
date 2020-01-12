@@ -16,7 +16,6 @@ import org.jminor.common.value.Value;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -26,6 +25,8 @@ import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
+import org.jminor.swing.common.ui.textfield.TextFields;
+import org.jminor.swing.common.ui.value.ValueLinks;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JCheckBox;
@@ -402,7 +403,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
         return checkBox;
       }
       else if (typeClass.equals(LocalTime.class) || typeClass.equals(LocalDateTime.class) || typeClass.equals(LocalDate.class)) {
-        return UiUtil.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
+        return TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
       }
 
       return new JTextField(DEFAULT_FIELD_COLUMNS);

@@ -20,10 +20,11 @@ import org.jminor.swing.common.ui.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
+import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.value.ValueLinks;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.ComboBoxModel;
@@ -210,7 +211,7 @@ public class EntityEditComponentPanel extends JPanel {
     final List<String> propertyIds = getSelectComponentPropertyIds();
     final List<Property> properties = Properties.sort(getEditModel().getEntityDefinition().getProperties(propertyIds));
     final Property property = properties.size() == 1 ?  properties.get(0) :
-            UiUtil.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
+            Dialogs.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
     if (property != null) {
       requestComponentFocus(property.getPropertyId());
     }

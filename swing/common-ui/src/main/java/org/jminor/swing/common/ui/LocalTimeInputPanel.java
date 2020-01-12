@@ -4,6 +4,7 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.state.StateObserver;
+import org.jminor.swing.common.ui.textfield.TextFields;
 
 import javax.swing.JFormattedTextField;
 import java.time.LocalTime;
@@ -19,7 +20,7 @@ public final class LocalTimeInputPanel extends TemporalInputPanel<LocalTime> {
    * @param dateFormat the date format
    */
   public LocalTimeInputPanel(final LocalTime initialValue, final String dateFormat) {
-    this(UiUtil.createFormattedTemporalField(dateFormat, initialValue), dateFormat, null);
+    this(TextFields.createFormattedTemporalField(dateFormat, initialValue), dateFormat, null);
   }
 
   /**

@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.empdept.ui;
 
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
@@ -23,8 +23,8 @@ public class DepartmentEditPanel extends EntityEditPanel {
 
     final JTextField departmentIdField = createTextField(EmpDept.DEPARTMENT_ID);
     departmentIdField.setColumns(10);
-    UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
-    UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
+    TextFields.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
+    TextFields.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
 
     //we don't allow editing of the department number since it's a primary key
     getEditModel().getPrimaryKeyNullObserver().addListener(() -> {

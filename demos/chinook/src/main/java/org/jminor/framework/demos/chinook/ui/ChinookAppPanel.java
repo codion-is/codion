@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
-import static org.jminor.swing.common.ui.UiUtil.runWithProgressBar;
+import static org.jminor.swing.common.ui.worker.ProgressWorker.runWithProgressBar;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
 

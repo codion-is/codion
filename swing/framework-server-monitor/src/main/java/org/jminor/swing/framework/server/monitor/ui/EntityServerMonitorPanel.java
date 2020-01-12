@@ -9,12 +9,13 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.Servers;
-import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.framework.server.monitor.EntityServerMonitor;
 import org.jminor.swing.framework.server.monitor.HostMonitor;
@@ -128,7 +129,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   public static synchronized void setJDKDir(final JComponent dialogParent) {
     try {
-      jdkDir = UiUtil.selectDirectory(dialogParent, jdkDir, "Set JDK home").getAbsolutePath();
+      jdkDir = Dialogs.selectDirectory(dialogParent, jdkDir, "Set JDK home").getAbsolutePath();
       PreferencesUtil.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);
     }
     catch (final CancelException ignored) {/*ignored*/}
@@ -212,7 +213,7 @@ public final class EntityServerMonitorPanel extends JPanel {
       }
       catch (final Exception e) {
         LOG.error(e.getMessage(), e);
-        UiUtil.showExceptionDialog(null, "Error during startup", e);
+        Dialogs.showExceptionDialog(null, "Error during startup", e);
         System.exit(1);
       }
     });

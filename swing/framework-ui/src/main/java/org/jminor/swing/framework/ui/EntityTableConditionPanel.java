@@ -14,15 +14,17 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.ForeignKeyConditionModel;
+import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
+import org.jminor.swing.common.ui.value.ValueLinks;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.BorderFactory;
@@ -84,7 +86,7 @@ public final class EntityTableConditionPanel extends JPanel {
     this.conditionRequiredControl.setDescription(MESSAGES.getString("require_query_condition_description"));
     setLayout(new BorderLayout());
     layoutPanel(true);
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
             Controls.control(tableModel::refresh, (String) null, conditionModel.getConditionStateObserver()));
   }
 
@@ -151,7 +153,7 @@ public final class EntityTableConditionPanel extends JPanel {
       if (!conditionProperties.isEmpty()) {
         Properties.sort(conditionProperties);
         final Property property = conditionProperties.size() == 1 ? conditionProperties.get(0) :
-                UiUtil.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
+                Dialogs.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
         if (property != null) {
           final ColumnConditionPanel conditionPanel = getConditionPanel(property.getPropertyId());
           if (conditionPanel != null) {

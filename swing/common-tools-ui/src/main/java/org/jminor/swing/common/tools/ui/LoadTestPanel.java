@@ -10,13 +10,14 @@ import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.LoadTest;
 import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.IntegerField;
+import org.jminor.swing.common.ui.textfield.TextFields;
+import org.jminor.swing.common.ui.value.ValueLinks;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -182,7 +183,7 @@ public final class LoadTestPanel extends JPanel {
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
     final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(2, 2, true, false);
-    layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
+    layout.setFixedRowHeight(TextFields.getPreferredTextFieldHeight());
     final JPanel userBase = new JPanel(layout);
     userBase.setBorder(BorderFactory.createTitledBorder("User"));
 
@@ -235,7 +236,7 @@ public final class LoadTestPanel extends JPanel {
         loadTestModel.removeApplicationBatch();
       }
     }, add ? "+" : "-"));
-    button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     button.setMargin(new Insets(COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP));
     button.setToolTipText(add ? "Add application batch" : "Remove application batch");
 
@@ -348,7 +349,7 @@ public final class LoadTestPanel extends JPanel {
     pauseControl.setMnemonic('P');
 
     final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(4, 2, true, false);
-    layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
+    layout.setFixedRowHeight(TextFields.getPreferredTextFieldHeight());
     final JPanel thinkTimePanel = new JPanel(layout);
     thinkTimePanel.add(new JLabel("Max. think time", JLabel.CENTER));
     thinkTimePanel.add(maxThinkTimeSpinner);

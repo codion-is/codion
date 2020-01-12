@@ -4,10 +4,12 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
+import org.jminor.swing.common.ui.textfield.TextFields;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -16,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.text.Document;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -25,7 +28,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class TextInputPanel extends JPanel {
 
-  private static final double DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO = 0.25;
+  private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
   private final JTextField textField;
   private final JButton button;
@@ -68,8 +71,8 @@ public final class TextInputPanel extends JPanel {
     requireNonNull(textField, "textComponent");
     this.dialogTitle = dialogTitle;
     this.textField = textField;
-    this.textAreaSize = textAreaSize == null ? UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO) : textAreaSize;
-    this.button = createButton(buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    this.textAreaSize = textAreaSize == null ? DEFAULT_TEXT_AREA_SIZE : textAreaSize;
+    this.button = createButton(buttonFocusable, TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     initializeUI();
   }
 
@@ -128,7 +131,12 @@ public final class TextInputPanel extends JPanel {
   }
 
   private JButton createButton(final boolean buttonFocusable, final Dimension buttonSize) {
-    final JButton jButton = new JButton(Controls.control(this::getInputFromUser, "..."));
+    final JButton jButton = new JButton(new AbstractAction("...") {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        getInputFromUser();
+      }
+    });
     jButton.setFocusable(buttonFocusable);
     if (buttonSize != null) {
       jButton.setPreferredSize(buttonSize);
@@ -151,9 +159,14 @@ public final class TextInputPanel extends JPanel {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
     textArea.setEditable(textField.isEditable());
-    final Control okControl = Controls.control(() -> textField.setText(textArea.getText()),
-            Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    UiUtil.displayInDialog(textField, new JScrollPane(textArea), dialogTitle, okControl);
+    final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        textField.setText(textArea.getText());
+      }
+    };
+    okAction.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    Dialogs.displayInDialog(textField, new JScrollPane(textArea), dialogTitle, okAction);
     textField.requestFocusInWindow();
   }
 }

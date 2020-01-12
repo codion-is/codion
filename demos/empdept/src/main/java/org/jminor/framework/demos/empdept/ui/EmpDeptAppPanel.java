@@ -15,6 +15,7 @@ import org.jminor.plugin.json.EntityJSONParser;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityModelProvider;
@@ -55,8 +56,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
 
   public void importJSON() throws Exception {
-    final File file = UiUtil.selectFile(this, null);
-    UiUtil.displayInDialog(this, EntityTablePanel.createReadOnlyEntityTablePanel(
+    final File file = Dialogs.selectFile(this, null);
+    Dialogs.displayInDialog(this, EntityTablePanel.createReadOnlyEntityTablePanel(
             new EntityJSONParser(getModel().getDomain()).deserializeEntities(
                     TextUtil.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
   }

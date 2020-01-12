@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.chinook.ui;
 
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
@@ -25,7 +25,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createTemporalInputPanel(EMPLOYEE_BIRTHDATE).getInputField().setColumns(16);
     createTextField(EMPLOYEE_ADDRESS).setColumns(16);
     createTextField(EMPLOYEE_CITY).setColumns(16);
-    UiUtil.makeUpperCase(createTextField(EMPLOYEE_STATE)).setColumns(16);
+    TextFields.makeUpperCase(createTextField(EMPLOYEE_STATE)).setColumns(16);
     createTextField(EMPLOYEE_COUNTRY).setColumns(16);
     createTextField(EMPLOYEE_POSTALCODE).setColumns(16);
     createTextField(EMPLOYEE_PHONE).setColumns(16);

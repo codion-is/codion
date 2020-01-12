@@ -9,7 +9,7 @@ import org.jminor.common.event.Events;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
-import org.jminor.swing.common.ui.ValueLinks;
+import org.jminor.swing.common.ui.value.ValueLinks;
 
 import javax.swing.ButtonModel;
 import javax.swing.tree.DefaultMutableTreeNode;

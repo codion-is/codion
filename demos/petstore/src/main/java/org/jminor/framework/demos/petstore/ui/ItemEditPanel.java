@@ -6,6 +6,7 @@ package org.jminor.framework.demos.petstore.ui;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
@@ -35,7 +36,7 @@ public class ItemEditPanel extends EntityEditPanel {
     final EntityComboBox addressBox = createForeignKeyComboBox(ITEM_ADDRESS_FK);
     UiUtil.setPreferredWidth(addressBox, 140);
     addressBox.setPopupWidth(200);
-    addressBox.setPreferredSize(UiUtil.getPreferredTextFieldSize());
+    addressBox.setPreferredSize(TextFields.getPreferredTextFieldSize());
     createTextField(ITEM_IMAGE_URL).setColumns(14);
     createTextField(ITEM_IMAGE_THUMB_URL).setColumns(14);
     createNullableCheckBox(ITEM_DISABLED, null, false);

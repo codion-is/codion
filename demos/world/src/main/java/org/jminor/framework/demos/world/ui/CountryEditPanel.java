@@ -9,8 +9,8 @@ import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
 
-import static org.jminor.swing.common.ui.UiUtil.makeUpperCase;
 import static org.jminor.swing.common.ui.UiUtil.setPreferredWidth;
+import static org.jminor.swing.common.ui.textfield.TextFields.makeUpperCase;
 
 public final class CountryEditPanel extends EntityEditPanel {
 

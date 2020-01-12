@@ -25,7 +25,6 @@ import org.jminor.swing.common.ui.LocalTimeInputPanel;
 import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.AutoCompletion;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
@@ -35,6 +34,8 @@ import org.jminor.swing.common.ui.textfield.DocumentSizeFilter;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
+import org.jminor.swing.common.ui.textfield.TextFields;
+import org.jminor.swing.common.ui.value.ValueLinks;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -317,7 +318,7 @@ public final class EntityInputComponents {
     Values.link(value, new LookupUIValue(lookupField.getModel()));
     linkToEnabledState(enabledState, lookupField);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
-    UiUtil.selectAllOnFocusGained(lookupField);
+    TextFields.selectAllOnFocusGained(lookupField);
 
     return lookupField;
   }
@@ -693,7 +694,7 @@ public final class EntityInputComponents {
       return initializeLongField(property);
     }
     else if (property.isTemporal()) {
-      return UiUtil.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
+      return TextFields.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
     }
     else if (property.isString()) {
       return initializeStringField(formatMaskString, valueContainsLiteralCharacters);
@@ -707,7 +708,7 @@ public final class EntityInputComponents {
       return new JTextField(new SizedDocument(), "", 0);
     }
 
-    return UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
+    return TextFields.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
   }
 
   private static JTextField initializeDecimalField(final Property property) {

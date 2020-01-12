@@ -32,16 +32,16 @@ public final class ToggleControl extends Control {
     addPropertyChangeListener(this::onPropertyChange);
   }
 
-  private void onPropertyChange(final PropertyChangeEvent changeEvent) {
-    if (MNEMONIC_KEY.equals(changeEvent.getPropertyName())) {
-      buttonModel.setMnemonic((Integer) changeEvent.getNewValue());
-    }
-  }
-
   /**
    * @return the button model
    */
   public ButtonModel getButtonModel() {
     return buttonModel;
+  }
+
+  private void onPropertyChange(final PropertyChangeEvent changeEvent) {
+    if (MNEMONIC_KEY.equals(changeEvent.getPropertyName())) {
+      buttonModel.setMnemonic((Integer) changeEvent.getNewValue());
+    }
   }
 }

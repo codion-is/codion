@@ -219,7 +219,7 @@ public final class ControlSet extends Control {
    * @param index the index
    */
   public void addSeparatorAt(final int index) {
-    actions.add(index, (Action) null);
+    actions.add(index, null);
   }
 
   /**

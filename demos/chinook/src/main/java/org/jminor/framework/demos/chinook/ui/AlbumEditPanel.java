@@ -4,8 +4,8 @@
 package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.plugin.imagepanel.NavigableImagePanel;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
@@ -80,7 +80,7 @@ public class AlbumEditPanel extends EntityEditPanel {
   }
 
   private void setCover() throws IOException {
-    final File coverFile = UiUtil.selectFile(this, null, "Select image");
+    final File coverFile = Dialogs.selectFile(this, null, "Select image");
     getEditModel().put(ALBUM_COVER, Files.readAllBytes(coverFile.toPath()));
   }
 

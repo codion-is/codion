@@ -3,6 +3,7 @@
  */
 package org.jminor.common;
 
+import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -36,6 +37,16 @@ public final class Formats {
   public static NumberFormat getNonGroupingIntegerFormat() {
     final NumberFormat format = NumberFormat.getIntegerInstance();
     format.setGroupingUsed(false);
+
+    return format;
+  }
+
+  /**
+   * @return a BigDecimal parsing DecimalFormat
+   */
+  public static DecimalFormat getBigDecimalNumberFormat() {
+    final DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance();
+    format.setParseBigDecimal(true);
 
     return format;
   }

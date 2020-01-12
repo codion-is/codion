@@ -25,19 +25,21 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
-import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
-import org.jminor.swing.common.ui.DialogExceptionHandler;
+import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
-import org.jminor.swing.common.ui.input.InputProviderPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
 import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.common.ui.table.FilteredTableSummaryPanel;
+import org.jminor.swing.common.ui.value.ComponentValuePanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
@@ -198,7 +200,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final JScrollPane tableScrollPane;
 
-  private final EntityInputProviders inputProviders;
+  private final EntityComponentValues componentValues;
 
   private final EntityTableConditionPanel conditionPanel;
 
@@ -266,21 +268,21 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param conditionPanel the condition panel
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableConditionPanel conditionPanel) {
-    this(tableModel, new EntityInputProviders(), conditionPanel);
+    this(tableModel, new EntityComponentValues(), conditionPanel);
   }
 
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
-   * @param inputProviders the input providers for this table panel
+   * @param componentValues the component value provider for this table panel
    * @param conditionPanel the condition panel
    */
-  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityInputProviders inputProviders,
+  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityComponentValues componentValues,
                           final EntityTableConditionPanel conditionPanel) {
     this.tableModel = tableModel;
     this.table = initializeTable(tableModel);
     this.tableScrollPane = new JScrollPane(table);
-    this.inputProviders = requireNonNull(inputProviders, "inputProviders");
+    this.componentValues = requireNonNull(componentValues, "inputProviders");
     this.conditionPanel = conditionPanel;
     this.conditionScrollPane = conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
     this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
@@ -569,7 +571,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
-   * @see EntityInputProviders#getInputProvider(Property, SwingEntityEditModel, Object)
+   * @see EntityComponentValues#getComponentValue(Property, SwingEntityEditModel, Object)
    */
   public final void updateSelectedEntities(final Property propertyToUpdate) {
     if (tableModel.getSelectionModel().isSelectionEmpty()) {
@@ -579,9 +581,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final List<Entity> selectedEntities = tableModel.getDomain().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
     final Collection values = Entities.getDistinctValues(propertyToUpdate.getPropertyId(), selectedEntities);
     final Object initialValue = values.size() == 1 ? values.iterator().next() : null;
-    final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
-            inputProviders.getInputProvider(propertyToUpdate, tableModel.getEditModel(), initialValue));
-    UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
+    final ComponentValuePanel inputPanel = new ComponentValuePanel(propertyToUpdate.getCaption(),
+            componentValues.getComponentValue(propertyToUpdate, tableModel.getEditModel(), initialValue));
+    Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
             inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
       Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
@@ -1254,7 +1256,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void bindPanelEvents() {
     if (includeDeleteSelectedControl()) {
-      UiUtil.addKeyEvent(table, KeyEvent.VK_DELETE, getDeleteSelectedControl());
+      KeyEvents.addKeyEvent(table, KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
     final EventListener statusListener = () -> SwingUtilities.invokeLater(EntityTablePanel.this::updateStatusMessage);
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
@@ -1316,11 +1318,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
-    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, control(() -> {
+    KeyEvents.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, control(() -> {
       final Point location = getPopupLocation(table);
       popupMenu.show(table, location.x, location.y);
     }, "EntityTablePanel.showPopupMenu"));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
+    KeyEvents.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             control(this::showEntityMenu,"EntityTablePanel.showEntityMenu"));
   }
 
@@ -1378,7 +1380,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     finally {
       setWaitCursor(false, dialogParent);
     }
-    UiUtil.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
+    Dialogs.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
   }
 
   private static FilteredTable<Entity, Property, SwingEntityTableModel> initializeTable(final SwingEntityTableModel tableModel) {

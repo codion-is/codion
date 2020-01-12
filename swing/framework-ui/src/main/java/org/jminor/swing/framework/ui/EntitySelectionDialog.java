@@ -7,6 +7,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
@@ -29,7 +30,8 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
-import static org.jminor.swing.common.ui.UiUtil.*;
+import static org.jminor.swing.common.ui.UiUtil.createFlowLayout;
+import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
 import static org.jminor.swing.common.ui.control.Controls.control;
 
 /**
@@ -67,7 +69,7 @@ public final class EntitySelectionDialog extends JDialog {
       tableModel.getEditModel().setReadOnly(true);
     }
     this.entityTablePanel = initializeTablePanel(tableModel, preferredSize);
-    addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
+    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
     setLayout(new BorderLayout());
     final JPanel buttonPanel = new JPanel(createFlowLayout(FlowLayout.RIGHT));
     final JButton okButton = new JButton(okControl);
