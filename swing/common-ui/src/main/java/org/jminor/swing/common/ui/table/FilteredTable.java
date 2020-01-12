@@ -14,9 +14,11 @@ import org.jminor.common.model.table.SortingDirective;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
+import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
 import org.jminor.swing.common.ui.textfield.TextFields;
 
@@ -427,7 +429,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JPopupMenu popupMenu = new JPopupMenu();
     final String settingsMessage = MESSAGES.getString("settings");
     popupMenu.add(Controls.control(() ->
-            UiUtil.displayInDialog(FilteredTable.this, panel, settingsMessage, control), settingsMessage));
+            Dialogs.displayInDialog(FilteredTable.this, panel, settingsMessage, control), settingsMessage));
 
     return popupMenu;
   }
@@ -531,13 +533,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       }
     });
     tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
-    UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK,
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK,
             new ResizeSelectedColumnAction(this, false));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK,
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK,
             new ResizeSelectedColumnAction(this, true));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
             new MoveSelectedColumnAction(this, true));
-    UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
             new MoveSelectedColumnAction(this, false));
   }
 

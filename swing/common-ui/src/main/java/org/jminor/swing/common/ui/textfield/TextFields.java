@@ -1,7 +1,12 @@
 package org.jminor.swing.common.ui.textfield;
 
 import org.jminor.common.DateFormats;
+import org.jminor.common.model.CancelException;
+import org.jminor.swing.common.ui.KeyEvents;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -12,13 +17,22 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.PlainDocument;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.io.File;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
+import java.util.Collection;
 import java.util.Locale;
+import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A utility class for TextFields.
@@ -210,6 +224,56 @@ public final class TextFields {
    */
   public static synchronized int getPreferredTextFieldHeight() {
     return getPreferredTextFieldSize().height;
+  }
+
+  /**
+   * Adds a CTRL-SPACE action the the given text field for displaying a lookup dialog showing the values provided
+   * by the given value provider
+   * @param textField the text field
+   * @param valueProvider provides the values for the lookup dialog
+   * @param <T> the type of values being looked up
+   */
+  public static <T> void addLookupDialog(final JTextField textField, final Supplier<Collection<T>> valueProvider) {
+    requireNonNull(valueProvider);
+    KeyEvents.addKeyEvent(textField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, new AbstractAction("TextFields.lookupValue") {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        final Object value = Dialogs.selectValue(textField, valueProvider.get());
+        if (value != null) {
+          textField.setText(value.toString());
+        }
+      }
+    });
+  }
+
+  /**
+   * Creates a Action instance, with a triple-dot name ('...') for selecting a file path to display in the given text field
+   * @param filenameField the text field for displaying the file path
+   * @return the Action
+   */
+  public static Action getBrowseAction(final JTextField filenameField) {
+    return new AbstractAction("...") {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          final File file = Dialogs.selectFile(filenameField, getParentPath(filenameField.getText()));
+          filenameField.setText(file.getAbsolutePath());
+        }
+        catch (final CancelException ignored) {/*ignored*/}
+      }
+    };
+  }
+
+  private static String getParentPath(final String text) {
+    if (nullOrEmpty(text)) {
+      return null;
+    }
+    try {
+      return new File(text).getParentFile().getPath();
+    }
+    catch (final Exception e) {
+      return null;
+    }
   }
 
   /**

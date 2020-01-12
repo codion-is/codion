@@ -18,13 +18,14 @@ import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
-import org.jminor.swing.common.ui.DialogExceptionHandler;
+import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
@@ -781,7 +782,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   private void bindEventsInternal() {
-    UiUtil.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(this::showEntityMenu,
                     "EntityEditPanel.showEntityMenu"));
     editModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityEditPanel.this));
@@ -862,8 +863,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       if (component instanceof JComboBox && ((JComboBox) component).isEditable()) {
         keyComponent = (JComponent) ((JComboBox) component).getEditor().getEditorComponent();
       }
-      UiUtil.addKeyEvent(keyComponent, KeyEvent.VK_ADD, KeyEvent.CTRL_DOWN_MASK, this);
-      UiUtil.addKeyEvent(keyComponent, KeyEvent.VK_PLUS, KeyEvent.CTRL_DOWN_MASK, this);
+      KeyEvents.addKeyEvent(keyComponent, KeyEvent.VK_ADD, KeyEvent.CTRL_DOWN_MASK, this);
+      KeyEvents.addKeyEvent(keyComponent, KeyEvent.VK_PLUS, KeyEvent.CTRL_DOWN_MASK, this);
     }
   }
 }

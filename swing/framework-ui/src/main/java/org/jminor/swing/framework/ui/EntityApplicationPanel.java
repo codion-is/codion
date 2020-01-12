@@ -27,9 +27,8 @@ import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
-import org.jminor.swing.common.ui.DialogExceptionHandler;
 import org.jminor.swing.common.ui.HierarchyPanel;
+import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
@@ -37,6 +36,9 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
+import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 
@@ -327,14 +329,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Displays in a dialog a tree describing the application layout
    */
   public final void viewApplicationTree() {
-    UiUtil.displayInDialog(this, initializeApplicationTree(), resourceBundle.getString("view_application_tree"), false);
+    Dialogs.displayInDialog(this, initializeApplicationTree(), resourceBundle.getString("view_application_tree"), false);
   }
 
   /**
    * Shows a dialog containing a dependency tree view of all defined entities
    */
   public final void viewDependencyTree() {
-    UiUtil.displayInDialog(this, initializeDependencyTree(), FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), false);
+    Dialogs.displayInDialog(this, initializeDependencyTree(), FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), false);
   }
 
   /**
@@ -959,8 +961,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
-      UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new UiUtil.DisposeWindowAction(dialog));
+      KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new Dialogs.DisposeWindowAction(dialog));
       dialog.pack();
       dialog.setLocationRelativeTo(this);
       if (modalDialog) {

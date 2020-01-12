@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui;
+package org.jminor.swing.common.ui.dialog;
 
 import java.awt.Window;
 
@@ -9,6 +9,7 @@ import java.awt.Window;
  * Handles an exception by displaying a error dialog.
  */
 public interface DialogExceptionHandler {
+
   /**
    * Handle the given exception and display it to the user.
    * @param exception the exception

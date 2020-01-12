@@ -8,7 +8,7 @@ import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.KeyEvents;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -111,7 +112,7 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
   }
 
   private void initializeUI(final String caption) {
-    setLayout(UiUtil.createBorderLayout());
+    setLayout(new BorderLayout(5, 5));
     if (caption != null) {
       setBorder(BorderFactory.createTitledBorder(caption));
     }
@@ -122,9 +123,9 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
   }
 
   private JPanel createButtonPanel() {
-    final JPanel panel = new JPanel(UiUtil.createGridLayout(1, COLUMNS));
+    final JPanel panel = new JPanel(new GridLayout(1, COLUMNS));
     panel.add(okButton);
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true,
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true,
             new AbstractAction("cancelInput") {
               @Override
               public void actionPerformed(final ActionEvent e) {

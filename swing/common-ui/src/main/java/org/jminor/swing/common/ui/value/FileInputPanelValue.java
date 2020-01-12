@@ -2,7 +2,7 @@ package org.jminor.swing.common.ui.value;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.model.DocumentAdapter;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.textfield.TextFields;
 
 import javax.swing.AbstractAction;
@@ -72,7 +72,7 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
 
     private void browseFile() {
       try {
-        final File file = UiUtil.selectFile(filePathField, null, "Select file");
+        final File file = Dialogs.selectFile(filePathField, null, "Select file");
         filePathField.setText(file.toString());
       }
       catch (final CancelException e) {

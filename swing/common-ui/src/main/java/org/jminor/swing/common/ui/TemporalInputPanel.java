@@ -4,6 +4,7 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.DateParser;
+import org.jminor.common.Util;
 import org.jminor.common.state.StateObserver;
 
 import javax.swing.JFormattedTextField;
@@ -22,6 +23,8 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the Temporal type supplied by this panel
  */
 public class TemporalInputPanel<T extends Temporal> extends JPanel {
+
+  protected static final String JCALENDAR_CLASS_NAME = "com.toedter.calendar.JCalendar";
 
   private final JFormattedTextField inputField;
   private final String dateFormat;
@@ -89,6 +92,13 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
    */
   public void setEditable(final boolean editable) {
     inputField.setEditable(editable);
+  }
+
+  /**
+   * @return true if the JCalendar library is available
+   */
+  public static boolean isJCalendarAvailable() {
+    return Util.onClasspath(JCALENDAR_CLASS_NAME);
   }
 
   /**

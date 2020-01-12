@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui;
+package org.jminor.swing.common.ui.dialog;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
@@ -44,7 +44,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
     if (nullOrEmpty(message)) {
       message = rootCause.getCause() != null ? trimMessage(rootCause.getCause()) : trimMessage(rootCause);
     }
-    UiUtil.showExceptionDialog(dialogParent, getMessageTitle(rootCause), message, rootCause);
+    Dialogs.showExceptionDialog(dialogParent, getMessageTitle(rootCause), message, rootCause);
   }
 
   static Throwable unwrapExceptions(final Throwable exception, final Collection<Class<? extends Throwable>> exceptions) {

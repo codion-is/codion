@@ -25,13 +25,15 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
-import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
-import org.jminor.swing.common.ui.DialogExceptionHandler;
+import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
@@ -581,7 +583,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Object initialValue = values.size() == 1 ? values.iterator().next() : null;
     final ComponentValuePanel inputPanel = new ComponentValuePanel(propertyToUpdate.getCaption(),
             componentValues.getComponentValue(propertyToUpdate, tableModel.getEditModel(), initialValue));
-    UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
+    Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
             inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
       Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
@@ -1254,7 +1256,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void bindPanelEvents() {
     if (includeDeleteSelectedControl()) {
-      UiUtil.addKeyEvent(table, KeyEvent.VK_DELETE, getDeleteSelectedControl());
+      KeyEvents.addKeyEvent(table, KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
     final EventListener statusListener = () -> SwingUtilities.invokeLater(EntityTablePanel.this::updateStatusMessage);
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
@@ -1316,11 +1318,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
-    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, control(() -> {
+    KeyEvents.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, control(() -> {
       final Point location = getPopupLocation(table);
       popupMenu.show(table, location.x, location.y);
     }, "EntityTablePanel.showPopupMenu"));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
+    KeyEvents.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             control(this::showEntityMenu,"EntityTablePanel.showEntityMenu"));
   }
 
@@ -1378,7 +1380,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     finally {
       setWaitCursor(false, dialogParent);
     }
-    UiUtil.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
+    Dialogs.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
   }
 
   private static FilteredTable<Entity, Property, SwingEntityTableModel> initializeTable(final SwingEntityTableModel tableModel) {
