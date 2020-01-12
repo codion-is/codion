@@ -107,7 +107,7 @@ class TextComponentValue<V, C extends JTextComponent> extends AbstractComponentV
   /**
    * @return the text from the linked text component
    */
-  protected final String getText() {
+  private String getText() {
     try {
       final String text;
       synchronized (document) {
@@ -117,19 +117,13 @@ class TextComponentValue<V, C extends JTextComponent> extends AbstractComponentV
         return text;
       }
 
-      return formatText(text);
-    }
-    catch (final BadLocationException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private String formatText(final String text) {
-    try {
       return (String) formatter.stringToValue(text);
     }
     catch (final ParseException e) {
       return null;
+    }
+    catch (final BadLocationException e) {
+      throw new RuntimeException(e);
     }
   }
 }
