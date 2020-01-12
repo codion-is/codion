@@ -5,7 +5,7 @@ package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.swing.common.ui.TemporalInputPanel;
+import org.jminor.swing.common.ui.time.TemporalInputPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;

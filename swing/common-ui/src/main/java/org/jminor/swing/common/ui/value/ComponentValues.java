@@ -6,11 +6,11 @@ package org.jminor.swing.common.ui.value;
 import org.jminor.common.Formats;
 import org.jminor.common.Item;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
-import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
+import org.jminor.swing.common.ui.time.TemporalInputPanel;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.ButtonModel;
@@ -379,7 +379,7 @@ public final class ComponentValues {
    * @return a ComponentValue based on a combo box
    */
   public static <V> ComponentValue<V, JComboBox<Item<V>>> selectedItemValue(final V initialValue, final List<Item<V>> values) {
-    return new SelectedItemValue<V>(initialValue, values);
+    return new SelectedItemValue<>(initialValue, values);
   }
 
   /**

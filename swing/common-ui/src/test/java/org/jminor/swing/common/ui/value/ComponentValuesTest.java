@@ -8,13 +8,13 @@ import org.jminor.common.Item;
 import org.jminor.common.value.Value;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.ui.LocalDateInputPanel;
-import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.TextFields;
+import org.jminor.swing.common.ui.time.LocalDateInputPanel;
+import org.jminor.swing.common.ui.time.TemporalInputPanel;
 
 import org.junit.jupiter.api.Test;
 
