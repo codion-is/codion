@@ -41,7 +41,7 @@ final class SelectedItemValue<T> extends AbstractComponentValue<T, JComboBox<Ite
 
   /** {@inheritDoc} */
   @Override
-  protected void setInternal(final T value) {
+  protected void setComponentValue(final T value) {
     getComponent().setSelectedItem(value);
   }
 

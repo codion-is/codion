@@ -41,11 +41,11 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
   @Override
   public final void set(final V value) {
     if (SwingUtilities.isEventDispatchThread()) {
-      setInternal(value);
+      setComponentValue(value);
     }
     else {
       try {
-        SwingUtilities.invokeAndWait(() -> setInternal(value));
+        SwingUtilities.invokeAndWait(() -> setComponentValue(value));
       }
       catch(final InterruptedException ex){
         Thread.currentThread().interrupt();
@@ -73,5 +73,5 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
    * Sets the given value in the input component.
    * @param value the value to display in the input component
    */
-  protected abstract void setInternal(V value);
+  protected abstract void setComponentValue(V value);
 }

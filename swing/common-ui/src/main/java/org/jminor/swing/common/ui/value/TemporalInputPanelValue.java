@@ -44,7 +44,7 @@ final class TemporalInputPanelValue<V extends Temporal> extends AbstractComponen
 
   /** {@inheritDoc} */
   @Override
-  protected void setInternal(final V value) {
+  protected void setComponentValue(final V value) {
     getComponent().setTemporal(value);
   }
 }

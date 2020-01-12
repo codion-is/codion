@@ -46,7 +46,7 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
   }
 
   @Override
-  protected void setInternal(final byte[] value) {
+  protected void setComponentValue(final byte[] value) {
     throw new UnsupportedOperationException();
   }
 

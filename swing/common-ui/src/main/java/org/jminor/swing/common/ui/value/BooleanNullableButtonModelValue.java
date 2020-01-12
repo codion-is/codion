@@ -18,7 +18,7 @@ final class BooleanNullableButtonModelValue extends AbstractComponentValue<Boole
   }
 
   @Override
-  protected void setInternal(final Boolean value) {
+  protected void setComponentValue(final Boolean value) {
     getComponent().setState(value);
   }
 }

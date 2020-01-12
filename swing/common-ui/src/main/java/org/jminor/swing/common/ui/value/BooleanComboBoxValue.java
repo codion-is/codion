@@ -36,7 +36,7 @@ final class BooleanComboBoxValue extends AbstractComponentValue<Boolean, JComboB
 
   /** {@inheritDoc} */
   @Override
-  protected void setInternal(final Boolean value) {
+  protected void setComponentValue(final Boolean value) {
     getComponent().setSelectedItem(value);
   }
 }

@@ -102,7 +102,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
     /** {@inheritDoc} */
     @Override
-    protected void setInternal(final Entity value) {
+    protected void setComponentValue(final Entity value) {
       getComponent().setSelectedItem(value);
     }
 

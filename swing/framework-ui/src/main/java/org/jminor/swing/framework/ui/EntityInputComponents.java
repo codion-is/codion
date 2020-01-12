@@ -26,8 +26,8 @@ import org.jminor.swing.common.ui.combobox.AutoCompletion;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.textfield.DecimalField;
-import org.jminor.swing.common.ui.textfield.DocumentSizeFilter;
 import org.jminor.swing.common.ui.textfield.IntegerField;
+import org.jminor.swing.common.ui.textfield.LengthDocumentFilter;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFields;
@@ -525,7 +525,7 @@ public final class EntityInputComponents {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
     if (property.getMaxLength() > 0) {
-      ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentSizeFilter(property.getMaxLength()));
+      ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new LengthDocumentFilter(property.getMaxLength()));
     }
     linkToEnabledState(enabledState, textArea);
 

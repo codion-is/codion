@@ -574,7 +574,7 @@ public final class EntityLookupField extends JTextField {
 
     /** {@inheritDoc} */
     @Override
-    protected void setInternal(final Entity value) {
+    protected void setComponentValue(final Entity value) {
       getComponent().getModel().setSelectedEntity(value);
     }
 

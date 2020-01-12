@@ -18,7 +18,7 @@ final class SpinnerNumberValue<V extends Number> extends AbstractComponentValue<
   }
 
   @Override
-  protected void setInternal(final V value) {
+  protected void setComponentValue(final V value) {
     getComponent().setValue(value);
   }
 }

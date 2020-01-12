@@ -22,7 +22,7 @@ final class IntegerFieldValue extends NumberFieldValue<IntegerField, Integer> {
   }
 
   @Override
-  protected void setInternal(final Integer value) {
+  protected void setComponentValue(final Integer value) {
     getComponent().setNumber(value);
   }
 }

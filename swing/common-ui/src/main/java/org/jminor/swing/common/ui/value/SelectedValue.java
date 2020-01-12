@@ -36,7 +36,7 @@ final class SelectedValue<V> extends AbstractComponentValue<V, JComboBox<V>> {
   }
 
   @Override
-  protected void setInternal(final Object value) {
+  protected void setComponentValue(final Object value) {
     getComponent().getModel().setSelectedItem(value);
   }
 }

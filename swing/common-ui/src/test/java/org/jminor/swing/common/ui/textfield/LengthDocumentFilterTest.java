@@ -10,12 +10,12 @@ import javax.swing.text.AbstractDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DocumentSizeFilterTest {
+public class LengthDocumentFilterTest {
 
   @Test
   public void insert() {
     final JTextArea textArea = new JTextArea();
-    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentSizeFilter(10));
+    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new LengthDocumentFilter(10));
     final String text8 = "12345678";
     textArea.setText(text8);
     assertEquals(text8, textArea.getText());
@@ -29,7 +29,7 @@ public class DocumentSizeFilterTest {
   @Test
   public void replace() {
     final JTextArea textArea = new JTextArea();
-    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentSizeFilter(10));
+    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new LengthDocumentFilter(10));
     final String text8 = "12345678";
     textArea.setText(text8);
     textArea.replaceRange("90", 8, 8);

@@ -34,7 +34,7 @@ class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel>
 
   /** {@inheritDoc} */
   @Override
-  protected void setInternal(final String value) {
+  protected void setComponentValue(final String value) {
     getComponent().setText(value);
   }
 

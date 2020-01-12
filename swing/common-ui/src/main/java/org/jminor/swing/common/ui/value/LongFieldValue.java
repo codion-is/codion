@@ -22,7 +22,7 @@ final class LongFieldValue extends NumberFieldValue<LongField, Long> {
   }
 
   @Override
-  protected void setInternal(final Long value) {
+  protected void setComponentValue(final Long value) {
     getComponent().setNumber(value);
   }
 }

@@ -22,7 +22,7 @@ final class DecimalFieldValue extends NumberFieldValue<DecimalField, Double> {
   }
 
   @Override
-  protected void setInternal(final Double value) {
+  protected void setComponentValue(final Double value) {
     getComponent().setNumber(value);
   }
 }

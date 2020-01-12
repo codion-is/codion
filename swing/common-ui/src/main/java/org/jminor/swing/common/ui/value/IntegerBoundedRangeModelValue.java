@@ -18,7 +18,7 @@ final class IntegerBoundedRangeModelValue extends AbstractComponentValue<Integer
   }
 
   @Override
-  protected void setInternal(final Integer value) {
+  protected void setComponentValue(final Integer value) {
     getComponent().setValue(value == null ? 0 : value);
   }
 }

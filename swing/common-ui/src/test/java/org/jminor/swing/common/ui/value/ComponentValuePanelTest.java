@@ -23,7 +23,7 @@ public class ComponentValuePanelTest {
         return textField.getText();
       }
       @Override
-      protected void setInternal(final String value) {
+      protected void setComponentValue(final String value) {
         textField.setText(value);
       }
     });

@@ -18,7 +18,7 @@ final class BooleanButtonModelValue extends AbstractComponentValue<Boolean, Butt
   }
 
   @Override
-  protected void setInternal(final Boolean value) {
+  protected void setComponentValue(final Boolean value) {
      getComponent().setSelected(value != null && value);
   }
 }

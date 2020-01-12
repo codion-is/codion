@@ -19,7 +19,7 @@ final class BigDecimalFieldValue extends NumberFieldValue<DecimalField, BigDecim
   }
 
   @Override
-  protected void setInternal(final BigDecimal value) {
+  protected void setComponentValue(final BigDecimal value) {
     getComponent().setNumber(value);
   }
 }

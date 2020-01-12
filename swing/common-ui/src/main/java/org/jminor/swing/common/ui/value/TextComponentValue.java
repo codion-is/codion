@@ -60,7 +60,7 @@ class TextComponentValue<V, C extends JTextComponent> extends AbstractComponentV
   }
 
   @Override
-  protected final void setInternal(final V value) {
+  protected final void setComponentValue(final V value) {
     try {
       final String text = textFromValue(value);
       synchronized (document) {
