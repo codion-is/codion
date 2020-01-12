@@ -9,9 +9,6 @@ import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;
 
-/**
- * A InputProvider implementation for boolean values.
- */
 final class BooleanComboBoxValue extends AbstractComponentValue<Boolean, JComboBox> {
 
   /**
@@ -28,15 +25,13 @@ final class BooleanComboBoxValue extends AbstractComponentValue<Boolean, JComboB
     });
   }
 
-  /** {@inheritDoc} */
   @Override
-  public Boolean get() {
-    return (Boolean) ((Item) getComponent().getModel().getSelectedItem()).getValue();
+  protected Boolean getComponentValue(final JComboBox component) {
+    return (Boolean) ((Item) component.getModel().getSelectedItem()).getValue();
   }
 
-  /** {@inheritDoc} */
   @Override
-  protected void setInternal(final Boolean value) {
-    getComponent().setSelectedItem(value);
+  protected void setComponentValue(final JComboBox component, final Boolean value) {
+    component.setSelectedItem(value);
   }
 }

@@ -23,35 +23,35 @@ public class DoubleComponentValueTest {
 
   @Test
   public void parse() {
-    final ComponentValue<Double, DecimalField> provider = ComponentValues.doubleValue((Double) null);
-    assertNull(provider.get());
+    final ComponentValue<Double, DecimalField> componentValue = ComponentValues.doubleValue((Double) null);
+    assertNull(componentValue.get());
 
-    provider.getComponent().setGroupingUsed(false);
+    componentValue.getComponent().setGroupingUsed(false);
 
-    provider.getComponent().setSeparators('.', ',');
-    provider.getComponent().setText("15.5");
-    assertEquals(Double.valueOf(15.5), provider.get());
-    provider.getComponent().setText("15,6");
-    assertEquals(Double.valueOf(15.5), provider.get());
+    componentValue.getComponent().setSeparators('.', ',');
+    componentValue.getComponent().setText("15.5");
+    assertEquals(Double.valueOf(15.5), componentValue.get());
+    componentValue.getComponent().setText("15,6");
+    assertEquals(Double.valueOf(15.5), componentValue.get());
 
-    provider.getComponent().setSeparators(',', '.');
-    provider.getComponent().setText("15.7");
-    assertEquals(Double.valueOf(15.5), provider.get());
-    provider.getComponent().setText("15,7");
-    assertEquals(Double.valueOf(15.7), provider.get());
+    componentValue.getComponent().setSeparators(',', '.');
+    componentValue.getComponent().setText("15.7");
+    assertEquals(Double.valueOf(15.5), componentValue.get());
+    componentValue.getComponent().setText("15,7");
+    assertEquals(Double.valueOf(15.7), componentValue.get());
 
-    provider.getComponent().setGroupingUsed(true);
+    componentValue.getComponent().setGroupingUsed(true);
 
-    provider.getComponent().setSeparators('.', ',');
-    provider.getComponent().setText("15.5");
-    assertEquals(Double.valueOf(15.5), provider.get());
-    provider.getComponent().setText("15,6");
-    assertEquals(Double.valueOf(156), provider.get());
+    componentValue.getComponent().setSeparators('.', ',');
+    componentValue.getComponent().setText("15.5");
+    assertEquals(Double.valueOf(15.5), componentValue.get());
+    componentValue.getComponent().setText("15,6");
+    assertEquals(Double.valueOf(156), componentValue.get());
 
-    provider.getComponent().setSeparators(',', '.');
-    provider.getComponent().setText("15.7");
-    assertEquals(Double.valueOf(157), provider.get());
-    provider.getComponent().setText("15,7");
-    assertEquals(Double.valueOf(15.7), provider.get());
+    componentValue.getComponent().setSeparators(',', '.');
+    componentValue.getComponent().setText("15.7");
+    assertEquals(Double.valueOf(157), componentValue.get());
+    componentValue.getComponent().setText("15,7");
+    assertEquals(Double.valueOf(15.7), componentValue.get());
   }
 }

@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.swing.common.model.DocumentAdapter;
+import org.jminor.swing.common.model.textfield.DocumentAdapter;
 import org.jminor.swing.common.ui.textfield.NumberField;
 
 import javax.swing.event.DocumentEvent;

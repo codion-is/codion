@@ -22,29 +22,26 @@ final class TemporalInputPanelValue<V extends Temporal> extends AbstractComponen
     super(inputPanel);
   }
 
-  /** {@inheritDoc} */
   @Override
-  public V get() {
+  protected V getComponentValue(final TemporalInputPanel<V> component) {
     try {
-      final String dateText = getComponent().getInputField().getText();
+      final String dateText = component.getInputField().getText();
       if (dateText.length() == 0) {
         return null;
       }
       if (!dateText.contains("_")) {
-        return getComponent().getTemporal();
+        return component.getTemporal();
       }
-      else {
-        return null;
-      }
+
+      return null;
     }
     catch (final DateTimeParseException e) {
-      throw new IllegalArgumentException("Wrong date format " + getComponent().getDateFormat() + " expected", e);
+      throw new IllegalArgumentException("Wrong date format " + component.getDateFormat() + " expected", e);
     }
   }
 
-  /** {@inheritDoc} */
   @Override
-  protected void setInternal(final V value) {
-    getComponent().setTemporal(value);
+  protected void setComponentValue(final TemporalInputPanel<V> component, final V value) {
+    component.setTemporal(value);
   }
 }

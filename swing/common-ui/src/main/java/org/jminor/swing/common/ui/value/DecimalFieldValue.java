@@ -12,8 +12,8 @@ final class DecimalFieldValue extends NumberFieldValue<DecimalField, Double> {
   }
 
   @Override
-  public Double get() {
-    final Number number = getComponent().getNumber();
+  protected Double getComponentValue(final DecimalField component) {
+    final Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0d;
     }
@@ -22,7 +22,7 @@ final class DecimalFieldValue extends NumberFieldValue<DecimalField, Double> {
   }
 
   @Override
-  protected void setInternal(final Double value) {
-    getComponent().setNumber(value);
+  protected void setComponentValue(final DecimalField component, final Double value) {
+    component.setNumber(value);
   }
 }

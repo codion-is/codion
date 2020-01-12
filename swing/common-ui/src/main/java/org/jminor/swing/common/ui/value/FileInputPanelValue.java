@@ -1,7 +1,10 @@
+/*
+ * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.swing.common.ui.value;
 
 import org.jminor.common.model.CancelException;
-import org.jminor.swing.common.model.DocumentAdapter;
+import org.jminor.swing.common.model.textfield.DocumentAdapter;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.textfield.TextFields;
 
@@ -29,8 +32,8 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
   }
 
   @Override
-  public byte[] get() {
-    final String filePath = getComponent().filePathField.getText();
+  protected byte[] getComponentValue(final FileInputPanel component) {
+    final String filePath = component.filePathField.getText();
     if (filePath.isEmpty()) {
       return null;
     }
@@ -43,7 +46,7 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
   }
 
   @Override
-  protected void setInternal(final byte[] value) {
+  protected void setComponentValue(final FileInputPanel component, final byte[] value) {
     throw new UnsupportedOperationException();
   }
 

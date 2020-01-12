@@ -15,13 +15,13 @@ public class IntegerComponentValueTest {
   @Test
   public void test() {
     final Integer value = 10;
-    ComponentValue<Integer, IntegerField> provider = ComponentValues.integerValue(value);
-    assertEquals(value, provider.get());
+    ComponentValue<Integer, IntegerField> componentValue = ComponentValues.integerValue(value);
+    assertEquals(value, componentValue.get());
 
-    provider = ComponentValues.integerValue((Integer) null);
-    assertNull(provider.get());
+    componentValue = ComponentValues.integerValue((Integer) null);
+    assertNull(componentValue.get());
 
-    provider.getComponent().setText("15");
-    assertEquals(Integer.valueOf(15), provider.get());
+    componentValue.getComponent().setText("15");
+    assertEquals(Integer.valueOf(15), componentValue.get());
   }
 }

@@ -564,18 +564,16 @@ public final class EntityLookupField extends JTextField {
       super(createEntityLookupField(lookupModel, initialValue));
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Entity get() {
+    protected Entity getComponentValue(final EntityLookupField component) {
       final List<Entity> selectedEntities = getComponent().getModel().getSelectedEntities();
 
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected void setInternal(final Entity value) {
-      getComponent().getModel().setSelectedEntity(value);
+    protected void setComponentValue(final EntityLookupField component, final Entity value) {
+      component.getModel().setSelectedEntity(value);
     }
 
     private static EntityLookupField createEntityLookupField(final EntityLookupModel lookupModel, final Entity initialValue) {

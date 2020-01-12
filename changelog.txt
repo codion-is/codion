@@ -5615,3 +5615,7 @@
   Dialogs utility class added, relevant methods moved from UiUtil
   KeyEvents utility class, added, relevant methods moved from UiUtil
   swing.common.ui.time package added
+  DocumentAdapter moved to swing.common.model.textfield
+  SizeDocumentFilter renamed to LengthDocumentFilter
+  AbstractComponentValue.setInternal() renamed to setComponentValue()
+  AbstractComponentValue.getComponentValue() added, refactored

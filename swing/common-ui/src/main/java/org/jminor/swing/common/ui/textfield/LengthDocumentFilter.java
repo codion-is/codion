@@ -11,14 +11,14 @@ import java.awt.Toolkit;
 /**
  * A DocumentFilter restricting the maximum length of the string the document can contain
  */
-public final class DocumentSizeFilter extends DocumentFilter {
+public final class LengthDocumentFilter extends DocumentFilter {
 
   private final int maxLength;
 
   /**
    * @param maxLength the maximum length of the string the document can contain
    */
-  public DocumentSizeFilter(final int maxLength) {
+  public LengthDocumentFilter(final int maxLength) {
     this.maxLength = maxLength;
   }
 

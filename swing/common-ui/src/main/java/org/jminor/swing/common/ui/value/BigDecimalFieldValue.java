@@ -14,12 +14,12 @@ final class BigDecimalFieldValue extends NumberFieldValue<DecimalField, BigDecim
   }
 
   @Override
-  public BigDecimal get() {
-    return (BigDecimal) getComponent().getNumber();
+  protected BigDecimal getComponentValue(final DecimalField component) {
+    return (BigDecimal) component.getNumber();
   }
 
   @Override
-  protected void setInternal(final BigDecimal value) {
-    getComponent().setNumber(value);
+  protected void setComponentValue(final DecimalField component, final BigDecimal value) {
+    component.setNumber(value);
   }
 }

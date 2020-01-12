@@ -94,16 +94,14 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
       super(createComboBox(comboBoxModel, initialValue));
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Entity get() {
-      return getComponent().getModel().getSelectedValue();
+    protected Entity getComponentValue(final EntityComboBox component) {
+      return component.getModel().getSelectedValue();
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected void setInternal(final Entity value) {
-      getComponent().setSelectedItem(value);
+    protected void setComponentValue(final EntityComboBox component, final Entity value) {
+      component.setSelectedItem(value);
     }
 
     private static EntityComboBox createComboBox(final SwingEntityComboBoxModel comboBoxModel, final Object currentValue) {

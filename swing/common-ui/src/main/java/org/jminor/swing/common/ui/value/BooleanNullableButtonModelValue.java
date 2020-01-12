@@ -13,12 +13,12 @@ final class BooleanNullableButtonModelValue extends AbstractComponentValue<Boole
   }
 
   @Override
-  public Boolean get() {
-    return getComponent().getState();
+  protected Boolean getComponentValue(final NullableToggleButtonModel component) {
+    return component.getState();
   }
 
   @Override
-  protected void setInternal(final Boolean value) {
-    getComponent().setState(value);
+  protected void setComponentValue(final NullableToggleButtonModel component, final Boolean value) {
+    component.setState(value);
   }
 }

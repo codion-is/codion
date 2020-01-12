@@ -39,13 +39,19 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
 
   /** {@inheritDoc} */
   @Override
+  public final V get() {
+    return getComponentValue(component);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void set(final V value) {
     if (SwingUtilities.isEventDispatchThread()) {
-      setInternal(value);
+      setComponentValue(component, value);
     }
     else {
       try {
-        SwingUtilities.invokeAndWait(() -> setInternal(value));
+        SwingUtilities.invokeAndWait(() -> setComponentValue(component, value));
       }
       catch(final InterruptedException ex){
         Thread.currentThread().interrupt();
@@ -70,8 +76,16 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
   }
 
   /**
+   * Returns the value according to the component
+   * @param component the component
+   * @return the value from the given component
+   */
+  protected abstract V getComponentValue(C component);
+
+  /**
    * Sets the given value in the input component.
+   * @param component the component
    * @param value the value to display in the input component
    */
-  protected abstract void setInternal(V value);
+  protected abstract void setComponentValue(C component, V value);
 }
