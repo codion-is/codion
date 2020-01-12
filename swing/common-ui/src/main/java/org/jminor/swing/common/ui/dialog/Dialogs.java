@@ -294,7 +294,7 @@ public final class Dialogs {
    * @param defaultButton the the default dialog button
    * @param closeEvent if specified the dialog will be disposed of when and only when this event occurs
    * @param disposeOnEscape if true then the dialog is disposed when the ESC button is pressed,
-   * has no effect if a <ocde>closeEvent</ocde> is specified
+   * has no effect if a <code>closeEvent</code> is specified
    * @param onClosedAction this action will be registered as a windowClosed action for the dialog
    * @return the dialog used to display the component
    */
