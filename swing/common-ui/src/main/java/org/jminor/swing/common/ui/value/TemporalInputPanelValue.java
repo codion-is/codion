@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.swing.common.ui.TemporalInputPanel;
+import org.jminor.swing.common.ui.time.TemporalInputPanel;
 
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;

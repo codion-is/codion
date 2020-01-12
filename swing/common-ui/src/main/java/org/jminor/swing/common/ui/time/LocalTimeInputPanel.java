@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui;
+package org.jminor.swing.common.ui.time;
 
 import org.jminor.common.state.StateObserver;
 import org.jminor.swing.common.ui.textfield.TextFields;

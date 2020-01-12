@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui;
+package org.jminor.swing.common.ui.time;
 
 import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
@@ -9,6 +9,8 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
+import org.jminor.swing.common.ui.KeyEvents;
+import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;

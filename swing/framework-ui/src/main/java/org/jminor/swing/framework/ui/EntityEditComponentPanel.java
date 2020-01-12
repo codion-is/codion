@@ -15,15 +15,15 @@ import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.ui.LocalDateInputPanel;
-import org.jminor.swing.common.ui.LocalDateTimeInputPanel;
-import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.time.LocalDateInputPanel;
+import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
+import org.jminor.swing.common.ui.time.TemporalInputPanel;
 import org.jminor.swing.common.ui.value.ValueLinks;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
