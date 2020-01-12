@@ -9,9 +9,9 @@ import org.jminor.framework.demos.chinook.model.TrackTableModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.input.BigDecimalInputProvider;
-import org.jminor.swing.common.ui.input.InputProviderPanel;
 import org.jminor.swing.common.ui.textfield.DecimalField;
+import org.jminor.swing.common.ui.value.ComponentValuePanel;
+import org.jminor.swing.common.ui.value.ComponentValues;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
@@ -41,9 +41,9 @@ public class TrackTablePanel extends EntityTablePanel {
   }
 
   private BigDecimal getAmountFromUser() {
-    final InputProviderPanel<BigDecimal, DecimalField> inputPanel =
-            new InputProviderPanel<>("Amount",
-                    new BigDecimalInputProvider(null));
+    final ComponentValuePanel<BigDecimal, DecimalField> inputPanel =
+            new ComponentValuePanel<>("Amount",
+                    ComponentValues.bigDecimalValue(new DecimalField()));
     UiUtil.displayInDialog(this, inputPanel, "Price Raise", true,
             inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted() && inputPanel.getValue() != null) {

@@ -22,15 +22,15 @@ import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import org.jminor.swing.common.ui.SwingMessages;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.UiValues;
-import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.input.AbstractInputProvider;
-import org.jminor.swing.common.ui.input.InputProviderPanel;
 import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
+import org.jminor.swing.common.ui.value.AbstractComponentValue;
+import org.jminor.swing.common.ui.value.ComponentValuePanel;
+import org.jminor.swing.common.ui.value.ComponentValues;
+import org.jminor.swing.common.ui.value.ValueLinks;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
@@ -221,8 +221,8 @@ public final class EntityLookupField extends JTextField {
                                                   final String lookupCaption, final String dialogTitle) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
     lookupModel.getMultipleSelectionEnabledValue().set(!singleSelection);
-    final InputProviderPanel inputPanel = new InputProviderPanel(lookupCaption,
-            new InputProvider(lookupModel, null));
+    final ComponentValuePanel inputPanel = new ComponentValuePanel(lookupCaption,
+            new ComponentValue(lookupModel, null));
     UiUtil.displayInDialog(dialogParent, inputPanel, dialogTitle, true,
             inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
@@ -240,7 +240,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    Values.link(model.getSearchStringValue(), UiValues.textValue(this));
+    Values.link(model.getSearchStringValue(), ComponentValues.textValue(this));
     model.getSearchStringValue().addDataListener(data -> updateColors());
     model.addSelectedEntitiesListener(data -> setCaretPosition(0));
   }
@@ -551,29 +551,29 @@ public final class EntityLookupField extends JTextField {
    * A InputProvider implementation for Entity values based on a EntityLookupField.
    * @see EntityLookupField
    */
-  public static final class InputProvider extends AbstractInputProvider<Entity, EntityLookupField> {
+  public static final class ComponentValue extends AbstractComponentValue<Entity, EntityLookupField> {
 
     /**
      * Instantiates a new EntityLookupProvider
      * @param lookupModel the lookup model to base the lookup field on
      * @param initialValue the initial value
      */
-    public InputProvider(final EntityLookupModel lookupModel, final Entity initialValue) {
+    public ComponentValue(final EntityLookupModel lookupModel, final Entity initialValue) {
       super(createEntityLookupField(lookupModel, initialValue));
     }
 
     /** {@inheritDoc} */
     @Override
-    public Entity getValue() {
-      final List<Entity> selectedEntities = getInputComponent().getModel().getSelectedEntities();
+    public Entity get() {
+      final List<Entity> selectedEntities = getComponent().getModel().getSelectedEntities();
 
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setValue(final Entity value) {
-      getInputComponent().getModel().setSelectedEntity(value);
+    protected void setInternal(final Entity value) {
+      getComponent().getModel().setSelectedEntity(value);
     }
 
     private static EntityLookupField createEntityLookupField(final EntityLookupModel lookupModel, final Entity initialValue) {

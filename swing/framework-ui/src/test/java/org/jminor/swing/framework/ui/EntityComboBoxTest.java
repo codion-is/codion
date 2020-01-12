@@ -31,16 +31,16 @@ public class EntityComboBoxTest {
     final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "OPERATIONS");
-    final EntityComboBox.InputProvider provider = new EntityComboBox.InputProvider(model, operations);
+    final EntityComboBox.ComponentValue provider = new EntityComboBox.ComponentValue(model, operations);
 
-    assertNotNull(provider.getValue());
+    assertNotNull(provider.get());
 
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedItem(sales);
-    assertEquals(sales, provider.getValue());
+    assertEquals(sales, provider.get());
     model.setSelectedItem(null);
-    assertNull(provider.getValue());
+    assertNull(provider.get());
   }
 }

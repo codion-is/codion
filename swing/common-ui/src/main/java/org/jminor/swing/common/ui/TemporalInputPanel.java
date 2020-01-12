@@ -69,7 +69,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
     return null;
   }
 
-    /**
+  /**
    * Sets the date in the input field, clears the field if {@code date} is null.
    * @param date the date to set
    */

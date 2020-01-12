@@ -5584,3 +5584,7 @@
   EntityEditView.requestComponentFocus() added
   ToggleControl moved up to package level
   ControlProvider and related classes refactored
+  swing.common.ui.value package added, ComponentValue added
+  InputProvider removed, replaced with ComponentValue
+  UiValues replaced with ComponentValues
+  TextFields added, relevant methods moved from UiUtil

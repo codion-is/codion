@@ -18,6 +18,7 @@ import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
+import org.jminor.swing.common.ui.textfield.TextFields;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -383,7 +384,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       }
     });
     field.addKeyListener(new SearchFieldKeyListener(field));
-    UiUtil.selectAllOnFocusGained(field);
+    TextFields.selectAllOnFocusGained(field);
 
     field.setComponentPopupMenu(initializeSearchFieldPopupMenu());
 

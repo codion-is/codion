@@ -7,8 +7,9 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.textfield.TextFields;
+import org.jminor.swing.common.ui.value.ValueLinks;
 import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -198,7 +199,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     resetTimeField.setHorizontalAlignment(JLabel.CENTER);
 
     final JButton resetButton = new JButton(Controls.control(model::resetStatistics, "Reset"));
-    resetButton.setMaximumSize(UiUtil.getPreferredTextFieldSize());
+    resetButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
 
     statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Pool size"), poolSizeField));
     statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections requested"), requestedField));
@@ -230,14 +231,14 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JCheckBox collectStatisticsCheckBox = new JCheckBox("Fine grained statistics");
     collectStatisticsCheckBox.setModel(ValueLinks.toggleValueLink(model, "collectFineGrainedStatistics",
             model.getCollectFineGrainedStatisticsObserver()));
-    collectStatisticsCheckBox.setMaximumSize(UiUtil.getPreferredTextFieldSize());
+    collectStatisticsCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
 
     chartConfig.add(collectStatisticsCheckBox);
 
     final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);
     final JButton resetButton = new JButton(Controls.control(model::resetInPoolStatistics, "Reset"));
-    resetButton.setMaximumSize(UiUtil.getPreferredTextFieldSize());
+    resetButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
     configBase.add(resetButton, BorderLayout.EAST);
 
     final JPanel chartBase = new JPanel(new GridLayout(2, 2));

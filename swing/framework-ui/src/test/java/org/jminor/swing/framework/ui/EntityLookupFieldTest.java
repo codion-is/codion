@@ -31,15 +31,15 @@ public class EntityLookupFieldTest {
   @Test
   public void inputProvider() throws Exception {
     final EntityLookupModel model = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    final EntityLookupField.InputProvider provider = new EntityLookupField.InputProvider(model, null);
+    final EntityLookupField.ComponentValue provider = new EntityLookupField.ComponentValue(model, null);
 
-    assertNull(provider.getValue());
+    assertNull(provider.get());
 
     final Entity dept = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedEntity(dept);
-    assertEquals(dept, provider.getValue());
+    assertEquals(dept, provider.get());
     model.setSelectedEntity(null);
-    assertNull(provider.getValue());
+    assertNull(provider.get());
   }
 }

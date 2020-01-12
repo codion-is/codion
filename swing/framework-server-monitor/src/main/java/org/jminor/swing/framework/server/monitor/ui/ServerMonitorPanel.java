@@ -6,9 +6,9 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.IntegerField;
+import org.jminor.swing.common.ui.value.ValueLinks;
 import org.jminor.swing.framework.server.monitor.ServerMonitor;
 
 import org.jfree.chart.ChartFactory;

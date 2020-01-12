@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.textfield.TextFields;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -109,10 +110,10 @@ public final class LoginPanel extends JPanel {
   private void initializeUI(final User defaultUser) {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
-    UiUtil.selectAllOnFocusGained(usernameField);
+    TextFields.selectAllOnFocusGained(usernameField);
     passwordField.setText(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()));
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
-    UiUtil.selectAllOnFocusGained(passwordField);
+    TextFields.selectAllOnFocusGained(passwordField);
 
     final JPanel basePanel = new JPanel(UiUtil.createFlexibleGridLayout(GRID_SIZE, GRID_SIZE, true, false));
     basePanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));

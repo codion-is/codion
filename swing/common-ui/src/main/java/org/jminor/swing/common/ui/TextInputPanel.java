@@ -7,6 +7,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
+import org.jminor.swing.common.ui.textfield.TextFields;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -69,7 +70,7 @@ public final class TextInputPanel extends JPanel {
     this.dialogTitle = dialogTitle;
     this.textField = textField;
     this.textAreaSize = textAreaSize == null ? UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO) : textAreaSize;
-    this.button = createButton(buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    this.button = createButton(buttonFocusable, TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     initializeUI();
   }
 

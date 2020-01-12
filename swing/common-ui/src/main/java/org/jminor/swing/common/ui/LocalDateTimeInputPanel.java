@@ -5,6 +5,7 @@ package org.jminor.swing.common.ui;
 
 import org.jminor.common.state.StateObserver;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.textfield.TextFields;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -30,7 +31,7 @@ public final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateT
    * @param dateFormat the date format
    */
   public LocalDateTimeInputPanel(final LocalDateTime initialValue, final String dateFormat) {
-    this(UiUtil.createFormattedTemporalField(dateFormat, initialValue), dateFormat, true, null);
+    this(TextFields.createFormattedTemporalField(dateFormat, initialValue), dateFormat, true, null);
   }
 
   /**
@@ -45,7 +46,7 @@ public final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateT
     super(inputField, dateFormat, LocalDateTime::parse, enabledState);
     if (includeCalendarButton && UiUtil.isJCalendarAvailable()) {
       this.button = new JButton(Controls.control(this::displayCalendar, "..."));
-      this.button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+      this.button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null) {
         UiUtil.linkToEnabledState(enabledState, button);
       }

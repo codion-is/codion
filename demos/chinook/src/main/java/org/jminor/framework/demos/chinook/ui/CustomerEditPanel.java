@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.chinook.ui;
 
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
@@ -25,7 +25,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     createTextField(CUSTOMER_COMPANY).setColumns(16);
     createTextField(CUSTOMER_ADDRESS).setColumns(16);
     createTextField(CUSTOMER_CITY).setColumns(16);
-    UiUtil.makeUpperCase(createTextField(CUSTOMER_STATE)).setColumns(16);
+    TextFields.makeUpperCase(createTextField(CUSTOMER_STATE)).setColumns(16);
     createTextField(CUSTOMER_COUNTRY).setColumns(16);
     createTextField(CUSTOMER_POSTALCODE).setColumns(16);
     createTextField(CUSTOMER_PHONE).setColumns(16);

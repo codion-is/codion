@@ -7,6 +7,7 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
+import org.jminor.swing.common.ui.textfield.TextFields;
 
 import org.junit.jupiter.api.Test;
 
@@ -51,26 +52,26 @@ public class UiUtilTest {
 
   @Test
   public void makeUpperCase() {
-    JTextField textField = UiUtil.makeUpperCase(new JTextField());
+    JTextField textField = TextFields.makeUpperCase(new JTextField());
     textField.setText("hello");
     assertEquals("HELLO", textField.getText());
 
     textField = new JTextField();
     textField.setDocument(new SizedDocument());
-    UiUtil.makeUpperCase(textField);
+    TextFields.makeUpperCase(textField);
     textField.setText("hello");
     assertEquals("HELLO", textField.getText());
   }
 
   @Test
   public void makeLowerCase() {
-    JTextField textField = UiUtil.makeLowerCase(new JTextField());
+    JTextField textField = TextFields.makeLowerCase(new JTextField());
     textField.setText("HELLO");
     assertEquals("hello", textField.getText());
 
     textField = new JTextField();
     textField.setDocument(new SizedDocument());
-    UiUtil.makeLowerCase(textField);
+    TextFields.makeLowerCase(textField);
     textField.setText("HELLO");
     assertEquals("hello", textField.getText());
   }
@@ -107,9 +108,9 @@ public class UiUtilTest {
   public void selectAllOnFocusGained() {
     final JTextField textField = new JTextField("test");
     final int focusListenerCount = textField.getFocusListeners().length;
-    UiUtil.selectAllOnFocusGained(textField);
+    TextFields.selectAllOnFocusGained(textField);
     assertEquals(focusListenerCount + 1, textField.getFocusListeners().length);
-    UiUtil.selectNoneOnFocusGained(textField);
+    TextFields.selectNoneOnFocusGained(textField);
     assertEquals(focusListenerCount, textField.getFocusListeners().length);
   }
 }

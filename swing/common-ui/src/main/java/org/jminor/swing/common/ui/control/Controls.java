@@ -11,7 +11,6 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
-import org.jminor.swing.common.ui.UiValues;
 
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
@@ -20,6 +19,8 @@ import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 
 import static java.util.Objects.requireNonNull;
+import static org.jminor.common.value.Values.propertyValue;
+import static org.jminor.swing.common.ui.value.ComponentValues.booleanButtonModelValue;
 
 /**
  * A factory class for Control objects.
@@ -189,7 +190,7 @@ public final class Controls {
                                             final EventObserver<Boolean> changeEvent, final StateObserver enabledState,
                                             final boolean nullable) {
     final ButtonModel buttonModel = nullable ? new NullableToggleButtonModel() : new JToggleButton.ToggleButtonModel();
-    Values.link(Values.propertyValue(owner, beanPropertyName, nullable ? Boolean.class : boolean.class, changeEvent), UiValues.booleanValue(buttonModel));
+    Values.link(propertyValue(owner, beanPropertyName, nullable ? Boolean.class : boolean.class, changeEvent), booleanButtonModelValue(buttonModel));
 
     return new ToggleControl(caption, buttonModel, enabledState);
   }
@@ -286,7 +287,7 @@ public final class Controls {
   public static ToggleControl toggleControl(final Value<Boolean> value, final String name, final StateObserver enabledState,
                                             final Icon icon) {
     final ButtonModel buttonModel = value.isNullable() ? new NullableToggleButtonModel() : new JToggleButton.ToggleButtonModel();
-    Values.link(value, UiValues.booleanValue(buttonModel));
+    Values.link(value, booleanButtonModelValue(buttonModel));
 
     final ToggleControl control = new ToggleControl(name, buttonModel, enabledState);
     control.setIcon(icon);

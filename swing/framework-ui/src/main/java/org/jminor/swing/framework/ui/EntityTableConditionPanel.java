@@ -15,7 +15,6 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.ForeignKeyConditionModel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
@@ -23,6 +22,7 @@ import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
+import org.jminor.swing.common.ui.value.ValueLinks;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.BorderFactory;

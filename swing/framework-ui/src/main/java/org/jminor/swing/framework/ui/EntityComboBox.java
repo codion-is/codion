@@ -11,7 +11,7 @@ import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
-import org.jminor.swing.common.ui.input.AbstractInputProvider;
+import org.jminor.swing.common.ui.value.AbstractComponentValue;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JOptionPane;
@@ -83,27 +83,27 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * A InputProvider implementation for Entity values based on a {@link EntityComboBox}.
    * @see SwingEntityComboBoxModel
    */
-  public static final class InputProvider extends AbstractInputProvider<Entity, EntityComboBox> {
+  public static final class ComponentValue extends AbstractComponentValue<Entity, EntityComboBox> {
 
     /**
      * Instantiates a new input provider based on the EntityComboBoxModel class
      * @param comboBoxModel the combo box model
      * @param initialValue the initial value to display
      */
-    public InputProvider(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
+    public ComponentValue(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
       super(createComboBox(comboBoxModel, initialValue));
     }
 
     /** {@inheritDoc} */
     @Override
-    public Entity getValue() {
-      return getInputComponent().getModel().getSelectedValue();
+    public Entity get() {
+      return getComponent().getModel().getSelectedValue();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setValue(final Entity value) {
-      getInputComponent().setSelectedItem(value);
+    protected void setInternal(final Entity value) {
+      getComponent().setSelectedItem(value);
     }
 
     private static EntityComboBox createComboBox(final SwingEntityComboBoxModel comboBoxModel, final Object currentValue) {

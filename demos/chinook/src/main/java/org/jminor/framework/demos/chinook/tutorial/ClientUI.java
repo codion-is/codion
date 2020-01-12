@@ -15,8 +15,8 @@ import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.UiValues;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.value.ComponentValues;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
@@ -47,7 +47,7 @@ public final class ClientUI {
             editModel.value(ARTIST_NAME);
     //create a String Value based on the text field
     Value<String> textFieldNameValue =
-            UiValues.textValue(nameField);
+            ComponentValues.textValue(nameField);
     //link the two values
     Values.link(editModelNameValue, textFieldNameValue);
     //add a insert action to the name field
@@ -98,7 +98,7 @@ public final class ClientUI {
             editModel.value(ALBUM_ARTIST_FK);
     //create a Entity Value based on the combobox
     Value<Entity> comboBoxArtistValue =
-            UiValues.selectedItemValue(artistComboBox);
+            ComponentValues.selectedValue(artistComboBox);
     //link the two values
     Values.link(editModelArtistValue, comboBoxArtistValue);
 
@@ -109,7 +109,7 @@ public final class ClientUI {
             editModel.value(ALBUM_TITLE);
     //create a String Value based on the text field
     Value<String> textFieldTitleValue =
-            UiValues.textValue(titleField);
+            ComponentValues.textValue(titleField);
     //link the two values
     Values.link(editModelNameValue, textFieldTitleValue);
 

@@ -4,8 +4,8 @@
 package org.jminor.framework.demos.empdept.ui;
 
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
@@ -23,11 +23,11 @@ public class EmployeeEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(EmpDept.EMPLOYEE_NAME);
 
-    final JTextField nameField = UiUtil.makeUpperCase(createTextField(EmpDept.EMPLOYEE_NAME));
+    final JTextField nameField = TextFields.makeUpperCase(createTextField(EmpDept.EMPLOYEE_NAME));
     nameField.setColumns(8);
     createValueListComboBox(EmpDept.EMPLOYEE_JOB);
     final JComboBox managerBox = createForeignKeyComboBox(EmpDept.EMPLOYEE_MGR_FK);
-    managerBox.setPreferredSize(UiUtil.getPreferredTextFieldSize());
+    managerBox.setPreferredSize(TextFields.getPreferredTextFieldSize());
     createForeignKeyComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
     createTextField(EmpDept.EMPLOYEE_SALARY);
     createTextField(EmpDept.EMPLOYEE_COMMISSION);
