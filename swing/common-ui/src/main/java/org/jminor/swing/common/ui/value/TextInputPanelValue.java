@@ -1,6 +1,9 @@
+/*
+ * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.swing.common.model.DocumentAdapter;
+import org.jminor.swing.common.model.textfield.DocumentAdapter;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 

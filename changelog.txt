@@ -5591,3 +5591,4 @@
   Dialogs utility class added, relevant methods moved from UiUtil
   KeyEvents utility class, added, relevant methods moved from UiUtil
   swing.common.ui.time package added
+  DocumentAdapter moved to swing.common.model.textfield

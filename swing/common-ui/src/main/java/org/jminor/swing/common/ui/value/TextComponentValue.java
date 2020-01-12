@@ -4,7 +4,7 @@
 package org.jminor.swing.common.ui.value;
 
 import org.jminor.common.Formats;
-import org.jminor.swing.common.model.DocumentAdapter;
+import org.jminor.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
