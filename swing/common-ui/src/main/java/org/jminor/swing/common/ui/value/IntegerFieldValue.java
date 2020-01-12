@@ -12,8 +12,8 @@ final class IntegerFieldValue extends NumberFieldValue<IntegerField, Integer> {
   }
 
   @Override
-  public Integer get() {
-    final Number number = getComponent().getNumber();
+  protected Integer getComponentValue(final IntegerField component) {
+    final Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0;
     }
@@ -22,7 +22,7 @@ final class IntegerFieldValue extends NumberFieldValue<IntegerField, Integer> {
   }
 
   @Override
-  protected void setComponentValue(final Integer value) {
-    getComponent().setNumber(value);
+  protected void setComponentValue(final IntegerField component, final Integer value) {
+    component.setNumber(value);
   }
 }

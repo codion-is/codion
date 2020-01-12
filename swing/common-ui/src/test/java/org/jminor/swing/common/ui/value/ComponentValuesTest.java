@@ -42,73 +42,73 @@ public class ComponentValuesTest {
   public void selectedItemValue() {
     final List<Item<String>> items = asList(new Item<>(null), new Item<>("one"),
             new Item<>("two"), new Item<>("three"), new Item<>("four"));
-    ComponentValue<String, JComboBox<Item<String>>> inputProvider = ComponentValues.selectedItemValue("two", items);
-    ItemComboBoxModel<String> boxModel = (ItemComboBoxModel<String>) inputProvider.getComponent().getModel();
+    ComponentValue<String, JComboBox<Item<String>>> componentValue = ComponentValues.selectedItemValue("two", items);
+    ItemComboBoxModel<String> boxModel = (ItemComboBoxModel<String>) componentValue.getComponent().getModel();
     assertEquals(5, boxModel.getSize());
-    assertEquals("two", inputProvider.get());
+    assertEquals("two", componentValue.get());
 
-    inputProvider = ComponentValues.selectedItemValue(null, items);
-    boxModel = (ItemComboBoxModel<String>) inputProvider.getComponent().getModel();
+    componentValue = ComponentValues.selectedItemValue(null, items);
+    boxModel = (ItemComboBoxModel<String>) componentValue.getComponent().getModel();
     assertEquals(5, boxModel.getSize());
-    assertNull(inputProvider.get());
+    assertNull(componentValue.get());
   }
 
   @Test
   public void textValue() {
     final String value = "hello";
-    ComponentValue<String, TextInputPanel> provider = ComponentValues.textValue("none", value, 2);
-    assertNull(provider.get());
+    ComponentValue<String, TextInputPanel> componentValue = ComponentValues.textValue("none", value, 2);
+    assertNull(componentValue.get());
 
-    provider = ComponentValues.textValue("none", value, 10);
-    assertEquals(value, provider.get());
+    componentValue = ComponentValues.textValue("none", value, 10);
+    assertEquals(value, componentValue.get());
 
-    provider = ComponentValues.textValue("none", null, 10);
-    assertNull(provider.get());
+    componentValue = ComponentValues.textValue("none", null, 10);
+    assertNull(componentValue.get());
 
-    provider.getComponent().setText("tester");
-    assertEquals("tester", provider.get());
+    componentValue.getComponent().setText("tester");
+    assertEquals("tester", componentValue.get());
 
-    provider.getComponent().setText("");
-    assertNull(provider.get());
+    componentValue.getComponent().setText("");
+    assertNull(componentValue.get());
   }
 
   @Test
   public void temporalValue() {
     final LocalDate date = LocalDate.now();
-    ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> provider =
+    ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
             ComponentValues.temporalValue(new LocalDateInputPanel(date, DateFormats.SHORT_DASH));
-    assertEquals(date, provider.get());
+    assertEquals(date, componentValue.get());
 
-    provider = new TemporalInputPanelValue(new LocalDateInputPanel(null, DateFormats.SHORT_DASH));
-    assertNull(provider.get());
+    componentValue = new TemporalInputPanelValue(new LocalDateInputPanel(null, DateFormats.SHORT_DASH));
+    assertNull(componentValue.get());
 
-    provider.getComponent().getInputField().setText(DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH).format(date));
-    assertEquals(date, provider.get());
+    componentValue.getComponent().getInputField().setText(DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH).format(date));
+    assertEquals(date, componentValue.get());
   }
 
   @Test
   public void longValue() {
     final Long value = 10L;
-    ComponentValue<Long, LongField> provider = ComponentValues.longValue(value);
-    assertEquals(value, provider.get());
+    ComponentValue<Long, LongField> componentValue = ComponentValues.longValue(value);
+    assertEquals(value, componentValue.get());
 
-    provider = ComponentValues.longValue(null);
-    assertNull(provider.get());
+    componentValue = ComponentValues.longValue(null);
+    assertNull(componentValue.get());
 
-    provider.getComponent().setText("15");
-    assertEquals(Long.valueOf(15), provider.get());
+    componentValue.getComponent().setText("15");
+    assertEquals(Long.valueOf(15), componentValue.get());
   }
 
   @Test
   public void booleanValue() {
-    ComponentValue<Boolean, JComboBox> provider = ComponentValues.booleanComboBoxValue(false);
-    assertEquals(false, provider.get());
-    provider.getComponent().getModel().setSelectedItem(true);
-    assertEquals(true, provider.get());
-    provider.getComponent().getModel().setSelectedItem(null);
-    assertNull(provider.get());
-    provider = new BooleanComboBoxValue(null);
-    assertNull(provider.get());
+    ComponentValue<Boolean, JComboBox> componentValue = ComponentValues.booleanComboBoxValue(false);
+    assertEquals(false, componentValue.get());
+    componentValue.getComponent().getModel().setSelectedItem(true);
+    assertEquals(true, componentValue.get());
+    componentValue.getComponent().getModel().setSelectedItem(null);
+    assertNull(componentValue.get());
+    componentValue = new BooleanComboBoxValue(null);
+    assertNull(componentValue.get());
   }
 
   @Test

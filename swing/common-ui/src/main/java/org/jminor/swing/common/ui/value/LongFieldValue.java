@@ -12,8 +12,8 @@ final class LongFieldValue extends NumberFieldValue<LongField, Long> {
   }
 
   @Override
-  public Long get() {
-    final Number number = getComponent().getNumber();
+  protected Long getComponentValue(final LongField component) {
+    final Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0L;
     }
@@ -22,7 +22,7 @@ final class LongFieldValue extends NumberFieldValue<LongField, Long> {
   }
 
   @Override
-  protected void setComponentValue(final Long value) {
-    getComponent().setNumber(value);
+  protected void setComponentValue(final LongField component, final Long value) {
+    component.setNumber(value);
   }
 }

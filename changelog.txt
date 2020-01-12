@@ -5594,3 +5594,4 @@
   DocumentAdapter moved to swing.common.model.textfield
   SizeDocumentFilter renamed to LengthDocumentFilter
   AbstractComponentValue.setInternal() renamed to setComponentValue()
+  AbstractComponentValue.getComponentValue() added, refactored

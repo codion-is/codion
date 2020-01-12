@@ -8,7 +8,6 @@ import org.jminor.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
@@ -20,13 +19,12 @@ import static org.jminor.common.Util.nullOrEmpty;
 
 class TextComponentValue<V, C extends JTextComponent> extends AbstractComponentValue<V, C> {
 
-  private final Document document;
   private final JFormattedTextField.AbstractFormatter formatter;
   private final Format format;
 
   TextComponentValue(final C textComponent, final Format format, final boolean updateOnKeystroke) {
     super(textComponent);
-    this.document = textComponent.getDocument();
+    final Document document = textComponent.getDocument();
     if (textComponent instanceof JFormattedTextField) {
       this.formatter = ((JFormattedTextField) textComponent).getFormatter();
     }
@@ -55,24 +53,13 @@ class TextComponentValue<V, C extends JTextComponent> extends AbstractComponentV
   }
 
   @Override
-  public final V get() {
-    return valueFromText(getText());
+  protected V getComponentValue(final C component) {
+    return valueFromText(getText(component));
   }
 
   @Override
-  protected final void setComponentValue(final V value) {
-    try {
-      final String text = textFromValue(value);
-      synchronized (document) {
-        document.remove(0, document.getLength());
-        if (value != null) {
-          document.insertString(0, text, null);
-        }
-      }
-    }
-    catch (final BadLocationException e) {
-      throw new RuntimeException(e);
-    }
+  protected final void setComponentValue(final C component, final V value) {
+    component.setText(textFromValue(value));
   }
 
   /**
@@ -104,15 +91,9 @@ class TextComponentValue<V, C extends JTextComponent> extends AbstractComponentV
     }
   }
 
-  /**
-   * @return the text from the linked text component
-   */
-  private String getText() {
+  private String getText(final C component) {
     try {
-      final String text;
-      synchronized (document) {
-        text = document.getText(0, document.getLength());
-      }
+      final String text = component.getText();
       if (formatter == null) {
         return text;
       }
@@ -121,9 +102,6 @@ class TextComponentValue<V, C extends JTextComponent> extends AbstractComponentV
     }
     catch (final ParseException e) {
       return null;
-    }
-    catch (final BadLocationException e) {
-      throw new RuntimeException(e);
     }
   }
 }

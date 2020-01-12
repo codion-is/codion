@@ -19,12 +19,12 @@ public class ComponentValuePanelTest {
     final JTextField textField = new JTextField();
     final ComponentValuePanel panel = new ComponentValuePanel("Test", new AbstractComponentValue<String, JTextField>(textField) {
       @Override
-      public String get() {
-        return textField.getText();
+      protected String getComponentValue(final JTextField component) {
+        return component.getText();
       }
       @Override
-      protected void setComponentValue(final String value) {
-        textField.setText(value);
+      protected void setComponentValue(final JTextField component, final String value) {
+        component.setText(value);
       }
     });
     assertEquals(textField, panel.getInputComponent());

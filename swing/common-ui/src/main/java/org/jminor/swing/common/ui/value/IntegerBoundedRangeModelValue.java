@@ -13,12 +13,12 @@ final class IntegerBoundedRangeModelValue extends AbstractComponentValue<Integer
   }
 
   @Override
-  public Integer get() {
-    return getComponent().getValue();
+  protected Integer getComponentValue(final BoundedRangeModel component) {
+    return component.getValue();
   }
 
   @Override
-  protected void setComponentValue(final Integer value) {
-    getComponent().setValue(value == null ? 0 : value);
+  protected void setComponentValue(final BoundedRangeModel component, final Integer value) {
+    component.setValue(value == null ? 0 : value);
   }
 }

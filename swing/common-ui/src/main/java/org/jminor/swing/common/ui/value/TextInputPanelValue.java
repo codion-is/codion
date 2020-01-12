@@ -24,18 +24,16 @@ class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel>
     });
   }
 
-  /** {@inheritDoc} */
   @Override
-  public String get() {
-    final String value = getComponent().getText();
+  protected String getComponentValue(final TextInputPanel component) {
+    final String value = component.getText();
 
     return value.length() == 0 ? null : value;
   }
 
-  /** {@inheritDoc} */
   @Override
-  protected void setComponentValue(final String value) {
-    getComponent().setText(value);
+  protected void setComponentValue(final TextInputPanel component, final String value) {
+    component.setText(value);
   }
 
   private static JTextField createDefaultTextField(final String initialValue, final int maxLength) {

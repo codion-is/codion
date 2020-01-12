@@ -13,12 +13,12 @@ final class SpinnerNumberValue<V extends Number> extends AbstractComponentValue<
   }
 
   @Override
-  public V get() {
-    return (V) getComponent().getValue();
+  protected V getComponentValue(final SpinnerNumberModel component) {
+    return (V) component.getValue();
   }
 
   @Override
-  protected void setComponentValue(final V value) {
-    getComponent().setValue(value);
+  protected void setComponentValue(final SpinnerNumberModel component, final V value) {
+    component.setValue(value);
   }
 }

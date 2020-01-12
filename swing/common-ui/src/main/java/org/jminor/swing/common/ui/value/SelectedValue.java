@@ -23,8 +23,8 @@ final class SelectedValue<V> extends AbstractComponentValue<V, JComboBox<V>> {
   }
 
   @Override
-  public V get() {
-    final ComboBoxModel<V> comboBoxModel = getComponent().getModel();
+  protected V getComponentValue(final JComboBox<V> component) {
+    final ComboBoxModel<V> comboBoxModel = component.getModel();
     if (comboBoxModel instanceof ItemComboBoxModel) {
       return (V) ((Item) comboBoxModel.getSelectedItem()).getValue();
     }
@@ -36,7 +36,7 @@ final class SelectedValue<V> extends AbstractComponentValue<V, JComboBox<V>> {
   }
 
   @Override
-  protected void setComponentValue(final Object value) {
-    getComponent().getModel().setSelectedItem(value);
+  protected void setComponentValue(final JComboBox<V> component, final V value) {
+    component.getModel().setSelectedItem(value);
   }
 }

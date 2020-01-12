@@ -13,12 +13,12 @@ final class BooleanButtonModelValue extends AbstractComponentValue<Boolean, Butt
   }
 
   @Override
-  public Boolean get() {
-    return getComponent().isSelected();
+  protected Boolean getComponentValue(final ButtonModel component) {
+    return component.isSelected();
   }
 
   @Override
-  protected void setComponentValue(final Boolean value) {
-     getComponent().setSelected(value != null && value);
+  protected void setComponentValue(final ButtonModel component, final Boolean value) {
+     component.setSelected(value != null && value);
   }
 }
