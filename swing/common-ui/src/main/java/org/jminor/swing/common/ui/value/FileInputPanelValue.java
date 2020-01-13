@@ -12,7 +12,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -23,12 +22,7 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
 
   FileInputPanelValue() {
     super(new FileInputPanel());
-    getComponent().filePathField.getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      public void contentsChanged(final DocumentEvent e) {
-        notifyValueChange(get());
-      }
-    });
+    getComponent().filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
   }
 
   @Override

@@ -8,7 +8,6 @@ import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
 
 class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel> {
 
@@ -16,12 +15,7 @@ class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel>
 
   TextInputPanelValue(final String inputDialogTitle, final String initialValue, final int maxLength) {
     super(new TextInputPanel(createDefaultTextField(initialValue, maxLength), inputDialogTitle));
-    getComponent().getTextField().getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      public void contentsChanged(final DocumentEvent e) {
-        notifyValueChange(get());
-      }
-    });
+    getComponent().getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
   }
 
   @Override

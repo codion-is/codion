@@ -6,7 +6,6 @@ package org.jminor.swing.common.ui.textfield;
 import org.jminor.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -42,7 +41,7 @@ public final class TextFieldHint {
     this.defaultForegroundColor = textField.getForeground();
     this.hintForegroundColor = hintForegroundColor;
     this.textField.addFocusListener(initializeFocusListener());
-    this.textField.getDocument().addDocumentListener(initializeDocumentListener());
+    this.textField.getDocument().addDocumentListener((DocumentAdapter) e -> updateColor());
     updateState();
   }
 
@@ -91,15 +90,6 @@ public final class TextFieldHint {
       @Override
       public void focusLost(final FocusEvent e) {
         updateState();
-      }
-    };
-  }
-
-  private DocumentAdapter initializeDocumentListener() {
-    return new DocumentAdapter() {
-      @Override
-      public void contentsChanged(final DocumentEvent e) {
-        updateColor();
       }
     };
   }

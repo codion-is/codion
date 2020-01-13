@@ -5595,3 +5595,4 @@
   SizeDocumentFilter renamed to LengthDocumentFilter
   AbstractComponentValue.setInternal() renamed to setComponentValue()
   AbstractComponentValue.getComponentValue() added, refactored
+  DocumentAdapter now interface with default methods instead of abstract class
