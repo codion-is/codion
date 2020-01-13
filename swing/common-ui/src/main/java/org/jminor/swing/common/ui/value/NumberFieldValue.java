@@ -6,7 +6,6 @@ package org.jminor.swing.common.ui.value;
 import org.jminor.swing.common.model.textfield.DocumentAdapter;
 import org.jminor.swing.common.ui.textfield.NumberField;
 
-import javax.swing.event.DocumentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
@@ -15,12 +14,7 @@ abstract class NumberFieldValue<C extends NumberField, V extends Number> extends
   NumberFieldValue(final C numberField, final boolean nullable, final boolean updateOnKeystroke) {
     super(numberField, nullable);
     if (updateOnKeystroke) {
-      numberField.getDocument().addDocumentListener(new DocumentAdapter() {
-        @Override
-        public void contentsChanged(final DocumentEvent e) {
-          notifyValueChange(get());
-        }
-      });
+      numberField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
     }
     else {
       numberField.addFocusListener(new FocusAdapter() {

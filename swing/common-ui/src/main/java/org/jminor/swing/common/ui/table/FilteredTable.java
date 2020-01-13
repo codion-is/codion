@@ -38,7 +38,6 @@ import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.event.DocumentEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -376,13 +375,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     field.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
     field.setColumns(SEARCH_FIELD_COLUMNS);
     final TextFieldHint textFieldHint = TextFieldHint.enable(field, Messages.get(Messages.SEARCH_FIELD_HINT));
-    field.getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      public void contentsChanged(final DocumentEvent e) {
-        if (!textFieldHint.isHintTextVisible()) {
-          performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
-                  lastSearchResultCoordinate.getRow(), true, field.getText());
-        }
+    field.getDocument().addDocumentListener((DocumentAdapter) e -> {
+      if (!textFieldHint.isHintTextVisible()) {
+        performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
+                lastSearchResultCoordinate.getRow(), true, field.getText());
       }
     });
     field.addKeyListener(new SearchFieldKeyListener(field));

@@ -7,23 +7,24 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
- * A simple document adapter, combining the {@code insertUpdate} and {@code removeUpdate} into {@code contentsChanged}
+ * A simple document adapter, with default implementations for the {@link #insertUpdate(DocumentEvent)} and
+ * {@link #removeUpdate(DocumentEvent)} calling {@link #contentsChanged(DocumentEvent)}.
  */
-public abstract class DocumentAdapter implements DocumentListener {
+public interface DocumentAdapter extends DocumentListener {
 
   /** {@inheritDoc} */
   @Override
-  public void changedUpdate(final DocumentEvent e) {}
+  default void changedUpdate(final DocumentEvent e) {}
 
   /** {@inheritDoc} */
   @Override
-  public final void insertUpdate(final DocumentEvent e) {
+  default void insertUpdate(final DocumentEvent e) {
     contentsChanged(e);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeUpdate(final DocumentEvent e) {
+  default void removeUpdate(final DocumentEvent e) {
     contentsChanged(e);
   }
 
@@ -31,5 +32,5 @@ public abstract class DocumentAdapter implements DocumentListener {
    * Called when the contents of this document change, either via insertion, update or removal
    * @param e the document event
    */
-  public abstract void contentsChanged(DocumentEvent e);
+  void contentsChanged(DocumentEvent e);
 }

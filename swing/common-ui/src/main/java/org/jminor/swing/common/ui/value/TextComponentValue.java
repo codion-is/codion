@@ -7,7 +7,6 @@ import org.jminor.common.Formats;
 import org.jminor.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
@@ -33,12 +32,7 @@ class TextComponentValue<V, C extends JTextComponent> extends AbstractComponentV
     }
     this.format = format == null ? Formats.NULL_FORMAT : format;
     if (updateOnKeystroke) {
-      document.addDocumentListener(new DocumentAdapter() {
-        @Override
-        public void contentsChanged(final DocumentEvent e) {
-          notifyValueChange(get());
-        }
-      });
+      document.addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
     }
     else {
       textComponent.addFocusListener(new FocusAdapter() {
