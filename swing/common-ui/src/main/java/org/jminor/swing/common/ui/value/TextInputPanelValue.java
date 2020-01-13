@@ -4,8 +4,8 @@
 package org.jminor.swing.common.ui.value;
 
 import org.jminor.swing.common.model.textfield.DocumentAdapter;
-import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
+import org.jminor.swing.common.ui.textfield.TextInputPanel;
 
 import javax.swing.JTextField;
 
