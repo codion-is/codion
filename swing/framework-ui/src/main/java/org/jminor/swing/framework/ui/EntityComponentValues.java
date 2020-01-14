@@ -39,8 +39,8 @@ public class EntityComponentValues {
    * @param initialValue the initial value to display
    * @return the ComponentValue handling input for {@code property}
    */
-  public ComponentValue getComponentValue(final Property property, final SwingEntityEditModel editModel,
-                                          final Object initialValue) {
+  public ComponentValue createComponentValue(final Property property, final SwingEntityEditModel editModel,
+                                             final Object initialValue) {
     if (property instanceof ForeignKeyProperty) {
       return createEntityComponentValue((ForeignKeyProperty) property, editModel, (Entity) initialValue);
     }
@@ -48,7 +48,7 @@ public class EntityComponentValues {
       final List<Item<Object>> values = ((ValueListProperty) property).getValues()
               .stream().map(item -> (Item<Object>) item).collect(Collectors.toList());
 
-      return ComponentValues.<Object>selectedItemValue(initialValue, values);
+      return ComponentValues.selectedItemValue(initialValue, values);
     }
     switch (property.getType()) {
       case Types.BOOLEAN:

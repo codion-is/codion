@@ -282,7 +282,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.tableModel = tableModel;
     this.table = initializeTable(tableModel);
     this.tableScrollPane = new JScrollPane(table);
-    this.componentValues = requireNonNull(componentValues, "inputProviders");
+    this.componentValues = requireNonNull(componentValues, "componentValues");
     this.conditionPanel = conditionPanel;
     this.conditionScrollPane = conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
     this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
@@ -571,7 +571,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
-   * @see EntityComponentValues#getComponentValue(Property, SwingEntityEditModel, Object)
+   * @see EntityComponentValues#createComponentValue(Property, SwingEntityEditModel, Object)
    */
   public final void updateSelectedEntities(final Property propertyToUpdate) {
     if (tableModel.getSelectionModel().isSelectionEmpty()) {
@@ -582,7 +582,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Collection values = Entities.getDistinctValues(propertyToUpdate.getPropertyId(), selectedEntities);
     final Object initialValue = values.size() == 1 ? values.iterator().next() : null;
     final ComponentValuePanel inputPanel = new ComponentValuePanel(propertyToUpdate.getCaption(),
-            componentValues.getComponentValue(propertyToUpdate, tableModel.getEditModel(), initialValue));
+            componentValues.createComponentValue(propertyToUpdate, tableModel.getEditModel(), initialValue));
     Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
             inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
