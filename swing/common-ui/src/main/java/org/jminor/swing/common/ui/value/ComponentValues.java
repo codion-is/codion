@@ -6,10 +6,10 @@ package org.jminor.swing.common.ui.value;
 import org.jminor.common.Formats;
 import org.jminor.common.Item;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
-import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
+import org.jminor.swing.common.ui.textfield.TextInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
 
 import javax.swing.BoundedRangeModel;
