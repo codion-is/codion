@@ -51,9 +51,11 @@ JMinor supports the following column data types:
 
 === Primary key
 
-Entities must have at least one primary key column property.
+It is recommended that entities have define a primary key, that is, one or more column properties representing a unique column combination.
 
 The only requirement is that the primary key properties represent a unique column combination for the underlying table, it does not have to correspond to an actual table primary key, although that is of course preferable. The framework does not enforce uniqueness for these properties, so a unique or primary key on the corresponding table columns is strongly recommended.
+
+If no primary key properties are specified the entity usage is somewhat restricted, it can not be referenced via a foreign key and equals() does not work (since it is based on the primary key). You can still use the *Entity.valuesEqual()* method to check if all values are equal in two entities.
 
 [source,java,indent=0]
 ----

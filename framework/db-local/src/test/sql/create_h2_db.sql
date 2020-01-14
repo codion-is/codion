@@ -61,5 +61,21 @@ create table scott.uuid_test_no_default (
   data varchar(20)
 );
 
+create table scott.no_pk_table (
+  col1 integer not null,
+  col2 varchar(20),
+  col3 varchar(10),
+  col4 integer not null
+);
+
+insert into scott.no_pk_table(col1, col2, col3, col4)
+values
+  (1, '2', '3', 4),
+  (2, '3', '4', 5),
+  (2, '3', '4', 5),
+  (3, '4', '5', 6),
+  (3, '4', '5', 6),
+  (4, '5', '6', 7);
+
 create user scott password 'tiger';
 alter user scott admin true;

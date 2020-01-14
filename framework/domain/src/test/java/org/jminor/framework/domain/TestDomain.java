@@ -26,6 +26,7 @@ public final class TestDomain extends Domain {
     detail();
     department();
     employee();
+    noPKEntity();
     registerDomain();
   }
 
@@ -225,6 +226,18 @@ public final class TestDomain extends Domain {
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setBeanClass(Employee.class)
             .setCaption("Employee");
+  }
+
+  public static final String T_NO_PK = "no_pk";
+  public static final String NO_PK_COL1 = "col1";
+  public static final String NO_PK_COL2 = "col2";
+  public static final String NO_PK_COL3 = "col3";
+
+  void noPKEntity() {
+    define(T_NO_PK,
+            columnProperty(NO_PK_COL1),
+            columnProperty(NO_PK_COL2),
+            columnProperty(NO_PK_COL3));
   }
 
   @Override

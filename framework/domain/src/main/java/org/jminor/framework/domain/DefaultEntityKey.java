@@ -50,10 +50,13 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
    * Instantiates a new DefaultKey for the given entity type, assuming it is a single value key
    * @param definition the entity definition
    * @param value the value
-   * @throws IllegalArgumentException in case this key is a composite key
+   * @throws IllegalArgumentException in case this key is a composite key or if the entity has no primary key
    */
   DefaultEntityKey(final EntityDefinition definition, final Object value) {
     this(definition, createSingleValueMap(definition.getPrimaryKeyProperties().get(0), value));
+    if (!definition.hasPrimaryKey()) {
+      throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
+    }
     if (compositeKey) {
       throw new IllegalArgumentException(definition.getEntityId() + " has a composite primary key");
     }
@@ -62,9 +65,13 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   /**
    * Instantiates a new Key for the given entity type
    * @param definition the entity definition
+   * @throws IllegalArgumentException in case the entity has no primary key
    */
   DefaultEntityKey(final EntityDefinition definition, final Map<ColumnProperty, Object> values) {
     super(values, null);
+    if (!definition.hasPrimaryKey()) {
+      throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
+    }
     this.definition = definition;
     final List<ColumnProperty> properties = definition.getPrimaryKeyProperties();
     this.compositeKey = properties.size() > 1;

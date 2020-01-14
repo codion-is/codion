@@ -52,7 +52,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private String toString;
 
   /**
-   * Caches the result of {@code getReferencedKey} method
+   * Caches the result of {@link #getReferencedKey} method
    */
   private Map<String, Key> referencedKeyCache;
 
@@ -700,6 +700,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   private Key initializeAndCacheCompositeReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
     final EntityDefinition foreignEntityDefinition = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
+    if (!foreignEntityDefinition.hasPrimaryKey()) {
+      throw new IllegalArgumentException("Entity '" + foreignEntityDefinition.getEntityId() + "' has no primary key defined");
+    }
     final List<ColumnProperty> foreignProperties = foreignEntityDefinition.getPrimaryKeyProperties();
     final List<ColumnProperty> columnProperties = foreignKeyProperty.getColumnProperties();
     final Map<ColumnProperty, Object> values = new HashMap<>(columnProperties.size());
@@ -756,8 +759,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * Initializes a Key for this Entity instance
    * @param originalValues if true then the original values of the properties involved are used
    * @return a Key based on the values in this Entity instance
+   * @throws IllegalArgumentException in case the this entity has no primary key properties defined
    */
   private Key initializeKey(final boolean originalValues) {
+    if (!definition.hasPrimaryKey()) {
+      throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
+    }
     final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
     if (primaryKeyProperties.size() > 1) {
       final Map<ColumnProperty, Object> values = new HashMap<>(primaryKeyProperties.size());
@@ -768,9 +775,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
       return new DefaultEntityKey(definition, values);
     }
-    else {
-      return new DefaultEntityKey(definition, originalValues ? getOriginal(primaryKeyProperties.get(0)) : super.get(primaryKeyProperties.get(0)));
-    }
+
+    return new DefaultEntityKey(definition, originalValues ? getOriginal(primaryKeyProperties.get(0)) : super.get(primaryKeyProperties.get(0)));
   }
 
   private Object getDerivedValue(final DerivedProperty derivedProperty) {

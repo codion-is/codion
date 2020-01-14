@@ -159,6 +159,11 @@ public interface EntityDefinition extends Serializable {
   Set<Property> getPropertySet();
 
   /**
+   * @return true if this entity has a defined primary key
+   */
+  boolean hasPrimaryKey();
+
+  /**
    * @return true if this entity contains any properties which values are derived from other properties
    */
   boolean hasDerivedProperties();

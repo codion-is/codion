@@ -542,8 +542,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @param propertyBuilders the {@link Property.Builder} objects to base the entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a {@link EntityDefinition.Builder}
-   * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
-   * no primary key property is specified
+   * @throws IllegalArgumentException in case the entityId has already been used to define an entity type
    */
   protected final EntityDefinition.Builder define(final String entityId, final String tableName,
                                                   final Property.Builder... propertyBuilders) {
@@ -676,6 +675,10 @@ public class Domain implements EntityDefinition.Provider, Serializable {
             throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityId()
                     + "' referenced by entity '" + entityId + "' via foreign key property '"
                     + foreignKeyProperty.getPropertyId() + "' has not been defined");
+          }
+          if (foreignEntity.getPrimaryKeyProperties().isEmpty()) {
+            throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityId()
+                    + "' can not be referenced via foreign key, since it has no primary key");
           }
           if (foreignKeyProperty.getColumnProperties().size() != foreignEntity.getPrimaryKeyProperties().size()) {
             throw new IllegalArgumentException("Number of column properties in '" +

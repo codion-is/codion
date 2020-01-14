@@ -816,6 +816,17 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals("test", entity.getString(UUID_TEST_NO_DEFAULT_DATA));
   }
 
+  @Test
+  public void entityWithoutPrimaryKey() throws DatabaseException {
+    List<Entity> entities = connection.select(entitySelectCondition(T_NO_PK));
+    assertEquals(6, entities.size());
+    entities = connection.select(entitySelectCondition(T_NO_PK,
+            conditionSet(Conjunction.OR,
+                    propertyCondition(NO_PK_COL1, ConditionType.LIKE, 2),
+                    propertyCondition(NO_PK_COL3, ConditionType.LIKE, "5"))));
+    assertEquals(4, entities.size());
+  }
+
   private static DefaultLocalEntityConnection initializeConnection() throws DatabaseException {
     return new DefaultLocalEntityConnection(DOMAIN, Databases.getInstance(), UNIT_TEST_USER, 1);
   }
