@@ -457,8 +457,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
+    requireNonNull(foreignKeyValues, "foreignKeyValues");
     final List<ForeignKeyProperty> foreignKeyProperties =
-            getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
+            getEntityDefinition().getForeignKeyReferences(requireNonNull(foreignKeyEntityId, "foreignKeyEntityId"));
     boolean changed = false;
     for (final Entity entity : getAllItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
@@ -479,6 +480,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void setSelectedByKey(final Collection<Entity.Key> keys) {
+    requireNonNull(keys, "keys");
     final List<Entity.Key> keyList = new ArrayList<>(keys);
     final List<Integer> indexes = new ArrayList<>();
     for (final Entity visibleEntity : getVisibleItems()) {
@@ -498,8 +500,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
-    return getAllItems().stream().filter(entity -> keys.stream()
-            .anyMatch(key -> entity.getKey().equals(key))).collect(Collectors.toList());
+    requireNonNull(keys, "keys");
+    return getAllItems().stream().filter(entity -> keys.contains(entity.getKey())).collect(Collectors.toList());
   }
 
   /** {@inheritDoc} */
