@@ -15,10 +15,10 @@ public class IntegerComponentValueTest {
   @Test
   public void test() {
     final Integer value = 10;
-    ComponentValue<Integer, IntegerField> componentValue = ComponentValues.integerValue(value);
+    ComponentValue<Integer, IntegerField> componentValue = IntegerValues.integerValue(value);
     assertEquals(value, componentValue.get());
 
-    componentValue = ComponentValues.integerValue((Integer) null);
+    componentValue = IntegerValues.integerValue((Integer) null);
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("15");

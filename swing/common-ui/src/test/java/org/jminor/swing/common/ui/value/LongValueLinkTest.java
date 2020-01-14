@@ -26,7 +26,7 @@ public class LongValueLinkTest {
     final LongField longField = new LongField();
     final Value<Long> longPropertyValue = Values.propertyValue(this, "longValue",
             Long.class, longValueChangedEvent);
-    ValueLinks.longValueLink(longField, longPropertyValue, true);
+    LongValues.longValueLink(longField, longPropertyValue, true);
     assertNull(longField.getLong());
     setLongValue(2L);
     assertEquals(2, longField.getLong().longValue());
@@ -41,7 +41,7 @@ public class LongValueLinkTest {
     final LongField longField = new LongField();
     final Value<Long> longPrimitivePropertyValue = Values.propertyValue(this, "longPrimitiveValue",
             long.class, longPrimitiveValueChangedEvent);
-    ValueLinks.longValueLink(longField, longPrimitivePropertyValue, false);
+    LongValues.longValueLink(longField, longPrimitivePropertyValue, false);
     assertEquals(Long.valueOf(0), longField.getLong());
     setLongPrimitiveValue(2);
     assertEquals(2, longField.getLong().longValue());

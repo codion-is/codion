@@ -5623,3 +5623,5 @@
   TextInputPanel moved to swing.common.ui.textfield
 0.13.1
   Allow entities without primary keys
+  EntityComponentValues.getComponentValue() renamed to createComponentValue()
+  ComponentValues and ValueLinks split and merged into type specific utility classes

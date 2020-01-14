@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.value.Values.propertyValue;
-import static org.jminor.swing.common.ui.value.ComponentValues.booleanButtonModelValue;
+import static org.jminor.swing.common.ui.value.BooleanValues.booleanButtonModelValue;
 
 /**
  * A factory class for Control objects.

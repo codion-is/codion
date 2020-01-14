@@ -26,7 +26,7 @@ public class IntegerValueLinkTest {
     final IntegerField integerField = new IntegerField();
     final Value<Integer> integerPropertyValue = Values.propertyValue(this, "integerValue",
             Integer.class, integerValueChangedEvent);
-    ValueLinks.integerValueLink(integerField, integerPropertyValue, true);
+    IntegerValues.integerValueLink(integerField, integerPropertyValue, true);
     assertNull(integerField.getInteger());
     setIntegerValue(2);
     assertEquals(2, integerField.getInteger().intValue());
@@ -41,7 +41,7 @@ public class IntegerValueLinkTest {
     final IntegerField integerField = new IntegerField();
         final Value<Integer> integerPropertyValue = Values.propertyValue(this, "intValue",
             int.class, intValueChangedEvent);
-    ValueLinks.integerValueLink(integerField, integerPropertyValue, false);
+    IntegerValues.integerValueLink(integerField, integerPropertyValue, false);
     assertEquals((Integer) 0, integerField.getInteger());
     setIntValue(2);
     assertEquals(2, integerField.getInteger().intValue());

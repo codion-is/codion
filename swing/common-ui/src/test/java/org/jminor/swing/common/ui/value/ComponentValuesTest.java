@@ -42,12 +42,12 @@ public class ComponentValuesTest {
   public void selectedItemValue() {
     final List<Item<String>> items = asList(new Item<>(null), new Item<>("one"),
             new Item<>("two"), new Item<>("three"), new Item<>("four"));
-    ComponentValue<String, JComboBox<Item<String>>> componentValue = ComponentValues.selectedItemValue("two", items);
+    ComponentValue<String, JComboBox<Item<String>>> componentValue = SelectedValues.selectedItemValue("two", items);
     ItemComboBoxModel<String> boxModel = (ItemComboBoxModel<String>) componentValue.getComponent().getModel();
     assertEquals(5, boxModel.getSize());
     assertEquals("two", componentValue.get());
 
-    componentValue = ComponentValues.selectedItemValue(null, items);
+    componentValue = SelectedValues.selectedItemValue(null, items);
     boxModel = (ItemComboBoxModel<String>) componentValue.getComponent().getModel();
     assertEquals(5, boxModel.getSize());
     assertNull(componentValue.get());
@@ -56,13 +56,13 @@ public class ComponentValuesTest {
   @Test
   public void textValue() {
     final String value = "hello";
-    ComponentValue<String, TextInputPanel> componentValue = ComponentValues.textValue("none", value, 2);
+    ComponentValue<String, TextInputPanel> componentValue = StringValues.stringValue("none", value, 2);
     assertNull(componentValue.get());
 
-    componentValue = ComponentValues.textValue("none", value, 10);
+    componentValue = StringValues.stringValue("none", value, 10);
     assertEquals(value, componentValue.get());
 
-    componentValue = ComponentValues.textValue("none", null, 10);
+    componentValue = StringValues.stringValue("none", null, 10);
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("tester");
@@ -76,7 +76,7 @@ public class ComponentValuesTest {
   public void temporalValue() {
     final LocalDate date = LocalDate.now();
     ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
-            ComponentValues.temporalValue(new LocalDateInputPanel(date, DateFormats.SHORT_DASH));
+            TemporalValues.temporalValue(new LocalDateInputPanel(date, DateFormats.SHORT_DASH));
     assertEquals(date, componentValue.get());
 
     componentValue = new TemporalInputPanelValue(new LocalDateInputPanel(null, DateFormats.SHORT_DASH));
@@ -89,10 +89,10 @@ public class ComponentValuesTest {
   @Test
   public void longValue() {
     final Long value = 10L;
-    ComponentValue<Long, LongField> componentValue = ComponentValues.longValue(value);
+    ComponentValue<Long, LongField> componentValue = LongValues.longValue(value);
     assertEquals(value, componentValue.get());
 
-    componentValue = ComponentValues.longValue(null);
+    componentValue = LongValues.longValue(null);
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("15");
@@ -101,7 +101,7 @@ public class ComponentValuesTest {
 
   @Test
   public void booleanValue() {
-    ComponentValue<Boolean, JComboBox> componentValue = ComponentValues.booleanComboBoxValue(false);
+    ComponentValue<Boolean, JComboBox> componentValue = BooleanValues.booleanComboBoxValue(false);
     assertEquals(false, componentValue.get());
     componentValue.getComponent().getModel().setSelectedItem(true);
     assertEquals(true, componentValue.get());
@@ -115,7 +115,7 @@ public class ComponentValuesTest {
   public void localTimeUiValue() {
     final String format = "HH:mm";
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(format));//HH:mm
-    final Value<LocalTime> value = ComponentValues.localTimeValue(textField, format);
+    final Value<LocalTime> value = LocalTimeValues.localTimeValue(textField, format);
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
@@ -137,7 +137,7 @@ public class ComponentValuesTest {
   @Test
   public void localDateUiValue() {
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DASH));//dd-MM-yyyy
-    final Value<LocalDate> value = ComponentValues.localDateValue(textField, DateFormats.SHORT_DASH);
+    final Value<LocalDate> value = LocalDateValues.localDateValue(textField, DateFormats.SHORT_DASH);
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH);
 
@@ -158,7 +158,7 @@ public class ComponentValuesTest {
   @Test
   public void localDateTimeUiValue() {
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.TIMESTAMP));//dd-MM-yyyy HH:mm
-    final Value<LocalDateTime> value = ComponentValues.localDateTimeValue(textField, DateFormats.TIMESTAMP);
+    final Value<LocalDateTime> value = LocalDateTimeValues.localDateTimeValue(textField, DateFormats.TIMESTAMP);
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.TIMESTAMP);
 
@@ -179,7 +179,7 @@ public class ComponentValuesTest {
   @Test
   public void integerSpinnerUiValue() {
     final SpinnerNumberModel model = new SpinnerNumberModel();
-    final Value<Integer> value = ComponentValues.integerValue(model);
+    final Value<Integer> value = IntegerValues.integerValue(model);
 
     assertEquals(Integer.valueOf(0), value.get());
     model.setValue(122);
@@ -194,7 +194,7 @@ public class ComponentValuesTest {
   @Test
   public void integerBoundedRangeModelUiValue() {
     final BoundedRangeModel model = new DefaultBoundedRangeModel(0, 0, 0, 150);
-    final Value<Integer> value = ComponentValues.integerValue(model);
+    final Value<Integer> value = IntegerValues.integerValue(model);
 
     assertEquals(Integer.valueOf(0), value.get());
     model.setValue(122);
@@ -209,7 +209,7 @@ public class ComponentValuesTest {
   @Test
   public void doubleSpinnerUiValue() {
     final SpinnerNumberModel model = new SpinnerNumberModel(0d, 0d, 130d, 1d);
-    final Value<Double> value = ComponentValues.doubleValue(model);
+    final Value<Double> value = DoubleValues.doubleValue(model);
 
     assertEquals(Double.valueOf(0d), value.get());
     model.setValue(122.2);
@@ -224,7 +224,7 @@ public class ComponentValuesTest {
   @Test
   public void integerTextUiValue() {
     final IntegerField integerField = new IntegerField();
-    final Value<Integer> value = ComponentValues.integerValue(integerField, true);
+    final Value<Integer> value = IntegerValues.integerValue(integerField, true);
 
     assertNull(value.get());
     integerField.setText("122");
@@ -239,7 +239,7 @@ public class ComponentValuesTest {
   @Test
   public void integerPrimitiveTextUiValue() {
     final IntegerField integerField = new IntegerField();
-    final Value<Integer> value = ComponentValues.integerValue(integerField, false);
+    final Value<Integer> value = IntegerValues.integerValue(integerField, false);
 
     assertEquals(Integer.valueOf(0), value.get());
     integerField.setText("122");
@@ -254,7 +254,7 @@ public class ComponentValuesTest {
   @Test
   public void longTextUiValue() {
     final LongField longField = new LongField();
-    final Value<Long> value = ComponentValues.longValue(longField, true);
+    final Value<Long> value = LongValues.longValue(longField, true);
 
     assertNull(value.get());
     longField.setText("122");
@@ -269,7 +269,7 @@ public class ComponentValuesTest {
   @Test
   public void longPrimitiveTextUiValue() {
     final LongField longField = new LongField();
-    final Value<Long> value = ComponentValues.longValue(longField, false);
+    final Value<Long> value = LongValues.longValue(longField, false);
 
     assertEquals(Long.valueOf(0), value.get());
     longField.setText("122");
@@ -285,7 +285,7 @@ public class ComponentValuesTest {
   public void doubleTextUiValue() {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    final Value<Double> value = ComponentValues.doubleValue(decimalField, true);
+    final Value<Double> value = DoubleValues.doubleValue(decimalField, true);
 
     assertNull(value.get());
     decimalField.setText("122.2");
@@ -301,7 +301,7 @@ public class ComponentValuesTest {
   public void doublePrimitiveTextUiValue() {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    final Value<Double> value = ComponentValues.doubleValue(decimalField, false);
+    final Value<Double> value = DoubleValues.doubleValue(decimalField, false);
 
     assertEquals(Double.valueOf(0), value.get());
     decimalField.setText("122.2");
@@ -318,7 +318,7 @@ public class ComponentValuesTest {
     final DecimalField decimalField = new DecimalField();
     decimalField.setParseBigDecimal(true);
     decimalField.setSeparators('.', ',');
-    final Value<BigDecimal> value = ComponentValues.bigDecimalValue(decimalField);
+    final Value<BigDecimal> value = BigDecimalValues.bigDecimalValue(decimalField);
 
     assertNull(value.get());
     decimalField.setText("122.2");
@@ -333,7 +333,7 @@ public class ComponentValuesTest {
   @Test
   public void textUiValueKeystroke() {
     final JTextField textField = new JTextField();
-    final Value<String> value = ComponentValues.textValue(textField);
+    final Value<String> value = StringValues.stringValue(textField);
 
     assertNull(value.get());
     textField.setText("hello there");
@@ -348,7 +348,7 @@ public class ComponentValuesTest {
   @Test
   public void toggleUiValue() {
     final ButtonModel model = new DefaultButtonModel();
-    final Value<Boolean> value = ComponentValues.booleanButtonModelValue(model);
+    final Value<Boolean> value = BooleanValues.booleanButtonModelValue(model);
 
     assertFalse(value.get());
     model.setSelected(true);
@@ -363,7 +363,7 @@ public class ComponentValuesTest {
   @Test
   public void nullableToggleUiValue() {
     final NullableToggleButtonModel model = new NullableToggleButtonModel();
-    final Value<Boolean> value = ComponentValues.booleanButtonModelValue(model);
+    final Value<Boolean> value = BooleanValues.booleanButtonModelValue(model);
 
     assertNull(value.get());
     model.setSelected(true);
@@ -387,7 +387,7 @@ public class ComponentValuesTest {
   @Test
   public void selectedItemUiValue() {
     final JComboBox box = new JComboBox(new String[] {null, "one", "two", "three"});
-    final Value<Object> value = ComponentValues.selectedValue(box);
+    final Value<Object> value = SelectedValues.selectedValue(box);
 
     assertNull(value.get());
     box.setSelectedIndex(1);

@@ -35,7 +35,16 @@ import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.LocalTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
-import org.jminor.swing.common.ui.value.ValueLinks;
+import org.jminor.swing.common.ui.value.BigDecimalValues;
+import org.jminor.swing.common.ui.value.BooleanValues;
+import org.jminor.swing.common.ui.value.DoubleValues;
+import org.jminor.swing.common.ui.value.IntegerValues;
+import org.jminor.swing.common.ui.value.LocalDateTimeValues;
+import org.jminor.swing.common.ui.value.LocalDateValues;
+import org.jminor.swing.common.ui.value.LocalTimeValues;
+import org.jminor.swing.common.ui.value.LongValues;
+import org.jminor.swing.common.ui.value.SelectedValues;
+import org.jminor.swing.common.ui.value.StringValues;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -282,7 +291,7 @@ public final class EntityInputComponents {
     requireNonNull(comboBoxModel, "comboBoxModel");
     comboBoxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    ValueLinks.selectedItemValueLink(comboBox, value);
+    SelectedValues.selectedItemValueLink(comboBox, value);
     linkToEnabledState(enabledState, comboBox);
     addComboBoxCompletion(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
@@ -404,7 +413,7 @@ public final class EntityInputComponents {
     requireNonNull(value, VALUE_PARAM_NAME);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
-    ValueLinks.selectedItemValueLink(comboBox, value);
+    SelectedValues.selectedItemValueLink(comboBox, value);
     linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
 
@@ -529,7 +538,7 @@ public final class EntityInputComponents {
     }
     linkToEnabledState(enabledState, textArea);
 
-    ValueLinks.textValueLink(textArea, value, null, updateOnKeystroke);
+    StringValues.stringValueLink(textArea, value, null, updateOnKeystroke);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -591,30 +600,30 @@ public final class EntityInputComponents {
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiteralCharacters);
     if (property.isString()) {
-      ValueLinks.textValueLink(textField, value, property.getFormat(), updateOnKeystroke);
+      StringValues.stringValueLink(textField, value, property.getFormat(), updateOnKeystroke);
     }
     else if (property.isInteger()) {
-      ValueLinks.integerValueLink((IntegerField) textField, value, true, updateOnKeystroke);
+      IntegerValues.integerValueLink((IntegerField) textField, value, true, updateOnKeystroke);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DecimalField) textField, value, true, updateOnKeystroke);
+      DoubleValues.doubleValueLink((DecimalField) textField, value, true, updateOnKeystroke);
     }
     else if (property.isBigDecimal()) {
-      ValueLinks.bigDecimalValueLink((DecimalField) textField, value, updateOnKeystroke);
+      BigDecimalValues.bigDecimalValueLink((DecimalField) textField, value, updateOnKeystroke);
     }
     else if (property.isLong()) {
-      ValueLinks.longValueLink((LongField) textField, value, true, updateOnKeystroke);
+      LongValues.longValueLink((LongField) textField, value, true, updateOnKeystroke);
     }
     else if (property.isDate()) {
-      ValueLinks.localDateValueLink((JFormattedTextField) textField, value,
+      LocalDateValues.localDateValueLink((JFormattedTextField) textField, value,
               property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else if (property.isTime()) {
-      ValueLinks.localTimeValueLink((JFormattedTextField) textField, value,
+      LocalTimeValues.localTimeValueLink((JFormattedTextField) textField, value,
               property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else if (property.isTimestamp()) {
-      ValueLinks.localDateTimeValueLink((JFormattedTextField) textField, value,
+      LocalDateTimeValues.localDateTimeValueLink((JFormattedTextField) textField, value,
               property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else {
@@ -740,7 +749,7 @@ public final class EntityInputComponents {
 
   private static JCheckBox initializeCheckBox(final Property property, final Value value,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
-    ValueLinks.toggleValueLink(checkBox.getModel(), value, false);
+    BooleanValues.toggleValueLink(checkBox.getModel(), value, false);
     linkToEnabledState(enabledState, checkBox);
     checkBox.setToolTipText(property.getDescription());
 

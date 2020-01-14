@@ -39,7 +39,7 @@ public class DateValueLinkTest {
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(format));
     final Value<LocalTime> timePropertyValue = Values.propertyValue(this, "time",
             LocalTime.class, timeValueChangedEvent);
-    ValueLinks.localTimeValueLink(textField, timePropertyValue, format);
+    LocalTimeValues.localTimeValueLink(textField, timePropertyValue, format);
     assertEquals("__:__", textField.getText());
 
     final LocalTime date = LocalTime.parse("22:42", formatter);
@@ -59,7 +59,7 @@ public class DateValueLinkTest {
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DOT));
     final Value<LocalDate> datePropertyValue = Values.propertyValue(this, "date",
             LocalDate.class, dateValueChangedEvent);
-    ValueLinks.localDateValueLink(textField, datePropertyValue, DateFormats.SHORT_DOT);
+    LocalDateValues.localDateValueLink(textField, datePropertyValue, DateFormats.SHORT_DOT);
     assertEquals("__.__.____", textField.getText());
 
     final LocalDate date = LocalDate.parse("03.10.1975", formatter);
@@ -79,7 +79,7 @@ public class DateValueLinkTest {
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_TIMESTAMP));
     final Value<LocalDateTime> timestampPropertyValue = Values.propertyValue(this, "timestamp",
             LocalDateTime.class, timestampValueChangedEvent);
-    ValueLinks.localDateTimeValueLink(textField, timestampPropertyValue, DateFormats.SHORT_TIMESTAMP);
+    LocalDateTimeValues.localDateTimeValueLink(textField, timestampPropertyValue, DateFormats.SHORT_TIMESTAMP);
     assertEquals("__-__-__ __:__", textField.getText());
 
     final LocalDateTime date = LocalDateTime.parse("03-10-75 10:34", formatter);

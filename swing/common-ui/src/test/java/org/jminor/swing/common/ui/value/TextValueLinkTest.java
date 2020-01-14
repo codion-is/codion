@@ -25,7 +25,7 @@ public class TextValueLinkTest {
     final JTextField textField = new JTextField();
     final Value<String> stringPropertyValue = Values.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent);
-    ValueLinks.textValueLink(textField, stringPropertyValue);
+    StringValues.stringValueLink(textField, stringPropertyValue);
     assertNull(this.stringValue);
     assertEquals("", textField.getText());
     setStringValue("hello");
@@ -37,7 +37,7 @@ public class TextValueLinkTest {
 
     final JTextField textField2 = new JTextField();
     this.stringValue = "test";
-    ValueLinks.textValueLink(textField2, Values.propertyValue(this, "stringValue",
+    StringValues.stringValueLink(textField2, Values.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent));
     assertEquals("test", textField2.getText());
   }
@@ -46,7 +46,7 @@ public class TextValueLinkTest {
   public void testNonNullInitialValue() throws Exception {
     stringValue = "name";
     final JTextField textField = new JTextField();
-    ValueLinks.textValueLink(textField, Values.propertyValue(this, "stringValue",
+    StringValues.stringValueLink(textField, Values.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent));
     assertEquals("name", textField.getText());
     textField.setText("darri");

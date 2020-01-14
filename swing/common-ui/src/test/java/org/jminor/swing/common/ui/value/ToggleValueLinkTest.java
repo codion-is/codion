@@ -21,7 +21,7 @@ public class ToggleValueLinkTest {
   @Test
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
-    ValueLinks.toggleValueLink(checkBox.getModel(), this, "booleanValue", booleanValueChangedEvent);
+    BooleanValues.toggleValueLink(checkBox.getModel(), this, "booleanValue", booleanValueChangedEvent);
     assertFalse(checkBox.isSelected());
     setBooleanValue(true);
     assertTrue(checkBox.isSelected());
