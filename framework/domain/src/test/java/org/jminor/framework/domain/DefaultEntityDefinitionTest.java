@@ -133,9 +133,14 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testNoPrimaryKey() {
-    assertThrows(IllegalArgumentException.class, () -> domain.define("entityId",
-            Properties.columnProperty("propertyId", Types.INTEGER)));
+  public void testForeignKeyWithNoPrimaryKey() {
+    final String entityId1 = "testForeignKeyWithNoPrimaryKey";
+    final String entityId2 = "testForeignKeyWithNoPrimaryKey2";
+    domain.define(entityId1,
+            Properties.columnProperty("propertyId", Types.INTEGER));
+    assertThrows(IllegalArgumentException.class, () -> domain.define(entityId2,
+            Properties.foreignKeyProperty("fk", null, entityId1,
+                    Properties.columnProperty("fk_col"))));
   }
 
   @Test

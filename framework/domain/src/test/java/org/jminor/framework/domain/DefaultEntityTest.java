@@ -234,6 +234,16 @@ public class DefaultEntityTest {
   }
 
   @Test
+  public void noPrimaryKey() {
+    final Entity noPk = DOMAIN.entity(TestDomain.T_NO_PK);
+    noPk.put(TestDomain.NO_PK_COL1, 1);
+    noPk.put(TestDomain.NO_PK_COL2, 2);
+    noPk.put(TestDomain.NO_PK_COL3, 3);
+    assertThrows(IllegalArgumentException.class, noPk::getKey);
+    assertThrows(IllegalArgumentException.class, noPk::getOriginalKey);
+  }
+
+  @Test
   public void entity() throws Exception {
     final Entity referencedEntityValue = DOMAIN.entity(TestDomain.T_MASTER);
     //assert not modified

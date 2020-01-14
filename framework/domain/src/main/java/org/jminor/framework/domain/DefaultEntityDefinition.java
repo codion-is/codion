@@ -173,7 +173,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /**
    * Defines a new entity type with the entityId serving as the initial entity caption.
-   * @throws IllegalArgumentException if no primary key property is specified
    */
   DefaultEntityDefinition(final String entityId, final String tableName, final Property.Builder... propertyBuilders) {
     this.entityId = rejectNullOrEmpty(entityId, "entityId");
@@ -481,6 +480,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /** {@inheritDoc} */
   @Override
+  public boolean hasPrimaryKey() {
+    return !primaryKeyProperties.isEmpty();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public boolean hasDerivedProperties() {
     return !derivedProperties.isEmpty();
   }
@@ -617,7 +622,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
         initializeForeignKeyProperty(entityId, propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
       }
     }
-    checkIfPrimaryKeyIsSpecified(entityId, propertyMap);
+    validatePrimaryKeyProperties(entityId, propertyMap);
 
     return unmodifiableMap(propertyMap);
   }
@@ -648,7 +653,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
   }
 
-  private static void checkIfPrimaryKeyIsSpecified(final String entityId, final Map<String, Property> propertyMap) {
+  private static void validatePrimaryKeyProperties(final String entityId, final Map<String, Property> propertyMap) {
     final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
     boolean primaryKeyPropertyFound = false;
     for (final Property property : propertyMap.values()) {
@@ -664,8 +669,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     if (primaryKeyPropertyFound) {
       return;
     }
-
-    throw new IllegalArgumentException("Entity is missing a primary key: " + entityId);
   }
 
   private static List<ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {

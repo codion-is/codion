@@ -5598,3 +5598,4 @@
   DocumentAdapter now interface with default methods instead of abstract class
   TextInputPanel moved to swing.common.ui.textfield
 0.13.1
+  Allow entities without primary keys

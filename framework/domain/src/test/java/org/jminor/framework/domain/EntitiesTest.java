@@ -383,4 +383,13 @@ public final class EntitiesTest {
     assertTrue(values.contains(2));
     assertFalse(values.contains(3));
   }
+
+  @Test
+  public void noPkEntity() {
+    final Entity noPk = domain.entity(TestDomain.T_NO_PK);
+    noPk.put(TestDomain.NO_PK_COL1, 1);
+    noPk.put(TestDomain.NO_PK_COL2, 2);
+    noPk.put(TestDomain.NO_PK_COL3, 3);
+    assertThrows(IllegalArgumentException.class, () -> Entities.getKeys(singletonList(noPk)));
+  }
 }

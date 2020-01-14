@@ -37,6 +37,7 @@ public final class TestDomain extends Domain {
     operations();
     joinedQuery();
     groupByQuery();
+    noPkEntity();
     registerDomain();
   }
 
@@ -192,6 +193,19 @@ public final class TestDomain extends Domain {
             .setHavingClause("job <> 'PRESIDENT'");
   }
 
+  public static final String T_NO_PK = "scott.no_pk_table";
+  public static final String NO_PK_COL1 = "col1";
+  public static final String NO_PK_COL2 = "col2";
+  public static final String NO_PK_COL3 = "col3";
+  public static final String NO_PK_COL4 = "col4";
+
+  private void noPkEntity() {
+    define(T_NO_PK,
+            columnProperty(NO_PK_COL1, Types.INTEGER),
+            columnProperty(NO_PK_COL2, Types.VARCHAR),
+            columnProperty(NO_PK_COL3, Types.VARCHAR),
+            columnProperty(NO_PK_COL4, Types.INTEGER));
+  }
 
   public static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
 
