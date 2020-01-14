@@ -11,7 +11,7 @@ import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.FilteredTable;
-import org.jminor.swing.common.ui.value.ComponentValues;
+import org.jminor.swing.common.ui.value.StringValues;
 import org.jminor.swing.framework.tools.EntityGeneratorModel;
 
 import javax.swing.ImageIcon;
@@ -54,7 +54,7 @@ public class EntityGeneratorPanel extends JPanel {
 
     final JTextArea textArea = new JTextArea(40, 60);
     textArea.setEditable(false);
-    Values.link(generatorModel.getDefinitionTextValue(), ComponentValues.textValue(textArea));
+    Values.link(generatorModel.getDefinitionTextValue(), StringValues.stringValue(textArea));
     final JScrollPane documentScroller = new JScrollPane(textArea);
     splitPane.setRightComponent(documentScroller);
 

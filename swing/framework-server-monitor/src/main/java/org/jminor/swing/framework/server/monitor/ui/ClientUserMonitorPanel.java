@@ -9,7 +9,7 @@ import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.table.FilteredTable;
-import org.jminor.swing.common.ui.value.ValueLinks;
+import org.jminor.swing.common.ui.value.IntegerValues;
 import org.jminor.swing.framework.server.monitor.ClientMonitor;
 import org.jminor.swing.framework.server.monitor.ClientUserMonitor;
 
@@ -95,7 +95,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     actionBase.add(new JLabel("Connection timeout (s)"));
     final JSpinner connectionTimeoutSpinner = new JSpinner(
-            ValueLinks.intSpinnerValueLink(model, "connectionTimeout", model.getConnectionTimeoutObserver()));
+            IntegerValues.integerSpinnerValueLink(model, "connectionTimeout", model.getConnectionTimeoutObserver()));
     ((JSpinner.DefaultEditor) connectionTimeoutSpinner.getEditor()).getTextField().setColumns(7);
     actionBase.add(connectionTimeoutSpinner);
 
@@ -123,7 +123,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
   private JPanel createConnectionHistoryPanel() {
     final JPanel configPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
-    final JSpinner updateIntervalSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner updateIntervalSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);

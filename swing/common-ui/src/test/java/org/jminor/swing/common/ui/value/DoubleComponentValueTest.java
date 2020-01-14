@@ -15,15 +15,15 @@ public class DoubleComponentValueTest {
   @Test
   public void constructor() {
     final Double value = 10.4;
-    ComponentValue<Double, DecimalField> provider = ComponentValues.doubleValue(value);
+    ComponentValue<Double, DecimalField> provider = DoubleValues.doubleValue(value);
     assertEquals(value, provider.get());
-    provider = ComponentValues.doubleValue((Double) null);
+    provider = DoubleValues.doubleValue((Double) null);
     assertNull(provider.get());
   }
 
   @Test
   public void parse() {
-    final ComponentValue<Double, DecimalField> componentValue = ComponentValues.doubleValue((Double) null);
+    final ComponentValue<Double, DecimalField> componentValue = DoubleValues.doubleValue((Double) null);
     assertNull(componentValue.get());
 
     componentValue.getComponent().setGroupingUsed(false);

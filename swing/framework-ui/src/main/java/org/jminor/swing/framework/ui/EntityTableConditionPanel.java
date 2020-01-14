@@ -24,7 +24,7 @@ import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
-import org.jminor.swing.common.ui.value.ValueLinks;
+import org.jminor.swing.common.ui.value.StringValues;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.BorderFactory;
@@ -260,7 +260,7 @@ public final class EntityTableConditionPanel extends JPanel {
     final JButton simpleSearchButton = new JButton(simpleSearchControl);
     simpleSearchTextField.addActionListener(simpleSearchControl);
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
-    ValueLinks.textValueLink(simpleSearchTextField, Values.propertyValue(conditionModel, "simpleConditionString",
+    StringValues.stringValueLink(simpleSearchTextField, Values.propertyValue(conditionModel, "simpleConditionString",
             String.class, conditionModel.getSimpleConditionStringObserver()));
     panel.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("condition")));
     panel.add(simpleSearchTextField, BorderLayout.CENTER);

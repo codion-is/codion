@@ -47,7 +47,7 @@ public class DoubleValueLinkTest {
     decimalField.setSeparators('.', ',');
     final Value doublePropertyValue = Values.propertyValue(this, "doubleValue",
             Double.class, doubleValueChangedEvent);
-    ValueLinks.doubleValueLink(decimalField, doublePropertyValue, true);
+    DoubleValues.doubleValueLink(decimalField, doublePropertyValue, true);
     assertNull(decimalField.getDouble());
     setDoubleValue(2.2);
     assertEquals(Double.valueOf(2.2), decimalField.getDouble());
@@ -63,7 +63,7 @@ public class DoubleValueLinkTest {
     decimalField.setSeparators('.', ',');
     final Value doublePrimitivePropertyValue = Values.propertyValue(this, "doublePrimitiveValue",
             double.class, doublePrimitiveValueValueChangedEvent);
-    ValueLinks.doubleValueLink(decimalField, doublePrimitivePropertyValue, false);
+    DoubleValues.doubleValueLink(decimalField, doublePrimitivePropertyValue, false);
     assertEquals((Double) 0.0, decimalField.getDouble());
     setDoublePrimitiveValue(2.2);
     assertEquals(Double.valueOf(2.2), decimalField.getDouble());

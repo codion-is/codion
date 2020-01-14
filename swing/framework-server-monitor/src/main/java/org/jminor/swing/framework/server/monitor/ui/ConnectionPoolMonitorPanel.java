@@ -9,7 +9,8 @@ import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.TextFields;
-import org.jminor.swing.common.ui.value.ValueLinks;
+import org.jminor.swing.common.ui.value.BooleanValues;
+import org.jminor.swing.common.ui.value.IntegerValues;
 import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -146,19 +147,19 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getConfigurationPanel() {
     final JPanel configBase = new JPanel(UiUtil.createGridLayout(0, 1));
 
-    final JSpinner timeoutSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "pooledConnectionTimeout",
+    final JSpinner timeoutSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model, "pooledConnectionTimeout",
             model.getStatisticsObserver()));
-    final JSpinner cleanupIntervalSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "poolCleanupInterval",
+    final JSpinner cleanupIntervalSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model, "poolCleanupInterval",
             model.getStatisticsObserver()));
-    final JSpinner maximumSizeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumPoolSize",
+    final JSpinner maximumSizeSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model, "maximumPoolSize",
             model.getStatisticsObserver()));
-    final JSpinner minimumSizeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "minimumPoolSize",
+    final JSpinner minimumSizeSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model, "minimumPoolSize",
             model.getStatisticsObserver()));
-    final JSpinner maximumRetryWaitSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumRetryWaitPeriod",
+    final JSpinner maximumRetryWaitSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model, "maximumRetryWaitPeriod",
             model.getStatisticsObserver()));
-    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumCheckOutTime",
+    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model, "maximumCheckOutTime",
             model.getStatisticsObserver()));
-    final JSpinner newConnectionThresholdSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "newConnectionThreshold",
+    final JSpinner newConnectionThresholdSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model, "newConnectionThreshold",
             model.getStatisticsObserver()));
 
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setEditable(false);
@@ -219,7 +220,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(UiUtil.createFlexibleGridLayout(1, 3, true, false));
-    final JSpinner updateIntervalSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner updateIntervalSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
@@ -229,7 +230,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(updateIntervalSpinner);
 
     final JCheckBox collectStatisticsCheckBox = new JCheckBox("Fine grained statistics");
-    collectStatisticsCheckBox.setModel(ValueLinks.toggleValueLink(model, "collectFineGrainedStatistics",
+    collectStatisticsCheckBox.setModel(BooleanValues.toggleValueLink(model, "collectFineGrainedStatistics",
             model.getCollectFineGrainedStatisticsObserver()));
     collectStatisticsCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
 

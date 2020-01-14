@@ -10,7 +10,7 @@ import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.model.AbstractEntityModelTest;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.TestDomain;
-import org.jminor.swing.common.ui.value.ValueLinks;
+import org.jminor.swing.common.ui.value.SelectedValues;
 
 import org.junit.jupiter.api.Test;
 
@@ -69,7 +69,7 @@ public final class SwingEntityModelTest
     final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     final SwingEntityEditModel employeeEditModel = employeeModel.getEditModel();
     final SwingEntityTableModel employeeTableModel = employeeModel.getTableModel();
-    ValueLinks.selectedItemValueLink(new JComboBox<>(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
+    SelectedValues.selectedItemValueLink(new JComboBox<>(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
             employeeEditModel.value(TestDomain.EMP_MGR_FK));
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getAllItems()) {

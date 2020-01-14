@@ -30,9 +30,9 @@ import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
 import org.jminor.swing.common.ui.value.AbstractComponentValue;
+import org.jminor.swing.common.ui.value.BooleanValues;
 import org.jminor.swing.common.ui.value.ComponentValuePanel;
-import org.jminor.swing.common.ui.value.ComponentValues;
-import org.jminor.swing.common.ui.value.ValueLinks;
+import org.jminor.swing.common.ui.value.StringValues;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
@@ -242,7 +242,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    Values.link(model.getSearchStringValue(), ComponentValues.textValue(this));
+    Values.link(model.getSearchStringValue(), StringValues.stringValue(this));
     model.getSearchStringValue().addDataListener(data -> updateColors());
     model.addSelectedEntitiesListener(data -> setCaretPosition(0));
   }
@@ -387,11 +387,11 @@ public final class EntityLookupField extends JTextField {
       }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
-      ValueLinks.toggleValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionEnabledValue(), false);
+      BooleanValues.toggleValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionEnabledValue(), false);
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
       final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
-      ValueLinks.textValueLink(multipleValueSeparatorField, lookupModel.getMultipleItemSeparatorValue());
+      StringValues.stringValueLink(multipleValueSeparatorField, lookupModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(UiUtil.createGridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
@@ -413,11 +413,11 @@ public final class EntityLookupField extends JTextField {
     private static JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
       final JPanel panel = new JPanel(UiUtil.createGridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
-      ValueLinks.toggleValueLink(boxCaseSensitive.getModel(), settings.getCaseSensitiveValue(), false);
+      BooleanValues.toggleValueLink(boxCaseSensitive.getModel(), settings.getCaseSensitiveValue(), false);
       final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
-      ValueLinks.toggleValueLink(boxPrefixWildcard.getModel(), settings.getWildcardPrefixValue(), false);
+      BooleanValues.toggleValueLink(boxPrefixWildcard.getModel(), settings.getWildcardPrefixValue(), false);
       final JCheckBox boxPostfixWildcard = new JCheckBox(MESSAGES.getString("postfix_wildcard"));
-      ValueLinks.toggleValueLink(boxPostfixWildcard.getModel(), settings.getWildcardPostfixValue(), false);
+      BooleanValues.toggleValueLink(boxPostfixWildcard.getModel(), settings.getWildcardPostfixValue(), false);
 
       panel.add(boxCaseSensitive);
       panel.add(boxPrefixWildcard);

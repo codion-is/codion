@@ -11,8 +11,16 @@ import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.LocalTimeInputPanel;
+import org.jminor.swing.common.ui.value.BigDecimalValues;
+import org.jminor.swing.common.ui.value.BooleanValues;
+import org.jminor.swing.common.ui.value.ByteArrayValues;
 import org.jminor.swing.common.ui.value.ComponentValue;
-import org.jminor.swing.common.ui.value.ComponentValues;
+import org.jminor.swing.common.ui.value.DoubleValues;
+import org.jminor.swing.common.ui.value.IntegerValues;
+import org.jminor.swing.common.ui.value.LongValues;
+import org.jminor.swing.common.ui.value.SelectedValues;
+import org.jminor.swing.common.ui.value.StringValues;
+import org.jminor.swing.common.ui.value.TemporalValues;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import java.math.BigDecimal;
@@ -48,31 +56,31 @@ public class EntityComponentValues {
       final List<Item<Object>> values = ((ValueListProperty) property).getValues()
               .stream().map(item -> (Item<Object>) item).collect(Collectors.toList());
 
-      return ComponentValues.selectedItemValue(initialValue, values);
+      return SelectedValues.selectedItemValue(initialValue, values);
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
-        return ComponentValues.booleanComboBoxValue((Boolean) initialValue);
+        return BooleanValues.booleanComboBoxValue((Boolean) initialValue);
       case Types.DATE:
-        return ComponentValues.temporalValue(new LocalDateInputPanel((LocalDate) initialValue, property.getDateTimeFormatPattern()));
+        return TemporalValues.temporalValue(new LocalDateInputPanel((LocalDate) initialValue, property.getDateTimeFormatPattern()));
       case Types.TIMESTAMP:
-        return ComponentValues.temporalValue(new LocalDateTimeInputPanel((LocalDateTime) initialValue, property.getDateTimeFormatPattern()));
+        return TemporalValues.temporalValue(new LocalDateTimeInputPanel((LocalDateTime) initialValue, property.getDateTimeFormatPattern()));
       case Types.TIME:
-        return ComponentValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimeFormatPattern()));
+        return TemporalValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimeFormatPattern()));
       case Types.DOUBLE:
-        return ComponentValues.doubleValue((Double) initialValue, (DecimalFormat) property.getFormat());
+        return DoubleValues.doubleValue((Double) initialValue, (DecimalFormat) property.getFormat());
       case Types.DECIMAL:
-        return ComponentValues.bigDecimalValue((BigDecimal) initialValue, (DecimalFormat) property.getFormat());
+        return BigDecimalValues.bigDecimalValue((BigDecimal) initialValue, (DecimalFormat) property.getFormat());
       case Types.INTEGER:
-        return ComponentValues.integerValue((Integer) initialValue, (NumberFormat) property.getFormat());
+        return IntegerValues.integerValue((Integer) initialValue, (NumberFormat) property.getFormat());
       case Types.BIGINT:
-        return ComponentValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
+        return LongValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
       case Types.CHAR:
-        return ComponentValues.textValue(property.getCaption(), (String) initialValue, 1);
+        return StringValues.stringValue(property.getCaption(), (String) initialValue, 1);
       case Types.VARCHAR:
-        return ComponentValues.textValue(property.getCaption(), (String) initialValue, property.getMaxLength());
+        return StringValues.stringValue(property.getCaption(), (String) initialValue, property.getMaxLength());
       case Types.BLOB:
-        return ComponentValues.blobValue();
+        return ByteArrayValues.blobValue();
       default:
         throw new IllegalArgumentException("No InputProvider implementation available for property: " + property + " (type: " + property.getType() + ")");
     }
