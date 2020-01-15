@@ -69,7 +69,7 @@ public class TextValuesTest {
   }
 
   @Test
-  public void stringValueField() {
+  public void textValueField() {
     final String value = "hello";
     ComponentValue<String, TextInputPanel> componentValue = TextValues.textValue("none", value, 2);
     assertNull(componentValue.get());
@@ -88,7 +88,7 @@ public class TextValuesTest {
   }
 
   @Test
-  public void stringValue() {
+  public void textValue() {
     final JTextField textField = new JTextField();
     final Value<String> value = TextValues.textValue(textField);
 
