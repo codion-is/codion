@@ -7,6 +7,7 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
+import org.jminor.swing.common.ui.textfield.TextInputPanel;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,13 +15,22 @@ import javax.swing.JTextField;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TextValueLinkTest {
+public class StringValuesTest {
 
   private String stringValue;
   private final Event<String> stringValueChangedEvent = Events.event();
 
+  public String getStringValue() {
+    return stringValue;
+  }
+
+  public void setStringValue(final String stringValue) {
+    this.stringValue = stringValue;
+    stringValueChangedEvent.onEvent();
+  }
+
   @Test
-  public void testNullInitialValue() throws Exception {
+  public void nullInitialValue() throws Exception {
     stringValue = null;
     final JTextField textField = new JTextField();
     final Value<String> stringPropertyValue = Values.propertyValue(this, "stringValue",
@@ -43,7 +53,7 @@ public class TextValueLinkTest {
   }
 
   @Test
-  public void testNonNullInitialValue() throws Exception {
+  public void nonNullInitialValue() throws Exception {
     stringValue = "name";
     final JTextField textField = new JTextField();
     StringValues.stringValueLink(textField, Values.propertyValue(this, "stringValue",
@@ -58,12 +68,37 @@ public class TextValueLinkTest {
     assertEquals("Björn", textField.getText());
   }
 
-  public String getStringValue() {
-    return stringValue;
+  @Test
+  public void stringValueField() {
+    final String value = "hello";
+    ComponentValue<String, TextInputPanel> componentValue = StringValues.stringValue("none", value, 2);
+    assertNull(componentValue.get());
+
+    componentValue = StringValues.stringValue("none", value, 10);
+    assertEquals(value, componentValue.get());
+
+    componentValue = StringValues.stringValue("none", null, 10);
+    assertNull(componentValue.get());
+
+    componentValue.getComponent().setText("tester");
+    assertEquals("tester", componentValue.get());
+
+    componentValue.getComponent().setText("");
+    assertNull(componentValue.get());
   }
 
-  public void setStringValue(final String stringValue) {
-    this.stringValue = stringValue;
-    stringValueChangedEvent.onEvent();
+  @Test
+  public void stringValue() {
+    final JTextField textField = new JTextField();
+    final Value<String> value = StringValues.stringValue(textField);
+
+    assertNull(value.get());
+    textField.setText("hello there");
+    assertEquals("hello there", value.get());
+    textField.setText("");
+    assertNull(value.get());
+
+    value.set("hi");
+    assertEquals("hi", textField.getText());
   }
 }

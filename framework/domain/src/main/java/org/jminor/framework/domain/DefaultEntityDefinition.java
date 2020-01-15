@@ -622,7 +622,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
         initializeForeignKeyProperty(entityId, propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
       }
     }
-    validatePrimaryKeyProperties(entityId, propertyMap);
+    validatePrimaryKeyProperties(propertyMap);
 
     return unmodifiableMap(propertyMap);
   }
@@ -653,7 +653,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
   }
 
-  private static void validatePrimaryKeyProperties(final String entityId, final Map<String, Property> propertyMap) {
+  private static void validatePrimaryKeyProperties(final Map<String, Property> propertyMap) {
     final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
     boolean primaryKeyPropertyFound = false;
     for (final Property property : propertyMap.values()) {

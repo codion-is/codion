@@ -13,7 +13,12 @@ import java.util.List;
 
 import static org.jminor.common.value.Values.propertyValue;
 
+/**
+ * Utility class for selection {@link ComponentValue} instances.
+ */
 public final class SelectedValues {
+
+  private SelectedValues() {}
 
   /**
    * Instantiates a Item based ComponentValue.

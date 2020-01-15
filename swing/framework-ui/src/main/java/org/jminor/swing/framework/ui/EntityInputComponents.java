@@ -35,16 +35,11 @@ import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.LocalTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
-import org.jminor.swing.common.ui.value.BigDecimalValues;
 import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.DoubleValues;
-import org.jminor.swing.common.ui.value.IntegerValues;
-import org.jminor.swing.common.ui.value.LocalDateTimeValues;
-import org.jminor.swing.common.ui.value.LocalDateValues;
-import org.jminor.swing.common.ui.value.LocalTimeValues;
-import org.jminor.swing.common.ui.value.LongValues;
+import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.StringValues;
+import org.jminor.swing.common.ui.value.TemporalValues;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -603,27 +598,27 @@ public final class EntityInputComponents {
       StringValues.stringValueLink(textField, value, property.getFormat(), updateOnKeystroke);
     }
     else if (property.isInteger()) {
-      IntegerValues.integerValueLink((IntegerField) textField, value, true, updateOnKeystroke);
+      NumericalValues.integerValueLink((IntegerField) textField, value, true, updateOnKeystroke);
     }
     else if (property.isDouble()) {
-      DoubleValues.doubleValueLink((DecimalField) textField, value, true, updateOnKeystroke);
+      NumericalValues.doubleValueLink((DecimalField) textField, value, true, updateOnKeystroke);
     }
     else if (property.isBigDecimal()) {
-      BigDecimalValues.bigDecimalValueLink((DecimalField) textField, value, updateOnKeystroke);
+      NumericalValues.bigDecimalValueLink((DecimalField) textField, value, updateOnKeystroke);
     }
     else if (property.isLong()) {
-      LongValues.longValueLink((LongField) textField, value, true, updateOnKeystroke);
+      NumericalValues.longValueLink((LongField) textField, value, true, updateOnKeystroke);
     }
     else if (property.isDate()) {
-      LocalDateValues.localDateValueLink((JFormattedTextField) textField, value,
+      TemporalValues.localDateValueLink((JFormattedTextField) textField, value,
               property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else if (property.isTime()) {
-      LocalTimeValues.localTimeValueLink((JFormattedTextField) textField, value,
+      TemporalValues.localTimeValueLink((JFormattedTextField) textField, value,
               property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else if (property.isTimestamp()) {
-      LocalDateTimeValues.localDateTimeValueLink((JFormattedTextField) textField, value,
+      TemporalValues.localDateTimeValueLink((JFormattedTextField) textField, value,
               property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else {

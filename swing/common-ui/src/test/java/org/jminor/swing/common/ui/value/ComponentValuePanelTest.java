@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ComponentValuePanelTest {
 
   @Test
-  public void test() {
+  public void componentValuePanel() {
     final JTextField textField = new JTextField();
     final ComponentValuePanel panel = new ComponentValuePanel("Test", new AbstractComponentValue<String, JTextField>(textField) {
       @Override

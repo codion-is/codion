@@ -8,7 +8,7 @@ import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.IntegerField;
-import org.jminor.swing.common.ui.value.IntegerValues;
+import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.StringValues;
 import org.jminor.swing.framework.server.monitor.ServerMonitor;
@@ -111,7 +111,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(initializeConnectionCountField());
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
     final JSpinner connectionLimitSpinner = new JSpinner(
-            IntegerValues.integerSpinnerValueLink(model, "connectionLimit", model.getConnectionLimitObserver()));
+            NumericalValues.integerSpinnerValueLink(model, "connectionLimit", model.getConnectionLimitObserver()));
     ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     infoPanel.add(connectionLimitSpinner);
     infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
@@ -134,7 +134,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JPanel initializePerformancePanel() {
     final JPanel controlPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
 
-    final JSpinner updateIntervalSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
@@ -208,7 +208,7 @@ public final class ServerMonitorPanel extends JPanel {
     final IntegerField connectionCountField = new IntegerField(4);
     connectionCountField.setEditable(false);
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
-    IntegerValues.integerValueLink(connectionCountField, Values.propertyValue(model, "connectionCount",
+    NumericalValues.integerValueLink(connectionCountField, Values.propertyValue(model, "connectionCount",
             int.class, model.getStatisticsUpdatedObserver()), false);
 
     return connectionCountField;

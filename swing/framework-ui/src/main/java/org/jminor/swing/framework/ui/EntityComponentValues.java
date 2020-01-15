@@ -11,13 +11,10 @@ import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.LocalTimeInputPanel;
-import org.jminor.swing.common.ui.value.BigDecimalValues;
 import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.ByteArrayValues;
 import org.jminor.swing.common.ui.value.ComponentValue;
-import org.jminor.swing.common.ui.value.DoubleValues;
-import org.jminor.swing.common.ui.value.IntegerValues;
-import org.jminor.swing.common.ui.value.LongValues;
+import org.jminor.swing.common.ui.value.FileValues;
+import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.StringValues;
 import org.jminor.swing.common.ui.value.TemporalValues;
@@ -68,21 +65,21 @@ public class EntityComponentValues {
       case Types.TIME:
         return TemporalValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimeFormatPattern()));
       case Types.DOUBLE:
-        return DoubleValues.doubleValue((Double) initialValue, (DecimalFormat) property.getFormat());
+        return NumericalValues.doubleValue((Double) initialValue, (DecimalFormat) property.getFormat());
       case Types.DECIMAL:
-        return BigDecimalValues.bigDecimalValue((BigDecimal) initialValue, (DecimalFormat) property.getFormat());
+        return NumericalValues.bigDecimalValue((BigDecimal) initialValue, (DecimalFormat) property.getFormat());
       case Types.INTEGER:
-        return IntegerValues.integerValue((Integer) initialValue, (NumberFormat) property.getFormat());
+        return NumericalValues.integerValue((Integer) initialValue, (NumberFormat) property.getFormat());
       case Types.BIGINT:
-        return LongValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
+        return NumericalValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
       case Types.CHAR:
         return StringValues.stringValue(property.getCaption(), (String) initialValue, 1);
       case Types.VARCHAR:
         return StringValues.stringValue(property.getCaption(), (String) initialValue, property.getMaxLength());
       case Types.BLOB:
-        return ByteArrayValues.blobValue();
+        return FileValues.fileInputValue();
       default:
-        throw new IllegalArgumentException("No InputProvider implementation available for property: " + property + " (type: " + property.getType() + ")");
+        throw new IllegalArgumentException("No ComponentValue implementation available for property: " + property + " (type: " + property.getType() + ")");
     }
   }
 
