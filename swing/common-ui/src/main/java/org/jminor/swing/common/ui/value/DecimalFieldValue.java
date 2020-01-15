@@ -5,7 +5,7 @@ package org.jminor.swing.common.ui.value;
 
 import org.jminor.swing.common.ui.textfield.DecimalField;
 
-final class DecimalFieldValue extends NumberFieldValue<Double, DecimalField> {
+final class DecimalFieldValue extends AbstractTextComponentValue<Double, DecimalField> {
 
   DecimalFieldValue(final DecimalField decimalField, final boolean nullable, final boolean updateOnKeystroke) {
     super(decimalField, nullable, updateOnKeystroke);

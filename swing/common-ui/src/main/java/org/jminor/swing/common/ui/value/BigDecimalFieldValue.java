@@ -7,7 +7,7 @@ import org.jminor.swing.common.ui.textfield.DecimalField;
 
 import java.math.BigDecimal;
 
-final class BigDecimalFieldValue extends NumberFieldValue<BigDecimal, DecimalField> {
+final class BigDecimalFieldValue extends AbstractTextComponentValue<BigDecimal, DecimalField> {
 
   BigDecimalFieldValue(final DecimalField decimalField, final boolean updateOnKeystroke) {
     super(decimalField, true, updateOnKeystroke);

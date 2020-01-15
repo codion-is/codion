@@ -5603,3 +5603,4 @@
   ComponentValues and ValueLinks split and merged into type specific utility classes
   Further refactoring of ComponentValue utility classes
   NumberFieldValue, generic parameters reordered
+  AbstractTextComponentValue added, replaces NumberFieldValue, related refactoring

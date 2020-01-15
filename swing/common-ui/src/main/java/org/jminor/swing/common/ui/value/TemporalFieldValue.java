@@ -10,9 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 
-import static org.jminor.common.Util.nullOrEmpty;
-
-final class TemporalFieldValue<V extends Temporal> extends TextComponentValue<V, JFormattedTextField> {
+final class TemporalFieldValue<V extends Temporal> extends FormattedTextComponentValue<V, JFormattedTextField> {
 
   private final DateTimeFormatter formatter;
   private final DateParser<V> dateParser;
@@ -25,20 +23,12 @@ final class TemporalFieldValue<V extends Temporal> extends TextComponentValue<V,
   }
 
   @Override
-  protected String textFromValue(final V value) {
-    if (value == null) {
-      return null;
-    }
-
+  protected String formatTextFromValue(final V value) {
     return formatter.format(value);
   }
 
   @Override
-  protected V valueFromText(final String text) {
-    if (nullOrEmpty(text)) {
-      return null;
-    }
-
+  protected V parseValueFromText(final String text) {
     try {
       return dateParser.parse(text, formatter);
     }

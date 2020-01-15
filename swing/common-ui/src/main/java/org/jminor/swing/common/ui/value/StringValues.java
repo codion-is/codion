@@ -10,6 +10,8 @@ import org.jminor.swing.common.ui.textfield.TextInputPanel;
 import javax.swing.text.JTextComponent;
 import java.text.Format;
 
+import static org.jminor.common.Util.nullOrEmpty;
+
 /**
  * Utility class for string based {@link ComponentValue} instances.
  */
@@ -22,7 +24,18 @@ public final class StringValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<String, JTextComponent> stringValue(final JTextComponent textComponent) {
-    return stringValue(textComponent, null);
+    return new AbstractTextComponentValue<String, JTextComponent>(textComponent, true, true) {
+      @Override
+      protected String getComponentValue(final JTextComponent component) {
+        final String text = component.getText();
+
+        return nullOrEmpty(text) ? null : text;
+      }
+      @Override
+      protected void setComponentValue(final JTextComponent component, final String value) {
+        component.setText(value);
+      }
+    };
   }
 
   /**
@@ -42,7 +55,7 @@ public final class StringValues {
    */
   public static ComponentValue<String, JTextComponent> stringValue(final JTextComponent textComponent, final Format format,
                                                                    final boolean updateOnKeystroke) {
-    return new TextComponentValue<>(textComponent, format, updateOnKeystroke);
+    return new FormattedTextComponentValue<>(textComponent, format, updateOnKeystroke);
   }
 
   /**

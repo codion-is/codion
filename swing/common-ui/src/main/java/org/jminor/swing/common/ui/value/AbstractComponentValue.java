@@ -33,7 +33,7 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
    * @param nullable true if this value can be null
    */
   public AbstractComponentValue(final C component, final boolean nullable) {
-    this.component = requireNonNull(component);
+    this.component = requireNonNull(component, "component");
     this.nullable = nullable;
   }
 
