@@ -29,8 +29,8 @@ import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.common.ui.value.BooleanValues;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
-import org.jminor.swing.common.ui.value.StringValues;
 import org.jminor.swing.common.ui.value.TemporalValues;
+import org.jminor.swing.common.ui.value.TextValues;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JCheckBox;
@@ -446,7 +446,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
                 columnConditionModel.getDateTimeFormatPattern());
       }
       else {
-        StringValues.stringValueLink((JTextField) component, modelValue);
+        TextValues.textValueLink((JTextField) component, modelValue);
       }
     }
   }

@@ -17,7 +17,7 @@ import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.value.SelectedValues;
-import org.jminor.swing.common.ui.value.StringValues;
+import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
@@ -48,7 +48,7 @@ public final class ClientUI {
             editModel.value(ARTIST_NAME);
     //create a String Value based on the text field
     Value<String> textFieldNameValue =
-            StringValues.stringValue(nameField);
+            TextValues.textValue(nameField);
     //link the two values
     Values.link(editModelNameValue, textFieldNameValue);
     //add a insert action to the name field
@@ -110,7 +110,7 @@ public final class ClientUI {
             editModel.value(ALBUM_TITLE);
     //create a String Value based on the text field
     Value<String> textFieldTitleValue =
-            StringValues.stringValue(titleField);
+            TextValues.textValue(titleField);
     //link the two values
     Values.link(editModelNameValue, textFieldTitleValue);
 

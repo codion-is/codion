@@ -10,7 +10,7 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
-import org.jminor.swing.common.ui.value.StringValues;
+import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.framework.server.monitor.ServerMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -218,7 +218,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField memoryField = new JTextField(8);
     memoryField.setEditable(false);
     memoryField.setHorizontalAlignment(JLabel.CENTER);
-    StringValues.stringValueLink(memoryField, Values.propertyValue(model, "memoryUsage", String.class,
+    TextValues.textValueLink(memoryField, Values.propertyValue(model, "memoryUsage", String.class,
             model.getStatisticsUpdatedObserver()));
 
     return memoryField;

@@ -5,7 +5,7 @@ package org.jminor.swing.common.ui.value;
 
 import org.jminor.swing.common.ui.textfield.LongField;
 
-final class LongFieldValue extends NumberFieldValue<LongField, Long> {
+final class LongFieldValue extends AbstractTextComponentValue<Long, LongField> {
 
   LongFieldValue(final LongField longField, final boolean nullable, final boolean updateOnKeystroke) {
     super(longField, nullable, updateOnKeystroke);

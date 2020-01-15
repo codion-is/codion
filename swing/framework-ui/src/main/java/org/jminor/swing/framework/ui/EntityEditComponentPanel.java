@@ -24,7 +24,7 @@ import org.jminor.swing.common.ui.textfield.TextInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
-import org.jminor.swing.common.ui.value.StringValues;
+import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.ComboBoxModel;
@@ -1296,7 +1296,7 @@ public class EntityEditComponentPanel extends JPanel {
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    StringValues.stringValueLink(textField, new ForeignKeyModelValue(getEditModel(), foreignKeyProperty.getPropertyId()));
+    TextValues.textValueLink(textField, new ForeignKeyModelValue(getEditModel(), foreignKeyProperty.getPropertyId()));
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter(textField);
     }

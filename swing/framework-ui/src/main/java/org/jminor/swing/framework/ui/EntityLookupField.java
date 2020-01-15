@@ -32,7 +32,7 @@ import org.jminor.swing.common.ui.textfield.TextFieldHint;
 import org.jminor.swing.common.ui.value.AbstractComponentValue;
 import org.jminor.swing.common.ui.value.BooleanValues;
 import org.jminor.swing.common.ui.value.ComponentValuePanel;
-import org.jminor.swing.common.ui.value.StringValues;
+import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
@@ -242,7 +242,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    Values.link(model.getSearchStringValue(), StringValues.stringValue(this));
+    Values.link(model.getSearchStringValue(), TextValues.textValue(this));
     model.getSearchStringValue().addDataListener(data -> updateColors());
     model.addSelectedEntitiesListener(data -> setCaretPosition(0));
   }
@@ -391,7 +391,7 @@ public final class EntityLookupField extends JTextField {
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
       final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
-      StringValues.stringValueLink(multipleValueSeparatorField, lookupModel.getMultipleItemSeparatorValue());
+      TextValues.textValueLink(multipleValueSeparatorField, lookupModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(UiUtil.createGridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));

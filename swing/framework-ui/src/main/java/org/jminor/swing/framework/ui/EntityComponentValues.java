@@ -16,8 +16,8 @@ import org.jminor.swing.common.ui.value.ComponentValue;
 import org.jminor.swing.common.ui.value.FileValues;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
-import org.jminor.swing.common.ui.value.StringValues;
 import org.jminor.swing.common.ui.value.TemporalValues;
+import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import java.math.BigDecimal;
@@ -73,9 +73,9 @@ public class EntityComponentValues {
       case Types.BIGINT:
         return NumericalValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
       case Types.CHAR:
-        return StringValues.stringValue(property.getCaption(), (String) initialValue, 1);
+        return TextValues.textValue(property.getCaption(), (String) initialValue, 1);
       case Types.VARCHAR:
-        return StringValues.stringValue(property.getCaption(), (String) initialValue, property.getMaxLength());
+        return TextValues.textValue(property.getCaption(), (String) initialValue, property.getMaxLength());
       case Types.BLOB:
         return FileValues.fileInputValue();
       default:
