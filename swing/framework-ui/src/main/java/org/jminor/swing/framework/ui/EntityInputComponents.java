@@ -38,8 +38,8 @@ import org.jminor.swing.common.ui.time.TemporalInputPanel;
 import org.jminor.swing.common.ui.value.BooleanValues;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
-import org.jminor.swing.common.ui.value.StringValues;
 import org.jminor.swing.common.ui.value.TemporalValues;
+import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -533,7 +533,7 @@ public final class EntityInputComponents {
     }
     linkToEnabledState(enabledState, textArea);
 
-    StringValues.stringValueLink(textArea, value, null, updateOnKeystroke);
+    TextValues.textValueLink(textArea, value, null, updateOnKeystroke);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -595,7 +595,7 @@ public final class EntityInputComponents {
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiteralCharacters);
     if (property.isString()) {
-      StringValues.stringValueLink(textField, value, property.getFormat(), updateOnKeystroke);
+      TextValues.textValueLink(textField, value, property.getFormat(), updateOnKeystroke);
     }
     else if (property.isInteger()) {
       NumericalValues.integerValueLink((IntegerField) textField, value, true, updateOnKeystroke);

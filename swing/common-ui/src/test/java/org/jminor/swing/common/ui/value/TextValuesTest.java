@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class StringValuesTest {
+public class TextValuesTest {
 
   private String stringValue;
   private final Event<String> stringValueChangedEvent = Events.event();
@@ -35,7 +35,7 @@ public class StringValuesTest {
     final JTextField textField = new JTextField();
     final Value<String> stringPropertyValue = Values.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent);
-    StringValues.stringValueLink(textField, stringPropertyValue);
+    TextValues.textValueLink(textField, stringPropertyValue);
     assertNull(this.stringValue);
     assertEquals("", textField.getText());
     setStringValue("hello");
@@ -47,7 +47,7 @@ public class StringValuesTest {
 
     final JTextField textField2 = new JTextField();
     this.stringValue = "test";
-    StringValues.stringValueLink(textField2, Values.propertyValue(this, "stringValue",
+    TextValues.textValueLink(textField2, Values.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent));
     assertEquals("test", textField2.getText());
   }
@@ -56,7 +56,7 @@ public class StringValuesTest {
   public void nonNullInitialValue() throws Exception {
     stringValue = "name";
     final JTextField textField = new JTextField();
-    StringValues.stringValueLink(textField, Values.propertyValue(this, "stringValue",
+    TextValues.textValueLink(textField, Values.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent));
     assertEquals("name", textField.getText());
     textField.setText("darri");
@@ -71,13 +71,13 @@ public class StringValuesTest {
   @Test
   public void stringValueField() {
     final String value = "hello";
-    ComponentValue<String, TextInputPanel> componentValue = StringValues.stringValue("none", value, 2);
+    ComponentValue<String, TextInputPanel> componentValue = TextValues.textValue("none", value, 2);
     assertNull(componentValue.get());
 
-    componentValue = StringValues.stringValue("none", value, 10);
+    componentValue = TextValues.textValue("none", value, 10);
     assertEquals(value, componentValue.get());
 
-    componentValue = StringValues.stringValue("none", null, 10);
+    componentValue = TextValues.textValue("none", null, 10);
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("tester");
@@ -90,7 +90,7 @@ public class StringValuesTest {
   @Test
   public void stringValue() {
     final JTextField textField = new JTextField();
-    final Value<String> value = StringValues.stringValue(textField);
+    final Value<String> value = TextValues.textValue(textField);
 
     assertNull(value.get());
     textField.setText("hello there");

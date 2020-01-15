@@ -5604,3 +5604,4 @@
   Further refactoring of ComponentValue utility classes
   NumberFieldValue, generic parameters reordered
   AbstractTextComponentValue added, replaces NumberFieldValue, related refactoring
+  StringValues renamed to TextValues

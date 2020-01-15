@@ -13,17 +13,17 @@ import java.text.Format;
 import static org.jminor.common.Util.nullOrEmpty;
 
 /**
- * Utility class for string based {@link ComponentValue} instances.
+ * Utility class for text based {@link ComponentValue} instances.
  */
-public final class StringValues {
+public final class TextValues {
 
-  private StringValues() {}
+  private TextValues() {}
 
   /**
    * @param textComponent the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<String, JTextComponent> stringValue(final JTextComponent textComponent) {
+  public static ComponentValue<String, JTextComponent> textValue(final JTextComponent textComponent) {
     return new AbstractTextComponentValue<String, JTextComponent>(textComponent, true, true) {
       @Override
       protected String getComponentValue(final JTextComponent component) {
@@ -43,8 +43,8 @@ public final class StringValues {
    * @param format the format
    * @return a Value bound to the given component
    */
-  public static ComponentValue<String, JTextComponent> stringValue(final JTextComponent textComponent, final Format format) {
-    return stringValue(textComponent, format, true);
+  public static ComponentValue<String, JTextComponent> textValue(final JTextComponent textComponent, final Format format) {
+    return textValue(textComponent, format, true);
   }
 
   /**
@@ -53,8 +53,8 @@ public final class StringValues {
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static ComponentValue<String, JTextComponent> stringValue(final JTextComponent textComponent, final Format format,
-                                                                   final boolean updateOnKeystroke) {
+  public static ComponentValue<String, JTextComponent> textValue(final JTextComponent textComponent, final Format format,
+                                                                 final boolean updateOnKeystroke) {
     return new FormattedTextComponentValue<>(textComponent, format, updateOnKeystroke);
   }
 
@@ -65,8 +65,8 @@ public final class StringValues {
    * @param maxLength the maximum input length, -1 for no limit
    * @return a String based ComponentValue
    */
-  public static ComponentValue<String, TextInputPanel> stringValue(final String inputDialogTitle, final String initialValue,
-                                                                   final int maxLength) {
+  public static ComponentValue<String, TextInputPanel> textValue(final String inputDialogTitle, final String initialValue,
+                                                                 final int maxLength) {
     return new TextInputPanelValue(inputDialogTitle, initialValue, maxLength);
   }
 
@@ -74,8 +74,8 @@ public final class StringValues {
    * @param textComponent the text component to link with the value
    * @param value the value to link with the component
    */
-  public static void stringValueLink(final JTextComponent textComponent, final Value<String> value) {
-    stringValueLink(textComponent, value, null, true);
+  public static void textValueLink(final JTextComponent textComponent, final Value<String> value) {
+    textValueLink(textComponent, value, null, true);
   }
 
   /**
@@ -84,8 +84,8 @@ public final class StringValues {
    * @param format the format to use when displaying the linked value, null if no formatting should be performed
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    */
-  public static void stringValueLink(final JTextComponent textComponent, final Value<String> value, final Format format,
-                                     final boolean updateOnKeystroke) {
-    Values.link(value, stringValue(textComponent, format, updateOnKeystroke));
+  public static void textValueLink(final JTextComponent textComponent, final Value<String> value, final Format format,
+                                   final boolean updateOnKeystroke) {
+    Values.link(value, textValue(textComponent, format, updateOnKeystroke));
   }
 }
