@@ -47,7 +47,7 @@ class TextComponentValue<V, C extends JTextComponent> extends AbstractComponentV
   }
 
   @Override
-  protected V getComponentValue(final C component) {
+  protected final V getComponentValue(final C component) {
     return valueFromText(getText(component));
   }
 

@@ -25,7 +25,7 @@ import java.awt.event.KeyEvent;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A panel for presenting a ComponentValue.
+ * A panel for presenting a ComponentValue, along with OK and Cancel buttons.
  * @param <V> the input value type
  * @param <C> the type of the input component
  */

@@ -6,7 +6,7 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.TaskScheduler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.value.IntegerValues;
+import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.framework.server.monitor.DatabaseMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -60,7 +60,7 @@ public final class DatabaseMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
-    final JSpinner updateIntervalSpinner = new JSpinner(IntegerValues.integerSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);

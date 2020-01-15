@@ -26,16 +26,11 @@ import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.TextFields;
-import org.jminor.swing.common.ui.value.BigDecimalValues;
 import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.DoubleValues;
-import org.jminor.swing.common.ui.value.IntegerValues;
-import org.jminor.swing.common.ui.value.LocalDateTimeValues;
-import org.jminor.swing.common.ui.value.LocalDateValues;
-import org.jminor.swing.common.ui.value.LocalTimeValues;
-import org.jminor.swing.common.ui.value.LongValues;
+import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.StringValues;
+import org.jminor.swing.common.ui.value.TemporalValues;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JCheckBox;
@@ -427,27 +422,27 @@ public class ColumnConditionPanel<R, C> extends JPanel {
       final Value modelValue = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
       final Class typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Integer.class)) {
-        IntegerValues.integerValueLink((IntegerField) component, modelValue, true);
+        NumericalValues.integerValueLink((IntegerField) component, modelValue, true);
       }
       else if (typeClass.equals(Double.class)) {
-        DoubleValues.doubleValueLink((DecimalField) component, modelValue, true);
+        NumericalValues.doubleValueLink((DecimalField) component, modelValue, true);
       }
       else if (typeClass.equals(BigDecimal.class)) {
-        BigDecimalValues.bigDecimalValueLink((DecimalField) component, modelValue);
+        NumericalValues.bigDecimalValueLink((DecimalField) component, modelValue);
       }
       else if (typeClass.equals(Long.class)) {
-        LongValues.longValueLink((LongField) component, modelValue, true);
+        NumericalValues.longValueLink((LongField) component, modelValue, true);
       }
       else if (typeClass.equals(LocalTime.class)) {
-        LocalTimeValues.localTimeValueLink((JFormattedTextField) component, modelValue,
+        TemporalValues.localTimeValueLink((JFormattedTextField) component, modelValue,
                 columnConditionModel.getDateTimeFormatPattern());
       }
       else if (typeClass.equals(LocalDateTime.class)) {
-        LocalDateTimeValues.localDateTimeValueLink((JFormattedTextField) component, modelValue,
+        TemporalValues.localDateTimeValueLink((JFormattedTextField) component, modelValue,
                 columnConditionModel.getDateTimeFormatPattern());
       }
       else if (typeClass.equals(LocalDate.class)) {
-        LocalDateValues.localDateValueLink((JFormattedTextField) component, modelValue,
+        TemporalValues.localDateValueLink((JFormattedTextField) component, modelValue,
                 columnConditionModel.getDateTimeFormatPattern());
       }
       else {

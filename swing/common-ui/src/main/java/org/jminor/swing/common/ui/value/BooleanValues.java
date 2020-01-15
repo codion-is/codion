@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.common.ui.value;
 
+import org.jminor.common.Item;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
@@ -14,7 +15,12 @@ import javax.swing.JToggleButton;
 
 import static org.jminor.common.value.Values.propertyValue;
 
+/**
+ * Utility class for boolean {@link ComponentValue} instances.
+ */
 public final class BooleanValues {
+
+  private BooleanValues() {}
 
   /**
    * Creates a boolean value based on the given button model.
@@ -35,7 +41,7 @@ public final class BooleanValues {
    * @param initialValue the initial value
    * @return a Boolean based ComponentValue
    */
-  public static ComponentValue<Boolean, JComboBox> booleanComboBoxValue(final Boolean initialValue) {
+  public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBoxValue(final Boolean initialValue) {
     return new BooleanComboBoxValue(initialValue);
   }
 

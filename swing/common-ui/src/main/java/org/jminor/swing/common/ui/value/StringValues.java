@@ -10,7 +10,12 @@ import org.jminor.swing.common.ui.textfield.TextInputPanel;
 import javax.swing.text.JTextComponent;
 import java.text.Format;
 
+/**
+ * Utility class for string based {@link ComponentValue} instances.
+ */
 public final class StringValues {
+
+  private StringValues() {}
 
   /**
    * @param textComponent the component

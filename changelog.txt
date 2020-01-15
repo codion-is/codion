@@ -5601,3 +5601,4 @@
   Allow entities without primary keys
   EntityComponentValues.getComponentValue() renamed to createComponentValue()
   ComponentValues and ValueLinks split and merged into type specific utility classes
+  Further refactoring of ComponentValue utility classes
