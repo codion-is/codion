@@ -25,7 +25,8 @@ import java.awt.event.KeyEvent;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A panel for presenting a ComponentValue, along with OK and Cancel buttons.
+ * A panel for presenting a ComponentValue. Provides OK and Cancel buttons
+ * for use when displayed in a Dialog.
  * @param <V> the input value type
  * @param <C> the type of the input component
  */
@@ -46,11 +47,31 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
    * @param componentValue the ComponentValue to display
    */
   public ComponentValuePanel(final String caption, final ComponentValue<V, C> componentValue) {
-    requireNonNull(componentValue, "componentValue");
-    this.componentValue = componentValue;
+    this.componentValue = requireNonNull(componentValue, "componentValue");
     this.okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
     this.cancelButton = createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION);
     initializeUI(caption);
+  }
+
+  /**
+   * @return the value from the underlying {@link ComponentValue}
+   */
+  public V getValue() {
+    return componentValue.get();
+  }
+
+  /**
+   * @param value the value to set in the underlying {@link ComponentValue}
+   */
+  public void setValue(final V value) {
+    componentValue.set(value);
+  }
+
+  /**
+   * @return the input component from the underlying {@link ComponentValue}
+   */
+  public C getInputComponent() {
+    return componentValue.getComponent();
   }
 
   /**
@@ -72,18 +93,6 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
    */
   public JButton getCancelButton() {
     return cancelButton;
-  }
-
-  public V getValue() {
-    return componentValue.get();
-  }
-
-  public void setValue(final V value) {
-    componentValue.set(value);
-  }
-
-  public C getInputComponent() {
-    return componentValue.getComponent();
   }
 
   /**
