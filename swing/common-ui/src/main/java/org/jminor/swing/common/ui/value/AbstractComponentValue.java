@@ -83,7 +83,7 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
   protected abstract V getComponentValue(C component);
 
   /**
-   * Sets the given value in the input component.
+   * Sets the given value in the input component. Note that this method is called on the EDT.
    * @param component the component
    * @param value the value to display in the input component
    */

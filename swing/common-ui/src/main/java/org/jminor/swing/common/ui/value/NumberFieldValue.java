@@ -9,7 +9,7 @@ import org.jminor.swing.common.ui.textfield.NumberField;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-abstract class NumberFieldValue<C extends NumberField, V extends Number> extends AbstractComponentValue<V, C> {
+abstract class NumberFieldValue<V extends Number, C extends NumberField> extends AbstractComponentValue<V, C> {
 
   NumberFieldValue(final C numberField, final boolean nullable, final boolean updateOnKeystroke) {
     super(numberField, nullable);

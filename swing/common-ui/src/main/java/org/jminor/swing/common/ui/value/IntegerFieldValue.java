@@ -5,7 +5,7 @@ package org.jminor.swing.common.ui.value;
 
 import org.jminor.swing.common.ui.textfield.IntegerField;
 
-final class IntegerFieldValue extends NumberFieldValue<IntegerField, Integer> {
+final class IntegerFieldValue extends NumberFieldValue<Integer, IntegerField> {
 
   IntegerFieldValue(final IntegerField integerField, final boolean nullable, final boolean updateOnKeystroke) {
     super(integerField, nullable, updateOnKeystroke);
