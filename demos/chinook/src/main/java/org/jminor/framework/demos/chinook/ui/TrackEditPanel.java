@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.ui;
 
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
@@ -35,12 +35,12 @@ public class TrackEditPanel extends EntityEditPanel {
     final Action newMediaTypeAction = EntityEditPanel.createEditPanelAction(mediaTypeBox,
             new EntityPanelProvider(T_MEDIATYPE)
                     .setEditPanelClass(MediaTypeEditPanel.class));
-    final JPanel mediaTypePanel = UiUtil.createEastButtonPanel(mediaTypeBox, newMediaTypeAction, false);
+    final JPanel mediaTypePanel = Components.createEastButtonPanel(mediaTypeBox, newMediaTypeAction, false);
     final EntityComboBox genreBox = createForeignKeyComboBox(TRACK_GENRE_FK);
     final Action newGenreAction = EntityEditPanel.createEditPanelAction(genreBox,
             new EntityPanelProvider(T_GENRE)
                     .setEditPanelClass(GenreEditPanel.class));
-    final JPanel genrePanel = UiUtil.createEastButtonPanel(genreBox, newGenreAction, false);
+    final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction, false);
     createTextInputPanel(TRACK_COMPOSER).getTextField().setColumns(18);
     final IntegerField millisecondsField = (IntegerField) createTextField(TRACK_MILLISECONDS);
     millisecondsField.setGroupingUsed(true);

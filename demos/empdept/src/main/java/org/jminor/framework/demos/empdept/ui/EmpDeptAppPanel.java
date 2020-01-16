@@ -12,7 +12,7 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.empdept.model.EmployeeEditModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.plugin.json.EntityJSONParser;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
@@ -81,7 +81,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.empdept.domain.EmpDept");
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false,
-            UiUtil.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
   }
 
   public static final class EmpDeptApplicationModel extends SwingEntityApplicationModel {

@@ -9,8 +9,8 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
@@ -66,7 +66,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
       this.button = new JButton(Controls.control(this::displayCalendar, "..."));
       this.button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null) {
-        UiUtil.linkToEnabledState(enabledState, button);
+        Components.linkToEnabledState(enabledState, button);
       }
       add(this.button, BorderLayout.EAST);
     }

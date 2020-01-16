@@ -6,7 +6,6 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.DateFormats;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields;
@@ -36,6 +35,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+
+import static org.jminor.swing.common.ui.Components.createNorthCenterPanel;
 
 /**
  * A ConnectionPoolMonitorPanel
@@ -168,13 +169,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     ((JSpinner.DefaultEditor) minimumSizeSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) maximumSizeSpinner.getEditor()).getTextField().setEditable(false);
 
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Min size"), minimumSizeSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Max size"), maximumSizeSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Max retry wait (ms)"), maximumRetryWaitSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Max check out time (ms)"), maximumCheckOutTimeSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("New conn. threshold (ms)"), newConnectionThresholdSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Idle timeout (s)"), timeoutSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Cleanup interval (s)"), cleanupIntervalSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Min size"), minimumSizeSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Max size"), maximumSizeSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Max retry wait (ms)"), maximumRetryWaitSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Max check out time (ms)"), maximumCheckOutTimeSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("New conn. threshold (ms)"), newConnectionThresholdSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Idle timeout (s)"), timeoutSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Cleanup interval (s)"), cleanupIntervalSpinner));
 
     final JPanel panel = new JPanel(Layouts.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Configuration"));
@@ -203,13 +204,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JButton resetButton = new JButton(Controls.control(model::resetStatistics, "Reset"));
     resetButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
 
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Pool size"), poolSizeField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections requested"), requestedField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Delayed requests"), delayedField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Failed requests"), failedField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections created"), createdField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections destroyed"), destroyedField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("since"), resetTimeField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Pool size"), poolSizeField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Connections requested"), requestedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Delayed requests"), delayedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Failed requests"), failedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Connections created"), createdField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Connections destroyed"), destroyedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("since"), resetTimeField));
 
     final JPanel panel = new JPanel(Layouts.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Statistics"));

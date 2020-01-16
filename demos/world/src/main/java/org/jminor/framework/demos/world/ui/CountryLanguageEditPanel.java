@@ -9,7 +9,7 @@ import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
 
-import static org.jminor.swing.common.ui.UiUtil.setPreferredWidth;
+import static org.jminor.swing.common.ui.Components.setPreferredWidth;
 
 public final class CountryLanguageEditPanel extends EntityEditPanel {
 

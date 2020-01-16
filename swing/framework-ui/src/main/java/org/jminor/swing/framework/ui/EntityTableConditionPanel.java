@@ -14,8 +14,8 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.ForeignKeyConditionModel;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
@@ -277,7 +277,7 @@ public final class EntityTableConditionPanel extends JPanel {
     private ConditionColumnSyncPanel(final SwingEntityTableModel tableModel) {
       super(tableModel.getColumnModel());
       this.conditionModel = tableModel.getConditionModel();
-      setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
+      setVerticalFillerWidth(Components.getPreferredScrollBarWidth());
       resetPanel();
     }
 

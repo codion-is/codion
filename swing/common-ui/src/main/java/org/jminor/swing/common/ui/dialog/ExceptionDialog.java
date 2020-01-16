@@ -5,8 +5,10 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
@@ -154,7 +156,7 @@ final class ExceptionDialog extends JDialog {
       positionOverFrame();
     }
     else {
-      UiUtil.centerWindow(this);
+      Windows.centerWindow(this);
     }
   }
 
@@ -170,7 +172,7 @@ final class ExceptionDialog extends JDialog {
     exceptionField = new JTextField();
     exceptionField.setEnabled(false);
     final JLabel messageLabel = new JLabel(MESSAGES.getString("message") + ": ", SwingConstants.LEFT);
-    UiUtil.setPreferredWidth(messageLabel, MESSAGE_LABEL_WIDTH);
+    Components.setPreferredWidth(messageLabel, MESSAGE_LABEL_WIDTH);
     messageArea = new JTextArea();
     messageArea.setEnabled(false);
     messageArea.setLineWrap(true);

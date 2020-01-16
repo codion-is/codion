@@ -9,6 +9,7 @@ import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.FilteredTable;
@@ -101,7 +102,7 @@ public class EntityGeneratorPanel extends JPanel {
         frame.add(generatorPanel);
 
         frame.pack();
-        UiUtil.centerWindow(frame);
+        Windows.centerWindow(frame);
         frame.setVisible(true);
       }
       catch (final CancelException ignored) {/*ignored*/}

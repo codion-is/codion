@@ -5,7 +5,7 @@ package org.jminor.swing.common.ui.time;
 
 import org.jminor.common.DateFormats;
 import org.jminor.common.state.StateObserver;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.textfield.TextFields;
@@ -60,7 +60,7 @@ public final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateT
       this.button = new JButton(Controls.control(this::displayCalendar, "..."));
       this.button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null) {
-        UiUtil.linkToEnabledState(enabledState, button);
+        Components.linkToEnabledState(enabledState, button);
       }
       add(this.button, BorderLayout.EAST);
     }

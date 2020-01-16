@@ -27,10 +27,12 @@ import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.HierarchyPanel;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -271,7 +273,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the parent window of this panel, if one exists, null otherwise
    */
   public final Window getParentWindow() {
-    return UiUtil.getParentWindow(this);
+    return Windows.getParentWindow(this);
   }
 
   /**
@@ -557,7 +559,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
             resourceBundle.getString(HELP));
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    UiUtil.resizeWindow(dialog, HELP_DIALOG_SCREEN_SIZE_RATIO, MINIMUM_HELP_WINDOW_SIZE);
+    Windows.resizeWindow(dialog, HELP_DIALOG_SCREEN_SIZE_RATIO, MINIMUM_HELP_WINDOW_SIZE);
     dialog.setLocationRelativeTo(this);
     dialog.setResizable(true);
     dialog.setModal(false);
@@ -1124,7 +1126,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     initializationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     initializationDialog.getContentPane().add(initializeStartupProgressPanel(icon), BorderLayout.CENTER);
     initializationDialog.pack();
-    UiUtil.centerWindow(initializationDialog);
+    Windows.centerWindow(initializationDialog);
 
     return initializationDialog;
   }
@@ -1189,9 +1191,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
     else {
       frame.pack();
-      UiUtil.setSizeWithinScreenBounds(frame);
+      Windows.setSizeWithinScreenBounds(frame);
     }
-    UiUtil.centerWindow(frame);
+    Windows.centerWindow(frame);
     if (maximize) {
       frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
@@ -1295,7 +1297,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Sets the uncaught exception handler
    */
   private void setUncaughtExceptionHandler() {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> displayException(e, UiUtil.getParentWindow(EntityApplicationPanel.this)));
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> displayException(e, Windows.getParentWindow(EntityApplicationPanel.this)));
   }
 
   private void bindEventsInternal() {
@@ -1378,7 +1380,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void setParentWindowTitle(final String title) {
-    final Window parentWindow = UiUtil.getParentWindow(this);
+    final Window parentWindow = Windows.getParentWindow(this);
     if (parentWindow instanceof JFrame) {
       ((JFrame) parentWindow).setTitle(title);
     }
@@ -1429,7 +1431,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     tree.setShowsRootHandles(true);
     tree.setToggleClickCount(1);
     tree.setRootVisible(false);
-    UiUtil.expandAll(tree, new TreePath(tree.getModel().getRoot()), true);
+    Components.expandAll(tree, new TreePath(tree.getModel().getRoot()), true);
 
     return new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   }

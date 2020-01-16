@@ -20,9 +20,11 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.DefaultEntityLookupModel;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.SwingMessages;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
@@ -138,8 +140,8 @@ public final class EntityLookupField extends JTextField {
     this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     updateColors();
     KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, lookupOnKeyRelease, initializeLookupControl());
-    UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
-    UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
+    Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
+    Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
   }
 
   /**
@@ -236,7 +238,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void selectEntities(final List<Entity> entities) {
-    final JDialog dialog = new JDialog(UiUtil.getParentWindow(this), MESSAGES.getString("select_entity"));
+    final JDialog dialog = new JDialog(Windows.getParentWindow(this), MESSAGES.getString("select_entity"));
     Dialogs.prepareScrollPanelDialog(dialog, this, selectionProvider.getSelectionComponent(entities),
             selectionProvider.getSelectControl(), new Dialogs.DisposeWindowAction(dialog));
     dialog.setVisible(true);
@@ -459,7 +461,7 @@ public final class EntityLookupField extends JTextField {
     public ListSelectionProvider(final EntityLookupModel model) {
       this.selectControl = Controls.control(() -> {
         model.setSelectedEntities(list.getSelectedValuesList());
-        UiUtil.getParentDialog(list).dispose();
+        Windows.getParentDialog(list).dispose();
       }, Messages.get(Messages.OK));
       list.setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
@@ -511,7 +513,7 @@ public final class EntityLookupField extends JTextField {
       table = new FilteredTable<>(tableModel);
       selectControl = control(() -> {
         model.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
-        UiUtil.getParentDialog(table).dispose();
+        Windows.getParentDialog(table).dispose();
       }, Messages.get(Messages.OK));
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
       final String enterActionKey = "EntityLookupField.enter";

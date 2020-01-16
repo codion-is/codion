@@ -15,7 +15,8 @@ import org.jminor.common.state.States;
 import org.jminor.common.value.Value;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -577,7 +578,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   }
 
   private void linkComponentsToLockedState() {
-    UiUtil.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
+    Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
             conditionTypeCombo, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
   }
 
@@ -586,12 +587,12 @@ public class ColumnConditionPanel<R, C> extends JPanel {
       return;
     }
 
-    final JDialog dialogParent = UiUtil.getParentDialog(parent);
+    final JDialog dialogParent = Windows.getParentDialog(parent);
     if (dialogParent != null) {
       dialog = new JDialog(dialogParent, conditionModel.getColumnIdentifier().toString(), false);
     }
     else {
-      dialog = new JDialog(UiUtil.getParentFrame(parent), conditionModel.getColumnIdentifier().toString(), false);
+      dialog = new JDialog(Windows.getParentFrame(parent), conditionModel.getColumnIdentifier().toString(), false);
     }
 
     final JPanel conditionPanel = new JPanel(new BorderLayout());

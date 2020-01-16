@@ -8,7 +8,7 @@ import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
@@ -144,11 +144,11 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
                                         final ControlSet buttonControls, final JPanel northPanel, final Control.Command task) {
     runWithProgressBar(dialogParent, progressBarTitle, task, () -> {
       if (!nullOrEmpty(successMessage)) {
-        JOptionPane.showMessageDialog(UiUtil.getParentWindow(dialogParent), successMessage, null, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(Windows.getParentWindow(dialogParent), successMessage, null, JOptionPane.INFORMATION_MESSAGE);
       }
     }, exception -> {
       if (!(exception instanceof CancelException)) {
-        Dialogs.showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, exception);
+        Dialogs.showExceptionDialog(Windows.getParentWindow(dialogParent), failTitle, exception);
       }
     }, northPanel, buttonControls);
   }
@@ -221,7 +221,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
                                         final Control.Command task, final Runnable onSuccess,
                                         final Consumer<Throwable> onException, final JPanel northPanel,
                                         final ControlSet buttonControls) {
-    final Window dialogOwner = UiUtil.getParentWindow(dialogParent);
+    final Window dialogOwner = Windows.getParentWindow(dialogParent);
     final ProgressWorker worker = new ProgressWorker(dialogOwner, progressBarTitle, true, northPanel, buttonControls) {
       @Override
       protected Object doInBackground() throws Exception {

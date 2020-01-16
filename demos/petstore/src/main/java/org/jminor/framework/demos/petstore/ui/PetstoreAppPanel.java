@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.petstore.model.PetstoreAppModel;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
@@ -62,7 +62,6 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.petstore.domain.Petstore");
     new PetstoreAppPanel().startApplication("The Pet Store", null, false,
-            UiUtil.getScreenSizeRatio(0.8), User.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.8), User.parseUser("scott:tiger"));
   }
-
 }

@@ -5607,3 +5607,5 @@
   StringValues renamed to TextValues
   Layout related methods moved from UiUtil to Layouts
   transferFocusOnEnter() moved from UiUtil to KeyEvents
+  linkToEnabledState() and relevant methods moved from UiUtil to Components, tests fixed
+  Windows utility class added, window related methods moved from UiUtil

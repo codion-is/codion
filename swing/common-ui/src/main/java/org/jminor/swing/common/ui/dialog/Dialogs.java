@@ -11,6 +11,7 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
@@ -219,7 +220,7 @@ public final class Dialogs {
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
                                         final boolean modal, final EventObserver closeObserver,
                                         final EventDataListener<State> confirmCloseListener) {
-    final JDialog dialog = new JDialog(UiUtil.getParentWindow(owner), title);
+    final JDialog dialog = new JDialog(Windows.getParentWindow(owner), title);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.addWindowListener(new WindowAdapter() {
       @Override
@@ -304,7 +305,7 @@ public final class Dialogs {
                                         final JButton defaultButton, final EventObserver closeEvent,
                                         final boolean disposeOnEscape,
                                         final Action onClosedAction) {
-    final Window dialogOwner = owner instanceof Window ? (Window) owner : UiUtil.getParentWindow(owner);
+    final Window dialogOwner = owner instanceof Window ? (Window) owner : Windows.getParentWindow(owner);
     final JDialog dialog = new JDialog(dialogOwner, title, modal ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);
     if (defaultButton != null) {
       dialog.getRootPane().setDefaultButton(defaultButton);
@@ -441,7 +442,7 @@ public final class Dialogs {
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();
     if (dialogOwner != null) {
-      dialog.setLocationRelativeTo(UiUtil.getParentWindow(dialogOwner));
+      dialog.setLocationRelativeTo(Windows.getParentWindow(dialogOwner));
     }
     dialog.setModal(true);
     dialog.setResizable(true);
@@ -666,7 +667,7 @@ public final class Dialogs {
     final DefaultListModel<T> listModel = new DefaultListModel<>();
     values.forEach(listModel::addElement);
     final JList<T> list = new JList<>(listModel);
-    final Window owner = UiUtil.getParentWindow(dialogOwner);
+    final Window owner = Windows.getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
     final Action okAction = new DisposeWindowAction(dialog);
     final Action cancelAction = new AbstractAction() {

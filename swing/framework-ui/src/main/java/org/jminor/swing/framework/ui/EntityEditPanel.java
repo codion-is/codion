@@ -18,8 +18,10 @@ import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -347,7 +349,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @see #displayException(Throwable, Window)
    */
   public void onException(final Exception exception) {
-    displayException(exception, UiUtil.getParentWindow(this));
+    displayException(exception, Windows.getParentWindow(this));
   }
 
   /** {@inheritDoc} */
@@ -789,7 +791,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     editModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityEditPanel.this));
     editModel.addAfterRefreshListener(() -> UiUtil.setWaitCursor(false, EntityEditPanel.this));
     editModel.addConfirmSetEntityObserver(confirmationState -> {
-      final int result = JOptionPane.showConfirmDialog(UiUtil.getParentWindow(EntityEditPanel.this),
+      final int result = JOptionPane.showConfirmDialog(Windows.getParentWindow(EntityEditPanel.this),
               FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       confirmationState.set(result == JOptionPane.YES_OPTION);
@@ -848,7 +850,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
               connectionProvider.getDomain().getDefinition(panelProvider.getEntityId()).getCaption() :
               panelProvider.getCaption());
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      UiUtil.addInitialFocusHack(editPanel, Controls.control(editPanel::requestInitialFocus));
+      Components.addInitialFocusHack(editPanel, Controls.control(editPanel::requestInitialFocus));
       dialog.setVisible(true);
       if (pane.getValue() != null && pane.getValue().equals(0)) {
         final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled

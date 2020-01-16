@@ -14,8 +14,8 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.exception.ValidationException;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.TextValues;
@@ -90,7 +90,7 @@ public final class ClientUI {
             editModel.getForeignKeyComboBoxModel(ALBUM_ARTIST_FK);
     EntityComboBox artistComboBox = new EntityComboBox(artistComboBoxModel);
     //limit the combo box width, due to long artist names
-    UiUtil.setPreferredWidth(artistComboBox, 240);
+    Components.setPreferredWidth(artistComboBox, 240);
     //move focus with Enter key
     KeyEvents.transferFocusOnEnter(artistComboBox);
     //populate the combo box model

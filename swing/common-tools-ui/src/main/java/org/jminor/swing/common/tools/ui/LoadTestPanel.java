@@ -10,6 +10,7 @@ import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.LoadTest;
 import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
@@ -120,8 +121,8 @@ public final class LoadTestPanel extends JPanel {
     });
     frame.setTitle(title);
     frame.getContentPane().add(this);
-    UiUtil.resizeWindow(frame, DEFAULT_SCREEN_SIZE_RATIO);
-    UiUtil.centerWindow(frame);
+    Windows.resizeWindow(frame, DEFAULT_SCREEN_SIZE_RATIO);
+    Windows.centerWindow(frame);
     frame.setVisible(true);
 
     return frame;

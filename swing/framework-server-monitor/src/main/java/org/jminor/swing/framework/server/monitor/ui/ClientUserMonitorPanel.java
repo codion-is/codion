@@ -5,7 +5,7 @@ package org.jminor.swing.framework.server.monitor.ui;
 
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.i18n.Messages;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.layout.Layouts;
@@ -162,7 +162,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private void onException(final Exception exception) {
-    Dialogs.showExceptionDialog(UiUtil.getParentWindow(this),
+    Dialogs.showExceptionDialog(Windows.getParentWindow(this),
             Messages.get(Messages.EXCEPTION), exception.getMessage(), exception);
   }
 }

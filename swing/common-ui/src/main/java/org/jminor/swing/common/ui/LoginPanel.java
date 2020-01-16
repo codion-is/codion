@@ -88,12 +88,12 @@ public final class LoginPanel extends JPanel {
    */
   public User showLoginPanel(final JComponent parent, final String title, final ImageIcon icon) {
     final JOptionPane pane = new JOptionPane(this, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
-    final Window parentWindow = UiUtil.getParentWindow(parent);
+    final Window parentWindow = Windows.getParentWindow(parent);
     final JFrame dummyFrame = parentWindow == null ? createDummyFrame(title, icon) : null;
     final JDialog dialog = pane.createDialog(dummyFrame == null ? parent : dummyFrame, title == null ? Messages.get(Messages.LOGIN) : title);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
-    UiUtil.centerWindow(dialog);
+    Windows.centerWindow(dialog);
     dialog.setResizable(false);
     dialog.setVisible(true);
     if (dummyFrame != null) {
@@ -127,10 +127,10 @@ public final class LoginPanel extends JPanel {
     setLayout(Layouts.createBorderLayout());
     add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().length() == 0) {
-      UiUtil.addInitialFocusHack(usernameField, Controls.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
+      Components.addInitialFocusHack(usernameField, Controls.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
     }
     else {
-      UiUtil.addInitialFocusHack(passwordField, Controls.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
+      Components.addInitialFocusHack(passwordField, Controls.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
   }
 

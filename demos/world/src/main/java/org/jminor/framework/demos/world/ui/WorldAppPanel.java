@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.world.domain.World;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.textfield.NumberField;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
@@ -56,7 +56,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     NumberField.DISABLE_GROUPING.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.world.domain.World");
-    new WorldAppPanel().startApplication("World", null, false, UiUtil.getScreenSizeRatio(0.8),
+    new WorldAppPanel().startApplication("World", null, false, Windows.getScreenSizeRatio(0.8),
             User.parseUser("scott:tiger"));
   }
 

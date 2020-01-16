@@ -19,7 +19,7 @@ import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.AutoCompletion;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
@@ -670,8 +670,8 @@ public final class EntityInputComponents {
    */
   public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final String foreignKeyPropertyId,
                                                        final boolean filterButtonTakesFocus) {
-    return UiUtil.createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterControl(foreignKeyPropertyId),
-            filterButtonTakesFocus);
+    return Components.createEastButtonPanel(entityComboBox,
+            entityComboBox.createForeignKeyFilterControl(foreignKeyPropertyId), filterButtonTakesFocus);
   }
 
   private static JTextField createTextField(final Property property, final StateObserver enabledState,
@@ -753,7 +753,7 @@ public final class EntityInputComponents {
 
   private static void linkToEnabledState(final StateObserver enabledState, final JComponent component) {
     if (enabledState != null) {
-      UiUtil.linkToEnabledState(enabledState, component);
+      Components.linkToEnabledState(enabledState, component);
     }
   }
 

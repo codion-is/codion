@@ -23,8 +23,8 @@ import static java.util.Collections.singletonList;
 import static org.jminor.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
 import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
-import static org.jminor.swing.common.ui.UiUtil.getScreenSizeRatio;
-import static org.jminor.swing.common.ui.UiUtil.setPreferredWidth;
+import static org.jminor.swing.common.ui.Components.setPreferredWidth;
+import static org.jminor.swing.common.ui.Windows.getScreenSizeRatio;
 
 /**
  * When running this make sure the chinook demo module directory is the

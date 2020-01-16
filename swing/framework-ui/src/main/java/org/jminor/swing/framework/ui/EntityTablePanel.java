@@ -25,6 +25,7 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
@@ -87,8 +88,8 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
 import static org.jminor.swing.common.ui.UiUtil.setWaitCursor;
+import static org.jminor.swing.common.ui.Windows.getParentWindow;
 import static org.jminor.swing.common.ui.control.Controls.control;
 
 /**
@@ -1396,7 +1397,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static JScrollPane createHiddenLinkedScrollPane(final JScrollPane masterScrollPane, final JPanel panel) {
     final JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    UiUtil.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
+    Components.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
     scrollPane.setVisible(false);
 
     return scrollPane;
