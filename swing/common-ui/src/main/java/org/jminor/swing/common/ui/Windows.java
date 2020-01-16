@@ -10,6 +10,9 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 
+/**
+ * A utility class for windows, dialogs and frames.
+ */
 public final class Windows {
 
   private Windows() {}

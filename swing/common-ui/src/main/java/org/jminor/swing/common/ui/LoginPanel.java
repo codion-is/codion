@@ -30,7 +30,7 @@ public final class LoginPanel extends JPanel {
 
   static {
     //initialize button captions
-    UiManagerDefaults.init();
+    UiManagerDefaults.initialize();
   }
 
   private static final int DEFAULT_FIELD_COLUMNS = 8;

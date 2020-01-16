@@ -10,6 +10,9 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
+/**
+ * A utility class for layouts.
+ */
 public final class Layouts {
 
   private static final int DEFAULT_HOR_VERT_GAP = 5;
@@ -22,7 +25,7 @@ public final class Layouts {
    * @see #createFlexibleGridLayout(int, int, boolean, boolean)
    */
   public static final Value<Integer> HORIZONTAL_VERTICAL_GAP =
-          Configuration.integerValue("jminor.ui.horizontalVerticalGap", DEFAULT_HOR_VERT_GAP);
+          Configuration.integerValue("jminor.swing.ui.horizontalVerticalGap", DEFAULT_HOR_VERT_GAP);
 
   private Layouts() {}
 

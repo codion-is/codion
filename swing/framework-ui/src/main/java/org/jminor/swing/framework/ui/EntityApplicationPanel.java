@@ -113,7 +113,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   static {
     //initialize button captions
-    UiManagerDefaults.init();
+    UiManagerDefaults.initialize();
   }
 
   private static final String SET_LOG_LEVEL = "set_log_level";

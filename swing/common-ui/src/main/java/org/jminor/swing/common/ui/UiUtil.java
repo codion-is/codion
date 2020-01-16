@@ -34,7 +34,7 @@ import static java.util.Collections.emptyList;
 public final class UiUtil {
 
   static {
-    UiManagerDefaults.init();
+    UiManagerDefaults.initialize();
   }
 
   private UiUtil() {}

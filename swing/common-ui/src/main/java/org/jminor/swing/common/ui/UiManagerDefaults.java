@@ -8,6 +8,9 @@ import org.jminor.common.i18n.Messages;
 import javax.swing.UIManager;
 import java.awt.Insets;
 
+/**
+ * A utility class for initializing default UIManager values.
+ */
 public final class UiManagerDefaults {
 
   static {
@@ -26,5 +29,5 @@ public final class UiManagerDefaults {
   /**
    * A convenience method for triggering a loading of this class, which sets the UIManager defaults
    */
-  public static void init() {/*Just for loading the class*/}
+  public static void initialize() {/*Just for loading the class*/}
 }
