@@ -8,7 +8,6 @@ import org.jminor.common.Util;
 import org.jminor.common.state.StateObserver;
 import org.jminor.swing.common.ui.layout.Layouts;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.JButton;
@@ -41,7 +40,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.HierarchyEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -364,34 +362,6 @@ public final class UiUtil {
   }
 
   /**
-   * Adds a key event to the component which transfers focus
-   * on enter, and backwards if shift is down
-   * @param component the component
-   * @param <T> the component type
-   * @see #removeTransferFocusOnEnter(JTextComponent)
-   * @return the component
-   */
-  public static <T extends JComponent> T transferFocusOnEnter(final T component) {
-    KeyEvents.addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, new TransferFocusAction(component));
-    KeyEvents.addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, new TransferFocusAction(component, true));
-
-    return component;
-  }
-
-  /**
-   * Removes the transfer focus action added via {@link #transferFocusOnEnter(javax.swing.JComponent)}
-   * @param component the component
-   * @param <T> the component type
-   * @return the component
-   */
-  public static <T extends JTextComponent> T removeTransferFocusOnEnter(final T component) {
-    KeyEvents.addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, null);
-    KeyEvents.addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, null);
-
-    return component;
-  }
-
-  /**
    * Makes the text component accept files during drag and drop operations and
    * insert the absolute path of the dropped file (the first file in a list if more
    * than one file is dropped)
@@ -552,46 +522,6 @@ public final class UiUtil {
   public static void linkBoundedRangeModels(final BoundedRangeModel master, final BoundedRangeModel slave) {
     master.addChangeListener(e -> slave.setRangeProperties(master.getValue(), master.getExtent(),
             master.getMinimum(), master.getMaximum(), master.getValueIsAdjusting()));
-  }
-
-  /**
-   * An action which transfers focus either forward or backward for a given component
-   */
-  public static final class TransferFocusAction extends AbstractAction {
-
-    private final JComponent component;
-    private final boolean backward;
-
-    /**
-     * @param component the component
-     */
-    public TransferFocusAction(final JComponent component) {
-      this(component, false);
-    }
-
-    /**
-     * @param component the component
-     * @param backward if true the focus is transferred backward
-     */
-    public TransferFocusAction(final JComponent component, final boolean backward) {
-      super(backward ? "UiUtil.transferFocusBackward" : "UiUtil.transferFocusForward");
-      this.component = component;
-      this.backward = backward;
-    }
-
-    /**
-     * Transfers focus according the the value of {@code backward}
-     * @param e the action event
-     */
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (backward) {
-        component.transferFocusBackward();
-      }
-      else {
-        component.transferFocus();
-      }
-    }
   }
 
   private static final class FileTransferHandler extends TransferHandler {

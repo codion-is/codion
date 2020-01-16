@@ -5606,3 +5606,4 @@
   AbstractTextComponentValue added, replaces NumberFieldValue, related refactoring
   StringValues renamed to TextValues
   Layout related methods moved from UiUtil to Layouts
+  transferFocusOnEnter() moved from UiUtil to KeyEvents

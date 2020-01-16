@@ -3,9 +3,13 @@
  */
 package org.jminor.swing.common.ui;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import javax.swing.text.JTextComponent;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -83,5 +87,75 @@ public final class KeyEvents {
       component.getActionMap().put(actionName, action);
     }
     component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), actionName);
+  }
+
+  /**
+   * Adds a key event to the component which transfers focus
+   * on enter, and backwards if shift is down
+   * @param component the component
+   * @param <T> the component type
+   * @see #removeTransferFocusOnEnter(JTextComponent)
+   * @return the component
+   */
+  public static <T extends JComponent> T transferFocusOnEnter(final T component) {
+    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false,
+            new TransferFocusAction(component));
+    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false,
+            new TransferFocusAction(component, true));
+
+    return component;
+  }
+
+  /**
+   * Removes the transfer focus action added via {@link #transferFocusOnEnter(JComponent)}
+   * @param component the component
+   * @param <T> the component type
+   * @return the component
+   */
+  public static <T extends JTextComponent> T removeTransferFocusOnEnter(final T component) {
+    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, null);
+    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, null);
+
+    return component;
+  }
+
+  /**
+   * An action which transfers focus either forward or backward for a given component
+   */
+  public static final class TransferFocusAction extends AbstractAction {
+
+    private final JComponent component;
+    private final boolean backward;
+
+    /**
+     * @param component the component
+     */
+    public TransferFocusAction(final JComponent component) {
+      this(component, false);
+    }
+
+    /**
+     * @param component the component
+     * @param backward if true the focus is transferred backward
+     */
+    public TransferFocusAction(final JComponent component, final boolean backward) {
+      super(backward ? "KeyEvents.transferFocusBackward" : "KeyEvents.transferFocusForward");
+      this.component = component;
+      this.backward = backward;
+    }
+
+    /**
+     * Transfers focus according the the value of {@code backward}
+     * @param e the action event
+     */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      if (backward) {
+        component.transferFocusBackward();
+      }
+      else {
+        component.transferFocus();
+      }
+    }
   }
 }

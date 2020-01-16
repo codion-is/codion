@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.ui;
 
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
@@ -33,7 +33,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
 
     createForeignKeyLookupField(INVOICELINE_TRACK_FK).setColumns(15);
     final JTextField quantityField = createTextField(INVOICELINE_QUANTITY);
-    UiUtil.removeTransferFocusOnEnter(quantityField);//otherwise the action added below wont work
+    KeyEvents.removeTransferFocusOnEnter(quantityField);//otherwise the action added below wont work
     quantityField.addActionListener(getSaveControl());
 
     setLayout(new BorderLayout(5, 5));

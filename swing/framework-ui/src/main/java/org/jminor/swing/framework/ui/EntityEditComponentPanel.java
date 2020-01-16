@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.swing.common.ui.UiUtil.transferFocusOnEnter;
+import static org.jminor.swing.common.ui.KeyEvents.transferFocusOnEnter;
 
 /**
  * A base class for entity edit panels, providing components for editing entities.

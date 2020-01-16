@@ -14,6 +14,7 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.exception.ValidationException;
+import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.value.SelectedValues;
@@ -91,7 +92,7 @@ public final class ClientUI {
     //limit the combo box width, due to long artist names
     UiUtil.setPreferredWidth(artistComboBox, 240);
     //move focus with Enter key
-    UiUtil.transferFocusOnEnter(artistComboBox);
+    KeyEvents.transferFocusOnEnter(artistComboBox);
     //populate the combo box model
     artistComboBoxModel.refresh();
     //create a Entity Value based on the album artist in the edit model
