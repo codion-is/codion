@@ -35,6 +35,7 @@ import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
 import org.jminor.swing.common.ui.table.FilteredTable;
@@ -903,7 +904,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
-    final JPanel centerPanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel centerPanel = new JPanel(Layouts.createBorderLayout());
     final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     searchFieldPanel.add(table.getSearchField());
     centerPanel.add(statusMessageLabel, BorderLayout.CENTER);
@@ -1189,7 +1190,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     JPanel southPanel = null;
     if (includeSouthPanel) {
-      southPanel = new JPanel(UiUtil.createBorderLayout());
+      southPanel = new JPanel(Layouts.createBorderLayout());
       final JPanel southPanelCenter = initializeSouthPanel();
       if (southPanelCenter != null) {
         final JToolBar southToolBar = initializeSouthToolBar();

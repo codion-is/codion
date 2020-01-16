@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.server.monitor.HostMonitor;
 import org.jminor.swing.framework.server.monitor.ServerMonitor;
 
@@ -37,7 +37,7 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    setLayout(UiUtil.createBorderLayout());
+    setLayout(Layouts.createBorderLayout());
     add(ControlProvider.createToolBar(getControls(), JToolBar.HORIZONTAL), BorderLayout.NORTH);
     serverPane = new JTabbedPane();
     add(serverPane, BorderLayout.CENTER);

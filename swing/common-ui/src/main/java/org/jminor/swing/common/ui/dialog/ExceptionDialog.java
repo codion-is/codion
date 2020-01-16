@@ -12,6 +12,7 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -124,14 +125,14 @@ final class ExceptionDialog extends JDialog {
 
   private void initializeUI() {
     KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(this::dispose));
-    final JPanel basePanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel basePanel = new JPanel(Layouts.createBorderLayout());
     basePanel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
     basePanel.add(createNorthPanel(), BorderLayout.NORTH);
     centerPanel = createCenterPanel();
     basePanel.add(centerPanel, BorderLayout.CENTER);
     basePanel.add(createButtonPanel(), BorderLayout.SOUTH);
 
-    getContentPane().setLayout(UiUtil.createBorderLayout());
+    getContentPane().setLayout(Layouts.createBorderLayout());
     getContentPane().add(basePanel, BorderLayout.CENTER);
   }
 
@@ -158,7 +159,7 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createNorthPanel() {
-    final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(NORTH_PANEL_DIMENSIONS, NORTH_PANEL_DIMENSIONS, true, false);
+    final FlexibleGridLayout layout = Layouts.createFlexibleGridLayout(NORTH_PANEL_DIMENSIONS, NORTH_PANEL_DIMENSIONS, true, false);
     layout.setFixedRowHeight(new JTextField().getPreferredSize().height);
     detailPanel = new JPanel(layout);
     descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"), SwingConstants.CENTER);
@@ -184,7 +185,7 @@ final class ExceptionDialog extends JDialog {
     detailPanel.add(messageLabel);
     detailPanel.add(messageScroller);
 
-    final JPanel northPanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel northPanel = new JPanel(Layouts.createBorderLayout());
     final JPanel northNorthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     northNorthPanel.add(descriptionLabel);
     northPanel.add(northNorthPanel, BorderLayout.NORTH);

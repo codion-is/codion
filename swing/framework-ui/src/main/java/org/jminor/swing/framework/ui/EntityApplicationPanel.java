@@ -40,6 +40,7 @@ import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 
 import org.slf4j.Logger;
@@ -835,7 +836,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the panel shown when Help -&#62; About is selected
    */
   protected JPanel getAboutPanel() {
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     final String versionString = Version.getVersionAndBuildNumberString();
     panel.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
     final JTextField versionMemoryField = new JTextField(versionString + " (" + Util.getMemoryUsageString() + ")");

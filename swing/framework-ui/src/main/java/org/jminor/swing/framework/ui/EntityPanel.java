@@ -13,6 +13,7 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
@@ -203,7 +204,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * The base edit panel which contains the controls required for editing a entity
    */
-  private final JPanel editControlPanel = new JPanel(UiUtil.createBorderLayout());
+  private final JPanel editControlPanel = new JPanel(Layouts.createBorderLayout());
 
   /**
    * The horizontal split pane, which is used in case this entity panel has detail panels.
@@ -1071,7 +1072,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       horizontalSplitPane = initializeHorizontalSplitPane();
       detailPanelTabbedPane = initializeDetailTabPane();
     }
-    setLayout(UiUtil.createBorderLayout());
+    setLayout(Layouts.createBorderLayout());
     if (detailPanelTabbedPane != null || tablePanel != null) {
       initializeDetailAndTablePanels();
     }
@@ -1187,7 +1188,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     editControlPanel.setMinimumSize(new Dimension(0, 0));
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-    final JPanel propertyBase = new JPanel(UiUtil.createFlowLayout(alignment));
+    final JPanel propertyBase = new JPanel(Layouts.createFlowLayout(alignment));
     propertyBase.add(editPanel);
     editControlPanel.add(propertyBase, BorderLayout.CENTER);
     if (includeControlPanel) {
@@ -1228,7 +1229,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     else {
       if (compactDetailLayout) {
-        compactBase = new JPanel(UiUtil.createBorderLayout());
+        compactBase = new JPanel(Layouts.createBorderLayout());
         compactBase.add(tablePanel, BorderLayout.CENTER);
         horizontalSplitPane.setLeftComponent(compactBase);
       }

@@ -10,6 +10,7 @@ import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.framework.tools.EntityGeneratorModel;
@@ -60,7 +61,7 @@ public class EntityGeneratorPanel extends JPanel {
 
     splitPane.setResizeWeight(RESIZE_WEIGHT);
 
-    setLayout(UiUtil.createBorderLayout());
+    setLayout(Layouts.createBorderLayout());
     add(splitPane, BorderLayout.CENTER);
 
     bindEvents();

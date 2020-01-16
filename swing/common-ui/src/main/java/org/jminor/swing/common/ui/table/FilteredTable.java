@@ -19,6 +19,7 @@ import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
 import org.jminor.swing.common.ui.textfield.TextFields;
 
@@ -416,7 +417,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private JPopupMenu initializeSearchFieldPopupMenu() {
     final JCheckBox boxRegexp = new JCheckBox(MESSAGES.getString("regular_expression_search"), tableModel.isRegularExpressionSearch());
-    final JPanel panel = new JPanel(UiUtil.createGridLayout(1, 1));
+    final JPanel panel = new JPanel(Layouts.createGridLayout(1, 1));
     panel.add(boxRegexp);
 
     final Control control = Controls.control(() -> tableModel.setRegularExpressionSearch(boxRegexp.isSelected()),
@@ -442,7 +443,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, true), MESSAGES.getString("select_all"))));
     southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, false), MESSAGES.getString("select_none"))));
 
-    final JPanel base = new JPanel(UiUtil.createBorderLayout());
+    final JPanel base = new JPanel(Layouts.createBorderLayout());
     base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);
     base.add(southPanel, BorderLayout.SOUTH);
 

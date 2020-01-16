@@ -8,6 +8,7 @@ import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.common.ui.value.BooleanValues;
 import org.jminor.swing.common.ui.value.NumericalValues;
@@ -102,7 +103,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void initializeUI() {
     initializeCharts(model);
-    setLayout(UiUtil.createFlexibleGridLayout(1, MAIN_LAYOUT_COLUMNS, true, false));
+    setLayout(Layouts.createFlexibleGridLayout(1, MAIN_LAYOUT_COLUMNS, true, false));
 
     add(getChartPanel());
     add(getStatisticsPanel());
@@ -145,7 +146,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getConfigurationPanel() {
-    final JPanel configBase = new JPanel(UiUtil.createGridLayout(0, 1));
+    final JPanel configBase = new JPanel(Layouts.createGridLayout(0, 1));
 
     final JSpinner timeoutSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model, "pooledConnectionTimeout",
             model.getStatisticsObserver()));
@@ -175,7 +176,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     configBase.add(UiUtil.northCenterPanel(new JLabel("Idle timeout (s)"), timeoutSpinner));
     configBase.add(UiUtil.northCenterPanel(new JLabel("Cleanup interval (s)"), cleanupIntervalSpinner));
 
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Configuration"));
     panel.add(configBase, BorderLayout.NORTH);
 
@@ -183,7 +184,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getStatisticsPanel() {
-    final JPanel statisticsBase = new JPanel(UiUtil.createGridLayout(0, 1));
+    final JPanel statisticsBase = new JPanel(Layouts.createGridLayout(0, 1));
     poolSizeField.setEditable(false);
     poolSizeField.setHorizontalAlignment(JLabel.CENTER);
     createdField.setEditable(false);
@@ -210,7 +211,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections destroyed"), destroyedField));
     statisticsBase.add(UiUtil.northCenterPanel(new JLabel("since"), resetTimeField));
 
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Statistics"));
     panel.add(statisticsBase, BorderLayout.NORTH);
     panel.add(resetButton, BorderLayout.SOUTH);
@@ -219,7 +220,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getChartPanel() {
-    final JPanel chartConfig = new JPanel(UiUtil.createFlexibleGridLayout(1, 3, true, false));
+    final JPanel chartConfig = new JPanel(Layouts.createFlexibleGridLayout(1, 3, true, false));
     final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
@@ -236,7 +237,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
     chartConfig.add(collectStatisticsCheckBox);
 
-    final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
+    final JPanel configBase = new JPanel(Layouts.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);
     final JButton resetButton = new JButton(Controls.control(model::resetInPoolStatistics, "Reset"));
     resetButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
@@ -249,7 +250,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartBase.add(inPoolFineGrainedChartPanel);
     chartBase.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Status"));
     panel.add(chartBase, BorderLayout.CENTER);
     panel.add(configBase, BorderLayout.SOUTH);

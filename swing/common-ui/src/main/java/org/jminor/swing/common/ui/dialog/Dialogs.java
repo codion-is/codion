@@ -11,6 +11,7 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -229,7 +230,7 @@ public final class Dialogs {
     if (closeObserver != null) {
       closeObserver.addListener(() -> closeIfConfirmed(confirmCloseListener, dialog));
     }
-    dialog.setLayout(UiUtil.createBorderLayout());
+    dialog.setLayout(Layouts.createBorderLayout());
     dialog.add(component, BorderLayout.CENTER);
     dialog.pack();
     dialog.setLocationRelativeTo(owner);
@@ -329,7 +330,7 @@ public final class Dialogs {
       });
     }
 
-    dialog.setLayout(UiUtil.createBorderLayout());
+    dialog.setLayout(Layouts.createBorderLayout());
     dialog.add(component, BorderLayout.CENTER);
     dialog.pack();
     dialog.setLocationRelativeTo(owner);

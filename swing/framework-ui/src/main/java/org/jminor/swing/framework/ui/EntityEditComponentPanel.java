@@ -15,11 +15,11 @@ import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
@@ -328,7 +328,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent,
                                              final boolean labelOnTop) {
     final JPanel panel = new JPanel(labelOnTop ?
-            UiUtil.createBorderLayout() : UiUtil.createFlowLayout(FlowLayout.LEADING));
+            Layouts.createBorderLayout() : Layouts.createFlowLayout(FlowLayout.LEADING));
     if (labelComponent instanceof JLabel) {
       ((JLabel) labelComponent).setLabelFor(inputComponent);
     }

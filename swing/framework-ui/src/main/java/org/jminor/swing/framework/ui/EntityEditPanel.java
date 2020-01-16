@@ -27,6 +27,7 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import org.slf4j.Logger;
@@ -367,12 +368,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       return null;
     }
     if (horizontal) {
-      final JPanel panel = new JPanel(UiUtil.createFlowLayout(FlowLayout.CENTER));
+      final JPanel panel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
       panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControlSet));
       return panel;
     }
     else {
-      final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+      final JPanel panel = new JPanel(Layouts.createBorderLayout());
       panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControlSet), BorderLayout.NORTH);
       return panel;
     }

@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.server.monitor.ClientInstanceMonitor;
 import org.jminor.swing.framework.server.monitor.ClientMonitor;
 
@@ -52,7 +52,7 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    setLayout(UiUtil.createBorderLayout());
+    setLayout(Layouts.createBorderLayout());
     clientInstanceList.getSelectionModel().addListSelectionListener(e -> {
       try {
         final ClientInstanceMonitor clientMonitor = clientInstanceList.getSelectedValue();
@@ -67,7 +67,7 @@ public final class ClientMonitorPanel extends JPanel {
     });
     clientInstanceList.setComponentPopupMenu(initializePopupMenu());
 
-    final JPanel clientInstanceBase = new JPanel(UiUtil.createBorderLayout());
+    final JPanel clientInstanceBase = new JPanel(Layouts.createBorderLayout());
     final JScrollPane clientInstanceScroller = new JScrollPane(clientInstanceList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);

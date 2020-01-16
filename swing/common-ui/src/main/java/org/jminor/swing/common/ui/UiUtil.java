@@ -6,7 +6,7 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.Util;
 import org.jminor.common.state.StateObserver;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -32,10 +32,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -79,11 +77,8 @@ public final class UiUtil {
    */
   public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
 
-  private static final int DEFAULT_HOR_VERT_GAP = 5;
   private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
   private static JScrollBar verticalScrollBar;
-
-  private static int horizontalVerticalComponentGap = DEFAULT_HOR_VERT_GAP;
 
   private UiUtil() {}
 
@@ -100,63 +95,6 @@ public final class UiUtil {
     }
 
     return systemLookAndFeel;
-  }
-
-  /**
-   * Sets the default horizontal and vertical component gap, used by the layout factory methods, by default this is 5
-   * @param gap the default horizontal and vertical gap
-   * @see #createBorderLayout()
-   * @see #createFlowLayout(int)
-   * @see #createGridLayout(int, int)
-   * @see #createFlexibleGridLayout(int, int, boolean, boolean)
-   */
-  public static void setHorizontalVerticalComponentGap(final int gap) {
-    horizontalVerticalComponentGap = gap;
-  }
-
-  /**
-   * Creates a BorderLayout using the default vertical and horizontal gap value
-   * @return a BorderLayout
-   * @see #setHorizontalVerticalComponentGap(int)
-   */
-  public static BorderLayout createBorderLayout() {
-    return new BorderLayout(horizontalVerticalComponentGap, horizontalVerticalComponentGap);
-  }
-
-  /**
-   * Creates a FlowLayout using the default vertical and horizontal gap value
-   * @param alignment the alignment
-   * @return a FlowLayout
-   * @see #setHorizontalVerticalComponentGap(int)
-   */
-  public static FlowLayout createFlowLayout(final int alignment) {
-    return new FlowLayout(alignment, horizontalVerticalComponentGap, horizontalVerticalComponentGap);
-  }
-
-  /**
-   * Creates a GridLayout using the default vertical and horizontal gap value
-   * @param rows the number of rows
-   * @param columns the number of columns
-   * @return a GridLayout
-   * @see #setHorizontalVerticalComponentGap(int)
-   */
-  public static GridLayout createGridLayout(final int rows, final int columns) {
-    return new GridLayout(rows, columns, horizontalVerticalComponentGap, horizontalVerticalComponentGap);
-  }
-
-  /**
-   * Creates a FlexibleGridLayout using the default vertical and horizontal gap value
-   * @param rows the number of rows
-   * @param columns the number of columns
-   * @param fixRowHeights if true then the height of the rows is fixed as the largest value
-   * @param fixColumnWidths if true then the width of the columns is fixed as the largest value
-   * @return a FlexibleGridLayout
-   * @see #setHorizontalVerticalComponentGap(int)
-   */
-  public static FlexibleGridLayout createFlexibleGridLayout(final int rows, final int columns,
-                                                            final boolean fixRowHeights, final boolean fixColumnWidths) {
-    return new FlexibleGridLayout(rows, columns, horizontalVerticalComponentGap,
-            horizontalVerticalComponentGap, fixRowHeights, fixColumnWidths);
   }
 
   /**
@@ -418,7 +356,7 @@ public final class UiUtil {
    * @return a panel displaying the given components in the NORTH an CENTER positions in a BorderLayout
    */
   public static JPanel northCenterPanel(final JComponent north, final JComponent center) {
-    final JPanel panel = new JPanel(createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     panel.add(north, BorderLayout.NORTH);
     panel.add(center, BorderLayout.CENTER);
 
