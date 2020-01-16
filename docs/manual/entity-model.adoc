@@ -43,6 +43,15 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerTabl
 include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressTableModel.java[lines=10..-1]
 ----
 
+== Detail models
+
+Detail models can be added to a model, this relies on a foreign key reference between the entities involved.
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/StoreAppModel.java[lines=10..-1]
+----
+
 == Event binding
 
 The EntityModel, EntityEditModel and EntityTableModel classes expose a number of *addListener* methods.
