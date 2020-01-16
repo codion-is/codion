@@ -6,6 +6,7 @@ package org.jminor.swing.common.ui.value;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.model.textfield.DocumentAdapter;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields;
 
 import javax.swing.AbstractAction;
@@ -51,7 +52,7 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
     private FileInputPanel() {
       filePathField.setEditable(false);
       filePathField.setFocusable(false);
-      setLayout(new BorderLayout(5, 5));
+      setLayout(Layouts.createBorderLayout());
       add(filePathField, BorderLayout.CENTER);
       final JButton browseButton = new JButton(new AbstractAction("...") {
         @Override

@@ -439,7 +439,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       checkBoxes.add(columnCheckBox);
       togglePanel.add(columnCheckBox);
     });
-    final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    final JPanel southPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.RIGHT));
     southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, true), MESSAGES.getString("select_all"))));
     southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, false), MESSAGES.getString("select_none"))));
 

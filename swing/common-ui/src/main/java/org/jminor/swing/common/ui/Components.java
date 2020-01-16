@@ -10,6 +10,8 @@ import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTree;
@@ -279,9 +281,9 @@ public final class Components {
    * @param component the component
    */
   private static void setWaitCursor(final boolean on, final JComponent component) {
-    RootPaneContainer root = Windows.getParentDialog(component);
+    RootPaneContainer root = getParentOfType(component, JDialog.class);
     if (root == null) {
-      root = Windows.getParentFrame(component);
+      root = getParentOfType(component, JFrame.class);
     }
     if (root == null) {
       return;

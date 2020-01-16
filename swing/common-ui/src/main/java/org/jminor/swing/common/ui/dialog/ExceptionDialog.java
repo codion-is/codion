@@ -64,7 +64,6 @@ final class ExceptionDialog extends JDialog {
   private static final int BORDER_SIZE = 5;
   private static final int ICON_TEXT_GAP = 10;
   private static final int NORTH_PANEL_DIMENSIONS = 2;
-  private static final int COMPONENT_GAP = 0;
   private static final int TAB_SIZE = 4;
 
   //ui components
@@ -188,7 +187,7 @@ final class ExceptionDialog extends JDialog {
     detailPanel.add(messageScroller);
 
     final JPanel northPanel = new JPanel(Layouts.createBorderLayout());
-    final JPanel northNorthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    final JPanel northNorthPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
     northNorthPanel.add(descriptionLabel);
     northPanel.add(northNorthPanel, BorderLayout.NORTH);
     northPanel.add(detailPanel, BorderLayout.CENTER);
@@ -213,8 +212,8 @@ final class ExceptionDialog extends JDialog {
 
   private JPanel createButtonPanel() {
     final JPanel baseButtonPanel = new JPanel(new BorderLayout());
-    final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, COMPONENT_GAP, COMPONENT_GAP));
-    final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, COMPONENT_GAP, COMPONENT_GAP));
+    final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+    final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
     final JButton closeButton = new JButton(closeControl);
     printButton = new JButton(printControl);

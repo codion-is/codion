@@ -9,6 +9,7 @@ import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.swing.common.ui.KeyEvents;
+import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -121,12 +122,12 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
   }
 
   private void initializeUI(final String caption) {
-    setLayout(new BorderLayout(5, 5));
+    setLayout(Layouts.createBorderLayout());
     if (caption != null) {
       setBorder(BorderFactory.createTitledBorder(caption));
     }
     add(componentValue.getComponent(), BorderLayout.CENTER);
-    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    final JPanel panel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
     panel.add(createButtonPanel());
     add(panel, BorderLayout.SOUTH);
   }

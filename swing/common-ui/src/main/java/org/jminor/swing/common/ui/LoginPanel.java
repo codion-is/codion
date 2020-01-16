@@ -122,7 +122,7 @@ public final class LoginPanel extends JPanel {
     basePanel.add(new JLabel(Messages.get(Messages.PASSWORD), JLabel.RIGHT));
     basePanel.add(passwordField);
 
-    final JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    final JPanel centerPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
     centerPanel.add(basePanel);
     setLayout(Layouts.createBorderLayout());
     add(centerPanel, BorderLayout.CENTER);

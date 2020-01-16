@@ -14,6 +14,7 @@ import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields;
 
 import javax.swing.JButton;
@@ -21,7 +22,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -109,7 +109,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
       final Method getCalendar = jCalendarClass.getMethod("getCalendar");
       final Constructor constructor = jCalendarClass.getConstructor(Calendar.class);
       final JPanel calendarPanel = (JPanel) constructor.newInstance(cal);
-      final JPanel datePanel = new JPanel(new BorderLayout(5, 5));
+      final JPanel datePanel = new JPanel(Layouts.createBorderLayout());
       datePanel.add(calendarPanel, BorderLayout.NORTH);
 
       final Event closeEvent = Events.event();
@@ -125,7 +125,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
         closeEvent.onEvent();
       }, Messages.get(Messages.CANCEL));
       final JButton cancelButton = new JButton(cancelControl);
-      final JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 5));
+      final JPanel buttonPanel = new JPanel(Layouts.createGridLayout(1, 2));
       buttonPanel.add(okButton);
       buttonPanel.add(cancelButton);
 

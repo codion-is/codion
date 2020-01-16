@@ -907,7 +907,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   protected JPanel initializeSouthPanel() {
     final JPanel centerPanel = new JPanel(Layouts.createBorderLayout());
-    final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    final JPanel searchFieldPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
     searchFieldPanel.add(table.getSearchField());
     centerPanel.add(statusMessageLabel, BorderLayout.CENTER);
     centerPanel.add(searchFieldPanel, BorderLayout.WEST);

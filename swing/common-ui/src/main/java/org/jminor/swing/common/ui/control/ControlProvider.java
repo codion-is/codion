@@ -6,6 +6,7 @@ package org.jminor.swing.common.ui.control;
 import org.jminor.common.state.StateObserver;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
+import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
 import javax.swing.ButtonModel;
@@ -21,7 +22,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import java.awt.GridLayout;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -38,7 +38,7 @@ public final class ControlProvider {
    * @return the button panel
    */
   public static JPanel createVerticalButtonPanel(final ControlSet controlSet) {
-    final JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+    final JPanel panel = new JPanel(Layouts.createGridLayout(0, 1));
     controlSet.getActions().forEach(new ButtonControlHandler(panel, true));
 
     return panel;
@@ -50,7 +50,7 @@ public final class ControlProvider {
    * @return the button panel
    */
   public static JPanel createHorizontalButtonPanel(final ControlSet controlSet) {
-    final JPanel panel = new JPanel(new GridLayout(1, 0, 5, 5));
+    final JPanel panel = new JPanel(Layouts.createGridLayout(1, 0));
     controlSet.getActions().forEach(new ButtonControlHandler(panel, false));
 
     return panel;
