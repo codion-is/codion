@@ -33,6 +33,9 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A utility class for UI components.
+ */
 public final class Components {
 
   private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();

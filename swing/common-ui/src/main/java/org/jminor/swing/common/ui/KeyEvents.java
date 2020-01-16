@@ -128,6 +128,7 @@ public final class KeyEvents {
     private final boolean backward;
 
     /**
+     * Instantiates an Action for transferring keyboard focus.
      * @param component the component
      */
     public TransferFocusAction(final JComponent component) {
