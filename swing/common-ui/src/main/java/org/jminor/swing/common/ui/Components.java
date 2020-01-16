@@ -223,22 +223,62 @@ public final class Components {
   }
 
   /**
+   * Adds a wait cursor request for the parent root pane of the given component,
+   * the wait cursor is activated once a request is made, but only deactivated once all such
+   * requests have been retracted. Best used in try/finally block combinations.
+   * <pre>
+   try {
+     UiUtil.showWaitCursor(dialogParent);
+     doSomething();
+   }
+   finally {
+     UiUtil.hideWaitCursor(dialogParent);
+   }
+   * </pre>
+   * @param component the component
+   * @see #hideWaitCursor(JComponent)
+   */
+  public static void showWaitCursor(final JComponent component) {
+    setWaitCursor(true, component);
+  }
+
+  /**
+   * Removes a wait cursor request for the parent root pane of the given component,
+   * the wait cursor is activated once a request is made, but only deactivated once all such
+   * requests have been retracted. Best used in try/finally block combinations.
+   * <pre>
+   try {
+     UiUtil.showWaitCursor(dialogParent);
+     doSomething();
+   }
+   finally {
+     UiUtil.hideWaitCursor(dialogParent);
+   }
+   * </pre>
+   * @param component the component
+   * @see #showWaitCursor(JComponent)
+   */
+  public static void hideWaitCursor(final JComponent component) {
+    setWaitCursor(false, component);
+  }
+
+  /**
    * Adds or subtracts a wait cursor request for the parent root pane of the given component,
    * the wait cursor is activated once a request is made, but only deactivated once all such
    * requests have been retracted. Best used in try/finally block combinations.
    * <pre>
    try {
-     UiUtil.setWaitCursor(true, dialogParent);
+     UiUtil.showWaitCursor(dialogParent);
      doSomething();
    }
    finally {
-     UiUtil.setWaitCursor(false, dialogParent);
+     UiUtil.hideWaitCursor(dialogParent);
    }
    * </pre>
    * @param on if on, then the wait cursor is activated, otherwise it is deactivated
    * @param component the component
    */
-  public static void setWaitCursor(final boolean on, final JComponent component) {
+  private static void setWaitCursor(final boolean on, final JComponent component) {
     RootPaneContainer root = Windows.getParentDialog(component);
     if (root == null) {
       root = Windows.getParentFrame(component);

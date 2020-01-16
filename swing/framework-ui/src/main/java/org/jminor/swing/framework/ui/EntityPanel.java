@@ -509,7 +509,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final EntityPanel initializePanel() {
     if (!panelInitialized) {
       try {
-        Components.setWaitCursor(true, this);
+        Components.showWaitCursor(this);
         initializeAssociatedPanels();
         initializeControlPanels();
         bindEvents();
@@ -518,7 +518,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       }
       finally {
         panelInitialized = true;
-        Components.setWaitCursor(false, this);
+        Components.hideWaitCursor(this);
       }
     }
 
@@ -1505,8 +1505,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void bindEvents() {
-    entityModel.addBeforeRefreshListener(() -> Components.setWaitCursor(true, EntityPanel.this));
-    entityModel.addAfterRefreshListener(() -> Components.setWaitCursor(false, EntityPanel.this));
+    entityModel.addBeforeRefreshListener(() -> Components.showWaitCursor(EntityPanel.this));
+    entityModel.addAfterRefreshListener(() -> Components.hideWaitCursor(EntityPanel.this));
     addComponentListener(new EntityPanelComponentAdapter());
   }
 

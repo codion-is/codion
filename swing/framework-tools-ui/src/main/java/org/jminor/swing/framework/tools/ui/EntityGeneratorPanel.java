@@ -69,8 +69,8 @@ public class EntityGeneratorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.addRefreshStartedListener(() -> Components.setWaitCursor(true, EntityGeneratorPanel.this));
-    model.addRefreshDoneListener(() -> Components.setWaitCursor(false, EntityGeneratorPanel.this));
+    model.addRefreshStartedListener(() -> Components.showWaitCursor(EntityGeneratorPanel.this));
+    model.addRefreshDoneListener(() -> Components.hideWaitCursor(EntityGeneratorPanel.this));
   }
 
   /**

@@ -943,7 +943,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final void showEntityPanelDialog(final EntityPanelProvider panelProvider, final boolean modalDialog) {
     try {
-      Components.setWaitCursor(true, this);
+      Components.showWaitCursor(this);
       final EntityPanel entityPanel;
       if (PERSIST_ENTITY_PANELS.get() && persistentEntityPanels.containsKey(panelProvider)) {
         entityPanel = persistentEntityPanels.get(panelProvider);
@@ -981,7 +981,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       SwingUtilities.invokeLater(() -> dialog.setVisible(true));
     }
     finally {
-      Components.setWaitCursor(false, this);
+      Components.hideWaitCursor(this);
     }
   }
 

@@ -44,14 +44,14 @@ public final class EntityReportUiUtil {
                                     final ReportUIWrapper uiWrapper, final String reportTitle,
                                     final EntityConnectionProvider connectionProvider) {
     try {
-      Components.setWaitCursor(true, component);
+      Components.showWaitCursor(component);
       viewReport(EntityReportUtil.fillReport(reportWrapper, connectionProvider), uiWrapper, reportTitle);
     }
     catch (final ReportException e) {
       throw new RuntimeException(e);
     }
     finally {
-      Components.setWaitCursor(false, component);
+      Components.hideWaitCursor(component);
     }
   }
 
@@ -67,14 +67,14 @@ public final class EntityReportUiUtil {
                                 final ReportUIWrapper uiWrapper, final ReportDataWrapper dataSource,
                                 final String reportTitle) {
     try {
-      Components.setWaitCursor(true, component);
+      Components.showWaitCursor(component);
       viewReport(EntityReportUtil.fillReport(reportWrapper, dataSource), uiWrapper, reportTitle);
     }
     catch (final ReportException e) {
       throw new RuntimeException(e);
     }
     finally {
-      Components.setWaitCursor(false, component);
+      Components.hideWaitCursor(component);
     }
   }
 

@@ -523,11 +523,11 @@ public final class Dialogs {
                                                                  final String dialogTitle) {
     if (fileChooserOpen == null) {
       try {
-        Components.setWaitCursor(true, dialogParent);
+        Components.showWaitCursor(dialogParent);
         fileChooserOpen = new JFileChooser(new File(startDir == null ? System.getProperty("user.home") : startDir));
       }
       finally {
-        Components.setWaitCursor(false, dialogParent);
+        Components.hideWaitCursor(dialogParent);
       }
     }
     if (filesOnly) {
@@ -587,11 +587,11 @@ public final class Dialogs {
                                                    final String defaultFileName, final boolean confirmOverwrite) {
     if (fileChooserSave == null) {
       try {
-        Components.setWaitCursor(true, dialogParent);
+        Components.showWaitCursor(dialogParent);
         fileChooserSave = new JFileChooser();
       }
       finally {
-        Components.setWaitCursor(false, dialogParent);
+        Components.hideWaitCursor(dialogParent);
       }
     }
     fileChooserSave.setSelectedFiles(new File[] {new File("")});

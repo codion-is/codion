@@ -297,11 +297,11 @@ public final class EntityLookupField extends JTextField {
         if (!model.searchStringRepresentsSelected()) {
           List<Entity> queryResult;
           try {
-            Components.setWaitCursor(true, this);
+            Components.showWaitCursor(this);
             queryResult = model.performQuery();
           }
           finally {
-            Components.setWaitCursor(false, this);
+            Components.hideWaitCursor(this);
           }
           if (queryResult.size() == 1) {
             model.setSelectedEntities(queryResult);
