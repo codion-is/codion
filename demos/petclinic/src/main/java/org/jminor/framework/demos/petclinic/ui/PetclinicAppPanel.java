@@ -10,7 +10,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.petclinic.model.PetclinicAppModel;
 import org.jminor.framework.demos.petclinic.model.VetSpecialtyEditModel;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityModelProvider;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
@@ -86,6 +86,6 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.petclinic.domain.impl.ClinicImpl");
     new PetclinicAppPanel().startApplication("Petclinic", null, false,
-            UiUtil.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
   }
 }

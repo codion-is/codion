@@ -25,6 +25,7 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
@@ -35,6 +36,7 @@ import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
 import org.jminor.swing.common.ui.table.FilteredTable;
@@ -86,8 +88,8 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
 import static org.jminor.swing.common.ui.UiUtil.setWaitCursor;
+import static org.jminor.swing.common.ui.Windows.getParentWindow;
 import static org.jminor.swing.common.ui.control.Controls.control;
 
 /**
@@ -903,7 +905,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
-    final JPanel centerPanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel centerPanel = new JPanel(Layouts.createBorderLayout());
     final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     searchFieldPanel.add(table.getSearchField());
     centerPanel.add(statusMessageLabel, BorderLayout.CENTER);
@@ -1189,7 +1191,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     JPanel southPanel = null;
     if (includeSouthPanel) {
-      southPanel = new JPanel(UiUtil.createBorderLayout());
+      southPanel = new JPanel(Layouts.createBorderLayout());
       final JPanel southPanelCenter = initializeSouthPanel();
       if (southPanelCenter != null) {
         final JToolBar southToolBar = initializeSouthToolBar();
@@ -1395,7 +1397,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static JScrollPane createHiddenLinkedScrollPane(final JScrollPane masterScrollPane, final JPanel panel) {
     final JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    UiUtil.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
+    Components.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
     scrollPane.setVisible(false);
 
     return scrollPane;

@@ -5,8 +5,8 @@ package org.jminor.swing.framework.server.monitor.ui;
 
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.value.Values;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
@@ -106,7 +106,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    final JPanel infoPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
+    final JPanel infoPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
     infoPanel.add(new JLabel("Connections", JLabel.RIGHT));
     infoPanel.add(initializeConnectionCountField());
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
@@ -132,7 +132,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel initializePerformancePanel() {
-    final JPanel controlPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
+    final JPanel controlPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
 
     final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
@@ -143,7 +143,7 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanel.add(new JLabel("Update interval (s)"));
     controlPanel.add(updateIntervalSpinner);
 
-    final JPanel controlPanelBase = new JPanel(UiUtil.createBorderLayout());
+    final JPanel controlPanelBase = new JPanel(Layouts.createBorderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
     controlPanelBase.add(new JButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
@@ -160,11 +160,11 @@ public final class ServerMonitorPanel extends JPanel {
     chartPanel.add(chartPanelRight);
     chartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel overviewPanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel overviewPanel = new JPanel(Layouts.createBorderLayout());
     overviewPanel.add(controlPanelBase, BorderLayout.SOUTH);
     overviewPanel.add(chartPanel, BorderLayout.CENTER);
 
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     panel.add(overviewPanel, BorderLayout.CENTER);
 
     return panel;
@@ -179,7 +179,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel initializeDomainModelPanel() {
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     final JTable table = new JTable(model.getDomainTableModel());
     table.setRowSorter(new TableRowSorter<>(model.getDomainTableModel()));
     final JScrollPane scroller = new JScrollPane(table);

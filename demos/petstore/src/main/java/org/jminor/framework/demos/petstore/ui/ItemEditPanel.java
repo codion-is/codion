@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.petstore.ui;
 
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
@@ -31,10 +31,10 @@ public class ItemEditPanel extends EntityEditPanel {
     descriptionPanel.getButton().setFocusable(false);
     createTextField(ITEM_PRICE);
     final EntityComboBox contactInfoBox = createForeignKeyComboBox(ITEM_C0NTACT_INFO_FK);
-    UiUtil.setPreferredWidth(contactInfoBox, 140);
+    Components.setPreferredWidth(contactInfoBox, 140);
     contactInfoBox.setPopupWidth(200);
     final EntityComboBox addressBox = createForeignKeyComboBox(ITEM_ADDRESS_FK);
-    UiUtil.setPreferredWidth(addressBox, 140);
+    Components.setPreferredWidth(addressBox, 140);
     addressBox.setPopupWidth(200);
     addressBox.setPreferredSize(TextFields.getPreferredTextFieldSize());
     createTextField(ITEM_IMAGE_URL).setColumns(14);
@@ -46,10 +46,10 @@ public class ItemEditPanel extends EntityEditPanel {
     addPropertyPanel(ITEM_NAME);
     add(createPropertyPanel(ITEM_DESCRIPTION, descriptionPanel));
     addPropertyPanel(ITEM_PRICE);
-    add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, UiUtil.createEastButtonPanel(contactInfoBox,
+    add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
             createEditPanelAction(contactInfoBox, new EntityPanelProvider(T_SELLER_CONTACT_INFO)
                     .setEditPanelClass(ContactInfoEditPanel.class)), false)));
-    add(createPropertyPanel(ITEM_ADDRESS_FK, UiUtil.createEastButtonPanel(addressBox,
+    add(createPropertyPanel(ITEM_ADDRESS_FK, Components.createEastButtonPanel(addressBox,
             createEditPanelAction(addressBox, new EntityPanelProvider(T_ADDRESS)
                     .setEditPanelClass(AddressEditPanel.class)), false)));
     addPropertyPanel(ITEM_IMAGE_URL);

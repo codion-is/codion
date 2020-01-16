@@ -30,9 +30,9 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
-import static org.jminor.swing.common.ui.UiUtil.createFlowLayout;
-import static org.jminor.swing.common.ui.UiUtil.getParentWindow;
+import static org.jminor.swing.common.ui.Windows.getParentWindow;
 import static org.jminor.swing.common.ui.control.Controls.control;
+import static org.jminor.swing.common.ui.layout.Layouts.createFlowLayout;
 
 /**
  * A dialog for searching for and selecting one or more entities from a table model.

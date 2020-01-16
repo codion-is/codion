@@ -14,11 +14,12 @@ import org.jminor.common.model.table.SortingDirective;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 import org.jminor.swing.common.model.textfield.DocumentAdapter;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
 import org.jminor.swing.common.ui.textfield.TextFields;
 
@@ -271,7 +272,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
    */
   public boolean isCellVisible(final int row, final int column) {
-    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
+    final JViewport viewport = Components.getParentOfType(this, JViewport.class);
     if (viewport == null) {
       return false;
     }
@@ -288,7 +289,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param columnIdentifier the column identifier
    */
   public void scrollToColumn(final Object columnIdentifier) {
-    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
+    final JViewport viewport = Components.getParentOfType(this, JViewport.class);
     if (viewport != null) {
       scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
               getModel().getColumnModel().getColumnIndex(columnIdentifier), false, false);
@@ -303,7 +304,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param centerYPos if true then the selected row is positioned in the center of the table, if possible
    */
   public void scrollToCoordinate(final int row, final int column, final boolean centerXPos, final boolean centerYPos) {
-    final JViewport viewport = UiUtil.getParentOfType(this, JViewport.class);
+    final JViewport viewport = Components.getParentOfType(this, JViewport.class);
     if (viewport != null) {
       final Rectangle cellRectangle = getCellRect(row, column, true);
       final Rectangle viewRectangle = viewport.getViewRect();
@@ -416,7 +417,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private JPopupMenu initializeSearchFieldPopupMenu() {
     final JCheckBox boxRegexp = new JCheckBox(MESSAGES.getString("regular_expression_search"), tableModel.isRegularExpressionSearch());
-    final JPanel panel = new JPanel(UiUtil.createGridLayout(1, 1));
+    final JPanel panel = new JPanel(Layouts.createGridLayout(1, 1));
     panel.add(boxRegexp);
 
     final Control control = Controls.control(() -> tableModel.setRegularExpressionSearch(boxRegexp.isSelected()),
@@ -442,7 +443,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, true), MESSAGES.getString("select_all"))));
     southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, false), MESSAGES.getString("select_none"))));
 
-    final JPanel base = new JPanel(UiUtil.createBorderLayout());
+    final JPanel base = new JPanel(Layouts.createBorderLayout());
     base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);
     base.add(southPanel, BorderLayout.SOUTH);
 

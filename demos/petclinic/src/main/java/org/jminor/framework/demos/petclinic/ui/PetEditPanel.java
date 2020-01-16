@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.petclinic.ui;
 
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
@@ -33,7 +33,7 @@ public final class PetEditPanel extends EntityEditPanel {
     final Action newPetTypeAction = EntityEditPanel.createEditPanelAction(petTypeBox,
             new EntityPanelProvider(T_PET_TYPE)
                     .setEditPanelClass(PetTypeEditPanel.class));
-    final JPanel petTypePanel = UiUtil.createEastButtonPanel(petTypeBox, newPetTypeAction, false);
+    final JPanel petTypePanel = Components.createEastButtonPanel(petTypeBox, newPetTypeAction, false);
 
     setLayout(new GridLayout(2, 2, 5, 5));
 

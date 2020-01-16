@@ -3,7 +3,8 @@
  */
 package org.jminor.swing.common.ui.dialog;
 
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 
@@ -85,12 +86,12 @@ public class ProgressDialog extends JDialog {
       add(southPanel, BorderLayout.SOUTH);
     }
     pack();
-    UiUtil.centerWindow(this);
+    Windows.centerWindow(this);
   }
 
   private static JProgressBar initializeProgressBar(final int maxProgress) {
     final JProgressBar bar = new JProgressBar();
-    UiUtil.setPreferredWidth(bar, DEFAULT_PROGRESS_BAR_WIDTH);
+    Components.setPreferredWidth(bar, DEFAULT_PROGRESS_BAR_WIDTH);
     if (maxProgress < 0) {
       bar.setIndeterminate(true);
     }

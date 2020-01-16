@@ -6,8 +6,8 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.DateFormats;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.remote.ClientLog;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
@@ -98,16 +98,16 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    setLayout(UiUtil.createBorderLayout());
+    setLayout(Layouts.createBorderLayout());
     creationDateField.setEditable(false);
-    final JPanel infoPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
+    final JPanel infoPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
     infoPanel.add(new JLabel("Creation date"));
     infoPanel.add(creationDateField);
-    final JPanel infoBase = new JPanel(UiUtil.createBorderLayout());
+    final JPanel infoBase = new JPanel(Layouts.createBorderLayout());
     infoBase.setBorder(BorderFactory.createTitledBorder("Connection info"));
     infoBase.add(infoPanel, BorderLayout.CENTER);
     loggingEnabledCheckBox = new JCheckBox("Logging enabled");
-    final JPanel settingsPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
+    final JPanel settingsPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
     settingsPanel.add(loggingEnabledCheckBox);
     settingsPanel.add(new JButton(Controls.control(this::updateView, "Refresh log")));
     infoBase.add(settingsPanel, BorderLayout.EAST);

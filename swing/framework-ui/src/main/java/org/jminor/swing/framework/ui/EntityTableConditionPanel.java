@@ -14,14 +14,15 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.ForeignKeyConditionModel;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.value.TextValues;
@@ -259,7 +260,7 @@ public final class EntityTableConditionPanel extends JPanel {
     final Control simpleSearchControl = Controls.control(conditionModel::performSimpleSearch, FrameworkMessages.get(FrameworkMessages.SEARCH));
     final JButton simpleSearchButton = new JButton(simpleSearchControl);
     simpleSearchTextField.addActionListener(simpleSearchControl);
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     TextValues.textValueLink(simpleSearchTextField, Values.propertyValue(conditionModel, "simpleConditionString",
             String.class, conditionModel.getSimpleConditionStringObserver()));
     panel.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("condition")));
@@ -276,7 +277,7 @@ public final class EntityTableConditionPanel extends JPanel {
     private ConditionColumnSyncPanel(final SwingEntityTableModel tableModel) {
       super(tableModel.getColumnModel());
       this.conditionModel = tableModel.getConditionModel();
-      setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
+      setVerticalFillerWidth(Components.getPreferredScrollBarWidth());
       resetPanel();
     }
 

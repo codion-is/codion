@@ -5,14 +5,17 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.value.PropertyValue;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.HierarchyPanel;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
@@ -203,7 +206,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * The base edit panel which contains the controls required for editing a entity
    */
-  private final JPanel editControlPanel = new JPanel(UiUtil.createBorderLayout());
+  private final JPanel editControlPanel = new JPanel(Layouts.createBorderLayout());
 
   /**
    * The horizontal split pane, which is used in case this entity panel has detail panels.
@@ -629,7 +632,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final HierarchyPanel getParentPanel() {
     HierarchyPanel parentPanel = masterPanel;
     if (parentPanel == null) {
-      parentPanel = UiUtil.getParentOfType(this, HierarchyPanel.class);
+      parentPanel = Components.getParentOfType(this, HierarchyPanel.class);
     }
 
     return parentPanel;
@@ -730,7 +733,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @see DefaultDialogExceptionHandler
    */
   public final void displayException(final Exception exception) {
-    DefaultDialogExceptionHandler.getInstance().displayException(exception, UiUtil.getParentWindow(this));
+    DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this));
   }
 
   /**
@@ -1071,7 +1074,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       horizontalSplitPane = initializeHorizontalSplitPane();
       detailPanelTabbedPane = initializeDetailTabPane();
     }
-    setLayout(UiUtil.createBorderLayout());
+    setLayout(Layouts.createBorderLayout());
     if (detailPanelTabbedPane != null || tablePanel != null) {
       initializeDetailAndTablePanels();
     }
@@ -1187,7 +1190,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     editControlPanel.setMinimumSize(new Dimension(0, 0));
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-    final JPanel propertyBase = new JPanel(UiUtil.createFlowLayout(alignment));
+    final JPanel propertyBase = new JPanel(Layouts.createFlowLayout(alignment));
     propertyBase.add(editPanel);
     editControlPanel.add(propertyBase, BorderLayout.CENTER);
     if (includeControlPanel) {
@@ -1228,7 +1231,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     else {
       if (compactDetailLayout) {
-        compactBase = new JPanel(UiUtil.createBorderLayout());
+        compactBase = new JPanel(Layouts.createBorderLayout());
         compactBase.add(tablePanel, BorderLayout.CENTER);
         horizontalSplitPane.setLeftComponent(compactBase);
       }
@@ -1435,7 +1438,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Shows the detail panels in a non-modal dialog
    */
   private void showDetailDialog() {
-    final Window parent = UiUtil.getParentWindow(this);
+    final Window parent = Windows.getParentWindow(this);
     final Dimension parentSize = parent.getSize();
     final Dimension size = getDetailDialogSize(parentSize);
     final Point parentLocation = parent.getLocation();
@@ -1468,7 +1471,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private void showEditDialog() {
     Container dialogOwner = this;
     if (CENTER_APPLICATION_DIALOGS.get()) {
-      dialogOwner = UiUtil.getParentWindow(this);
+      dialogOwner = Windows.getParentWindow(this);
     }
     editPanelDialog = Dialogs.displayInDialog(dialogOwner, editControlPanel, caption, false, disposeEditDialogOnEscape,
             Controls.control(() -> setEditPanelState(HIDDEN)));
@@ -1593,12 +1596,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private static class FocusActivationListener implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent changeEvent) {
-      final EntityEditPanel editPanelParent = UiUtil.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class);
+      final EntityEditPanel editPanelParent = Components.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class);
       if (editPanelParent != null) {
         editPanelParent.setActive(true);
       }
       else {
-        final EntityPanel parent = UiUtil.getParentOfType((Component) changeEvent.getNewValue(), EntityPanel.class);
+        final EntityPanel parent = Components.getParentOfType((Component) changeEvent.getNewValue(), EntityPanel.class);
         if (parent != null && parent.getEditPanel() != null) {
           parent.getEditPanel().setActive(true);
         }

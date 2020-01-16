@@ -9,7 +9,7 @@ import org.jminor.common.event.Events;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -67,7 +67,7 @@ public final class EventState {
       public void actionPerformed(ActionEvent e) {}
     };
 
-    UiUtil.linkToEnabledState(state, action);
+    Components.linkToEnabledState(state, action);
 
     System.out.println(action.isEnabled());// output: false
 

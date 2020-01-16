@@ -6,7 +6,7 @@ package org.jminor.swing.common.ui.time;
 import org.jminor.common.DateParser;
 import org.jminor.common.Util;
 import org.jminor.common.state.StateObserver;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
@@ -49,7 +49,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
     add(inputField, BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(inputField));
     if (enabledState != null) {
-      UiUtil.linkToEnabledState(enabledState, inputField);
+      Components.linkToEnabledState(enabledState, inputField);
     }
   }
 

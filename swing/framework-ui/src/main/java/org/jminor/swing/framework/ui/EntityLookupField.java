@@ -20,12 +20,15 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.DefaultEntityLookupModel;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.SwingMessages;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
@@ -95,8 +98,8 @@ public final class EntityLookupField extends JTextField {
   private final EntityLookupModel model;
   private final TextFieldHint searchHint;
   private final SettingsPanel settingsPanel;
-  private final Action transferFocusAction = new UiUtil.TransferFocusAction(this);
-  private final Action transferFocusBackwardAction = new UiUtil.TransferFocusAction(this, true);
+  private final Action transferFocusAction = new KeyEvents.TransferFocusAction(this);
+  private final Action transferFocusBackwardAction = new KeyEvents.TransferFocusAction(this, true);
   /**
    * A hack used to prevent the lookup being triggered by the closing of
    * the "empty result" message, which happens on windows
@@ -137,8 +140,8 @@ public final class EntityLookupField extends JTextField {
     this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     updateColors();
     KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, lookupOnKeyRelease, initializeLookupControl());
-    UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
-    UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
+    Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
+    Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
   }
 
   /**
@@ -235,7 +238,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void selectEntities(final List<Entity> entities) {
-    final JDialog dialog = new JDialog(UiUtil.getParentWindow(this), MESSAGES.getString("select_entity"));
+    final JDialog dialog = new JDialog(Windows.getParentWindow(this), MESSAGES.getString("select_entity"));
     Dialogs.prepareScrollPanelDialog(dialog, this, selectionProvider.getSelectionComponent(entities),
             selectionProvider.getSelectControl(), new Dialogs.DisposeWindowAction(dialog));
     dialog.setVisible(true);
@@ -341,11 +344,11 @@ public final class EntityLookupField extends JTextField {
               okButton.doClick();
               closeEvent.onEvent();
             }, "EntityLookupField.emptyResultOK"));
-    final JPanel buttonPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.CENTER));
+    final JPanel buttonPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
     buttonPanel.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
     messageLabel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE));
-    final JPanel messagePanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel messagePanel = new JPanel(Layouts.createBorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     messagePanel.add(buttonPanel, BorderLayout.SOUTH);
     disableLookup();
@@ -393,25 +396,25 @@ public final class EntityLookupField extends JTextField {
       final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
       TextValues.textValueLink(multipleValueSeparatorField, lookupModel.getMultipleItemSeparatorValue());
 
-      final JPanel generalSettingsPanel = new JPanel(UiUtil.createGridLayout(2, 1));
+      final JPanel generalSettingsPanel = new JPanel(Layouts.createGridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
 
       generalSettingsPanel.add(boxAllowMultipleValues);
 
-      final JPanel valueSeparatorPanel = new JPanel(UiUtil.createBorderLayout());
+      final JPanel valueSeparatorPanel = new JPanel(Layouts.createBorderLayout());
       valueSeparatorPanel.add(multipleValueSeparatorField, BorderLayout.WEST);
       valueSeparatorPanel.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
 
       generalSettingsPanel.add(valueSeparatorPanel);
 
-      setLayout(UiUtil.createBorderLayout());
+      setLayout(Layouts.createBorderLayout());
       add(new JComboBox<>(propertyComboBoxModel), BorderLayout.NORTH);
       add(propertyBasePanel, BorderLayout.CENTER);
       add(generalSettingsPanel, BorderLayout.SOUTH);
     }
 
     private static JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
-      final JPanel panel = new JPanel(UiUtil.createGridLayout(3, 1));
+      final JPanel panel = new JPanel(Layouts.createGridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
       BooleanValues.toggleValueLink(boxCaseSensitive.getModel(), settings.getCaseSensitiveValue(), false);
       final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
@@ -458,7 +461,7 @@ public final class EntityLookupField extends JTextField {
     public ListSelectionProvider(final EntityLookupModel model) {
       this.selectControl = Controls.control(() -> {
         model.setSelectedEntities(list.getSelectedValuesList());
-        UiUtil.getParentDialog(list).dispose();
+        Windows.getParentDialog(list).dispose();
       }, Messages.get(Messages.OK));
       list.setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
@@ -510,7 +513,7 @@ public final class EntityLookupField extends JTextField {
       table = new FilteredTable<>(tableModel);
       selectControl = control(() -> {
         model.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
-        UiUtil.getParentDialog(table).dispose();
+        Windows.getParentDialog(table).dispose();
       }, Messages.get(Messages.OK));
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
       final String enterActionKey = "EntityLookupField.enter";

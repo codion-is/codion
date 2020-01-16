@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields;
 
 import javax.swing.ImageIcon;
@@ -87,12 +88,12 @@ public final class LoginPanel extends JPanel {
    */
   public User showLoginPanel(final JComponent parent, final String title, final ImageIcon icon) {
     final JOptionPane pane = new JOptionPane(this, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
-    final Window parentWindow = UiUtil.getParentWindow(parent);
+    final Window parentWindow = Windows.getParentWindow(parent);
     final JFrame dummyFrame = parentWindow == null ? createDummyFrame(title, icon) : null;
     final JDialog dialog = pane.createDialog(dummyFrame == null ? parent : dummyFrame, title == null ? Messages.get(Messages.LOGIN) : title);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
-    UiUtil.centerWindow(dialog);
+    Windows.centerWindow(dialog);
     dialog.setResizable(false);
     dialog.setVisible(true);
     if (dummyFrame != null) {
@@ -115,7 +116,7 @@ public final class LoginPanel extends JPanel {
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(passwordField);
 
-    final JPanel basePanel = new JPanel(UiUtil.createFlexibleGridLayout(GRID_SIZE, GRID_SIZE, true, false));
+    final JPanel basePanel = new JPanel(Layouts.createFlexibleGridLayout(GRID_SIZE, GRID_SIZE, true, false));
     basePanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));
     basePanel.add(usernameField);
     basePanel.add(new JLabel(Messages.get(Messages.PASSWORD), JLabel.RIGHT));
@@ -123,13 +124,13 @@ public final class LoginPanel extends JPanel {
 
     final JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     centerPanel.add(basePanel);
-    setLayout(UiUtil.createBorderLayout());
+    setLayout(Layouts.createBorderLayout());
     add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().length() == 0) {
-      UiUtil.addInitialFocusHack(usernameField, Controls.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
+      Components.addInitialFocusHack(usernameField, Controls.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
     }
     else {
-      UiUtil.addInitialFocusHack(passwordField, Controls.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
+      Components.addInitialFocusHack(passwordField, Controls.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
   }
 

@@ -6,8 +6,8 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.DateFormats;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.common.ui.value.BooleanValues;
 import org.jminor.swing.common.ui.value.NumericalValues;
@@ -35,6 +35,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+
+import static org.jminor.swing.common.ui.Components.createNorthCenterPanel;
 
 /**
  * A ConnectionPoolMonitorPanel
@@ -102,7 +104,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void initializeUI() {
     initializeCharts(model);
-    setLayout(UiUtil.createFlexibleGridLayout(1, MAIN_LAYOUT_COLUMNS, true, false));
+    setLayout(Layouts.createFlexibleGridLayout(1, MAIN_LAYOUT_COLUMNS, true, false));
 
     add(getChartPanel());
     add(getStatisticsPanel());
@@ -145,7 +147,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getConfigurationPanel() {
-    final JPanel configBase = new JPanel(UiUtil.createGridLayout(0, 1));
+    final JPanel configBase = new JPanel(Layouts.createGridLayout(0, 1));
 
     final JSpinner timeoutSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model, "pooledConnectionTimeout",
             model.getStatisticsObserver()));
@@ -167,15 +169,15 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     ((JSpinner.DefaultEditor) minimumSizeSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) maximumSizeSpinner.getEditor()).getTextField().setEditable(false);
 
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Min size"), minimumSizeSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Max size"), maximumSizeSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Max retry wait (ms)"), maximumRetryWaitSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Max check out time (ms)"), maximumCheckOutTimeSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("New conn. threshold (ms)"), newConnectionThresholdSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Idle timeout (s)"), timeoutSpinner));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Cleanup interval (s)"), cleanupIntervalSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Min size"), minimumSizeSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Max size"), maximumSizeSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Max retry wait (ms)"), maximumRetryWaitSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Max check out time (ms)"), maximumCheckOutTimeSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("New conn. threshold (ms)"), newConnectionThresholdSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Idle timeout (s)"), timeoutSpinner));
+    configBase.add(createNorthCenterPanel(new JLabel("Cleanup interval (s)"), cleanupIntervalSpinner));
 
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Configuration"));
     panel.add(configBase, BorderLayout.NORTH);
 
@@ -183,7 +185,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getStatisticsPanel() {
-    final JPanel statisticsBase = new JPanel(UiUtil.createGridLayout(0, 1));
+    final JPanel statisticsBase = new JPanel(Layouts.createGridLayout(0, 1));
     poolSizeField.setEditable(false);
     poolSizeField.setHorizontalAlignment(JLabel.CENTER);
     createdField.setEditable(false);
@@ -202,15 +204,15 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JButton resetButton = new JButton(Controls.control(model::resetStatistics, "Reset"));
     resetButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
 
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Pool size"), poolSizeField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections requested"), requestedField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Delayed requests"), delayedField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Failed requests"), failedField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections created"), createdField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections destroyed"), destroyedField));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("since"), resetTimeField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Pool size"), poolSizeField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Connections requested"), requestedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Delayed requests"), delayedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Failed requests"), failedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Connections created"), createdField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Connections destroyed"), destroyedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("since"), resetTimeField));
 
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Statistics"));
     panel.add(statisticsBase, BorderLayout.NORTH);
     panel.add(resetButton, BorderLayout.SOUTH);
@@ -219,7 +221,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getChartPanel() {
-    final JPanel chartConfig = new JPanel(UiUtil.createFlexibleGridLayout(1, 3, true, false));
+    final JPanel chartConfig = new JPanel(Layouts.createFlexibleGridLayout(1, 3, true, false));
     final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
@@ -236,7 +238,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
     chartConfig.add(collectStatisticsCheckBox);
 
-    final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
+    final JPanel configBase = new JPanel(Layouts.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);
     final JButton resetButton = new JButton(Controls.control(model::resetInPoolStatistics, "Reset"));
     resetButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
@@ -249,7 +251,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartBase.add(inPoolFineGrainedChartPanel);
     chartBase.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Status"));
     panel.add(chartBase, BorderLayout.CENTER);
     panel.add(configBase, BorderLayout.SOUTH);

@@ -10,6 +10,7 @@ import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.Servers;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -61,7 +62,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public EntityServerMonitorPanel() throws RemoteException {
     this(new EntityServerMonitor(Server.SERVER_HOST_NAME.get(), Server.REGISTRY_PORT.get()));
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-            DefaultDialogExceptionHandler.getInstance().displayException(e, UiUtil.getParentWindow(EntityServerMonitorPanel.this)));
+            DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(EntityServerMonitorPanel.this)));
   }
 
   /**
@@ -122,8 +123,8 @@ public final class EntityServerMonitorPanel extends JPanel {
     monitorFrame.setTitle("JMinor Server Monitor");
     monitorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     monitorFrame.getContentPane().add(this);
-    UiUtil.resizeWindow(monitorFrame, SCREEN_SIZE_RATIO);
-    UiUtil.centerWindow(monitorFrame);
+    Windows.resizeWindow(monitorFrame, SCREEN_SIZE_RATIO);
+    Windows.centerWindow(monitorFrame);
     monitorFrame.setVisible(true);
   }
 

@@ -9,6 +9,7 @@ import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.reports.ReportUIWrapper;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
@@ -88,8 +89,8 @@ public final class EntityReportUiUtil {
       final JFrame frame = new JFrame(frameTitle == null ? MESSAGES.getString("report_printer") : frameTitle);
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.getContentPane().add(uiWrapper.createReportComponent(reportResult));
-      UiUtil.resizeWindow(frame, SCREEN_SIZE_RATIO, MINIMUM_REPORT_WINDOW_SIZE);
-      UiUtil.centerWindow(frame);
+      Windows.resizeWindow(frame, SCREEN_SIZE_RATIO, MINIMUM_REPORT_WINDOW_SIZE);
+      Windows.centerWindow(frame);
       frame.setVisible(true);
     });
   }

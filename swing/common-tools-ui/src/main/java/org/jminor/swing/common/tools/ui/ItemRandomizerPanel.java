@@ -12,7 +12,7 @@ import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.ItemRandomizerModel;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.ButtonModel;
 import javax.swing.DefaultListModel;
@@ -42,7 +42,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   private static final int SPINNER_COLUMNS = 3;
 
   private final ItemRandomizer<T> model;
-  private final JPanel configPanel = new JPanel(UiUtil.createGridLayout(0, 1));
+  private final JPanel configPanel = new JPanel(Layouts.createGridLayout(0, 1));
   private final JList<ItemRandomizer.RandomItem<T>> itemList = new JList<>(new DefaultListModel<>());
   private final Event selectedItemChangedEvent = Events.event();
 
@@ -99,7 +99,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
       onSelectionChanged();
       selectedItemChangedEvent.onEvent();
     });
-    setLayout(UiUtil.createBorderLayout());
+    setLayout(Layouts.createBorderLayout());
     add(new JScrollPane(itemList), BorderLayout.CENTER);
     add(configPanel, BorderLayout.SOUTH);
   }
@@ -118,7 +118,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @return a control panel for the item weight
    */
   private JPanel initializeWeightPanel(final ItemRandomizerModel.RandomItem<T> item) {
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
     ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     spinner.setToolTipText(item.getItem().toString());

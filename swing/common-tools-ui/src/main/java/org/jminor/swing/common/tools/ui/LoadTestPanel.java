@@ -10,11 +10,13 @@ import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.LoadTest;
 import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.common.ui.value.NumericalValues;
@@ -68,7 +70,7 @@ public final class LoadTestPanel extends JPanel {
 
   private final LoadTest loadTestModel;
 
-  private final JPanel scenarioBase = new JPanel(UiUtil.createGridLayout(COMPONENT_GAP, 1));
+  private final JPanel scenarioBase = new JPanel(Layouts.createGridLayout(COMPONENT_GAP, 1));
   private final JPanel pluginPanel;
   private final ItemRandomizerPanel scenarioPanel;
 
@@ -119,8 +121,8 @@ public final class LoadTestPanel extends JPanel {
     });
     frame.setTitle(title);
     frame.getContentPane().add(this);
-    UiUtil.resizeWindow(frame, DEFAULT_SCREEN_SIZE_RATIO);
-    UiUtil.centerWindow(frame);
+    Windows.resizeWindow(frame, DEFAULT_SCREEN_SIZE_RATIO);
+    Windows.centerWindow(frame);
     frame.setVisible(true);
 
     return frame;
@@ -133,7 +135,7 @@ public final class LoadTestPanel extends JPanel {
     final JPanel userBase = initializeUserPanel();
     final JPanel chartControlPanel = initializeChartControlPanel();
 
-    final JPanel controlPanel = new JPanel(UiUtil.createFlexibleGridLayout(5, 1, false, true));
+    final JPanel controlPanel = new JPanel(Layouts.createFlexibleGridLayout(5, 1, false, true));
     controlPanel.add(applicationPanel);
     controlPanel.add(activityPanel);
     controlPanel.add(scenarioPanel);
@@ -182,7 +184,7 @@ public final class LoadTestPanel extends JPanel {
     final ActionListener userInfoListener = e -> loadTestModel.setUser(new User(usernameField.getText(), passwordField.getPassword()));
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
-    final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(2, 2, true, false);
+    final FlexibleGridLayout layout = Layouts.createFlexibleGridLayout(2, 2, true, false);
     layout.setFixedRowHeight(TextFields.getPreferredTextFieldHeight());
     final JPanel userBase = new JPanel(layout);
     userBase.setBorder(BorderFactory.createTitledBorder("User"));
@@ -200,7 +202,7 @@ public final class LoadTestPanel extends JPanel {
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
     NumericalValues.integerValueLink(applicationCountField, Values.propertyValue(loadTestModel, "applicationCount",
             int.class, loadTestModel.applicationCountObserver()), false);
-    final JPanel applicationPanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel applicationPanel = new JPanel(Layouts.createBorderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
     final JSpinner batchSizeSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(loadTestModel, "applicationBatchSize",
@@ -209,7 +211,7 @@ public final class LoadTestPanel extends JPanel {
     ((JSpinner.DefaultEditor) batchSizeSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) batchSizeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
-    final JPanel applicationCountPanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel applicationCountPanel = new JPanel(Layouts.createBorderLayout());
     applicationCountPanel.add(initializeApplicationCountButtonPanel(), BorderLayout.WEST);
     applicationCountPanel.add(applicationCountField, BorderLayout.CENTER);
     applicationCountPanel.add(batchSizeSpinner, BorderLayout.EAST);
@@ -244,7 +246,7 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeChartControlPanel() {
-    final JPanel controlPanel = new JPanel(UiUtil.createFlexibleGridLayout(1, 2, true, false));
+    final JPanel controlPanel = new JPanel(Layouts.createFlexibleGridLayout(1, 2, true, false));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
     controlPanel.add(ControlProvider.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
             "Collect chart data", loadTestModel.collectChartDataObserver())));
@@ -348,7 +350,7 @@ public final class LoadTestPanel extends JPanel {
     final ToggleControl pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
     pauseControl.setMnemonic('P');
 
-    final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(4, 2, true, false);
+    final FlexibleGridLayout layout = Layouts.createFlexibleGridLayout(4, 2, true, false);
     layout.setFixedRowHeight(TextFields.getPreferredTextFieldHeight());
     final JPanel thinkTimePanel = new JPanel(layout);
     thinkTimePanel.add(new JLabel("Max. think time", JLabel.CENTER));
@@ -387,12 +389,12 @@ public final class LoadTestPanel extends JPanel {
     renderer.setDefaultShapesVisible(false);
     scenarioDurationChart.getXYPlot().setRenderer(renderer);
 
-    final JPanel basePanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel basePanel = new JPanel(Layouts.createBorderLayout());
     final JTabbedPane tabPanel = new JTabbedPane();
     tabPanel.addTab("Duration", scenarioDurationChartPanel);
 
     final JTextArea exceptionsArea = new JTextArea();
-    final JPanel scenarioExceptionPanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel scenarioExceptionPanel = new JPanel(Layouts.createBorderLayout());
     scenarioExceptionPanel.add(exceptionsArea, BorderLayout.CENTER);
     final JButton refreshButton = new JButton(new RefreshExceptionsAction(exceptionsArea, item));
     refreshButton.doClick();
@@ -401,7 +403,7 @@ public final class LoadTestPanel extends JPanel {
     final JScrollPane exceptionScroller = new JScrollPane(exceptionsArea);
 
     scenarioExceptionPanel.add(exceptionScroller, BorderLayout.CENTER);
-    final JPanel buttonPanel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel buttonPanel = new JPanel(Layouts.createBorderLayout());
     buttonPanel.add(refreshButton, BorderLayout.NORTH);
     buttonPanel.add(clearButton, BorderLayout.SOUTH);
 
