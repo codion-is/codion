@@ -116,6 +116,12 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
+  public int hashCode() {
+    return values.hashCode();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean containsKey(final K key) {
     return values.containsKey(key);
   }
