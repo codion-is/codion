@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.swing.common.ui.dialog;
 
 import org.jminor.common.Util;
@@ -21,7 +24,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -29,7 +31,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
@@ -37,20 +38,13 @@ import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URI;
-import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static org.jminor.common.Util.nullOrEmpty;
-
 /**
  * A JDialog for displaying information on exceptions.
- * Before you can use the ExceptionDialog email mechanism (Windows only) you need to call at least
- * ExceptionDialog.setErrorReportEmailFrom() and ExceptionDialog.setErrorReportEmailTo(),
- * to prefix a string to the subject field call ExceptionDialog.setErrorReportEmailSubjectPrefix()
  */
 final class ExceptionDialog extends JDialog {
 
@@ -67,61 +61,28 @@ final class ExceptionDialog extends JDialog {
   private static final int TAB_SIZE = 4;
 
   //ui components
+  private final Window parentWindow;
   private JTextField exceptionField;
   private JTextArea messageArea;
   private JPanel detailPanel;
-  private final Window window;
   private JPanel centerPanel;
   private JTextArea detailsArea;
   private JLabel descriptionLabel;
   private JButton printButton;
   private JButton saveButton;
   private JButton copyButton;
-  private JButton emailButton;
-  //controls
-  private ToggleControl detailsControl;
-  private Control closeControl;
-  private Control printControl;
-  private Control saveControl;
-  private Control copyControl;
-  private Control emailControl;
 
   private final State showDetailsState = States.state();
 
   /**
    * Instantiates a new ExceptionDialog with the given window as parent
-   * @param window the dialog parent
+   * @param parentWindow the dialog parent
    */
-  ExceptionDialog(final Window window) {
-    super(window);
-    this.window = window;
-    setupControls();
+  ExceptionDialog(final Window parentWindow) {
+    super(parentWindow);
+    this.parentWindow = parentWindow;
     bindEvents();
     initializeUI();
-  }
-
-  private void setupControls() {
-    detailsControl = Controls.toggleControl(showDetailsState);
-    detailsControl.setName(MESSAGES.getString("details"));
-    detailsControl.setDescription(MESSAGES.getString("show_details"));
-    printControl = Controls.control(() -> detailsArea.print(), Messages.get(Messages.PRINT));
-    printControl.setDescription(MESSAGES.getString("print_error_report"));
-    printControl.setMnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0));
-    closeControl = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
-    closeControl.setDescription(MESSAGES.getString("close_dialog"));
-    closeControl.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
-    saveControl = Controls.control(() ->
-                    Files.write(Dialogs.selectFileToSave(detailsArea, null, null).toPath(),
-                            Arrays.asList(detailsArea.getText().split("\\r?\\n"))),
-            MESSAGES.getString("save"));
-    saveControl.setDescription(MESSAGES.getString("save_error_log"));
-    saveControl.setMnemonic(MESSAGES.getString("save_mnemonic").charAt(0));
-    copyControl = Controls.control(() -> UiUtil.setClipboard(detailsArea.getText()), Messages.get(Messages.COPY));
-    copyControl.setDescription(MESSAGES.getString("copy_to_clipboard"));
-    copyControl.setMnemonic(MESSAGES.getString("copy_mnemonic").charAt(0));
-    emailControl = Controls.control(this::emailErrorReport, MESSAGES.getString("send"));
-    emailControl.setDescription(MESSAGES.getString("send_email"));
-    emailControl.setMnemonic(MESSAGES.getString("send_mnemonic").charAt(0));
   }
 
   private void initializeUI() {
@@ -146,12 +107,11 @@ final class ExceptionDialog extends JDialog {
     printButton.setVisible(show);
     saveButton.setVisible(show);
     copyButton.setVisible(show);
-    emailButton.setVisible(show);
     detailPanel.setVisible(show);
     centerPanel.setVisible(show);
     pack();
     detailPanel.revalidate();
-    if (window != null && window.isVisible()) {
+    if (parentWindow != null && parentWindow.isVisible()) {
       positionOverFrame();
     }
     else {
@@ -211,16 +171,34 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createButtonPanel() {
-    final JPanel baseButtonPanel = new JPanel(new BorderLayout());
-    final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-    final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    final ToggleControl detailsControl = Controls.toggleControl(showDetailsState);
+    detailsControl.setName(MESSAGES.getString("details"));
+    detailsControl.setDescription(MESSAGES.getString("show_details"));
+    final Control printControl = Controls.control(() -> detailsArea.print(), Messages.get(Messages.PRINT));
+    printControl.setDescription(MESSAGES.getString("print_error_report"));
+    printControl.setMnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0));
+    final Control closeControl = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
+    closeControl.setDescription(MESSAGES.getString("close_dialog"));
+    closeControl.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
+    final Control saveControl = Controls.control(() ->
+                    Files.write(Dialogs.selectFileToSave(detailsArea, null, "error.txt").toPath(),
+                            Arrays.asList(detailsArea.getText().split("\\r?\\n"))),
+            MESSAGES.getString("save"));
+    saveControl.setDescription(MESSAGES.getString("save_error_log"));
+    saveControl.setMnemonic(MESSAGES.getString("save_mnemonic").charAt(0));
+    final Control copyControl = Controls.control(() -> UiUtil.setClipboard(detailsArea.getText()), Messages.get(Messages.COPY));
+    copyControl.setDescription(MESSAGES.getString("copy_to_clipboard"));
+    copyControl.setMnemonic(MESSAGES.getString("copy_mnemonic").charAt(0));
 
     final JButton closeButton = new JButton(closeControl);
     printButton = new JButton(printControl);
     saveButton = new JButton(saveControl);
     copyButton = new JButton(copyControl);
-    emailButton = new JButton(emailControl);
-    rightButtonPanel.add(emailButton);
+
+    final JPanel baseButtonPanel = new JPanel(new BorderLayout());
+    final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+    final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
     rightButtonPanel.add(copyButton);
     rightButtonPanel.add(printButton);
     rightButtonPanel.add(saveButton);
@@ -264,11 +242,11 @@ final class ExceptionDialog extends JDialog {
     exceptionField.setText(name);
     messageArea.setText(throwable.getMessage());
 
-    final StringWriter sw = new StringWriter();
-    throwable.printStackTrace(new PrintWriter(sw));
+    final StringWriter stringWriter = new StringWriter();
+    throwable.printStackTrace(new PrintWriter(stringWriter));
 
     detailsArea.setText(null);
-    detailsArea.append(sw.toString());
+    detailsArea.append(stringWriter.toString());
     detailsArea.append("\n");
     detailsArea.append("--------------------------------------------Properties--------------------------------------------\n\n");
 
@@ -278,25 +256,6 @@ final class ExceptionDialog extends JDialog {
     detailsArea.setCaretPosition(0);
     initializeDetailView(false);
     setVisible(true);
-  }
-
-  /**
-   * Uses "mailto" to create an email containing the current error report to a specified recipient
-   */
-  private void emailErrorReport() {
-    final String address = JOptionPane.showInputDialog(MESSAGES.getString("input_email_address"));
-    if (nullOrEmpty(address)) {
-      return;
-    }
-    try {
-      final String uriStr = String.format("mailto:%s?subject=%s&body=%s", address,
-              URLEncoder.encode(descriptionLabel.getText(), "UTF-8").replace("+", "%20"),
-              URLEncoder.encode(detailsArea.getText(), "UTF-8").replace("+", "%20"));
-      Desktop.getDesktop().browse(new URI(uriStr));
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private static String truncateMessage(final String message) {
