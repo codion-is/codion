@@ -362,7 +362,7 @@ The following methods all have default implementations which are based on random
 * {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#initializeTestEntity-java.lang.String-java.util.Map-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
 * {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
-To run the full CRUD test for a domain entity you need to call the *testEntity(String entityId)* method with the id of the given entity as parameter. You can either create a single *testDomain()* method and call the *testEntity* method in turn for each entityId or create a single *testEntityName* for each domain entity, as we do in the example below.
+To run the full CRUD test for a domain entity you need to call the *test(String entityId)* method with the id of the given entity as parameter. You can either create a single *testDomain()* method and call the *test* method in turn for each entityId or create a *entityName* method for each domain entity, as we do in the example below.
 
 [source,java]
 ----

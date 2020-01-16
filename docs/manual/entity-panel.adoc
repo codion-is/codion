@@ -6,4 +6,4 @@ The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanel] is
 
 == Detail panels
 
-Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the correct detail model for the detail panel, in this case a *CustomerModel* instance, see <<entity-model.adoc#_detail_models, detail models>>. See link:#_entityapplicationpanel[EntityApplicationPanel].
+Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the correct detail model for the detail panel, in this case a *CustomerModel* instance, see link:#_detail_models[detail models]. See link:#_entityapplicationpanel[EntityApplicationPanel].
