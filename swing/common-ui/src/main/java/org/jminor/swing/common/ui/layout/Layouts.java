@@ -16,7 +16,6 @@ public final class Layouts {
 
   /**
    * Specifies the default horizontal and vertical component gap, used by the layout factory methods, by default this is 5
-   * @param gap the default horizontal and vertical gap
    * @see #createBorderLayout()
    * @see #createFlowLayout(int)
    * @see #createGridLayout(int, int)
@@ -51,7 +50,7 @@ public final class Layouts {
    * @param rows the number of rows
    * @param columns the number of columns
    * @return a GridLayout
-   * @see @see #HORIZONTAL_VERTICAL_GAP
+   * @see #HORIZONTAL_VERTICAL_GAP
    */
   public static GridLayout createGridLayout(final int rows, final int columns) {
     return new GridLayout(rows, columns, HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get());
@@ -64,7 +63,7 @@ public final class Layouts {
    * @param fixRowHeights if true then the height of the rows is fixed as the largest value
    * @param fixColumnWidths if true then the width of the columns is fixed as the largest value
    * @return a FlexibleGridLayout
-   * @see @see #HORIZONTAL_VERTICAL_GAP
+   * @see #HORIZONTAL_VERTICAL_GAP
    */
   public static FlexibleGridLayout createFlexibleGridLayout(final int rows, final int columns,
                                                             final boolean fixRowHeights, final boolean fixColumnWidths) {
