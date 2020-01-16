@@ -5633,3 +5633,6 @@
   transferFocusOnEnter() moved from UiUtil to KeyEvents
   linkToEnabledState() and relevant methods moved from UiUtil to Components, tests fixed
   Windows utility class added, window related methods moved from UiUtil
+  UiManagerDefaults added, handles initializing UiManager values
+  UiUtil.setWaitCursor() moved to Components
+  Components.setWaitCursor() replaced with showWaitCursor() and hideWaitCursor()

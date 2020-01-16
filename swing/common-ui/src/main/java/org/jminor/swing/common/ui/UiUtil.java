@@ -6,18 +6,14 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.Util;
 
-import javax.swing.JComponent;
 import javax.swing.JTextField;
-import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.JTextComponent;
-import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -25,9 +21,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
@@ -40,21 +34,8 @@ import static java.util.Collections.emptyList;
 public final class UiUtil {
 
   static {
-    //otherwise a hierarchy of tabbed panes looks crappy
-    UIManager.put("TabbedPane.contentBorderInsets", new Insets(2, 0, 0, 0));
+    UiManagerDefaults.init();
   }
-
-  /**
-   * A wait cursor
-   */
-  public static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
-
-  /**
-   * The default cursor
-   */
-  public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
-
-  private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
 
   private UiUtil() {}
 
@@ -86,56 +67,6 @@ public final class UiUtil {
             textField.setText(Util.getMemoryUsageString())), updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
 
     return textField;
-  }
-
-  /**
-   * Adds or subtracts a wait cursor request for the parent root pane of the given component,
-   * the wait cursor is activated once a request is made, but only deactivated once all such
-   * requests have been retracted. Best used in try/finally block combinations.
-   * <pre>
-   try {
-   UiUtil.setWaitCursor(true, dialogParent);
-   doSomething();
-   }
-   finally {
-   UiUtil.setWaitCursor(false, dialogParent);
-   }
-   * </pre>
-   * @param on if on, then the wait cursor is activated, otherwise it is deactivated
-   * @param component the component
-   */
-  public static void setWaitCursor(final boolean on, final JComponent component) {
-    RootPaneContainer root = Windows.getParentDialog(component);
-    if (root == null) {
-      root = Windows.getParentFrame(component);
-    }
-    if (root == null) {
-      return;
-    }
-
-    synchronized (WAIT_CURSOR_REQUESTS) {
-      if (!WAIT_CURSOR_REQUESTS.containsKey(root)) {
-        WAIT_CURSOR_REQUESTS.put(root, 0);
-      }
-
-      int requests = WAIT_CURSOR_REQUESTS.get(root);
-      if (on) {
-        requests++;
-      }
-      else {
-        requests--;
-      }
-
-      if ((requests == 1 && on) || (requests == 0 && !on)) {
-        root.getRootPane().setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
-      }
-      if (requests == 0) {
-        WAIT_CURSOR_REQUESTS.remove(root);
-      }
-      else {
-        WAIT_CURSOR_REQUESTS.put(root, requests);
-      }
-    }
   }
 
   /**

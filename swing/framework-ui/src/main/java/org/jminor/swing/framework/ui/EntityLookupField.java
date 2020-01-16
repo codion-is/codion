@@ -23,7 +23,6 @@ import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.SwingMessages;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
@@ -298,11 +297,11 @@ public final class EntityLookupField extends JTextField {
         if (!model.searchStringRepresentsSelected()) {
           List<Entity> queryResult;
           try {
-            UiUtil.setWaitCursor(true, this);
+            Components.showWaitCursor(this);
             queryResult = model.performQuery();
           }
           finally {
-            UiUtil.setWaitCursor(false, this);
+            Components.hideWaitCursor(this);
           }
           if (queryResult.size() == 1) {
             model.setSelectedEntities(queryResult);

@@ -29,8 +29,8 @@ import java.awt.Window;
 public final class LoginPanel extends JPanel {
 
   static {
-    //simply to initialize button captions before the application starts
-    SwingMessages.init();
+    //initialize button captions
+    UiManagerDefaults.init();
   }
 
   private static final int DEFAULT_FIELD_COLUMNS = 8;

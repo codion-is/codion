@@ -20,7 +20,6 @@ import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -56,6 +55,8 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.jminor.swing.common.ui.Components.hideWaitCursor;
+import static org.jminor.swing.common.ui.Components.showWaitCursor;
 
 /**
  * A UI component based on a {@link EntityEditModel}.
@@ -405,12 +406,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final EntityEditPanel initializePanel() {
     if (!panelInitialized) {
       try {
-        UiUtil.setWaitCursor(true, this);
+        showWaitCursor(this);
         initializeUI();
       }
       finally {
         panelInitialized = true;
-        UiUtil.setWaitCursor(false, this);
+        hideWaitCursor(this);
       }
     }
 
@@ -471,11 +472,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       if (!confirmRequired || confirmInsert()) {
         validateData();
         try {
-          UiUtil.setWaitCursor(true, this);
+          showWaitCursor(this);
           editModel.insert();
         }
         finally {
-          UiUtil.setWaitCursor(false, this);
+          hideWaitCursor(this);
         }
         if (clearAfterInsert) {
           getEditModel().setEntity(null);
@@ -515,11 +516,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     try {
       if (!confirmRequired || confirmDelete()) {
         try {
-          UiUtil.setWaitCursor(true, this);
+          showWaitCursor(this);
           editModel.delete();
         }
         finally {
-          UiUtil.setWaitCursor(false, this);
+          hideWaitCursor(this);
         }
 
         return true;
@@ -555,11 +556,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       if (!confirmRequired || confirmUpdate()) {
         validateData();
         try {
-          UiUtil.setWaitCursor(true, this);
+          showWaitCursor(this);
           editModel.update();
         }
         finally {
-          UiUtil.setWaitCursor(false, this);
+          hideWaitCursor(this);
         }
         requestInitialFocus();
 
@@ -788,8 +789,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     KeyEvents.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(this::showEntityMenu,
                     "EntityEditPanel.showEntityMenu"));
-    editModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityEditPanel.this));
-    editModel.addAfterRefreshListener(() -> UiUtil.setWaitCursor(false, EntityEditPanel.this));
+    editModel.addBeforeRefreshListener(() -> showWaitCursor(EntityEditPanel.this));
+    editModel.addAfterRefreshListener(() -> hideWaitCursor(EntityEditPanel.this));
     editModel.addConfirmSetEntityObserver(confirmationState -> {
       final int result = JOptionPane.showConfirmDialog(Windows.getParentWindow(EntityEditPanel.this),
               FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),

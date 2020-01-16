@@ -9,8 +9,8 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.layout.Layouts;
 
@@ -523,11 +523,11 @@ public final class Dialogs {
                                                                  final String dialogTitle) {
     if (fileChooserOpen == null) {
       try {
-        UiUtil.setWaitCursor(true, dialogParent);
+        Components.showWaitCursor(dialogParent);
         fileChooserOpen = new JFileChooser(new File(startDir == null ? System.getProperty("user.home") : startDir));
       }
       finally {
-        UiUtil.setWaitCursor(false, dialogParent);
+        Components.hideWaitCursor(dialogParent);
       }
     }
     if (filesOnly) {
@@ -587,11 +587,11 @@ public final class Dialogs {
                                                    final String defaultFileName, final boolean confirmOverwrite) {
     if (fileChooserSave == null) {
       try {
-        UiUtil.setWaitCursor(true, dialogParent);
+        Components.showWaitCursor(dialogParent);
         fileChooserSave = new JFileChooser();
       }
       finally {
-        UiUtil.setWaitCursor(false, dialogParent);
+        Components.hideWaitCursor(dialogParent);
       }
     }
     fileChooserSave.setSelectedFiles(new File[] {new File("")});

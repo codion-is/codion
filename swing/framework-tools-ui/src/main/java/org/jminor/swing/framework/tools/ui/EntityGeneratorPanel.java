@@ -7,8 +7,8 @@ import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.LoginPanel;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
@@ -69,8 +69,8 @@ public class EntityGeneratorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.addRefreshStartedListener(() -> UiUtil.setWaitCursor(true, EntityGeneratorPanel.this));
-    model.addRefreshDoneListener(() -> UiUtil.setWaitCursor(false, EntityGeneratorPanel.this));
+    model.addRefreshStartedListener(() -> Components.showWaitCursor(EntityGeneratorPanel.this));
+    model.addRefreshDoneListener(() -> Components.hideWaitCursor(EntityGeneratorPanel.this));
   }
 
   /**

@@ -8,7 +8,7 @@ import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.reports.ReportUIWrapper;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;
@@ -44,14 +44,14 @@ public final class EntityReportUiUtil {
                                     final ReportUIWrapper uiWrapper, final String reportTitle,
                                     final EntityConnectionProvider connectionProvider) {
     try {
-      UiUtil.setWaitCursor(true, component);
+      Components.showWaitCursor(component);
       viewReport(EntityReportUtil.fillReport(reportWrapper, connectionProvider), uiWrapper, reportTitle);
     }
     catch (final ReportException e) {
       throw new RuntimeException(e);
     }
     finally {
-      UiUtil.setWaitCursor(false, component);
+      Components.hideWaitCursor(component);
     }
   }
 
@@ -67,14 +67,14 @@ public final class EntityReportUiUtil {
                                 final ReportUIWrapper uiWrapper, final ReportDataWrapper dataSource,
                                 final String reportTitle) {
     try {
-      UiUtil.setWaitCursor(true, component);
+      Components.showWaitCursor(component);
       viewReport(EntityReportUtil.fillReport(reportWrapper, dataSource), uiWrapper, reportTitle);
     }
     catch (final ReportException e) {
       throw new RuntimeException(e);
     }
     finally {
-      UiUtil.setWaitCursor(false, component);
+      Components.hideWaitCursor(component);
     }
   }
 
