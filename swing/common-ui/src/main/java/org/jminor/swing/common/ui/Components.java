@@ -13,22 +13,29 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTree;
+import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
 public final class Components {
 
+  private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
+  private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
+  private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
   private static JScrollBar verticalScrollBar;
 
   private Components() {}
@@ -213,5 +220,55 @@ public final class Components {
    */
   public static <T> T getParentOfType(final Component component, final Class<T> clazz) {
     return (T) SwingUtilities.getAncestorOfClass(clazz, component);
+  }
+
+  /**
+   * Adds or subtracts a wait cursor request for the parent root pane of the given component,
+   * the wait cursor is activated once a request is made, but only deactivated once all such
+   * requests have been retracted. Best used in try/finally block combinations.
+   * <pre>
+   try {
+     UiUtil.setWaitCursor(true, dialogParent);
+     doSomething();
+   }
+   finally {
+     UiUtil.setWaitCursor(false, dialogParent);
+   }
+   * </pre>
+   * @param on if on, then the wait cursor is activated, otherwise it is deactivated
+   * @param component the component
+   */
+  public static void setWaitCursor(final boolean on, final JComponent component) {
+    RootPaneContainer root = Windows.getParentDialog(component);
+    if (root == null) {
+      root = Windows.getParentFrame(component);
+    }
+    if (root == null) {
+      return;
+    }
+
+    synchronized (WAIT_CURSOR_REQUESTS) {
+      if (!WAIT_CURSOR_REQUESTS.containsKey(root)) {
+        WAIT_CURSOR_REQUESTS.put(root, 0);
+      }
+
+      int requests = WAIT_CURSOR_REQUESTS.get(root);
+      if (on) {
+        requests++;
+      }
+      else {
+        requests--;
+      }
+
+      if ((requests == 1 && on) || (requests == 0 && !on)) {
+        root.getRootPane().setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
+      }
+      if (requests == 0) {
+        WAIT_CURSOR_REQUESTS.remove(root);
+      }
+      else {
+        WAIT_CURSOR_REQUESTS.put(root, requests);
+      }
+    }
   }
 }

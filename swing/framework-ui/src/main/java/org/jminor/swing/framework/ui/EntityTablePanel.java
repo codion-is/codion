@@ -88,7 +88,7 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.swing.common.ui.UiUtil.setWaitCursor;
+import static org.jminor.swing.common.ui.Components.setWaitCursor;
 import static org.jminor.swing.common.ui.Windows.getParentWindow;
 import static org.jminor.swing.common.ui.control.Controls.control;
 
@@ -1252,8 +1252,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void bindEvents() {
     table.getModel().addSortListener(table.getTableHeader()::repaint);
-    table.getModel().addRefreshStartedListener(() -> UiUtil.setWaitCursor(true, EntityTablePanel.this));
-    table.getModel().addRefreshDoneListener(() -> UiUtil.setWaitCursor(false, EntityTablePanel.this));
+    table.getModel().addRefreshStartedListener(() -> Components.setWaitCursor(true, EntityTablePanel.this));
+    table.getModel().addRefreshDoneListener(() -> Components.setWaitCursor(false, EntityTablePanel.this));
   }
 
   private void bindPanelEvents() {

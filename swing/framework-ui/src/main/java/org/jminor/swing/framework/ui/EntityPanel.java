@@ -7,7 +7,6 @@ import org.jminor.common.Configuration;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.HierarchyPanel;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -510,7 +509,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final EntityPanel initializePanel() {
     if (!panelInitialized) {
       try {
-        UiUtil.setWaitCursor(true, this);
+        Components.setWaitCursor(true, this);
         initializeAssociatedPanels();
         initializeControlPanels();
         bindEvents();
@@ -519,7 +518,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       }
       finally {
         panelInitialized = true;
-        UiUtil.setWaitCursor(false, this);
+        Components.setWaitCursor(false, this);
       }
     }
 
@@ -1506,8 +1505,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void bindEvents() {
-    entityModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityPanel.this));
-    entityModel.addAfterRefreshListener(() -> UiUtil.setWaitCursor(false, EntityPanel.this));
+    entityModel.addBeforeRefreshListener(() -> Components.setWaitCursor(true, EntityPanel.this));
+    entityModel.addAfterRefreshListener(() -> Components.setWaitCursor(false, EntityPanel.this));
     addComponentListener(new EntityPanelComponentAdapter());
   }
 

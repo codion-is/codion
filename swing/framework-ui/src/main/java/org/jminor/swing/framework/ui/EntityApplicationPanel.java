@@ -31,6 +31,7 @@ import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.HierarchyPanel;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.LoginPanel;
+import org.jminor.swing.common.ui.UiManagerDefaults;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
@@ -109,6 +110,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName(), Locale.getDefault());
+
+  static {
+    //initialize button captions
+    UiManagerDefaults.init();
+  }
 
   private static final String SET_LOG_LEVEL = "set_log_level";
   private static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";
@@ -937,7 +943,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final void showEntityPanelDialog(final EntityPanelProvider panelProvider, final boolean modalDialog) {
     try {
-      UiUtil.setWaitCursor(true, this);
+      Components.setWaitCursor(true, this);
       final EntityPanel entityPanel;
       if (PERSIST_ENTITY_PANELS.get() && persistentEntityPanels.containsKey(panelProvider)) {
         entityPanel = persistentEntityPanels.get(panelProvider);
@@ -975,7 +981,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       SwingUtilities.invokeLater(() -> dialog.setVisible(true));
     }
     finally {
-      UiUtil.setWaitCursor(false, this);
+      Components.setWaitCursor(false, this);
     }
   }
 
