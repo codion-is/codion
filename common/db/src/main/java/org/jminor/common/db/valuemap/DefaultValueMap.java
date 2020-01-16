@@ -6,13 +6,13 @@ package org.jminor.common.db.valuemap;
 import org.jminor.common.Util;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -32,8 +32,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * Holds the original value for keys which values have changed since they were first set.
    */
   private Map<K, V> originalValues;
-
-  private static final int MAGIC_NUMBER = 23;
 
   /**
    * Instantiates a new empty instance
@@ -69,7 +67,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   @Override
   public final V put(final K key, final V value) {
     requireNonNull(key, "key");
-    final V newValue = validateAndPrepare(key, value);
+    final V newValue = validateAndPrepareForPut(key, value);
     final boolean initialization = !values.containsKey(key);
     final V previousValue = values.put(key, newValue);
     if (!initialization && Objects.equals(previousValue, newValue)) {
@@ -102,8 +100,8 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   }
 
   /**
-   * Two DefaultValueMap objects are equal if they contain the
-   * same number of values and all their values are equal.
+   * Two DefaultValueMap objects are equal if their current values represent the same mappings.
+   * @see Map#equals(Object)
    */
   @Override
   public boolean equals(final Object obj) {
@@ -112,20 +110,8 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     }
 
     final DefaultValueMap<K, V> otherMap = (DefaultValueMap<K, V>) obj;
-    if (size() != otherMap.size()) {
-      return false;
-    }
 
-    return otherMap.keySet().stream().noneMatch(key -> !containsKey(key) || !Objects.equals(otherMap.get(key), get(key)));
-  }
-
-  /**
-   * Creates a hash code based on the values in this ValueMap
-   * @return a hash code based on the values in this ValueMap
-   */
-  @Override
-  public int hashCode() {
-    return MAGIC_NUMBER + values.values().stream().filter(Objects::nonNull).mapToInt(Object::hashCode).sum();
+    return otherMap.values.equals(this.values);
   }
 
   /** {@inheritDoc} */
@@ -157,23 +143,23 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public final Set<K> keySet() {
-    return Collections.unmodifiableSet(values.keySet());
+    return unmodifiableSet(values.keySet());
   }
 
   /** {@inheritDoc} */
   @Override
   public final Set<K> originalKeySet() {
     if (originalValues == null) {
-      return Collections.emptySet();
+      return emptySet();
     }
 
-    return Collections.unmodifiableSet(originalValues.keySet());
+    return unmodifiableSet(originalValues.keySet());
   }
 
   /** {@inheritDoc} */
   @Override
   public final Collection<V> values() {
-    return Collections.unmodifiableCollection(values.values());
+    return unmodifiableCollection(values.values());
   }
 
   /** {@inheritDoc} */
@@ -264,13 +250,14 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   }
 
   /**
-   * Validates the value for the given key, note that this default implementation does nothing, provided for subclasses.
+   * Validates the value for the given key, during a {@link #put(Object, Object)} operation,
+   * note that this default implementation does nothing, provided for subclasses.
    * @param key the key
    * @param value the value to validate
    * @return the value
    * @throws IllegalArgumentException in case the value is invalid
    */
-  protected V validateAndPrepare(final K key, final V value) {
+  protected V validateAndPrepareForPut(final K key, final V value) {
     return value;
   }
 

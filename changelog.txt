@@ -5614,3 +5614,4 @@
   Components.setWaitCursor() replaced with showWaitCursor() and hideWaitCursor()
   Layouts factory methods used where applicable
   ExceptionDialog, send email functionality removed, some refactoring
+  DefaultValueMap no longer overrides hashCode(), equals() now relies on HashMap.equals(), validateAndPrepare() renamed to validateAndPrepareForPut()

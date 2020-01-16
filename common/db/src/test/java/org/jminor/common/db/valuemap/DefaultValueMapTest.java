@@ -208,22 +208,4 @@ public class DefaultValueMapTest {
     assertFalse(map.isModified());
     assertFalse(map.isModified(two));
   }
-
-  @Test
-  public void testHashCode() {
-    final String one = "one";
-    final String two = "two";
-    final String three = "three";
-
-    final ValueMap<String, Integer> map = new DefaultValueMap<>();
-    map.put(one, 1);
-    map.put(two, 2);
-    map.put(three, 3);
-
-    assertEquals(29, map.hashCode());
-
-    map.put(two, null);
-
-    assertEquals(27, map.hashCode());
-  }
 }

@@ -553,7 +553,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  protected Object validateAndPrepare(final Property property, final Object value) {
+  protected Object validateAndPrepareForPut(final Property property, final Object value) {
     if (property instanceof DerivedProperty) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
