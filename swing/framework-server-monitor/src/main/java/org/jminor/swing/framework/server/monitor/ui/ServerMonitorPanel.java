@@ -35,7 +35,6 @@ import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.rmi.RemoteException;
 
 /**
@@ -147,15 +146,15 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
     controlPanelBase.add(new JButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
-    final JPanel chartPanelLeft = new JPanel(new GridLayout(3, 1, 5, 5));
-    final JPanel chartPanelRight = new JPanel(new GridLayout(3, 1, 5, 5));
+    final JPanel chartPanelLeft = new JPanel(Layouts.createGridLayout(3, 1));
+    final JPanel chartPanelRight = new JPanel(Layouts.createGridLayout(3, 1));
     chartPanelLeft.add(requestsPerSecondChartPanel);
     chartPanelLeft.add(connectionCountChartPanel);
     chartPanelLeft.add(systemLoadChartPanel);
     chartPanelRight.add(threadCountChartPanel);
     chartPanelRight.add(memoryUsageChartPanel);
     chartPanelRight.add(gcEventsChartPanel);
-    final JPanel chartPanel = new JPanel(new GridLayout(1, 2, 5, 5));
+    final JPanel chartPanel = new JPanel(Layouts.createGridLayout(1, 2));
     chartPanel.add(chartPanelLeft);
     chartPanel.add(chartPanelRight);
     chartPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -184,7 +183,7 @@ public final class ServerMonitorPanel extends JPanel {
     table.setRowSorter(new TableRowSorter<>(model.getDomainTableModel()));
     final JScrollPane scroller = new JScrollPane(table);
 
-    final JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    final JPanel refreshPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.RIGHT));
     refreshPanel.add(new JButton(Controls.control(model::refreshDomainList, "Refresh")));
     panel.add(refreshPanel, BorderLayout.NORTH);
     panel.add(scroller, BorderLayout.CENTER);

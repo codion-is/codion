@@ -432,12 +432,12 @@ public final class Dialogs {
     okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
     cancelButton.setText(Messages.get(Messages.CANCEL));
     cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
-    dialog.setLayout(new BorderLayout(5, 5));
+    dialog.setLayout(Layouts.createBorderLayout());
     dialog.add(new JScrollPane(toScroll), BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
     buttonPanel.add(okButton);
     buttonPanel.add(cancelButton);
-    final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    final JPanel buttonBasePanel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
     buttonBasePanel.add(buttonPanel);
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();

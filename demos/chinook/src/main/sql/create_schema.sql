@@ -41,7 +41,8 @@ create table chinook.album
     title varchar(160) not null,
     artistid integer not null,
     cover blob,
-    constraint pk_productitem primary key (albumid)
+    constraint pk_productitem primary key (albumid),
+    constraint fk_artist_album foreign key (artistid) references chinook.artist(artistid)
 );
 
 create table chinook.track
@@ -55,7 +56,10 @@ create table chinook.track
     milliseconds integer not null,
     bytes double,
     unitprice double not null,
-    constraint pk_track primary key (trackid)
+    constraint pk_track primary key (trackid),
+    constraint fk_album_track foreign key (albumid) references chinook.album(albumid),
+    constraint fk_mediatype_track foreign key (mediatypeid) references chinook.mediatype(mediatypeid),
+    constraint fk_genre_track foreign key (genreid) references chinook.genre(genreid)
 );
 
 create table chinook.employee
@@ -75,7 +79,8 @@ create table chinook.employee
     phone varchar(24),
     fax varchar(24),
     email varchar(60),
-    constraint pk_employee primary key (employeeid)
+    constraint pk_employee primary key (employeeid),
+    constraint fk_employee_reportsto foreign key (reportsto) references chinook.employee(employeeid)
 );
 
 create table chinook.customer
@@ -93,7 +98,8 @@ create table chinook.customer
     fax varchar(24),
     email varchar(60) not null,
     supportrepid integer,
-    constraint pk_customer primary key (customerid)
+    constraint pk_customer primary key (customerid),
+    constraint fk_employee_customer foreign key (supportrepid) references chinook.employee(employeeid)
 );
 
 create table chinook.invoice
@@ -107,7 +113,8 @@ create table chinook.invoice
     billingcountry varchar(40),
     billingpostalcode varchar(10),
     total decimal(10, 2), --not null,
-    constraint pk_invoice primary key (invoiceid)
+    constraint pk_invoice primary key (invoiceid),
+    constraint fk_customer_invoice foreign key (customerid) references chinook.customer(customerid)
 );
 
 create table chinook.invoiceline
@@ -117,55 +124,27 @@ create table chinook.invoiceline
     trackid integer not null,
     unitprice double not null,
     quantity integer not null,
-    constraint pk_invoiceline primary key (invoicelineid)
+    constraint pk_invoiceline primary key (invoicelineid),
+    constraint fk_productitem_invoiceline foreign key (trackid) references chinook.track(trackid),
+    constraint fk_invoice_invoiceline foreign key (invoiceid) references chinook.invoice(invoiceid)
 );
 
 create table chinook.playlist
 (
     playlistid identity not null,
     name varchar(120) not null,
-    constraint pk_playlist primary key (playlistid)
+    constraint pk_playlist primary key (playlistid),
+    constraint uk_playlist unique (name)
 );
 
 create table chinook.playlisttrack
 (
     playlistid integer not null,
     trackid integer not null,
-    constraint pk_playlisttrack primary key (playlistid, trackid)
+    constraint pk_playlisttrack primary key (playlistid, trackid),
+    constraint fk_track_playlisttrack foreign key (trackid) references chinook.track(trackid),
+    constraint fk_playlist_playlisttrack foreign key (playlistid) references chinook.playlist(playlistid)
 );
-
-alter table chinook.album add constraint fk_artist_album
-foreign key (artistid) references chinook.artist(artistid);
-
-alter table chinook.track add constraint fk_album_track
-foreign key (albumid) references chinook.album(albumid);
-
-alter table chinook.track add constraint fk_mediatype_track
-foreign key (mediatypeid) references chinook.mediatype(mediatypeid);
-
-alter table chinook.track add constraint fk_genre_track
-foreign key (genreid) references chinook.genre(genreid);
-
-alter table chinook.employee add constraint fk_employee_reportsto
-foreign key (reportsto) references chinook.employee(employeeid);
-
-alter table chinook.customer add constraint fk_employee_customer
-foreign key (supportrepid) references chinook.employee(employeeid);
-
-alter table chinook.invoice add constraint fk_customer_invoice
-foreign key (customerid) references chinook.customer(customerid);
-
-alter table chinook.invoiceline add constraint fk_productitem_invoiceline
-foreign key (trackid) references chinook.track(trackid);
-
-alter table chinook.invoiceline add constraint fk_invoice_invoiceline
-foreign key (invoiceid) references chinook.invoice(invoiceid);
-
-alter table chinook.playlisttrack add constraint fk_track_playlisttrack
-foreign key (trackid) references chinook.track(trackid);
-
-alter table chinook.playlisttrack add constraint fk_playlist_playlisttrack
-foreign key (playlistid) references chinook.playlist(playlistid);
 
 insert into chinook.user (username, passwordhash) values ('scott', 110358719);
 insert into chinook.user (username, passwordhash) values ('peter', 110358719);

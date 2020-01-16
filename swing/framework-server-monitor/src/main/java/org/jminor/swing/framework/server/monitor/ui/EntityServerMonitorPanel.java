@@ -18,6 +18,7 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.server.monitor.EntityServerMonitor;
 import org.jminor.swing.framework.server.monitor.HostMonitor;
 
@@ -197,7 +198,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private static JPanel initializeSouthPanel() {
-    final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+    final JPanel southPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.TRAILING));
     southPanel.setBorder(BorderFactory.createEtchedBorder());
     southPanel.add(new JLabel("Memory usage:"));
     southPanel.add(UiUtil.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));

@@ -65,12 +65,11 @@ public final class LoadTestPanel extends JPanel {
   private static final int LARGE_TEXT_FIELD_COLUMNS = 8;
   private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
   private static final int SPINNER_STEP_SIZE = 10;
-  private static final int COMPONENT_GAP = 0;
   private static final double RESIZE_WEIGHT = 0.8;
 
   private final LoadTest loadTestModel;
 
-  private final JPanel scenarioBase = new JPanel(Layouts.createGridLayout(COMPONENT_GAP, 1));
+  private final JPanel scenarioBase = new JPanel(Layouts.createGridLayout(0, 1));
   private final JPanel pluginPanel;
   private final ItemRandomizerPanel scenarioPanel;
 
@@ -160,7 +159,7 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private static JPanel initializeSouthPanel() {
-    final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+    final JPanel southPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.TRAILING));
     southPanel.add(new JLabel("Memory usage:"));
     southPanel.add(UiUtil.createMemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS));
 
@@ -222,7 +221,7 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeApplicationCountButtonPanel() {
-    final JPanel buttonPanel = new JPanel(new GridLayout(1, 2, COMPONENT_GAP, COMPONENT_GAP));
+    final JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 0, 0));
     buttonPanel.add(initializeAddRemoveApplicationButton(false));
     buttonPanel.add(initializeAddRemoveApplicationButton(true));
 
@@ -239,7 +238,7 @@ public final class LoadTestPanel extends JPanel {
       }
     }, add ? "+" : "-"));
     button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
-    button.setMargin(new Insets(COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP));
+    button.setMargin(new Insets(0, 0, 0, 0));
     button.setToolTipText(add ? "Add application batch" : "Remove application batch");
 
     return button;
@@ -304,7 +303,7 @@ public final class LoadTestPanel extends JPanel {
     twoTab.addTab("Scenarios run", usageScenarioChartPanel);
     twoTab.addTab("Failed runs", failureChartPanel);
 
-    final JPanel bottomPanel = new JPanel(new GridLayout(1, 4, COMPONENT_GAP, COMPONENT_GAP));
+    final JPanel bottomPanel = new JPanel(new GridLayout(1, 4, 0, 0));
     bottomPanel.add(memoryUsageChartPanel);
     bottomPanel.add(systemLoadChartPanel);
     bottomPanel.add(thinkTimeChartPanel);
@@ -316,7 +315,7 @@ public final class LoadTestPanel extends JPanel {
     two.setRightComponent(bottomPanel);
     two.setResizeWeight(RESIZE_WEIGHT);
 
-    final JPanel chartBase = new JPanel(new BorderLayout(COMPONENT_GAP, COMPONENT_GAP));
+    final JPanel chartBase = new JPanel(new BorderLayout(0, 0));
 
     final JTabbedPane tabPane = new JTabbedPane();
     tabPane.addTab("Overview", two);

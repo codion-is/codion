@@ -5636,3 +5636,5 @@
   UiManagerDefaults added, handles initializing UiManager values
   UiUtil.setWaitCursor() moved to Components
   Components.setWaitCursor() replaced with showWaitCursor() and hideWaitCursor()
+  Layouts factory methods used where applicable
+  ExceptionDialog, send email functionality removed, some refactoring

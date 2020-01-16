@@ -7,6 +7,7 @@ import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JDialog;
@@ -75,13 +76,13 @@ public class ProgressDialog extends JDialog {
    * @param buttonControls if specified buttons based on these controls are added to this dialog
    */
   protected void initializeUI(final JPanel northPanel, final ControlSet buttonControls) {
-    setLayout(new BorderLayout(5, 5));
+    setLayout(Layouts.createBorderLayout());
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
     }
     add(progressBar, BorderLayout.CENTER);
     if (buttonControls != null) {
-      final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+      final JPanel southPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.TRAILING));
       southPanel.add(initializeButtonPanel(buttonControls));
       add(southPanel, BorderLayout.SOUTH);
     }
