@@ -27,6 +27,13 @@ public final class NumericalValues {
   private NumericalValues() {}
 
   /**
+   * @return a BigDecimal based ComponentValue
+   */
+  public static ComponentValue<BigDecimal, DecimalField> bigDecimalValue() {
+    return bigDecimalValue(null, Formats.getBigDecimalNumberFormat());
+  }
+
+  /**
    * @param initialValue the initial value
    * @return a BigDecimal based ComponentValue
    */
@@ -93,6 +100,14 @@ public final class NumericalValues {
 
   /**
    * Instantiates a new Double based ComponentValue.
+   * @return a Double based ComponentValue
+   */
+  public static ComponentValue<Double, DecimalField> doubleValue() {
+    return doubleValue(null, new DecimalFormat());
+  }
+
+  /**
+   * Instantiates a new Double based ComponentValue.
    * @param initialValue the initial value
    * @return a Double based ComponentValue
    */
@@ -111,6 +126,14 @@ public final class NumericalValues {
     final DecimalField decimalField = new DecimalField(format);
     decimalField.setDouble(initialValue);
 
+    return doubleValue(decimalField, true);
+  }
+
+  /**
+   * @param decimalField the component
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField) {
     return doubleValue(decimalField, true);
   }
 
@@ -137,6 +160,14 @@ public final class NumericalValues {
   /**
    * @param decimalField the decimal field to link with the value
    * @param value the model value
+   */
+  public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value) {
+    doubleValueLink(decimalField, value, true);
+  }
+
+  /**
+   * @param decimalField the decimal field to link with the value
+   * @param value the model value
    * @param nullable if false then 0 is used instead of null
    */
   public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable) {
@@ -152,6 +183,14 @@ public final class NumericalValues {
   public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable,
                                      final boolean updateOnKeystroke) {
     Values.link(value, doubleValue(decimalField, nullable, updateOnKeystroke));
+  }
+
+  /**
+   * Instantiates a new Integer based ComponentValue.
+   * @return a Integer based ComponentValue
+   */
+  public static ComponentValue<Integer, IntegerField> integerValue() {
+    return integerValue(null, NumberFormat.getIntegerInstance());
   }
 
   /**
@@ -173,6 +212,14 @@ public final class NumericalValues {
     final IntegerField integerField = new IntegerField(format);
     integerField.setInteger(initialValue);
 
+    return integerValue(integerField);
+  }
+
+  /**
+   * @param integerField the component
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<Integer, IntegerField> integerValue(final IntegerField integerField) {
     return integerValue(integerField, true);
   }
 
@@ -210,6 +257,14 @@ public final class NumericalValues {
    */
   public static ComponentValue<Integer, BoundedRangeModel> integerValue(final BoundedRangeModel boundedRangeModel) {
     return new IntegerBoundedRangeModelValue(boundedRangeModel);
+  }
+
+  /**
+   * @param integerField the int field to link with the value
+   * @param value the model value
+   */
+  public static void integerValueLink(final IntegerField integerField, final Value<Integer> value) {
+    integerValueLink(integerField, value, true);
   }
 
   /**
@@ -309,6 +364,14 @@ public final class NumericalValues {
 
   /**
    * Instantiates a new Long based ComponentValue.
+   * @return a Long based ComponentValue
+   */
+  public static ComponentValue<Long, LongField> longValue() {
+    return longValue((Long) null);
+  }
+
+  /**
+   * Instantiates a new Long based ComponentValue.
    * @param initialValue the initial value
    * @return a Long based ComponentValue
    */
@@ -326,6 +389,14 @@ public final class NumericalValues {
     final LongField longField = new LongField(format);
     longField.setLong(initialValue);
 
+    return longValue(longField);
+  }
+
+  /**
+   * @param longField the component
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<Long, LongField> longValue(final LongField longField) {
     return longValue(longField, true);
   }
 
@@ -347,6 +418,14 @@ public final class NumericalValues {
   public static ComponentValue<Long, LongField> longValue(final LongField longField, final boolean nullable,
                                                           final boolean updateOnKeystroke) {
     return new LongFieldValue(longField, nullable, updateOnKeystroke);
+  }
+
+  /**
+   * @param longField the long field to link with the value
+   * @param value the model value
+   */
+  public static void longValueLink(final LongField longField, final Value<Long> value) {
+    longValueLink(longField, value, true);
   }
 
   /**

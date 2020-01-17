@@ -41,7 +41,7 @@ public class DefaultEntityValidator implements Entity.Validator {
 
   private final boolean performNullValidation;
 
-  private final transient Event revalidateEvent = Events.event();
+  private transient Event revalidateEvent;
 
   /**
    * Instantiates a new {@link Entity.Validator}
@@ -185,19 +185,27 @@ public class DefaultEntityValidator implements Entity.Validator {
   /** {@inheritDoc} */
   @Override
   public final void revalidate() {
-    revalidateEvent.onEvent();
+    getRevalidateEvent().onEvent();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addRevalidationListener(final EventListener listener) {
-    revalidateEvent.addListener(listener);
+    getRevalidateEvent().addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeRevalidationListener(final EventListener listener) {
-    revalidateEvent.removeListener(listener);
+    getRevalidateEvent().removeListener(listener);
+  }
+
+  private Event getRevalidateEvent() {
+    if (revalidateEvent == null) {
+      revalidateEvent = Events.event();
+    }
+
+    return revalidateEvent;
   }
 
   private static boolean isNonGeneratedPrimaryKeyProperty(final Entity entity, final Property property) {

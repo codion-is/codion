@@ -232,7 +232,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(updateIntervalSpinner);
 
     final JCheckBox collectStatisticsCheckBox = new JCheckBox("Fine grained statistics");
-    collectStatisticsCheckBox.setModel(BooleanValues.toggleValueLink(model, "collectFineGrainedStatistics",
+    collectStatisticsCheckBox.setModel(BooleanValues.booleanValueLink(model, "collectFineGrainedStatistics",
             model.getCollectFineGrainedStatisticsObserver()));
     collectStatisticsCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
 

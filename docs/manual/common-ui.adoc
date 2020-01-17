@@ -1,0 +1,4 @@
+= Common UI
+:dir-manual: ../manual
+
+include::{dir-manual}/common-ui-input-controls.adoc[leveloffset=+1]

@@ -37,6 +37,14 @@ public final class BooleanValues {
   }
 
   /**
+   * Instantiates a new Boolean based ComponentValue with a null initial value.
+   * @return a Boolean based ComponentValue
+   */
+  public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBoxValue() {
+    return booleanComboBoxValue(null);
+  }
+
+  /**
    * Instantiates a new Boolean based ComponentValue.
    * @param initialValue the initial value
    * @return a Boolean based ComponentValue
@@ -51,8 +59,8 @@ public final class BooleanValues {
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @return a ButtomModel based on the value
    */
-  public static ButtonModel toggleValueLink(final Object owner, final String propertyName, final EventObserver<Boolean> valueChangeEvent) {
-    return toggleValueLink(owner, propertyName, valueChangeEvent, false);
+  public static ButtonModel booleanValueLink(final Object owner, final String propertyName, final EventObserver<Boolean> valueChangeEvent) {
+    return booleanValueLink(owner, propertyName, valueChangeEvent, false);
   }
 
   /**
@@ -62,10 +70,10 @@ public final class BooleanValues {
    * @param readOnly if true the component will be read only
    * @return a ButtomModel based on the value
    */
-  public static ButtonModel toggleValueLink(final Object owner, final String propertyName, final EventObserver<Boolean> valueChangeEvent,
-                                            final boolean readOnly) {
+  public static ButtonModel booleanValueLink(final Object owner, final String propertyName, final EventObserver<Boolean> valueChangeEvent,
+                                             final boolean readOnly) {
     final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-    toggleValueLink(buttonModel, owner, propertyName, valueChangeEvent, readOnly);
+    booleanValueLink(buttonModel, owner, propertyName, valueChangeEvent, readOnly);
 
     return buttonModel;
   }
@@ -76,9 +84,9 @@ public final class BooleanValues {
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    */
-  public static void toggleValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
-                                     final EventObserver<Boolean> valueChangeEvent) {
-    toggleValueLink(buttonModel, owner, propertyName, valueChangeEvent, false);
+  public static void booleanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
+                                      final EventObserver<Boolean> valueChangeEvent) {
+    booleanValueLink(buttonModel, owner, propertyName, valueChangeEvent, false);
   }
 
   /**
@@ -88,9 +96,17 @@ public final class BooleanValues {
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    */
-  public static void toggleValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
-                                     final EventObserver<Boolean> valueChangeEvent, final boolean readOnly) {
-    toggleValueLink(buttonModel, propertyValue(owner, propertyName, boolean.class, valueChangeEvent), readOnly);
+  public static void booleanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
+                                      final EventObserver<Boolean> valueChangeEvent, final boolean readOnly) {
+    booleanValueLink(buttonModel, propertyValue(owner, propertyName, boolean.class, valueChangeEvent), readOnly);
+  }
+
+  /**
+   * @param buttonModel the button model to link with the value
+   * @param value the model value
+   */
+  public static void booleanValueLink(final ButtonModel buttonModel, final Value<Boolean> value) {
+    booleanValueLink(buttonModel, value, false);
   }
 
   /**
@@ -98,7 +114,7 @@ public final class BooleanValues {
    * @param value the model value
    * @param readOnly if true the component will be read only
    */
-  public static void toggleValueLink(final ButtonModel buttonModel, final Value<Boolean> value, final boolean readOnly) {
+  public static void booleanValueLink(final ButtonModel buttonModel, final Value<Boolean> value, final boolean readOnly) {
     Values.link(value, booleanButtonModelValue(buttonModel), readOnly);
   }
 }

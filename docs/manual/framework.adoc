@@ -1,0 +1,8 @@
+= Framework
+:dir-manual: ../manual
+
+include::{dir-manual}/framework-domain-db.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-model.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-ui.adoc[leveloffset=+1]

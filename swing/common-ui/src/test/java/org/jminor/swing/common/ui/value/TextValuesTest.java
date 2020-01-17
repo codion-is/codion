@@ -89,8 +89,9 @@ public class TextValuesTest {
 
   @Test
   public void textValue() {
-    final JTextField textField = new JTextField();
-    final Value<String> value = TextValues.textValue(textField);
+    final ComponentValue<String, JTextField> value = TextValues.textValue();
+
+    final JTextField textField = value.getComponent();
 
     assertNull(value.get());
     textField.setText("hello there");

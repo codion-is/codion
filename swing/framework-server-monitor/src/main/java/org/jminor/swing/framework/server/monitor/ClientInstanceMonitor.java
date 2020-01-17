@@ -33,7 +33,7 @@ public final class ClientInstanceMonitor {
   private final EntityConnectionServerAdmin server;
   private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
-  private ButtonModel loggingEnabledButtonModel;
+  private final ButtonModel loggingEnabledButtonModel;
 
   /**
    * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
@@ -43,6 +43,7 @@ public final class ClientInstanceMonitor {
   public ClientInstanceMonitor(final EntityConnectionServerAdmin server, final RemoteClient remoteClient) {
     this.remoteClient = remoteClient;
     this.server = server;
+    this.loggingEnabledButtonModel = BooleanValues.booleanValueLink(this, "loggingEnabled", loggingStatusChangedEvent);
   }
 
   /**
@@ -56,10 +57,6 @@ public final class ClientInstanceMonitor {
    * @return the {@link ButtonModel} for controlling whether logging is enabled
    */
   public ButtonModel getLoggingEnabledButtonModel() {
-    if (loggingEnabledButtonModel == null) {
-      loggingEnabledButtonModel = BooleanValues.toggleValueLink(this, "loggingEnabled", loggingStatusChangedEvent);
-    }
-
     return loggingEnabledButtonModel;
   }
 

@@ -111,11 +111,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName(), Locale.getDefault());
 
-  static {
-    //initialize button captions
-    UiManagerDefaults.initialize();
-  }
-
   private static final String SET_LOG_LEVEL = "set_log_level";
   private static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";
   private static final String SELECT_LOOK_AND_FEEL = "select_look_and_feel";
@@ -196,6 +191,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
+    //initialize button captions, not in a static initializer since applications may set the locale in main()
+    UiManagerDefaults.initialize();
     setUncaughtExceptionHandler();
   }
 

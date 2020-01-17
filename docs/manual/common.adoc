@@ -1,0 +1,6 @@
+= Common
+:dir-manual: ../manual
+
+include::{dir-manual}/common-model.adoc[leveloffset=+1]
+
+include::{dir-manual}/common-ui.adoc[leveloffset=+1]

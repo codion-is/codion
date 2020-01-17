@@ -14,6 +14,8 @@ NOTE: Static imports are used extensively in the examples, see <<#_full_example,
 
 === select
 
+For selecting one or more rows.
+
 {url-entity-connection}#select-org.jminor.framework.db.condition.EntitySelectCondition-[select(EntitySelectCondition condition)]
 
 [source,java,indent=0]
@@ -36,6 +38,8 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 ----
 
 === selectSingle
+
+For selecting single rows.
 
 {url-entity-connection}#selectSingle-org.jminor.framework.db.condition.EntitySelectCondition-[selectSingle(EntitySelectCondition condition)]
 
@@ -60,6 +64,8 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 === selectValues
 
+For selecting the values of a single column.
+
 {url-entity-connection}#selectValues-java.lang.String-org.jminor.framework.db.condition.EntityCondition-[selectValues(String propertyId, EntityCondition condition)]
 
 [source,java,indent=0]
@@ -69,6 +75,8 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 === selectDependencies
 
+For selecting entities that depend on a set of entities via foreign keys.
+
 {url-entity-connection}#selectDependencies-java.util.Collection-[selectDependencies(Collection<Entity> entities)]
 
 [source,java,indent=0]
@@ -77,6 +85,8 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 ----
 
 === selectRowCount
+
+For selecting the row count given a condition.
 
 {url-entity-connection}#selectRowCount-org.jminor.framework.db.condition.EntityCondition-[selectRowCount(EntityCondition condition)]
 
@@ -89,6 +99,8 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 === insert
 
+For inserting rows.
+
 {url-entity-connection}#insert-java.util.List-[insert(List<Entity> entities)]
 
 [source,java,indent=0]
@@ -98,6 +110,8 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 === update
 
+For updating existing rows.
+
 ** {url-entity-connection}#update-java.util.List-[update(List<Entity> entities)]
 
 [source,java,indent=0]
@@ -106,6 +120,8 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 ----
 
 === delete
+
+For deleting existing rows.
 
 ** {url-entity-connection}#delete-org.jminor.framework.db.condition.EntityCondition-[delete(EntityCondition condition)]
 
