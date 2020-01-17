@@ -42,7 +42,7 @@ public final class InputControls {
     JToggleButton.ToggleButtonModel buttonModel =
             new JToggleButton.ToggleButtonModel();
 
-    BooleanValues.toggleValueLink(buttonModel, booleanValue);
+    BooleanValues.booleanValueLink(buttonModel, booleanValue);
 
     JCheckBox checkBox = new JCheckBox();
     checkBox.setModel(buttonModel);
@@ -57,7 +57,7 @@ public final class InputControls {
     NullableToggleButtonModel buttonModel =
             new NullableToggleButtonModel();
 
-    BooleanValues.toggleValueLink(buttonModel, booleanValue);
+    BooleanValues.booleanValueLink(buttonModel, booleanValue);
 
     NullableCheckBox checkBox = new NullableCheckBox(buttonModel);
     // end::nullableCheckBox[]

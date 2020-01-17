@@ -415,7 +415,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
     }
 
     private void createToggleProperty(final JCheckBox checkBox, final boolean upperBound) {
-      BooleanValues.toggleValueLink(checkBox.getModel(),
+      BooleanValues.booleanValueLink(checkBox.getModel(),
               upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue(), false);
     }
 

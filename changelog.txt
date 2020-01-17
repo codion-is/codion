@@ -5618,3 +5618,6 @@
   EntityApplicationPanel, call to UiManagerDefaults.initialize() moved from static initializer to constructor, since locale is usually set in main()
   TextValues, NumericalValues, BooleanVales, added a couple of overloaded methods
   TextValues, generics improved
+  BooleanValues.toggleValueLink() renamed to booleanValueLink()
+  ClientInstanceMonitor, minor refactoring
+  DefaultEntityValidator bug fixed, did not initialize transient revalidateEvent field after serialization

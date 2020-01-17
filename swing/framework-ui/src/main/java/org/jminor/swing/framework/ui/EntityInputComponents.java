@@ -744,7 +744,7 @@ public final class EntityInputComponents {
 
   private static JCheckBox initializeCheckBox(final Property property, final Value value,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
-    BooleanValues.toggleValueLink(checkBox.getModel(), value);
+    BooleanValues.booleanValueLink(checkBox.getModel(), value);
     linkToEnabledState(enabledState, checkBox);
     checkBox.setToolTipText(property.getDescription());
 

@@ -389,7 +389,7 @@ public final class EntityLookupField extends JTextField {
       }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
-      BooleanValues.toggleValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionEnabledValue());
+      BooleanValues.booleanValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionEnabledValue());
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
       final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
@@ -415,11 +415,11 @@ public final class EntityLookupField extends JTextField {
     private static JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
       final JPanel panel = new JPanel(Layouts.createGridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
-      BooleanValues.toggleValueLink(boxCaseSensitive.getModel(), settings.getCaseSensitiveValue());
+      BooleanValues.booleanValueLink(boxCaseSensitive.getModel(), settings.getCaseSensitiveValue());
       final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
-      BooleanValues.toggleValueLink(boxPrefixWildcard.getModel(), settings.getWildcardPrefixValue());
+      BooleanValues.booleanValueLink(boxPrefixWildcard.getModel(), settings.getWildcardPrefixValue());
       final JCheckBox boxPostfixWildcard = new JCheckBox(MESSAGES.getString("postfix_wildcard"));
-      BooleanValues.toggleValueLink(boxPostfixWildcard.getModel(), settings.getWildcardPostfixValue());
+      BooleanValues.booleanValueLink(boxPostfixWildcard.getModel(), settings.getWildcardPostfixValue());
 
       panel.add(boxCaseSensitive);
       panel.add(boxPrefixWildcard);
