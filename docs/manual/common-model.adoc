@@ -10,7 +10,7 @@ Two common classes used throughout the framework are the {url-javadoc}/org/jmino
 
 === Event
 
-The {url-javadoc}/org/jminor/common/event/Event.html[Event] class is a simple event implementation used throughout the framework to signal object state changes or to indicate that an action is about to start or has ended. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *fire()* method, with or without a *data* parameter.
+The {url-javadoc}/org/jminor/common/event/Event.html[Event] class is a simple event implementation used throughout the framework to signal object state changes or to indicate that an action is about to start or has ended. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *onEvent()* method, with or without a *data* parameter.
 
 Events are instantiated via the {url-javadoc}/org/jminor/common/event/Events.html[Events] factory class.
 
@@ -32,7 +32,7 @@ States are instantiated via the {url-javadoc}/org/jminor/common/state/States.htm
 include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=state]
 ----
 
-Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
+Any *Action* object can be linked to a *State* object via the *Components.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
 
 [source,java,indent=0]
 ----

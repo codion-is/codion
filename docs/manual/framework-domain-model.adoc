@@ -5,8 +5,8 @@
 :dir-source-world: ../../demos/world/src/main/java
 :url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
 
-The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[org.jminor.framework.domain.Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/property/Property.html[org.jminor.framework.domain.property.Property], which represents columns. The
-{url-javadoc}/org/jminor/framework/domain/Domain.html[org.jminor.framework.domain.Domain] class serves as a container for the domain model and as a factory for Entity and Entity.Key objects.
+The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property], which represents columns. The
+{url-javadoc}/org/jminor/framework/domain/Domain.html[Domain] class serves as a container for the domain model as well as a factory for Entity and Entity.Key objects.
 
 == Entities
 
