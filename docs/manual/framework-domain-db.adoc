@@ -1,0 +1,10 @@
+= Domain & Database
+:dir-manual: ../manual
+
+include::{dir-manual}/framework-domain-model.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-conditions.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-entity-connection.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-entity-connection-provider.adoc[leveloffset=+1]

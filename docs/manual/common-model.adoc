@@ -1,4 +1,4 @@
-= Model layer
+= Common Model
 :dir-source: ../../demos/manual/src/main/java
 :url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
 

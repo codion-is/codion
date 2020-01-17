@@ -1,0 +1,12 @@
+= Framework Model
+:dir-manual: ../manual
+
+include::{dir-manual}/framework-entity-model.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-entity-edit-model.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-entity-table-model.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-entity-application-model.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-load-test.adoc[leveloffset=+1]

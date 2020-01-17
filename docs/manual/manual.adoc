@@ -4,38 +4,6 @@
 
 NOTE: Most of the code used throughout this manual is available in the 'manual' demo module included in the project.
 
-:leveloffset: 1
+include::{dir-manual}/common.adoc[leveloffset=+1]
 
-include::{dir-manual}/domain-model.adoc[]
-
-include::{dir-manual}/entity-connection.adoc[]
-
-include::{dir-manual}/entity-connection-provider.adoc[]
-
-include::{dir-manual}/conditions.adoc[]
-
-include::{dir-manual}/model.adoc[]
-
-include::{dir-manual}/entity-model.adoc[]
-
-include::{dir-manual}/entity-edit-model.adoc[]
-
-include::{dir-manual}/entity-table-model.adoc[]
-
-include::{dir-manual}/entity-application-model.adoc[]
-
-include::{dir-manual}/load-test.adoc[]
-
-include::{dir-manual}/input-controls.adoc[]
-
-include::{dir-manual}/entity-panel.adoc[]
-
-include::{dir-manual}/entity-edit-panel.adoc[]
-
-include::{dir-manual}/entity-table-panel.adoc[]
-
-include::{dir-manual}/entity-panel-provider.adoc[]
-
-include::{dir-manual}/entity-application-panel.adoc[]
-
-include::{dir-manual}/reports.adoc[]
+include::{dir-manual}/framework.adoc[leveloffset=+1]

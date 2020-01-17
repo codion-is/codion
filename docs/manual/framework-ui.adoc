@@ -1,0 +1,14 @@
+= Framework UI
+:dir-manual: ../manual
+
+include::{dir-manual}/framework-entity-panel.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-entity-edit-panel.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-entity-table-panel.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-entity-panel-provider.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-entity-application-panel.adoc[leveloffset=+1]
+
+include::{dir-manual}/framework-reports.adoc[leveloffset=+1]
