@@ -4,7 +4,6 @@
 package org.jminor.plugin.tomcat.pool;
 
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
@@ -17,6 +16,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.apache.tomcat.jdbc.pool.Validator;
 
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -56,8 +56,9 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
     private DataSourceWrapper(final Database database, final User user, final DataSource dataSource) {
       super(database, user);
-      dataSource.setDataSource(Util.initializeProxy(javax.sql.DataSource.class, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
-              onInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
+      dataSource.setDataSource((javax.sql.DataSource) Proxy.newProxyInstance(javax.sql.DataSource.class.getClassLoader(),
+              new Class[] {javax.sql.DataSource.class}, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
+                      onInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
       setPool(dataSource);
     }
 

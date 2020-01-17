@@ -5,7 +5,6 @@ package org.jminor.framework.server;
 
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
@@ -31,6 +30,7 @@ import org.slf4j.MDC;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -92,7 +92,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     super(port, clientSocketFactory, serverSocketFactory);
     this.connectionHandler = new RemoteEntityConnectionHandler(domain, remoteClient,
             connectionPool, database, loggingEnabled);
-    this.connectionProxy = Util.initializeProxy(EntityConnection.class, connectionHandler);
+    this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
+            new Class[] {EntityConnection.class}, connectionHandler);
   }
 
   /**

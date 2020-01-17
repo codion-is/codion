@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.db.http;
 
+import org.jminor.common.Serializer;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.ConditionType;
@@ -535,7 +536,7 @@ final class HttpEntityConnection implements EntityConnection {
   private static HttpPost createHttpPost(final URIBuilder uriBuilder, final Object data) throws URISyntaxException, IOException {
     final HttpPost post = new HttpPost(uriBuilder.build());
     if (data != null) {
-      post.setEntity(new ByteArrayEntity(Util.serialize(data)));
+      post.setEntity(new ByteArrayEntity(Serializer.serialize(data)));
     }
 
     return post;
@@ -546,10 +547,10 @@ final class HttpEntityConnection implements EntityConnection {
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       response.getEntity().writeTo(outputStream);
       if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-        throw Util.<Exception>deserialize(outputStream.toByteArray());
+        throw Serializer.<Exception>deserialize(outputStream.toByteArray());
       }
 
-      return Util.deserialize(outputStream.toByteArray());
+      return Serializer.deserialize(outputStream.toByteArray());
     }
   }
 

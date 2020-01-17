@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui;
 
+import org.jminor.common.Memory;
 import org.jminor.common.TaskScheduler;
-import org.jminor.common.Util;
 
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -64,7 +64,7 @@ public final class UiUtil {
     textField.setEditable(false);
     textField.setHorizontalAlignment(JTextField.CENTER);
     new TaskScheduler(() -> SwingUtilities.invokeLater(() ->
-            textField.setText(Util.getMemoryUsageString())), updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
+            textField.setText(Memory.getMemoryUsageString())), updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
 
     return textField;
   }

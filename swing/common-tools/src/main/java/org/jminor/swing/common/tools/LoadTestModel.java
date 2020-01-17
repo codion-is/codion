@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.common.tools;
 
+import org.jminor.common.Memory;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 import org.jminor.common.Util;
@@ -620,9 +621,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
     numberOfApplicationsSeries.add(time, applications.size());
-    allocatedMemoryCollection.add(time, Util.getAllocatedMemory() / THOUSAND);
-    usedMemoryCollection.add(time, Util.getUsedMemory() / THOUSAND);
-    maxMemoryCollection.add(time, Util.getMaxMemory() / THOUSAND);
+    allocatedMemoryCollection.add(time, Memory.getAllocatedMemory() / THOUSAND);
+    usedMemoryCollection.add(time, Memory.getUsedMemory() / THOUSAND);
+    maxMemoryCollection.add(time, Memory.getMaxMemory() / THOUSAND);
     systemLoadSeries.add(time, getSystemCpuLoad() * HUNDRED);
     processLoadSeries.add(time, getProcessCpuLoad() * HUNDRED);
     scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());

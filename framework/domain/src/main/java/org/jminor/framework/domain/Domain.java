@@ -17,6 +17,7 @@ import org.jminor.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -421,7 +422,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    */
   public final Entity createToStringEntity(final String entityId, final String toStringValue) {
     final Entity entity = entity(entityId);
-    return Util.initializeProxy(Entity.class, (proxy, method, args) -> {
+    return (Entity) Proxy.newProxyInstance(Entity.class.getClassLoader(), new Class[] {Entity.class}, (proxy, method, args) -> {
       if ("toString".equals(method.getName())) {
         return toStringValue;
       }

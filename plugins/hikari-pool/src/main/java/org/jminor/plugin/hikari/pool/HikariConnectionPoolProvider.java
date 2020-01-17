@@ -4,7 +4,6 @@
 package org.jminor.plugin.hikari.pool;
 
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.AbstractConnectionPool;
@@ -16,6 +15,7 @@ import com.zaxxer.hikari.pool.HikariPool;
 import com.zaxxer.hikari.util.DriverDataSource;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -51,8 +51,9 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
       config.setMinimumIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());
       config.setIdleTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get());
       config.setJdbcUrl(database.getURL(null));
-      config.setDataSource(Util.initializeProxy(DataSource.class, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
-              onInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
+      config.setDataSource((DataSource) Proxy.newProxyInstance(DataSource.class.getClassLoader(),
+              new Class[] {DataSource.class}, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
+                      onInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
       setPool(new HikariPool(config));
     }
 

@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.remote.Clients;
@@ -19,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Collection;
@@ -79,15 +79,16 @@ public class DefaultRemoteEntityConnectionTest {
       assertTrue(boundNames.contains(serviceName));
 
       final DefaultRemoteEntityConnection finalAdapter = adapter;
-      final EntityConnection proxy = Util.initializeProxy(EntityConnection.class, (proxy1, method, args) -> {
-        final Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
-        try {
-          return remoteMethod.invoke(finalAdapter, args);
-        }
-        catch (final InvocationTargetException e) {
-          throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
-        }
-      });
+      final EntityConnection proxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
+              new Class[] {EntityConnection.class}, (proxy1, method, args) -> {
+                final Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
+                try {
+                  return remoteMethod.invoke(finalAdapter, args);
+                }
+                catch (final InvocationTargetException e) {
+                  throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
+                }
+              });
 
       final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP);
       proxy.beginTransaction();
