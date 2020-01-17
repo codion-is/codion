@@ -29,6 +29,7 @@ public final class TextValues {
 
   /**
    * @param textComponent the component
+   * @param <C> the text component type
    * @return a Value bound to the given component
    */
   public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent) {
@@ -49,6 +50,7 @@ public final class TextValues {
   /**
    * @param textComponent the component
    * @param format the format
+   * @param <C> the text component type
    * @return a Value bound to the given component
    */
   public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent, final Format format) {
@@ -59,6 +61,7 @@ public final class TextValues {
    * @param textComponent the component
    * @param format the format
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param <C> the text component type
    * @return a Value bound to the given component
    */
   public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent, final Format format,
