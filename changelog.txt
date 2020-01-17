@@ -5617,3 +5617,4 @@
   DefaultValueMap hashCode() and equals() now rely on HashMap.hashCode() and equals(), validateAndPrepare() renamed to validateAndPrepareForPut()
   EntityApplicationPanel, call to UiManagerDefaults.initialize() moved from static initializer to constructor, since locale is usually set in main()
   TextValues, NumericalValues, BooleanVales, added a couple of overloaded methods
+  TextValues, generics improved

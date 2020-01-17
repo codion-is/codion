@@ -23,7 +23,7 @@ public final class TextValues {
   /**
    * @return a Value bound to a JTextField
    */
-  public static ComponentValue<String, JTextComponent> textValue() {
+  public static ComponentValue<String, JTextField> textValue() {
     return textValue(new JTextField());
   }
 
@@ -31,16 +31,16 @@ public final class TextValues {
    * @param textComponent the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<String, JTextComponent> textValue(final JTextComponent textComponent) {
-    return new AbstractTextComponentValue<String, JTextComponent>(textComponent, true, true) {
+  public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent) {
+    return new AbstractTextComponentValue<String, C>(textComponent, true, true) {
       @Override
-      protected String getComponentValue(final JTextComponent component) {
+      protected String getComponentValue(final C component) {
         final String text = component.getText();
 
         return nullOrEmpty(text) ? null : text;
       }
       @Override
-      protected void setComponentValue(final JTextComponent component, final String value) {
+      protected void setComponentValue(final C component, final String value) {
         component.setText(value);
       }
     };
@@ -51,7 +51,7 @@ public final class TextValues {
    * @param format the format
    * @return a Value bound to the given component
    */
-  public static ComponentValue<String, JTextComponent> textValue(final JTextComponent textComponent, final Format format) {
+  public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent, final Format format) {
     return textValue(textComponent, format, true);
   }
 
@@ -61,8 +61,8 @@ public final class TextValues {
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static ComponentValue<String, JTextComponent> textValue(final JTextComponent textComponent, final Format format,
-                                                                 final boolean updateOnKeystroke) {
+  public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent, final Format format,
+                                                                               final boolean updateOnKeystroke) {
     return new FormattedTextComponentValue<>(textComponent, format, updateOnKeystroke);
   }
 
