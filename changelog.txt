@@ -5623,3 +5623,4 @@
   DefaultEntityValidator bug fixed, did not initialize transient revalidateEvent field after serialization
   BooleanComboBoxModel now sets null as the initially selected value
   SelectedValues, BooleanValues, minor refactoring
+  Dates removed
