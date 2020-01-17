@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.db.http;
 
+import org.jminor.common.Serializer;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.ConditionType;
@@ -491,16 +492,16 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   private HttpRequest createRequest(final String path, final Object data) throws IOException {
     return HttpRequest.newBuilder()
             .uri(URI.create(baseurl + path))
-            .POST(data == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofByteArray(Util.serialize(data)))
+            .POST(data == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(data)))
             .headers(headers).build();
   }
 
   private static <T> T handleResponse(final HttpResponse response) throws Exception {
     if (response.statusCode() != HTTP_STATUS_OK) {
-      throw (Exception) Util.deserialize((byte[]) response.body());
+      throw (Exception) Serializer.deserialize((byte[]) response.body());
     }
 
-    return Util.deserialize((byte[]) response.body());
+    return Serializer.deserialize((byte[]) response.body());
   }
 
   private static final class DaemonThreadFactory implements ThreadFactory {

@@ -3,14 +3,12 @@
  */
 package org.jminor.framework.servlet;
 
+import org.jminor.common.Serializer;
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
-import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -90,7 +88,7 @@ public class EntityServletServerTest {
             .POST(HttpRequest.BodyPublishers.noBody()).build();
 
     final HttpResponse<byte[]> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
-    final Boolean result = Util.deserialize(httpResponse.body());
+    final Boolean result = Serializer.deserialize(httpResponse.body());
     assertFalse(result);
   }
 
@@ -142,11 +140,11 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Conditions.entitySelectCondition(TestDomain.T_DEPARTMENT)))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(Conditions.entitySelectCondition(TestDomain.T_DEPARTMENT)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
-    List<Entity> queryEntities = Util.deserialize(response.body());
+    List<Entity> queryEntities = Serializer.deserialize(response.body());
     assertEquals(4, queryEntities.size());
 
     final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
@@ -159,11 +157,11 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/insert"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(singletonList(department)))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(singletonList(department)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
-    List<Entity.Key> queryKeys = Util.deserialize(response.body());
+    List<Entity.Key> queryKeys = Serializer.deserialize(response.body());
     assertEquals(1, queryKeys.size());
     assertEquals(department.getKey(), queryKeys.get(0));
 
@@ -171,7 +169,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/delete"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Conditions.entitySelectCondition(department.getKey())))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(Conditions.entitySelectCondition(department.getKey())))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -180,11 +178,11 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/insert"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(singletonList(department)))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(singletonList(department)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
-    queryKeys = Util.deserialize(response.body());
+    queryKeys = Serializer.deserialize(response.body());
     assertEquals(1, queryKeys.size());
     assertEquals(department.getKey(), queryKeys.get(0));
 
@@ -196,11 +194,11 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/update"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(singletonList(department)))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(singletonList(department)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
-    queryEntities = Util.deserialize(response.body());
+    queryEntities = Serializer.deserialize(response.body());
     assertEquals(1, queryEntities.size());
     assertEquals(department, queryEntities.get(0));
 
@@ -208,30 +206,30 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Conditions.entitySelectCondition(TestDomain.T_DEPARTMENT,
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(Conditions.entitySelectCondition(TestDomain.T_DEPARTMENT,
                     TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "New name")))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
-    queryEntities = Util.deserialize(response.body());
+    queryEntities = Serializer.deserialize(response.body());
     assertEquals(1, queryEntities.size());
 
     //select by condition
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Conditions.entitySelectCondition(department.getKey())))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(Conditions.entitySelectCondition(department.getKey())))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
-    queryEntities = Util.deserialize(response.body());
+    queryEntities = Serializer.deserialize(response.body());
     assertEquals(1, queryEntities.size());
 
     //delete
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/delete"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Conditions.entitySelectCondition(TestDomain.T_DEPARTMENT,
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(Conditions.entitySelectCondition(TestDomain.T_DEPARTMENT,
                     TestDomain.DEPARTMENT_ID, ConditionType.LIKE, -42)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
@@ -241,7 +239,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/function?functionId=" + TestDomain.FUNCTION_ID))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(emptyList()))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(emptyList()))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -250,7 +248,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/procedure?procedureId=" + TestDomain.PROCEDURE_ID))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(emptyList()))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(emptyList()))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
