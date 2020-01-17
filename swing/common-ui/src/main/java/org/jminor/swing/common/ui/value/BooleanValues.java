@@ -8,6 +8,7 @@ import org.jminor.common.event.EventObserver;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
+import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 
 import javax.swing.ButtonModel;
 import javax.swing.JComboBox;
@@ -41,7 +42,7 @@ public final class BooleanValues {
    * @return a Boolean based ComponentValue
    */
   public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBoxValue() {
-    return booleanComboBoxValue(null);
+    return booleanComboBoxValue((Boolean) null);
   }
 
   /**
@@ -50,7 +51,19 @@ public final class BooleanValues {
    * @return a Boolean based ComponentValue
    */
   public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBoxValue(final Boolean initialValue) {
-    return new BooleanComboBoxValue(initialValue);
+    final BooleanComboBoxModel model = new BooleanComboBoxModel();
+    model.setSelectedItem(initialValue);
+
+    return booleanComboBoxValue(new JComboBox<>(model));
+  }
+
+  /**
+   * Instantiates a new Boolean based ComponentValue.
+   * @param comboBox the combo box
+   * @return a Boolean based ComponentValue
+   */
+  public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBoxValue(final JComboBox<Item<Boolean>> comboBox) {
+    return new BooleanComboBoxValue(comboBox);
   }
 
   /**
@@ -99,6 +112,14 @@ public final class BooleanValues {
   public static void booleanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
                                       final EventObserver<Boolean> valueChangeEvent, final boolean readOnly) {
     booleanValueLink(buttonModel, propertyValue(owner, propertyName, boolean.class, valueChangeEvent), readOnly);
+  }
+
+  /**
+   * @param buttonModel the button model to link with the value
+   * @param value the model value
+   */
+  public static void booleanValueLink(final JComboBox<Item<Boolean>> comboBox, final Value<Boolean> value) {
+    Values.link(booleanComboBoxValue(comboBox), value);
   }
 
   /**

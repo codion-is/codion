@@ -26,7 +26,7 @@ public class SelectedValuesTest {
   @Test
   public void selectedItemValueLink() throws Exception {
     final JComboBox box = new JComboBox(new String[] {"b", "d", "s"});
-    SelectedValues.selectedItemValueLink(box, this, "selectedItem", String.class, selectedItemChangedEvent);
+    SelectedValues.selectedValueLink(box, this, "selectedItem", String.class, selectedItemChangedEvent);
     assertNull(selectedItem);
     setSelectedItem("s");
     assertEquals("s", box.getSelectedItem());

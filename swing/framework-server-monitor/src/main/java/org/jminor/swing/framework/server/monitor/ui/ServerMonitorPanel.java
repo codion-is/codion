@@ -227,7 +227,7 @@ public final class ServerMonitorPanel extends JPanel {
     final DefaultComboBoxModel comboModel = new DefaultComboBoxModel(model.getLoggingLevels().toArray());
 
     final JComboBox box = new JComboBox<>(comboModel);
-    SelectedValues.selectedItemValueLink(box, model, "loggingLevel", Object.class, model.getLoggingLevelObserver());
+    SelectedValues.selectedValueLink(box, model, "loggingLevel", Object.class, model.getLoggingLevelObserver());
 
     return box;
   }

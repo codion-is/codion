@@ -286,7 +286,7 @@ public final class EntityInputComponents {
     requireNonNull(comboBoxModel, "comboBoxModel");
     comboBoxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    SelectedValues.selectedItemValueLink(comboBox, value);
+    SelectedValues.selectedValueLink(comboBox, value);
     linkToEnabledState(enabledState, comboBox);
     addComboBoxCompletion(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
@@ -408,7 +408,7 @@ public final class EntityInputComponents {
     requireNonNull(value, VALUE_PARAM_NAME);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
-    SelectedValues.selectedItemValueLink(comboBox, value);
+    SelectedValues.selectedValueLink(comboBox, value);
     linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
 
