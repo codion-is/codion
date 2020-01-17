@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.LoggerProxy;
+import org.jminor.common.Memory;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
@@ -343,19 +344,19 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public long getAllocatedMemory() {
-    return Util.getAllocatedMemory();
+    return Memory.getAllocatedMemory();
   }
 
   /** {@inheritDoc} */
   @Override
   public long getUsedMemory() {
-    return Util.getUsedMemory();
+    return Memory.getUsedMemory();
   }
 
   /** {@inheritDoc} */
   @Override
   public long getMaxMemory() {
-    return Util.getMaxMemory();
+    return Memory.getMaxMemory();
   }
 
   /** {@inheritDoc} */
