@@ -115,7 +115,7 @@ public final class BooleanValues {
   }
 
   /**
-   * @param buttonModel the button model to link with the value
+   * @param comboBox the combo box to link with the value
    * @param value the model value
    */
   public static void booleanValueLink(final JComboBox<Item<Boolean>> comboBox, final Value<Boolean> value) {
