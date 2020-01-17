@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.remote;
 
-import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.remote.Clients;
 import org.jminor.common.remote.Server;
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -105,10 +105,11 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     }
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(
-              getServer().connect(Clients.connectionRequest(getUser(), getClientId(), getClientTypeId(),
-                      getClientVersion(), Collections.singletonMap(REMOTE_CLIENT_DOMAIN_ID,
-                              getDomainId(getDomainClassName()))))));
+      return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
+              new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
+                      getServer().connect(Clients.connectionRequest(getUser(), getClientId(), getClientTypeId(),
+                              getClientVersion(), Collections.singletonMap(REMOTE_CLIENT_DOMAIN_ID,
+                                      getDomainId(getDomainClassName()))))));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);

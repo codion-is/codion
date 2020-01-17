@@ -1,12 +1,12 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.User;
-import org.jminor.common.Util;
 
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,7 +58,7 @@ public final class AbstractEntityConnectionProviderTest {
 
     @Override
     protected EntityConnection connect() {
-      return Util.initializeProxy(EntityConnection.class, new InvocationHandler() {
+      return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(), new Class[] {EntityConnection.class}, new InvocationHandler() {
         private boolean connected = true;
         @Override
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {

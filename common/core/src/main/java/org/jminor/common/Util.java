@@ -6,9 +6,7 @@ package org.jminor.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -229,17 +227,6 @@ public final class Util {
 
     return propertyNames.stream().map(key -> key + ": " +
             propertyWriter.writeValue(key, props.getProperty(key))).collect(Collectors.joining("\n"));
-  }
-
-  /**
-   * Initializes a proxy instance for the given class, using the class loader of that class
-   * @param clazz the class to proxy
-   * @param invocationHandler the invocation handler to use
-   * @param <T> the type
-   * @return a proxy for the given class
-   */
-  public static <T> T initializeProxy(final Class<T> clazz, final InvocationHandler invocationHandler) {
-    return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, invocationHandler);
   }
 
   /**

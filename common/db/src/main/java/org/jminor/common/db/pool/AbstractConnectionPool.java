@@ -5,13 +5,13 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
@@ -176,7 +176,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
       final Connection connection = database.createConnection(user);
       counter.incrementConnectionsCreatedCounter();
 
-      return Util.initializeProxy(Connection.class, (connectionProxy, connectionMethod, connectionArgs) -> {
+      return Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class}, (connectionProxy, connectionMethod, connectionArgs) -> {
         if ("close".equals(connectionMethod.getName())) {
           counter.incrementConnectionsDestroyedCounter();
         }
