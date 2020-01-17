@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.servlet;
 
+import org.jminor.common.Serializer;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.remote.Clients;
@@ -73,7 +74,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.getDomain())).build();
+      return Response.ok(Serializer.serialize(connection.getDomain())).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -119,7 +120,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.isTransactionOpen())).build();
+      return Response.ok(Serializer.serialize(connection.isTransactionOpen())).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -237,7 +238,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.executeFunction(functionId,
+      return Response.ok(Serializer.serialize(connection.executeFunction(functionId,
               EntityService.<List>deserialize(request).toArray()))).build();
     }
     catch (final Exception e) {
@@ -260,7 +261,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.fillReport(deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.fillReport(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -282,7 +283,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.selectDependencies(deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.selectDependencies(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -304,7 +305,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.selectRowCount(deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.selectRowCount(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -328,7 +329,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.selectValues(propertyId, deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.selectValues(propertyId, deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -351,7 +352,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Entity.Key> keys = deserialize(request);
 
-      return Response.ok(Util.serialize(connection.select(keys))).build();
+      return Response.ok(Serializer.serialize(connection.select(keys))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -374,7 +375,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final EntitySelectCondition selectCondition = deserialize(request);
 
-      return Response.ok(Util.serialize(connection.select(selectCondition))).build();
+      return Response.ok(Serializer.serialize(connection.select(selectCondition))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -396,7 +397,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.insert(deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.insert(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -418,7 +419,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.update(deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.update(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -440,7 +441,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final EntityCondition entityCondition = deserialize(request);
 
-      return Response.ok(Util.serialize(connection.delete(entityCondition))).build();
+      return Response.ok(Serializer.serialize(connection.delete(entityCondition))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -462,7 +463,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Entity.Key> keys = deserialize(request);
 
-      return Response.ok(Util.serialize(connection.delete(keys))).build();
+      return Response.ok(Serializer.serialize(connection.delete(keys))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -509,7 +510,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List parameters = deserialize(request);
 
-      return Response.ok(Util.serialize(connection.readBlob((Entity.Key) parameters.get(0), (String) parameters.get(1)))).build();
+      return Response.ok(Serializer.serialize(connection.readBlob((Entity.Key) parameters.get(0), (String) parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -551,10 +552,10 @@ public final class EntityService extends Application {
   private static Response getExceptionResponse(final Exception exeption) {
     try {
       if (exeption instanceof ServerAuthenticationException) {
-        return Response.status(Response.Status.UNAUTHORIZED).entity(Util.serialize(exeption)).build();
+        return Response.status(Response.Status.UNAUTHORIZED).entity(Serializer.serialize(exeption)).build();
       }
 
-      return Response.serverError().entity(Util.serialize(exeption)).build();
+      return Response.serverError().entity(Serializer.serialize(exeption)).build();
     }
     catch (final IOException e) {
       LOG.error(e.getMessage(), e);

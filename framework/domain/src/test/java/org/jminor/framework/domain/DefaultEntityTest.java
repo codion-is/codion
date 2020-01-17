@@ -4,7 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.FileUtil;
-import org.jminor.common.Util;
+import org.jminor.common.Serializer;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
@@ -105,7 +105,7 @@ public class DefaultEntityTest {
     master.put(TestDomain.MASTER_ID, 1L);
     master.put(TestDomain.MASTER_CODE, 11);
 
-    final Entity masterDeserialized = Util.deserialize(Util.serialize(master));
+    final Entity masterDeserialized = Serializer.deserialize(Serializer.serialize(master));
     assertEquals(master.get(TestDomain.MASTER_ID), masterDeserialized.get(TestDomain.MASTER_ID));
     assertEquals(master.get(TestDomain.MASTER_CODE), masterDeserialized.get(TestDomain.MASTER_CODE));
     assertFalse(masterDeserialized.containsKey(TestDomain.MASTER_NAME));
@@ -662,7 +662,7 @@ public class DefaultEntityTest {
     transientProperty.setModifiesEntity(false);
     assertFalse(entity.isModified());
 
-    final Entity deserialized = Util.deserialize(Util.serialize(entity));
+    final Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));
     assertTrue(deserialized.isModified("trans"));
   }
 

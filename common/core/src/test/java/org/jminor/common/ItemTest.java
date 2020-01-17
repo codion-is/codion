@@ -30,7 +30,7 @@ public class ItemTest {
     assertEquals(0, new Item<String>(null).hashCode());
 
     //just make sure its ok post serialization
-    final Item<String> deser = Util.deserialize(Util.serialize(item));
+    final Item<String> deser = Serializer.deserialize(Serializer.serialize(item));
     deser.compareTo(item);
   }
 }

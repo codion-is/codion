@@ -5624,3 +5624,4 @@
   BooleanComboBoxModel now sets null as the initially selected value
   SelectedValues, BooleanValues, minor refactoring
   Dates removed
+  Util.serialize() and deserialize() moved to Serializer

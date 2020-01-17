@@ -5,7 +5,6 @@ package org.jminor.common;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,13 +17,6 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class UtilTest {
-
-  @Test
-  public void serializeDeserialize() throws IOException, ClassNotFoundException {
-    assertNull(Util.deserialize(new byte[0]));
-    assertEquals(0, Util.serialize(null).length);
-    assertEquals(Integer.valueOf(4), Util.deserialize(Util.serialize(4)));
-  }
 
   @Test
   public void roundDouble() {
