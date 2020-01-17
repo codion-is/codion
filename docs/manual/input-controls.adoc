@@ -1,0 +1,106 @@
+= Input Controls
+:dir-source: ../../demos/manual/src/main/java
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+
+Here are the basics of linking input controls to model values.
+
+== Boolean
+
+=== CheckBox
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=checkBox]
+----
+
+=== NullableCheckBox
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=nullableCheckBox]
+----
+
+=== ComboBox
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=booleanComboBox]
+----
+
+== Text
+
+=== TextField
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=textField]
+----
+
+=== TextArea
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=textArea]
+----
+
+== Numbers
+
+=== Integer
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=integerField]
+----
+
+=== Long
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=longField]
+----
+
+=== Double
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=doubleField]
+----
+
+=== BigDecimal
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=bigDecimalField]
+----
+
+== Date & Time
+
+=== LocalTime
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=localTime]
+----
+
+=== LocalDate
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=localDate]
+----
+
+=== LocalDateTime
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=localDateTime]
+----
+
+== Selection
+
+=== ComboBox
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=selectionComboBox]
+----

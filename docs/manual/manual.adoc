@@ -26,6 +26,8 @@ include::{dir-manual}/entity-application-model.adoc[]
 
 include::{dir-manual}/load-test.adoc[]
 
+include::{dir-manual}/input-controls.adoc[]
+
 include::{dir-manual}/entity-panel.adoc[]
 
 include::{dir-manual}/entity-edit-panel.adoc[]
