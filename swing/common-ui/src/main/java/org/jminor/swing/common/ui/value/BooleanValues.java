@@ -37,6 +37,14 @@ public final class BooleanValues {
   }
 
   /**
+   * Instantiates a new Boolean based ComponentValue with a null initial value.
+   * @return a Boolean based ComponentValue
+   */
+  public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBoxValue() {
+    return booleanComboBoxValue(null);
+  }
+
+  /**
    * Instantiates a new Boolean based ComponentValue.
    * @param initialValue the initial value
    * @return a Boolean based ComponentValue
@@ -91,6 +99,14 @@ public final class BooleanValues {
   public static void toggleValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
                                      final EventObserver<Boolean> valueChangeEvent, final boolean readOnly) {
     toggleValueLink(buttonModel, propertyValue(owner, propertyName, boolean.class, valueChangeEvent), readOnly);
+  }
+
+  /**
+   * @param buttonModel the button model to link with the value
+   * @param value the model value
+   */
+  public static void toggleValueLink(final ButtonModel buttonModel, final Value<Boolean> value) {
+    toggleValueLink(buttonModel, value, false);
   }
 
   /**

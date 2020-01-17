@@ -423,16 +423,16 @@ public class ColumnConditionPanel<R, C> extends JPanel {
       final Value modelValue = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
       final Class typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Integer.class)) {
-        NumericalValues.integerValueLink((IntegerField) component, modelValue, true);
+        NumericalValues.integerValueLink((IntegerField) component, modelValue);
       }
       else if (typeClass.equals(Double.class)) {
-        NumericalValues.doubleValueLink((DecimalField) component, modelValue, true);
+        NumericalValues.doubleValueLink((DecimalField) component, modelValue);
       }
       else if (typeClass.equals(BigDecimal.class)) {
         NumericalValues.bigDecimalValueLink((DecimalField) component, modelValue);
       }
       else if (typeClass.equals(Long.class)) {
-        NumericalValues.longValueLink((LongField) component, modelValue, true);
+        NumericalValues.longValueLink((LongField) component, modelValue);
       }
       else if (typeClass.equals(LocalTime.class)) {
         TemporalValues.localTimeValueLink((JFormattedTextField) component, modelValue,

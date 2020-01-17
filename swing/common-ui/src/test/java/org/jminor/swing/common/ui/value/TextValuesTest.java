@@ -12,6 +12,7 @@ import org.jminor.swing.common.ui.textfield.TextInputPanel;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -89,8 +90,9 @@ public class TextValuesTest {
 
   @Test
   public void textValue() {
-    final JTextField textField = new JTextField();
-    final Value<String> value = TextValues.textValue(textField);
+    final ComponentValue<String, JTextComponent> value = TextValues.textValue();
+
+    final JTextField textField = (JTextField) value.getComponent();
 
     assertNull(value.get());
     textField.setText("hello there");

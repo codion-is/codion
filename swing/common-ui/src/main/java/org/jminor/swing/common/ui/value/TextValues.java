@@ -7,6 +7,7 @@ import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
 
+import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import java.text.Format;
 
@@ -18,6 +19,13 @@ import static org.jminor.common.Util.nullOrEmpty;
 public final class TextValues {
 
   private TextValues() {}
+
+  /**
+   * @return a Value bound to a JTextField
+   */
+  public static ComponentValue<String, JTextComponent> textValue() {
+    return textValue(new JTextField());
+  }
 
   /**
    * @param textComponent the component

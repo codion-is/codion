@@ -128,7 +128,7 @@ public class NumericalValuesTest {  private Long longValue;
     final IntegerField integerField = new IntegerField();
     final Value<Integer> integerPropertyValue = Values.propertyValue(this, "integerValue",
             Integer.class, integerValueChangedEvent);
-    NumericalValues.integerValueLink(integerField, integerPropertyValue, true);
+    NumericalValues.integerValueLink(integerField, integerPropertyValue);
     assertNull(integerField.getInteger());
     setIntegerValue(2);
     assertEquals(2, integerField.getInteger().intValue());
@@ -175,7 +175,7 @@ public class NumericalValuesTest {  private Long longValue;
     decimalField.setSeparators('.', ',');
     final Value doublePropertyValue = Values.propertyValue(this, "doubleValue",
             Double.class, doubleValueChangedEvent);
-    NumericalValues.doubleValueLink(decimalField, doublePropertyValue, true);
+    NumericalValues.doubleValueLink(decimalField, doublePropertyValue);
     assertNull(decimalField.getDouble());
     setDoubleValue(2.2);
     assertEquals(Double.valueOf(2.2), decimalField.getDouble());
@@ -206,13 +206,13 @@ public class NumericalValuesTest {  private Long longValue;
     final Double value = 10.4;
     ComponentValue<Double, DecimalField> componentValue = NumericalValues.doubleValue(value);
     assertEquals(value, componentValue.get());
-    componentValue = NumericalValues.doubleValue((Double) null);
+    componentValue = NumericalValues.doubleValue();
     assertNull(componentValue.get());
   }
 
   @Test
   public void parseDouble() {
-    final ComponentValue<Double, DecimalField> componentValue = NumericalValues.doubleValue((Double) null);
+    final ComponentValue<Double, DecimalField> componentValue = NumericalValues.doubleValue();
     assertNull(componentValue.get());
 
     componentValue.getComponent().setGroupingUsed(false);
@@ -250,7 +250,7 @@ public class NumericalValuesTest {  private Long longValue;
     ComponentValue<Integer, IntegerField> componentValue = NumericalValues.integerValue(value);
     assertEquals(value, componentValue.get());
 
-    componentValue = NumericalValues.integerValue((Integer) null);
+    componentValue = NumericalValues.integerValue();
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("15");
@@ -305,7 +305,7 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void integerTextUiValue() {
     final IntegerField integerField = new IntegerField();
-    final Value<Integer> value = NumericalValues.integerValue(integerField, true);
+    final Value<Integer> value = NumericalValues.integerValue(integerField);
 
     assertNull(value.get());
     integerField.setText("122");
@@ -338,7 +338,7 @@ public class NumericalValuesTest {  private Long longValue;
     ComponentValue<Long, LongField> componentValue = NumericalValues.longValue(value);
     assertEquals(value, componentValue.get());
 
-    componentValue = NumericalValues.longValue(null);
+    componentValue = NumericalValues.longValue();
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("15");
@@ -348,7 +348,7 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void longTextUiValue() {
     final LongField longField = new LongField();
-    final Value<Long> value = NumericalValues.longValue(longField, true);
+    final Value<Long> value = NumericalValues.longValue(longField);
 
     assertNull(value.get());
     longField.setText("122");
@@ -379,7 +379,7 @@ public class NumericalValuesTest {  private Long longValue;
   public void doubleTextUiValue() {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    final Value<Double> value = NumericalValues.doubleValue(decimalField, true);
+    final Value<Double> value = NumericalValues.doubleValue(decimalField);
 
     assertNull(value.get());
     decimalField.setText("122.2");
