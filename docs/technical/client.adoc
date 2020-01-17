@@ -1,5 +1,6 @@
 = Client
 :dir-source: ../../demos/chinook/src/main/java
+:imagesdir: ../images
 
 == Features
 
@@ -14,6 +15,12 @@
 * Extensive searching and filtering capabilities
 * Flexible keyboard-centric UI based on tab and split panes, detachable panels and toolbars
 * Detailed logging of client actions
+
+== Default client layout
+
+The default master/detail panel layout.
+
+image::technical/world-client.png[Client UI, 720]
 
 == Architecture
 

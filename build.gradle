@@ -184,7 +184,7 @@ configure(project.frameworkModules) {
 
 asciidoctor {
     doFirst {
-        ant.copy(todir: "${rootDir}/docs/images") {
+        ant.copy(todir: "${rootDir}/docs/images/modules") {
             fileset(dir: "${rootDir}", includes: '**/*/build/reports/dependency-graph/dependency-graph.svg', excludes: 'docs/**/*,build/**/*')
         }
     }
