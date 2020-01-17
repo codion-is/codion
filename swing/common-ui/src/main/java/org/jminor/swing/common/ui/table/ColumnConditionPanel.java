@@ -501,7 +501,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
       }
     }
     final JComboBox<ConditionType> comboBox = new SteppedComboBox(comboBoxModel);
-    SelectedValues.selectedItemValueLink(comboBox, conditionModel, "conditionType", ConditionType.class, conditionModel.getConditionTypeObserver());
+    SelectedValues.selectedValueLink(comboBox, conditionModel, "conditionType", ConditionType.class, conditionModel.getConditionTypeObserver());
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,

@@ -14,14 +14,14 @@ import static java.util.Arrays.asList;
 public final class BooleanComboBoxModel extends ItemComboBoxModel<Boolean> {
 
   /**
-   * Constructs a new BooleanComboBoxModel.
+   * Constructs a new BooleanComboBoxModel, with null as the initially selected value.
    */
   public BooleanComboBoxModel() {
     this("-");
   }
 
   /**
-   * Constructs a new BooleanComboBoxModel.
+   * Constructs a new BooleanComboBoxModel, with null as the initially selected value.
    * @param nullString the string representing a null value
    */
   public BooleanComboBoxModel(final String nullString) {
@@ -29,12 +29,14 @@ public final class BooleanComboBoxModel extends ItemComboBoxModel<Boolean> {
   }
 
   /**
-   * Constructs a new BooleanComboBoxModel.
+   * Constructs a new BooleanComboBoxModel, with null as the initially selected value.
    * @param nullString the string representing a null value
    * @param trueString the string representing the boolean value 'true'
    * @param falseString the string representing the boolean value 'false'
    */
   public BooleanComboBoxModel(final String nullString, final String trueString, final String falseString) {
-    super(null, asList(new Item<>(null, nullString), new Item<>(true, trueString), new Item<>(false, falseString)));
+    super(null, asList(new Item<>(null, nullString),
+            new Item<>(true, trueString), new Item<>(false, falseString)));
+    setSelectedItem(null);
   }
 }

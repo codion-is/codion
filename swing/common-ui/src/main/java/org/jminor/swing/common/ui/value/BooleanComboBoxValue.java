@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui.value;
 
 import org.jminor.common.Item;
-import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 
 import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;
@@ -12,12 +11,11 @@ import java.awt.event.ItemEvent;
 final class BooleanComboBoxValue extends AbstractComponentValue<Boolean, JComboBox<Item<Boolean>>> {
 
   /**
-   * Instantiates a new BooleanInputProvider.
-   * @param initialValue the initial value
+   * Instantiates a new {@link BooleanComboBoxValue}.
+   * @param comboBox the combo box
    */
-  BooleanComboBoxValue(final Boolean initialValue) {
-    super(new JComboBox<>(new BooleanComboBoxModel()));
-    getComponent().getModel().setSelectedItem(initialValue);
+  BooleanComboBoxValue(final JComboBox<Item<Boolean>> comboBox) {
+    super(comboBox);
     getComponent().addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED) {
         notifyValueChange(get());

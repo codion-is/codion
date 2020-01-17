@@ -8,6 +8,7 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.value.Value;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
+import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +52,7 @@ public class BooleanValuesTest {
     assertEquals(true, componentValue.get());
     componentValue.getComponent().getModel().setSelectedItem(null);
     assertNull(componentValue.get());
-    componentValue = new BooleanComboBoxValue(null);
+    componentValue = new BooleanComboBoxValue(new JComboBox<>(new BooleanComboBoxModel()));
     assertNull(componentValue.get());
   }
 

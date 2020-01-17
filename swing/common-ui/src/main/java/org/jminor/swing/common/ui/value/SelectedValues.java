@@ -48,9 +48,9 @@ public final class SelectedValues {
    * @param valueClass the value class
    * @param valueChangeEvent an EventObserver notified each time the value changes
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> comboBox, final Object owner, final String propertyName,
-                                               final Class<V> valueClass, final EventObserver<V> valueChangeEvent) {
-    selectedItemValueLink(comboBox, owner, propertyName, valueClass, valueChangeEvent, false);
+  public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Object owner, final String propertyName,
+                                           final Class<V> valueClass, final EventObserver<V> valueChangeEvent) {
+    selectedValueLink(comboBox, owner, propertyName, valueClass, valueChangeEvent, false);
   }
 
   /**
@@ -62,10 +62,10 @@ public final class SelectedValues {
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> comboBox, final Object owner, final String propertyName,
-                                               final Class<V> valueClass, final EventObserver<V> valueChangeEvent,
-                                               final boolean readOnly) {
-    selectedItemValueLink(comboBox, propertyValue(owner, propertyName, valueClass, valueChangeEvent), readOnly);
+  public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Object owner, final String propertyName,
+                                           final Class<V> valueClass, final EventObserver<V> valueChangeEvent,
+                                           final boolean readOnly) {
+    selectedValueLink(comboBox, propertyValue(owner, propertyName, valueClass, valueChangeEvent), readOnly);
   }
 
   /**
@@ -73,7 +73,7 @@ public final class SelectedValues {
    * @param comboBox the combo box to link with the value
    * @param value the model value
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> comboBox, final Value<V> value) {
+  public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Value<V> value) {
     Values.link(value, selectedValue(comboBox), false);
   }
 
@@ -83,7 +83,7 @@ public final class SelectedValues {
    * @param value the model value
    * @param readOnly if true the component will be read only
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> comboBox, final Value<V> value, final boolean readOnly) {
+  public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Value<V> value, final boolean readOnly) {
     Values.link(value, selectedValue(comboBox), readOnly);
   }
 }

@@ -7,12 +7,12 @@ import org.jminor.common.Item;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
+import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.ComponentValue;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.TemporalValues;
@@ -67,12 +67,9 @@ public final class InputControls {
     // tag::booleanComboBox[]
     Value<Boolean> booleanValue = Values.value();
 
-    ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBoxValue =
-            BooleanValues.booleanComboBoxValue();
+    JComboBox<Item<Boolean>> comboBox = new JComboBox<>(new BooleanComboBoxModel());
 
-    Values.link(booleanValue, booleanComboBoxValue);
-
-    JComboBox<Item<Boolean>> comboBox = booleanComboBoxValue.getComponent();
+    BooleanValues.booleanValueLink(comboBox, booleanValue);
     // end::booleanComboBox[]
   }
 
@@ -172,7 +169,7 @@ public final class InputControls {
 
     JComboBox<String> comboBox = new JComboBox<>(new String[] {"one", "two", "three"});
 
-    SelectedValues.selectedItemValueLink(comboBox, stringValue);
+    SelectedValues.selectedValueLink(comboBox, stringValue);
     // end::selectionComboBox[]
   }
 }
