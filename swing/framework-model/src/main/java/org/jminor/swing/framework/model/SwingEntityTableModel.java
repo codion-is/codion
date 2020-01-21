@@ -166,7 +166,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
     this.conditionModel = conditionModel;
-    bindEventsInternal();
+    bindEvents();
     applyPreferences();
   }
 
@@ -199,8 +199,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityId() + ", tableModel: " + entityId);
     }
     this.editModel = editModel;
-    bindEditModelEventsInternal();
     bindEditModelEvents();
+    onSetEditModel(editModel);
   }
 
   /** {@inheritDoc} */
@@ -655,13 +655,17 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     return getEntityDefinition().getOrderBy();
   }
 
+  /**
+   * Called after a delete has been performed via the associated edit model.
+   * @param deletedEntities the deleted entities
+   */
   protected void onDelete(final List<Entity> deletedEntities) {/*Provided for subclasses*/}
 
   /**
-   * Override to bind events using the edit model, called after the edit model has been set
-   * @see #getEditModel()
+   * Override to handle the edit model being set.
+   * @param editModel the edit model that was just set, never null
    */
-  protected void bindEditModelEvents() {/*Provided for subclasses*/}
+  protected void onSetEditModel(final SwingEntityEditModel editModel) {/*Provided for subclasses*/}
 
   /**
    * Returns the key used to identify user preferences for this table model, that is column positions, widths and such.
@@ -685,12 +689,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     PreferencesUtil.removeUserPreference(getUserPreferencesKey());
   }
 
-  private void bindEventsInternal() {
+  private void bindEvents() {
     getColumnModel().addColumnHiddenListener(this::onColumnHidden);
     conditionModel.addSimpleConditionListener(this::refresh);
   }
 
-  private void bindEditModelEventsInternal() {
+  private void bindEditModelEvents() {
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDeleteInternal);
