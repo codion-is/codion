@@ -5628,3 +5628,4 @@
   Memory split from Util
   Util.initializeProxy() removed
   SwingEntityTableModel.bindEditModelEvents() renamed to onSetEditModel(editModel), added to FXEntityListModel
+  DefaultDatabaseConnection, minor refactoring
