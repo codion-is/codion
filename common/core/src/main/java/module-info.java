@@ -14,6 +14,7 @@ module org.jminor.common.core {
   exports org.jminor.common.i18n;
   exports org.jminor.common.state;
   exports org.jminor.common.value;
+  exports org.jminor.common.valuemap;
 
   uses org.jminor.common.LoggerProxy;
   uses org.jminor.common.CredentialsProvider;
