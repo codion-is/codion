@@ -4,7 +4,7 @@
 package org.jminor.framework.domain.property;
 
 import org.jminor.common.Item;
-import org.jminor.common.db.valuemap.ValueMap;
+import org.jminor.common.valuemap.ValueMap;
 
 import java.sql.Types;
 import java.text.Collator;

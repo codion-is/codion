@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.valuemap.DefaultValueMap;
-import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
+import org.jminor.common.valuemap.DefaultValueMap;
+import org.jminor.common.valuemap.ValueMap;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;

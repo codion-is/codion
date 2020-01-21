@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.valuemap.DefaultValueMap;
+import org.jminor.common.valuemap.DefaultValueMap;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.io.IOException;
