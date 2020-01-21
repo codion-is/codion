@@ -200,7 +200,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
-  protected void valuePut(final ColumnProperty property, final Object value, final Object previousValue) {
+  protected void onValuePut(final ColumnProperty property, final Object value, final Object previousValue) {
     if (singleIntegerKey) {
       setHashCode((Integer) value);
     }
