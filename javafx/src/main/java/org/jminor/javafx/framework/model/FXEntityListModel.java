@@ -124,6 +124,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
     this.editModel = editModel;
     bindEditModelEvents();
+    onSetEditModel(editModel);
   }
 
   /** {@inheritDoc} */
@@ -489,6 +490,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   protected OrderBy getOrderBy() {
     return getEntityDefinition().getOrderBy();
   }
+
+  /**
+   * Override to handle the edit model being set.
+   * @param editModel the edit model that was just set, never null
+   */
+  protected void onSetEditModel(final FXEntityEditModel editModel) {/*Provided for subclasses*/}
 
   /**
    * Returns the key used to identify user preferences for this table model, that is column positions, widths and such.
