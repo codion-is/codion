@@ -5652,3 +5652,7 @@
   Memory split from Util
   Util.initializeProxy() removed
   SwingEntityTableModel.bindEditModelEvents() renamed to onSetEditModel(editModel), added to FXEntityListModel
+  DefaultDatabaseConnection, minor refactoring
+  DefaultValueMap.valuePut() and valueChanged() renamed to onValuePut() and onValueChanged() for consistency
+  ValueMap moved from common.db.valuemap to common.valuemap
+  Gradle upgraded to 6.1

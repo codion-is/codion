@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.valuemap.DefaultValueMap;
-import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
+import org.jminor.common.valuemap.DefaultValueMap;
+import org.jminor.common.valuemap.ValueMap;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -187,11 +187,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * Returns the value associated with the given property.
    * Foreign key values which have non-null references but have not been loaded are simply returned
-   * as null, use {@link #getForeignKey(ForeignKeyProperty)} (org.jminor.framework.domain.property.Property.ForeignKeyProperty)}
-   * to get an empty entity instance
+   * as null, use {@link #getForeignKey(ForeignKeyProperty)} to get an empty entity instance
    * @param property the property for which to retrieve the value
    * @return the value associated with the given property.
    * @see #getForeignKeyValue(ForeignKeyProperty)
+   * @see #getDerivedValue(DerivedProperty)
    * @see #isLoaded(String)
    */
   @Override
@@ -566,7 +566,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  protected void valuePut(final Property property, final Object value, final Object previousValue) {
+  protected void onValuePut(final Property property, final Object value, final Object previousValue) {
     if (property instanceof ColumnProperty) {
       final ColumnProperty columnProperty = (ColumnProperty) property;
       if (columnProperty.isPrimaryKeyProperty()) {
@@ -583,7 +583,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   /**
-   * Called when a value changes.
+   * Called after a value has been changed.
    * @param property the property of the value that is changing
    * @param currentValue the new value
    * @param previousValue the previous value, if any
@@ -591,7 +591,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @see #addValueListener(EventDataListener)
    */
   @Override
-  protected void valueChanged(final Property property, final Object currentValue, final Object previousValue, final boolean initialization) {
+  protected void onValueChanged(final Property property, final Object currentValue, final Object previousValue, final boolean initialization) {
     if (valueChangedEvent != null) {
       valueChangedEvent.onEvent(valueChange(property, currentValue, previousValue, initialization));
       if (definition.hasDerivedProperties()) {

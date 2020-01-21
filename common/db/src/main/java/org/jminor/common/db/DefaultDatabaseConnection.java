@@ -32,7 +32,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   /**
    * The default timoeout in seconds when checking if this connection is valid
    */
-  static final int DEFAULT_VALIDITY_CHECK_TIMEOUT = 2;
+  private static final int DEFAULT_VALIDITY_CHECK_TIMEOUT = 2;
 
   private final User user;
   private final Database database;
@@ -65,9 +65,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   DefaultDatabaseConnection(final Database database, final User user,
                             final int validityCheckTimeout) throws DatabaseException {
     this.database = requireNonNull(database, "database");
-    this.user = requireNonNull(user, "user");
     this.validityCheckTimeout = validityCheckTimeout;
-    initialize(database.createConnection(user));
+    this.connection = disableAutoCommit(database.createConnection(user));
+    this.user = requireNonNull(user, "user");
   }
 
   /**
@@ -95,7 +95,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
                             final int validityCheckTimeout) throws DatabaseException {
     this.database = requireNonNull(database, "database");
     this.validityCheckTimeout = validityCheckTimeout;
-    initialize(requireNonNull(connection, "connection"));
+    this.connection = disableAutoCommit(connection);
     this.user = getUser(connection);
   }
 
@@ -350,18 +350,17 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   /**
-   * Disables auto-commit on the given connection and sets the internal connection.
+   * Disables auto-commit on the given connection and returns it.
    * @param connection the connection
+   * @return the connection with auto-commit disabled
    * @throws DatabaseException in case disabling auto-commit fails
    */
-  private void initialize(final Connection connection) throws DatabaseException {
-    if (isConnected()) {
-      throw new IllegalStateException("Already connected");
-    }
-
+  private static Connection disableAutoCommit(final Connection connection) throws DatabaseException {
+    requireNonNull(connection, "connection");
     try {
       connection.setAutoCommit(false);
-      this.connection = connection;
+
+      return connection;
     }
     catch (final SQLException e) {
       LOG.error("Unable to disable auto commit on connection, assuming invalid state", e);

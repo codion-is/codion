@@ -20,12 +20,12 @@ public class CustomerEditPanel extends EntityEditPanel {
     //the firstName field should receive the focus whenever the panel is initialized
     setInitialFocusProperty(Store.CUSTOMER_FIRST_NAME);
 
-    setLayout(new GridLayout(4,1));
     createTextField(Store.CUSTOMER_FIRST_NAME);
     createTextField(Store.CUSTOMER_LAST_NAME);
     createForeignKeyComboBox(Store.CUSTOMER_ADDRESS_FK);
     createCheckBox(Store.CUSTOMER_IS_ACTIVE, null, false);
 
+    setLayout(new GridLayout(4,1));
     //the createControlPanel method creates a panel containing the
     //component associated with the property as well as a JLabel with the
     //property caption as defined in the domain model

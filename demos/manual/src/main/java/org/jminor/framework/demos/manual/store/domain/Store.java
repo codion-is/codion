@@ -23,6 +23,7 @@ public final class Store extends Domain {
   public static final String ADDRESS_ID = "id";
   public static final String ADDRESS_STREET = "street";
   public static final String ADDRESS_CITY = "city";
+  public static final String ADDRESS_VALID = "valid";
 
   public static final String T_CUSTOMER = "store.customer";
   public static final String CUSTOMER_ID = "id";
@@ -45,7 +46,9 @@ public final class Store extends Domain {
             columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street")
                     .setNullable(false).setMaxLength(120),
             columnProperty(ADDRESS_CITY, Types.VARCHAR, "City")
-                    .setNullable(false).setMaxLength(50))
+                    .setNullable(false).setMaxLength(50),
+            columnProperty(ADDRESS_VALID, Types.BOOLEAN, "Valid")
+                    .setColumnHasDefaultValue(true).setNullable(false))
             .setStringProvider(new StringProvider(ADDRESS_STREET)
                     .addText(", ").addValue(ADDRESS_CITY))
             .setKeyGenerator(automatic(T_ADDRESS));

@@ -32,17 +32,20 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 public final class ChinookLoginProxy implements LoginProxy {
 
   /**
-   * The actual user used to connect to the database.
+   * The actual user credentials to return for successfully
+   * authenticated users.
    */
-  private static final User DATABASE_USER = User.parseUser("scott:tiger");
+  private final User databaseUser = User.parseUser("scott:tiger");
+
   /**
-   * The Database instance on which to base the connection pool.
+   * The Database instance we're connecting to.
    */
-  private static final Database DATABASE = Databases.getInstance();
+  private final Database database = Databases.getInstance();
+
   /**
    * The Domain on which to base the authentication connection.
    */
-  private static final Domain DOMAIN = new ChinookImpl();
+  private final Domain domain = new ChinookImpl();
 
   /**
    * The ConnectionPool used when authenticating users.
@@ -51,7 +54,7 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   public ChinookLoginProxy() throws DatabaseException {
     connectionPool = ConnectionPoolProvider.getConnectionPoolProvider()
-            .createConnectionPool(DATABASE_USER, DATABASE);
+            .createConnectionPool(databaseUser, database);
   }
 
   /**
@@ -69,7 +72,7 @@ public final class ChinookLoginProxy implements LoginProxy {
 
     //Create a new RemoteClient based on the one received
     //but with the actual database user
-    return remoteClient(remoteClient, DATABASE_USER);
+    return remoteClient(remoteClient, databaseUser);
   }
 
   @Override
@@ -98,13 +101,13 @@ public final class ChinookLoginProxy implements LoginProxy {
       throw new RuntimeException(e);
     }
     finally {
-      connection.disconnect();
+      connection.disconnect();//returns the underlying connection to the pool
     }
   }
 
   private EntityConnection getConnectionFromPool() {
     try {
-      return LocalEntityConnections.createConnection(DOMAIN, DATABASE,
+      return LocalEntityConnections.createConnection(domain, database,
               connectionPool.getConnection());
     }
     catch (final DatabaseException e) {

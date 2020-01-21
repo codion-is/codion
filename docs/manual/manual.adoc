@@ -2,7 +2,7 @@
 :toclevels: 4
 :dir-manual: ../manual
 
-NOTE: Most of the code used throughout this manual is available in the 'manual' demo module included in the project.
+NOTE: Most of the code used throughout this manual is available in the *manual* demo module included in the project.
 
 include::{dir-manual}/common.adoc[leveloffset=+1]
 

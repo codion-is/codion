@@ -36,8 +36,8 @@ public interface DatabaseConnection extends AutoCloseable {
   Connection getConnection();
 
   /**
-   * Sets the internal connection to use, note that no validation or
-   * transaction checking is performed, it is simply used 'as is'
+   * Sets the internal connection to use, note that no validation or transaction checking is performed
+   * on the connection and auto-commit is assumed to be disabled. The connection is simply used 'as is'.
    * @param connection the JDBC connection
    */
   void setConnection(Connection connection);

@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
+import org.jminor.common.valuemap.ValueMap;
 import org.jminor.framework.domain.exception.LengthValidationException;
 import org.jminor.framework.domain.exception.NullValidationException;
 import org.jminor.framework.domain.exception.RangeValidationException;

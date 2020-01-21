@@ -26,7 +26,8 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
 
     AddressModel addressModel =
             (AddressModel) customerModel.getDetailModel(Store.T_ADDRESS);
-    EntityPanel addressPanel = new EntityPanel(addressModel);
+    EntityPanel addressPanel = new EntityPanel(addressModel,
+            new AdressEditPanel(addressModel.getEditModel()));
 
     customerPanel.addDetailPanel(addressPanel);
 

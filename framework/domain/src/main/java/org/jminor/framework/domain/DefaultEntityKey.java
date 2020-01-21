@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.db.valuemap.DefaultValueMap;
+import org.jminor.common.valuemap.DefaultValueMap;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.io.IOException;
@@ -200,7 +200,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
-  protected void valuePut(final ColumnProperty property, final Object value, final Object previousValue) {
+  protected void onValuePut(final ColumnProperty property, final Object value, final Object previousValue) {
     if (singleIntegerKey) {
       setHashCode((Integer) value);
     }

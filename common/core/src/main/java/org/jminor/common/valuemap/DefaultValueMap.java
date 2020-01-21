@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.valuemap;
+package org.jminor.common.valuemap;
 
 import org.jminor.common.Util;
 
@@ -76,8 +76,8 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (!initialization) {
       updateOriginalValue(key, newValue, previousValue);
     }
-    valuePut(key, newValue, previousValue);
-    valueChanged(key, newValue, previousValue, initialization);
+    onValuePut(key, newValue, previousValue);
+    onValueChanged(key, newValue, previousValue, initialization);
 
     return previousValue;
   }
@@ -132,7 +132,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (values.containsKey(key)) {
       final V value = values.remove(key);
       removeOriginalValue(key);
-      valueChanged(key, null, value, false);
+      onValueChanged(key, null, value, false);
 
       return value;
     }
@@ -206,7 +206,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
       }
     }
     for (final K key : affectedKeys) {
-      valueChanged(key, values.get(key), null, true);
+      onValueChanged(key, values.get(key), null, true);
     }
   }
 
@@ -273,17 +273,17 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * @param value the value
    * @param previousValue the previous value
    */
-  protected void valuePut(final K key, final V value, final V previousValue) {/*Provided for subclasses*/}
+  protected void onValuePut(final K key, final V value, final V previousValue) {/*Provided for subclasses*/}
 
   /**
-   * Called when a value changes, note that this default implementation does nothing, provided for subclasses.
-   * @param key the key of the value that is changing
+   * Called when a value has changed, note that this default implementation does nothing, provided for subclasses.
+   * @param key the key of the value that was changed
    * @param currentValue the new value
    * @param previousValue the previous value, if any
-   * @param initialization true if the value is being initialized, that is, no previous value exists
+   * @param initialization true if the value was being initialized, that is, no previous value existed
    */
-  protected void valueChanged(final K key, final V currentValue, final V previousValue,
-                              final boolean initialization) {/*Provided for subclasses*/}
+  protected void onValueChanged(final K key, final V currentValue, final V previousValue,
+                                final boolean initialization) {/*Provided for subclasses*/}
 
   protected final void setOriginalValue(final K key, final V previousValue) {
     if (originalValues == null) {
