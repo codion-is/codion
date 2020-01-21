@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.manual.basics;
+package org.jminor.framework.demos.manual.common;
 
 import org.jminor.common.Item;
 import org.jminor.common.value.Value;

@@ -7,6 +7,7 @@ create table store.address (
   id identity not null,
   street varchar(120) not null,
   city varchar(50) not null,
+  valid boolean default true not null,
   constraint address_pk primary key (id)
 );
 
