@@ -494,6 +494,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /**
    * Override to handle the edit model being set.
    * @param editModel the edit model that was just set, never null
+   * @see #setEditModel(FXEntityEditModel)
    */
   protected void onSetEditModel(final FXEntityEditModel editModel) {/*Provided for subclasses*/}
 

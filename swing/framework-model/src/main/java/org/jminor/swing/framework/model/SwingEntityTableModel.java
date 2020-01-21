@@ -664,6 +664,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * Override to handle the edit model being set.
    * @param editModel the edit model that was just set, never null
+   * @see #setEditModel(SwingEntityEditModel)
    */
   protected void onSetEditModel(final SwingEntityEditModel editModel) {/*Provided for subclasses*/}
 
