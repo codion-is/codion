@@ -6,7 +6,7 @@ The model layer in a JMinor application contains the business logic, most of the
 
 == Common classes
 
-Two common classes used throughout the framework are the {url-javadoc}/org/jminor/common/event/Event.html[Event] and {url-javadoc}/org/jminor/common/state/State.html[State] classes, their respective observers {url-javadoc}/org/jminor/common/event/EventObserver.html[EventObserver] and {url-javadoc}/org/jminor/common/state/StateObserver.html[StateObserver] and listeners {url-javadoc}/org/jminor/common/event/EventListener.html[EventListener] and {url-javadoc}/org/jminor/common/event/EventDataListener.html[EventDataListener].
+Three common classes used throughout the framework are the {url-javadoc}/org/jminor/common/event/Event.html[Event], {url-javadoc}/org/jminor/common/state/State.html[State] and {url-javadoc}/org/jminor/common/value/Value.html[Value] classes, their respective observers {url-javadoc}/org/jminor/common/event/EventObserver.html[EventObserver] and {url-javadoc}/org/jminor/common/state/StateObserver.html[StateObserver] and listeners {url-javadoc}/org/jminor/common/event/EventListener.html[EventListener] and {url-javadoc}/org/jminor/common/event/EventDataListener.html[EventDataListener].
 
 === Event
 
@@ -18,7 +18,7 @@ To listen to Events you use the {url-javadoc}/org/jminor/common/event/EventListe
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/common/EventState.java[tags=event]
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventStateValue.java[tags=event]
 ----
 
 === State
@@ -29,12 +29,23 @@ States are instantiated via the {url-javadoc}/org/jminor/common/state/States.htm
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/common/EventState.java[tags=state]
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventStateValue.java[tags=state]
 ----
 
 Any *Action* object can be linked to a *State* object via the *Components.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/common/EventState.java[tags=action]
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventStateValue.java[tags=action]
+----
+
+=== Value
+
+The {url-javadoc}/org/jminor/common/value/Value.html[Value] interface is a value wrapper which supplies a change listener.
+
+Values are instantiated via the {url-javadoc}/org/jminor/common/value/Values.html[Values] factory class.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventStateValue.java[tags=value]
 ----

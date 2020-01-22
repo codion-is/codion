@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Just making sure the tutorials are runnable
  */
-public final class EventStateTest {
+public final class EventStateValueTest {
 
   @Test
   public void test() {
-    EventState.main(new String[0]);
+    EventStateValue.main(new String[0]);
   }
 }
