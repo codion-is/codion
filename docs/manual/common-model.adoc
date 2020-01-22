@@ -18,7 +18,7 @@ To listen to Events you use the {url-javadoc}/org/jminor/common/event/EventListe
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=event]
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventState.java[tags=event]
 ----
 
 === State
@@ -29,12 +29,12 @@ States are instantiated via the {url-javadoc}/org/jminor/common/state/States.htm
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=state]
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventState.java[tags=state]
 ----
 
 Any *Action* object can be linked to a *State* object via the *Components.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=action]
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventState.java[tags=action]
 ----

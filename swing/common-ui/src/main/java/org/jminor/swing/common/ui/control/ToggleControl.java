@@ -4,44 +4,31 @@
 package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.state.StateObserver;
-
-import javax.swing.ButtonModel;
-import java.beans.PropertyChangeEvent;
+import org.jminor.common.value.Value;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A Control for toggling a button model
+ * A Control for toggling a boolean value
  */
 public final class ToggleControl extends Control {
 
-  private final ButtonModel buttonModel;
+  private final Value<Boolean> value;
 
   /**
    * @param name the name
-   * @param buttonModel the button model
+   * @param value the value to toggle
    * @param enabledObserver an observer indicating when this control should be enabled
    */
-  public ToggleControl(final String name, final ButtonModel buttonModel, final StateObserver enabledObserver) {
+  ToggleControl(final String name, final Value<Boolean> value, final StateObserver enabledObserver) {
     super(name, enabledObserver);
-    this.buttonModel = requireNonNull(buttonModel);
-    if (enabledObserver != null) {
-      enabledObserver.addDataListener(buttonModel::setEnabled);
-      buttonModel.setEnabled(enabledObserver.get());
-    }
-    addPropertyChangeListener(this::onPropertyChange);
+    this.value = requireNonNull(value, "value");
   }
 
   /**
-   * @return the button model
+   * @return the value being toggled by this toggle control
    */
-  public ButtonModel getButtonModel() {
-    return buttonModel;
-  }
-
-  private void onPropertyChange(final PropertyChangeEvent changeEvent) {
-    if (MNEMONIC_KEY.equals(changeEvent.getPropertyName())) {
-      buttonModel.setMnemonic((Integer) changeEvent.getNewValue());
-    }
+  public Value<Boolean> getValue() {
+    return value;
   }
 }

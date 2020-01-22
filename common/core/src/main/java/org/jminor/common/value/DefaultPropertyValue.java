@@ -15,6 +15,7 @@ final class DefaultPropertyValue<V> extends AbstractObservableValue<V> implement
 
   private final EventObserver<V> changeEvent;
   private final String propertyName;
+  private final Class<V> valueClass;
   private final Object valueOwner;
   private final Method getMethod;
   private Method setMethod;
@@ -25,6 +26,7 @@ final class DefaultPropertyValue<V> extends AbstractObservableValue<V> implement
       throw new IllegalArgumentException("propertyName is null or an empty string");
     }
     this.propertyName = propertyName;
+    this.valueClass = valueClass;
     try {
       this.valueOwner = requireNonNull(valueOwner, "valueOwner");
       this.changeEvent = requireNonNull(changeEvent);
@@ -78,7 +80,7 @@ final class DefaultPropertyValue<V> extends AbstractObservableValue<V> implement
 
   @Override
   public boolean isNullable() {
-    return true;
+    return !valueClass.isPrimitive();
   }
 
   @Override

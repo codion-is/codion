@@ -32,7 +32,7 @@ public class ValuesTest {
     }
   }
 
-  public Integer getIntValue() {
+  public int getIntValue() {
     return integerValue;
   }
 
@@ -108,8 +108,9 @@ public class ValuesTest {
   @Test
   public void linkValuesReadOnly() {
     final AtomicInteger modelValueEventCounter = new AtomicInteger();
-    final Value<Integer> modelValue = Values.propertyValue(this, "intValue", Integer.class, integerValueChange.getObserver());
+    final Value<Integer> modelValue = Values.propertyValue(this, "intValue", int.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
+    assertFalse(modelValue.isNullable());
     Values.link(modelValue, uiValue, true);
     modelValue.addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
