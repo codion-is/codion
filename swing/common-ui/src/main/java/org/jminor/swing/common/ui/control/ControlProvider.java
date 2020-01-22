@@ -4,9 +4,11 @@
 package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.state.StateObserver;
+import org.jminor.common.value.Value;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.layout.Layouts;
+import org.jminor.swing.common.ui.value.BooleanValues;
 
 import javax.swing.Action;
 import javax.swing.ButtonModel;
@@ -24,6 +26,8 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Provides UI controls based on the Control class and its descendants.
@@ -83,7 +87,7 @@ public final class ControlProvider {
    */
   public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleControl toggleControl) {
     final JCheckBoxMenuItem item = new JCheckBoxMenuItem(toggleControl);
-    item.setModel(toggleControl.getButtonModel());
+    item.setModel(toggleButtonModel(toggleControl));
 
     return item;
   }
@@ -94,7 +98,7 @@ public final class ControlProvider {
    */
   public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleControl toggleControl) {
     final JRadioButtonMenuItem item = new JRadioButtonMenuItem(toggleControl);
-    item.setModel(toggleControl.getButtonModel());
+    item.setModel(toggleButtonModel(toggleControl));
 
     return item;
   }
@@ -331,15 +335,13 @@ public final class ControlProvider {
    * @return a check box
    */
   public static JCheckBox createCheckBox(final ToggleControl toggleControl) {
-    final ButtonModel buttonModel = toggleControl.getButtonModel();
-    final JCheckBox checkBox;
+    final ButtonModel buttonModel = toggleButtonModel(toggleControl);
     if (buttonModel instanceof NullableToggleButtonModel) {
-      checkBox = new NullableCheckBox((NullableToggleButtonModel) buttonModel, toggleControl.getName());
+      return new NullableCheckBox((NullableToggleButtonModel) buttonModel, toggleControl.getName());
     }
-    else {
-      checkBox = new JCheckBox(toggleControl);
-      checkBox.setModel(buttonModel);
-    }
+
+    final JCheckBox checkBox = new JCheckBox(toggleControl);
+    checkBox.setModel(buttonModel);
 
     return checkBox;
   }
@@ -360,10 +362,39 @@ public final class ControlProvider {
    * @return a toggle button
    */
   public static JToggleButton createToggleButton(final ToggleControl toggleControl, final boolean includeCaption) {
+    requireNonNull(toggleControl, "toggleControl");
     final JToggleButton toggleButton = new JToggleButton(toggleControl);
-    toggleButton.setModel(toggleControl.getButtonModel());
+    toggleButton.setModel(toggleButtonModel(toggleControl));
     toggleButton.setText(includeCaption ? toggleControl.getName() : null);
 
     return toggleButton;
+  }
+
+  /**
+   * Creates a ButtonModel based on the given {@link ToggleControl}.
+   * If the underlying value is nullable then a NullableButtonModel is returned.
+   * @param toggleControl the toggle control on which to base the button model
+   * @return a button model
+   */
+  public static ButtonModel toggleButtonModel(final ToggleControl toggleControl) {
+    requireNonNull(toggleControl, "toggleControl");
+    final Value<Boolean> value = toggleControl.getValue();
+    final ButtonModel buttonModel;
+    if (value.isNullable()) {
+      buttonModel = new NullableToggleButtonModel(value.get());
+    }
+    else {
+      buttonModel = new JToggleButton.ToggleButtonModel();
+    }
+    BooleanValues.booleanValueLink(buttonModel, value);
+    buttonModel.setEnabled(toggleControl.getEnabledObserver().get());
+    toggleControl.getEnabledObserver().addDataListener(buttonModel::setEnabled);
+    toggleControl.addPropertyChangeListener(changeEvent -> {
+      if (Action.MNEMONIC_KEY.equals(changeEvent.getPropertyName())) {
+        buttonModel.setMnemonic((Integer) changeEvent.getNewValue());
+      }
+    });
+
+    return buttonModel;
   }
 }

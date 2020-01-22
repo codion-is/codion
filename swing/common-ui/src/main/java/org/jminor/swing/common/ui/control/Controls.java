@@ -10,17 +10,13 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
-import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 
-import javax.swing.ButtonModel;
 import javax.swing.Icon;
-import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.value.Values.propertyValue;
-import static org.jminor.swing.common.ui.value.BooleanValues.booleanButtonModelValue;
 
 /**
  * A factory class for Control objects.
@@ -154,7 +150,7 @@ public final class Controls {
    * @param owner the owner object
    * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
    * @param caption the control caption
-   * @param changeEvent an event fired each time the property value changes in the underlying object
+   * @param changeEvent an event triggered each time the property value changes in the underlying object
    * @return a toggle control
    */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
@@ -167,7 +163,7 @@ public final class Controls {
    * @param owner the owner object
    * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
    * @param caption the control caption
-   * @param changeEvent an event fired each time the property value changes in the underlying object
+   * @param changeEvent an event triggered each time the property value changes in the underlying object
    * @param enabledState the state which controls the enabled state of the control
    * @return a toggle control
    */
@@ -181,7 +177,7 @@ public final class Controls {
    * @param owner the owner object
    * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
    * @param caption the control caption
-   * @param changeEvent an event fired each time the property value changes in the underlying object
+   * @param changeEvent an event triggered each time the property value changes in the underlying object
    * @param enabledState the state which controls the enabled state of the control
    * @param nullable if true then a nullable (false, true, null) button model is used
    * @return a toggle control
@@ -189,10 +185,9 @@ public final class Controls {
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
                                             final EventObserver<Boolean> changeEvent, final StateObserver enabledState,
                                             final boolean nullable) {
-    final ButtonModel buttonModel = nullable ? new NullableToggleButtonModel() : new JToggleButton.ToggleButtonModel();
-    Values.link(propertyValue(owner, beanPropertyName, nullable ? Boolean.class : boolean.class, changeEvent), booleanButtonModelValue(buttonModel));
 
-    return new ToggleControl(caption, buttonModel, enabledState);
+    return new ToggleControl(caption,
+            propertyValue(owner, beanPropertyName, nullable ? Boolean.class : boolean.class, changeEvent), enabledState);
   }
 
   /**
@@ -240,7 +235,6 @@ public final class Controls {
 
   /**
    * Creates a ToggleControl based on the given boolean {@link Value}.
-   * If the value is nullable then a NullableButtonModel is used.
    * @param value the value to toggle
    * @return a ToggleControl based on the given state
    * @see Value#isNullable()
@@ -250,8 +244,7 @@ public final class Controls {
   }
 
   /**
-   * Creates a ToggleControl based on the given boolean {@link Value}
-   * If the value is nullable then a NullableButtonModel is used.
+   * Creates a ToggleControl based on the given boolean {@link Value}.
    * @param value the value to toggle
    * @param name the name of this control
    * @return a ToggleControl based on the given state
@@ -262,8 +255,7 @@ public final class Controls {
   }
 
   /**
-   * Creates a ToggleControl based on the given boolean {@link Value}
-   * If the value is nullable then a NullableButtonModel is used.
+   * Creates a ToggleControl based on the given boolean {@link Value}.
    * @param value the value to toggle
    * @param name the name of this control
    * @param enabledState the state which controls the enabled state of the control
@@ -275,8 +267,7 @@ public final class Controls {
   }
 
   /**
-   * Creates a ToggleControl based on the given boolean {@link Value}
-   * If the value is nullable then a NullableButtonModel is used.
+   * Creates a ToggleControl based on the given boolean {@link Value}.
    * @param value the value to toggle
    * @param name the name of this control
    * @param enabledState the state which controls the enabled state of the control
@@ -286,19 +277,13 @@ public final class Controls {
    */
   public static ToggleControl toggleControl(final Value<Boolean> value, final String name, final StateObserver enabledState,
                                             final Icon icon) {
-    final ButtonModel buttonModel = value.isNullable() ? new NullableToggleButtonModel() : new JToggleButton.ToggleButtonModel();
-    Values.link(value, booleanButtonModelValue(buttonModel));
-
-    final ToggleControl control = new ToggleControl(name, buttonModel, enabledState);
-    control.setIcon(icon);
-
-    return control;
+    return (ToggleControl) new ToggleControl(name, value, enabledState).setIcon(icon);
   }
 
   /**
-   * Creates a Control which fires the given event on action performed
+   * Creates a Control which triggers the given event on action performed
    * @param event the event
-   * @return a control which fires the given event
+   * @return a control which triggers the given event
    */
   public static Control eventControl(final Event<ActionEvent> event) {
     return control(event::onEvent);

@@ -13,6 +13,8 @@ import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.ButtonModel;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ControlsTest {
@@ -42,30 +44,32 @@ public final class ControlsTest {
   @Test
   public void toggleControl() {
     final ToggleControl control = Controls.toggleControl(this, "value", "test", valueChangeEvent.getObserver());
-    control.getButtonModel().setSelected(true);
+    control.getValue().set(true);
     assertTrue(value);
-    control.getButtonModel().setSelected(false);
+    control.getValue().set(false);
     assertFalse(value);
     setValue(true);
-    assertTrue(control.getButtonModel().isSelected());
+    assertTrue(control.getValue().get());
 
     final Value<Boolean> nullableValue = Values.value(true);
     final ToggleControl nullableControl = Controls.toggleControl(nullableValue);
-    assertTrue(nullableControl.getButtonModel() instanceof NullableToggleButtonModel);
-    assertTrue(nullableControl.getButtonModel().isSelected());
+    ButtonModel buttonModel = ControlProvider.toggleButtonModel(nullableControl);
+    assertTrue(buttonModel instanceof NullableToggleButtonModel);
+    assertTrue(nullableControl.getValue().get());
     nullableValue.set(false);
-    assertFalse(nullableControl.getButtonModel().isSelected());
+    assertFalse(nullableControl.getValue().get());
     nullableValue.set(null);
-    assertNull(((NullableToggleButtonModel) nullableControl.getButtonModel()).getState());
+    assertNull(((NullableToggleButtonModel) buttonModel).getState());
 
     final Value<Boolean> nonNullableValue = Values.value(true, false);
     final ToggleControl nonNullableControl = Controls.toggleControl(nonNullableValue);
-    assertFalse(nonNullableControl.getButtonModel() instanceof NullableToggleButtonModel);
-    assertTrue(nonNullableControl.getButtonModel().isSelected());
+    buttonModel = ControlProvider.toggleButtonModel(nonNullableControl);
+    assertFalse(buttonModel instanceof NullableToggleButtonModel);
+    assertTrue(nonNullableControl.getValue().get());
     nonNullableValue.set(false);
-    assertFalse(nonNullableControl.getButtonModel().isSelected());
+    assertFalse(nonNullableControl.getValue().get());
     nonNullableValue.set(null);
-    assertFalse(nonNullableControl.getButtonModel().isSelected());
+    assertFalse(nonNullableControl.getValue().get());
   }
 
   @Test
@@ -77,20 +81,21 @@ public final class ControlsTest {
   public void stateToggleControl() {
     final State enabledState = States.state(false);
     final ToggleControl control = Controls.toggleControl(state, "stateToggleControl", enabledState);
+    final ButtonModel buttonModel = ControlProvider.toggleButtonModel(control);
     assertFalse(control.isEnabled());
-    assertFalse(control.getButtonModel().isEnabled());
+    assertFalse(buttonModel.isEnabled());
     enabledState.set(true);
     assertTrue(control.isEnabled());
-    assertTrue(control.getButtonModel().isEnabled());
+    assertTrue(buttonModel.isEnabled());
     assertEquals(control.getName(), "stateToggleControl");
-    assertFalse(control.getButtonModel().isSelected());
+    assertFalse(control.getValue().get());
     state.set(true);
-    assertTrue(control.getButtonModel().isSelected());
+    assertTrue(control.getValue().get());
     state.set(false);
-    assertFalse(control.getButtonModel().isSelected());
-    control.getButtonModel().setSelected(true);
+    assertFalse(control.getValue().get());
+    control.getValue().set(true);
     assertTrue(state.get());
-    control.getButtonModel().setSelected(false);
+    control.getValue().set(false);
     assertFalse(state.get());
 
     enabledState.set(false);
@@ -102,7 +107,7 @@ public final class ControlsTest {
   @Test
   public void nullableToggleControl() {
     final ToggleControl toggleControl = Controls.toggleControl(this, "nullableValue", "nullable", valueChangeEvent, null, true);
-    final NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) toggleControl.getButtonModel();
+    final NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) ControlProvider.toggleButtonModel(toggleControl);
     buttonModel.setState(null);
     assertNull(value);
     buttonModel.setSelected(false);
