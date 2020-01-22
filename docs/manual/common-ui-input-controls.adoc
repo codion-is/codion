@@ -10,21 +10,21 @@ Here are the basics of linking input controls to model values.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=checkBox]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=checkBox]
 ----
 
 === NullableCheckBox
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=nullableCheckBox]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=nullableCheckBox]
 ----
 
 === ComboBox
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=booleanComboBox]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=booleanComboBox]
 ----
 
 == Text
@@ -33,14 +33,14 @@ include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.jav
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=textField]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=textField]
 ----
 
 === TextArea
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=textArea]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=textArea]
 ----
 
 == Numbers
@@ -49,28 +49,28 @@ include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.jav
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=integerField]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=integerField]
 ----
 
 === Long
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=longField]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=longField]
 ----
 
 === Double
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=doubleField]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=doubleField]
 ----
 
 === BigDecimal
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=bigDecimalField]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=bigDecimalField]
 ----
 
 == Date & Time
@@ -79,21 +79,21 @@ include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.jav
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=localTime]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=localTime]
 ----
 
 === LocalDate
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=localDate]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=localDate]
 ----
 
 === LocalDateTime
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=localDateTime]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=localDateTime]
 ----
 
 == Selection
@@ -102,5 +102,5 @@ include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.jav
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/InputControls.java[tags=selectionComboBox]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=selectionComboBox]
 ----
