@@ -53,7 +53,7 @@ public final class ControlsTest {
 
     final Value<Boolean> nullableValue = Values.value(true);
     final ToggleControl nullableControl = Controls.toggleControl(nullableValue);
-    ButtonModel buttonModel = ControlProvider.toggleButtonModel(nullableControl);
+    ButtonModel buttonModel = ControlProvider.createButtonModel(nullableControl);
     assertTrue(buttonModel instanceof NullableToggleButtonModel);
     assertTrue(nullableControl.getValue().get());
     nullableValue.set(false);
@@ -63,7 +63,7 @@ public final class ControlsTest {
 
     final Value<Boolean> nonNullableValue = Values.value(true, false);
     final ToggleControl nonNullableControl = Controls.toggleControl(nonNullableValue);
-    buttonModel = ControlProvider.toggleButtonModel(nonNullableControl);
+    buttonModel = ControlProvider.createButtonModel(nonNullableControl);
     assertFalse(buttonModel instanceof NullableToggleButtonModel);
     assertTrue(nonNullableControl.getValue().get());
     nonNullableValue.set(false);
@@ -81,7 +81,7 @@ public final class ControlsTest {
   public void stateToggleControl() {
     final State enabledState = States.state(false);
     final ToggleControl control = Controls.toggleControl(state, "stateToggleControl", enabledState);
-    final ButtonModel buttonModel = ControlProvider.toggleButtonModel(control);
+    final ButtonModel buttonModel = ControlProvider.createButtonModel(control);
     assertFalse(control.isEnabled());
     assertFalse(buttonModel.isEnabled());
     enabledState.set(true);
@@ -107,7 +107,7 @@ public final class ControlsTest {
   @Test
   public void nullableToggleControl() {
     final ToggleControl toggleControl = Controls.toggleControl(this, "nullableValue", "nullable", valueChangeEvent, null, true);
-    final NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) ControlProvider.toggleButtonModel(toggleControl);
+    final NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) ControlProvider.createButtonModel(toggleControl);
     buttonModel.setState(null);
     assertNull(value);
     buttonModel.setSelected(false);
