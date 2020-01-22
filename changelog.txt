@@ -5632,3 +5632,4 @@
   DefaultValueMap.valuePut() and valueChanged() renamed to onValuePut() and onValueChanged() for consistency
   ValueMap moved from common.db.valuemap to common.valuemap
   Gradle upgraded to 6.1
+  DefaultPropertyValue.isNullable() is now based on whether the value class is a primitive
