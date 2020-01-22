@@ -9,13 +9,16 @@ import org.jminor.common.event.Events;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
+import org.jminor.common.value.Value;
+import org.jminor.common.value.ValueObserver;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.Components;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
 
-public final class EventState {
+public final class EventStateValue {
 
   public static void main(final String[] args) {
     // tag::event[]
@@ -75,5 +78,15 @@ public final class EventState {
 
     System.out.println(action.isEnabled());// output: true
     // end::action[]
+
+    // tag::value[]
+    Value<Integer> value = Values.value();
+
+    ValueObserver<Integer> valueObserver = value.getObserver();
+
+    valueObserver.addDataListener(System.out::println);
+
+    value.set(2);
+    // end::value[]
   }
 }

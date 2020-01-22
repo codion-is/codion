@@ -87,7 +87,7 @@ public final class ControlProvider {
    */
   public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleControl toggleControl) {
     final JCheckBoxMenuItem item = new JCheckBoxMenuItem(toggleControl);
-    item.setModel(toggleButtonModel(toggleControl));
+    item.setModel(createButtonModel(toggleControl));
 
     return item;
   }
@@ -98,7 +98,7 @@ public final class ControlProvider {
    */
   public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleControl toggleControl) {
     final JRadioButtonMenuItem item = new JRadioButtonMenuItem(toggleControl);
-    item.setModel(toggleButtonModel(toggleControl));
+    item.setModel(createButtonModel(toggleControl));
 
     return item;
   }
@@ -156,6 +156,34 @@ public final class ControlProvider {
     menuBar.add(createMenu(controlSet));
 
     return menuBar;
+  }
+
+  /**
+   * Creates a ButtonModel based on the given {@link ToggleControl}.
+   * If the underlying value is nullable then a NullableButtonModel is returned.
+   * @param toggleControl the toggle control on which to base the button model
+   * @return a button model
+   */
+  public static ButtonModel createButtonModel(final ToggleControl toggleControl) {
+    requireNonNull(toggleControl, "toggleControl");
+    final Value<Boolean> value = toggleControl.getValue();
+    final ButtonModel buttonModel;
+    if (value.isNullable()) {
+      buttonModel = new NullableToggleButtonModel(value.get());
+    }
+    else {
+      buttonModel = new JToggleButton.ToggleButtonModel();
+    }
+    BooleanValues.booleanValueLink(buttonModel, value);
+    buttonModel.setEnabled(toggleControl.getEnabledObserver().get());
+    toggleControl.getEnabledObserver().addDataListener(buttonModel::setEnabled);
+    toggleControl.addPropertyChangeListener(changeEvent -> {
+      if (Action.MNEMONIC_KEY.equals(changeEvent.getPropertyName())) {
+        buttonModel.setMnemonic((Integer) changeEvent.getNewValue());
+      }
+    });
+
+    return buttonModel;
   }
 
   private static abstract class ControlHandler implements Consumer<Action> {
@@ -335,7 +363,7 @@ public final class ControlProvider {
    * @return a check box
    */
   public static JCheckBox createCheckBox(final ToggleControl toggleControl) {
-    final ButtonModel buttonModel = toggleButtonModel(toggleControl);
+    final ButtonModel buttonModel = createButtonModel(toggleControl);
     if (buttonModel instanceof NullableToggleButtonModel) {
       return new NullableCheckBox((NullableToggleButtonModel) buttonModel, toggleControl.getName());
     }
@@ -364,37 +392,9 @@ public final class ControlProvider {
   public static JToggleButton createToggleButton(final ToggleControl toggleControl, final boolean includeCaption) {
     requireNonNull(toggleControl, "toggleControl");
     final JToggleButton toggleButton = new JToggleButton(toggleControl);
-    toggleButton.setModel(toggleButtonModel(toggleControl));
+    toggleButton.setModel(createButtonModel(toggleControl));
     toggleButton.setText(includeCaption ? toggleControl.getName() : null);
 
     return toggleButton;
-  }
-
-  /**
-   * Creates a ButtonModel based on the given {@link ToggleControl}.
-   * If the underlying value is nullable then a NullableButtonModel is returned.
-   * @param toggleControl the toggle control on which to base the button model
-   * @return a button model
-   */
-  public static ButtonModel toggleButtonModel(final ToggleControl toggleControl) {
-    requireNonNull(toggleControl, "toggleControl");
-    final Value<Boolean> value = toggleControl.getValue();
-    final ButtonModel buttonModel;
-    if (value.isNullable()) {
-      buttonModel = new NullableToggleButtonModel(value.get());
-    }
-    else {
-      buttonModel = new JToggleButton.ToggleButtonModel();
-    }
-    BooleanValues.booleanValueLink(buttonModel, value);
-    buttonModel.setEnabled(toggleControl.getEnabledObserver().get());
-    toggleControl.getEnabledObserver().addDataListener(buttonModel::setEnabled);
-    toggleControl.addPropertyChangeListener(changeEvent -> {
-      if (Action.MNEMONIC_KEY.equals(changeEvent.getPropertyName())) {
-        buttonModel.setMnemonic((Integer) changeEvent.getNewValue());
-      }
-    });
-
-    return buttonModel;
   }
 }
