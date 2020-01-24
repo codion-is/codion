@@ -1,7 +1,6 @@
 = Petclinic Tutorial
 :dir-source: ../../demos/petclinic/src/main/java
 :dir-test-source: ../../demos/petclinic/src/test/java
-:dir-manual: ../manual
 
 == Domain model
 

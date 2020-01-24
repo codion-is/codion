@@ -1,4 +1,4 @@
 = Common UI
-:dir-manual: ../manual
+:basedir: ..
 
-include::{dir-manual}/common-ui-input-controls.adoc[leveloffset=+1]
+include::{basedir}/manual/common-ui-input-controls.adoc[leveloffset=+1]

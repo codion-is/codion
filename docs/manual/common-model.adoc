@@ -41,7 +41,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/common/EventStateValue.j
 
 === Value
 
-The {url-javadoc}/org/jminor/common/value/Value.html[Value] interface is a value wrapper which supplies a change listener.
+The {url-javadoc}/org/jminor/common/value/Value.html[Value] interface is a value wrapper with a change listener.
 
 Values are instantiated via the {url-javadoc}/org/jminor/common/value/Values.html[Values] factory class.
 

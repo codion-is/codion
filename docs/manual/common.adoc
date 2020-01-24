@@ -1,6 +1,6 @@
 = Common
-:dir-manual: ../manual
+:basedir: ..
 
-include::{dir-manual}/common-model.adoc[leveloffset=+1]
+include::{basedir}/manual/common-model.adoc[leveloffset=+1]
 
-include::{dir-manual}/common-ui.adoc[leveloffset=+1]
+include::{basedir}/manual/common-ui.adoc[leveloffset=+1]
