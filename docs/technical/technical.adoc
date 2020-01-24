@@ -1,15 +1,15 @@
 = Technical details
 :toclevels: 4
-:dir-technical: ../technical
+:basedir: ..
 
-include::{dir-technical}/project.adoc[leveloffset=+1]
+include::{basedir}/technical/project.adoc[leveloffset=+1]
 
-include::{dir-technical}/client.adoc[leveloffset=+1]
+include::{basedir}/technical/client.adoc[leveloffset=+1]
 
-include::{dir-technical}/database.adoc[leveloffset=+1]
+include::{basedir}/technical/database.adoc[leveloffset=+1]
 
-include::{dir-technical}/server.adoc[leveloffset=+1]
+include::{basedir}/technical/server.adoc[leveloffset=+1]
 
-include::{dir-technical}/server-monitor.adoc[leveloffset=+1]
+include::{basedir}/technical/server-monitor.adoc[leveloffset=+1]
 
-include::{dir-technical}/modules.adoc[leveloffset=+1]
+include::{basedir}/technical/modules.adoc[leveloffset=+1]
