@@ -231,6 +231,10 @@ public class DomainTest {
     assertEquals(43, key.hashCode());
 
     assertThrows(NullPointerException.class, () -> domain.key(null));
+
+    final Entity.Key noPk = domain.key(TestDomain.T_NO_PK);
+    assertThrows(IllegalArgumentException.class, () -> noPk.put(TestDomain.NO_PK_COL1, 1));
+    assertThrows(IllegalArgumentException.class, () -> noPk.get(TestDomain.NO_PK_COL1));
   }
 
    @Test

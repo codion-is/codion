@@ -390,6 +390,7 @@ public final class EntitiesTest {
     noPk.put(TestDomain.NO_PK_COL1, 1);
     noPk.put(TestDomain.NO_PK_COL2, 2);
     noPk.put(TestDomain.NO_PK_COL3, 3);
-    assertThrows(IllegalArgumentException.class, () -> Entities.getKeys(singletonList(noPk)));
+    final List<Entity.Key> keys = Entities.getKeys(singletonList(noPk));
+    assertEquals(0, keys.get(0).size());
   }
 }

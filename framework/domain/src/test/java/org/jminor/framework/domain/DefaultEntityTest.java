@@ -239,8 +239,10 @@ public class DefaultEntityTest {
     noPk.put(TestDomain.NO_PK_COL1, 1);
     noPk.put(TestDomain.NO_PK_COL2, 2);
     noPk.put(TestDomain.NO_PK_COL3, 3);
-    assertThrows(IllegalArgumentException.class, noPk::getKey);
-    assertThrows(IllegalArgumentException.class, noPk::getOriginalKey);
+    final Entity.Key key = noPk.getKey();
+    assertEquals(0, key.size());
+    final Entity.Key originalKey = noPk.getOriginalKey();
+    assertEquals(0, originalKey.size());
   }
 
   @Test
