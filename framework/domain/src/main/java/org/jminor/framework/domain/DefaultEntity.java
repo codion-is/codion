@@ -763,7 +763,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   private Key initializeKey(final boolean originalValues) {
     if (!definition.hasPrimaryKey()) {
-      throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
+      return new DefaultEntityKey(definition);
     }
     final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
     if (primaryKeyProperties.size() > 1) {

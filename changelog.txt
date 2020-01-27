@@ -5659,3 +5659,5 @@
   DefaultPropertyValue.isNullable() is now based on whether the value class is a primitive
   ToggleControl now based on a Value<Boolean> instead of a ButtonModel
   ControlProvider.toggleButtonModel() renamed createButtonModel()
+  Domain.key() now creates an empty primary key for entities without primary keys
+  Allow insert of entities without primary keys

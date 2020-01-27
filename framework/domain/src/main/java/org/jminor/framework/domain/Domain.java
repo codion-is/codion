@@ -291,7 +291,12 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return a new {@link Entity.Key} instance
    */
   public final Entity.Key key(final String entityId) {
-    return new DefaultEntityKey(getDefinition(entityId), null);
+    final EntityDefinition definition = getDefinition(entityId);
+    if (definition.hasPrimaryKey()) {
+      return new DefaultEntityKey(definition, null);
+    }
+
+    return new DefaultEntityKey(definition);
   }
 
   /**

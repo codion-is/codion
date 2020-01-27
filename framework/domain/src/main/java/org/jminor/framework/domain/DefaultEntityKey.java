@@ -47,6 +47,20 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   private EntityDefinition definition;
 
   /**
+   * Instantiates a new empty primary key, for entities without primary keys
+   * @param definition the entity definition
+   * @throws IllegalArgumentException in case the entity has a primary key defined
+   */
+  DefaultEntityKey(final EntityDefinition definition) {
+    if (definition.hasPrimaryKey()) {
+      throw new IllegalArgumentException("Can not create an empty key for entity '" + definition.getEntityId() + "'");
+    }
+    this.definition = definition;
+    this.cachedHashCode = 0;
+    this.hashCodeDirty = false;
+  }
+
+  /**
    * Instantiates a new DefaultKey for the given entity type, assuming it is a single value key
    * @param definition the entity definition
    * @param value the value

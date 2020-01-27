@@ -142,6 +142,18 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
+  public void insertNoPk() throws DatabaseException {
+    final Entity noPk = DOMAIN.entity(T_NO_PK);
+    noPk.put(NO_PK_COL1, 10);
+    noPk.put(NO_PK_COL2, "10");
+    noPk.put(NO_PK_COL3, "10");
+    noPk.put(NO_PK_COL4, 10);
+
+    final Entity.Key key = connection.insert(singletonList(noPk)).get(0);
+    assertEquals(0, key.size());
+  }
+
+  @Test
   public void updateNoParentKey() throws DatabaseException {
     final Entity emp = connection.selectSingle(T_EMP, EMP_ID, 3);
     emp.put(EMP_DEPARTMENT, -1010);//not available
