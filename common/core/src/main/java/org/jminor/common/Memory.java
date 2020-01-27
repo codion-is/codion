@@ -10,6 +10,8 @@ public final class Memory {
 
   private static final int K = 1024;
 
+  private Memory() {}
+
   /**
    * @return the total memory allocated by this JVM in kilobytes
    */

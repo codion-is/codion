@@ -16,6 +16,8 @@ public final class Serializer {
 
   private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
+  private Serializer() {}
+
   /**
    * Serializes the given Object, null object results in an empty byte array
    * @param object the object
