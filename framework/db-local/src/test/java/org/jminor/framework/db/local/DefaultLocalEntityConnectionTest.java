@@ -25,7 +25,9 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
 import org.junit.jupiter.api.AfterEach;
@@ -517,6 +519,60 @@ public class DefaultLocalEntityConnectionTest {
   public void update() throws DatabaseException {
     final List<Entity> updated = connection.update(new ArrayList<>());
     assertTrue(updated.isEmpty());
+  }
+
+  @Test
+  public void updateWithConditionNoProperties() throws DatabaseException {
+    final EntityUpdateCondition condition = Conditions.entityUpdateCondition(T_EMP);
+    assertThrows(IllegalArgumentException.class, () -> connection.update(condition));
+  }
+
+  @Test
+  public void updateWithCondition() throws DatabaseException {
+    final EntitySelectCondition selectCondition = Conditions.entitySelectCondition(T_EMP,
+            EMP_COMMISSION, ConditionType.LIKE, null);
+
+    final List<Entity> entities = connection.select(selectCondition);
+
+    final EntityUpdateCondition updateCondition = Conditions.entityUpdateCondition(T_EMP,
+            EMP_COMMISSION, ConditionType.LIKE, null)
+            .set(EMP_COMMISSION, 500d)
+            .set(EMP_SALARY, 4200d);
+    try {
+      connection.beginTransaction();
+      connection.update(updateCondition);
+      assertEquals(0, connection.selectRowCount(selectCondition));
+      final List<Entity> afterUpdate = connection.select(Entities.getKeys(entities));
+      for (final Entity entity : afterUpdate) {
+        assertEquals(500d, entity.getDouble(EMP_COMMISSION));
+        assertEquals(4200d, entity.getDouble(EMP_SALARY));
+      }
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
+  }
+
+  @Test
+  public void updateWithConditionNoRows() {
+    final EntityUpdateCondition updateCondition = Conditions.entityUpdateCondition(T_EMP,
+            EMP_ID, ConditionType.LIKE, null)
+            .set(EMP_SALARY, 4200d);
+    try {
+      connection.beginTransaction();
+      assertThrows(UpdateException.class, () -> connection.update(updateCondition));
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
+  }
+
+  @Test
+  public void updateWithConditionWrongType() {
+    final EntityUpdateCondition updateCondition = Conditions.entityUpdateCondition(T_EMP,
+            EMP_ID, ConditionType.LIKE, null)
+            .set(EMP_SALARY, "abcd");
+    assertThrows(IllegalArgumentException.class, () -> connection.update(updateCondition));
   }
 
   @Test

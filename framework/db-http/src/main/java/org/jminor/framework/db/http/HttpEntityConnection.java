@@ -16,6 +16,7 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 
@@ -264,6 +265,22 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(entities);
     try {
       return onResponse(execute(createHttpPost("update", entities)));
+    }
+    catch (final DatabaseException e) {
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int update(final EntityUpdateCondition condition) throws DatabaseException {
+    Objects.requireNonNull(condition);
+    try {
+      return onResponse(execute(createHttpPost("updateByCondition", condition)));
     }
     catch (final DatabaseException e) {
       throw e;

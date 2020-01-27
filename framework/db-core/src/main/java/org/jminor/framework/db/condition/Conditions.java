@@ -146,6 +146,42 @@ public final class Conditions {
   }
 
   /**
+   * Creates a {@link EntityUpdateCondition} instance for updating all entities of the type identified by {@code entityId}
+   * @param entityId the entity ID
+   * @return an update condition encompassing all entities of the given type
+   */
+  public static EntityUpdateCondition entityUpdateCondition(final String entityId) {
+    return new DefaultEntityUpdateCondition(entityId);
+  }
+
+  /**
+   * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityId}
+   * with a where condition based on the property identified by {@code propertyId}, the operators based on
+   * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
+   * of values or null.
+   * @param entityId the entity ID
+   * @param propertyId the property ID
+   * @param conditionType the condition type
+   * @param value the condition value, can be a Collection of values
+   * @return an update condition based on the given value
+   */
+  public static EntityUpdateCondition entityUpdateCondition(final String entityId, final String propertyId,
+                                                            final ConditionType conditionType, final Object value) {
+    return entityUpdateCondition(entityId, propertyCondition(propertyId, conditionType, value));
+  }
+
+  /**
+   * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityId},
+   * using the given {@link Condition}
+   * @param entityId the entity ID
+   * @param condition the column condition
+   * @return an update condition based on the given column condition
+   */
+  public static EntityUpdateCondition entityUpdateCondition(final String entityId, final Condition condition) {
+    return new DefaultEntityUpdateCondition(entityId, condition);
+  }
+
+  /**
    * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
    * @return a new {@link Condition.Set} instance

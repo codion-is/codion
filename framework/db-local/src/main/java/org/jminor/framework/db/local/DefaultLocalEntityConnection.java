@@ -23,6 +23,7 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.condition.WhereCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -327,6 +328,60 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final UpdateException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(getUser(), updateSQL, propertyValuesToSet, e, null), e);
+        throw e;
+      }
+      finally {
+        closeSilently(statement);
+      }
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int update(final EntityUpdateCondition condition) throws DatabaseException {
+    requireNonNull(condition, CONDITION_PARAM_NAME);
+    if (condition.getPropertyValues().isEmpty()) {
+      throw new IllegalArgumentException("No property values provided for update");
+    }
+    checkReadOnly(condition.getEntityId());
+
+    PreparedStatement statement = null;
+    String updateSQL = null;
+    final List<Object> statementValues = new ArrayList<>();
+    synchronized (connection) {
+      try {
+        final List<ColumnProperty> statementProperties = new ArrayList<>();
+        final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
+        for (final Map.Entry<String, Object> propertyValue : condition.getPropertyValues().entrySet()) {
+          final ColumnProperty columnProperty = entityDefinition.getColumnProperty(propertyValue.getKey());
+          if (!columnProperty.isUpdatable()) {
+            throw new IllegalArgumentException("Property is not updatable: " + columnProperty.getPropertyId());
+          }
+          statementProperties.add(columnProperty);
+          statementValues.add(columnProperty.validateType(propertyValue.getValue()));
+        }
+        final WhereCondition updateCondition = whereCondition(condition, entityDefinition);
+        updateSQL = createUpdateSQL(entityDefinition.getTableName(), statementProperties, updateCondition.getWhereClause());
+        statementProperties.addAll(updateCondition.getColumnProperties());
+        statementValues.addAll(updateCondition.getValues());
+        statement = prepareStatement(updateSQL);
+        final int updatedRows = executePreparedUpdate(statement, updateSQL, statementProperties, statementValues);
+        if (updatedRows == 0) {
+          throw new UpdateException("Update did not affect any rows");
+        }
+
+        commitIfTransactionIsNotOpen();
+
+        return updatedRows;
+      }
+      catch (final SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(createLogMessage(getUser(), updateSQL, statementValues, e, null), e);
+        throw translateInsertUpdateSQLException(e);
+      }
+      catch (final UpdateException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(createLogMessage(getUser(), updateSQL, statementValues, e, null), e);
         throw e;
       }
       finally {

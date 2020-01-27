@@ -10,6 +10,7 @@ import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 
@@ -116,6 +117,16 @@ public interface RemoteEntityConnection extends Remote {
    * @throws RemoteException in case of a remote exception
    */
   List<Entity> update(List<Entity> entities) throws RemoteException, DatabaseException;
+
+  /**
+   * Performs an update according to the given condition, updating the properties found
+   * in the {@link EntityUpdateCondition#getPropertyValues()} map, with the associated values.
+   * @param condition the condition
+   * @return the number of affected rows
+   * @throws DatabaseException in case of a dabase exception
+   * @throws RemoteException in case of a remote exception
+   */
+  int update(EntityUpdateCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Deletes the entities according to the given primary keys.

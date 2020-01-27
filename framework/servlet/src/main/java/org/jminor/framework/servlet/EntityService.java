@@ -12,6 +12,7 @@ import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.common.remote.exception.ServerException;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
@@ -418,7 +419,29 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Serializer.serialize(connection.update(deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.update((List<Entity>) deserialize(request)))).build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      return getExceptionResponse(e);
+    }
+  }
+
+  /**
+   * Performs an update according to the given condition
+   * @param request the servlet request
+   * @param headers the headers
+   * @return a response
+   */
+  @POST
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("updateByCondition")
+  public Response updateByCondition(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+    try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+
+      return Response.ok(Serializer.serialize(connection.update((EntityUpdateCondition) deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

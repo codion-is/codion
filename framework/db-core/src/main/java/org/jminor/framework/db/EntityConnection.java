@@ -10,6 +10,7 @@ import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -112,6 +113,15 @@ public interface EntityConnection {
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    */
   List<Entity> update(List<Entity> entities) throws DatabaseException;
+
+  /**
+   * Performs an update according to the given condition, updating the properties found
+   * in the {@link EntityUpdateCondition#getPropertyValues()} map, with the associated values.
+   * @param condition the condition
+   * @return the number of affected rows
+   * @throws DatabaseException in case of a dabase exception
+   */
+  int update(EntityUpdateCondition condition) throws DatabaseException;
 
   /**
    * Deletes the entities according to the given primary keys.

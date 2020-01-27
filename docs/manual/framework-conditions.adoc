@@ -23,3 +23,7 @@ The <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>> is used
 == EntitySelectCondition
 
 {url-javadoc}/org/jminor/framework/db/condition/EntitySelectCondition.html[EntitySelectCondition] represents a where clause for a entity type specifically for selecting.
+
+== EntityUpdateCondition
+
+{url-javadoc}/org/jminor/framework/db/condition/EntityUpdateCondition.html[EntityUpdateCondition] represents a where clause and values for updating one or more entities.

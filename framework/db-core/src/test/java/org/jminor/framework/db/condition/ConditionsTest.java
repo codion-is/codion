@@ -46,4 +46,11 @@ public final class ConditionsTest {
     assertThrows(IllegalArgumentException.class, () -> entitySelectCondition(TestDomain.T_EMP)
             .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT)));
   }
+
+  @Test
+  public void updateConditionDuplicate() {
+    assertThrows(IllegalArgumentException.class, () -> Conditions.entityUpdateCondition(TestDomain.T_EMP)
+            .set(TestDomain.EMP_COMMISSION, 123)
+            .set(TestDomain.EMP_COMMISSION, 123));
+  }
 }
