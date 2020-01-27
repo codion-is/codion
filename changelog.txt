@@ -5661,3 +5661,4 @@
   ControlProvider.toggleButtonModel() renamed createButtonModel()
   Domain.key() now creates an empty primary key for entities without primary keys
   Allow insert of entities without primary keys
+0.13.2
