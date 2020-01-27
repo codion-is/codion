@@ -160,7 +160,7 @@ public final class EntityConnectionDemo {
   static void updateCondition(EntityConnection connection) throws DatabaseException {
     // tag::updateCondition[]
     EntityUpdateCondition updateCondition =
-            entityUpdateCondition(T_ARTIST, ARTIST_NAME, LIKE, "Metallica");
+            entityUpdateCondition(T_ARTIST, ARTIST_NAME, LIKE, "Azymuth");
 
     updateCondition.set(ARTIST_NAME, "Another Name");
 
