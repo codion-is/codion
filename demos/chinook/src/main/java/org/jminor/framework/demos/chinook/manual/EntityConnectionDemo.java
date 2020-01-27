@@ -11,6 +11,7 @@ import org.jminor.common.db.reports.ReportException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Domain;
@@ -156,6 +157,17 @@ public final class EntityConnectionDemo {
     // end::update[]
   }
 
+  static void updateCondition(EntityConnection connection) throws DatabaseException {
+    // tag::updateCondition[]
+    EntityUpdateCondition updateCondition =
+            entityUpdateCondition(T_ARTIST, ARTIST_NAME, LIKE, "My Band");
+
+    updateCondition.set(ARTIST_NAME, "Proper Name");
+
+    connection.update(updateCondition);
+    // end::updateCondition[]
+  }
+
   static void deleteCondition(EntityConnection connection) throws DatabaseException {
     // tag::deleteCondition[]
     Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Proper Name");
@@ -240,6 +252,7 @@ public final class EntityConnectionDemo {
     selectRowCount(connection);
     insert(connection);
     update(connection);
+    updateCondition(connection);
     deleteCondition(connection);
     deleteKey(connection);
     procedure(connection);

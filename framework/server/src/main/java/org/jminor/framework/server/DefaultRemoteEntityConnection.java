@@ -12,6 +12,7 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -168,6 +169,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.update(entities);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int update(final EntityUpdateCondition condition) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.update(condition);
     }
   }
 

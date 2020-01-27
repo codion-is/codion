@@ -4,6 +4,7 @@
 package org.jminor.framework.db.http;
 
 import org.jminor.common.User;
+import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.reports.ReportDataWrapper;
@@ -12,6 +13,10 @@ import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
+import org.jminor.framework.db.condition.Conditions;
+import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.condition.EntityUpdateCondition;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.servlet.EntityServletServer;
@@ -126,6 +131,32 @@ public final class HttpEntityConnectionTest {
     connection.update(singletonList(department));
     department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, department.get(TestDomain.DEPARTMENT_ID));
     assertEquals("TEstING", department.getString(TestDomain.DEPARTMENT_NAME));
+  }
+
+  @Test
+  public void updateByCondition() throws DatabaseException {
+    final EntitySelectCondition selectCondition = Conditions.entitySelectCondition(TestDomain.T_EMP,
+            TestDomain.EMP_COMMISSION, ConditionType.LIKE, null);
+
+    final List<Entity> entities = connection.select(selectCondition);
+
+    final EntityUpdateCondition updateCondition = Conditions.entityUpdateCondition(TestDomain.T_EMP,
+            TestDomain.EMP_COMMISSION, ConditionType.LIKE, null)
+            .set(TestDomain.EMP_COMMISSION, 500d)
+            .set(TestDomain.EMP_SALARY, 4200d);
+    try {
+      connection.beginTransaction();
+      connection.update(updateCondition);
+      assertEquals(0, connection.selectRowCount(selectCondition));
+      final List<Entity> afterUpdate = connection.select(Entities.getKeys(entities));
+      for (final Entity entity : afterUpdate) {
+        assertEquals(500d, entity.getDouble(TestDomain.EMP_COMMISSION));
+        assertEquals(4200d, entity.getDouble(TestDomain.EMP_SALARY));
+      }
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
   }
 
   @Test

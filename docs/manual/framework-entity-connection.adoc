@@ -119,6 +119,13 @@ For updating existing rows.
 include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
 ----
 
+** {url-entity-connection}#update-java.util.List-[update(EntityUpdateCondition condition)]
+
+[source,java,indent=0]
+----
+include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=updateCondition]
+----
+
 === delete
 
 For deleting existing rows.
