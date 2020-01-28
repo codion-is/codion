@@ -119,7 +119,7 @@ For updating existing rows.
 include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
 ----
 
-** {url-entity-connection}#update-java.util.List-[update(EntityUpdateCondition condition)]
+** {url-entity-connection}#update-org.jminor.framework.db.condition.EntityUpdateCondition-[update(EntityUpdateCondition condition)]
 
 [source,java,indent=0]
 ----
