@@ -12,7 +12,7 @@ buildscript {
 plugins {
     id "org.sonarqube" version "2.8"
     id "com.github.ben-manes.versions" version "0.27.0"
-    id "org.asciidoctor.jvm.convert" version "2.3.0"
+    id "org.asciidoctor.jvm.convert" version "2.3.0" apply false
     id "com.vanniktech.dependency.graph.generator" version "0.5.0"
 }
 
@@ -40,7 +40,7 @@ ext {
     versionPropertiesFile = '/org/jminor/common/version.properties'
     versionProperties = new Properties()
     frameworkModules = subprojects.findAll {
-        project -> !project.name.contains("demos")
+        project -> !project.name.contains("demos") && !project.name.contains("documentation")
     }
 }
 
@@ -180,61 +180,4 @@ configure(project.frameworkModules) {
         systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
         systemProperty "jminor.test.user", "scott:tiger"
     }.dependsOn createServerKeystore
-}
-
-asciidoctor {
-    doFirst {
-        ant.copy(todir: "${rootDir}/docs/images/modules") {
-            fileset(dir: "${rootDir}", includes: '**/*/build/reports/dependency-graph/dependency-graph.svg', excludes: 'docs/**/*,build/**/*')
-        }
-    }
-    sourceDir = file('docs')
-    //so asciidoc include works in intellij, relative path
-    baseDir = file('docs/noop')
-    sources {
-        include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc'
-    }
-    attributes toc: 'right', sectnums: 4, 'jminor-version': project.version, prewrap: false, experimental: true
-    asciidoctorj {
-        version = '2.2.0'
-        modules {
-            diagram.use()
-            diagram.version '1.5.16'
-        }
-        attributes 'source-highlighter': 'prettify'
-    }
-    //possible code changes
-    outputs.upToDateWhen { false }
-}
-
-task combinedJavadoc(type: Javadoc) {
-    group 'documentation'
-    title "JMinor Framework API $project.version"
-    failOnError = false
-    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
-    destinationDir = file("${buildDir}/docs/javadoc")
-    source frameworkModules.collect { it.sourceSets.main.allJava }
-    classpath = files(frameworkModules.collect { it.sourceSets.main.compileClasspath })
-}
-
-task populateSite(dependsOn: [combinedJavadoc, asciidoctor]) {
-    group 'documentation'
-    doLast {
-        ant.delete(dir: "${sitePath}/docs")
-        ant.copy(todir: "${sitePath}/docs/api") {
-            fileset(dir: "${buildDir}/docs/javadoc")
-        }
-        ant.copy(todir: "${sitePath}") {
-            fileset(dir: "${buildDir}/docs/asciidoc")
-        }
-        ant.copy(todir: "${sitePath}") {
-            fileset(dir: 'docs', includes: 'favicon.ico')
-        }
-        ant.chgrp(group: 'www', type: 'both') {
-            fileset(dir: "${sitePath}", includes: '**/*')
-        }
-        ant.chmod(dir: "${sitePath}", perm: 'ugo+r', type: 'file', includes: '**/*')
-        ant.chmod(dir: "${sitePath}", perm: 'ugo+rx', type: 'dir', includes: '**/*')
-        ant.chmod(file: "${sitePath}", perm: 'ugo+rx', type: 'dir')
-    }
 }
