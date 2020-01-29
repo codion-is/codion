@@ -1,0 +1,74 @@
+plugins {
+    id "org.asciidoctor.jvm.convert"
+}
+
+asciidoctor {
+    doFirst {
+        ant.copy(todir: "${rootDir}/docs/images/modules") {
+            fileset(dir: "${rootDir}",
+                    includes: '**/*/build/reports/dependency-graph/dependency-graph.svg',
+                    excludes: 'docs/**/*,build/**/*')
+        }
+    }
+    sourceDir = file('.')
+    //so asciidoc include works in intellij, relative path
+    baseDir = file('noop')
+    sources {
+        include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc'
+    }
+    attributes toc: 'right', sectnums: 4, 'jminor-version': project.version, prewrap: false, experimental: true
+    asciidoctorj {
+        version = '2.2.0'
+        modules {
+            diagram.use()
+            diagram.version '1.5.16'
+        }
+        attributes 'source-highlighter': 'prettify'
+    }
+    //possible code changes
+    outputs.upToDateWhen { false }
+}
+
+task combinedJavadoc(type: Javadoc) {
+    group 'documentation'
+    title "JMinor Framework API $project.version"
+    failOnError = false
+    options.links 'http://docs.oracle.com/javase/8/docs/api/'
+    destinationDir = file("${buildDir}/docs/javadoc")
+    source frameworkModules.collect { it.sourceSets.main.allJava }
+    classpath = files(frameworkModules.collect { it.sourceSets.main.compileClasspath })
+}
+
+task combineDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
+    group 'documentation'
+    doLast {
+        ant.delete(dir: "${buildDir}/docs/site")
+        ant.copy(todir: "${buildDir}/docs/site") {
+            fileset(dir: "${buildDir}/docs/asciidoc")
+        }
+        ant.copy(todir: "${buildDir}/docs/site/api") {
+            fileset(dir: "${buildDir}/docs/javadoc")
+        }
+    }
+}
+
+task populateSite(dependsOn: combineDocs) {
+    group 'documentation'
+    doLast {
+        ant.delete() {
+            fileset(dir: "${sitePath}")
+        }
+        ant.copy(todir: "${sitePath}") {
+            fileset(dir: "${buildDir}/docs/site")
+        }
+        ant.copy(todir: "${sitePath}") {
+            fileset(dir: '.', includes: 'favicon.ico')
+        }
+        ant.chgrp(group: 'www', type: 'both') {
+            fileset(dir: "${sitePath}", includes: '**/*')
+        }
+        ant.chmod(dir: "${sitePath}", perm: 'ugo+r', type: 'file', includes: '**/*')
+        ant.chmod(dir: "${sitePath}", perm: 'ugo+rx', type: 'dir', includes: '**/*')
+        ant.chmod(file: "${sitePath}", perm: 'ugo+rx', type: 'dir')
+    }
+}

@@ -1,5 +1,8 @@
 rootProject.name = 'org.jminor'
 
+include 'jminor-documentation'
+project(':jminor-documentation').projectDir = file('docs')
+
 include 'jminor-common-core'
 project(':jminor-common-core').projectDir = file('common/core')
 
