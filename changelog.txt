@@ -5639,3 +5639,4 @@
   Allow insert of entities without primary keys
 0.13.2
   EntityConnection.update(EntityUpdateCondition) added
+  EntityConnection.update(EntityUpdateCondition) no longer throws UpdateException if no rows were affected

@@ -366,9 +366,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         statementValues.addAll(updateCondition.getValues());
         statement = prepareStatement(updateSQL);
         final int updatedRows = executePreparedUpdate(statement, updateSQL, statementProperties, statementValues);
-        if (updatedRows == 0) {
-          throw new UpdateException("Update did not affect any rows");
-        }
 
         commitIfTransactionIsNotOpen();
 
@@ -378,11 +375,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(getUser(), updateSQL, statementValues, e, null), e);
         throw translateInsertUpdateSQLException(e);
-      }
-      catch (final UpdateException e) {
-        rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateSQL, statementValues, e, null), e);
-        throw e;
       }
       finally {
         closeSilently(statement);

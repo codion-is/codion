@@ -554,13 +554,13 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void updateWithConditionNoRows() {
+  public void updateWithConditionNoRows() throws DatabaseException {
     final EntityUpdateCondition updateCondition = Conditions.entityUpdateCondition(T_EMP,
             EMP_ID, ConditionType.LIKE, null)
             .set(EMP_SALARY, 4200d);
     try {
       connection.beginTransaction();
-      assertThrows(UpdateException.class, () -> connection.update(updateCondition));
+      assertEquals(0, connection.update(updateCondition));
     }
     finally {
       connection.rollbackTransaction();
