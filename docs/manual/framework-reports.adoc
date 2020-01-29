@@ -7,8 +7,6 @@ JMinor uses a plugin oriented approach to report viewing, and provides an implem
 
 With the JMinor JasperReports plugin you can either design your report based on a SQL query in which case you use the JasperReportsWrapper class, which facilitates the report being filled using the active database connection or you can design your report around the JRDataSource implementation provided by the {url-javadoc}/org/jminor/plugin/jasperreports/model/JasperReportsEntityDataSource.html[JasperReportsEntityDataSource] class, which is constructed around an iterator.
 
-The EntityPanel class provides straight forward methods for viewing reports using methods provided by the EntityModel class for filling them. Both these classes rely on static utility classes for doing the actual work so you are not bound by the EntityPanel and EntityModel classes for viewing reports, they simply provide the easiest way of doing so.
-
 == JDBC Reports
 
 Using a report based on a SQL query, {url-javadoc}/org/jminor/plugin/jasperreports/model/JasperReportsWrapper.html[JasperReportsWrapper] and {url-javadoc}/org/jminor/plugin/jasperreports/ui/JasperReportsUIWrapper.html[JasperReportsUIWrapper] is the simplest way of viewing a report using JMinor, just add a method similar to the one below to a EntityPanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<entity-panel.adoc#_adding_a_print_action, adding a print action>> section.
@@ -36,8 +34,6 @@ public Object getFieldValue(JRField jrField) {
   return super.getFieldValue(jrField);
 }
 ----
-
-The way you view the report is just like in the jdbc report example above except you use the __viewReport()__ method instead of __viewJdbcReport()__.
 
 == Examples
 
