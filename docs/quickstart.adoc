@@ -72,7 +72,7 @@ dependencies {
     //H2 DBMS module
     runtime 'org.jminor.jdk8:jminor-dbms-h2database:{jminor-version}'
     //H2 JDBC driver
-    runtime 'com.h2database:h2:1.4.199'
+    runtime 'com.h2database:h2:1.4.200'
     //Logging with Logback
     runtime 'org.jminor.jdk8:jminor-plugin-logback-proxy:{jminor-version}'
 
