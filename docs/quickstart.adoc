@@ -55,30 +55,31 @@ JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 
 |Logback|org.jminor.jdk11:jminor-plugin-logback-proxy:{jminor-version}
 |Log4j|org.jminor.jdk11:jminor-plugin-log4j-proxy:{jminor-version}
+|Java Util Logging|org.jminor.jdk11:jminor-plugin-jul-proxy:{jminor-version}
 |===
 
 == Gradle
-[source,groovy]
+[source,groovy,subs=attributes]
 ----
 dependencies {
     //Swing client UI module
-    implementation 'org.jminor.jdk11:jminor-swing-framework-ui:0.12.5-SNAPSHOT'
+    implementation 'org.jminor.jdk11:jminor-swing-framework-ui:{jminor-version}'
 
     //JSON for persisting client preferences
-    runtime 'org.jminor.jdk11:jminor-plugin-json:0.12.5-SNAPSHOT'
+    runtime 'org.jminor.jdk11:jminor-plugin-json:{jminor-version}'
     //Local JDBC connection module
-    runtime 'org.jminor.jdk11:jminor-framework-db-local:0.12.5-SNAPSHOT'
+    runtime 'org.jminor.jdk11:jminor-framework-db-local:{jminor-version}'
     //H2 DBMS module
-    runtime 'org.jminor.jdk11:jminor-dbms-h2database:0.12.5-SNAPSHOT'
+    runtime 'org.jminor.jdk11:jminor-dbms-h2database:{jminor-version}'
     //H2 JDBC driver
-    runtime 'com.h2database:h2:1.4.199'
+    runtime 'com.h2database:h2:1.4.200'
     //Logging with Logback
-    runtime 'org.jminor.jdk11:jminor-plugin-logback-proxy:0.12.5-SNAPSHOT'
+    runtime 'org.jminor.jdk11:jminor-plugin-logback-proxy:{jminor-version}'
 
     //Domain model unit testing module
-    testImplementation 'org.jminor.jdk11:jminor-framework-domain-test:0.12.5-SNAPSHOT'
-    //JUnit
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.5.1'
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
+    testImplementation 'org.jminor.jdk11:jminor-framework-domain-test:{jminor-version}'
+    //JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 }
 ----
