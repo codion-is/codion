@@ -3,6 +3,8 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.value.AbstractValue;
+import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -11,14 +13,21 @@ import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.textfield.IntegerField;
+import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.common.ui.value.AbstractComponentValue;
+import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A UI component based on the SwingEntityComboBoxModel.
@@ -77,6 +86,65 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
     popupMenu.add(Controls.control(((EntityComboBoxModel) getModel())::forceRefresh, FrameworkMessages.get(FrameworkMessages.REFRESH)));
 
     return popupMenu;
+  }
+
+  /**
+   * Links a {@link IntegerField} with the given combo box and propertyId.
+   */
+  public static class IntegerSelector {
+
+    public IntegerSelector(final EntityComboBox comboBox, final IntegerField integerField, final String propertyId) {
+      requireNonNull(comboBox);
+      requireNonNull(integerField);
+      requireNonNull(propertyId);
+      TextFields.selectAllOnFocusGained(integerField);
+      Values.link(NumericalValues.integerValue(integerField), new EntityValue(comboBox.getModel(), propertyId));
+    }
+
+    protected Entity findEntity(final List<Entity> entities, final String propertyId, final Integer value) {
+      if (value == null) {
+        return null;
+      }
+
+      for (final Entity entity : entities) {
+        if (Objects.equals(value, entity.getInteger(propertyId))) {
+          return entity;
+        }
+      }
+
+      return null;
+    }
+
+    private final class EntityValue extends AbstractValue<Integer> {
+
+      private final EntityComboBoxModel comboBoxModel;
+      private final String propertyId;
+
+      private EntityValue(final EntityComboBoxModel comboBoxModel, final String propertyId) {
+        this.comboBoxModel = comboBoxModel;
+        this.propertyId = propertyId;
+        this.comboBoxModel.addSelectionListener(selected -> notifyValueChange(get()));
+      }
+
+      @Override
+      public void set(final Integer value) {
+        comboBoxModel.setSelectedItem(findEntity(comboBoxModel.getVisibleItems(), propertyId, value));
+      }
+
+      @Override
+      public Integer get() {
+        if (comboBoxModel.isSelectionEmpty()) {
+          return null;
+        }
+
+        return comboBoxModel.getSelectedValue().getInteger(propertyId);
+      }
+
+      @Override
+      public boolean isNullable() {
+        return true;
+      }
+    }
   }
 
   /**

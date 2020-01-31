@@ -5641,3 +5641,5 @@
   EntityConnection.update(EntityUpdateCondition) added
   EntityConnection.update(EntityUpdateCondition) no longer throws UpdateException if no rows were affected
   jminor-documentation gradle module split from root project
+  EntityComboBox.IntegerSelector added
+  Components.createEastCenterPanel() added
