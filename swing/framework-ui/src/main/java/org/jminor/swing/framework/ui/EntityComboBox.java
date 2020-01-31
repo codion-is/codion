@@ -3,15 +3,20 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityComboBoxModelSelector;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.textfield.IntegerField;
+import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.common.ui.value.AbstractComponentValue;
+import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JOptionPane;
@@ -70,6 +75,19 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
     MaximumMatch.enable(comboBox);
 
     return comboBox;
+  }
+
+  public IntegerField integerFieldSelector(final String propertyId) {
+    return integerFieldSelector(propertyId, EntityComboBoxModelSelector.defaultFinder(propertyId));
+  }
+
+  public IntegerField integerFieldSelector(final String propertyId, final EntityComboBoxModelSelector.Finder<Integer> finder) {
+    final IntegerField integerField = new IntegerField(2);
+    TextFields.selectAllOnFocusGained(integerField);
+    Values.link(NumericalValues.integerValue(integerField),
+            new EntityComboBoxModelSelector<>(getModel(), propertyId, finder));
+
+    return integerField;
   }
 
   private JPopupMenu initializePopupMenu() {

@@ -230,7 +230,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final List<ControlSet> additionalPopupControlSets = new ArrayList<>();
   private final List<ControlSet> additionalToolBarControlSets = new ArrayList<>();
-  private final Set<Property> excludeFromUpdateMenu = new HashSet<>();
+  private final Set<String> excludeFromUpdateMenu = new HashSet<>();
 
   /**
    * specifies whether to include the south panel
@@ -312,12 +312,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Specifies that the given property should be excluded from the update selected entities menu.
-   * @param property the property to exclude from the update menu
+   * @param propertyId the id of the property to exclude from the update menu
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void excludeFromUpdateMenu(final Property property) {
+  public final void excludeFromUpdateMenu(final String propertyId) {
     checkIfInitialized();
-    excludeFromUpdateMenu.add(property);
+    getTableModel().getEntityDefinition().getProperty(propertyId);//just validating that the property exists
+    excludeFromUpdateMenu.add(propertyId);
   }
 
   /**
@@ -494,7 +495,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control set containing a set of controls, one for each updatable property in the
    * underlying entity, for performing an update on the selected entities
    * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
-   * @see #excludeFromUpdateMenu(Property)
+   * @see #excludeFromUpdateMenu(String)
    * @see EntityEditModel#getUpdateEnabledObserver()
    */
   public final ControlSet getUpdateSelectedControlSet() {
@@ -508,7 +509,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
-      if (!excludeFromUpdateMenu.contains(property)) {
+      if (!excludeFromUpdateMenu.contains(property.getPropertyId())) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
         controlSet.add(control(() -> updateSelectedEntities(property), caption, enabled));
       }

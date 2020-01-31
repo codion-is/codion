@@ -195,6 +195,20 @@ public final class Components {
   }
 
   /**
+   * Creates a JPanel, using a BorderLayout, adding the given components to their respective positions.
+   * @param west the panel to display in the BorderLayout.WEST position
+   * @param center the panel to display in the BorderLayout.CENTER position
+   * @return a panel displaying the given components in the WEST an CENTER positions in a BorderLayout
+   */
+  public static JPanel createWestCenterPanel(final JComponent west, final JComponent center) {
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
+    panel.add(west, BorderLayout.WEST);
+    panel.add(center, BorderLayout.CENTER);
+
+    return panel;
+  }
+
+  /**
    * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and a button based on buttonAction
    * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
    * @param centerComponent the center component
