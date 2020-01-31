@@ -5643,3 +5643,4 @@
   jminor-documentation gradle module split from root project
   EntityComboBox.IntegerSelector added
   Components.createEastCenterPanel() added
+  EntityTablePanel.excludeFromUpdateMenu() now takes a propertyId instead of Property parameter
