@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
  * Selects an Entity in a combo box model according to a property value.
  * @param <T> the value type
  */
-public class EntityComboBoxModelSelector<T> extends AbstractValue<T> {
+public final class EntityComboBoxModelSelector<T> extends AbstractValue<T> {
 
   private final EntityComboBoxModel comboBoxModel;
   private final String propertyId;
@@ -48,19 +48,15 @@ public class EntityComboBoxModelSelector<T> extends AbstractValue<T> {
    * @param value the value
    */
   @Override
-  public final void set(final T value) {
-    Entity toSelect = null;
-    if (value != null) {
-      toSelect = finder.findEntity(comboBoxModel.getVisibleItems(), value);
-    }
-    comboBoxModel.setSelectedItem(toSelect);
+  public void set(final T value) {
+    comboBoxModel.setSelectedItem(value == null ? null : finder.findEntity(comboBoxModel.getVisibleItems(), value));
   }
 
   /**
    * @return the value of the underlying property in the selected Entity, null if the selection is empty
    */
   @Override
-  public final T get() {
+  public T get() {
     if (comboBoxModel.isSelectionEmpty()) {
       return null;
     }
@@ -72,7 +68,7 @@ public class EntityComboBoxModelSelector<T> extends AbstractValue<T> {
    * @return true
    */
   @Override
-  public final boolean isNullable() {
+  public boolean isNullable() {
     return true;
   }
 
