@@ -247,19 +247,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   @Override
-  protected final void done() {
-    progressDialog.setVisible(false);
-    progressDialog.dispose();
-    try {
-      onSuccessEvent.onEvent(get());
-    }
-    catch (final InterruptedException e) {
-      onInterruptedException(e);
-    }
-    catch (final ExecutionException e) {
-      onException(e.getCause());
-    }
-  }
+  protected final void done() {/*Prevent overriding*/}
 
   /**
    * Handles an InterruptedException.
@@ -285,11 +273,34 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   protected final void process(final List<Void> chunks) {/*Prevent overriding*/}
 
   private void onPropertyChangeEvent(final PropertyChangeEvent changeEvent) {
-    if ("state".equals(changeEvent.getPropertyName()) && StateValue.STARTED.equals(changeEvent.getNewValue())) {
-      SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
+    if ("state".equals(changeEvent.getPropertyName())) {
+      if (StateValue.STARTED.equals(changeEvent.getNewValue())) {
+        SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
+      }
+      else if (StateValue.DONE.equals(changeEvent.getNewValue())) {
+        SwingUtilities.invokeLater(this::finish);
+      }
     }
     else if ("progress".equals(changeEvent.getPropertyName())) {
       SwingUtilities.invokeLater(() -> progressDialog.getProgressModel().setValue((Integer) changeEvent.getNewValue()));
     }
+  }
+
+  private void finish() {
+    closeDialog();
+    try {
+      onSuccessEvent.onEvent(get());
+    }
+    catch (final InterruptedException e) {
+      onInterruptedException(e);
+    }
+    catch (final ExecutionException e) {
+      onException(e.getCause());
+    }
+  }
+
+  private void closeDialog() {
+    progressDialog.setVisible(false);
+    progressDialog.dispose();
   }
 }
