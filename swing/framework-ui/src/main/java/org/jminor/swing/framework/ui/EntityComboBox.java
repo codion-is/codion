@@ -7,7 +7,6 @@ import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.framework.model.EntityComboBoxModelSelector;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.Control;
@@ -77,15 +76,29 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
     return comboBox;
   }
 
+  /**
+   * Creates a {@link IntegerField} which value is bound to the selected value in this combo box
+   * @param propertyId the property
+   * @return a {@link IntegerField} bound to the selected value
+   */
   public IntegerField integerFieldSelector(final String propertyId) {
-    return integerFieldSelector(propertyId, EntityComboBoxModelSelector.defaultFinder(propertyId));
-  }
-
-  public IntegerField integerFieldSelector(final String propertyId, final EntityComboBoxModelSelector.Finder<Integer> finder) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    Values.link(NumericalValues.integerValue(integerField),
-            new EntityComboBoxModelSelector<>(getModel(), propertyId, finder));
+    Values.link(NumericalValues.integerValue(integerField), getModel().integerValueSelector(propertyId));
+
+    return integerField;
+  }
+
+  /**
+   * Creates a {@link IntegerField} which value is bound to the selected value in this combo box
+   * @param propertyId the property
+   * @param finder responsible for finding the item to select by value
+   * @return a {@link IntegerField} bound to the selected value
+   */
+  public IntegerField integerFieldSelector(final String propertyId, final EntityComboBoxModel.Finder<Integer> finder) {
+    final IntegerField integerField = new IntegerField(2);
+    TextFields.selectAllOnFocusGained(integerField);
+    Values.link(NumericalValues.integerValue(integerField), getModel().integerValueSelector(propertyId, finder));
 
     return integerField;
   }

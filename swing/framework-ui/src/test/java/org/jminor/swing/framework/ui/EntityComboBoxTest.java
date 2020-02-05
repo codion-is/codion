@@ -8,6 +8,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
+import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import org.junit.jupiter.api.Test;
@@ -42,5 +43,23 @@ public class EntityComboBoxTest {
     assertEquals(sales, provider.get());
     model.setSelectedItem(null);
     assertNull(provider.get());
+  }
+
+  @Test
+  public void integerValueSelector() {
+    final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    comboBoxModel.refresh();
+    final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
+    final IntegerField empIdValue = comboBox.integerFieldSelector(TestDomain.EMP_ID);
+    assertNull(empIdValue.getInteger());
+    final Entity.Key jonesKey = comboBoxModel.getConnectionProvider().getDomain().key(TestDomain.T_EMP, 5);
+    comboBoxModel.setSelectedEntityByKey(jonesKey);
+    assertEquals(5, empIdValue.getInteger());
+    comboBoxModel.setSelectedItem(null);
+    assertNull(empIdValue.getInteger());
+    empIdValue.setInteger(10);
+    assertEquals("ADAMS", comboBoxModel.getSelectedValue().getString(TestDomain.EMP_NAME));
+    empIdValue.setInteger(null);
+    assertNull(comboBoxModel.getSelectedValue());
   }
 }

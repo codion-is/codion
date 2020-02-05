@@ -5,11 +5,13 @@ package org.jminor.framework.model;
 
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
+import org.jminor.common.value.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -150,6 +152,21 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   Condition.Provider getSelectConditionProvider();
 
   /**
+   * Creates a {@link Value} linked to the selected entity via the value of the given property.
+   * @param propertyId the property id
+   * @return a {@link Value} for selecting items by integer property value
+   */
+  Value<Integer> integerValueSelector(String propertyId);
+
+  /**
+   * Creates a {@link Value} linked to the selected entity via the value of the given property.
+   * @param propertyId the property id
+   * @param finder responsible for finding the entity by value
+   * @return a {@link Value} for selecting items by integer property value
+   */
+  Value<Integer> integerValueSelector(String propertyId, Finder<Integer> finder);
+
+  /**
    * @param listener a listener to be notified each time this model is refreshed
    */
   void addRefreshListener(EventListener listener);
@@ -158,4 +175,21 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param listener the listener to remove
    */
   void removeRefreshListener(EventListener listener);
+
+  /**
+   * Responsible for finding an Entity by the value of a given property.
+   * @param <T> the value type
+   */
+  interface Finder<T> {
+
+    /**
+     * Returns the first Entity in the given list with {@code value} associated with
+     * the given property. Only called for non-null {@code value}s.
+     * @param entities the entities to search
+     * @param propertyId the property id
+     * @param value the value to search for, never null
+     * @return the first Entity in the given list with the given value.
+     */
+    Entity findByValue(List<Entity> entities, String propertyId, T value);
+  }
 }

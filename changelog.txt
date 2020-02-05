@@ -5646,3 +5646,4 @@
   EntityTablePanel.excludeFromUpdateMenu() now takes a propertyId instead of Property parameter
   EntityComboBoxModelSelector added, EntityComboBox.IntegerSelector removed, EntityComboBox.integerFieldSelector() added
   ProgressWorker refactored a bit, was a bit flaky with respect to closing the dialog
+  EntityComboBoxModelSelector removed, EntityComboBoxModel.integerValueSelector() added
