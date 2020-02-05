@@ -92,7 +92,6 @@ public final class LoadTestPanel extends JPanel {
     this.pluginPanel = pluginPanel;
     this.scenarioPanel = initializeScenarioPanel();
     initializeUI();
-    onScenarioSelected();
   }
 
   /**
@@ -166,10 +165,10 @@ public final class LoadTestPanel extends JPanel {
     return southPanel;
   }
 
-  private ItemRandomizerPanel initializeScenarioPanel() {
+  private ItemRandomizerPanel<LoadTestModel.UsageScenario> initializeScenarioPanel() {
     final ItemRandomizerPanel<LoadTestModel.UsageScenario> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
     panel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
-    panel.addSelectedItemListener(this::onScenarioSelected);
+    panel.addSelectedItemListener(this::onScenarioSelectionChanged);
 
     return panel;
   }
@@ -365,12 +364,10 @@ public final class LoadTestPanel extends JPanel {
     return thinkTimePanel;
   }
 
-  private void onScenarioSelected() {
+  private void onScenarioSelectionChanged(final List<ItemRandomizer.RandomItem<LoadTest.UsageScenario>> selectedScenarios) {
     scenarioBase.removeAll();
-    for (final Object selectedItem : scenarioPanel.getSelectedItems()) {
-      final ItemRandomizer.RandomItem<LoadTest.UsageScenario> item = (ItemRandomizer.RandomItem<LoadTest.UsageScenario>) selectedItem;
-      final JPanel panel = createScenarioPanel(item.getItem());
-      scenarioBase.add(panel);
+    for (final ItemRandomizer.RandomItem<LoadTest.UsageScenario> selectedItem : selectedScenarios) {
+      scenarioBase.add(createScenarioPanel(selectedItem.getItem()));
     }
     validate();
     repaint();

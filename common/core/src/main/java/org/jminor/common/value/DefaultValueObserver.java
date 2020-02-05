@@ -3,7 +3,8 @@
  */
 package org.jminor.common.value;
 
-import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 
 import static java.util.Objects.requireNonNull;
 
@@ -26,7 +27,22 @@ final class DefaultValueObserver<V> implements ValueObserver<V> {
   }
 
   @Override
-  public EventObserver<V> getChangeObserver() {
-    return value.getChangeObserver();
+  public void addListener(final EventListener listener) {
+    value.addListener(listener);
+  }
+
+  @Override
+  public void removeListener(final EventListener listener) {
+    value.removeListener(listener);
+  }
+
+  @Override
+  public void addDataListener(final EventDataListener<V> listener) {
+    value.addDataListener(listener);
+  }
+
+  @Override
+  public void removeDataListener(final EventDataListener listener) {
+    value.removeDataListener(listener);
   }
 }

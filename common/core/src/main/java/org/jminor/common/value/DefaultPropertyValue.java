@@ -4,6 +4,8 @@
 package org.jminor.common.value;
 
 import org.jminor.common.Util;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
 
 import java.lang.reflect.Method;
@@ -11,7 +13,7 @@ import java.lang.reflect.Method;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
 
-final class DefaultPropertyValue<V> extends AbstractObservableValue<V> implements PropertyValue<V> {
+final class DefaultPropertyValue<V> implements PropertyValue<V> {
 
   private final EventObserver<V> changeEvent;
   private final String propertyName;
@@ -84,7 +86,22 @@ final class DefaultPropertyValue<V> extends AbstractObservableValue<V> implement
   }
 
   @Override
-  public EventObserver<V> getChangeObserver() {
-    return changeEvent;
+  public void addListener(final EventListener listener) {
+    changeEvent.addListener(listener);
+  }
+
+  @Override
+  public void removeListener(final EventListener listener) {
+    changeEvent.removeListener(listener);
+  }
+
+  @Override
+  public void addDataListener(final EventDataListener<V> listener) {
+    changeEvent.addDataListener(listener);
+  }
+
+  @Override
+  public void removeDataListener(final EventDataListener listener) {
+    changeEvent.removeDataListener(listener);
   }
 }
