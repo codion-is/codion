@@ -552,13 +552,13 @@ public final class EntityLookupField extends JTextField {
   }
 
   /**
-   * A InputProvider implementation for Entity values based on a EntityLookupField.
+   * A {@link org.jminor.swing.common.ui.value.ComponentValue} implementation for Entity values based on a EntityLookupField.
    * @see EntityLookupField
    */
   public static final class ComponentValue extends AbstractComponentValue<Entity, EntityLookupField> {
 
     /**
-     * Instantiates a new EntityLookupProvider
+     * Instantiates a new ComponentValue
      * @param lookupModel the lookup model to base the lookup field on
      * @param initialValue the initial value
      */
