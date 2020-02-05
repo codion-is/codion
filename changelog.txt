@@ -5673,3 +5673,4 @@
   EntityComboBoxModelSelector removed, EntityComboBoxModel.integerValueSelector() added
   Value.getObserver() and AbstractObservableValue removed
   ItemRandomizerPanel, LoadTestPanel, minor refactoring
+  Icelandic caption for INSERT action is now same as for SAVE
