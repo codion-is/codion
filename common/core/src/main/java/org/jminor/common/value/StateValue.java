@@ -3,7 +3,8 @@
  */
 package org.jminor.common.value;
 
-import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.state.State;
 
 import static java.util.Objects.requireNonNull;
@@ -11,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A boolean value based on a State, null values are translated to 'false'
  */
-final class StateValue extends AbstractObservableValue<Boolean> {
+final class StateValue implements Value<Boolean>  {
 
   private final State state;
 
@@ -35,7 +36,22 @@ final class StateValue extends AbstractObservableValue<Boolean> {
   }
 
   @Override
-  public EventObserver<Boolean> getChangeObserver() {
-    return state.getObserver();
+  public void addListener(final EventListener listener) {
+    state.addListener(listener);
+  }
+
+  @Override
+  public void removeListener(final EventListener listener) {
+    state.removeListener(listener);
+  }
+
+  @Override
+  public void addDataListener(final EventDataListener<Boolean> listener) {
+    state.addDataListener(listener);
+  }
+
+  @Override
+  public void removeDataListener(final EventDataListener listener) {
+    state.removeDataListener(listener);
   }
 }

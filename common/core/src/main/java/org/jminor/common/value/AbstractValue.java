@@ -4,21 +4,38 @@
 package org.jminor.common.value;
 
 import org.jminor.common.event.Event;
-import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 
 /**
  * A base Value implementation handling everything except the value itself.
+ * When extending this class remember to always call {@link #notifyValueChange(Object)}
+ * when the underlying value changes.
  * @param <V> the value type
  */
-public abstract class AbstractValue<V> extends AbstractObservableValue<V> {
+public abstract class AbstractValue<V> implements Value<V> {
 
   private final Event<V> changeEvent = Events.event();
 
-  /** {@inheritDoc} */
   @Override
-  public final EventObserver<V> getChangeObserver() {
-    return changeEvent.getObserver();
+  public void addListener(final EventListener listener) {
+    changeEvent.addListener(listener);
+  }
+
+  @Override
+  public void removeListener(final EventListener listener) {
+    changeEvent.removeListener(listener);
+  }
+
+  @Override
+  public void addDataListener(final EventDataListener<V> listener) {
+    changeEvent.addDataListener(listener);
+  }
+
+  @Override
+  public void removeDataListener(final EventDataListener listener) {
+    changeEvent.removeDataListener(listener);
   }
 
   /**

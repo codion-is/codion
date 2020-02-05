@@ -5,9 +5,7 @@ package org.jminor.swing.common.tools.ui;
 
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
-import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
-import org.jminor.common.value.AbstractObservableValue;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.tools.ItemRandomizer;
@@ -44,7 +42,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   private final ItemRandomizer<T> model;
   private final JPanel configPanel = new JPanel(Layouts.createGridLayout(0, 1));
   private final JList<ItemRandomizer.RandomItem<T>> itemList = new JList<>(new DefaultListModel<>());
-  private final Event selectedItemChangedEvent = Events.event();
+  private final Event<T> selectedItemChangedEvent = Events.event();
 
   /**
    * Instantiates a new RandomItemPanel.
@@ -158,7 +156,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     return spinnerModel;
   }
 
-  private final class EnabledModelValue extends AbstractObservableValue<Boolean> {
+  private final class EnabledModelValue extends AbstractValue<Boolean> {
     private final T item;
 
     private EnabledModelValue(final T item) {
@@ -178,11 +176,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     @Override
     public boolean isNullable() {
       return false;
-    }
-
-    @Override
-    public EventObserver<Boolean> getChangeObserver() {
-      return model.getEnabledObserver();
     }
   }
 
@@ -210,7 +203,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
   }
 
-  private final class WeightModelValue extends AbstractObservableValue<Integer> {
+  private final class WeightModelValue extends AbstractValue<Integer> {
     private final T item;
 
     private WeightModelValue(final T item) {
@@ -230,11 +223,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     @Override
     public boolean isNullable() {
       return false;
-    }
-
-    @Override
-    public EventObserver<Integer> getChangeObserver() {
-      return model.getWeightsObserver();
     }
   }
 

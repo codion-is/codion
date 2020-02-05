@@ -14,9 +14,4 @@ public interface Value<V> extends ValueObserver<V> {
    * @param value the value
    */
   void set(V value);
-
-  /**
-   * @return a read only view of this value
-   */
-  ValueObserver<V> getObserver();
 }

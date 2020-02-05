@@ -39,10 +39,12 @@ public class ValuesTest {
   @Test
   public void value() {
     final AtomicInteger eventCounter = new AtomicInteger();
+    final AtomicInteger observerCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42, -1);
     assertFalse(intValue.isNullable());
+    final ValueObserver<Integer> valueObserver = Values.valueObserver(intValue);
     intValue.addListener(eventCounter::incrementAndGet);
-    intValue.getObserver().addDataListener(data -> {
+    intValue.addDataListener(data -> {
       if (eventCounter.get() != 2) {
         assertNotNull(data);
       }
@@ -53,14 +55,17 @@ public class ValuesTest {
     assertEquals(1, eventCounter.get());
     intValue.set(null);
     assertEquals(-1, intValue.get());
+    assertEquals(-1, valueObserver.get());
     assertEquals(2, eventCounter.get());
     intValue.set(null);
     assertEquals(-1, intValue.get());
+    assertEquals(-1, valueObserver.get());
     assertEquals(2, eventCounter.get());
     intValue.set(42);
     assertEquals(3, eventCounter.get());
     intValue.set(null);
     assertEquals(-1, intValue.get());
+    assertEquals(-1, valueObserver.get());
 
     final Value<String> stringValue = Values.value(null, "null");
     assertFalse(stringValue.isNullable());
@@ -144,7 +149,6 @@ public class ValuesTest {
   public void stateValue() {
     final State state = States.state(true);
     final Value<Boolean> stateValue = Values.stateValue(state);
-    assertNotNull(stateValue.getChangeObserver());
     assertTrue(stateValue.get());
     stateValue.set(false);
     assertFalse(state.get());

@@ -10,7 +10,6 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.common.value.Value;
-import org.jminor.common.value.ValueObserver;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.Components;
 
@@ -82,9 +81,7 @@ public final class EventStateValue {
     // tag::value[]
     Value<Integer> value = Values.value();
 
-    ValueObserver<Integer> valueObserver = value.getObserver();
-
-    valueObserver.addDataListener(System.out::println);
+    value.addDataListener(System.out::println);
 
     value.set(2);
     // end::value[]
