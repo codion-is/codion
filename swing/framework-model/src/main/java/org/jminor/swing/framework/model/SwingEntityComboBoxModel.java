@@ -9,6 +9,8 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
+import org.jminor.common.value.AbstractValue;
+import org.jminor.common.value.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.domain.Domain;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -297,6 +300,20 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /** {@inheritDoc} */
   @Override
+  public final Value<Integer> integerValueSelector(final String propertyId) {
+    return integerValueSelector(propertyId, (entities, thePropertyId, value) ->
+            entities.stream().filter(entity ->
+                    Objects.equals(value, entity.get(propertyId))).findFirst().orElse(null));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Value<Integer> integerValueSelector(final String propertyId, final Finder<Integer> finder) {
+    return new SelectorValue<>(propertyId, finder);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void addRefreshListener(final EventListener listener) {
     refreshDoneEvent.addListener(listener);
   }
@@ -430,6 +447,52 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     @Override
     public void onEvent() {
       foreignKeyModel.forceRefresh();
+    }
+  }
+
+  private final class SelectorValue<T> extends AbstractValue<T> {
+
+    private final String propertyId;
+    private final EntityComboBoxModel.Finder<T> finder;
+
+    /**
+     * @param propertyId the property
+     * @param finder the Finder instance responsible for finding the entity by value
+     */
+    private SelectorValue(final String propertyId, final EntityComboBoxModel.Finder<T> finder) {
+      this.propertyId = requireNonNull(propertyId);
+      this.finder = requireNonNull(finder);
+      addSelectionListener(selected -> notifyValueChange(get()));
+    }
+
+    /**
+     * Selects the first entity found in the underlying combo box model, which
+     * has the the given value associated with the underlying property.
+     * @param value the value
+     */
+    @Override
+    public void set(final T value) {
+      setSelectedItem(value == null ? null : finder.findByValue(getVisibleItems(), propertyId, value));
+    }
+
+    /**
+     * @return the value of the underlying property in the selected Entity, null if the selection is empty
+     */
+    @Override
+    public T get() {
+      if (isSelectionEmpty()) {
+        return null;
+      }
+
+      return (T) getSelectedValue().get(propertyId);
+    }
+
+    /**
+     * @return true
+     */
+    @Override
+    public boolean isNullable() {
+      return true;
     }
   }
 }

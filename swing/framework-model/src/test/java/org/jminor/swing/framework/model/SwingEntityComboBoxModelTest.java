@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.EventListener;
+import org.jminor.common.value.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
@@ -177,6 +178,22 @@ public final class SwingEntityComboBoxModelTest {
   @Test
   public void setSelectedEntityByPrimaryKeyNullValue() {
     assertThrows(NullPointerException.class, () -> comboBoxModel.setSelectedEntityByKey(null));
+  }
+
+  @Test
+  public void integerValueSelector() {
+    comboBoxModel.refresh();
+    final Value<Integer> empIdValue = comboBoxModel.integerValueSelector(TestDomain.EMP_ID);
+    assertNull(empIdValue.get());
+    final Entity.Key jonesKey = comboBoxModel.getConnectionProvider().getDomain().key(TestDomain.T_EMP, 5);
+    comboBoxModel.setSelectedEntityByKey(jonesKey);
+    assertEquals(5, empIdValue.get());
+    comboBoxModel.setSelectedItem(null);
+    assertNull(empIdValue.get());
+    empIdValue.set(10);
+    assertEquals("ADAMS", comboBoxModel.getSelectedValue().getString(TestDomain.EMP_NAME));
+    empIdValue.set(null);
+    assertNull(comboBoxModel.getSelectedValue());
   }
 
   @Test
