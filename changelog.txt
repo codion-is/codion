@@ -5650,3 +5650,4 @@
   Value.getObserver() and AbstractObservableValue removed
   ItemRandomizerPanel, LoadTestPanel, minor refactoring
   Icelandic caption for INSERT action is now same as for SAVE
+  ExceptionDialog no longer sets close button as the default root pane button, did not consume the Enter key event, which tended to trigger further actions after the dialog closed, key events used instead
