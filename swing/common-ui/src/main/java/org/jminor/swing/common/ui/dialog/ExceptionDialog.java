@@ -180,6 +180,8 @@ final class ExceptionDialog extends JDialog {
     final Control closeControl = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
     closeControl.setDescription(MESSAGES.getString("close_dialog"));
     closeControl.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
+    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true, closeControl);
+    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true, closeControl);
     final Control saveControl = Controls.control(() ->
                     Files.write(Dialogs.selectFileToSave(detailsArea, null, "error.txt").toPath(),
                             Arrays.asList(detailsArea.getText().split("\\r?\\n"))),
@@ -207,8 +209,6 @@ final class ExceptionDialog extends JDialog {
 
     baseButtonPanel.add(leftButtonPanel, BorderLayout.WEST);
     baseButtonPanel.add(rightButtonPanel, BorderLayout.CENTER);
-
-    getRootPane().setDefaultButton(closeButton);
 
     return baseButtonPanel;
   }

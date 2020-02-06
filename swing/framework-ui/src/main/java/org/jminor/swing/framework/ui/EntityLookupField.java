@@ -26,6 +26,7 @@ import org.jminor.swing.common.ui.SwingMessages;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.FilteredTable;
@@ -295,24 +296,29 @@ public final class EntityLookupField extends JTextField {
       }
       else {
         if (!model.searchStringRepresentsSelected()) {
-          List<Entity> queryResult;
           try {
-            Components.showWaitCursor(this);
-            queryResult = model.performQuery();
-          }
-          finally {
-            Components.hideWaitCursor(this);
-          }
-          if (queryResult.size() == 1) {
-            model.setSelectedEntities(queryResult);
-          }
-          else if (promptUser) {
-            if (queryResult.isEmpty()) {
-              showEmptyResultMessage();
+            List<Entity> queryResult;
+            try {
+              Components.showWaitCursor(this);
+              queryResult = model.performQuery();
             }
-            else {
-              selectEntities(queryResult);
+            finally {
+              Components.hideWaitCursor(this);
             }
+            if (queryResult.size() == 1) {
+              model.setSelectedEntities(queryResult);
+            }
+            else if (promptUser) {
+              if (queryResult.isEmpty()) {
+                showEmptyResultMessage();
+              }
+              else {
+                selectEntities(queryResult);
+              }
+            }
+          }
+          catch (final Exception e) {
+            DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(this));
           }
         }
       }
@@ -339,10 +345,9 @@ public final class EntityLookupField extends JTextField {
     final Event closeEvent = Events.event();
     final JButton okButton = new JButton(Controls.control(closeEvent::onEvent, Messages.get(Messages.OK)));
     KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true,
-            Controls.control(() -> {
-              okButton.doClick();
-              closeEvent.onEvent();
-            }, "EntityLookupField.emptyResultOK"));
+            Controls.control(okButton::doClick));
+    KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_FOCUSED, true,
+            Controls.control(closeEvent::onEvent));
     final JPanel buttonPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
     buttonPanel.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
