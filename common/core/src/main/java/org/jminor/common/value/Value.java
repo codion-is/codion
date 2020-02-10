@@ -16,17 +16,10 @@ public interface Value<V> extends ValueObserver<V> {
   void set(V value);
 
   /**
-   * Links the given value to this value, so that changes in one are reflected in the other
-   * @param linkedValue the linked value
-   * @param <V> the value type
+   * Creates a biderectional link between this and the given value,
+   * so that changes in one are reflected in the other.
+   * Note that after a call to this method the value of {@code linkedValue} is the same as this value.
+   * @param linkedValue the value to link
    */
   void link(Value<V> linkedValue);
-
-  /**
-   * Links the given value to this value, so that changes in this value are reflected in the linked value
-   * @param linkedValue the linked value
-   * @param oneWay if true this value is not updated if the linked value changes
-   * @param <V> the value type
-   */
-  void link(Value<V> linkedValue, boolean oneWay);
 }

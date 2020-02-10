@@ -107,11 +107,6 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
 
   @Override
   public void link(final Value<V> linkedValue) {
-    link(linkedValue, false);
-  }
-
-  @Override
-  public void link(final Value<V> linkedValue, final boolean oneWay) {
-    new ValueLink<V>(this, linkedValue, oneWay);
+    new ValueLink<V>(this, linkedValue);
   }
 }

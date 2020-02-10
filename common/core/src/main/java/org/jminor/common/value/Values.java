@@ -7,6 +7,8 @@ import org.jminor.common.event.EventObserver;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A factory class for {@link Value} objects
  */
@@ -76,7 +78,7 @@ public final class Values {
    */
   public static State valueState(final Value<Boolean> booleanValue) {
     final State state = States.state();
-    booleanValue.link(stateValue(state));
+    requireNonNull(booleanValue, "booleanValue").link(stateValue(state));
 
     return state;
   }

@@ -57,11 +57,6 @@ final class StateValue implements Value<Boolean>  {
 
   @Override
   public void link(final Value<Boolean> linkedValue) {
-    link(linkedValue, false);
-  }
-
-  @Override
-  public void link(final Value<Boolean> linkedValue, final boolean oneWay) {
-    new ValueLink<>(this, linkedValue, oneWay);
+    new ValueLink<>(this, linkedValue);
   }
 }

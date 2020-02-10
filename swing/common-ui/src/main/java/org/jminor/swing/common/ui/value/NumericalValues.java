@@ -294,20 +294,8 @@ public final class NumericalValues {
    */
   public static SpinnerNumberModel integerSpinnerValueLink(final Object owner, final String propertyName,
                                                            final EventObserver<Integer> valueChangeEvent) {
-    return integerSpinnerValueLink(owner, propertyName, valueChangeEvent, false);
-  }
-
-  /**
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param readOnly if true the value link will be read only
-   * @return a SpinnerNumberModel based on the value
-   */
-  public static SpinnerNumberModel integerSpinnerValueLink(final Object owner, final String propertyName,
-                                                           final EventObserver<Integer> valueChangeEvent, final boolean readOnly) {
     final SpinnerNumberModel numberModel = new SpinnerNumberModel();
-    integerSpinnerValueLink(owner, propertyName, valueChangeEvent, numberModel, readOnly);
+    integerSpinnerValueLink(owner, propertyName, valueChangeEvent, numberModel);
 
     return numberModel;
   }
@@ -317,17 +305,8 @@ public final class NumericalValues {
    * @return a SpinnerNumberModel based on the value
    */
   public static SpinnerNumberModel integerSpinnerValueLink(final Value<Integer> integerValue) {
-    return integerSpinnerValueLink(integerValue, false);
-  }
-
-  /**
-   * @param integerValue the value
-   * @param readOnly if true the value link will be read only
-   * @return a SpinnerNumberModel based on the value
-   */
-  public static SpinnerNumberModel integerSpinnerValueLink(final Value<Integer> integerValue, final boolean readOnly) {
     final SpinnerNumberModel numberModel = new SpinnerNumberModel();
-    integerSpinnerValueLink(numberModel, integerValue, readOnly);
+    integerSpinnerValueLink(numberModel, integerValue);
 
     return numberModel;
   }
@@ -337,11 +316,10 @@ public final class NumericalValues {
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param spinnerModel the spinner model to use
-   * @param readOnly if true the value link will be read only
    */
   public static void integerSpinnerValueLink(final Object owner, final String propertyName, final EventObserver<Integer> valueChangeEvent,
-                                             final SpinnerNumberModel spinnerModel, final boolean readOnly) {
-    integerSpinnerValueLink(spinnerModel, propertyValue(owner, propertyName, int.class, valueChangeEvent), readOnly);
+                                             final SpinnerNumberModel spinnerModel) {
+    integerSpinnerValueLink(spinnerModel, propertyValue(owner, propertyName, int.class, valueChangeEvent));
   }
 
   /**
@@ -349,16 +327,7 @@ public final class NumericalValues {
    * @param integerValue the value
    */
   public static void integerSpinnerValueLink(final SpinnerNumberModel spinnerModel, final Value<Integer> integerValue) {
-    integerSpinnerValueLink(spinnerModel, integerValue, false);
-  }
-
-  /**
-   * @param spinnerModel the spinner model
-   * @param integerValue the value
-   * @param readOnly if true the value link will be read only
-   */
-  public static void integerSpinnerValueLink(final SpinnerNumberModel spinnerModel, final Value<Integer> integerValue, final boolean readOnly) {
-    integerValue.link(integerValue(spinnerModel), readOnly);
+    integerValue.link(integerValue(spinnerModel));
   }
 
   /**

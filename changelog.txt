@@ -5655,3 +5655,4 @@
   DefaultPropertyCondition, bug fixed, did not wrap in clauses exceeding the in clause limit in additional paranthesis
   AbstractValue.addListener() methods now final
   Value.link() added, Values.link() removed
+  Value.link(value, readOnly) removed

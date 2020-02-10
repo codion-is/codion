@@ -40,12 +40,7 @@ public abstract class AbstractValue<V> implements Value<V> {
 
   @Override
   public final void link(final Value<V> linkedValue) {
-    link(linkedValue, false);
-  }
-
-  @Override
-  public final void link(final Value<V> linkedValue, final boolean oneWay) {
-    new ValueLink<V>(this, linkedValue, oneWay);
+    new ValueLink<V>(this, linkedValue);
   }
 
   /**

@@ -116,7 +116,8 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.propertyValue(this, "intValue", int.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     assertFalse(modelValue.isNullable());
-    modelValue.link(uiValue, true);
+    modelValue.addDataListener(uiValue::set);//modelValue.link(uiValue, true);
+    uiValue.set(modelValue.get());
     modelValue.addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
     uiValue.addListener(uiValueEventCounter::incrementAndGet);

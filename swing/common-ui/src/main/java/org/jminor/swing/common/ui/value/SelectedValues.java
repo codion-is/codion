@@ -49,22 +49,7 @@ public final class SelectedValues {
    */
   public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Object owner, final String propertyName,
                                            final Class<V> valueClass, final EventObserver<V> valueChangeEvent) {
-    selectedValueLink(comboBox, owner, propertyName, valueClass, valueChangeEvent, false);
-  }
-
-  /**
-   * @param <V> the value type
-   * @param comboBox the combo box to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueClass the value class
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param readOnly if true the component will be read only
-   */
-  public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Object owner, final String propertyName,
-                                           final Class<V> valueClass, final EventObserver<V> valueChangeEvent,
-                                           final boolean readOnly) {
-    selectedValueLink(comboBox, propertyValue(owner, propertyName, valueClass, valueChangeEvent), readOnly);
+    selectedValueLink(comboBox, propertyValue(owner, propertyName, valueClass, valueChangeEvent));
   }
 
   /**
@@ -73,16 +58,6 @@ public final class SelectedValues {
    * @param value the model value
    */
   public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Value<V> value) {
-    value.link(selectedValue(comboBox), false);
-  }
-
-  /**
-   * @param <V> the value type
-   * @param comboBox the combo box to link with the value
-   * @param value the model value
-   * @param readOnly if true the component will be read only
-   */
-  public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Value<V> value, final boolean readOnly) {
-    value.link(selectedValue(comboBox), readOnly);
+    value.link(selectedValue(comboBox));
   }
 }
