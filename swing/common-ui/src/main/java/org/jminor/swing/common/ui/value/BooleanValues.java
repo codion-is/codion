@@ -6,7 +6,6 @@ package org.jminor.swing.common.ui.value;
 import org.jminor.common.Item;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 
@@ -73,20 +72,8 @@ public final class BooleanValues {
    * @return a ButtomModel based on the value
    */
   public static ButtonModel booleanValueLink(final Object owner, final String propertyName, final EventObserver<Boolean> valueChangeEvent) {
-    return booleanValueLink(owner, propertyName, valueChangeEvent, false);
-  }
-
-  /**
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param readOnly if true the component will be read only
-   * @return a ButtomModel based on the value
-   */
-  public static ButtonModel booleanValueLink(final Object owner, final String propertyName, final EventObserver<Boolean> valueChangeEvent,
-                                             final boolean readOnly) {
     final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-    booleanValueLink(buttonModel, owner, propertyName, valueChangeEvent, readOnly);
+    booleanValueLink(buttonModel, owner, propertyName, valueChangeEvent);
 
     return buttonModel;
   }
@@ -99,19 +86,7 @@ public final class BooleanValues {
    */
   public static void booleanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
                                       final EventObserver<Boolean> valueChangeEvent) {
-    booleanValueLink(buttonModel, owner, propertyName, valueChangeEvent, false);
-  }
-
-  /**
-   * @param buttonModel the button model to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param readOnly if true the component will be read only
-   */
-  public static void booleanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
-                                      final EventObserver<Boolean> valueChangeEvent, final boolean readOnly) {
-    booleanValueLink(buttonModel, propertyValue(owner, propertyName, boolean.class, valueChangeEvent), readOnly);
+    booleanValueLink(buttonModel, propertyValue(owner, propertyName, boolean.class, valueChangeEvent));
   }
 
   /**
@@ -119,7 +94,7 @@ public final class BooleanValues {
    * @param value the model value
    */
   public static void booleanValueLink(final JComboBox<Item<Boolean>> comboBox, final Value<Boolean> value) {
-    Values.link(booleanComboBoxValue(comboBox), value);
+    value.link(booleanComboBoxValue(comboBox));
   }
 
   /**
@@ -127,15 +102,6 @@ public final class BooleanValues {
    * @param value the model value
    */
   public static void booleanValueLink(final ButtonModel buttonModel, final Value<Boolean> value) {
-    booleanValueLink(buttonModel, value, false);
-  }
-
-  /**
-   * @param buttonModel the button model to link with the value
-   * @param value the model value
-   * @param readOnly if true the component will be read only
-   */
-  public static void booleanValueLink(final ButtonModel buttonModel, final Value<Boolean> value, final boolean readOnly) {
-    Values.link(value, booleanButtonModelValue(buttonModel), readOnly);
+    value.link(booleanButtonModelValue(buttonModel));
   }
 }

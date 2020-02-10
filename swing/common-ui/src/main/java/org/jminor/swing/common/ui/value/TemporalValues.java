@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui.value;
 
 import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
 
 import javax.swing.JFormattedTextField;
@@ -72,7 +71,7 @@ public final class TemporalValues {
    */
   public static void localTimeValueLink(final JFormattedTextField textComponent, final Value<LocalTime> value,
                                         final String dateFormat, final boolean updateOnKeystroke) {
-    Values.link(value, localTimeValue(textComponent, dateFormat, updateOnKeystroke));
+    value.link(localTimeValue(textComponent, dateFormat, updateOnKeystroke));
   }
 
   /**
@@ -117,7 +116,7 @@ public final class TemporalValues {
    */
   public static void localDateValueLink(final JFormattedTextField textComponent, final Value<LocalDate> value,
                                         final String dateFormat, final boolean updateOnKeystroke) {
-    Values.link(value, localDateValue(textComponent, dateFormat, updateOnKeystroke));
+    value.link(localDateValue(textComponent, dateFormat, updateOnKeystroke));
   }
 
   /**
@@ -162,6 +161,6 @@ public final class TemporalValues {
    */
   public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Value<LocalDateTime> value,
                                             final String dateFormat, final boolean updateOnKeystroke) {
-    Values.link(value, localDateTimeValue(textComponent, dateFormat, updateOnKeystroke));
+    value.link(localDateTimeValue(textComponent, dateFormat, updateOnKeystroke));
   }
 }

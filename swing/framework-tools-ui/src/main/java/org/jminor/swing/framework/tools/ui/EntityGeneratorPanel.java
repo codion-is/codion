@@ -5,7 +5,6 @@ package org.jminor.swing.framework.tools.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.LoginPanel;
@@ -56,7 +55,7 @@ public class EntityGeneratorPanel extends JPanel {
 
     final JTextArea textArea = new JTextArea(40, 60);
     textArea.setEditable(false);
-    Values.link(generatorModel.getDefinitionTextValue(), TextValues.textValue(textArea));
+    generatorModel.getDefinitionTextValue().link(TextValues.textValue(textArea));
     final JScrollPane documentScroller = new JScrollPane(textArea);
     splitPane.setRightComponent(documentScroller);
 

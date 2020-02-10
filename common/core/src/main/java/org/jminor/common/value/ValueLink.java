@@ -25,21 +25,17 @@ final class ValueLink<V> {
    * Instantiates a new ValueLink
    * @param originalValue the original value
    * @param linkedValue the value to link to the original value
-   * @param oneWay if true then this link will be uni-directional, that is, changes in
-   * the linked value do not trigger a change in the original value
    */
-  ValueLink(final Value<V> originalValue, final Value<V> linkedValue, final boolean oneWay) {
+  ValueLink(final Value<V> originalValue, final Value<V> linkedValue) {
     requireNonNull(originalValue, "originalValue");
     requireNonNull(linkedValue, "linkedValue");
     linkedValue.set(originalValue.get());
-    bindEvents(originalValue, linkedValue, oneWay);
+    bindEvents(originalValue, linkedValue);
   }
 
-  private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean oneWay) {
+  private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue) {
     originalValue.addListener(() -> updateLinkedValue(originalValue, linkedValue));
-    if (!oneWay) {
-      linkedValue.addListener(() -> updateOriginalValue(originalValue, linkedValue));
-    }
+    linkedValue.addListener(() -> updateOriginalValue(originalValue, linkedValue));
   }
 
   private void updateOriginalValue(final Value<V> originalValue, final Value<V> linkedValue) {

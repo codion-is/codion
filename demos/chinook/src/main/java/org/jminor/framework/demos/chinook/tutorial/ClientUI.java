@@ -8,7 +8,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
@@ -51,7 +50,7 @@ public final class ClientUI {
     Value<String> textFieldNameValue =
             TextValues.textValue(nameField);
     //link the two values
-    Values.link(editModelNameValue, textFieldNameValue);
+    editModelNameValue.link(textFieldNameValue);
     //add a insert action to the name field
     //so we can insert by pressing Enter
     nameField.addActionListener(Controls.control(() -> {
@@ -102,7 +101,7 @@ public final class ClientUI {
     Value<Entity> comboBoxArtistValue =
             SelectedValues.selectedValue(artistComboBox);
     //link the two values
-    Values.link(editModelArtistValue, comboBoxArtistValue);
+    editModelArtistValue.link(comboBoxArtistValue);
 
     //create a field for entering a album title
     JTextField titleField = new JTextField(10);
@@ -113,7 +112,7 @@ public final class ClientUI {
     Value<String> textFieldTitleValue =
             TextValues.textValue(titleField);
     //link the two values
-    Values.link(editModelNameValue, textFieldTitleValue);
+    editModelNameValue.link(textFieldTitleValue);
 
     //add a insert action to the title field
     //so we can insert by pressing Enter

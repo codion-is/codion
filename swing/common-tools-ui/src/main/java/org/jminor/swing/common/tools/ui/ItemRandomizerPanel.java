@@ -7,7 +7,6 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.value.AbstractValue;
-import org.jminor.common.value.Values;
 import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.ItemRandomizerModel;
 import org.jminor.swing.common.ui.layout.Layouts;
@@ -131,7 +130,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private JCheckBox createEnabledCheckBox(final T item) {
     final JCheckBox enabledBox = new JCheckBox("Enabled");
-    Values.link(new EnabledModelValue(item), new EnabledUIValue(enabledBox.getModel()));
+    new EnabledModelValue(item).link(new EnabledUIValue(enabledBox.getModel()));
 
     return enabledBox;
   }
@@ -143,7 +142,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
-    Values.link(new WeightModelValue(item), new WeightUIValue(spinnerModel));
+    new WeightModelValue(item).link(new WeightUIValue(spinnerModel));
 
     return spinnerModel;
   }

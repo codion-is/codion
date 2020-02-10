@@ -5677,3 +5677,6 @@
   ExceptionDialog no longer sets close button as the default root pane button, did not consume the Enter key event, which tended to trigger further actions after the dialog closed, key events used instead
   EntityLookupField bug fixed, closing exception dialog triggered lookup, now handles exceptions within performLookup method
   DefaultPropertyCondition, bug fixed, did not wrap in clauses exceeding the in clause limit in additional paranthesis
+  AbstractValue.addListener() methods now final
+  Value.link() added, Values.link() removed
+  Value.link(value, readOnly) removed

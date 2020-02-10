@@ -7,6 +7,8 @@ import org.jminor.common.event.EventObserver;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A factory class for {@link Value} objects
  */
@@ -76,7 +78,7 @@ public final class Values {
    */
   public static State valueState(final Value<Boolean> booleanValue) {
     final State state = States.state();
-    link(booleanValue, stateValue(state));
+    requireNonNull(booleanValue, "booleanValue").link(stateValue(state));
 
     return state;
   }
@@ -89,26 +91,5 @@ public final class Values {
    */
   public static <V> ValueObserver<V> valueObserver(final Value<V> value) {
     return new DefaultValueObserver<>(value);
-  }
-
-  /**
-   * Links the two values together so that changes in one are reflected in the other
-   * @param originalValue the original value
-   * @param linkedValue the linked value
-   * @param <V> the value type
-   */
-  public static <V> void link(final Value<V> originalValue, final Value<V> linkedValue) {
-    link(originalValue, linkedValue, false);
-  }
-
-  /**
-   * Links the two values together so that changes in one are reflected in the other
-   * @param originalValue the original value
-   * @param linkedValue the linked value
-   * @param oneWay if true the original value is not updated if the linked value changes
-   * @param <V> the value type
-   */
-  public static <V> void link(final Value<V> originalValue, final Value<V> linkedValue, final boolean oneWay) {
-    new ValueLink<>(originalValue, linkedValue, oneWay);
   }
 }

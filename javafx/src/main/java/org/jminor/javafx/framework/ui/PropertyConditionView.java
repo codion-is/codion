@@ -106,7 +106,7 @@ public final class PropertyConditionView extends BorderPane {
 
   private CheckBox createEnabledBox() {
     final CheckBox box = new CheckBox();
-    Values.link(Values.propertyValue(model, "enabled", boolean.class, model.getEnabledObserver()), FXUiUtil.createBooleanValue(box));
+    Values.propertyValue(model, "enabled", boolean.class, model.getEnabledObserver()).link(FXUiUtil.createBooleanValue(box));
     FXUiUtil.link(box.disableProperty(), model.getLockedObserver());
 
     return box;
@@ -115,7 +115,7 @@ public final class PropertyConditionView extends BorderPane {
   private Control createUpperBoundControl() {
     final Control control = createControl();
     if (!(control instanceof EntityLookupField)) {
-      Values.link(model.getUpperBoundValue(), FXUiUtil.createValue(model.getColumnIdentifier(), control, null));
+      model.getUpperBoundValue().link(FXUiUtil.createValue(model.getColumnIdentifier(), control, null));
     }
 
     return control;
@@ -127,7 +127,7 @@ public final class PropertyConditionView extends BorderPane {
       return null;
     }
     final Control control = createControl();
-    Values.link(model.getLowerBoundValue(), FXUiUtil.createValue(model.getColumnIdentifier(), control, null));
+    model.getLowerBoundValue().link(FXUiUtil.createValue(model.getColumnIdentifier(), control, null));
 
     return control;
   }
