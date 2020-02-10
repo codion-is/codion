@@ -19,22 +19,22 @@ public abstract class AbstractValue<V> implements Value<V> {
   private final Event<V> changeEvent = Events.event();
 
   @Override
-  public void addListener(final EventListener listener) {
+  public final void addListener(final EventListener listener) {
     changeEvent.addListener(listener);
   }
 
   @Override
-  public void removeListener(final EventListener listener) {
+  public final void removeListener(final EventListener listener) {
     changeEvent.removeListener(listener);
   }
 
   @Override
-  public void addDataListener(final EventDataListener<V> listener) {
+  public final void addDataListener(final EventDataListener<V> listener) {
     changeEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(final EventDataListener listener) {
+  public final void removeDataListener(final EventDataListener listener) {
     changeEvent.removeDataListener(listener);
   }
 
