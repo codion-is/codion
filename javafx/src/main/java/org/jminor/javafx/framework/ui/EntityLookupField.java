@@ -4,7 +4,6 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityLookupModel;
@@ -102,7 +101,7 @@ public final class EntityLookupField extends TextField {
   }
 
   private void linkToModel() {
-    Values.link(model.getSearchStringValue(), PropertyValues.stringPropertyValue(textProperty()));
+    model.getSearchStringValue().link(PropertyValues.stringPropertyValue(textProperty()));
   }
 
   private void selectEntities(final List<Entity> queryResult) {

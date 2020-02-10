@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui.value;
 
 import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
 
 import javax.swing.JTextField;
@@ -97,6 +96,6 @@ public final class TextValues {
    */
   public static void textValueLink(final JTextComponent textComponent, final Value<String> value, final Format format,
                                    final boolean updateOnKeystroke) {
-    Values.link(value, textValue(textComponent, format, updateOnKeystroke));
+    value.link(textValue(textComponent, format, updateOnKeystroke));
   }
 }

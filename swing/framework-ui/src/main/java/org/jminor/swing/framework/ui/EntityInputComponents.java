@@ -9,7 +9,6 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -318,8 +317,9 @@ public final class EntityInputComponents {
                                                               final EntityLookupModel lookupModel, final StateObserver enabledState) {
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     requireNonNull(lookupModel, "lookupModel");
+    requireNonNull(value, "value");
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
-    Values.link(value, new LookupUIValue(lookupField.getModel()));
+    value.link(new LookupUIValue(lookupField.getModel()));
     linkToEnabledState(enabledState, lookupField);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
     TextFields.selectAllOnFocusGained(lookupField);

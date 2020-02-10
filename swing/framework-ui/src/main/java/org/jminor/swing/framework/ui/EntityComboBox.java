@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -84,7 +83,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final String propertyId) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    Values.link(NumericalValues.integerValue(integerField), getModel().integerValueSelector(propertyId));
+    NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(propertyId));
 
     return integerField;
   }
@@ -98,7 +97,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final String propertyId, final EntityComboBoxModel.Finder<Integer> finder) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    Values.link(NumericalValues.integerValue(integerField), getModel().integerValueSelector(propertyId, finder));
+    NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(propertyId, finder));
 
     return integerField;
   }

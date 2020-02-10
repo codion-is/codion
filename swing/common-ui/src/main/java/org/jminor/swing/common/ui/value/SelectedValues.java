@@ -6,7 +6,6 @@ package org.jminor.swing.common.ui.value;
 import org.jminor.common.Item;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 
 import javax.swing.JComboBox;
 import java.util.List;
@@ -74,7 +73,7 @@ public final class SelectedValues {
    * @param value the model value
    */
   public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Value<V> value) {
-    Values.link(value, selectedValue(comboBox), false);
+    value.link(selectedValue(comboBox), false);
   }
 
   /**
@@ -84,6 +83,6 @@ public final class SelectedValues {
    * @param readOnly if true the component will be read only
    */
   public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Value<V> value, final boolean readOnly) {
-    Values.link(value, selectedValue(comboBox), readOnly);
+    value.link(selectedValue(comboBox), readOnly);
   }
 }

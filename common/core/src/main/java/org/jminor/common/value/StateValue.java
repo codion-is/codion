@@ -54,4 +54,14 @@ final class StateValue implements Value<Boolean>  {
   public void removeDataListener(final EventDataListener listener) {
     state.removeDataListener(listener);
   }
+
+  @Override
+  public void link(final Value<Boolean> linkedValue) {
+    link(linkedValue, false);
+  }
+
+  @Override
+  public void link(final Value<Boolean> linkedValue, final boolean oneWay) {
+    new ValueLink<>(this, linkedValue, oneWay);
+  }
 }

@@ -38,6 +38,16 @@ public abstract class AbstractValue<V> implements Value<V> {
     changeEvent.removeDataListener(listener);
   }
 
+  @Override
+  public final void link(final Value<V> linkedValue) {
+    link(linkedValue, false);
+  }
+
+  @Override
+  public final void link(final Value<V> linkedValue, final boolean oneWay) {
+    new ValueLink<V>(this, linkedValue, oneWay);
+  }
+
   /**
    * Fires the change event for this value, indicating that the underlying value
    * has changed or at least that it may have changed

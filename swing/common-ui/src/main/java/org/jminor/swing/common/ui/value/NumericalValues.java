@@ -6,7 +6,6 @@ package org.jminor.swing.common.ui.value;
 import org.jminor.common.Formats;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
@@ -87,7 +86,7 @@ public final class NumericalValues {
    */
   public static void bigDecimalValueLink(final DecimalField decimalField, final Value<BigDecimal> value,
                                          final boolean updateOnKeystroke) {
-    Values.link(value, bigDecimalValue(decimalField, updateOnKeystroke));
+    value.link(bigDecimalValue(decimalField, updateOnKeystroke));
   }
 
   /**
@@ -182,7 +181,7 @@ public final class NumericalValues {
    */
   public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable,
                                      final boolean updateOnKeystroke) {
-    Values.link(value, doubleValue(decimalField, nullable, updateOnKeystroke));
+    value.link(doubleValue(decimalField, nullable, updateOnKeystroke));
   }
 
   /**
@@ -284,7 +283,7 @@ public final class NumericalValues {
    */
   public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean nullable,
                                       final boolean updateOnKeystroke) {
-    Values.link(value, integerValue(integerField, nullable, updateOnKeystroke));
+    value.link(integerValue(integerField, nullable, updateOnKeystroke));
   }
 
   /**
@@ -359,7 +358,7 @@ public final class NumericalValues {
    * @param readOnly if true the value link will be read only
    */
   public static void integerSpinnerValueLink(final SpinnerNumberModel spinnerModel, final Value<Integer> integerValue, final boolean readOnly) {
-    Values.link(integerValue, integerValue(spinnerModel), readOnly);
+    integerValue.link(integerValue(spinnerModel), readOnly);
   }
 
   /**
@@ -445,6 +444,6 @@ public final class NumericalValues {
    */
   public static void longValueLink(final LongField longField, final Value<Long> value, final boolean nullable,
                                    final boolean updateOnKeystroke) {
-    Values.link(value, longValue(longField, nullable, updateOnKeystroke));
+    value.link(longValue(longField, nullable, updateOnKeystroke));
   }
 }

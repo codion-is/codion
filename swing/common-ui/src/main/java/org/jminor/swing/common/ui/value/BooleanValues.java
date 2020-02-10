@@ -6,7 +6,6 @@ package org.jminor.swing.common.ui.value;
 import org.jminor.common.Item;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 
@@ -119,7 +118,7 @@ public final class BooleanValues {
    * @param value the model value
    */
   public static void booleanValueLink(final JComboBox<Item<Boolean>> comboBox, final Value<Boolean> value) {
-    Values.link(booleanComboBoxValue(comboBox), value);
+    value.link(booleanComboBoxValue(comboBox));
   }
 
   /**
@@ -136,6 +135,6 @@ public final class BooleanValues {
    * @param readOnly if true the component will be read only
    */
   public static void booleanValueLink(final ButtonModel buttonModel, final Value<Boolean> value, final boolean readOnly) {
-    Values.link(value, booleanButtonModelValue(buttonModel), readOnly);
+    value.link(booleanButtonModelValue(buttonModel), readOnly);
   }
 }

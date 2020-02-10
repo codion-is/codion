@@ -10,7 +10,6 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
-import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
@@ -245,7 +244,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    Values.link(model.getSearchStringValue(), TextValues.textValue(this));
+    model.getSearchStringValue().link(TextValues.textValue(this));
     model.getSearchStringValue().addDataListener(data -> updateColors());
     model.addSelectedEntitiesListener(data -> setCaretPosition(0));
   }
