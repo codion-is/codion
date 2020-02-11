@@ -87,7 +87,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   private void initializeUI() {
     final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(model.getItems());
     items.sort(Comparator.comparing(item -> item.getItem().toString()));
-    items.forEach(item -> ((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel()).addElement(item));
+    items.forEach(((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel())::addElement);
     itemList.addListSelectionListener(e -> selectedItemChangedEvent.onEvent(itemList.getSelectedValuesList()));
     addSelectedItemListener(selectedItems -> {
       configPanel.removeAll();
