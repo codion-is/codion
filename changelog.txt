@@ -5656,3 +5656,4 @@
   AbstractValue.addListener() methods now final
   Value.link() added, Values.link() removed
   Value.link(value, readOnly) removed
+  ProgressWorker, minor refactoring
