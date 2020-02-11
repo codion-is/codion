@@ -39,6 +39,8 @@ import static org.jminor.common.Util.nullOrEmpty;
  */
 public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
 
+  private static final String STATE_PROPERTY = "state";
+  private static final String PROGRESS_PROPERTY = "progress";
   private static final int NO_PROGRESS = -1;
   private static final int MAX_PROGRESS = 100;
 
@@ -155,7 +157,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
 
   /**
    * Runs the given task while displaying a simple indeterminate progress bar, using the default
-   * exception handler, which displays exceptions resulting from the tast execution in an exception dialog.
+   * exception handler, which displays exceptions resulting from the task execution in an exception dialog.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
    * @param task the task to run
@@ -167,7 +169,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
 
   /**
    * Runs the given task while displaying a simple indeterminate progress bar, using the default
-   * exception handler, which displays exceptions resulting from the tast execution in an exception dialog.
+   * exception handler, which displays exceptions resulting from the task execution in an exception dialog.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
    * @param task the task to run
@@ -273,7 +275,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   protected final void process(final List<Void> chunks) {/*Prevent overriding*/}
 
   private void onPropertyChangeEvent(final PropertyChangeEvent changeEvent) {
-    if ("state".equals(changeEvent.getPropertyName())) {
+    if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
       if (StateValue.STARTED.equals(changeEvent.getNewValue())) {
         SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
       }
@@ -281,13 +283,14 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
         SwingUtilities.invokeLater(this::finish);
       }
     }
-    else if ("progress".equals(changeEvent.getPropertyName())) {
+    else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
       SwingUtilities.invokeLater(() -> progressDialog.getProgressModel().setValue((Integer) changeEvent.getNewValue()));
     }
   }
 
   private void finish() {
-    closeDialog();
+    progressDialog.setVisible(false);
+    progressDialog.dispose();
     try {
       onSuccessEvent.onEvent(get());
     }
@@ -297,10 +300,5 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     catch (final ExecutionException e) {
       onException(e.getCause());
     }
-  }
-
-  private void closeDialog() {
-    progressDialog.setVisible(false);
-    progressDialog.dispose();
   }
 }

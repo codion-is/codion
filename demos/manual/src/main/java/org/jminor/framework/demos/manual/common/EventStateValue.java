@@ -12,6 +12,9 @@ import org.jminor.common.state.States;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.Components;
+import org.jminor.swing.common.ui.textfield.IntegerField;
+import org.jminor.swing.common.ui.value.ComponentValue;
+import org.jminor.swing.common.ui.value.NumericalValues;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -19,7 +22,7 @@ import java.awt.event.ActionEvent;
 
 public final class EventStateValue {
 
-  public static void main(final String[] args) {
+  private static void event() {
     // tag::event[]
     Event<String> event = Events.event();
 
@@ -40,7 +43,9 @@ public final class EventStateValue {
     // directly without referring to the EventObserver
     event.addListener(() -> System.out.println("Event"));
     // end::event[]
+  }
 
+  private static void state() {
     // tag::state[]
     // a boolean state, false by default
     State state = States.state();
@@ -63,8 +68,12 @@ public final class EventStateValue {
     // directly without referring to the StateObserver
     state.addListener(() -> System.out.println("State changed"));
     // end::state[]
+  }
 
+  private static void action() {
     // tag::action[]
+    State state = States.state();
+
     Action action = new AbstractAction("action") {
       public void actionPerformed(ActionEvent e) {}
     };
@@ -77,13 +86,30 @@ public final class EventStateValue {
 
     System.out.println(action.isEnabled());// output: true
     // end::action[]
+  }
 
+  private static void value() {
     // tag::value[]
     Value<Integer> value = Values.value();
 
     value.addDataListener(System.out::println);
 
     value.set(2);
+
+    IntegerField integerField = new IntegerField();
+
+    ComponentValue<Integer, IntegerField> fieldValue =
+            NumericalValues.integerValue(integerField);
+
+    value.link(fieldValue);
+
+    integerField.setInteger(3);//linked value is now 3
     // end::value[]
+  }
+
+  public static void main(final String[] args) {
+    event();
+    state();
+    action();
   }
 }
