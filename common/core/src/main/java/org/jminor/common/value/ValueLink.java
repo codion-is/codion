@@ -27,8 +27,9 @@ final class ValueLink<V> {
    * @param linkedValue the value to link to the original value
    */
   ValueLink(final Value<V> originalValue, final Value<V> linkedValue) {
-    requireNonNull(originalValue, "originalValue");
-    requireNonNull(linkedValue, "linkedValue");
+    if (requireNonNull(originalValue, "originalValue") == requireNonNull(linkedValue, "linkedValue")) {
+      throw new IllegalArgumentException("A Value can not be linked to itself");
+    }
     linkedValue.set(originalValue.get());
     bindEvents(originalValue, linkedValue);
   }
