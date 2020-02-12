@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.model.table;
 
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, C, TableColumn> {
 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
-  private static final Comparator LEXICAL_COMPARATOR = TextUtil.getSpaceAwareCollator();
+  private static final Comparator LEXICAL_COMPARATOR = Text.getSpaceAwareCollator();
 
   private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortingDirective.UNSORTED, -1);
 

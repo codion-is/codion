@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.PreferencesUtil;
@@ -569,7 +569,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       header.add(property.getCaption());
     }
 
-    return TextUtil.getDelimitedString(header, Entities.getStringValueList(properties,
+    return Text.getDelimitedString(header, Entities.getStringValueList(properties,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }

@@ -87,7 +87,7 @@ public final class Item<T> implements Comparable<Item>, Serializable {
 
   private Comparator<String> getCollator() {
     if (collator == null) {
-      collator = TextUtil.getSpaceAwareCollator();
+      collator = Text.getSpaceAwareCollator();
     }
 
     return collator;

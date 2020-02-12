@@ -5681,3 +5681,4 @@
   Value.link() added, Values.link() removed
   Value.link(value, readOnly) removed
   ProgressWorker, minor refactoring
+  TextUtil renamed to Text

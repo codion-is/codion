@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.ui;
 
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnSummary;
@@ -59,7 +59,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     final File file = Dialogs.selectFile(this, null);
     Dialogs.displayInDialog(this, EntityTablePanel.createReadOnlyEntityTablePanel(
             new EntityJSONParser(getModel().getDomain()).deserializeEntities(
-                    TextUtil.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
+                    Text.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
   }
 
   @Override

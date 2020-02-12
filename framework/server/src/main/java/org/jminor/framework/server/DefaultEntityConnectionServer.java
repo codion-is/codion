@@ -5,7 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.TaskScheduler;
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Version;
@@ -622,7 +622,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   protected static Map<String, Integer> getClientTimeoutValues() {
-    final Collection<String> values = TextUtil.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get());
+    final Collection<String> values = Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get());
 
     return getClientTimeouts(values);
   }
@@ -768,11 +768,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     final Database database = Databases.getInstance();
     final String serverName = initializeServerName(database.getHost(), database.getSid());
 
-    final Collection<String> domainModelClassNames = TextUtil.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get());
-    final Collection<String> loginProxyClassNames = TextUtil.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get());
-    final Collection<String> connectionValidationClassNames = TextUtil.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get());
-    final Collection<String> startupPoolUsers = TextUtil.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get());
-    final Collection<String> auxiliaryServerClassNames = TextUtil.parseCommaSeparatedValues(AUXILIARY_SERVER_CLASS_NAMES.get());
+    final Collection<String> domainModelClassNames = Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get());
+    final Collection<String> loginProxyClassNames = Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get());
+    final Collection<String> connectionValidationClassNames = Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get());
+    final Collection<String> startupPoolUsers = Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get());
+    final Collection<String> auxiliaryServerClassNames = Text.parseCommaSeparatedValues(AUXILIARY_SERVER_CLASS_NAMES.get());
     final boolean clientLoggingEnabled = SERVER_CLIENT_LOGGING_ENABLED.get();
     final Integer connectionTimeout = Server.SERVER_CONNECTION_TIMEOUT.get();
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
