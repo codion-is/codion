@@ -20,18 +20,13 @@ public final class Version implements Comparable<Version>, Serializable {
   private static final int MINOR_INDEX = 1;
   private static final int PATCH_INDEX = 2;
 
-  /**
-   * The name of the file containing the current version information
-   */
-  public static final String VERSION_FILE = "version.properties";
-
   private static final Version VERSION;
 
   static {
     try {
       final Properties properties = new Properties();
-      properties.load(Version.class.getResourceAsStream(VERSION_FILE));
-      VERSION = fromProperties(properties);
+      properties.load(Version.class.getResourceAsStream("version.properties"));
+      VERSION = parse(properties.getProperty("version"));
     }
     catch (final IOException e) {
       throw new RuntimeException(e);
@@ -212,22 +207,5 @@ public final class Version implements Comparable<Version>, Serializable {
     }
 
     return 0;
-  }
-
-  static Version fromProperties(final Properties properties) {
-    final Version version = parse(properties.getProperty("version"));
-    final String buildTime = properties.getProperty("buildTime");
-    final StringBuilder metadata = new StringBuilder();
-    if (version.metadata != null) {
-      metadata.append(version.metadata);
-    }
-    if (metadata.length() > 0) {
-      metadata.append(" ");
-    }
-    if (buildTime != null) {
-      metadata.append(buildTime);
-    }
-
-    return new Version(version.major, version.minor, version.patch, metadata.toString());
   }
 }

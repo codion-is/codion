@@ -1,10 +1,17 @@
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
 jar {
     doFirst {
-        project.versionProperties.put('buildTime', LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-        project.versionProperties.put('buildUser', System.getProperty("user.name"))
-        project.versionProperties.store(file(sourceSets.main.output.resourcesDir.getAbsolutePath() + project.versionPropertiesFile).newWriter(), null)
+        def versionProperties = new Properties()
+        versionProperties.put('version', project.version)
+        def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + '/org/jminor/common/version.properties')
+        if (!versionFile.exists()) {
+            versionProperties.store(versionFile.newWriter(), null)
+        }
+        else {
+            versionFile.withInputStream { versionProperties.load(it) }
+            if (!Objects.equals(project.version, versionProperties.get('version'))) {
+                versionProperties.put('version', project.version)
+                versionProperties.store(versionFile.newWriter(), null)
+            }
+        }
     }
 }

@@ -5682,3 +5682,4 @@
   Value.link(value, readOnly) removed
   ProgressWorker, minor refactoring
   TextUtil renamed to Text
+  Build version handling improved
