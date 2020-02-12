@@ -5683,3 +5683,4 @@
   ProgressWorker, minor refactoring
   TextUtil renamed to Text
   Build version handling improved
+0.13.3
