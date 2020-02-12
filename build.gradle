@@ -159,9 +159,7 @@ task tagRelease() {
         if (project.version.contains("SNAPSHOT")) {
             throw new GradleException("Can not tag a snapshot realease")
         }
-        exec {
-            commandLine 'git', 'tag', '-a', tagName, '-m', '"' + tagName + ' release"'
-            commandLine 'git', 'push', 'origin', tagName
-        }
+        exec { commandLine 'git', 'tag', '-a', tagName, '-m', '"' + tagName + ' release"' }
+        exec { commandLine 'git', 'push', 'origin', tagName }
     }
 }
