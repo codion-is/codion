@@ -2,7 +2,7 @@
  * Common classes used throughout.<br>
  * <br>
  * Configuration values:<br>
- * {@link org.jminor.common.TextUtil#DEFAULT_COLLATOR_LANGUAGE}<br>
+ * {@link org.jminor.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>
  * @uses org.jminor.common.LoggerProxy
  * @uses org.jminor.common.CredentialsProvider
  */
