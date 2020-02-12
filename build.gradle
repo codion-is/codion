@@ -25,18 +25,12 @@ ext {
     commonsBeanUtilsVersion = '1.9.4'
     jdtCoreCompilerVersion = '4.6.1'
 
-    versionPropertiesFile = '/org/jminor/common/version.properties'
-    versionProperties = new Properties()
     frameworkModules = subprojects.findAll {
         project -> !project.name.contains("demos") && !project.name.contains("documentation")
     }
 }
 
-file("${projectDir}/common/core/src/main/resources" +
-        project.versionPropertiesFile).withInputStream { project.versionProperties.load(it) }
-
 allprojects {
-    project.version = project.versionProperties.getProperty('version')
     repositories {
         jcenter()
     }
@@ -82,7 +76,8 @@ configure(project.frameworkModules) {
                     "Implementation-URL": "http://jminor.org",
                     "Automatic-Module-Name": "org." + project.name.replace('-', '.'),
                     "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
-                    "Built-By": System.getProperty("user.name"))
+                    "Built-By": System.getProperty("user.name"),
+                    "Build-Date": java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()))
         }
     }
 
