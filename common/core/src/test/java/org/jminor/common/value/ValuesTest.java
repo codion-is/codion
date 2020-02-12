@@ -108,6 +108,13 @@ public class ValuesTest {
     assertNull(uiValue.get());
     assertEquals(3, modelValueEventCounter.get());
     assertEquals(3, uiValueEventCounter.get());
+
+    final Value<Integer> valueOne = Values.value();
+    final Value<Integer> valueTwo = Values.value();
+    valueOne.link(valueTwo);
+    valueTwo.link(valueOne);
+    valueOne.set(1);
+    assertThrows(IllegalArgumentException.class, () -> valueOne.link(valueOne));
   }
 
   @Test

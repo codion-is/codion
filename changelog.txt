@@ -5660,3 +5660,4 @@
   TextUtil renamed to Text
   Build version handling improved
 0.13.3
+  Value.link() now prevents a Value from being linked to itself
