@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.model.combobox;
 
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
@@ -456,7 +456,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private static final class SortComparator<T> implements Comparator<T> {
 
     private final T nullValue;
-    private final Comparator comparator = TextUtil.getSpaceAwareCollator();
+    private final Comparator comparator = Text.getSpaceAwareCollator();
 
     SortComparator(final T nullValue) {
       this.nullValue = nullValue;

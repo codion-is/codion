@@ -310,7 +310,7 @@ public final class MethodLogger {
      * @return a string representation of this log entry
      */
     private String toString(final int indentation) {
-      final String indentString = indentation > 0 ? TextUtil.padString("", indentation, '\t', TextUtil.Alignment.RIGHT) : "";
+      final String indentString = indentation > 0 ? Text.padString("", indentation, '\t', Text.Alignment.RIGHT) : "";
       final StringBuilder stringBuilder = new StringBuilder();
       final LocalDateTime accessDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(accessTime), TimeZone.getDefault().toZoneId());
       if (isComplete()) {

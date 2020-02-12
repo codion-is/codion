@@ -3,7 +3,7 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
@@ -454,7 +454,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       header.add(property.getCaption());
     });
 
-    return TextUtil.getDelimitedString(header, Entities.getStringValueList(properties,
+    return Text.getDelimitedString(header, Entities.getStringValueList(properties,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }

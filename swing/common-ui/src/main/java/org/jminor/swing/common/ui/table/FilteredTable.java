@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.table;
 
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
@@ -241,7 +241,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
       @Override
       public int compare(final TableColumn o1, final TableColumn o2) {
-        return TextUtil.collateSansSpaces(collator, o1.getIdentifier().toString(), o2.getIdentifier().toString());
+        return Text.collateSansSpaces(collator, o1.getIdentifier().toString(), o2.getIdentifier().toString());
       }
     });
     final List<JCheckBox> checkBoxes = new ArrayList<>();

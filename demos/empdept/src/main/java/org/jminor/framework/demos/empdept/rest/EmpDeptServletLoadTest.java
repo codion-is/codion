@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.rest;
 
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -70,7 +70,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
       try {
         final List<Entity> departments = client.getConnection().select(entitySelectCondition(EmpDept.T_DEPARTMENT));
         final Entity entity = departments.get(new Random().nextInt(departments.size()));
-        entity.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(10, 13));
+        entity.put(EmpDept.DEPARTMENT_LOCATION, Text.createRandomString(10, 13));
         client.getConnection().update(singletonList(entity));
       }
       catch (final Exception e) {
@@ -131,8 +131,8 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         final int deptNo = new Random().nextInt(5000);
         final Entity department = client.getDomain().entity(EmpDept.T_DEPARTMENT);
         department.put(EmpDept.DEPARTMENT_ID, deptNo);
-        department.put(EmpDept.DEPARTMENT_NAME, TextUtil.createRandomString(4, 8));
-        department.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(5, 10));
+        department.put(EmpDept.DEPARTMENT_NAME, Text.createRandomString(4, 8));
+        department.put(EmpDept.DEPARTMENT_LOCATION, Text.createRandomString(5, 10));
 
         client.getConnection().insert(singletonList(department));
       }
@@ -158,7 +158,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         final Entity department = departments.get(random.nextInt(departments.size()));
         final Entity employee = client.getDomain().entity(EmpDept.T_EMPLOYEE);
         employee.put(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
-        employee.put(EmpDept.EMPLOYEE_NAME, TextUtil.createRandomString(5, 10));
+        employee.put(EmpDept.EMPLOYEE_NAME, Text.createRandomString(5, 10));
         employee.put(EmpDept.EMPLOYEE_JOB, EmpDept.JOB_VALUES.get(random.nextInt(EmpDept.JOB_VALUES.size())).getValue());
         employee.put(EmpDept.EMPLOYEE_SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000));
         employee.put(EmpDept.EMPLOYEE_HIREDATE, LocalDate.now());

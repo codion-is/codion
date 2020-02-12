@@ -5,7 +5,7 @@ package org.jminor.framework.domain.test;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Item;
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
@@ -451,7 +451,7 @@ public class EntityTestUnit {
   private static String getRandomString(final Property property) {
     final int length = property.getMaxLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaxLength();
 
-    return TextUtil.createRandomString(length, length);
+    return Text.createRandomString(length, length);
   }
 
   private static byte[] getRandomBlob(final Property property) {

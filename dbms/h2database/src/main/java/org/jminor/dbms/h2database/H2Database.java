@@ -3,7 +3,7 @@
  */
 package org.jminor.dbms.h2database;
 
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.db.AbstractDatabase;
 import org.jminor.common.db.Database;
 
@@ -70,7 +70,7 @@ public final class H2Database extends AbstractDatabase {
   public H2Database(final String databaseName, final boolean embeddedInMemory) {
     super(Type.H2, DRIVER_CLASS_NAME, getEmbeddedName(databaseName, embeddedInMemory), null, null, true);
     this.embeddedInMemory = embeddedInMemory;
-    initializeSharedDatabase(TextUtil.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPT.get()));
+    initializeSharedDatabase(Text.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPT.get()));
   }
 
   /**

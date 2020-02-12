@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
@@ -61,7 +61,7 @@ final class EntityPopupMenu extends JPopupMenu {
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<ColumnProperty> primaryKeyProperties) {
-    TextUtil.collate(primaryKeyProperties);
+    Text.collate(primaryKeyProperties);
     for (final ColumnProperty property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property);
       final StringBuilder builder = new StringBuilder("[PK] ").append(property.getPropertyId()).append(": ").append(entity.getAsString(property));
@@ -79,7 +79,7 @@ final class EntityPopupMenu extends JPopupMenu {
                                              final EntityConnectionProvider connectionProvider,
                                              final List<ForeignKeyProperty> fkProperties) {
     try {
-      TextUtil.collate(fkProperties);
+      Text.collate(fkProperties);
       final Entity.Validator validator = connectionProvider.getDomain().getDefinition(entity.getEntityId()).getValidator();
       for (final ForeignKeyProperty property : fkProperties) {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
@@ -132,7 +132,7 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties,
                                         final Domain domain) {
-    TextUtil.collate(properties);
+    Text.collate(properties);
     final int maxValueLength = 20;
     final Entity.Validator validator = domain.getDefinition(entity.getEntityId()).getValidator();
     for (final Property property : properties) {

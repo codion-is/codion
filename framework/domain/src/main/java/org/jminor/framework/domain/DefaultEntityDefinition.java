@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
@@ -100,7 +100,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The comparator
    */
-  private Comparator<Entity> comparator = TextUtil.getSpaceAwareCollator();
+  private Comparator<Entity> comparator = Text.getSpaceAwareCollator();
 
   /**
    * The validator

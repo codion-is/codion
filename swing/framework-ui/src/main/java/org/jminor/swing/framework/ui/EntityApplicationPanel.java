@@ -8,7 +8,7 @@ import org.jminor.common.CredentialsProvider;
 import org.jminor.common.Item;
 import org.jminor.common.LoggerProxy;
 import org.jminor.common.Memory;
-import org.jminor.common.TextUtil;
+import org.jminor.common.Text;
 import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.event.Event;
@@ -834,7 +834,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws IOException in case of an IO exception
    */
   protected String getHelpText() throws IOException {
-    return TextUtil.getTextFileContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
+    return Text.getTextFileContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
   }
 
   /**
@@ -908,7 +908,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return null;
     }
 
-    final Comparator<String> comparator = TextUtil.getSpaceAwareCollator();
+    final Comparator<String> comparator = Text.getSpaceAwareCollator();
     final Domain domain = applicationModel.getDomain();
     supportPanelProviders.sort((ep1, ep2) -> {
       final String thisCompare = ep1.getCaption() == null ? domain.getDefinition(ep1.getEntityId()).getCaption() : ep1.getCaption();

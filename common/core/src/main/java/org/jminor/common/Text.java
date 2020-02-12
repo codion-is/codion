@@ -29,7 +29,7 @@ import static org.jminor.common.Util.nullOrEmpty;
 /**
  * A utility class for working with text, such as sorting and reading from files
  */
-public final class TextUtil {
+public final class Text {
 
   /**
    * Specifies the default collator locale language.<br>
@@ -54,7 +54,7 @@ public final class TextUtil {
   private static final String UNDERSCORE = "_";
   private static final String ALPHA_NUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  private TextUtil() {}
+  private Text() {}
 
   /**
    * Creates a random string from alphanumeric uppercase characters
@@ -76,7 +76,7 @@ public final class TextUtil {
   /**
    * Sorts the string representations of this lists contents, using
    * the space aware collator
-   * @see TextUtil#getSpaceAwareCollator()
+   * @see Text#getSpaceAwareCollator()
    * @param values the list to sort (collate)
    */
   public static void collate(final List values) {
