@@ -4,10 +4,11 @@ plugins {
 
 asciidoctor {
     doFirst {
-        ant.copy(todir: "${rootDir}/docs/images/modules") {
-            fileset(dir: "${rootDir}",
-                    includes: '**/*/build/reports/dependency-graph/dependency-graph.svg',
-                    excludes: 'docs/**/*,build/**/*')
+        frameworkModules.each {
+            def buildDir = it.buildDir
+            ant.copy(todir: "${rootDir}/docs/images/modules") {
+                fileset(dir: buildDir, includes: 'reports/dependency-graph/dependency-graph.svg')
+            }
         }
     }
     sourceDir = file('.')
