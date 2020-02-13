@@ -1,6 +1,6 @@
 = EntityConnectionProvider
 :dir-source-chinook: ../../demos/chinook/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
 
 In most cases *EntityConnections* are retrieved from a {url-javadoc}/org/jminor/framework/db/EntityConnectionProvider.html[EntityConnectionProvider], which is responsible for establishing a connection to the underlying database. The *EntityConnectionProvider* class is central to the framework and is a common constructor parameter in classes requiring database access.
 

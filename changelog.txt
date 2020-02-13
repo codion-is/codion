@@ -5686,3 +5686,4 @@
 0.13.3
   Value.link() now prevents a Value from being linked to itself
   jminor-documentation module now publishes full documentation as zip
+  Version now part of documentation URLs
