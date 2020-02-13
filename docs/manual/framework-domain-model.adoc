@@ -3,7 +3,7 @@
 :dir-source: ../../demos/manual/src/main/java
 :dir-source-petstore: ../../demos/petstore/src/main/java
 :dir-source-world: ../../demos/world/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
 
 The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property], which represents columns. The
 {url-javadoc}/org/jminor/framework/domain/Domain.html[Domain] class serves as a container for the domain model as well as a factory for Entity and Entity.Key objects.

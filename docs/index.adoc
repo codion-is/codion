@@ -4,7 +4,7 @@ Björn Darri Sigurðsson <bjorndarri@gmail.com>
 :toclevels: 1
 :dir-tutorials: tutorials
 :imagesdir: images
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
 
 image::jminor_logo_medium.png[JMinor Logo,200]
 As simple as possible, but no simpler.

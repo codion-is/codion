@@ -47,12 +47,17 @@ task combinedJavadoc(type: Javadoc) {
 task combineDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
     group 'documentation'
     doLast {
-        ant.delete(dir: "${buildDir}/docs/site")
-        ant.copy(todir: "${buildDir}/docs/site") {
+        def siteFolder = "${buildDir}/docs/site/${project.version}"
+        ant.delete(dir: siteFolder)
+        ant.copy(todir: siteFolder) {
             fileset(dir: "${buildDir}/docs/asciidoc")
         }
-        ant.copy(todir: "${buildDir}/docs/site/api") {
+        def siteApiFolder = "${buildDir}/docs/site/${project.version}/api"
+        ant.copy(todir: siteApiFolder) {
             fileset(dir: "${buildDir}/docs/javadoc")
+        }
+        ant.copy(todir: siteFolder) {
+            fileset(dir: '.', includes: 'favicon.ico')
         }
     }
 }
@@ -82,9 +87,6 @@ task populateSite(dependsOn: combineDocs) {
         }
         ant.copy(todir: "${sitePath}") {
             fileset(dir: "${buildDir}/docs/site")
-        }
-        ant.copy(todir: "${sitePath}") {
-            fileset(dir: '.', includes: 'favicon.ico')
         }
         ant.chgrp(group: 'www', type: 'both') {
             fileset(dir: "${sitePath}", includes: '**/*')

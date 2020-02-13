@@ -1,7 +1,7 @@
 = EntityTableModel
 :dir-source: ../../demos/manual/src/main/java
 :dir-tutorials: ../tutorials
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
 
 The {url-javadoc}/org/jminor/framework/model/EntityTableModel.html[EntityTableModel] class provides a table representation of the underlying entities.
 
