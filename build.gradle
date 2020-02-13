@@ -65,9 +65,11 @@ configure(project.frameworkModules) {
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     }
 
-    clean.doLast {
-        //clean intellij output dir as well
-        file('out').deleteDir()
+    clean {
+        doLast {
+            //clean intellij output dir as well
+            file('out').deleteDir()
+        }
     }
 
     java {
@@ -116,7 +118,6 @@ configure(project.frameworkModules) {
                     username "${artifactoryUsername}"
                     password "${artifactoryPassword}"
                 }
-
                 if (project.version.endsWith('-SNAPSHOT')) {
                     url "${artifactorySnapshotUrl}"
                 } else {
@@ -141,19 +142,23 @@ configure(project.frameworkModules) {
     }
 
     /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
-    def keystoreRootDir = project.rootDir.toString() + '/framework/server/src/main/security/'
-    def keystore = keystoreRootDir + 'jminor_keystore.jks'
     task createServerKeystore {
+        def keystoreDir = "${rootDir}/framework/server/src/main/security/"
+        def keystore = keystoreDir + 'jminor_keystore.jks'
+        def truststore = keystoreDir + 'jminor_truststore.jks'
+        def certificate = keystoreDir + 'jminor_server.cer'
+        def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
+
+        onlyIf {!file(keystore).exists()}
+
         doLast {
-            def certificate = keystoreRootDir + 'jminor_server.cer'
-            def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
             ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: keystore,
                     storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU', storetype: 'pkcs12')
             exec {
                 executable = keyToolExecutable
-                args = ['-exportcert', '-keystore', keystore, '-storepass', 'crappypass', '-alias', 'JMinorServer', '-rfc', '-file', certificate]
+                args = ['-exportcert', '-keystore', keystore, '-storepass', 'crappypass',
+                        '-alias', 'JMinorServer', '-rfc', '-file', certificate]
             }
-            def truststore = keystoreRootDir + 'jminor_truststore.jks'
             exec {
                 executable = keyToolExecutable
                 args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', certificate,
@@ -162,7 +167,6 @@ configure(project.frameworkModules) {
             ant.delete(file: certificate)
         }
     }
-    createServerKeystore.onlyIf { !new File(keystore).exists() }
 
     test {
         moduleOptions {
@@ -181,12 +185,12 @@ configure(project.frameworkModules) {
     }.dependsOn createServerKeystore
 }
 
-task tagRelease() {
-    def tagName = 'v' + project.version + '-' + project.jdk
+task tagRelease {
     doLast {
         if (project.version.contains("SNAPSHOT")) {
-            throw new GradleException("Can not tag a snapshot realease")
+            throw new GradleException("Can not tag a snapshot release")
         }
+        def tagName = 'v' + project.version + '-' + project.jdk
         exec { commandLine 'git', 'tag', '-a', tagName, '-m', '"' + tagName + ' release"' }
         exec { commandLine 'git', 'push', 'origin', tagName }
     }
