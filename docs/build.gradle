@@ -1,13 +1,16 @@
 plugins {
-    id "org.asciidoctor.jvm.convert" version "3.0.0"
+    id "org.asciidoctor.jvm.convert" version "3.1.0"
 }
+
+apply plugin: 'maven-publish'
 
 asciidoctor {
     doFirst {
-        ant.copy(todir: "${rootDir}/docs/images/modules") {
-            fileset(dir: "${rootDir}",
-                    includes: '**/*/build/reports/dependency-graph/dependency-graph.svg',
-                    excludes: 'docs/**/*,build/**/*')
+        frameworkModules.each {
+            def buildDir = it.buildDir
+            ant.copy(todir: "${rootDir}/docs/images/modules") {
+                fileset(dir: buildDir, includes: 'reports/dependency-graph/dependency-graph.svg')
+            }
         }
     }
     sourceDir = file('.')
@@ -49,6 +52,23 @@ task combineDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
         }
         ant.copy(todir: "${buildDir}/docs/site/docs/api") {
             fileset(dir: "${buildDir}/docs/javadoc")
+        }
+    }
+}
+
+task documentationZip(type: Zip, dependsOn: combineDocs) {
+    from "${buildDir}/docs/site"
+}
+
+artifacts {
+    archives documentationZip
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId 'org.jminor.' + project.jdk
+            artifact documentationZip
         }
     }
 }

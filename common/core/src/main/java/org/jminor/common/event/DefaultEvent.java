@@ -23,7 +23,6 @@ final class DefaultEvent<T> implements Event<T> {
         dataListener.onEvent(data);
       }
     }
-
   }
 
   @Override
