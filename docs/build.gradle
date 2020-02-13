@@ -7,9 +7,11 @@ apply plugin: 'maven-publish'
 asciidoctor {
     doFirst {
         frameworkModules.each {
-            def buildDir = it.buildDir
-            ant.copy(todir: "${rootDir}/docs/images/modules") {
-                fileset(dir: buildDir, includes: 'reports/dependency-graph/dependency-graph.svg')
+            def moduleDir = it.projectDir
+            def graphFilePath = "${moduleDir}/build/reports/dependency-graph/dependency-graph.svg"
+            graphFilePath = graphFilePath.replace(rootDir.toString(), '').substring(1)
+            ant.copy(todir: "${buildDir}/docs/asciidoc/images/modules") {
+                fileset(dir: rootDir, includes: graphFilePath)
             }
         }
     }
