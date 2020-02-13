@@ -1,6 +1,6 @@
 = EntityPanelProvider
 :dir-source: ../../demos/world/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
 
 The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanelProvider.html[EntityPanelProvider] class provides lazy initialization for {url-javadoc}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanels]. Using the *EntityPanelProvider* class instead of instantiating *EntityPanels* directly means the panels are not initialized until made visible.
 

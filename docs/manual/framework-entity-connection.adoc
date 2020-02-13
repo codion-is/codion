@@ -1,7 +1,7 @@
 = EntityConnection
 :dir-tutorials: ../tutorials
 :dir-source-chinook: ../../demos/chinook/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
 :url-entity-connection: {url-javadoc}/org/jminor/framework/db/EntityConnection.html
 
 The {url-entity-connection}[EntityConnection] interface defines the database layer accessible to JMinor applications. It provides methods for selecting, inserting, updating and deleting entities, executing procedures and functions, filling reports as well as providing transaction control.

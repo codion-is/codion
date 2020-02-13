@@ -1,7 +1,7 @@
 = Reporting with JasperReports
 :dir-source: ../../demos/manual/src/main/java
 :dir-tutorials: ../tutorials
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
 
 JMinor uses a plugin oriented approach to report viewing, and provides an implementation for JasperReports and NextReports.
 

@@ -1,7 +1,7 @@
 = Conditions
 :dir-tutorials: ../tutorials
 :dir-source-chinook: ../../demos/chinook/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
 :url-conditions: {url-javadoc}/org/jminor/framework/db/condition/Conditions.html
 
 The {url-conditions}[Conditions] class is a factory for conditions, used when querying entities.

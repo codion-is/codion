@@ -1,7 +1,7 @@
 = EntityModel
 :dir-source: ../../demos/manual/src/main/java
 :dir-tutorials: ../tutorials
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
 
 The {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] class links together and coordinates between a {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] and a {url-javadoc}/org/jminor/framework/model/EntityTableModel.html[EntityTableModel], where the *EntityEditModel* handles CRUD operations and the *EntityTableModel* provides a table representation of the underlying entities.
 
