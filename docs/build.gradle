@@ -52,7 +52,7 @@ task combineDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
         ant.copy(todir: "${buildDir}/docs/site") {
             fileset(dir: "${buildDir}/docs/asciidoc")
         }
-        ant.copy(todir: "${buildDir}/docs/site/docs/api") {
+        ant.copy(todir: "${buildDir}/docs/site/api") {
             fileset(dir: "${buildDir}/docs/javadoc")
         }
     }

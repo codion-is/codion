@@ -1,6 +1,6 @@
 = Common Utilities
 :dir-source: ../../demos/manual/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
 
 JMinor provides a few classes with miscellanous utility functions.
 
@@ -14,7 +14,7 @@ JMinor provides a few classes with miscellanous utility functions.
 
 {url-javadoc}/org/jminor/common/Serializer.html[Serializer]
 
-{url-javadoc}/org/jminor/common/TextUtil.html[TextUtil]
+{url-javadoc}/org/jminor/common/Text.html[Text]
 
 {url-javadoc}/org/jminor/common/Util.html[Util]
 

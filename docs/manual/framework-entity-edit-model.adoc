@@ -1,7 +1,7 @@
 = EntityEditModel
 :dir-source: ../../demos/manual/src/main/java
 :dir-tutorials: ../tutorials
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
 
 The {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] interface defines the CRUD business logic used by the {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class when entities are being edited. The EntityEditModel works with a single entity instance, called the active entity, which can be set via the {url-javadoc}/org/jminor/framework/model/EntityEditModel.html#setEntity-org.jminor.framework.domain.Entity-[setEntity(Entity entity)] method and retrieved via {url-javadoc}/org/jminor/framework/model/EntityEditModel.html#getEntityCopy--[getEntityCopy()]. The EntityEditModel interface exposes a number of methods for manipulating as well as querying the property values of the active entity.
 

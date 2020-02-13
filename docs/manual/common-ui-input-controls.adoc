@@ -1,6 +1,6 @@
 = Input Controls
 :dir-source: ../../demos/manual/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
 
 Here are the basics of linking input controls to model values.
 

@@ -1,6 +1,6 @@
 = EntityTablePanel
 :dir-source: ../../demos/manual/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/docs/api
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/api
 
 The {url-javadoc}/org/jminor/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] provides a table view of entities.
 
