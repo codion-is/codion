@@ -65,6 +65,11 @@ configure(project.frameworkModules) {
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     }
 
+    clean.doLast {
+        //clean intellij output dir as well
+        file('out').deleteDir()
+    }
+
     java {
         withJavadocJar()
         withSourcesJar()
