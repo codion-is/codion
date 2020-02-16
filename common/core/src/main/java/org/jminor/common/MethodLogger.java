@@ -40,23 +40,20 @@ public final class MethodLogger {
   private boolean enabled;
 
   /**
-   * Instantiates a new MethodLogger.
+   * Instantiates a new MethodLogger, disabled by default.
    * @param maxSize the maximum log size
-   * @param enabled true if this logger should be enabled
    */
-  public MethodLogger(final int maxSize, final boolean enabled) {
-    this(maxSize, enabled, new ArgumentToString());
+  public MethodLogger(final int maxSize) {
+    this(maxSize, new ArgumentToString());
   }
 
   /**
-   * Instantiates a new MethodLogger.
+   * Instantiates a new MethodLogger, disabled by default.
    * @param maxSize the maximum log size
-   * @param enabled true if this logger should be enabled
    * @param argumentStringProvider responsible for providing String representations of method arguments
    */
-  public MethodLogger(final int maxSize, final boolean enabled, final Function<Object, String> argumentStringProvider) {
+  public MethodLogger(final int maxSize, final Function<Object, String> argumentStringProvider) {
     this.maxSize = maxSize;
-    this.enabled = enabled;
     this.argumentStringProvider = requireNonNull(argumentStringProvider);
   }
 

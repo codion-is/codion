@@ -77,7 +77,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @param database defines the underlying database
    * @param remoteClient information about the client requesting the connection
    * @param port the port to use when exporting this remote connection
-   * @param loggingEnabled specifies whether or not method logging is enabled
    * @param clientSocketFactory the client socket factory to use, null for default
    * @param serverSocketFactory the server socket factory to use, null for default
    * @throws RemoteException in case of an exception
@@ -85,13 +84,12 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * if a wrong username or password is provided
    */
   protected AbstractRemoteEntityConnection(final Domain domain, final ConnectionPool connectionPool, final Database database,
-                                           final RemoteClient remoteClient, final int port, final boolean loggingEnabled,
+                                           final RemoteClient remoteClient, final int port,
                                            final RMIClientSocketFactory clientSocketFactory,
                                            final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
     super(port, clientSocketFactory, serverSocketFactory);
-    this.connectionHandler = new RemoteEntityConnectionHandler(domain, remoteClient,
-            connectionPool, database, loggingEnabled);
+    this.connectionHandler = new RemoteEntityConnectionHandler(domain, remoteClient, connectionPool, database);
     this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
             new Class[] {EntityConnection.class}, connectionHandler);
   }
@@ -245,15 +243,14 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     private boolean disconnected = false;
 
     private RemoteEntityConnectionHandler(final Domain domain, final RemoteClient remoteClient,
-                                          final ConnectionPool connectionPool, final Database database,
-                                          final boolean loggingEnabled) throws DatabaseException {
+                                          final ConnectionPool connectionPool, final Database database)
+            throws DatabaseException {
       this.domain = domain;
       this.remoteClient = remoteClient;
       this.connectionPool = connectionPool;
       this.database = database;
       this.methodLogger = new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(),
-            false, new EntityArgumentToString(domain));
-      this.methodLogger.setEnabled(loggingEnabled);
+              new EntityArgumentToString(domain));
       this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();
       try {
         if (connectionPool == null) {

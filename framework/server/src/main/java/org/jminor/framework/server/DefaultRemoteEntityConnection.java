@@ -35,15 +35,13 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @param database the underlying database
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
-   * @param loggingEnabled specifies whether or not method logging is enabled
    * @throws RemoteException in case of an exception
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final Domain domain, final Database database, final RemoteClient remoteClient, final int port,
-                                final boolean loggingEnabled)
-          throws DatabaseException, RemoteException {
-    this(domain, database, remoteClient, port, loggingEnabled, null, null);
+  DefaultRemoteEntityConnection(final Domain domain, final Database database, final RemoteClient remoteClient,
+                                final int port) throws DatabaseException, RemoteException {
+    this(domain, database, remoteClient, port, null, null);
   }
 
   /**
@@ -51,7 +49,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @param database the underlying database
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
-   * @param loggingEnabled specifies whether or not method logging is enabled
    * @param clientSocketFactory the client socket factory to use, null for default
    * @param serverSocketFactory the server socket factory to use, null for default
    * @throws RemoteException in case of an exception
@@ -59,10 +56,10 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * if a wrong username or password is provided
    */
   DefaultRemoteEntityConnection(final Domain domain, final Database database, final RemoteClient remoteClient,
-                                final int port, final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
+                                final int port, final RMIClientSocketFactory clientSocketFactory,
                                 final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(domain, null, database, remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
+    super(domain, null, database, remoteClient, port, clientSocketFactory, serverSocketFactory);
   }
 
   /**
@@ -70,7 +67,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @param connectionPool the connection pool to use, if none is provided a local connection is established
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
-   * @param loggingEnabled specifies whether or not method logging is enabled
    * @param clientSocketFactory the client socket factory to use, null for default
    * @param serverSocketFactory the server socket factory to use, null for default
    * @throws RemoteException in case of an exception
@@ -78,10 +74,10 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * if a wrong username or password is provided
    */
   DefaultRemoteEntityConnection(final Domain domain, final ConnectionPool connectionPool, final RemoteClient remoteClient,
-                                final int port, final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
+                                final int port, final RMIClientSocketFactory clientSocketFactory,
                                 final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(domain, connectionPool, connectionPool.getDatabase(), remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
+    super(domain, connectionPool, connectionPool.getDatabase(), remoteClient, port, clientSocketFactory, serverSocketFactory);
   }
 
   /** {@inheritDoc} */

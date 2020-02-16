@@ -270,8 +270,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       }
 
       final AbstractRemoteEntityConnection connection = createRemoteConnection(connectionPool, getDatabase(), remoteClient,
-              getServerInfo().getServerPort(), isClientLoggingEnabled(), isSslEnabled() ? new SslRMIClientSocketFactory() : null,
+              getServerInfo().getServerPort(), isSslEnabled() ? new SslRMIClientSocketFactory() : null,
               isSslEnabled() ? new SslRMIServerSocketFactory() : null);
+      connection.setLoggingEnabled(clientLoggingEnabled);
 
       connection.addDisconnectListener(this::disconnectQuietly);
       LOG.debug("{} connected", remoteClient);
@@ -302,7 +303,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @param database the underlying database
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
-   * @param clientLoggingEnabled specifies whether or not method logging is enabled
    * @param clientSocketFactory the client socket factory, null for default
    * @param serverSocketFactory the server socket factory, null for default
    * @throws RemoteException in case of an exception
@@ -312,7 +312,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    */
   protected AbstractRemoteEntityConnection createRemoteConnection(final ConnectionPool connectionPool, final Database database,
                                                                   final RemoteClient remoteClient, final int port,
-                                                                  final boolean clientLoggingEnabled,
                                                                   final RMIClientSocketFactory clientSocketFactory,
                                                                   final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
@@ -322,11 +321,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
     final Domain domainModel = Domain.getDomain(domainId);
     if (connectionPool != null) {
-      return new DefaultRemoteEntityConnection(domainModel, connectionPool, remoteClient, port, clientLoggingEnabled,
+      return new DefaultRemoteEntityConnection(domainModel, connectionPool, remoteClient, port,
               clientSocketFactory, serverSocketFactory);
     }
 
-    return new DefaultRemoteEntityConnection(domainModel, database, remoteClient, port, clientLoggingEnabled,
+    return new DefaultRemoteEntityConnection(domainModel, database, remoteClient, port,
             clientSocketFactory, serverSocketFactory);
   }
 
