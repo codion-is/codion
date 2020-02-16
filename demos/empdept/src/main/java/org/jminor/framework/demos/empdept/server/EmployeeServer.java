@@ -34,22 +34,20 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
   }
 
   @Override
-  protected DefaultEmployeeService createRemoteConnection(final ConnectionPool connectionPool,
-                                                          final Database database, final RemoteClient remoteClient,
-                                                          final int port, final boolean clientLoggingEnabled,
+  protected DefaultEmployeeService createRemoteConnection(final ConnectionPool connectionPool, final Database database,
+                                                          final RemoteClient remoteClient, final int port,
                                                           final RMIClientSocketFactory clientSocketFactory,
                                                           final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
-    return new DefaultEmployeeService(database, remoteClient, port, clientLoggingEnabled);
+    return new DefaultEmployeeService(database, remoteClient, port);
   }
 
   static final class DefaultEmployeeService extends AbstractRemoteEntityConnection
           implements EmployeeService {
 
-    private DefaultEmployeeService(final Database database, final RemoteClient remoteClient, final int port,
-                                   final boolean loggingEnabled)
+    private DefaultEmployeeService(final Database database, final RemoteClient remoteClient, final int port)
             throws DatabaseException, RemoteException {
-      super(DOMAIN, null, database, remoteClient, port, loggingEnabled, null, null);
+      super(DOMAIN, null, database, remoteClient, port, null, null);
     }
 
     @Override
