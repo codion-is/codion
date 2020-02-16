@@ -48,6 +48,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A base class for remote connections served by a {@link DefaultEntityConnectionServer}.
+ * Handles logging of service calls and database connection pooling.
  */
 public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject {
 
@@ -249,8 +250,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       this.remoteClient = remoteClient;
       this.connectionPool = connectionPool;
       this.database = database;
-      this.methodLogger = new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(),
-              new EntityArgumentToString(domain));
+      this.methodLogger = new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(), new EntityArgumentToString(domain));
       this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();
       try {
         if (connectionPool == null) {
@@ -404,20 +404,21 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
     private void cleanupLocalConnections() {
       if (poolEntityConnection != null) {
-        if (poolEntityConnection.isTransactionOpen()) {
-          LOG.info("Rollback open transaction on disconnect: {}", remoteClient);
-          poolEntityConnection.rollbackTransaction();
-        }
+        rollbackIfRequired(poolEntityConnection);
         returnConnectionToPool();
         poolEntityConnection = null;
       }
       if (localEntityConnection != null) {
-        if (localEntityConnection.isTransactionOpen()) {
-          LOG.info("Rollback open transaction on disconnect: {}", remoteClient);
-          localEntityConnection.rollbackTransaction();
-        }
+        rollbackIfRequired(localEntityConnection);
         localEntityConnection.disconnect();
         localEntityConnection = null;
+      }
+    }
+
+    private void rollbackIfRequired(final LocalEntityConnection entityConnection) {
+      if (entityConnection.isTransactionOpen()) {
+        LOG.info("Rollback open transaction on disconnect: {}", remoteClient);
+        entityConnection.rollbackTransaction();
       }
     }
 

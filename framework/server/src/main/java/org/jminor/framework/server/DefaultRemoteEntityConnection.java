@@ -25,8 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An implementation of the RemoteEntityConnection interface, provides the logging of service calls
- * and database connection pooling.
+ * A default RemoteEntityConnection implementation.
  */
 final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection implements RemoteEntityConnection {
 
