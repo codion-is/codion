@@ -301,10 +301,8 @@ public final class Dialogs {
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final boolean modal,
-                                        final JButton defaultButton, final EventObserver closeEvent,
-                                        final boolean disposeOnEscape,
-                                        final Action onClosedAction) {
+                                        final boolean modal, final JButton defaultButton, final EventObserver closeEvent,
+                                        final boolean disposeOnEscape, final Action onClosedAction) {
     final Window dialogOwner = owner instanceof Window ? (Window) owner : Windows.getParentWindow(owner);
     final JDialog dialog = new JDialog(dialogOwner, title, modal ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);
     if (defaultButton != null) {

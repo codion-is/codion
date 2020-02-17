@@ -202,8 +202,8 @@ public final class EntityLookupField extends JTextField {
    * @see EntityDefinition#getSearchProperties()
    */
   public static List<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
-                                                  final boolean singleSelection, final JComponent dialogParent,
-                                                  final String lookupCaption) {
+                                            final boolean singleSelection, final JComponent dialogParent,
+                                            final String lookupCaption) {
     return lookupEntities(entityId, connectionProvider, singleSelection, dialogParent, lookupCaption, lookupCaption);
   }
 
@@ -221,8 +221,8 @@ public final class EntityLookupField extends JTextField {
    * @see EntityDefinition#getSearchProperties()
    */
   public static List<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
-                                                  final boolean singleSelection, final JComponent dialogParent,
-                                                  final String lookupCaption, final String dialogTitle) {
+                                            final boolean singleSelection, final JComponent dialogParent,
+                                            final String lookupCaption, final String dialogTitle) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
     lookupModel.getMultipleSelectionEnabledValue().set(!singleSelection);
     final ComponentValuePanel inputPanel = new ComponentValuePanel(lookupCaption,
