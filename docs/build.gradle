@@ -44,25 +44,22 @@ task combinedJavadoc(type: Javadoc) {
     classpath = files(frameworkModules.collect { it.sourceSets.main.compileClasspath })
 }
 
-task combineDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
+task assembleSite(dependsOn: [combinedJavadoc, asciidoctor]) {
     group 'documentation'
     doLast {
         def siteFolder = "${buildDir}/docs/site/${project.version}"
         ant.delete(dir: siteFolder)
         ant.copy(todir: siteFolder) {
             fileset(dir: "${buildDir}/docs/asciidoc")
+            fileset(file: 'favicon.ico')
         }
-        def siteApiFolder = "${buildDir}/docs/site/${project.version}/api"
-        ant.copy(todir: siteApiFolder) {
+        ant.copy(todir: siteFolder + '/api') {
             fileset(dir: "${buildDir}/docs/javadoc")
-        }
-        ant.copy(todir: siteFolder) {
-            fileset(dir: '.', includes: 'favicon.ico')
         }
     }
 }
 
-task documentationZip(type: Zip, dependsOn: combineDocs) {
+task documentationZip(type: Zip, dependsOn: assembleSite) {
     from "${buildDir}/docs/site"
 }
 
@@ -79,7 +76,7 @@ publishing {
     }
 }
 
-task populateSite(dependsOn: combineDocs) {
+task publishSite(dependsOn: assembleSite) {
     group 'documentation'
     doLast {
         ant.delete() {
