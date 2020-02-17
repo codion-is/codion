@@ -315,7 +315,7 @@ public final class Dialogs {
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       if (disposeOnEscape) {
-        KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, disposeAction);
+        KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, false, disposeAction);
       }
     }
     else {

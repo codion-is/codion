@@ -5664,3 +5664,4 @@
   jminor-documentation module now publishes full documentation as zip
   Version now part of documentation URLs
   MethodLogger enabled constructor parameter removed
+  Dialogs.displayInDialog(), disposeOnEscape now triggered on onKeyPress instead of onKeyRelease, since the latter could be triggered by non-consumed Esc usages in the dialog, such as when closing a combobox popup
