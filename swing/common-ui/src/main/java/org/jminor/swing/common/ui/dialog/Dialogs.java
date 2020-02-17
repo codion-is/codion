@@ -301,10 +301,8 @@ public final class Dialogs {
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final boolean modal,
-                                        final JButton defaultButton, final EventObserver closeEvent,
-                                        final boolean disposeOnEscape,
-                                        final Action onClosedAction) {
+                                        final boolean modal, final JButton defaultButton, final EventObserver closeEvent,
+                                        final boolean disposeOnEscape, final Action onClosedAction) {
     final Window dialogOwner = owner instanceof Window ? (Window) owner : Windows.getParentWindow(owner);
     final JDialog dialog = new JDialog(dialogOwner, title, modal ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);
     if (defaultButton != null) {
@@ -315,7 +313,7 @@ public final class Dialogs {
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       if (disposeOnEscape) {
-        KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, disposeAction);
+        KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, false, disposeAction);
       }
     }
     else {
