@@ -239,7 +239,7 @@ public final class EntityLookupField extends JTextField {
   private void selectEntities(final List<Entity> entities) {
     final JDialog dialog = new JDialog(Windows.getParentWindow(this), MESSAGES.getString("select_entity"));
     Dialogs.prepareScrollPanelDialog(dialog, this, selectionProvider.getSelectionComponent(entities),
-            selectionProvider.getSelectControl(), new Dialogs.DisposeWindowAction(dialog));
+            selectionProvider.getSelectControl(), Controls.control(dialog::dispose));
     dialog.setVisible(true);
   }
 

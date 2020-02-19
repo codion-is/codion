@@ -5665,3 +5665,4 @@
   Version now part of documentation URLs
   MethodLogger enabled constructor parameter removed
   Dialogs.displayInDialog(), disposeOnEscape now triggered on onKeyPress instead of onKeyRelease, since the latter could be triggered by non-consumed Esc usages in the dialog, such as when closing a combobox popup
+  Dialogs.displayInDialog() now uses DisposeDialogOnEscapeAction for Esc, to prevent the dialog from closing if popup menus are visible, focus does not return to the component under the popup menu though, when popups are closed this way
