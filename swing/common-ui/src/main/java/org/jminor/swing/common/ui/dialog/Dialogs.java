@@ -24,12 +24,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -43,6 +45,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -51,6 +55,7 @@ import java.util.ResourceBundle;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.jminor.common.Util.nullOrEmpty;
 
 /**
@@ -309,11 +314,12 @@ public final class Dialogs {
       dialog.getRootPane().setDefaultButton(defaultButton);
     }
 
-    final Action disposeAction = new DisposeWindowAction(dialog);
+    final Action disposeAction = new DisposeDialogAction(dialog);
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       if (disposeOnEscape) {
-        KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, false, disposeAction);
+        KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, false,
+                new DisposeDialogOnEscapeAction(dialog));
       }
     }
     else {
@@ -667,7 +673,7 @@ public final class Dialogs {
     final JList<T> list = new JList<>(listModel);
     final Window owner = Windows.getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
-    final Action okAction = new DisposeWindowAction(dialog);
+    final Action okAction = new DisposeDialogAction(dialog);
     final Action cancelAction = new AbstractAction() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -702,29 +708,60 @@ public final class Dialogs {
     return list.getSelectedValuesList();
   }
 
-  /**
-   * An action which disposes a given window when performed
-   */
-  public static final class DisposeWindowAction extends AbstractAction {
-
-    private final Window window;
-
-    /**
-     * Instantiates a new DisposeWindowAction, which disposes of the given window when performed
-     * @param window the window to dispose
-     */
-    public DisposeWindowAction(final Window window) {
-      super("UiUtil.disposeWindow");
-      this.window = window;
+  private static <T extends Component> List<T> getComponentsOfType(final Container container, final Class<T> clazz) {
+    final List<T> components = new ArrayList<>();
+    for (final Component component : container.getComponents()) {
+      if (clazz.isAssignableFrom(component.getClass())) {
+        components.add((T) component);
+      }
+      if (component instanceof Container) {
+        components.addAll(getComponentsOfType((Container) component, clazz));
+      }
     }
 
-    /**
-     * Calls dispose on the window
-     * @param e ignored
-     */
+    return components;
+  }
+
+  private static final class DisposeDialogAction extends AbstractAction {
+
+    private final Dialog dialog;
+
+    private DisposeDialogAction(final Dialog dialog) {
+      super("Dialogs.disposeDialogAction");
+      this.dialog = dialog;
+    }
+
     @Override
     public void actionPerformed(final ActionEvent e) {
-      window.dispose();
+      dialog.dispose();
+    }
+  }
+
+  private static final class DisposeDialogOnEscapeAction extends AbstractAction {
+
+    private final JDialog dialog;
+
+    public DisposeDialogOnEscapeAction(final JDialog dialog) {
+      super("Dialogs.disposeDialogOnEscapeAction");
+      this.dialog = dialog;
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      final List<Window> heavyWeightWindows = Arrays.stream(dialog.getOwnedWindows()).filter(window ->
+              window.getClass().getName().endsWith("Popup$HeavyWeightWindow") && window.isVisible()).collect(toList());
+      if (!heavyWeightWindows.isEmpty()) {
+        heavyWeightWindows.forEach(Window::dispose);
+
+        return;
+      }
+      final List<JPopupMenu> popupMenus = getComponentsOfType(dialog.getContentPane(), JPopupMenu.class);
+      if (popupMenus.isEmpty()) {
+        dialog.dispose();
+      }
+      else {
+        popupMenus.forEach(popupMenu -> popupMenu.setVisible(false));
+      }
     }
   }
 }
