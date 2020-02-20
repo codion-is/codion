@@ -86,25 +86,14 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
 
   /** {@inheritDoc} */
   @Override
-  public final void setSortingDirective(final C columnIdentifier, final SortingDirective directive,
-                                        final boolean addColumnToSort) {
-    if (!addColumnToSort) {
-      resetSortingStates();
-    }
-    if (directive == SortingDirective.UNSORTED) {
-      sortingStates.put(columnIdentifier, EMPTY_SORTING_STATE);
-    }
-    else {
-      final SortingState state = getSortingState(columnIdentifier);
-      if (state.equals(EMPTY_SORTING_STATE)) {
-        final int priority = getNextSortPriority();
-        sortingStates.put(columnIdentifier, new DefaultSortingState(directive, priority));
-      }
-      else {
-        sortingStates.put(columnIdentifier, new DefaultSortingState(directive, state.getPriority()));
-      }
-    }
-    sortingStateChangedEvent.onEvent();
+  public final void setSortingDirective(final C columnIdentifier, final SortingDirective directive) {
+    setSortingDirective(columnIdentifier, directive, false);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addSortingDirective(final C columnIdentifier, final SortingDirective directive) {
+    setSortingDirective(columnIdentifier, directive, true);
   }
 
   /** {@inheritDoc} */
@@ -143,6 +132,27 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
 
     return LEXICAL_COMPARATOR;
+  }
+
+  private void setSortingDirective(final C columnIdentifier, final SortingDirective directive,
+                                   final boolean addColumnToSort) {
+    if (!addColumnToSort) {
+      resetSortingStates();
+    }
+    if (directive == SortingDirective.UNSORTED) {
+      sortingStates.put(columnIdentifier, EMPTY_SORTING_STATE);
+    }
+    else {
+      final SortingState state = getSortingState(columnIdentifier);
+      if (state.equals(EMPTY_SORTING_STATE)) {
+        final int priority = getNextSortPriority();
+        sortingStates.put(columnIdentifier, new DefaultSortingState(directive, priority));
+      }
+      else {
+        sortingStates.put(columnIdentifier, new DefaultSortingState(directive, state.getPriority()));
+      }
+    }
+    sortingStateChangedEvent.onEvent();
   }
 
   private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {

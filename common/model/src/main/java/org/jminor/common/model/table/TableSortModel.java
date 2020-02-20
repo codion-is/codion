@@ -22,14 +22,24 @@ public interface TableSortModel<R, C, T> {
   void sort(List<R> items);
 
   /**
+   * Clears the sorting state and adds the given column sorting directive.
    * @param columnIdentifier the identifier of the column to sort by
    * @param directive the sorting directive
-   * @param addColumnToSort if false then the sorting state is cleared, otherwise
-   * this column is added to the sorted column set according to sorting priority
+   * @see #addSortingDirective(Object, SortingDirective)
    * @see #getSortingState(Object)
    */
-  void setSortingDirective(C columnIdentifier, SortingDirective directive,
-                           boolean addColumnToSort);
+  void setSortingDirective(C columnIdentifier, SortingDirective directive);
+
+  /**
+   * Adds the given column sorting directive to the currently sorted columns.
+   * If no column sorting is enabled, this call is the equivilent to using
+   * {@link #setSortingDirective(Object, SortingDirective)}.
+   * @param columnIdentifier the identifier of the column to sort by
+   * @param directive the sorting directive
+   * @see #setSortingDirective(Object, SortingDirective)
+   * @see #getSortingState(Object)
+   */
+  void addSortingDirective(C columnIdentifier, SortingDirective directive);
 
   /**
    * @param columnIdentifier the column identifier

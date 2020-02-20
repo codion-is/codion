@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.common.model.table.SortingDirective;
-import org.jminor.framework.domain.property.Property;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
@@ -78,8 +77,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
             new EntityLookupField.TableSelectionProvider(customerField.getModel());
     final SwingEntityTableModel tableModel = customerSelectionProvider.getTable().getModel();
     tableModel.setColumns(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME, CUSTOMER_EMAIL);
-    tableModel.getSortModel().setSortingDirective((Property) tableModel.getColumnModel().getColumn(0).getIdentifier(),
-              SortingDirective.ASCENDING, false);
+    tableModel.setSortingDirective(CUSTOMER_LASTNAME, SortingDirective.ASCENDING);
     customerField.setSelectionProvider(customerSelectionProvider);
   }
 }
