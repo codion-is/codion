@@ -37,38 +37,38 @@ public class AbstractTableSortModelTest {
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
 
-    model.setSortingDirective(0, SortingDirective.ASCENDING, false);
+    model.setSortingDirective(0, SortingDirective.ASCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
 
-    model.setSortingDirective(2, SortingDirective.ASCENDING, false);
+    model.setSortingDirective(2, SortingDirective.ASCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
 
-    model.setSortingDirective(0, SortingDirective.ASCENDING, false);
-    model.setSortingDirective(1, SortingDirective.DESCENDING, true);
+    model.setSortingDirective(0, SortingDirective.ASCENDING);
+    model.addSortingDirective(1, SortingDirective.DESCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(thirdRow));
     assertEquals(1, items.indexOf(firstRow));
     assertEquals(2, items.indexOf(secondRow));
 
-    model.setSortingDirective(2, SortingDirective.DESCENDING, true);
+    model.addSortingDirective(2, SortingDirective.DESCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(thirdRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(firstRow));
 
-    model.setSortingDirective(2, SortingDirective.ASCENDING, true);
+    model.addSortingDirective(2, SortingDirective.ASCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(thirdRow));
     assertEquals(1, items.indexOf(firstRow));
     assertEquals(2, items.indexOf(secondRow));
 
-    model.setSortingDirective(2, SortingDirective.ASCENDING, false);
+    model.setSortingDirective(2, SortingDirective.ASCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
@@ -91,7 +91,7 @@ public class AbstractTableSortModelTest {
       }
     };
     final List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
-    model.setSortingDirective(0, SortingDirective.DESCENDING, false);
+    model.setSortingDirective(0, SortingDirective.DESCENDING);
     model.sort(collections);
   }
 

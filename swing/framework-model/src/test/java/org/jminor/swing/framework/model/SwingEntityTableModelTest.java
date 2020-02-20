@@ -63,7 +63,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   protected SwingEntityTableModel createDepartmentTableModel() {
     final SwingEntityTableModel deptModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
     deptModel.setEditModel(new SwingEntityEditModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider()));
-    deptModel.setSortingDirective(TestDomain.DEPARTMENT_NAME, SortingDirective.ASCENDING, false);
+    deptModel.setSortingDirective(TestDomain.DEPARTMENT_NAME, SortingDirective.ASCENDING);
 
     return deptModel;
   }
@@ -209,10 +209,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   public void indexOf() {
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
-    tableModel.getSortModel().setSortingDirective(getConnectionProvider().getDomain().getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_NAME),
-            SortingDirective.ASCENDING, false);
-    assertEquals(SortingDirective.ASCENDING, tableModel.getSortModel()
-            .getSortingState(getConnectionProvider().getDomain().getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_NAME)).getDirective());
+    tableModel.setSortingDirective(TestDomain.EMP_NAME, SortingDirective.ASCENDING);
+    assertEquals(SortingDirective.ASCENDING, tableModel.getSortingState(TestDomain.EMP_NAME).getDirective());
 
     final Entity.Key pk1 = getConnectionProvider().getDomain().key(TestDomain.T_EMP, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));

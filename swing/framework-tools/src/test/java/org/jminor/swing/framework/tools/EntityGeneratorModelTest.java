@@ -122,8 +122,8 @@ public class EntityGeneratorModelTest {
   @BeforeEach
   public void setUp() throws Exception {
     model = new EntityGeneratorModel(UNIT_TEST_USER, "PETSTORE");
-    model.getTableModel().getSortModel().setSortingDirective(EntityGeneratorModel.SCHEMA_COLUMN_ID, SortingDirective.ASCENDING, false);
-    model.getTableModel().getSortModel().setSortingDirective(EntityGeneratorModel.TABLE_COLUMN_ID, SortingDirective.ASCENDING, true);
+    model.getTableModel().getSortModel().setSortingDirective(EntityGeneratorModel.SCHEMA_COLUMN_ID, SortingDirective.ASCENDING);
+    model.getTableModel().getSortModel().addSortingDirective(EntityGeneratorModel.TABLE_COLUMN_ID, SortingDirective.ASCENDING);
   }
 
   @AfterEach

@@ -11,6 +11,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SortingDirective;
+import org.jminor.common.model.table.TableSortModel;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 import org.jminor.swing.common.model.textfield.DocumentAdapter;
@@ -696,7 +697,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       final int index = columnModel.getColumnIndexAtX(e.getX());
       if (index >= 0) {
         final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
-        SortingDirective status = getModel().getSortModel().getSortingState(columnIdentifier).getDirective();
+        final TableSortModel<R, C, TableColumn> sortModel = getModel().getSortModel();
+        SortingDirective status = sortModel.getSortingState(columnIdentifier).getDirective();
         final boolean shiftDown = e.isShiftDown();
         switch (status) {
           case UNSORTED:
@@ -715,7 +717,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
             break;
         }
 
-        getModel().getSortModel().setSortingDirective(columnIdentifier, status, e.isControlDown());
+        if (e.isControlDown()) {
+          sortModel.addSortingDirective(columnIdentifier, status);
+        }
+        else {
+          sortModel.setSortingDirective(columnIdentifier, status);
+        }
       }
     }
   }

@@ -8,10 +8,12 @@ import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
+import org.jminor.swing.common.model.textfield.DocumentAdapter;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
+import org.jminor.swing.common.ui.value.AbstractComponentValue;
 import org.jminor.swing.common.ui.value.BooleanValues;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
@@ -21,9 +23,12 @@ import org.jminor.swing.common.ui.value.TextValues;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -171,5 +176,69 @@ public final class InputControls {
 
     SelectedValues.selectedValueLink(comboBox, stringValue);
     // end::selectionComboBox[]
+  }
+
+  static void customTextFields() {
+    // tag::customTextFields[]
+    class Person {
+      final String firstName;
+      final String lastName;
+
+      public Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+      }
+
+      @Override
+      public String toString() {
+        return lastName + ", " + firstName;
+      }
+    }
+
+    class PersonPanel extends JPanel {
+      final JTextField firstNameField = new JTextField();
+      final JTextField lastNameField = new JTextField();
+
+      public PersonPanel() {
+        setLayout(new GridLayout(2, 2, 5, 5));
+        add(new JLabel("First name"));
+        add(new JLabel("Last name"));
+        add(firstNameField);
+        add(lastNameField);
+      }
+    }
+
+    class PersonPanelValue extends AbstractComponentValue<Person, PersonPanel> {
+
+      public PersonPanelValue(PersonPanel component) {
+        super(component);
+        //We must call notifyValueChange each time this value changes,
+        //that is, when either the first or last name changes.
+        component.firstNameField.getDocument()
+                .addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
+        component.lastNameField.getDocument()
+                .addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
+      }
+
+      @Override
+      protected Person getComponentValue(PersonPanel component) {
+        return new Person(component.firstNameField.getText(), component.lastNameField.getText());
+      }
+
+      @Override
+      protected void setComponentValue(PersonPanel component, Person value) {
+        component.firstNameField.setText(value == null ? null : value.firstName);
+        component.lastNameField.setText(value == null ? null : value.lastName);
+      }
+    }
+
+    Value<Person> personValue = Values.value();
+
+    PersonPanel personPanel = new PersonPanel();
+
+    Value<Person> personPanelValue = new PersonPanelValue(personPanel);
+
+    personValue.link(personPanelValue);
+    // end::customTextFields[]
   }
 }

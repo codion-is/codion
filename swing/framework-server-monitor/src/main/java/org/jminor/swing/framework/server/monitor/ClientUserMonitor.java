@@ -127,7 +127,7 @@ public final class ClientUserMonitor {
    * @throws RemoteException in case of an exception
    */
   public void disconnectAll() throws RemoteException {
-    server.disconnectClients(false);
+    server.disconnectAllClients();
     refresh();
   }
 
@@ -136,7 +136,7 @@ public final class ClientUserMonitor {
    * @throws RemoteException in case of an exception
    */
   public void disconnectTimedOut() throws RemoteException {
-    server.disconnectClients(true);
+    server.disconnectTimedOutClients();
     refresh();
   }
 
