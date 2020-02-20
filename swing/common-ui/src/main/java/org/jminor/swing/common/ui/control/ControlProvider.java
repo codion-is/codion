@@ -274,10 +274,10 @@ public final class ControlProvider {
       if (description != null) {
         menu.setToolTipText(description);
       }
-      final StateObserver enabledState = controlSet.getEnabledObserver();
-      if (enabledState != null) {
-        menu.setEnabled(enabledState.get());
-        enabledState.addListener(() -> menu.setEnabled(enabledState.get()));
+      final StateObserver enabledObserver = controlSet.getEnabledObserver();
+      if (enabledObserver != null) {
+        menu.setEnabled(enabledObserver.get());
+        enabledObserver.addListener(() -> menu.setEnabled(enabledObserver.get()));
       }
       final Icon icon = controlSet.getIcon();
       if (icon != null) {
@@ -320,15 +320,9 @@ public final class ControlProvider {
   private static final class ToolBarControlHandler extends ControlHandler {
 
     private final JToolBar toolbar;
-    private final boolean includeCaption;
 
     private ToolBarControlHandler(final JToolBar owner) {
-      this(owner, true);
-    }
-
-    private ToolBarControlHandler(final JToolBar owner, final boolean includeCaption) {
       this.toolbar = owner;
-      this.includeCaption = includeCaption;
     }
 
     @Override
@@ -339,7 +333,7 @@ public final class ControlProvider {
     @Override
     public void onControl(final Control control) {
       if (control instanceof ToggleControl) {
-        toolbar.add(createToggleButton((ToggleControl) control, includeCaption));
+        toolbar.add(createToggleButton((ToggleControl) control));
       }
       else {
         toolbar.add(control);
@@ -380,20 +374,10 @@ public final class ControlProvider {
    * @return a toggle button
    */
   public static JToggleButton createToggleButton(final ToggleControl toggleControl) {
-    return createToggleButton(toggleControl, true);
-  }
-
-  /**
-   * Creates a JToggleButton based on the given toggle control
-   * @param toggleControl the toggle control
-   * @param includeCaption if true a caption is included
-   * @return a toggle button
-   */
-  public static JToggleButton createToggleButton(final ToggleControl toggleControl, final boolean includeCaption) {
     requireNonNull(toggleControl, "toggleControl");
     final JToggleButton toggleButton = new JToggleButton(toggleControl);
     toggleButton.setModel(createButtonModel(toggleControl));
-    toggleButton.setText(includeCaption ? toggleControl.getName() : null);
+    toggleButton.setText(toggleControl.getName());
 
     return toggleButton;
   }
