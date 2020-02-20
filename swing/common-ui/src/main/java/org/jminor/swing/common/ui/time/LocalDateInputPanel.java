@@ -116,10 +116,11 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
       final State cancel = States.state();
       final Calendar returnTime = Calendar.getInstance();
       returnTime.setTime(cal.getTime());
-      final JButton okButton = new JButton(Controls.control(() -> {
+      final Control okControl = Controls.control(() -> {
         returnTime.setTimeInMillis(((Calendar) getCalendar.invoke(calendarPanel)).getTimeInMillis());
         closeEvent.onEvent();
-      }, Messages.get(Messages.OK)));
+      }, Messages.get(Messages.OK));
+      final JButton okButton = new JButton(okControl);
       final Control cancelControl = Controls.control(() -> {
         cancel.set(true);
         closeEvent.onEvent();
@@ -132,7 +133,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
       datePanel.add(buttonPanel, BorderLayout.SOUTH);
 
       KeyEvents.addKeyEvent(datePanel, KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
-      Dialogs.displayInDialog(parent, datePanel, message, true, okButton, closeEvent, true, null);
+      Dialogs.displayInDialog(parent, datePanel, message, true, okControl, closeEvent, true, null);
 
       return cancel.get() ? null : Instant.ofEpochMilli(returnTime.getTime().getTime())
               .atZone(ZoneId.systemDefault())

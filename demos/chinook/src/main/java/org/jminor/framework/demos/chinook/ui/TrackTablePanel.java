@@ -45,7 +45,7 @@ public class TrackTablePanel extends EntityTablePanel {
             new ComponentValuePanel<>("Amount",
                     NumericalValues.bigDecimalValue(new DecimalField()));
     Dialogs.displayInDialog(this, inputPanel, "Price Raise", true,
-            inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
+            inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted() && inputPanel.getValue() != null) {
       return inputPanel.getValue();
     }

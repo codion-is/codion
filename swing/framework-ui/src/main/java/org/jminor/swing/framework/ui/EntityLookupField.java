@@ -116,15 +116,6 @@ public final class EntityLookupField extends JTextField {
    * @param lookupModel the lookup model on which to base this lookup field
    */
   public EntityLookupField(final EntityLookupModel lookupModel) {
-    this(lookupModel, true);
-  }
-
-  /**
-   * Initializes a new EntityLookupField
-   * @param lookupModel the lookup model on which to base this lookup field
-   * @param lookupOnKeyRelease if true then lookup is performed on key release, otherwise it is performed on keyPressed.
-   */
-  public EntityLookupField(final EntityLookupModel lookupModel, final boolean lookupOnKeyRelease) {
     requireNonNull(lookupModel, "lookupModel");
     this.model = lookupModel;
     this.settingsPanel = new SettingsPanel(lookupModel);
@@ -138,7 +129,7 @@ public final class EntityLookupField extends JTextField {
     addEscapeListener();
     this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     updateColors();
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, lookupOnKeyRelease, initializeLookupControl());
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, initializeLookupControl());
     Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
   }
@@ -228,7 +219,7 @@ public final class EntityLookupField extends JTextField {
     final ComponentValuePanel inputPanel = new ComponentValuePanel(lookupCaption,
             new ComponentValue(lookupModel, null));
     Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, true,
-            inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
+            inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
       return lookupModel.getSelectedEntities();
     }
@@ -582,7 +573,7 @@ public final class EntityLookupField extends JTextField {
     }
 
     private static EntityLookupField createEntityLookupField(final EntityLookupModel lookupModel, final Entity initialValue) {
-      final EntityLookupField field = new EntityLookupField(lookupModel, false);
+      final EntityLookupField field = new EntityLookupField(lookupModel);
       lookupModel.setSelectedEntity(initialValue);
 
       return field;

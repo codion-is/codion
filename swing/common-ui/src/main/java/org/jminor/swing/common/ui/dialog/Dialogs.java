@@ -172,13 +172,13 @@ public final class Dialogs {
    * @param component the component to display
    * @param title the dialog title
    * @param modal if true then the dialog is modal
-   * @param defaultButton the the default dialog button
+   * @param enterAction the action to associate with the ENTER key
    * @param disposeOnEscape if true then dispose is called on the dialog on ESC
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title, final boolean modal,
-                                        final JButton defaultButton, final boolean disposeOnEscape) {
-    return displayInDialog(owner, component, title, modal, defaultButton, null, disposeOnEscape, null);
+                                        final Action enterAction, final boolean disposeOnEscape) {
+    return displayInDialog(owner, component, title, modal, enterAction, null, disposeOnEscape, null);
   }
 
   /**
@@ -187,13 +187,13 @@ public final class Dialogs {
    * @param component the component to display
    * @param title the dialog title
    * @param modal if true then the dialog is modal
-   * @param defaultButton the the default dialog button
+   * @param enterAction the action to associate with the ENTER key
    * @param closeEvent the dialog will be closed and disposed of when and only when this event occurs
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title, final boolean modal,
-                                        final JButton defaultButton, final EventObserver closeEvent) {
-    return displayInDialog(owner, component, title, modal, defaultButton, closeEvent, false, null);
+                                        final Action enterAction, final EventObserver closeEvent) {
+    return displayInDialog(owner, component, title, modal, enterAction, closeEvent, false, null);
   }
 
   /**
@@ -298,7 +298,7 @@ public final class Dialogs {
    * @param component the component to display
    * @param title the dialog title
    * @param modal if true then the dialog is modal
-   * @param defaultButton the the default dialog button
+   * @param enterAction the action to associate with the ENTER key
    * @param closeEvent if specified the dialog will be disposed of when and only when this event occurs
    * @param disposeOnEscape if true then the dialog is disposed when the ESC button is pressed,
    * has no effect if a <code>closeEvent</code> is specified
@@ -306,12 +306,13 @@ public final class Dialogs {
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final boolean modal, final JButton defaultButton, final EventObserver closeEvent,
+                                        final boolean modal, final Action enterAction, final EventObserver closeEvent,
                                         final boolean disposeOnEscape, final Action onClosedAction) {
     final Window dialogOwner = owner instanceof Window ? (Window) owner : Windows.getParentWindow(owner);
     final JDialog dialog = new JDialog(dialogOwner, title, modal ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);
-    if (defaultButton != null) {
-      dialog.getRootPane().setDefaultButton(defaultButton);
+    if (enterAction != null) {
+      KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, true,
+                enterAction);
     }
 
     final Action disposeAction = new DisposeDialogAction(dialog);

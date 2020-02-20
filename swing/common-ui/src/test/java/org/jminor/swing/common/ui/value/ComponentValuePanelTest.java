@@ -34,10 +34,10 @@ public class ComponentValuePanelTest {
     final AtomicInteger eventCounter = new AtomicInteger();
     final EventDataListener<Integer> listener = data -> eventCounter.incrementAndGet();
     panel.addButtonClickListener(listener);
-    panel.getOkButton().doClick();
+    panel.getOkAction().actionPerformed(null);
     assertTrue(panel.isInputAccepted());
     assertEquals(1, eventCounter.get());
-    panel.getCancelButton().doClick();
+    panel.getCancelAction().actionPerformed(null);
     assertEquals(2, eventCounter.get());
     panel.removeButtonClickListener(listener);
   }
