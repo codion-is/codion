@@ -221,11 +221,16 @@ public interface EntityConnectionServerAdmin extends Remote {
   int getRequestsPerSecond() throws RemoteException;
 
   /**
-   * Removes connections.
-   * @param timedOutOnly if true only connections that have timed out are culled
+   * Disconnects all timed-out clients.
    * @throws RemoteException in case of an exception
    */
-  void disconnectClients(boolean timedOutOnly) throws RemoteException;
+  void disconnectTimedOutClients() throws RemoteException;
+
+  /**
+   * Disconnects all connected clients.
+   * @throws RemoteException in case of an exception
+   */
+  void disconnectAllClients() throws RemoteException;
 
   /**
    * Resets the statistics that have been collected so far
