@@ -12,6 +12,7 @@ import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -37,8 +38,8 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
 
   private final Event<Integer> buttonClickedEvent = Events.event();
   private final ComponentValue<V, C> componentValue;
-  private final JButton okButton;
-  private final JButton cancelButton;
+  private final Action okAction;
+  private final Action cancelAction;
 
   private int buttonValue = -Integer.MAX_VALUE;
 
@@ -49,8 +50,8 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
    */
   public ComponentValuePanel(final String caption, final ComponentValue<V, C> componentValue) {
     this.componentValue = requireNonNull(componentValue, "componentValue");
-    this.okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
-    this.cancelButton = createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION);
+    this.okAction = createAction(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
+    this.cancelAction = createAction(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION);
     initializeUI(caption);
   }
 
@@ -83,17 +84,17 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
   }
 
   /**
-   * @return the OK button
+   * @return the OK action
    */
-  public JButton getOkButton() {
-    return okButton;
+  public Action getOkAction() {
+    return okAction;
   }
 
   /**
-   * @return the Cancel button
+   * @return the Cancel action
    */
-  public JButton getCancelButton() {
-    return cancelButton;
+  public Action getCancelAction() {
+    return cancelAction;
   }
 
   /**
@@ -133,6 +134,8 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
   }
 
   private JPanel createButtonPanel() {
+    final JButton okButton = new JButton(okAction);
+    final JButton cancelButton = new JButton(cancelAction);
     final JPanel panel = new JPanel(new GridLayout(1, COLUMNS));
     panel.add(okButton);
     KeyEvents.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true,
@@ -147,16 +150,16 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
     return panel;
   }
 
-  private JButton createButton(final String caption, final String mnemonic, final int option) {
-    final JButton button = new JButton(new AbstractAction(caption) {
+  private Action createAction(final String caption, final String mnemonic, final int option) {
+    final AbstractAction action = new AbstractAction(caption) {
       @Override
       public void actionPerformed(final ActionEvent e) {
         buttonValue = option;
         buttonClickedEvent.onEvent(option);
       }
-    });
-    button.setMnemonic(mnemonic.charAt(0));
+    };
+    action.putValue(Action.MNEMONIC_KEY, (int) mnemonic.charAt(0));
 
-    return button;
+    return action;
   }
 }

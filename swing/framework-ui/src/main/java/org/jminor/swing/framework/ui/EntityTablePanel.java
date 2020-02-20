@@ -588,7 +588,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final ComponentValuePanel inputPanel = new ComponentValuePanel(propertyToUpdate.getCaption(),
             componentValues.createComponentValue(propertyToUpdate, tableModel.getEditModel(), initialValue));
     Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
-            inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
+            inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
       Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
       try {
