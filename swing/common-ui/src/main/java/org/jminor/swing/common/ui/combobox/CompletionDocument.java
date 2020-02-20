@@ -27,7 +27,7 @@ class CompletionDocument extends PlainDocument {
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
 
-  public CompletionDocument(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {
+  protected CompletionDocument(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {
     this.comboBox = comboBox;
     this.normalize = normalize;
     model = comboBox.getModel();
@@ -161,7 +161,7 @@ class CompletionDocument extends PlainDocument {
 
     private final boolean showPopupOnMatch;
 
-    public MatchKeyAdapter(final boolean showPopupOnMatch) {
+    private MatchKeyAdapter(final boolean showPopupOnMatch) {
       this.showPopupOnMatch = showPopupOnMatch;
     }
 
