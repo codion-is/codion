@@ -143,7 +143,6 @@ public final class EntitySelectionDialog extends JDialog {
    * Displays a entity table in a dialog for selecting a single entity
    * @param tableModel the table model on which to base the table panel
    * @param dialogOwner the dialog owner
-   * @param singleSelection if true then only a single item can be selected
    * @param dialogTitle the dialog title
    * @return the selected entity or null if none was selected
    * @throws CancelException in case the user cancels the operation
@@ -157,8 +156,8 @@ public final class EntitySelectionDialog extends JDialog {
    * Displays a entity table in a dialog for selecting a single entity
    * @param tableModel the table model on which to base the table panel
    * @param dialogOwner the dialog owner
-   * @param singleSelection if true then only a single item can be selected
    * @param dialogTitle the dialog title
+   * @param preferredSize the preferred dialog size
    * @return the selected entity or null if none was selected
    * @throws CancelException in case the user cancels the operation
    */
