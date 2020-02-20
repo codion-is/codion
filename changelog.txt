@@ -5673,3 +5673,4 @@
   ComponentValuePanel.getOkButton() and getCancelButton() replaced with getOkAction() and getCancelAction()
   Ok changed to OK
   EntityLookupField.lookupEntities(), singleSelection parameter removed, lookupEntity() added
+  EntitySelectionDialog.selectEntities(), singleSelection parameter removed, selectEntity() added
