@@ -140,35 +140,62 @@ public final class EntitySelectionDialog extends JDialog {
   }
 
   /**
-   * Displays a entity table in a dialog for selecting one or more entities
+   * Displays a entity table in a dialog for selecting a single entity
    * @param tableModel the table model on which to base the table panel
    * @param dialogOwner the dialog owner
    * @param singleSelection if true then only a single item can be selected
    * @param dialogTitle the dialog title
-   * @return a List containing the selected entities
+   * @return the selected entity or null if none was selected
    * @throws CancelException in case the user cancels the operation
    */
-  public static List<Entity> selectEntities(final SwingEntityTableModel tableModel, final Container dialogOwner,
-                                            final boolean singleSelection, final String dialogTitle) {
-    return selectEntities(tableModel, dialogOwner, singleSelection, dialogTitle, null);
+  public static Entity selectEntity(final SwingEntityTableModel tableModel, final Container dialogOwner,
+                                    final String dialogTitle) {
+    return selectEntity(tableModel, dialogOwner, dialogTitle, null);
+  }
+
+  /**
+   * Displays a entity table in a dialog for selecting a single entity
+   * @param tableModel the table model on which to base the table panel
+   * @param dialogOwner the dialog owner
+   * @param singleSelection if true then only a single item can be selected
+   * @param dialogTitle the dialog title
+   * @return the selected entity or null if none was selected
+   * @throws CancelException in case the user cancels the operation
+   */
+  public static Entity selectEntity(final SwingEntityTableModel tableModel, final Container dialogOwner,
+                                    final String dialogTitle, final Dimension preferredSize) {
+    final EntitySelectionDialog dialog = new EntitySelectionDialog(tableModel, dialogOwner, dialogTitle, preferredSize);
+    dialog.setSingleSelection(true);
+
+    final List<Entity> entities = dialog.selectEntities();
+
+    return entities.isEmpty() ? null : entities.get(0);
   }
 
   /**
    * Displays a entity table in a dialog for selecting one or more entities
    * @param tableModel the table model on which to base the table panel
    * @param dialogOwner the dialog owner
-   * @param singleSelection if true then only a single item can be selected
+   * @param dialogTitle the dialog title
+   * @return a List containing the selected entities
+   * @throws CancelException in case the user cancels the operation
+   */
+  public static List<Entity> selectEntities(final SwingEntityTableModel tableModel, final Container dialogOwner,
+                                            final String dialogTitle) {
+    return selectEntities(tableModel, dialogOwner, dialogTitle, null);
+  }
+
+  /**
+   * Displays a entity table in a dialog for selecting one or more entities
+   * @param tableModel the table model on which to base the table panel
+   * @param dialogOwner the dialog owner
    * @param dialogTitle the dialog title
    * @param preferredSize the preferred size of the dialog
    * @return a List containing the selected entities
    * @throws CancelException in case the user cancels the operation or selects no entities
    */
   public static List<Entity> selectEntities(final SwingEntityTableModel tableModel, final Container dialogOwner,
-                                            final boolean singleSelection, final String dialogTitle,
-                                            final Dimension preferredSize) {
-    final EntitySelectionDialog dialog = new EntitySelectionDialog(tableModel, dialogOwner, dialogTitle, preferredSize);
-    dialog.setSingleSelection(singleSelection);
-
-    return dialog.selectEntities();
+                                            final String dialogTitle, final Dimension preferredSize) {
+    return new EntitySelectionDialog(tableModel, dialogOwner, dialogTitle, preferredSize).selectEntities();
   }
 }

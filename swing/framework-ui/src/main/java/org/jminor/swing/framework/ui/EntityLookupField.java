@@ -185,17 +185,18 @@ public final class EntityLookupField extends JTextField {
    * in a dialog, using the default search properties for the given entityId.
    * @param entityId the entityId of the entity to perform a lookup for
    * @param connectionProvider the connection provider
-   * @param singleSelection if true only a single entity can be selected
    * @param dialogParent the component serving as the dialog parent
-   * @param lookupCaption the caption for the lookup field, used as a caption for the dialog as well
-   * @return the selected entities or an empty list in case no entity was selected
+   * @param lookupCaption the caption for the lookup field
+   * @param dialogTitle the title to display on the dialog
+   * @return the selected entity or null in case no entity was selected
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static List<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
-                                            final boolean singleSelection, final JComponent dialogParent,
-                                            final String lookupCaption) {
-    return lookupEntities(entityId, connectionProvider, singleSelection, dialogParent, lookupCaption, lookupCaption);
+  public static Entity lookupEntity(final String entityId, final EntityConnectionProvider connectionProvider,
+                                    final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
+    final List<Entity> entities = lookupEntities(entityId, connectionProvider, true, dialogParent, lookupCaption, dialogTitle);
+
+    return entities.isEmpty() ? null : entities.get(0);
   }
 
   /**
@@ -203,7 +204,6 @@ public final class EntityLookupField extends JTextField {
    * in a dialog, using the default search properties for the given entityId.
    * @param entityId the entityId of the entity to perform a lookup for
    * @param connectionProvider the connection provider
-   * @param singleSelection if true only a single entity can be selected
    * @param dialogParent the component serving as the dialog parent
    * @param lookupCaption the caption for the lookup field
    * @param dialogTitle the title to display on the dialog
@@ -212,19 +212,8 @@ public final class EntityLookupField extends JTextField {
    * @see EntityDefinition#getSearchProperties()
    */
   public static List<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
-                                            final boolean singleSelection, final JComponent dialogParent,
-                                            final String lookupCaption, final String dialogTitle) {
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
-    lookupModel.getMultipleSelectionEnabledValue().set(!singleSelection);
-    final ComponentValuePanel inputPanel = new ComponentValuePanel(lookupCaption,
-            new ComponentValue(lookupModel, null));
-    Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, true,
-            inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
-    if (inputPanel.isInputAccepted()) {
-      return lookupModel.getSelectedEntities();
-    }
-
-    return emptyList();
+                                            final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
+    return lookupEntities(entityId, connectionProvider, false, dialogParent, lookupCaption, dialogTitle);
   }
 
   private void selectEntities(final List<Entity> entities) {
@@ -361,6 +350,22 @@ public final class EntityLookupField extends JTextField {
     final Timer timer = new Timer(ENABLE_LOOKUP_DELAY, e -> lookupEnabledState.set(true));
     timer.setRepeats(false);
     timer.start();
+  }
+
+  private static List<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
+                                             final boolean singleSelection, final JComponent dialogParent,
+                                             final String lookupCaption, final String dialogTitle) {
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
+    lookupModel.getMultipleSelectionEnabledValue().set(!singleSelection);
+    final ComponentValuePanel inputPanel = new ComponentValuePanel(lookupCaption,
+            new ComponentValue(lookupModel, null));
+    Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, true,
+            inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
+    if (inputPanel.isInputAccepted()) {
+      return lookupModel.getSelectedEntities();
+    }
+
+    return emptyList();
   }
 
   private static final class SettingsPanel extends JPanel {
