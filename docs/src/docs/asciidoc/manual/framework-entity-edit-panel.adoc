@@ -1,6 +1,6 @@
 = EntityEditPanel
 :dir-source: ../../../../../demos/manual/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
+:url-javadoc: link:../api
 
 The {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] contains the controls (text fields, combo boxes and such) for editing an entity instance.
 

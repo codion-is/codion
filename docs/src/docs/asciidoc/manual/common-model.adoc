@@ -1,6 +1,6 @@
 = Common Model
 :dir-source: ../../../../../demos/manual/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
+:url-javadoc: link:../api
 
 The model layer in a JMinor application contains the business logic, most of the events and application state.
 

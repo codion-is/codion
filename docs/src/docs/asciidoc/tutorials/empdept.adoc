@@ -2,7 +2,7 @@
 :basedir: ..
 :dir-source: ../../../../../demos/empdept/src/main/java
 :dir-test-source: ../../../../../demos/empdept/src/test/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
+:url-javadoc: link:../api
 
 == Domain model
 

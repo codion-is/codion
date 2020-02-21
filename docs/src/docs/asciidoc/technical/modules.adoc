@@ -1,5 +1,5 @@
 = Modules
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
+:url-javadoc: link:../api
 :imagesdir: ../images
 
 == Common
