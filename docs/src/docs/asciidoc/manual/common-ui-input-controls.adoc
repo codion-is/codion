@@ -109,7 +109,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.jav
 
 === TextField
 
-In the following example we link a value based on a Person class to component value displaying text fields for a first and last name.
+In the following example we link a value based on a Person class to a component value displaying text fields for a first and last name.
 
 [source,java,indent=0]
 ----
