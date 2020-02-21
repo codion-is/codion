@@ -1,0 +1,31 @@
+= Common Utilities
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
+
+JMinor provides a few classes with miscellanous utility functions.
+
+== Model
+
+{url-javadoc}/org/jminor/common/FileUtil.html[FileUtil]
+
+{url-javadoc}/org/jminor/common/Formats.html[Formats]
+
+{url-javadoc}/org/jminor/common/Memory.html[Memory]
+
+{url-javadoc}/org/jminor/common/Serializer.html[Serializer]
+
+{url-javadoc}/org/jminor/common/Text.html[Text]
+
+{url-javadoc}/org/jminor/common/Util.html[Util]
+
+== UI
+
+{url-javadoc}/org/jminor/swing/common/ui/Components.html[Components]
+
+{url-javadoc}/org/jminor/swing/common/ui/KeyEvents.html[KeyEvents]
+
+{url-javadoc}/org/jminor/swing/common/ui/layout/Layouts.html[Layouts]
+
+{url-javadoc}/org/jminor/swing/common/ui/UiUtil.html[UiUtil]
+
+{url-javadoc}/org/jminor/swing/common/ui/Windows.html[Windows]

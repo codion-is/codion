@@ -1,0 +1,51 @@
+= Common Model
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
+
+The model layer in a JMinor application contains the business logic, most of the events and application state.
+
+== Common classes
+
+Three common classes used throughout the framework are the {url-javadoc}/org/jminor/common/event/Event.html[Event], {url-javadoc}/org/jminor/common/state/State.html[State] and {url-javadoc}/org/jminor/common/value/Value.html[Value] classes, their respective observers {url-javadoc}/org/jminor/common/event/EventObserver.html[EventObserver] and {url-javadoc}/org/jminor/common/state/StateObserver.html[StateObserver] and listeners {url-javadoc}/org/jminor/common/event/EventListener.html[EventListener] and {url-javadoc}/org/jminor/common/event/EventDataListener.html[EventDataListener].
+
+=== Event
+
+The {url-javadoc}/org/jminor/common/event/Event.html[Event] class is a simple event implementation used throughout the framework to signal object state changes or to indicate that an action is about to start or has ended. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *onEvent()* method, with or without a *data* parameter.
+
+Events are instantiated via the {url-javadoc}/org/jminor/common/event/Events.html[Events] factory class.
+
+To listen to Events you use the {url-javadoc}/org/jminor/common/event/EventListener.html[EventListener] or {url-javadoc}/org/jminor/common/event/EventDataListener.html[EventDataListener] interfaces.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventStateValue.java[tags=event]
+----
+
+=== State
+
+The {url-javadoc}/org/jminor/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}/org/jminor/common/state/StateObserver.html[StateObserver].
+
+States are instantiated via the {url-javadoc}/org/jminor/common/state/States.html[States] factory class.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventStateValue.java[tags=state]
+----
+
+Any *Action* object can be linked to a *State* object via the *Components.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventStateValue.java[tags=action]
+----
+
+=== Value
+
+The {url-javadoc}/org/jminor/common/value/Value.html[Value] interface is a value wrapper with a change listener.
+
+Values are instantiated via the {url-javadoc}/org/jminor/common/value/Values.html[Values] factory class.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/common/EventStateValue.java[tags=value]
+----

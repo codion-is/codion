@@ -15,7 +15,6 @@ asciidoctor {
             }
         }
     }
-    sourceDir = file('.')
     baseDirFollowsSourceFile()
     sources {
         include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc'
