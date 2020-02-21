@@ -1,6 +1,6 @@
 = Common Utilities
 :dir-source: ../../../../../demos/manual/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
+:url-javadoc: link:../api
 
 JMinor provides a few classes with miscellanous utility functions.
 

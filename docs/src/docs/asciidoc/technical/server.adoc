@@ -1,7 +1,7 @@
 = Server
 :dir-tutorials: ../tutorials
 :dir-source: ../../../../../framework/server
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
+:url-javadoc: link:../api
 
 == Features
 

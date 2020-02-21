@@ -4,7 +4,6 @@ Björn Darri Sigurðsson <bjorndarri@gmail.com>
 :toclevels: 1
 :dir-tutorials: tutorials
 :imagesdir: images
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
 
 image::jminor_logo_medium.png[JMinor Logo,200]
 As simple as possible, but no simpler.
@@ -14,5 +13,5 @@ image::https://github.com/bjorndarri/jminor/workflows/Java%20CI/badge.svg[CI]
 [stripes=none]
 |===
 |<<introduction.adoc#, Introduction>>|<<technical/technical.adoc#, Technical>>|<<quickstart.adoc#, Quickstart>>
-|<<manual/manual.adoc#, Manual>>|<<tutorials/tutorials.adoc#, Tutorials>>|{url-javadoc}/index.html[Javadocs]
+|<<manual/manual.adoc#, Manual>>|<<tutorials/tutorials.adoc#, Tutorials>>|link:api/index.html[Javadocs]
 |===
