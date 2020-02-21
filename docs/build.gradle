@@ -16,8 +16,7 @@ asciidoctor {
         }
     }
     sourceDir = file('.')
-    //so asciidoc include works in intellij, relative path
-    baseDir = file('noop')
+    baseDirFollowsSourceFile()
     sources {
         include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc'
     }
