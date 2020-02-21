@@ -1,0 +1,75 @@
+= Pet Store Tutorial
+:dir-source: ../../../../../demos/petstore/src/main/java
+:dir-test-source: ../../../../../demos/petstore/src/test/java
+
+== Domain model
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/domain/Petstore.java[lines=4..-1]
+----
+
+== Domain model unit test
+
+[source,java]
+----
+include::{dir-test-source}/org/jminor/framework/demos/petstore/domain/PetstoreTest.java[lines=4..-1]
+----
+
+== Main application model
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/model/PetstoreAppModel.java[lines=4..-1]
+----
+
+== Application UI layer
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/ui/AddressEditPanel.java[lines=4..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/ui/CategoryEditPanel.java[lines=4..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/ui/ContactInfoEditPanel.java[lines=4..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/ui/ItemEditPanel.java[lines=4..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/ui/ProductEditPanel.java[lines=4..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/ui/TagItemEditPanel.java[lines=4..-1]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/ui/TagEditPanel.java[lines=4..-1]
+----
+
+== Main application panel
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/ui/PetstoreAppPanel.java[lines=4..-1]
+----
+
+== Application load test
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/petstore/testing/PetstoreLoadTest.java[lines=4..-1]
+----

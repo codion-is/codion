@@ -1,9 +1,0 @@
-= EntityPanel
-:dir-source: ../../demos/manual/src/main/java
-:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
-
-The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanel] is the base UI class for working with entity instances. It usually consists of an {url-javadoc}/org/jminor/swing/framework/ui/EntityTablePanel.html[EntityTablePanel], an {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], and a set of detail panels representing the entities having a master/detail relationship with the underlying entity.
-
-== Detail panels
-
-Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the correct detail model for the detail panel, in this case a *CustomerModel* instance, see link:#_detail_models[detail models]. See link:#_entityapplicationpanel[EntityApplicationPanel].

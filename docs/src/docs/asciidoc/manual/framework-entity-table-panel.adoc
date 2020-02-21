@@ -1,0 +1,16 @@
+= EntityTablePanel
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
+
+The {url-javadoc}/org/jminor/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] provides a table view of entities.
+
+== Adding a print action
+
+The most common place to add a custom control is the table popup menu, i.e. an action for printing reports. The table popup menu is based on the ControlSet returned by the **getTablePopupControlSet()** method in the EntityPanel class which in turn uses the ControlSet returned by the **getPrintControls()** method in the same class for constructing the print popup submenu. So, to add a custom print action you override the **getPrintControls()** method and return a ControlSet containing the action.
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[lines=22..40]
+     //see below
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[lines=54..55]
+----

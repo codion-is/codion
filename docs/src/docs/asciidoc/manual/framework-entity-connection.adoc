@@ -1,0 +1,206 @@
+= EntityConnection
+:dir-tutorials: ../tutorials
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
+:url-entity-connection: {url-javadoc}/org/jminor/framework/db/EntityConnection.html
+
+The {url-entity-connection}[EntityConnection] interface defines the database layer accessible to JMinor applications. It provides methods for selecting, inserting, updating and deleting entities, executing procedures and functions, filling reports as well as providing transaction control.
+
+The <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>> is used in the examples below.
+
+NOTE: Static imports are used extensively in the examples, see <<#_full_example, full example code>>.
+
+== Selecting
+
+=== select
+
+For selecting one or more rows.
+
+{url-entity-connection}#select-org.jminor.framework.db.condition.EntitySelectCondition-[select(EntitySelectCondition condition)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectCondition]
+----
+
+{url-entity-connection}#select-java.util.List-[select(List<Entity.Key> keys)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKeys]
+----
+
+{url-entity-connection}#select-java.lang.String-java.lang.String-java.lang.Object...-[select(String entityId, String propertyId, Object... values)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValue]
+----
+
+=== selectSingle
+
+For selecting single rows.
+
+{url-entity-connection}#selectSingle-org.jminor.framework.db.condition.EntitySelectCondition-[selectSingle(EntitySelectCondition condition)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleCondition]
+----
+
+{url-entity-connection}#selectSingle-org.jminor.framework.domain.Entity.Key-[selectSingle(Entity.Key key)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleKeys]
+----
+
+{url-entity-connection}#selectSingle-java.lang.String-java.lang.String-java.lang.Object...-[selectSingle(String entityId, String propertyId, Object... values)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleValue]
+----
+
+=== selectValues
+
+For selecting the values of a single column.
+
+{url-entity-connection}#selectValues-java.lang.String-org.jminor.framework.db.condition.EntityCondition-[selectValues(String propertyId, EntityCondition condition)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValues]
+----
+
+=== selectDependencies
+
+For selecting entities that depend on a set of entities via foreign keys.
+
+{url-entity-connection}#selectDependencies-java.util.Collection-[selectDependencies(Collection<Entity> entities)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectDependencies]
+----
+
+=== selectRowCount
+
+For selecting the row count given a condition.
+
+{url-entity-connection}#selectRowCount-org.jminor.framework.db.condition.EntityCondition-[selectRowCount(EntityCondition condition)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectRowCount]
+----
+
+== Modifying
+
+=== insert
+
+For inserting rows.
+
+{url-entity-connection}#insert-java.util.List-[insert(List<Entity> entities)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=insert]
+----
+
+=== update
+
+For updating existing rows.
+
+** {url-entity-connection}#update-java.util.List-[update(List<Entity> entities)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
+----
+
+** {url-entity-connection}#update-org.jminor.framework.db.condition.EntityUpdateCondition-[update(EntityUpdateCondition condition)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=updateCondition]
+----
+
+=== delete
+
+For deleting existing rows.
+
+** {url-entity-connection}#delete-org.jminor.framework.db.condition.EntityCondition-[delete(EntityCondition condition)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
+----
+
+** {url-entity-connection}#delete-java.util.List-[delete(List<Entity.Key> keys)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteKey]
+----
+
+== Procedures & Functions
+
+=== executeProcedure
+
+** {url-entity-connection}#executeProcedure-java.lang.String-java.lang.Object...-[executeProcedure(String procedureId, Object... arguments)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=procedure]
+----
+
+=== executeFunction
+
+** {url-entity-connection}#executeFunction-java.lang.String-java.lang.Object...-[executeFunction(String functionId, Object... arguments)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=function]
+----
+
+== Reporting
+
+=== fillReport
+
+** {url-entity-connection}#fillReport-org.jminor.common.db.reports.ReportWrapper-[fillReport(ReportWrapper reportWrapper)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
+----
+
+== Full example
+
+.Show code
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report,lines=4..-1]
+----
+====
+
+== Transaction control
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transaction]
+----
+
+== LocalEntityConnection
+
+A EntityConnection with a direct connection to the database, provides access to the underlying JDBC connection.
+
+== RemoteEntityConnection
+
+A EntityConnection connecting to the database via RMI.
+
+== HttpEntityConnection
+
+A EntityConnection connecting to the database via HTTP.
