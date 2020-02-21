@@ -1,8 +1,8 @@
 = Domain Model
 :dir-tutorials: ../tutorials
 :dir-source: ../../demos/manual/src/main/java
-:dir-source-petstore: ../../demos/petstore/src/main/java
-:dir-source-world: ../../demos/world/src/main/java
+:dir-petstore-source: ../../demos/petstore/src/main/java
+:dir-world-source: ../../demos/world/src/main/java
 :url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
 
 The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property], which represents columns. The
@@ -26,7 +26,7 @@ String constants for the Entities and Properties in the World demo, here the *en
 
 [source,java]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=entityAndPropertyIds]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=entityAndPropertyIds]
 ----
 
 === Supported data types
@@ -59,14 +59,14 @@ If no primary key properties are specified the entity usage is somewhat restrict
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=primaryKey]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=primaryKey]
 ----
 
 In case of composite primary keys you create a ColumnProperty and specify the primary key index. Note that in the example below the column with primary key index 0 is a foreign key column and wrapped in a foreignKeyProperty(), which are discussed a bit later.
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=compositePrimaryKey]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=compositePrimaryKey]
 ----
 
 === ColumnProperty
@@ -75,7 +75,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=columnProperty]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=columnProperty]
 ----
 
 === BlobProperty
@@ -84,7 +84,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=blobProperty]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=blobProperty]
 ----
 
 === ForeignKeyProperty
@@ -93,7 +93,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=foreignKeyPropertyCapital]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=foreignKeyPropertyCapital]
 ----
 
 Referring to an entity with composite primary key.
@@ -126,7 +126,7 @@ For databases supporting *Types.BOOLEAN* you simply use *Properties.columnProper
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=booleanProperty]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=booleanProperty]
 ----
 
 For databases lacking native boolean support we use the *Properties.booleanProperty* method, specifying the underlying true/false values.
@@ -162,7 +162,7 @@ An entity can include a property value from a entity referenced via foreign key,
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=denormalizedViewProperty]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=denormalizedViewProperty]
 ----
 
 === DenormalizedProperty
@@ -214,12 +214,12 @@ Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=derivedProperty]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=derivedProperty]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=derivedPropertyProvider]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=derivedPropertyProvider]
 ----
 
 == Domain
@@ -228,7 +228,7 @@ Each entity type is defined by calling {url-javadoc}/org/jminor/framework/domain
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=defineCity]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=defineCity]
 ----
 
 === Examples
@@ -261,7 +261,7 @@ When sequences are used without triggers the framework can fetch the value from 
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=sequence]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=sequence]
 ----
 
 === Queried
@@ -317,7 +317,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=colorProvider]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=colorProvider]
 ----
 
 == Validation
@@ -328,7 +328,7 @@ The *DefaultEntityValidator* implementation provides basic range and null valida
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=validator]
+include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=validator]
 ----
 
 == Examples
@@ -343,7 +343,7 @@ Using the Entity class is rather straight forward.
 
 [source,java,indent=0]
 ----
-include::{dir-source-petstore}/org/jminor/framework/demos/petstore/manual/EntitiesInAction.java[tags=entitiesInAction]
+include::{dir-petstore-source}/org/jminor/framework/demos/petstore/manual/EntitiesInAction.java[tags=entitiesInAction]
 ----
 
 == Unit Testing

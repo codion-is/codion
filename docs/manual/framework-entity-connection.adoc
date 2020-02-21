@@ -1,6 +1,6 @@
 = EntityConnection
 :dir-tutorials: ../tutorials
-:dir-source-chinook: ../../demos/chinook/src/main/java
+:dir-chinook-source: ../../demos/chinook/src/main/java
 :url-javadoc: https://heima.hafro.is/~darri/jminor_site/{jminor-version}/api
 :url-entity-connection: {url-javadoc}/org/jminor/framework/db/EntityConnection.html
 
@@ -20,21 +20,21 @@ For selecting one or more rows.
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectCondition]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectCondition]
 ----
 
 {url-entity-connection}#select-java.util.List-[select(List<Entity.Key> keys)]
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKeys]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKeys]
 ----
 
 {url-entity-connection}#select-java.lang.String-java.lang.String-java.lang.Object...-[select(String entityId, String propertyId, Object... values)]
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValue]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValue]
 ----
 
 === selectSingle
@@ -45,21 +45,21 @@ For selecting single rows.
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleCondition]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleCondition]
 ----
 
 {url-entity-connection}#selectSingle-org.jminor.framework.domain.Entity.Key-[selectSingle(Entity.Key key)]
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleKeys]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleKeys]
 ----
 
 {url-entity-connection}#selectSingle-java.lang.String-java.lang.String-java.lang.Object...-[selectSingle(String entityId, String propertyId, Object... values)]
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleValue]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleValue]
 ----
 
 === selectValues
@@ -70,7 +70,7 @@ For selecting the values of a single column.
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValues]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValues]
 ----
 
 === selectDependencies
@@ -81,7 +81,7 @@ For selecting entities that depend on a set of entities via foreign keys.
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectDependencies]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectDependencies]
 ----
 
 === selectRowCount
@@ -92,7 +92,7 @@ For selecting the row count given a condition.
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectRowCount]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectRowCount]
 ----
 
 == Modifying
@@ -105,7 +105,7 @@ For inserting rows.
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=insert]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=insert]
 ----
 
 === update
@@ -116,14 +116,14 @@ For updating existing rows.
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
 ----
 
 ** {url-entity-connection}#update-org.jminor.framework.db.condition.EntityUpdateCondition-[update(EntityUpdateCondition condition)]
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=updateCondition]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=updateCondition]
 ----
 
 === delete
@@ -134,14 +134,14 @@ For deleting existing rows.
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
 ----
 
 ** {url-entity-connection}#delete-java.util.List-[delete(List<Entity.Key> keys)]
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteKey]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteKey]
 ----
 
 == Procedures & Functions
@@ -152,7 +152,7 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=procedure]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=procedure]
 ----
 
 === executeFunction
@@ -161,7 +161,7 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=function]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=function]
 ----
 
 == Reporting
@@ -172,7 +172,7 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
 ----
 
 == Full example
@@ -182,7 +182,7 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 ====
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report,lines=4..-1]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report,lines=4..-1]
 ----
 ====
 
@@ -190,7 +190,7 @@ include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 [source,java,indent=0]
 ----
-include::{dir-source-chinook}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transaction]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transaction]
 ----
 
 == LocalEntityConnection
