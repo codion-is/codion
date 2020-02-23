@@ -77,10 +77,6 @@ configure(project.frameworkModules) {
         withSourcesJar()
     }
 
-    javadoc {
-        failOnError = false
-    }
-
     ext.moduleName = "org." + project.name.replace('-', '.')
 
     tasks.withType(JavaCompile) {
@@ -89,7 +85,8 @@ configure(project.frameworkModules) {
     }
 
     javadoc {
-        options.links 'https://docs.oracle.com/javase/8/docs/api/'
+        options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+        failOnError = false
     }
 
     jar {
