@@ -1,4 +1,4 @@
-jar {
+classes {
     doFirst {
         def versionProperties = new Properties()
         versionProperties.put('version', project.version)

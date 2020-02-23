@@ -59,7 +59,7 @@ public final class EntityConnectionDemo {
 
   static void selectKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectKeys[]
-    final Domain domain = connection.getDomain();
+    Domain domain = connection.getDomain();
     Entity.Key key42 = domain.key(T_ARTIST, 42L);
     Entity.Key key43 = domain.key(T_ARTIST, 43L);
 
