@@ -75,20 +75,15 @@ publishing {
     }
 }
 
-task publishSite(dependsOn: assembleSite) {
+task copyToGHPages(dependsOn: assembleSite) {
     group 'documentation'
     doLast {
-        ant.delete() {
-            fileset(dir: "${sitePath}")
+        def ghPagesDocDir = "../../gh-pages/doc"
+        if (!file(ghPagesDocDir).exists()) {
+            throw new GradleException("gh-pages branch not found")
         }
-        ant.copy(todir: "${sitePath}") {
-            fileset(dir: "${buildDir}/docs/site")
+        ant.copy(todir: ghPagesDocDir) {
+            fileset(dir: "${buildDir}/docs/doc")
         }
-        ant.chgrp(group: 'www', type: 'both') {
-            fileset(dir: "${sitePath}", includes: '**/*')
-        }
-        ant.chmod(dir: "${sitePath}", perm: 'ugo+r', type: 'file', includes: '**/*')
-        ant.chmod(dir: "${sitePath}", perm: 'ugo+rx', type: 'dir', includes: '**/*')
-        ant.chmod(file: "${sitePath}", perm: 'ugo+rx', type: 'dir')
     }
 }
