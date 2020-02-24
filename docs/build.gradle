@@ -45,13 +45,13 @@ task combinedJavadoc(type: Javadoc) {
 task assembleSite(dependsOn: [combinedJavadoc, asciidoctor]) {
     group 'documentation'
     doLast {
-        def siteFolder = "${buildDir}/docs/site/${project.version}"
-        ant.delete(dir: siteFolder)
-        ant.copy(todir: siteFolder) {
+        def docFolder = "${buildDir}/docs/doc/${project.version}/${project.jdk}"
+        ant.delete(dir: docFolder)
+        ant.copy(todir: docFolder) {
             fileset(dir: "${buildDir}/docs/asciidoc")
             fileset(file: 'favicon.ico')
         }
-        ant.copy(todir: siteFolder + '/api') {
+        ant.copy(todir: docFolder + '/api') {
             fileset(dir: "${buildDir}/docs/javadoc")
         }
     }
