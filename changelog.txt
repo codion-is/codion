@@ -5674,3 +5674,4 @@
   Ok changed to OK
   EntityLookupField.lookupEntities(), singleSelection parameter removed, lookupEntity() added
   EntitySelectionDialog.selectEntities(), singleSelection parameter removed, selectEntity() added
+0.13.4
