@@ -4,6 +4,8 @@ plugins {
 
 apply plugin: 'maven-publish'
 
+def documentationDir = "doc/${project.version}/${project.jdk}"
+
 asciidoctor {
     doFirst {
         frameworkModules.each {
@@ -43,10 +45,10 @@ task combinedJavadoc(type: Javadoc) {
     classpath = files(frameworkModules.collect { it.sourceSets.main.compileClasspath })
 }
 
-task assembleSite(dependsOn: [combinedJavadoc, asciidoctor]) {
+task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
     group 'documentation'
+    def docFolder = "${buildDir}/docs/${documentationDir}"
     doLast {
-        def docFolder = "${buildDir}/docs/doc/${project.version}/${project.jdk}"
         ant.delete(dir: docFolder)
         ant.copy(todir: docFolder) {
             fileset(dir: "${buildDir}/docs/asciidoc")
@@ -58,8 +60,16 @@ task assembleSite(dependsOn: [combinedJavadoc, asciidoctor]) {
     }
 }
 
-task documentationZip(type: Zip, dependsOn: assembleSite) {
-    from "${buildDir}/docs/site"
+task copyToGitHubPages(type: Sync, dependsOn: assembleDocs) {
+    group 'documentation'
+    def ghPagesDocDir = "../../gh-pages/${documentationDir}"
+    from "${buildDir}/docs/${documentationDir}"
+    into ghPagesDocDir
+}
+
+task documentationZip(type: Zip, dependsOn: assembleDocs) {
+    group 'documentation'
+    from "${buildDir}/docs/${documentationDir}"
 }
 
 artifacts {
@@ -71,19 +81,6 @@ publishing {
         mavenJava(MavenPublication) {
             groupId 'org.jminor.' + project.jdk
             artifact documentationZip
-        }
-    }
-}
-
-task copyToGHPages(dependsOn: assembleSite) {
-    group 'documentation'
-    doLast {
-        def ghPagesDocDir = "../../gh-pages/doc"
-        if (!file(ghPagesDocDir).exists()) {
-            throw new GradleException("gh-pages branch not found")
-        }
-        ant.copy(todir: ghPagesDocDir) {
-            fileset(dir: "${buildDir}/docs/doc")
         }
     }
 }
