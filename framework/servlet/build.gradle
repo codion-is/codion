@@ -11,8 +11,8 @@ dependencies {
     api 'javax.xml.bind:jaxb-api:2.3.0'
     api 'javax.activation:javax.activation-api:1.2.0'
 
-    implementation "org.glassfish.jersey.containers:jersey-container-jetty-servlet:2.29.1"
-    implementation "org.glassfish.jersey.inject:jersey-hk2:2.29.1"
+    implementation "org.glassfish.jersey.containers:jersey-container-jetty-servlet:2.30"
+    implementation "org.glassfish.jersey.inject:jersey-hk2:2.30"
 
     testImplementation project(':jminor-framework-db-local')
     testImplementation project(':jminor-framework-server')
