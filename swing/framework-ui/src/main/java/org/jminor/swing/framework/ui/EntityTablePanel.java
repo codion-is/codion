@@ -283,7 +283,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityComponentValues componentValues,
                           final EntityTableConditionPanel conditionPanel) {
     this.tableModel = tableModel;
-    this.table = initializeTable(tableModel);
+    this.table = createFilteredTable();
     this.tableScrollPane = new JScrollPane(table);
     this.componentValues = requireNonNull(componentValues, "componentValues");
     this.conditionPanel = conditionPanel;
@@ -1206,6 +1206,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     layoutPanel(tablePanel, southPanel);
   }
 
+  private FilteredTable<Entity, Property, SwingEntityTableModel> createFilteredTable() {
+    final FilteredTable<Entity, Property, SwingEntityTableModel> filteredTable =
+            new FilteredTable<>(tableModel, new DefaultColumnConditionPanelProvider(tableModel));
+    filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
+    filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
+    filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
+    filteredTable.setAutoStartsEdit(false);
+
+    return filteredTable;
+  }
+
   /**
    * @return the refresh toolbar
    */
@@ -1280,7 +1291,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void initializeTable() {
-    table.putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
     tableModel.getColumnModel().getAllColumns().forEach(column -> {
       final Property property = (Property) column.getIdentifier();
       column.setCellRenderer(initializeTableCellRenderer(property));
@@ -1385,16 +1395,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       hideWaitCursor(dialogParent);
     }
     Dialogs.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
-  }
-
-  private static FilteredTable<Entity, Property, SwingEntityTableModel> initializeTable(final SwingEntityTableModel tableModel) {
-    final FilteredTable<Entity, Property, SwingEntityTableModel> filteredTable =
-            new FilteredTable<>(tableModel, new DefaultColumnConditionPanelProvider(tableModel));
-    filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
-    filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
-    filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
-
-    return filteredTable;
   }
 
   private static JScrollPane createHiddenLinkedScrollPane(final JScrollPane masterScrollPane, final JPanel panel) {

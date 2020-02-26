@@ -5700,3 +5700,5 @@
   EntitySelectionDialog.selectEntities(), singleSelection parameter removed, selectEntity() added
 0.13.4
   3d party dependencies upgraded
+  FilteredTable.setAutoStartsEdit() convenience method added
+  EntityTablePanel, now sets autoStartsEdit during createFilteredTable()
