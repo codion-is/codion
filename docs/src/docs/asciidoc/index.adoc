@@ -6,9 +6,6 @@ Björn Darri Sigurðsson <bjorndarri@gmail.com>
 :imagesdir: images
 
 image::jminor_logo_medium.png[JMinor Logo,200]
-As simple as possible, but no simpler.
-
-image::https://github.com/bjorndarri/jminor/workflows/Java%20CI/badge.svg[CI]
 
 [stripes=none]
 |===
