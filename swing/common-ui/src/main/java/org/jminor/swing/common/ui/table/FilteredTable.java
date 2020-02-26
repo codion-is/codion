@@ -355,6 +355,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   /**
+   * A convenience method for setting the client property 'JTable.autoStartsEdit'.
+   * @param autoStartsEdit the value
+   */
+  public void setAutoStartsEdit(final boolean autoStartsEdit) {
+    putClientProperty("JTable.autoStartsEdit", autoStartsEdit);
+  }
+
+  /**
    * @param listener a listener notified each time the table is double clicked
    */
   public void addDoubleClickListener(final EventDataListener<MouseEvent> listener) {
