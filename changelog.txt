@@ -5702,3 +5702,4 @@
   3d party dependencies upgraded
   FilteredTable.setAutoStartsEdit() convenience method added
   EntityTablePanel, now sets autoStartsEdit during createFilteredTable()
+  Queries refactored out of DefaultLocalEntityConnection, some renaming
