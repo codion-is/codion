@@ -275,7 +275,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String updateSQL = null;
     synchronized (connection) {
       try {
-        lockAndCheckIfModified(entitiesByEntityId);
+        performOptimisticLocking(entitiesByEntityId);
 
         final List<ColumnProperty> propertiesToUpdate = new ArrayList<>();
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
@@ -862,7 +862,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
    * the {@code modifiedRow} provided by the exception is null
    */
-  private void lockAndCheckIfModified(final Map<String, List<Entity>> entitiesByEntityId) throws SQLException, RecordModifiedException {
+  private void performOptimisticLocking(final Map<String, List<Entity>> entitiesByEntityId) throws SQLException, RecordModifiedException {
     if (!optimisticLocking) {
       return;
     }

@@ -69,7 +69,7 @@ public final class KeyGenerators {
 
   private abstract static class AbstractQueriedKeyGenerator implements KeyGenerator {
 
-    protected final void queryAndSet(final Entity entity, final ColumnProperty keyProperty,
+    protected final void queryAndPut(final Entity entity, final ColumnProperty keyProperty,
                                      final DatabaseConnection connection) throws SQLException {
       final Object value;
       switch (keyProperty.getColumnType()) {
@@ -100,7 +100,7 @@ public final class KeyGenerators {
     public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
       final ColumnProperty primaryKeyProperty = entity.getPrimaryKeyProperties().get(0);
       if (entity.isNull(primaryKeyProperty)) {
-        queryAndSet(entity, primaryKeyProperty, connection);
+        queryAndPut(entity, primaryKeyProperty, connection);
       }
     }
 
@@ -122,7 +122,7 @@ public final class KeyGenerators {
     public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
       final ColumnProperty primaryKeyProperty = entity.getPrimaryKeyProperties().get(0);
       if (entity.isNull(primaryKeyProperty)) {
-        queryAndSet(entity, primaryKeyProperty, connection);
+        queryAndPut(entity, primaryKeyProperty, connection);
       }
     }
 
@@ -148,7 +148,7 @@ public final class KeyGenerators {
     @Override
     public void afterInsert(final Entity entity, final DatabaseConnection connection,
                             final Statement insertStatement) throws SQLException {
-      queryAndSet(entity, entity.getPrimaryKeyProperties().get(0), connection);
+      queryAndPut(entity, entity.getPrimaryKeyProperties().get(0), connection);
     }
 
     @Override
