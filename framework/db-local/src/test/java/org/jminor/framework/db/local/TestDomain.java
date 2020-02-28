@@ -142,7 +142,7 @@ public final class TestDomain extends Domain {
         }
       }
       @Override
-      public boolean returnPrimaryKeyValues() {
+      public boolean returnGeneratedKeys() {
         return true;
       }
     };

@@ -219,8 +219,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         final List<ColumnProperty> statementProperties = new ArrayList<>();
         for (int i = 0; i < entities.size(); i++) {
           final Entity entity = entities.get(i);
-          final String entityId = entity.getEntityId();
-          final EntityDefinition entityDefinition = getEntityDefinition(entityId);
+          final EntityDefinition entityDefinition = getEntityDefinition(entity.getEntityId());
           final KeyGenerator keyGenerator = entityDefinition.getKeyGenerator();
           keyGenerator.beforeInsert(entity, connection);
 
@@ -229,7 +228,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
           populateStatementPropertiesAndValues(true, entity, insertableProperties, statementProperties, statementValues);
 
-          final String[] returnColumns = keyGenerator.returnPrimaryKeyValues() ? getPrimaryKeyColumnNames(entityDefinition) : null;
+          final String[] returnColumns = keyGenerator.returnGeneratedKeys() ? getPrimaryKeyColumnNames(entityDefinition) : null;
           insertQuery = insertQuery(entityDefinition.getTableName(), statementProperties);
           statement = prepareStatement(insertQuery, returnColumns);
           executePreparedUpdate(statement, insertQuery, statementProperties, statementValues);
@@ -289,9 +288,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             final WhereCondition updateCondition =
                     whereCondition(entityCondition(entityToUpdate.getOriginalKey()), entityDefinition);
             updateQuery = updateQuery(entityDefinition.getTableName(), propertiesToUpdate, updateCondition.getWhereClause());
+            statement = prepareStatement(updateQuery);
             propertiesToUpdate.addAll(updateCondition.getColumnProperties());
             propertyValuesToSet.addAll(updateCondition.getValues());
-            statement = prepareStatement(updateQuery);
             final int updatedRows = executePreparedUpdate(statement, updateQuery, propertiesToUpdate, propertyValuesToSet);
             if (updatedRows == 0) {
               throw new UpdateException("Update did not affect any rows");
@@ -360,9 +359,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
         final WhereCondition updateCondition = whereCondition(condition, entityDefinition);
         updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, updateCondition.getWhereClause());
+        statement = prepareStatement(updateQuery);
         statementProperties.addAll(updateCondition.getColumnProperties());
         statementValues.addAll(updateCondition.getValues());
-        statement = prepareStatement(updateQuery);
         final int updatedRows = executePreparedUpdate(statement, updateQuery, statementProperties, statementValues);
 
         commitIfTransactionIsNotOpen();
