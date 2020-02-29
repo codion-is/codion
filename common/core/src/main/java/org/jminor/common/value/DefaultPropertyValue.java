@@ -23,7 +23,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   private Method setMethod;
 
   DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<V> valueClass,
-                       final EventObserver<V> changeEvent) {
+                       final EventObserver<V> changeObserver) {
     if (nullOrEmpty(propertyName)) {
       throw new IllegalArgumentException("propertyName is null or an empty string");
     }
@@ -31,7 +31,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
     this.valueClass = valueClass;
     try {
       this.valueOwner = requireNonNull(valueOwner, "valueOwner");
-      this.changeEvent = requireNonNull(changeEvent);
+      this.changeEvent = requireNonNull(changeObserver);
       this.getMethod = Util.getGetMethod(valueClass, propertyName, valueOwner);
     }
     catch (final NoSuchMethodException e) {
@@ -62,7 +62,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   @Override
   public void set(final V value) {
     if (setMethod == null) {
-      throw new IllegalStateException("Set method for property not found: " + getMethod.getName());
+      throw new IllegalStateException("Set method for property not found: " + propertyName);
     }
     try {
       setMethod.invoke(valueOwner, value);

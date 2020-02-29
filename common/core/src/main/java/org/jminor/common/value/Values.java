@@ -51,13 +51,13 @@ public final class Values {
    * @param owner the property owner
    * @param propertyName the name of the property
    * @param valueClass the value class
-   * @param valueChangeEvent an event which fires each time the value changes
+   * @param valueChangeObserver an observer notified each time the value changes
    * @param <V> type to wrap
    * @return a Value for the given property
    */
   public static <V> Value<V> propertyValue(final Object owner, final String propertyName, final Class<V> valueClass,
-                                           final EventObserver<V> valueChangeEvent) {
-    return new DefaultPropertyValue<>(owner, propertyName, valueClass, valueChangeEvent);
+                                           final EventObserver<V> valueChangeObserver) {
+    return new DefaultPropertyValue<>(owner, propertyName, valueClass, valueChangeObserver);
   }
 
   /**
