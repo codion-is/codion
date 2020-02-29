@@ -23,7 +23,7 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
 
   FileInputPanelValue() {
     super(new FileInputPanel());
-    getComponent().filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
+    getComponent().filePathField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
   }
 
   @Override

@@ -28,7 +28,7 @@ final class SelectedItemValue<T> extends AbstractComponentValue<T, JComboBox<Ite
     super(createComboBox(initialValue, values));
     getComponent().addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED) {
-        notifyValueChange(get());
+        notifyValueChange();
       }
     });
   }

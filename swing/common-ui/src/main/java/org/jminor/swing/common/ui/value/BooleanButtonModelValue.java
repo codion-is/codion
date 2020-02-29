@@ -9,7 +9,7 @@ final class BooleanButtonModelValue extends AbstractComponentValue<Boolean, Butt
 
   BooleanButtonModelValue(final ButtonModel buttonModel) {
     super(buttonModel, false);
-    buttonModel.addItemListener(e -> notifyValueChange(get()));
+    buttonModel.addItemListener(itemEvent -> notifyValueChange());
   }
 
   @Override

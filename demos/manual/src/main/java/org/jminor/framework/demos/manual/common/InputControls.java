@@ -215,9 +215,9 @@ public final class InputControls {
         //We must call notifyValueChange each time this value changes,
         //that is, when either the first or last name changes.
         component.firstNameField.getDocument()
-                .addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
+                .addDocumentListener((DocumentAdapter) e -> notifyValueChange());
         component.lastNameField.getDocument()
-                .addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
+                .addDocumentListener((DocumentAdapter) e -> notifyValueChange());
       }
 
       @Override

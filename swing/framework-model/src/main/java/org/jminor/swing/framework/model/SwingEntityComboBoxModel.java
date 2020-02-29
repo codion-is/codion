@@ -462,7 +462,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     private SelectorValue(final String propertyId, final EntityComboBoxModel.Finder<T> finder) {
       this.propertyId = requireNonNull(propertyId);
       this.finder = requireNonNull(finder);
-      addSelectionListener(selected -> notifyValueChange(get()));
+      addSelectionListener(selected -> notifyValueChange());
     }
 
     /**

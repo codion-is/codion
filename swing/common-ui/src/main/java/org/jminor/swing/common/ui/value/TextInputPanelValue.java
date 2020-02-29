@@ -15,7 +15,7 @@ class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel>
 
   TextInputPanelValue(final String inputDialogTitle, final String initialValue, final int maxLength) {
     super(new TextInputPanel(createDefaultTextField(initialValue, maxLength), inputDialogTitle));
-    getComponent().getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
+    getComponent().getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
   }
 
   @Override

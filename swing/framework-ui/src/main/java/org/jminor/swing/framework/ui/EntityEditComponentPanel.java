@@ -1394,7 +1394,7 @@ public class EntityEditComponentPanel extends JPanel {
     private ForeignKeyModelValue(final EntityEditModel editModel, final String foreignKeyPropertyId) {
       this.editModel = editModel;
       this.foreignKeyPropertyId = foreignKeyPropertyId;
-      editModel.addValueListener(foreignKeyPropertyId, valueChange -> notifyValueChange(get()));
+      editModel.addValueListener(foreignKeyPropertyId, valueChange -> notifyValueChange());
     }
 
     @Override

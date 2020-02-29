@@ -789,7 +789,7 @@ public final class EntityInputComponents {
 
     private LookupUIValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(selected -> notifyValueChange(get()));
+      this.lookupModel.addSelectedEntitiesListener(selected -> notifyValueChange());
     }
 
     @Override

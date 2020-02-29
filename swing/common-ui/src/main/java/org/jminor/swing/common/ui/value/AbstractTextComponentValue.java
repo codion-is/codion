@@ -25,7 +25,7 @@ abstract class AbstractTextComponentValue<V, C extends JTextComponent> extends A
   private final class NotifyOnContentsChanged implements DocumentAdapter {
     @Override
     public void contentsChanged(final DocumentEvent e) {
-      notifyValueChange(get());
+      notifyValueChange();
     }
   }
 
@@ -33,7 +33,7 @@ abstract class AbstractTextComponentValue<V, C extends JTextComponent> extends A
     @Override
     public void focusLost(final FocusEvent e) {
       if (!e.isTemporary()) {
-        notifyValueChange(get());
+        notifyValueChange();
       }
     }
   }
