@@ -5681,3 +5681,4 @@
   Queries refactored out of DefaultLocalEntityConnection, some renaming
   jminor_server.policy updated using pro-grade, jar versions still hardcoded, some work required to use
   AbstractValue.notifyValueChange() value parameter removed, uses get() internally
+  Components.propertyChangeObserver() added

@@ -3,6 +3,9 @@
  */
 package org.jminor.swing.common.ui;
 
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.Events;
 import org.jminor.common.state.StateObserver;
 import org.jminor.swing.common.ui.layout.Layouts;
 
@@ -94,6 +97,23 @@ public final class Components {
         });
       }
     }
+  }
+
+  /**
+   * Returns a {@link EventObserver} notified each time the value of the given property changes in the given component.
+   * @param component the component
+   * @param property the property to listen to changes for
+   * @param <T> the property data type
+   * @return a {@link EventObserver} notified each time the value of the given property changes
+   */
+  public static <T> EventObserver<T> propertyChangeObserver(final JComponent component, final String property) {
+    requireNonNull(component, "component");
+    requireNonNull(property, "property");
+    final Event<T> event = Events.event();
+    component.addPropertyChangeListener(property,
+            changeEvent -> event.onEvent((T) changeEvent.getNewValue()));
+
+    return event.getObserver();
   }
 
   /**
