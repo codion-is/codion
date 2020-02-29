@@ -4,7 +4,7 @@
 :url-javadoc: link:../api
 :url-entity-connection: {url-javadoc}/org/jminor/framework/db/EntityConnection.html
 
-The {url-entity-connection}[EntityConnection] interface defines the database layer accessible to JMinor applications. It provides methods for selecting, inserting, updating and deleting entities, executing procedures and functions, filling reports as well as providing transaction control.
+The database layer is specified by the {url-entity-connection}[EntityConnection] class. It provides methods for selecting, inserting, updating and deleting entities, executing procedures and functions, filling reports as well as providing transaction control.
 
 The <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>> is used in the examples below.
 
@@ -195,12 +195,12 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 == LocalEntityConnection
 
-A EntityConnection with a direct connection to the database, provides access to the underlying JDBC connection.
+A EntityConnection implementation based on a direct connection to the database, provides access to the underlying JDBC connection.
 
 == RemoteEntityConnection
 
-A EntityConnection connecting to the database via RMI.
+A EntityConnection implementation based on a RMI connection. Requires a server.
 
 == HttpEntityConnection
 
-A EntityConnection connecting to the database via HTTP.
+A EntityConnection implementation based on HTTP. Requires a server.
