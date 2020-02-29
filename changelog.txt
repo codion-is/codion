@@ -5703,3 +5703,4 @@
   FilteredTable.setAutoStartsEdit() convenience method added
   EntityTablePanel, now sets autoStartsEdit during createFilteredTable()
   Queries refactored out of DefaultLocalEntityConnection, some renaming
+  jminor_server.policy updated using pro-grade, jar versions still hardcoded, some work required to use

@@ -17,7 +17,7 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
-public class EntitiesInAction {
+public final class EntitiesInAction {
 
   public static void main(final String[] args) throws DatabaseException {
     // tag::entitiesInAction[]

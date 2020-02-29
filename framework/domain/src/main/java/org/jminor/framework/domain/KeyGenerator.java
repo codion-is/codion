@@ -55,9 +55,10 @@ public interface KeyGenerator {
    * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(Entity, DatabaseConnection, Statement)}.
    * The default implementation returns false.
    * @return true if the primary key column values should be returned via the insert statement resultSet
+   * @see Statement#getGeneratedKeys()
    * @see java.sql.Connection#prepareStatement(String, String[])
    */
-  default boolean returnPrimaryKeyValues() {
+  default boolean returnGeneratedKeys() {
     return false;
   }
 }

@@ -28,6 +28,8 @@ dependencies {
     serverRuntime project(':jminor-plugin-hikari-pool')
     serverRuntime project(':jminor-plugin-logback-proxy')
 
+//    runtimeOnly 'net.sourceforge.pro-grade:pro-grade:1.1.2-SNAPSHOT'
+
     serverRuntime project(path: ':jminor-demos-empdept', configuration: 'domain')
     serverRuntime project(path: ':jminor-demos-chinook', configuration: 'domain')
     serverRuntime project(path: ':jminor-demos-petclinic', configuration: 'domain')
@@ -68,7 +70,9 @@ applicationDistribution.from(configurations.serverRuntime.files) {
 applicationDistribution.from(files(
         'src/main/security/jminor_keystore.jks',
         'src/main/security/jminor_truststore.jks',
+        'src/main/security/jminor_server.policy',
         'src/main/security/all_permissions.policy',
+        'src/main/security/default.policy',
         'src/main/security/serialization-whitelist.txt')) {
     into("config")
 }
@@ -95,9 +99,18 @@ applicationDistribution.from(files('../../demos/chinook/build/classes/reports/cu
 }
 applicationDefaultJvmArgs = [
         '-Xmx256m', '--add-modules', 'org.jminor.framework.servlet,java.xml.bind',
-        '-Djava.security.policy=../config/all_permissions.policy',
-        '-Dlogback.configurationFile=../config/logback.xml',
-        '-Djminor.configurationFile=../config/h2_embedded.config'
+        "-Djminor.configurationFile=../config/h2_embedded.config",
+        "-Dlogback.configurationFile=../config/logback.xml",
+        "-Djava.security.policy=../config/all_permissions.policy"
+]
+
+def applicationGenerateSecurityPolicyJvmArgs = [
+        '-Xmx256m', '--add-modules', 'org.jminor.framework.servlet,java.xml.bind',
+        "-Djminor.configurationFile=../config/h2_embedded.config",
+        "-Dlogback.configurationFile=../config/logback.xml",
+        "-Djava.security.manager=net.sourceforge.prograde.sm.PolicyFileGeneratorJSM",
+        "-Djava.security.policy=../config/default.policy",
+        "-Dprograde.generated.policy=../config/generated.policy"
 ]
 
 task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
@@ -124,9 +137,9 @@ task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
             'jminor.server.serializationFilterDryRun'   : 'false',
             'jminor.server.loginProxyClasses'           : 'org.jminor.framework.demos.chinook.server.ChinookLoginProxy',
             'javax.net.ssl.keyStore'                    : 'src/main/security/jminor_keystore.jks',
-            'java.security.policy'                      : 'src/main/security/all_permissions.policy',
             'javax.net.ssl.keyStorePassword'            : 'crappypass',
             'java.rmi.server.hostname'                  : 'localhost',
-            'logback.configurationFile'                 : 'src/main/config/logback.xml'
+            'logback.configurationFile'                 : 'src/main/config/logback.xml',
+            'java.security.policy'                      : 'src/main/security/all_permissions.policy'
     ]
 }

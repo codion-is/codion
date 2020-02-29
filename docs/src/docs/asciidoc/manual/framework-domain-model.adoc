@@ -5,7 +5,7 @@
 :dir-world-source: ../../../../../demos/world/src/main/java
 :url-javadoc: link:../api
 
-The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property], which represents columns. The
+The domain model is based around two classes, {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property], which represents columns. The
 {url-javadoc}/org/jminor/framework/domain/Domain.html[Domain] class serves as a container for the domain model as well as a factory for Entity and Entity.Key objects.
 
 == Entities
@@ -51,11 +51,11 @@ JMinor supports the following column data types:
 
 === Primary key
 
-It is recommended that entities have define a primary key, that is, one or more column properties representing a unique column combination.
+It is recommended that entities have a primary key defined, that is, one or more column properties representing a unique column combination.
 
 The only requirement is that the primary key properties represent a unique column combination for the underlying table, it does not have to correspond to an actual table primary key, although that is of course preferable. The framework does not enforce uniqueness for these properties, so a unique or primary key on the corresponding table columns is strongly recommended.
 
-If no primary key properties are specified the entity usage is somewhat restricted, it can not be referenced via a foreign key and equals() does not work (since it is based on the primary key). You can still use the *Entity.valuesEqual()* method to check if all values are equal in two entities.
+If no primary key properties are specified the entity is somewhat restricted, it can not be referenced via a foreign key and equals() does not work (since it is based on the primary key). You can still use the *Entity.valuesEqual()* method to check if all values are equal in two entities.
 
 [source,java,indent=0]
 ----
@@ -89,7 +89,7 @@ include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[t
 
 === ForeignKeyProperty
 
-{url-javadoc}/org/jminor/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
+{url-javadoc}/org/jminor/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to represent a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
 
 [source,java,indent=0]
 ----
@@ -174,7 +174,7 @@ denormalizedProperty(CUSTOMER_CITY, CUSTOMER_ADDRESS_FK,
         getProperty(T_ADDRESS, ADDRESS_CITY), "City")
 ----
 
-NOTE: The property is not kept in sync if the denormalized property is updated in the referenced entity.
+NOTE: The property is not kept in sync if the value of the denormalized property is modified in the referenced entity.
 
 [source,java]
 ----
@@ -197,7 +197,7 @@ customer.get(CUSTOMER_CITY);//now this returns "Canastota"
 
 === SubqueryProperty
 
-{url-javadoc}/org/jminor/framework/domain/property/SubqueryProperty.html[SubqueryProperty] is used to represent properties which get their value from a subquery returning a single value. Note that in the example below *reference_id* must be available when the query is run, that is, the entity must include that column as a property.
+{url-javadoc}/org/jminor/framework/domain/property/SubqueryProperty.html[SubqueryProperty] is used to represent a property which gets its value from a subquery returning a single value. Note that in the example below *reference_id* must be available when the query is run, that is, the entity must include that column as a property.
 [source,java]
 ----
 Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
@@ -239,7 +239,7 @@ include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[t
 
 == KeyGenerator
 
-The framework provides implementations for most common primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/org/jminor/framework/domain/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/org/jminor/framework/domain/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
+The framework provides implementations for most commonly used primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/org/jminor/framework/domain/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/org/jminor/framework/domain/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
 
 === Auto-increment
 
@@ -313,7 +313,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[
 
 == ColorProvider
 
-{url-javadoc}/org/jminor/framework/domain/Entity.ColorProvider.html[Entity.ColorProvider] provides the background color for entity property cells when displayed in a table.
+{url-javadoc}/org/jminor/framework/domain/Entity.ColorProvider.html[Entity.ColorProvider] is used to provide colors for entity properties, used as background color in table cells for example.
 
 [source,java,indent=0]
 ----
@@ -322,7 +322,7 @@ include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[t
 
 == Validation
 
-Custom validation of Entities is done by implementing a {url-javadoc}/org/jminor/framework/domain/Entity.Validator.html[Entity.Validator].
+Custom validation of Entities is performed by implementing a {url-javadoc}/org/jminor/framework/domain/Entity.Validator.html[Entity.Validator].
 
 The *DefaultEntityValidator* implementation provides basic range and null validation and can be extended to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access for example belongs in the application model or ui.
 
