@@ -72,9 +72,25 @@ jminor.server.serializationFilterDryRun=true
 .Example whitelist
 [%collapsible]
 ====
-[source,java]
+[source]
 ----
 include::{dir-source}/src/main/security/serialization-whitelist.txt[]
+----
+====
+
+=== Security Policy
+
+Security policy generated with https://github.com/pro-grade/pro-grade[ProGrade].
+
+Requires this fix:
+https://github.com/pro-grade/pro-grade/issues/29#issuecomment-592956858[Issue#29]
+
+.Demo security policy
+[%collapsible]
+====
+[source]
+----
+include::{dir-source}/src/main/security/jminor_server.policy[]
 ----
 ====
 

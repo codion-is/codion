@@ -1,55 +1,218 @@
+//this file is based on the server application dist folder structure
 grant {
-  permission java.io.FilePermission "${user.dir}/logs", "read";
-  permission java.io.FilePermission "${user.dir}/logs/-", "read,write,delete";
-  permission java.io.FilePermission "${user.dir}/-", "read,write,delete";
-  permission java.io.FilePermission "./-", "read,write,delete";
-  //Web Start Server document root
-  //permission java.io.FilePermission "/home/webstart/-", "read";
+  permission java.io.FilePermission "../config/-", "read";
+  permission java.io.FilePermission "../lib/-", "read";
+  permission java.io.FilePermission "../logs/-", "read,write,delete";
+  permission java.io.FilePermission "../reports/-", "read";
+  permission java.io.FilePermission "../web", "read";
+  permission java.io.FilePermission "/tmp/*", "write,delete";
+  permission java.util.PropertyPermission "*", "read";
+  permission java.util.PropertyPermission "jminor.*", "write";
+  permission java.net.SocketPermission "127.0.0.1:*", "accept,resolve";
+};
 
-  //Web Start server port
-  permission java.net.SocketPermission "*:8080", "listen";
-  permission java.net.SocketPermission "*:8080-", "connect,listen,resolve";
-  //Database port
-  permission java.net.SocketPermission "*:3306", "connect";
-  //Client service port
-  permission java.net.SocketPermission "*:2222", "connect,listen";
-  //Server admin port
-  permission java.net.SocketPermission "*:4444", "connect,listen";
-  //RMI Registry
-  permission java.net.SocketPermission "*:1099", "connect,listen";
-
-  permission java.net.SocketPermission "*", "accept";
-  permission java.util.PropertyPermission "*", "read, write";
-
-  permission java.lang.RuntimePermission "shutdownHooks";
-  //for shutting down ExecutorService instances
-  permission java.lang.RuntimePermission "modifyThread";
-  //for JasperReports report generation and domain class loading
-  permission java.lang.RuntimePermission "createClassLoader";
-  permission java.lang.RuntimePermission "getProtectionDomain";
-  permission java.lang.RuntimePermission "accessClassInPackage.sun.reflect";
-  //for logback
-  permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.transport.proxy";
-  permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.registry";
-  permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.server";
-  permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.transport.tcp";
-  permission java.lang.RuntimePermission "accessClassInPackage.sun.net.www.protocol.http";
-  permission java.lang.RuntimePermission "accessClassInPackage.sun.net.www.http";
-
-  //for jetty, --incomplete, use all_permissions.policy when using the rest server plugin--
-  permission java.util.PropertyPermission "*", "read,write";
-  permission java.io.FilePermission "${user.dir}${/}-", "read";
-  permission java.io.FilePermission "${user.dir}${/}logs${/}*", "read,write,delete";
-  permission java.io.FilePermission "${java.io.tmpdir}${/}-", "read,write,delete";
-  permission java.security.SecurityPermission "putProviderProperty.SunJSSE";
-  permission java.security.SecurityPermission "insertProvider.SunJSSE";
-  permission java.lang.RuntimePermission "setSecurityManager";
-  permission java.lang.RuntimePermission "createClassLoader";
-  permission java.lang.RuntimePermission "setContextClassLoader";
-  permission java.lang.RuntimePermission "accessClassInPackage.sun.tools.*";
+grant codeBase "file:../lib/HikariCP-3.4.2.jar" {
   permission java.lang.RuntimePermission "getClassLoader";
-  permission java.lang.RuntimePermission "accessClassInPackage.sun.tools.*";
-  permission java.security.SecurityPermission "getPolicy";
-  permission java.lang.RuntimePermission "setIO";
+};
+
+grant codeBase "file:../lib/h2-1.4.200.jar" {
+  permission java.io.FilePermission "mem:h2db.h2.db", "read";
+  permission java.io.FilePermission "mem:h2db.mv.db", "read";
+  permission java.lang.RuntimePermission "shutdownHooks";
+};
+
+grant codeBase "file:../lib/hk2-api-2.6.1.jar" {
   permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+};
+
+grant codeBase "file:../lib/hk2-locator-2.6.1.jar" {
+  permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+};
+
+grant codeBase "file:../lib/hk2-utils-2.6.1.jar" {
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+};
+
+grant codeBase "file:../lib/jasperreports-6.11.0.jar" {
+  permission java.io.FilePermission "jasperreports.properties", "read";
+  permission java.io.FilePermission "net/sf/jasperreports/fonts/icons/icons.ttf", "read";
+  permission java.io.FilePermission "net/sf/jasperreports/fonts/jasperreports-fonts.xml", "read";
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "createClassLoader";
+  permission java.lang.RuntimePermission "getClassLoader";
+  permission java.lang.RuntimePermission "getProtectionDomain";
+};
+
+grant codeBase "file:../lib/jersey-common-2.30.jar" {
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+};
+
+grant codeBase "file:../lib/jersey-container-servlet-core-2.30.jar" {
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+};
+
+grant codeBase "file:../lib/jersey-server-2.30.jar" {
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+};
+
+grant codeBase "file:../lib/jetty-io-9.4.17.v20190418.jar" {
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "setContextClassLoader";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+};
+
+grant codeBase "file:../lib/jetty-server-9.4.17.v20190418.jar" {
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "getenv.JETTY_AVAILABLE_PROCESSORS";
+  permission java.lang.RuntimePermission "getenv.JETTY_WORKER_INSTANCE";
+  permission java.lang.RuntimePermission "setContextClassLoader";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+  permission java.net.SocketPermission "localhost:8080", "listen,resolve";
+  permission java.util.PropertyPermission "jetty.git.hash", "write";
+};
+
+grant codeBase "file:../lib/jetty-servlet-9.4.17.v20190418.jar" {
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "getenv.JETTY_WORKER_INSTANCE";
+  permission java.lang.RuntimePermission "setContextClassLoader";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+};
+
+grant codeBase "file:../lib/jetty-util-9.4.17.v20190418.jar" {
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "getenv.JETTY_AVAILABLE_PROCESSORS";
+  permission java.lang.RuntimePermission "getenv.JETTY_WORKER_INSTANCE";
+  permission java.lang.RuntimePermission "setContextClassLoader";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+  permission java.net.SocketPermission "localhost:8080", "listen,resolve";
+  permission java.util.PropertyPermission "*", "read,write";
+  permission java.util.PropertyPermission "jetty.git.hash", "write";
+};
+
+grant codeBase "file:../lib/jminor-common-core-0.13.4.jar" {
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.misc";
+  permission java.util.PropertyPermission "*", "read,write";
+  permission java.util.PropertyPermission "java.rmi.server.hostname", "write";
+  permission java.util.PropertyPermission "java.rmi.server.randomIDs", "write";
+  permission java.util.PropertyPermission "java.rmi.server.useCodebaseOnly", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.keyStore", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.keyStorePassword", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.trustStore", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.trustStorePassword", "write";
+  permission java.util.PropertyPermission "logback.configurationFile", "write";
+};
+
+grant codeBase "file:../lib/jminor-common-db-0.13.4.jar" {
+  permission java.io.FilePermission "mem:h2db.h2.db", "read";
+  permission java.io.FilePermission "mem:h2db.mv.db", "read";
+  permission java.lang.RuntimePermission "getClassLoader";
+  permission java.lang.RuntimePermission "shutdownHooks";
+};
+
+grant codeBase "file:../lib/jminor-common-remote-0.13.4.jar" {
+  permission java.io.FilePermission "jasperreports.properties", "read";
+  permission java.io.FilePermission "net/sf/jasperreports/fonts/icons/icons.ttf", "read";
+  permission java.io.FilePermission "net/sf/jasperreports/fonts/jasperreports-fonts.xml", "read";
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "createClassLoader";
+  permission java.lang.RuntimePermission "getClassLoader";
+  permission java.lang.RuntimePermission "getProtectionDomain";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+  permission java.util.PropertyPermission "java.rmi.server.hostname", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.keyStore", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.keyStorePassword", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.trustStore", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.trustStorePassword", "write";
+};
+
+grant codeBase "file:../lib/jminor-common-remote-http-0.13.4.jar" {
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "getenv.JETTY_AVAILABLE_PROCESSORS";
+  permission java.lang.RuntimePermission "getenv.JETTY_WORKER_INSTANCE";
+  permission java.lang.RuntimePermission "setContextClassLoader";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+  permission java.net.SocketPermission "localhost:8080", "listen,resolve";
+  permission java.util.PropertyPermission "jetty.git.hash", "write";
+};
+
+grant codeBase "file:../lib/jminor-dbms-h2database-0.13.4.jar" {
+  permission java.io.FilePermission "mem:h2db.h2.db", "read";
+  permission java.io.FilePermission "mem:h2db.mv.db", "read";
+  permission java.lang.RuntimePermission "shutdownHooks";
+};
+
+grant codeBase "file:../lib/jminor-demos-chinook-domain-0.13.4.jar" {
+  permission java.lang.RuntimePermission "getClassLoader";
+};
+
+grant codeBase "file:../lib/jminor-framework-db-local-0.13.4.jar" {
+  permission java.io.FilePermission "net/sf/jasperreports/fonts/icons/icons.ttf", "read";
+  permission java.io.FilePermission "net/sf/jasperreports/fonts/jasperreports-fonts.xml", "read";
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "createClassLoader";
+  permission java.lang.RuntimePermission "getClassLoader";
+  permission java.lang.RuntimePermission "getProtectionDomain";
+};
+
+grant codeBase "file:../lib/jminor-framework-server-0.13.4.jar" {
+  permission java.io.FilePermission "jasperreports.properties", "read";
+  permission java.io.FilePermission "mem:h2db.h2.db", "read";
+  permission java.io.FilePermission "mem:h2db.mv.db", "read";
+  permission java.io.FilePermission "net/sf/jasperreports/fonts/icons/icons.ttf", "read";
+  permission java.io.FilePermission "net/sf/jasperreports/fonts/jasperreports-fonts.xml", "read";
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.misc";
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "createClassLoader";
+  permission java.lang.RuntimePermission "getClassLoader";
+  permission java.lang.RuntimePermission "getProtectionDomain";
+  permission java.lang.RuntimePermission "getenv.JETTY_AVAILABLE_PROCESSORS";
+  permission java.lang.RuntimePermission "getenv.JETTY_WORKER_INSTANCE";
+  permission java.lang.RuntimePermission "setContextClassLoader";
+  permission java.lang.RuntimePermission "shutdownHooks";
+  permission java.lang.management.ManagementPermission "monitor";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+  permission java.net.SocketPermission "localhost:4444", "listen,resolve";
+  permission java.net.SocketPermission "localhost:8080", "listen,resolve";
+  permission java.util.PropertyPermission "*", "read,write";
+  permission java.util.PropertyPermission "java.rmi.server.hostname", "write";
+  permission java.util.PropertyPermission "java.rmi.server.randomIDs", "write";
+  permission java.util.PropertyPermission "java.rmi.server.useCodebaseOnly", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.keyStore", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.keyStorePassword", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.trustStore", "write";
+  permission java.util.PropertyPermission "javax.net.ssl.trustStorePassword", "write";
+  permission java.util.PropertyPermission "jetty.git.hash", "write";
+  permission java.util.PropertyPermission "logback.configurationFile", "write";
+};
+
+grant codeBase "file:../lib/jminor-framework-servlet-0.13.4.jar" {
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "getenv.JETTY_AVAILABLE_PROCESSORS";
+  permission java.net.SocketPermission "localhost:2222", "listen,resolve";
+  permission java.util.PropertyPermission "jetty.git.hash", "write";
+};
+
+grant codeBase "file:../lib/jminor-plugin-hikari-pool-0.13.4.jar" {
+  permission java.lang.RuntimePermission "getClassLoader";
+};
+
+grant codeBase "file:../lib/jminor-plugin-jasperreports-0.13.4.jar" {
+  permission java.io.FilePermission "net/sf/jasperreports/fonts/icons/icons.ttf", "read";
+  permission java.io.FilePermission "net/sf/jasperreports/fonts/jasperreports-fonts.xml", "read";
+  permission java.lang.RuntimePermission "accessDeclaredMembers";
+  permission java.lang.RuntimePermission "createClassLoader";
+  permission java.lang.RuntimePermission "getClassLoader";
+  permission java.lang.RuntimePermission "getProtectionDomain";
+};
+
+grant codeBase "file:../lib/logback-core-1.2.3.jar" {
+  permission java.lang.RuntimePermission "getClassLoader";
+};
+
+grant codeBase "file:../lib/slf4j-api-1.7.25.jar" {
+  permission java.util.PropertyPermission "jetty.git.hash", "write";
 };
