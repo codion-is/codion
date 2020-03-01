@@ -39,8 +39,10 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.swing.common.ui.KeyEvents.transferFocusOnEnter;
@@ -69,6 +71,11 @@ public class EntityEditComponentPanel extends JPanel {
    * Input components mapped to their respective propertyIds
    */
   private final Map<String, JComponent> components = new HashMap<>();
+
+  /**
+   * Properties that should be excluded when presenting the component selection
+   */
+  private final Set<String> excludeFromSelection = new HashSet<>();
 
   /**
    * The component that should receive focus when the UI is initialized
@@ -204,7 +211,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Displays a dialog allowing the user the select a input component which should receive the keyboard focus,
    * if only one input component is available then that component is selected automatically.
-   * @see #includeComponentSelectionPropertyId(String)
+   * @see #excludeFromComponentSelection(String)
    * @see #requestComponentFocus(String)
    */
   public void selectInputComponent() {
@@ -218,13 +225,12 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Override to exclude components from the component focus selection.
-   * @param propertyId the component propertyId
-   * @return true if the component associated with the given propertyId should be included when allowing the user
-   * to select a input component in this panel, true by default.
+   * Specifies that the given property should be excluded when presenting a component selection list.
+   * @param propertyId the id of the property to exclude from selection
    */
-  public boolean includeComponentSelectionPropertyId(final String propertyId) {
-    return true;
+  public final void excludeComponentFromSelection(final String propertyId) {
+    getEditModel().getEntityDefinition().getProperty(propertyId);//just validating that the property exists
+    excludeFromSelection.add(propertyId);
   }
 
   /**
@@ -1371,7 +1377,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a list of propertyIds to use when selecting a input component in this panel,
    * this returns all propertyIds that have mapped components in this panel
    * that are enabled, displayable, visible and focusable.
-   * @see #includeComponentSelectionPropertyId(String) (String)
+   * @see #excludeFromComponentSelection(String)
    * @see #setComponent(String, javax.swing.JComponent)
    */
   private List<String> getSelectComponentPropertyIds() {
@@ -1379,7 +1385,7 @@ public class EntityEditComponentPanel extends JPanel {
     propertyIds.removeIf(propertyId -> {
       final JComponent component = getComponent(propertyId);
 
-      return component == null || !includeComponentSelectionPropertyId(propertyId) || !component.isDisplayable() ||
+      return component == null || excludeFromSelection.contains(propertyId) || !component.isDisplayable() ||
               !component.isVisible() || !component.isFocusable() || !component.isEnabled();
     });
 
