@@ -39,6 +39,6 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
     setLayout(new BorderLayout(5, 5));
     add(createPropertyPanel(INVOICELINE_TRACK_FK), BorderLayout.WEST);
     add(createPropertyPanel(INVOICELINE_QUANTITY), BorderLayout.CENTER);
-    add(createPropertyPanel(new JLabel(" "), tableSearchField, true), BorderLayout.EAST);
+    add(createPropertyPanel(new JLabel(" "), tableSearchField), BorderLayout.EAST);
   }
 }

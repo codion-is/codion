@@ -36,11 +36,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.swing.common.ui.KeyEvents.transferFocusOnEnter;
@@ -52,23 +53,27 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Specifies whether focus should be transferred from components on enter,
-   * this does not work for editable combo boxes, combo boxes with the
-   * maximum match functionality enabled or text areas<br>
+   * this does not apply to text areas<br>
    * Value type: Boolean<br>
    * Default value: true
    */
   public static final PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityEditPanel.transferFocusOnEnter", true);
+          "org.jminor.swing.framework.ui.EntityEditComponentPanel.transferFocusOnEnter", true);
 
   /**
    * The edit model these edit components are associated with
    */
-  protected final SwingEntityEditModel editModel;
+  private final SwingEntityEditModel editModel;
 
   /**
    * Input components mapped to their respective propertyIds
    */
   private final Map<String, JComponent> components = new HashMap<>();
+
+  /**
+   * Properties that should be excluded when presenting the component selection
+   */
+  private final Set<String> excludeFromSelection = new HashSet<>();
 
   /**
    * The component that should receive focus when the UI is initialized
@@ -204,7 +209,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Displays a dialog allowing the user the select a input component which should receive the keyboard focus,
    * if only one input component is available then that component is selected automatically.
-   * @see #includeComponentSelectionPropertyId(String)
+   * @see #excludeFromComponentSelection(String)
    * @see #requestComponentFocus(String)
    */
   public void selectInputComponent() {
@@ -218,13 +223,12 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Override to exclude components from the component focus selection.
-   * @param propertyId the component propertyId
-   * @return true if the component associated with the given propertyId should be included when allowing the user
-   * to select a input component in this panel, true by default.
+   * Specifies that the given property should be excluded when presenting a component selection list.
+   * @param propertyId the id of the property to exclude from selection
    */
-  public boolean includeComponentSelectionPropertyId(final String propertyId) {
-    return true;
+  public final void excludeComponentFromSelection(final String propertyId) {
+    getEditModel().getEntityDefinition().getProperty(propertyId);//just validating that the property exists
+    excludeFromSelection.add(propertyId);
   }
 
   /**
@@ -233,6 +237,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param component the input component
    */
   protected final void setComponent(final String propertyId, final JComponent component) {
+    getEditModel().getEntityDefinition().getProperty(propertyId);
     if (components.containsKey(propertyId)) {
       throw new IllegalStateException("Component already set for propertyId: " + propertyId);
     }
@@ -274,7 +279,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final String propertyId, final JComponent inputComponent) {
-    return createPropertyPanel(propertyId, inputComponent, true);
+    return createPropertyPanel(propertyId, inputComponent, BorderLayout.NORTH);
   }
 
   /**
@@ -282,13 +287,13 @@ public class EntityEditComponentPanel extends JPanel {
    * The label text is the caption of the property identified by {@code propertyId}.
    * @param propertyId the id of the property from which to retrieve the label caption
    * @param inputComponent a component bound to the property with id {@code propertyId}
-   * @param labelOnTop if true then the label is positioned above {@code inputComponent},
-   * otherwise it uses FlowLayout.LEADING in a FlowLayout.
+   * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
+   * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final String propertyId, final JComponent inputComponent,
-                                             final boolean labelOnTop) {
-    return createPropertyPanel(propertyId, inputComponent, labelOnTop, JLabel.LEADING);
+                                             final String labelBorderLayoutConstraints) {
+    return createPropertyPanel(propertyId, inputComponent, labelBorderLayoutConstraints, JLabel.LEADING);
   }
 
   /**
@@ -296,50 +301,46 @@ public class EntityEditComponentPanel extends JPanel {
    * The label text is the caption of the property identified by {@code propertyId}.
    * @param propertyId the id of the property from which to retrieve the label caption
    * @param inputComponent a component bound to the property with id {@code propertyId}
-   * @param labelOnTop if true then the label is positioned above {@code inputComponent},
-   * otherwise it uses FlowLayout.LEADING in a FlowLayout.
+   * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
+   * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @param labelAlignment the label alignment
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final String propertyId, final JComponent inputComponent,
-                                             final boolean labelOnTop, final int labelAlignment) {
-    return createPropertyPanel(createLabel(propertyId, labelAlignment), inputComponent, labelOnTop);
+                                             final String labelBorderLayoutConstraints, final int labelAlignment) {
+    return createPropertyPanel(createLabel(propertyId, labelAlignment), inputComponent, labelBorderLayoutConstraints);
   }
 
   /**
    * Creates a panel containing a label component and the {@code inputComponent} with the label
    * component positioned above the input component.
    * @param labelComponent the label component
-   * @param inputComponent a component bound to the property with id {@code propertyId}
+   * @param inputComponent a input component
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent) {
-    return createPropertyPanel(labelComponent, inputComponent, true);
+    return createPropertyPanel(labelComponent, inputComponent, BorderLayout.NORTH);
   }
 
   /**
-   * Creates a panel containing a label component and the {@code inputComponent}.
+   * Creates a panel with a BorderLayout, with the {@code inputComponent} at BorderLayout.CENTER
+   * and the {@code labelComponent} at a specified location.
    * @param labelComponent the label component
-   * @param inputComponent a component bound to the property with id {@code propertyId}
-   * @param labelOnTop if true then the label is positioned above {@code inputComponent},
-   * otherwise it uses FlowLayout.LEADING in a FlowLayout.
+   * @param inputComponent a input component
+   * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
+   * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent,
-                                             final boolean labelOnTop) {
-    final JPanel panel = new JPanel(labelOnTop ?
-            Layouts.createBorderLayout() : Layouts.createFlowLayout(FlowLayout.LEADING));
+                                             final String labelBorderLayoutConstraints) {
+    requireNonNull(labelComponent, "labelComponent");
+    requireNonNull(inputComponent, "inputComponent");
     if (labelComponent instanceof JLabel) {
-      ((JLabel) labelComponent).setLabelFor(inputComponent);
+      setLabelForComponent((JLabel) labelComponent, inputComponent);
     }
-    if (labelOnTop) {
-      panel.add(labelComponent, BorderLayout.NORTH);
-      panel.add(inputComponent, BorderLayout.CENTER);
-    }
-    else {
-      panel.add(labelComponent);
-      panel.add(inputComponent);
-    }
+    final JPanel panel = new JPanel(Layouts.createBorderLayout());
+    panel.add(inputComponent, BorderLayout.CENTER);
+    panel.add(labelComponent, labelBorderLayoutConstraints);
 
     return panel;
   }
@@ -440,10 +441,13 @@ public class EntityEditComponentPanel extends JPanel {
                                                       final boolean buttonFocusable) {
     final TextInputPanel inputPanel = EntityInputComponents.createTextInputPanel(property,
             getEditModel().value(property.getPropertyId()), updateOnKeystroke, buttonFocusable);
-    if (inputPanel.getButton() != null && TRANSFER_FOCUS_ON_ENTER.get()) {
-      transferFocusOnEnter(inputPanel.getButton());//todo
+    if (TRANSFER_FOCUS_ON_ENTER.get()) {
+      transferFocusOnEnter(inputPanel.getTextField());
+      if (inputPanel.getButton() != null) {
+        transferFocusOnEnter(inputPanel.getButton());
+      }
     }
-    setComponent(property.getPropertyId(), inputPanel.getTextField());
+    setComponent(property.getPropertyId(), inputPanel);
 
     return inputPanel;
   }
@@ -1306,7 +1310,8 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a JLabel with a caption from the property identified by {@code propertyId}
+   * Creates a JLabel with a caption from the property identified by {@code propertyId}, if a input component exists
+   * for the given property this label is associated with it via {@link JLabel#setLabelFor(Component)}.
    * @param propertyId the ID of the property from which to retrieve the caption
    * @return a JLabel for the given property
    */
@@ -1315,17 +1320,19 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a JLabel with a caption from the given property identified by {@code propertyId}
+   * Creates a JLabel with a caption from the property identified by {@code propertyId}, if an input component exists
+   * for the given property this label is associated with it via {@link JLabel#setLabelFor(Component)}.
    * @param propertyId the ID of the property from which to retrieve the caption
    * @param horizontalAlignment the horizontal text alignment
    * @return a JLabel for the given property
    */
   protected final JLabel createLabel(final String propertyId, final int horizontalAlignment) {
-    return EntityInputComponents.createLabel(getEditModel().getEntityDefinition().getProperty(propertyId), horizontalAlignment);
+    return setLabelForComponent(EntityInputComponents.createLabel(getEditModel().getEntityDefinition()
+            .getProperty(propertyId), horizontalAlignment), getComponent(propertyId));
   }
 
   /**
-   * @return the component that should get the initial focus when the UI is prepared
+   * @return the component that should get the initial focus when the UI is cleared
    */
   protected JComponent getInitialFocusComponent() {
     if (initialFocusComponent != null) {
@@ -1371,7 +1378,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a list of propertyIds to use when selecting a input component in this panel,
    * this returns all propertyIds that have mapped components in this panel
    * that are enabled, displayable, visible and focusable.
-   * @see #includeComponentSelectionPropertyId(String) (String)
+   * @see #excludeFromComponentSelection(String)
    * @see #setComponent(String, javax.swing.JComponent)
    */
   private List<String> getSelectComponentPropertyIds() {
@@ -1379,11 +1386,19 @@ public class EntityEditComponentPanel extends JPanel {
     propertyIds.removeIf(propertyId -> {
       final JComponent component = getComponent(propertyId);
 
-      return component == null || !includeComponentSelectionPropertyId(propertyId) || !component.isDisplayable() ||
+      return component == null || excludeFromSelection.contains(propertyId) || !component.isDisplayable() ||
               !component.isVisible() || !component.isFocusable() || !component.isEnabled();
     });
 
     return propertyIds;
+  }
+
+  private static JLabel setLabelForComponent(final JLabel label, final JComponent component) {
+    if (component != null && label.getLabelFor() != component) {
+      label.setLabelFor(component);
+    }
+
+    return label;
   }
 
   private static final class ForeignKeyModelValue extends AbstractValue<String> {
