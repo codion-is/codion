@@ -9,7 +9,7 @@ final class BooleanNullableButtonModelValue extends AbstractComponentValue<Boole
 
   BooleanNullableButtonModelValue(final NullableToggleButtonModel buttonModel) {
     super(buttonModel);
-    buttonModel.addStateListener(value -> notifyValueChange(get()));
+    buttonModel.addStateListener(value -> notifyValueChange());
   }
 
   @Override

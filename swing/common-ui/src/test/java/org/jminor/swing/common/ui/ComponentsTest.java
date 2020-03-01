@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.common.ui;
 
+import org.jminor.common.event.EventObserver;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 
@@ -13,8 +14,10 @@ import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,5 +66,18 @@ public class ComponentsTest {
     final JTextField textField = new JTextField();
     Components.setPreferredHeight(textField, 42);
     assertEquals(new Dimension(textField.getPreferredSize().width, 42), textField.getPreferredSize());
+  }
+
+  @Test
+  public void propertyChangeObserver() {
+    final JTextField textField = new JTextField();
+    final AtomicInteger counter = new AtomicInteger();
+    final EventObserver<Integer> alignmentObserver =
+            Components.propertyChangeObserver(textField, "horizontalAlignment");
+    alignmentObserver.addListener(counter::incrementAndGet);
+    textField.setHorizontalAlignment(SwingConstants.RIGHT);
+    assertEquals(1, counter.get());
+    textField.setHorizontalAlignment(SwingConstants.LEFT);
+    assertEquals(2, counter.get());
   }
 }

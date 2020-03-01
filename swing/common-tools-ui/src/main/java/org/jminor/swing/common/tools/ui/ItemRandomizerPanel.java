@@ -175,7 +175,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     private EnabledUIValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
-      buttonModel.addItemListener(e -> notifyValueChange(get()));
+      buttonModel.addItemListener(e -> notifyValueChange());
     }
 
     @Override
@@ -222,7 +222,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     private WeightUIValue(final SpinnerNumberModel spinnerModel) {
       this.spinnerModel = spinnerModel;
-      spinnerModel.addChangeListener(e -> notifyValueChange(get()));
+      spinnerModel.addChangeListener(e -> notifyValueChange());
     }
 
     @Override

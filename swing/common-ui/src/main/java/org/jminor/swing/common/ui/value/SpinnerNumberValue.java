@@ -9,7 +9,7 @@ final class SpinnerNumberValue<V extends Number> extends AbstractComponentValue<
 
   SpinnerNumberValue(final SpinnerNumberModel spinnerModel) {
     super(spinnerModel);
-    spinnerModel.addChangeListener(e -> notifyValueChange(get()));
+    spinnerModel.addChangeListener(e -> notifyValueChange());
   }
 
   @Override

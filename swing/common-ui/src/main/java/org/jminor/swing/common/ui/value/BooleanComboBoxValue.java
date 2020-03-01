@@ -18,7 +18,7 @@ final class BooleanComboBoxValue extends AbstractComponentValue<Boolean, JComboB
     super(comboBox);
     getComponent().addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED) {
-        notifyValueChange(get());
+        notifyValueChange();
       }
     });
   }

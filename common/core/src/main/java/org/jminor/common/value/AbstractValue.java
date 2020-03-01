@@ -10,7 +10,7 @@ import org.jminor.common.event.Events;
 
 /**
  * A base Value implementation handling everything except the value itself.
- * When extending this class remember to always call {@link #notifyValueChange(Object)}
+ * When extending this class remember to always call {@link #notifyValueChange()}
  * when the underlying value changes.
  * @param <V> the value type
  */
@@ -44,11 +44,10 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   /**
-   * Fires the change event for this value, indicating that the underlying value
-   * has changed or at least that it may have changed
-   * @param value the new value
+   * Fires the change event for this value, using the current value, indicating that
+   * the underlying value has changed or at least that it may have changed
    */
-  protected final void notifyValueChange(final V value) {
-    changeEvent.onEvent(value);
+  protected final void notifyValueChange() {
+    changeEvent.onEvent(get());
   }
 }

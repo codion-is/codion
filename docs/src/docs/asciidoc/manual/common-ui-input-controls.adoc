@@ -115,3 +115,12 @@ In the following example we link a value based on a Person class to a component 
 ----
 include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=customTextFields]
 ----
+
+=== Property
+
+Below we link the 'columns' property of a IntegerField to the integer value displayed in the field.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=customTextFieldColumns]
+----

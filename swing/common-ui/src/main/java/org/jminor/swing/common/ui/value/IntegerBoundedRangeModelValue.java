@@ -9,7 +9,7 @@ final class IntegerBoundedRangeModelValue extends AbstractComponentValue<Integer
 
   IntegerBoundedRangeModelValue(final BoundedRangeModel rangeModel) {
     super(rangeModel, false);
-    rangeModel.addChangeListener(e -> notifyValueChange(get()));
+    rangeModel.addChangeListener(e -> notifyValueChange());
   }
 
   @Override

@@ -9,7 +9,9 @@ import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.textfield.DocumentAdapter;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
@@ -215,9 +217,9 @@ public final class InputControls {
         //We must call notifyValueChange each time this value changes,
         //that is, when either the first or last name changes.
         component.firstNameField.getDocument()
-                .addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
+                .addDocumentListener((DocumentAdapter) e -> notifyValueChange());
         component.lastNameField.getDocument()
-                .addDocumentListener((DocumentAdapter) e -> notifyValueChange(get()));
+                .addDocumentListener((DocumentAdapter) e -> notifyValueChange());
       }
 
       @Override
@@ -240,5 +242,27 @@ public final class InputControls {
 
     personValue.link(personPanelValue);
     // end::customTextFields[]
+  }
+
+  static void customTextFieldColumns() {
+    // tag::customTextFieldColumns[]
+    IntegerField columnsField = new IntegerField(5);
+
+    Value<Integer> columnsValue =
+            Values.propertyValue(columnsField, "columns",
+                    int.class, Components.propertyChangeObserver(columnsField, "columns"));
+
+    Value<Integer> fieldValue =
+            NumericalValues.integerValue(columnsField, /*nullable*/ false);
+
+    columnsValue.link(fieldValue);
+
+    JPanel panel = new JPanel();
+    panel.add(columnsField);
+
+    fieldValue.addListener(panel::revalidate);
+
+    Dialogs.displayInDialog(null, panel, "test");
+    // end::customTextFieldColumns[]
   }
 }
