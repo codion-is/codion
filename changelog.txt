@@ -5684,3 +5684,7 @@
   Components.propertyChangeObserver() added
   EntityEditComponentPanel.includeComponentSelectionPropertyId() replaced with excludeComponentFromSelection()
   EntityEditComponentPanel.editModel now private instead of protected
+  EntityEditComponentPanel.createPropertyPanel() labelOnTop parameter replaced with labelBorderLayoutConstraints
+  TextInputPanel, textField now requests focus when the panel receives it
+  EntityEditComponentPanel bug fixed, createTextInputPanel(), text field did not transfer focus on enter
+  EntityEditComponentPanel now sets the TextInputPanel as the property component instead of just the text field

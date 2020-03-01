@@ -44,7 +44,7 @@ public class ItemEditPanel extends EntityEditPanel {
     setLayout(new FlexibleGridLayout(3, 3, 5, 5));
     addPropertyPanel(ITEM_PRODUCT_FK);
     addPropertyPanel(ITEM_NAME);
-    add(createPropertyPanel(ITEM_DESCRIPTION, descriptionPanel));
+    add(createPropertyPanel(ITEM_DESCRIPTION));
     addPropertyPanel(ITEM_PRICE);
     add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
             createEditPanelAction(contactInfoBox, new EntityPanelProvider(T_SELLER_CONTACT_INFO)

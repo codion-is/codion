@@ -17,6 +17,8 @@ import javax.swing.text.Document;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -126,6 +128,12 @@ public final class TextInputPanel extends JPanel {
     setLayout(new BorderLayout());
     add(textField, BorderLayout.CENTER);
     add(button, BorderLayout.EAST);
+    addFocusListener(new FocusAdapter() {
+      @Override
+      public void focusGained(final FocusEvent e) {
+        textField.requestFocusInWindow();
+      }
+    });
   }
 
   private JButton createButton(final boolean buttonFocusable, final Dimension buttonSize) {
