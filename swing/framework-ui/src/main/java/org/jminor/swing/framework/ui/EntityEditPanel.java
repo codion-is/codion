@@ -162,7 +162,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return editModel.toString();
+    return getEditModel().toString();
   }
 
   /**
@@ -247,7 +247,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
-    return Controls.control(editModel::refresh, FrameworkMessages.get(FrameworkMessages.REFRESH),
+    return Controls.control(getEditModel()::refresh, FrameworkMessages.get(FrameworkMessages.REFRESH),
             getActiveObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
                     + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -260,8 +260,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     return Controls.control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
                     getActiveObserver(),
-                    editModel.getDeleteEnabledObserver(),
-                    editModel.getEntityNewObserver().getReversedObserver()),
+                    getEditModel().getDeleteEnabledObserver(),
+                    getEditModel().getEntityNewObserver().getReversedObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -284,9 +284,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     return Controls.control(this::update, FrameworkMessages.get(FrameworkMessages.UPDATE),
             States.aggregateState(Conjunction.AND,
                     getActiveObserver(),
-                    editModel.getUpdateEnabledObserver(),
-                    editModel.getEntityNewObserver().getReversedObserver(),
-                    editModel.getModifiedObserver()),
+                    getEditModel().getUpdateEnabledObserver(),
+                    getEditModel().getEntityNewObserver().getReversedObserver(),
+                    getEditModel().getModifiedObserver()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -297,7 +297,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.control(this::insert, FrameworkMessages.get(FrameworkMessages.INSERT),
-            States.aggregateState(Conjunction.AND, getActiveObserver(), editModel.getInsertEnabledObserver()),
+            States.aggregateState(Conjunction.AND, getActiveObserver(), getEditModel().getInsertEnabledObserver()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_ADD_16));
   }
@@ -308,9 +308,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control getSaveControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC);
-    final State insertUpdateState = States.aggregateState(Conjunction.OR, editModel.getInsertEnabledObserver(),
-            States.aggregateState(Conjunction.AND, editModel.getUpdateEnabledObserver(),
-                    editModel.getModifiedObserver()));
+    final State insertUpdateState = States.aggregateState(Conjunction.OR, getEditModel().getInsertEnabledObserver(),
+            States.aggregateState(Conjunction.AND, getEditModel().getUpdateEnabledObserver(),
+                    getEditModel().getModifiedObserver()));
     return Controls.control(this::save, FrameworkMessages.get(FrameworkMessages.SAVE),
             States.aggregateState(Conjunction.AND, getActiveObserver(), insertUpdateState),
             FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")",
@@ -327,7 +327,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public void onReferentialIntegrityException(final ReferentialIntegrityException exception,
                                               final Entity entity) {
     if (referentialIntegrityErrorHandling == EntityTablePanel.ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-      EntityTablePanel.showDependenciesDialog(singletonList(entity), editModel.getConnectionProvider(), this);
+      EntityTablePanel.showDependenciesDialog(singletonList(entity), getEditModel().getConnectionProvider(), this);
     }
     else {
       onException(exception);
@@ -435,7 +435,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * is asked whether to update the selected entity or insert a new one
    */
   public final void save() {
-    if (editModel.isEntityNew() || !editModel.isModified() || !editModel.isUpdateEnabled()) {
+    if (getEditModel().isEntityNew() || !getEditModel().isModified() || !getEditModel().isUpdateEnabled()) {
       //no entity selected, selected entity is unmodified or update is not enabled, can only insert
       insert();
     }
@@ -473,7 +473,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
         validateData();
         try {
           showWaitCursor(this);
-          editModel.insert();
+          getEditModel().insert();
         }
         finally {
           hideWaitCursor(this);
@@ -517,7 +517,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       if (!confirmRequired || confirmDelete()) {
         try {
           showWaitCursor(this);
-          editModel.delete();
+          getEditModel().delete();
         }
         finally {
           hideWaitCursor(this);
@@ -528,7 +528,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     }
     catch (final ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e, editModel.getEntityCopy());
+      onReferentialIntegrityException(e, getEditModel().getEntityCopy());
     }
     catch (final Exception ex) {
       LOG.error(ex.getMessage(), ex);
@@ -557,7 +557,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
         validateData();
         try {
           showWaitCursor(this);
-          editModel.update();
+          getEditModel().update();
         }
         finally {
           hideWaitCursor(this);
@@ -759,7 +759,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       return;
     }
     final Collection<ControlCode> codes = asList(controlCodes);
-    if (!editModel.isReadOnly()) {
+    if (!getEditModel().isReadOnly()) {
       setupEditControls(codes);
     }
     if (codes.contains(ControlCode.CLEAR)) {
@@ -771,16 +771,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   private void setupEditControls(final Collection<ControlCode> controlCodes) {
-    if (editModel.isInsertEnabled() && editModel.isUpdateEnabled() && controlCodes.contains(ControlCode.SAVE)) {
+    if (getEditModel().isInsertEnabled() && getEditModel().isUpdateEnabled() && controlCodes.contains(ControlCode.SAVE)) {
       setControl(ControlCode.SAVE, getSaveControl());
     }
-    if (editModel.isInsertEnabled() && controlCodes.contains(ControlCode.INSERT)) {
+    if (getEditModel().isInsertEnabled() && controlCodes.contains(ControlCode.INSERT)) {
       setControl(ControlCode.INSERT, getInsertControl());
     }
-    if (editModel.isUpdateEnabled() && controlCodes.contains(ControlCode.UPDATE)) {
+    if (getEditModel().isUpdateEnabled() && controlCodes.contains(ControlCode.UPDATE)) {
       setControl(ControlCode.UPDATE, getUpdateControl());
     }
-    if (editModel.isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
+    if (getEditModel().isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
       setControl(ControlCode.DELETE, getDeleteControl());
     }
   }
@@ -789,9 +789,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     KeyEvents.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(this::showEntityMenu,
                     "EntityEditPanel.showEntityMenu"));
-    editModel.addBeforeRefreshListener(() -> showWaitCursor(EntityEditPanel.this));
-    editModel.addAfterRefreshListener(() -> hideWaitCursor(EntityEditPanel.this));
-    editModel.addConfirmSetEntityObserver(confirmationState -> {
+    getEditModel().addBeforeRefreshListener(() -> showWaitCursor(EntityEditPanel.this));
+    getEditModel().addAfterRefreshListener(() -> hideWaitCursor(EntityEditPanel.this));
+    getEditModel().addConfirmSetEntityObserver(confirmationState -> {
       final int result = JOptionPane.showConfirmDialog(Windows.getParentWindow(EntityEditPanel.this),
               FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
@@ -800,7 +800,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   private void showEntityMenu() {
-    new EntityPopupMenu(editModel.getEntityCopy(), editModel.getConnectionProvider()).show(this, 0, 0);
+    new EntityPopupMenu(getEditModel().getEntityCopy(), getEditModel().getConnectionProvider()).show(this, 0, 0);
   }
 
   private static final class InsertEntityAction extends AbstractAction {
@@ -809,7 +809,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     private final EntityPanelProvider panelProvider;
     private final EntityConnectionProvider connectionProvider;
     private final EventDataListener<List<Entity>> insertListener;
-    private final List<Entity> lastInsertedEntities = new ArrayList<>();
+    private final List<Entity> insertedEntities = new ArrayList<>();
 
     private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
       this(comboBox, panelProvider, comboBox.getModel().getConnectionProvider(), insertedEntities -> {
@@ -842,9 +842,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(connectionProvider);
       editPanel.initializePanel();
-      editPanel.editModel.addAfterInsertListener(insertedEntities -> {
-        lastInsertedEntities.clear();
-        lastInsertedEntities.addAll(insertedEntities);
+      editPanel.getEditModel().addAfterInsertListener(insertedEntities -> {
+        this.insertedEntities.clear();
+        this.insertedEntities.addAll(insertedEntities);
       });
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
       final JDialog dialog = pane.createDialog(component, panelProvider.getCaption() == null ?
@@ -855,8 +855,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       dialog.setVisible(true);
       if (pane.getValue() != null && pane.getValue().equals(0)) {
         final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
-        if (insertPerformed && !lastInsertedEntities.isEmpty()) {
-          insertListener.onEvent(lastInsertedEntities);
+        if (insertPerformed && !insertedEntities.isEmpty()) {
+          insertListener.onEvent(insertedEntities);
         }
       }
       component.requestFocusInWindow();

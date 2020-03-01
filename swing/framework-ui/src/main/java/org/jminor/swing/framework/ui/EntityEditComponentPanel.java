@@ -65,7 +65,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * The edit model these edit components are associated with
    */
-  protected final SwingEntityEditModel editModel;
+  private final SwingEntityEditModel editModel;
 
   /**
    * Input components mapped to their respective propertyIds
@@ -239,6 +239,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param component the input component
    */
   protected final void setComponent(final String propertyId, final JComponent component) {
+    getEditModel().getEntityDefinition().getProperty(propertyId);
     if (components.containsKey(propertyId)) {
       throw new IllegalStateException("Component already set for propertyId: " + propertyId);
     }
@@ -316,7 +317,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a panel containing a label component and the {@code inputComponent} with the label
    * component positioned above the input component.
    * @param labelComponent the label component
-   * @param inputComponent a component bound to the property with id {@code propertyId}
+   * @param inputComponent a input component
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent) {
@@ -326,18 +327,20 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a panel containing a label component and the {@code inputComponent}.
    * @param labelComponent the label component
-   * @param inputComponent a component bound to the property with id {@code propertyId}
+   * @param inputComponent a input component
    * @param labelOnTop if true then the label is positioned above {@code inputComponent},
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent,
                                              final boolean labelOnTop) {
+    requireNonNull(labelComponent, "labelComponent");
+    requireNonNull(inputComponent, "inputComponent");
+    if (labelComponent instanceof JLabel) {
+      setLabelForComponent((JLabel) labelComponent, inputComponent);
+    }
     final JPanel panel = new JPanel(labelOnTop ?
             Layouts.createBorderLayout() : Layouts.createFlowLayout(FlowLayout.LEADING));
-    if (labelComponent instanceof JLabel) {
-      ((JLabel) labelComponent).setLabelFor(inputComponent);
-    }
     if (labelOnTop) {
       panel.add(labelComponent, BorderLayout.NORTH);
       panel.add(inputComponent, BorderLayout.CENTER);
@@ -1312,7 +1315,8 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a JLabel with a caption from the property identified by {@code propertyId}
+   * Creates a JLabel with a caption from the property identified by {@code propertyId}, if a input component exists
+   * for the given property this label is associated with it via {@link JLabel#setLabelFor(Component)}.
    * @param propertyId the ID of the property from which to retrieve the caption
    * @return a JLabel for the given property
    */
@@ -1321,17 +1325,19 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a JLabel with a caption from the given property identified by {@code propertyId}
+   * Creates a JLabel with a caption from the property identified by {@code propertyId}, if an input component exists
+   * for the given property this label is associated with it via {@link JLabel#setLabelFor(Component)}.
    * @param propertyId the ID of the property from which to retrieve the caption
    * @param horizontalAlignment the horizontal text alignment
    * @return a JLabel for the given property
    */
   protected final JLabel createLabel(final String propertyId, final int horizontalAlignment) {
-    return EntityInputComponents.createLabel(getEditModel().getEntityDefinition().getProperty(propertyId), horizontalAlignment);
+    return setLabelForComponent(EntityInputComponents.createLabel(getEditModel().getEntityDefinition()
+            .getProperty(propertyId), horizontalAlignment), getComponent(propertyId));
   }
 
   /**
-   * @return the component that should get the initial focus when the UI is prepared
+   * @return the component that should get the initial focus when the UI is cleared
    */
   protected JComponent getInitialFocusComponent() {
     if (initialFocusComponent != null) {
@@ -1390,6 +1396,14 @@ public class EntityEditComponentPanel extends JPanel {
     });
 
     return propertyIds;
+  }
+
+  private static JLabel setLabelForComponent(final JLabel label, final JComponent component) {
+    if (component != null && label.getLabelFor() != component) {
+      label.setLabelFor(component);
+    }
+
+    return label;
   }
 
   private static final class ForeignKeyModelValue extends AbstractValue<String> {
