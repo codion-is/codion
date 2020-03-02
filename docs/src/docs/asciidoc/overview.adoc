@@ -1,0 +1,58 @@
+= Overview
+:dir-source: ../../../../demos/manual/src/main/java
+
+== Domain model
+
+The JMinor framework is based around the *Entity* class, a map-like structure, representing a row in a table. The domain is modelled much like an E/R diagram, with an *EntityDefinition* per table, a *Property* for each column and a *ForeignKeyProperty* for each foreign key relationship.
+
+=== Defining entities
+
+The below examples are somewhat simplified, but functionally correct.
+
+First we define the entity based on the table *store.customer*.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/overview/Overview.java[tags=customer]
+----
+
+Next we define the entity based on the table *store.address*.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/overview/Overview.java[tags=address]
+----
+
+And finally we define the entity based on the _many-to-many_ relationship table *store.customer_address*.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/overview/Overview.java[tags=customerAddress]
+----
+
+.Full code
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/overview/Overview.java[tags=domainModel]
+----
+====
+
+== EntityConnection
+
+The *EntityConnection* class provides select, insert, update, and delete methods.
+
+=== Selecting
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/overview/Overview.java[tags=select]
+----
+
+=== Persisting
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/overview/Overview.java[tags=persist]
+----

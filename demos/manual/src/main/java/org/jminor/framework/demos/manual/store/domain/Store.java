@@ -42,7 +42,7 @@ public final class Store extends Domain {
   private void address() {
     // tag::address[]
     define(T_ADDRESS,
-            primaryKeyProperty(ADDRESS_ID),
+            primaryKeyProperty(ADDRESS_ID, Types.INTEGER),
             columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street")
                     .setNullable(false).setMaxLength(120),
             columnProperty(ADDRESS_CITY, Types.VARCHAR, "City")
