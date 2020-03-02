@@ -107,46 +107,16 @@ task runClientLocalFX(type: JavaExec) {
 
 runClientRMI {
     main = mainClass
-    systemProperties = [
-            'jminor.client.connectionType'    : 'remote',
-            'jminor.server.hostname'          : 'localhost',
-            'jminor.report.path'              : '../../demos/empdept/build/classes/reports',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
-            'javax.net.ssl.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/main/resources/logback.xml'
-    ]
 }
 
 runClientHttp {
     main = mainClass
-    systemProperties = [
-            'jminor.client.connectionType': 'http',
-            'jminor.client.http.secure'   : 'false',
-            'jminor.server.hostname'      : 'localhost',
-            'jminor.report.path'          : '../../demos/empdept/build/classes/reports',
-            'logback.configurationFile'   : 'src/main/resources/logback.xml'
-    ]
 }
 
 runLoadTestRMI {
     main = loadTestMainClass
-    systemProperties = [
-            'jminor.client.connectionType'    : 'remote',
-            'jminor.server.hostname'          : 'localhost',
-            'jminor.report.path'              : '../../demos/empdept/build/classes/reports',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
-            'javax.net.ssl.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/main/resources/logback.xml'
-    ]
 }
 
 runLoadTestHttp {
     main = loadTestMainClass
-    systemProperties = [
-            'jminor.client.connectionType': 'http',
-            'jminor.client.http.secure'   : 'false',
-            'jminor.server.hostname'      : 'localhost',
-            'jminor.report.path'          : '../../demos/empdept/build/classes/reports',
-            'logback.configurationFile'   : 'src/main/resources/logback.xml'
-    ]
 }
