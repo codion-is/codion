@@ -812,17 +812,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     private final List<Entity> insertedEntities = new ArrayList<>();
 
     private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
-      this(comboBox, panelProvider, comboBox.getModel().getConnectionProvider(), insertedEntities -> {
+      this(comboBox, panelProvider, comboBox.getModel().getConnectionProvider(), inserted -> {
         final EntityComboBoxModel comboBoxModel = comboBox.getModel();
-        final Entity item = insertedEntities.get(0);
+        final Entity item = inserted.get(0);
         comboBoxModel.addItem(item);
         comboBoxModel.setSelectedItem(item);
       });
     }
 
     private InsertEntityAction(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
-      this(lookupField, panelProvider, lookupField.getModel().getConnectionProvider(), insertedEntities ->
-              lookupField.getModel().setSelectedEntities(insertedEntities));
+      this(lookupField, panelProvider, lookupField.getModel().getConnectionProvider(), inserted ->
+              lookupField.getModel().setSelectedEntities(inserted));
     }
 
     private InsertEntityAction(final JComponent component, final EntityPanelProvider panelProvider,
@@ -842,9 +842,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(connectionProvider);
       editPanel.initializePanel();
-      editPanel.getEditModel().addAfterInsertListener(insertedEntities -> {
+      editPanel.getEditModel().addAfterInsertListener(inserted -> {
         this.insertedEntities.clear();
-        this.insertedEntities.addAll(insertedEntities);
+        this.insertedEntities.addAll(inserted);
       });
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
       final JDialog dialog = pane.createDialog(component, panelProvider.getCaption() == null ?
