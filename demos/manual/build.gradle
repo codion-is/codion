@@ -5,6 +5,7 @@ dependencies {
     implementation project(':jminor-swing-framework-tools')
     implementation project(':jminor-framework-domain-test')
     implementation project(':jminor-framework-db-local')
+    implementation project(':jminor-framework-db-remote')
     implementation project(':jminor-plugin-jasperreports')
 
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
@@ -12,7 +13,6 @@ dependencies {
     }
 
     runtimeOnly project(':jminor-plugin-logback-proxy')
-    runtimeOnly project(':jminor-framework-db-remote')
     runtimeOnly project(':jminor-framework-db-http')
 
     runtimeOnly project(':jminor-dbms-h2database')
