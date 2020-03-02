@@ -209,7 +209,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Displays a dialog allowing the user the select a input component which should receive the keyboard focus,
    * if only one input component is available then that component is selected automatically.
-   * @see #excludeFromComponentSelection(String)
+   * @see #excludeComponentFromSelection(String)
    * @see #requestComponentFocus(String)
    */
   public void selectInputComponent() {
@@ -1378,7 +1378,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a list of propertyIds to use when selecting a input component in this panel,
    * this returns all propertyIds that have mapped components in this panel
    * that are enabled, displayable, visible and focusable.
-   * @see #excludeFromComponentSelection(String)
+   * @see #excludeComponentFromSelection(String)
    * @see #setComponent(String, javax.swing.JComponent)
    */
   private List<String> getSelectComponentPropertyIds() {
