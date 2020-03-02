@@ -101,7 +101,7 @@ applicationDefaultJvmArgs = [
         '-Xmx256m', '--add-modules', 'org.jminor.framework.servlet,java.xml.bind',
         "-Djminor.configurationFile=../config/h2_embedded.config",
         "-Dlogback.configurationFile=../config/logback.xml",
-        "-Djava.security.policy=../config/all_permissions.policy"
+        "-Djava.security.policy=../config/jminor_server.policy"
 ]
 
 def applicationGenerateSecurityPolicyJvmArgs = [
@@ -140,6 +140,6 @@ task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
             'javax.net.ssl.keyStorePassword'            : 'crappypass',
             'java.rmi.server.hostname'                  : 'localhost',
             'logback.configurationFile'                 : 'src/main/config/logback.xml',
-            'java.security.policy'                      : 'src/main/security/all_permissions.policy'
+            'java.security.policy'                      : 'src/main/security/jminor_server.policy'
     ]
 }

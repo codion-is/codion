@@ -134,7 +134,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
    */
   public static JasperReport loadJasperReport(final String reportPath) throws JRException, MalformedURLException {
     requireNonNull(reportPath, "reportPath");
-    if (reportPath.length() == 0) {
+    if (reportPath.isEmpty()) {
       throw new IllegalArgumentException("Empty report path");
     }
     if (CACHE_REPORTS.get() && REPORT_CACHE.containsKey(reportPath)) {
