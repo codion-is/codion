@@ -103,6 +103,16 @@ classes.dependsOn buildReports
 task runClientLocal(type: ModularJavaExec) {
     group 'run'
     main = mainClass
+    systemProperties = [
+            'jminor.client.connectionType': 'local',
+            'jminor.db.type'              : 'h2',
+            'jminor.db.host'              : 'h2db',
+            'jminor.db.embedded'          : 'true',
+            'jminor.db.embeddedInMemory'  : 'true',
+            'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
+            'jminor.report.path'          : 'build/classes/reports',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+    ]
 }
 
 task runClientLocalFX(type: ModularJavaExec) {
@@ -122,21 +132,51 @@ task runClientLocalFX(type: ModularJavaExec) {
 task runClientRMI(type: ModularJavaExec) {
     group 'run'
     main = mainClass
+    systemProperties = [
+            'jminor.client.connectionType'    : 'remote',
+            'jminor.server.hostname'          : 'localhost',
+            'jminor.report.path'              : 'build/classes/reports',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'logback.configurationFile'       : 'src/main/config/logback.xml'
+    ]
 }
 
 task runClientHttp(type: ModularJavaExec) {
     group 'run'
     main = mainClass
+    systemProperties = [
+            'jminor.client.connectionType': 'http',
+            'jminor.client.http.secure'   : 'false',
+            'jminor.client.http.hostname' : 'localhost',
+            'jminor.report.path'          : 'build/classes/reports',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+    ]
 }
 
 task runLoadTestRMI(type: ModularJavaExec) {
     group 'run'
     main = loadTestMainClass
+    systemProperties = [
+            'jminor.client.connectionType'    : 'remote',
+            'jminor.server.hostname'          : 'localhost',
+            'jminor.report.path'              : 'build/classes/reports',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'logback.configurationFile'       : 'src/main/config/logback.xml'
+    ]
 }
 
 task runLoadTestHttp(type: ModularJavaExec) {
     group 'run'
     main = loadTestMainClass
+    systemProperties = [
+            'jminor.client.connectionType': 'http',
+            'jminor.client.http.secure'   : 'false',
+            'jminor.client.http.hostname' : 'localhost',
+            'jminor.report.path'          : 'build/classes/reports',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+    ]
 }
 
 task clientLocalScript(type: ModularCreateStartScripts) {
