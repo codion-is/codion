@@ -1,6 +1,7 @@
 module org.jminor.framework.demos.empdept {
   requires java.desktop;
   requires org.jminor.common.core;
+  requires org.jminor.framework.db.local;
   requires org.jminor.framework.db.remote;
   requires org.jminor.swing.common.ui;
   requires org.jminor.swing.framework.model;
