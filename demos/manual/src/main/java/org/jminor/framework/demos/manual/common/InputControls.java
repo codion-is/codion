@@ -244,25 +244,25 @@ public final class InputControls {
     // end::customTextFields[]
   }
 
-  static void customTextFieldColumns() {
-    // tag::customTextFieldColumns[]
-    IntegerField columnsField = new IntegerField(5);
+  static void customTextFieldHorizontalAlignment() {
+    // tag::customTextFieldHorizontalAlignment[]
+    IntegerField horizontalAlignmentField = new IntegerField(5);
 
-    Value<Integer> columnsValue =
-            Values.propertyValue(columnsField, "columns",
-                    int.class, Components.propertyChangeObserver(columnsField, "columns"));
+    Value<Integer> horizontalAlignmentValue =
+            Values.propertyValue(horizontalAlignmentField, "horizontalAlignment",
+                    int.class, Components.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
 
     Value<Integer> fieldValue =
-            NumericalValues.integerValue(columnsField, /*nullable*/ false);
+            NumericalValues.integerValue(horizontalAlignmentField, /*nullable*/ false);
 
-    columnsValue.link(fieldValue);
+    horizontalAlignmentValue.link(fieldValue);
 
     JPanel panel = new JPanel();
-    panel.add(columnsField);
+    panel.add(horizontalAlignmentField);
 
     fieldValue.addListener(panel::revalidate);
 
     Dialogs.displayInDialog(null, panel, "test");
-    // end::customTextFieldColumns[]
+    // end::customTextFieldHorizontalAlignment[]
   }
 }

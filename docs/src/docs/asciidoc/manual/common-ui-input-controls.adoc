@@ -118,9 +118,9 @@ include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.jav
 
 === Property
 
-Below we link the 'columns' property of a IntegerField to the integer value displayed in the field.
+Below we link the 'horizontalAlignment' property of a IntegerField to the integer value displayed in the field.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=customTextFieldColumns]
+include::{dir-source}/org/jminor/framework/demos/manual/common/InputControls.java[tags=customTextFieldHorizontalAlignment]
 ----
