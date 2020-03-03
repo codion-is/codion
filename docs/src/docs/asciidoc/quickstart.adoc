@@ -7,8 +7,8 @@ JMinor is primarily a Swing based framework, the Swing client is mature and stab
 |===
 |Client|Artifact
 
-|Swing|org.jminor.jdk8:jminor-swing-framework.ui:{jminor-version}
-|JavaFX|org.jminor.jdk8:jminor-javafx-framework:{jminor-version}
+|Swing|org.jminor.{jminor-jdk}:jminor-swing-framework.ui:{jminor-version}
+|JavaFX|org.jminor.{jminor-jdk}:jminor-javafx-framework:{jminor-version}
 |===
 
 == Database connectivity
@@ -18,9 +18,9 @@ A JMinor client has three ways of connecting to a database, directly via a local
 |===
 |DB Connection|Artifact
 
-|Local|org.jminor.jdk8:jminor-framework-db-local:{jminor-version}
-|RMI|org.jminor.jdk8:jminor-framework-db-remote:{jminor-version}
-|HTTP|org.jminor.jdk8:jminor-framework-db-http:{jminor-version}
+|Local|org.jminor.{jminor-jdk}:jminor-framework-db-local:{jminor-version}
+|RMI|org.jminor.{jminor-jdk}:jminor-framework-db-remote:{jminor-version}
+|HTTP|org.jminor.{jminor-jdk}:jminor-framework-db-http:{jminor-version}
 |===
 
 == DBMS
@@ -36,14 +36,14 @@ The most used and tested DBMS modules are:
 |===
 |DBMS|Artifact
 
-|Derby|org.jminor.jdk8:jminor-dbms-derby:{jminor-version}
-|H2 Database|org.jminor.jdk8:jminor-dbms-h2database:{jminor-version}
-|HSQL|org.jminor.jdk8:jminor-dbms-hsql:{jminor-version}
-|MySQL|org.jminor.jdk8:jminor-dbms-mysql:{jminor-version}
-|Oracle|org.jminor.jdk8:jminor-dbms-oracle:{jminor-version}
-|Postgresql|org.jminor.jdk8:jminor-dbms-postgresql:{jminor-version}
-|SQLite|org.jminor.jdk8:jminor-dbms-sqlite:{jminor-version}
-|SQL Server|org.jminor.jdk8:jminor-dbms-sqlserver:{jminor-version}
+|Derby|org.jminor.{jminor-jdk}:jminor-dbms-derby:{jminor-version}
+|H2 Database|org.jminor.{jminor-jdk}:jminor-dbms-h2database:{jminor-version}
+|HSQL|org.jminor.{jminor-jdk}:jminor-dbms-hsql:{jminor-version}
+|MySQL|org.jminor.{jminor-jdk}:jminor-dbms-mysql:{jminor-version}
+|Oracle|org.jminor.{jminor-jdk}:jminor-dbms-oracle:{jminor-version}
+|Postgresql|org.jminor.{jminor-jdk}:jminor-dbms-postgresql:{jminor-version}
+|SQLite|org.jminor.{jminor-jdk}:jminor-dbms-sqlite:{jminor-version}
+|SQL Server|org.jminor.{jminor-jdk}:jminor-dbms-sqlserver:{jminor-version}
 |===
 
 == Logging
@@ -53,9 +53,9 @@ JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 |===
 |Logging|Artifact
 
-|Logback|org.jminor.jdk8:jminor-plugin-logback-proxy:{jminor-version}
-|Log4j|org.jminor.jdk8:jminor-plugin-log4j-proxy:{jminor-version}
-|Java Util Logging|org.jminor.jdk8:jminor-plugin-jul-proxy:{jminor-version}
+|Logback|org.jminor.{jminor-jdk}:jminor-plugin-logback-proxy:{jminor-version}
+|Log4j|org.jminor.{jminor-jdk}:jminor-plugin-log4j-proxy:{jminor-version}
+|Java Util Logging|org.jminor.{jminor-jdk}:jminor-plugin-jul-proxy:{jminor-version}
 |===
 
 == Gradle
@@ -63,23 +63,23 @@ JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 ----
 dependencies {
     //Swing client UI module
-    implementation 'org.jminor.jdk8:jminor-swing-framework-ui:{jminor-version}'
+    implementation 'org.jminor.{jminor-jdk}:jminor-swing-framework-ui:{jminor-version}'
 
     //JSON for persisting client preferences
-    runtime 'org.jminor.jdk8:jminor-plugin-json:{jminor-version}'
+    runtimeOnly 'org.jminor.{jminor-jdk}:jminor-plugin-json:{jminor-version}'
     //Local JDBC connection module
-    runtime 'org.jminor.jdk8:jminor-framework-db-local:{jminor-version}'
+    runtimeOnly 'org.jminor.{jminor-jdk}:jminor-framework-db-local:{jminor-version}'
     //H2 DBMS module
-    runtime 'org.jminor.jdk8:jminor-dbms-h2database:{jminor-version}'
+    runtimeOnly 'org.jminor.{jminor-jdk}:jminor-dbms-h2database:{jminor-version}'
     //H2 JDBC driver
-    runtime 'com.h2database:h2:1.4.200'
+    runtimeOnly 'com.h2database:h2:1.4.200'
     //Logging with Logback
-    runtime 'org.jminor.jdk8:jminor-plugin-logback-proxy:{jminor-version}'
+    runtimeOnly 'org.jminor.{jminor-jdk}:jminor-plugin-logback-proxy:{jminor-version}'
 
     //Domain model unit testing module
-    testImplementation 'org.jminor.jdk8:jminor-framework-domain-test:{jminor-version}'
+    testImplementation 'org.jminor.{jminor-jdk}:jminor-framework-domain-test:{jminor-version}'
     //JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 }
 ----

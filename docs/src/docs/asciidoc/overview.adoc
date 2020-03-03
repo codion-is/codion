@@ -9,21 +9,21 @@ The JMinor framework is based around the *Entity* class, a map-like structure, r
 
 The below examples are somewhat simplified, but functionally correct.
 
-First we define the entity based on the table *store.customer*.
+First we define a entity based on the table *store.customer*, using String constants to identify the entity type and its properties.
 
 [source,java,indent=0]
 ----
 include::{dir-source}/org/jminor/framework/demos/manual/overview/Overview.java[tags=customer]
 ----
 
-Next we define the entity based on the table *store.address*.
+Next we define a entity based on the table *store.address*.
 
 [source,java,indent=0]
 ----
 include::{dir-source}/org/jminor/framework/demos/manual/overview/Overview.java[tags=address]
 ----
 
-And finally we define the entity based on the _many-to-many_ relationship table *store.customer_address*.
+And finally we define a entity based on the _many-to-many_ relationship table *store.customer_address*.
 
 [source,java,indent=0]
 ----
