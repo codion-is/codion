@@ -87,10 +87,12 @@ public final class Overview {
             LocalEntityConnections.createConnection(
                     domain, Databases.getInstance(), User.parseUser("scott:tiger"));
 
-    Entity customer = connection.selectSingle(T_CUSTOMER, CUSTOMER_LAST_NAME, "Doe");
+    //select customer where last name = Doe
+    Entity johnDoe = connection.selectSingle(T_CUSTOMER, CUSTOMER_LAST_NAME, "Doe");
 
-    List<Entity> customerAddresses =
-            connection.select(T_CUSTOMER_ADDRESS, CUSTOMER_ADDRESS_CUSTOMER_FK, customer);
+    //select all customer addresses
+    List<Entity> customerAddresses = //where customer = john doe
+            connection.select(T_CUSTOMER_ADDRESS, CUSTOMER_ADDRESS_CUSTOMER_FK, johnDoe);
 
     Entity customerAddress = customerAddresses.get(0);
 

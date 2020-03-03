@@ -21,7 +21,8 @@ asciidoctor {
     sources {
         include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc'
     }
-    attributes toc: 'right', sectnums: 4, 'jminor-version': project.version, prewrap: false, experimental: true
+    attributes 'jminor-version': project.version, 'jminor-jdk': project.jdk,
+            toc: 'right', sectnums: 4, prewrap: false, experimental: true
     asciidoctorj {
         version = '2.2.0'
         modules {
