@@ -7,9 +7,11 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
+// tag::customerTableModel[]
 public class CustomerTableModel extends SwingEntityTableModel {
 
   public CustomerTableModel(EntityConnectionProvider connectionProvider) {
     super(Store.T_CUSTOMER, connectionProvider);
   }
 }
+// end::customerTableModel[]

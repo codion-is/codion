@@ -13,7 +13,7 @@ Using a report based on a SQL query, {url-javadoc}/org/jminor/plugin/jasperrepor
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[lines=40..55]
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
 ----
 
 == JRDataSource Reports

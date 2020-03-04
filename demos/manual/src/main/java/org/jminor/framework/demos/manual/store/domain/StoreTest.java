@@ -10,10 +10,16 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+// tag::storeTest[]
 public class StoreTest extends EntityTestUnit {
 
   public StoreTest() {
     super(Store.class.getName());
+  }
+
+  @Test
+  public void customer() throws Exception {
+    test(Store.T_CUSTOMER);
   }
 
   @Test
@@ -22,8 +28,8 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Test
-  public void customer() throws Exception {
-    test(Store.T_CUSTOMER);
+  public void customerAddress() throws Exception {
+    test(Store.T_CUSTOMER_ADDRESS);
   }
 
   @Override
@@ -43,9 +49,9 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(String entityID,
+  protected Entity initializeTestEntity(String entityId,
                                         Map<String, Entity> foreignKeyEntities) {
-    if (entityID.equals(Store.T_ADDRESS)) {
+    if (entityId.equals(Store.T_ADDRESS)) {
       //Initialize a entity representing the table STORE.ADDRESS,
       //which can be used for the testing
       Entity address = getDomain().entity(Store.T_ADDRESS);
@@ -55,20 +61,26 @@ public class StoreTest extends EntityTestUnit {
 
       return address;
     }
-    else if (entityID.equals(Store.T_CUSTOMER)) {
+    else if (entityId.equals(Store.T_CUSTOMER)) {
       //Initialize a entity representing the table STORE.CUSTOMER,
       //which can be used for the testing
       Entity customer = getDomain().entity(Store.T_CUSTOMER);
       customer.put(Store.CUSTOMER_ID, 42);
       customer.put(Store.CUSTOMER_FIRST_NAME, "Robert");
       customer.put(Store.CUSTOMER_LAST_NAME, "Ford");
-      customer.put(Store.CUSTOMER_ADDRESS_FK, foreignKeyEntities.get(Store.T_ADDRESS));
       customer.put(Store.CUSTOMER_IS_ACTIVE, true);
 
       return customer;
     }
+    else if (entityId.equals(Store.T_CUSTOMER_ADDRESS)) {
+      Entity customerAddress = getDomain().entity(Store.T_CUSTOMER_ADDRESS);
+      customerAddress.put(Store.CUSTOMER_ADDRESS_CUSTOMER_FK, foreignKeyEntities.get(Store.T_CUSTOMER));
+      customerAddress.put(Store.CUSTOMER_ADDRESS_ADDRESS_FK, foreignKeyEntities.get(Store.T_ADDRESS));
 
-    return super.initializeTestEntity(entityID, foreignKeyEntities);
+      return customerAddress;
+    }
+
+    return super.initializeTestEntity(entityId, foreignKeyEntities);
   }
 
   @Override
@@ -86,3 +98,4 @@ public class StoreTest extends EntityTestUnit {
     }
   }
 }
+// end::storeTest[]

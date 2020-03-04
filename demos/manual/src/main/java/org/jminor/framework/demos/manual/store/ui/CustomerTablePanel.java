@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// tag::customerTablePanel[]
 public class CustomerTablePanel extends EntityTablePanel {
 
   public CustomerTablePanel(final SwingEntityTableModel tableModel) {
@@ -54,3 +55,4 @@ public class CustomerTablePanel extends EntityTablePanel {
             getTableModel().getConnectionProvider());
   }
 }
+// end::customerTablePanel[]

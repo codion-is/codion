@@ -6,16 +6,18 @@ package org.jminor.framework.demos.manual.store.model;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 
+// tag::storeAppModel[]
 public class StoreAppModel extends SwingEntityApplicationModel {
 
   public StoreAppModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
 
     CustomerModel customerModel = new CustomerModel(connectionProvider);
-    AddressModel addressModel = new AddressModel(connectionProvider);
+    CustomerAddressModel customerAddressModel = new CustomerAddressModel(connectionProvider);
 
-    customerModel.addDetailModel(addressModel);
+    customerModel.addDetailModel(customerAddressModel);
 
     addEntityModel(customerModel);
   }
 }
+// end::storeAppModel[]

@@ -7,26 +7,26 @@ The {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] class
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressModel.java[lines=9..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressModel.java[tags=addressModel]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerModel.java[tags=customerModel]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerAddressModel.java[tags=customerAddressModel]
 ----
 
 == Edit model
 
-Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] contains a single {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] instance. This edit model can be created automatically by the *EntityModel* or supplied via a constructor argument in case of a specialized implementation.
+Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] contains a single {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] instance. This edit model can be created automatically by the *EntityModel* or supplied via a constructor argument in case of a custom implementation.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerEditModel.java[lines=10..-1]
-----
-
-[source,java]
-----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressEditModel.java[lines=10..-1]
-----
-
-[source,java,indent=0]
-----
-include::{dir-source}/org/jminor/framework/demos/manual/store/Misc.java[lines=20..53]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
 ----
 
 == Table model
@@ -35,12 +35,7 @@ Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] can 
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerTableModel.java[lines=10..-1]
-----
-
-[source,java]
-----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressTableModel.java[lines=10..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
 ----
 
 == Detail models
@@ -49,7 +44,7 @@ Detail models can be added to a model, this relies on a foreign key reference be
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/StoreAppModel.java[lines=10..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/StoreAppModel.java[tags=storeAppModel]
 ----
 
 == Event binding
@@ -60,7 +55,7 @@ The following example prints, to the standard output, all changes made to a give
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerModel.java[lines=18..27]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerModel.java[tags=bindEvents]
 ----
 
 == Examples

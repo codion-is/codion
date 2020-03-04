@@ -7,9 +7,14 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.ui.EntityPanel;
 
 import java.sql.Types;
 import java.util.List;
@@ -78,6 +83,20 @@ public final class Overview {
     // end::customerAddress[]
   }
   // end::domainModel[]
+
+  static void customerPanel() {
+    // tag::customerPanel[]
+    EntityConnectionProvider connectionProvider =
+            new LocalEntityConnectionProvider(Databases.getInstance());
+
+    SwingEntityModel customerModel = new SwingEntityModel(T_CUSTOMER, connectionProvider);
+    EntityPanel customerPanel = new EntityPanel(customerModel);
+
+    customerPanel.initializePanel();
+
+    Dialogs.displayInDialog(null, customerPanel, "Customers");
+    // end::customerPanel[]
+  }
 
   static void selectEntities() throws DatabaseException {
     // tag::select[]

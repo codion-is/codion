@@ -182,7 +182,7 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 ====
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report,lines=4..-1]
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[lines=4..-1]
 ----
 ====
 

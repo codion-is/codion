@@ -4,12 +4,14 @@
 package org.jminor.framework.demos.manual.store.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.swing.framework.model.SwingEntityModel;
 
+// tag::addressModel[]
 public class AddressModel extends SwingEntityModel {
 
   public AddressModel(EntityConnectionProvider connectionProvider) {
-    super(new AddressEditModel(connectionProvider),
-            new AddressTableModel(connectionProvider));
+    super(Store.T_ADDRESS, connectionProvider);
   }
 }
+// end::addressModel[]

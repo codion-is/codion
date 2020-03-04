@@ -366,7 +366,7 @@ To run the full CRUD test for a domain entity you need to call the *test(String 
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/domain/StoreTest.java[lines=13..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/domain/StoreTest.java[tags=storeTest]
 ----
 
 === Examples
