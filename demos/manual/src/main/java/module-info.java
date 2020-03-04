@@ -1,4 +1,4 @@
-module org.jminor.framework.demos.empdept {
+module org.jminor.framework.demos.manual {
   requires java.desktop;
   requires org.jminor.common.core;
   requires org.jminor.framework.db.local;
@@ -12,4 +12,5 @@ module org.jminor.framework.demos.empdept {
   requires org.junit.jupiter.api;
 
   exports org.jminor.framework.demos.manual.store.domain;
+  exports org.jminor.framework.demos.manual.store.ui;
 }

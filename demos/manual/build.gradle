@@ -1,3 +1,5 @@
+import org.javamodularity.moduleplugin.tasks.ModularJavaExec
+
 apply from: '../demos.gradle'
 
 dependencies {
@@ -19,8 +21,22 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'org.jminor.framework.demos.manual.store.ui.StoreAppPanel'
+ext.mainClass = "$moduleName/org.jminor.framework.demos.manual.store.ui.StoreAppPanel"
 
 startScripts {
     mainClassName = mainClass
+}
+
+task runClientLocal(type: ModularJavaExec) {
+    group 'run'
+    main = mainClass
+    systemProperties = [
+            'jminor.client.connectionType': 'local',
+            'jminor.db.type'              : 'h2',
+            'jminor.db.host'              : 'h2db',
+            'jminor.db.embedded'          : 'true',
+            'jminor.db.embeddedInMemory'  : 'true',
+            'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+    ]
 }
