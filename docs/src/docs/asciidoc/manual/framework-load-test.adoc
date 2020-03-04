@@ -7,7 +7,7 @@ The application load testing harness is used to see how your application, server
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/test/StoreLoadTest.java[lines=17..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/test/StoreLoadTest.java[tags=storeLoadTest]
 ----
 
 == Examples

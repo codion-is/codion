@@ -15,12 +15,17 @@ public final class StoreTest extends EntityTestUnit {
   }
 
   @Test
+  void customer() throws DatabaseException {
+    test(Store.T_CUSTOMER);
+  }
+
+  @Test
   void address() throws DatabaseException {
     test(Store.T_ADDRESS);
   }
 
   @Test
-  void customer() throws DatabaseException {
-    test(Store.T_CUSTOMER);
+  public void customerAddress() throws Exception {
+    test(Store.T_CUSTOMER_ADDRESS);
   }
 }

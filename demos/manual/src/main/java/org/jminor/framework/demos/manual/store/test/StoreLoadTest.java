@@ -14,15 +14,16 @@ import org.jminor.swing.framework.tools.EntityLoadTestModel;
 import java.util.Collections;
 import java.util.UUID;
 
+// tag::storeLoadTest[]
 public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
 
-  public StoreLoadTest(final User user) {
+  public StoreLoadTest(User user) {
     super(user, Collections.singletonList(new Scenario()));
   }
 
   @Override
   protected StoreAppModel initializeApplication() {
-    final EntityConnectionProvider connectionProvider =
+    EntityConnectionProvider connectionProvider =
             new RemoteEntityConnectionProvider()
                     .setClientId(UUID.randomUUID())
                     .setUser(getUser())
@@ -35,7 +36,7 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
           EntityLoadTestModel.AbstractEntityUsageScenario<StoreAppModel> {
 
     @Override
-    protected void performScenario(final StoreAppModel application)
+    protected void performScenario(StoreAppModel application)
             throws ScenarioException {
       try {
         EntityModel customerModel =
@@ -49,3 +50,4 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
     }
   }
 }
+// end::storeLoadTest[]

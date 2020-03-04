@@ -9,6 +9,7 @@ import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
 
+// tag::customerEditPanel[]
 public class CustomerEditPanel extends EntityEditPanel {
 
   public CustomerEditPanel(SwingEntityEditModel editModel) {
@@ -20,9 +21,9 @@ public class CustomerEditPanel extends EntityEditPanel {
     //the firstName field should receive the focus whenever the panel is initialized
     setInitialFocusProperty(Store.CUSTOMER_FIRST_NAME);
 
-    createTextField(Store.CUSTOMER_FIRST_NAME);
-    createTextField(Store.CUSTOMER_LAST_NAME);
-    createForeignKeyComboBox(Store.CUSTOMER_ADDRESS_FK);
+    createTextField(Store.CUSTOMER_FIRST_NAME).setColumns(15);
+    createTextField(Store.CUSTOMER_LAST_NAME).setColumns(15);
+    createTextField(Store.CUSTOMER_EMAIL).setColumns(15);
     createCheckBox(Store.CUSTOMER_IS_ACTIVE, null, false);
 
     setLayout(new GridLayout(4,1));
@@ -31,7 +32,8 @@ public class CustomerEditPanel extends EntityEditPanel {
     //property caption as defined in the domain model
     addPropertyPanel(Store.CUSTOMER_FIRST_NAME);
     addPropertyPanel(Store.CUSTOMER_LAST_NAME);
-    addPropertyPanel(Store.CUSTOMER_ADDRESS_FK);
+    addPropertyPanel(Store.CUSTOMER_EMAIL);
     addPropertyPanel(Store.CUSTOMER_IS_ACTIVE);
   }
 }
+// end::customerEditPanel[]

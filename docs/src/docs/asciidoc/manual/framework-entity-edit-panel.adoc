@@ -8,7 +8,17 @@ When extending an EntityEditPanel you must implement the *initializeUI()* method
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerEditPanel.java[lines=12..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerEditPanel.java[tags=customerEditPanel]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/AddressEditPanel.java[tags=addressEditPanel]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerAddressEditPanel.java[tags=customerAddressEditPanel]
 ----
 
 == Input controls

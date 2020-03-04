@@ -7,17 +7,7 @@ The {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditMode
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressModel.java[lines=9..-1]
-----
-
-[source,java,indent=0]
-----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerEditModel.java[lines=10..-1]
-----
-
-[source,java,indent=0]
-----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressEditModel.java[lines=10..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
 ----
 
 [source,java,indent=0]

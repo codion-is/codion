@@ -9,9 +9,10 @@ import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
 
-public final class AdressEditPanel extends EntityEditPanel {
+// tag::addressEditPanel[]
+public class AddressEditPanel extends EntityEditPanel {
 
-  public AdressEditPanel(final SwingEntityEditModel editModel) {
+  public AddressEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
 
@@ -19,8 +20,8 @@ public final class AdressEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(Store.ADDRESS_STREET);
 
-    createTextField(Store.ADDRESS_STREET);
-    createTextField(Store.ADDRESS_CITY);
+    createTextField(Store.ADDRESS_STREET).setColumns(25);
+    createTextField(Store.ADDRESS_CITY).setColumns(25);
     createCheckBox(Store.ADDRESS_VALID, null, false);
 
     setLayout(new GridLayout(3, 1, 5, 5));
@@ -29,3 +30,4 @@ public final class AdressEditPanel extends EntityEditPanel {
     addPropertyPanel(Store.ADDRESS_VALID);
   }
 }
+// end::addressEditPanel[]

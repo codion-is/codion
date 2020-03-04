@@ -245,11 +245,13 @@ public final class EntityLookupField extends JTextField {
       }
       @Override
       public void focusLost(final FocusEvent e) {
-        if (getText().length() == 0) {
-          getModel().setSelectedEntity(null);
-        }
-        else if (!searchHint.isHintTextVisible() && !performingLookup && !model.searchStringRepresentsSelected()) {
-          performLookup(false);
+        if (!e.isTemporary()) {
+          if (getText().length() == 0) {
+            getModel().setSelectedEntity(null);
+          }
+          else if (!searchHint.isHintTextVisible() && !performingLookup && !model.searchStringRepresentsSelected()) {
+            performLookup(false);
+          }
         }
         updateColors();
       }

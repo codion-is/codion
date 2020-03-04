@@ -30,13 +30,36 @@ public final class Store extends Domain {
   public static final String CUSTOMER_FIRST_NAME = "first_name";
   public static final String CUSTOMER_LAST_NAME = "last_name";
   public static final String CUSTOMER_EMAIL = "email";
-  public static final String CUSTOMER_ADDRESS_ID = "address_id";
-  public static final String CUSTOMER_ADDRESS_FK = "address_fk";
   public static final String CUSTOMER_IS_ACTIVE = "is_active";
 
+  public static final String T_CUSTOMER_ADDRESS = "store.customer_address";
+  public static final String CUSTOMER_ADDRESS_ID = "id";
+  public static final String CUSTOMER_ADDRESS_CUSTOMER_ID = "customer_id";
+  public static final String CUSTOMER_ADDRESS_CUSTOMER_FK = "customer_fk";
+  public static final String CUSTOMER_ADDRESS_ADDRESS_ID = "address_id";
+  public static final String CUSTOMER_ADDRESS_ADDRESS_FK = "address_fk";
+
   public Store() {
-    address();
     customer();
+    address();
+    customerAddress();
+  }
+
+  private void customer() {
+    // tag::customer[]
+    define(T_CUSTOMER,
+            primaryKeyProperty(CUSTOMER_ID, Types.VARCHAR),
+            columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
+                    .setNullable(false).setMaxLength(40),
+            columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
+                    .setNullable(false).setMaxLength(40),
+            columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email"),
+            columnProperty(CUSTOMER_IS_ACTIVE, Types.BOOLEAN, "Is active")
+                    .setColumnHasDefaultValue(true).setDefaultValue(true))
+            .setKeyGenerator(new UUIDKeyGenerator())
+            .setStringProvider(new CustomerToString())
+            .setCaption("Customer");
+    // end::customer[]
   }
 
   private void address() {
@@ -51,26 +74,25 @@ public final class Store extends Domain {
                     .setColumnHasDefaultValue(true).setNullable(false))
             .setStringProvider(new StringProvider(ADDRESS_STREET)
                     .addText(", ").addValue(ADDRESS_CITY))
-            .setKeyGenerator(automatic(T_ADDRESS));
+            .setKeyGenerator(automatic(T_ADDRESS))
+            .setSmallDataset(true)
+            .setCaption("Address");
     // end::address[]
   }
 
-  private void customer() {
-    // tag::customer[]
-    define(T_CUSTOMER,
-            primaryKeyProperty(CUSTOMER_ID, Types.VARCHAR),
-            columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
-                    .setNullable(false).setMaxLength(40),
-            columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
-                    .setNullable(false).setMaxLength(40),
-            columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email"),
-            foreignKeyProperty(CUSTOMER_ADDRESS_FK, "Address", T_ADDRESS,
-                    columnProperty(CUSTOMER_ADDRESS_ID)),
-            columnProperty(CUSTOMER_IS_ACTIVE, Types.BOOLEAN, "Is active")
-                    .setColumnHasDefaultValue(true).setDefaultValue(true))
-            .setKeyGenerator(new UUIDKeyGenerator())
-            .setStringProvider(new CustomerToString());
-    // end::customer[]
+  private void customerAddress() {
+    // tag::customerAddress[]
+    define(T_CUSTOMER_ADDRESS,
+            primaryKeyProperty(CUSTOMER_ADDRESS_ID),
+            foreignKeyProperty(CUSTOMER_ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
+                    columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID, Types.VARCHAR))
+                    .setNullable(false),
+            foreignKeyProperty(CUSTOMER_ADDRESS_ADDRESS_FK, "Address", T_ADDRESS,
+                    columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID))
+                    .setNullable(false))
+            .setKeyGenerator(automatic(T_CUSTOMER_ADDRESS))
+            .setCaption("Customer address");
+    // end::customerAddress[]
   }
 
   // tag::toString[]

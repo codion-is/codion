@@ -7,15 +7,10 @@ The {url-javadoc}/org/jminor/framework/model/EntityTableModel.html[EntityTableMo
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressTableModel.java[lines=9..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerTableModel.java[lines=10..-1]
-----
-
-[source,java]
-----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/AddressTableModel.java[lines=10..-1]
+include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerAddressTableModel.java[tags=customerAddressTableModel]
 ----
