@@ -77,7 +77,7 @@ public class DefaultLocalEntityConnectionTest {
       connection.beginTransaction();
       final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 40);
       assertEquals(0, connection.delete(new ArrayList<>()));
-      assertEquals(1, connection.delete(key));
+      assertTrue(connection.delete(key));
       try {
         connection.selectSingle(key);
         fail();

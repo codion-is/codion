@@ -149,10 +149,10 @@ public interface EntityConnection {
    * Deletes the entity with the given primary key.
    * Performs a commit unless a transaction is open.
    * @param entityKey the primary key of the entity to delete
-   * @return the number of deleted rows
+   * @return true if a record was deleted, false otherwise
    * @throws DatabaseException in case of a database exception
    */
-  int delete(Entity.Key entityKey) throws DatabaseException;
+  boolean delete(Entity.Key entityKey) throws DatabaseException;
 
   /**
    * Deletes the entities with the given primary keys.

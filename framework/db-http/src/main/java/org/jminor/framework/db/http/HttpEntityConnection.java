@@ -306,8 +306,8 @@ final class HttpEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public int delete(final Entity.Key entityKey) throws DatabaseException {
-    return delete(singletonList(entityKey));
+  public boolean delete(final Entity.Key entityKey) throws DatabaseException {
+    return delete(singletonList(entityKey)) == 1;
   }
 
   /** {@inheritDoc} */
