@@ -5693,3 +5693,4 @@
   EntityConnection, insert, update and delete for single Entity/Key instances added
   EntityConnection.delete(Entity.Key) now returns boolean, true if record was deleted, false otherwise
   DefaultLocalEntityConnection, populateStatementPropertiesAndValues() refactored
+  DefaultLocalEntityConnection, some renaming and minor refactoring
