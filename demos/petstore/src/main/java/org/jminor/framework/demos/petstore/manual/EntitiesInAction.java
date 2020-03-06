@@ -14,7 +14,6 @@ import org.jminor.framework.domain.Entity;
 
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 public final class EntitiesInAction {
@@ -35,7 +34,7 @@ public final class EntitiesInAction {
     insects.put(CATEGORY_NAME, "Insects");
     insects.put(CATEGORY_DESCRIPTION, "Creepy crawlies");
 
-    connection.insert(singletonList(insects));
+    connection.insert(insects);
 
     //populate a new product for the insect category
     Entity smallBeetles = store.entity(T_PRODUCT);
@@ -43,7 +42,7 @@ public final class EntitiesInAction {
     smallBeetles.put(PRODUCT_NAME, "Small Beetles");
     smallBeetles.put(PRODUCT_DESCRIPTION, "Beetles on the smaller side");
 
-    connection.insert(singletonList(smallBeetles));
+    connection.insert(smallBeetles);
 
     //see what products are available for the Cats category
     Entity categoryCats = connection.selectSingle(T_CATEGORY, CATEGORY_NAME, "Cats");

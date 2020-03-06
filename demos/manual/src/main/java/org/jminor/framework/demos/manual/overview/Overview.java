@@ -19,7 +19,6 @@ import org.jminor.swing.framework.ui.EntityPanel;
 import java.sql.Types;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static org.jminor.framework.demos.manual.overview.Overview.Store.*;
 import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
@@ -131,25 +130,25 @@ public final class Overview {
     customer.put(CUSTOMER_FIRST_NAME, "John");
     customer.put(CUSTOMER_LAST_NAME, "Doe");
 
-    connection.insert(singletonList(customer));
+    connection.insert(customer);
 
     Entity address = domain.entity(T_ADDRESS);
     address.put(ADDRESS_STREET, "Elm Street 321");
     address.put(ADDRESS_CITY, "Syracuse");
 
-    connection.insert(singletonList(address));
+    connection.insert(address);
 
     Entity customerAddress = domain.entity(T_CUSTOMER_ADDRESS);
     customerAddress.put(CUSTOMER_ADDRESS_CUSTOMER_FK, customer);
     customerAddress.put(CUSTOMER_ADDRESS_ADDRESS_FK, address);
 
-    connection.insert(singletonList(customerAddress));
+    connection.insert(customerAddress);
 
     customer.put(CUSTOMER_FIRST_NAME, "Jonathan");
 
-    connection.update(singletonList(customer));
+    connection.update(customer);
 
-    connection.delete(singletonList(customerAddress.getKey()));
+    connection.delete(customerAddress.getKey());
     // end::persist[]
   }
 }

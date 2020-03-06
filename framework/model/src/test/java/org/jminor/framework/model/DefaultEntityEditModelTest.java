@@ -122,7 +122,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.refreshEntity();
       employeeEditModel.setEntity(employee);
       employee.put(TestDomain.EMP_NAME, "NOONE");
-      connection.update(singletonList(employee));
+      connection.update(employee);
       employeeEditModel.refreshEntity();
       assertEquals("NOONE", employeeEditModel.get(TestDomain.EMP_NAME));
     }
@@ -343,7 +343,8 @@ public final class DefaultEntityEditModelTest {
       tmpDept.put(TestDomain.DEPARTMENT_LOCATION, "Limbo");
       tmpDept.put(TestDomain.DEPARTMENT_NAME, "Judgment");
 
-      final Entity department = employeeEditModel.getConnectionProvider().getConnection().selectSingle(employeeEditModel.getConnectionProvider().getConnection().insert(singletonList(tmpDept)).get(0));
+      final Entity department = employeeEditModel.getConnectionProvider().getConnection()
+              .selectSingle(employeeEditModel.getConnectionProvider().getConnection().insert(tmpDept));
 
       employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, department);
 

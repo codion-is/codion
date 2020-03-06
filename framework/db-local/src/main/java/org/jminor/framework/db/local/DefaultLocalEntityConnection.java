@@ -203,6 +203,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
+  public Entity.Key insert(final Entity entity) throws DatabaseException {
+    return insert(singletonList(requireNonNull(entity, "entity"))).get(0);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES_PARAM_NAME);
     if (entities.isEmpty()) {
@@ -253,6 +259,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         closeSilently(statement);
       }
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity update(final Entity entity) throws DatabaseException {
+    return update(singletonList(requireNonNull(entity, "entity"))).get(0);
   }
 
   /** {@inheritDoc} */
@@ -408,6 +420,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         closeSilently(statement);
       }
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int delete(final Entity.Key key) throws DatabaseException {
+    return delete(singletonList(requireNonNull(key, "key")));
   }
 
   /** {@inheritDoc} */
