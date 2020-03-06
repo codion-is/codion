@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.jminor.common.Conjunction.AND;
 import static org.jminor.common.db.ConditionType.LIKE;
 import static org.jminor.common.db.ConditionType.NOT_LIKE;
@@ -137,13 +136,13 @@ public final class EntityConnectionDemo {
     Entity myBand = domain.entity(T_ARTIST);
     myBand.put(ARTIST_NAME, "My Band");
 
-    connection.insert(singletonList(myBand));
+    connection.insert(myBand);
 
     Entity album = domain.entity(T_ALBUM);
     album.put(ALBUM_ARTIST_FK, myBand);
     album.put(ALBUM_TITLE, "First album");
 
-    connection.insert(singletonList(album));
+    connection.insert(album);
     // end::insert[]
   }
 
@@ -153,7 +152,7 @@ public final class EntityConnectionDemo {
 
     myBand.put(ARTIST_NAME, "Proper Name");
 
-    connection.update(singletonList(myBand));
+    connection.update(myBand);
     // end::update[]
   }
 
@@ -180,7 +179,7 @@ public final class EntityConnectionDemo {
     // tag::deleteKey[]
     Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Proper Name");
 
-    int deleteCount = connection.delete(singletonList(myBand.getKey()));
+    int deleteCount = connection.delete(myBand.getKey());
     // end::deleteKey[]
   }
 

@@ -5688,5 +5688,6 @@
   TextInputPanel, textField now requests focus when the panel receives it
   EntityEditComponentPanel bug fixed, createTextInputPanel(), text field did not transfer focus on enter
   EntityEditComponentPanel now sets the TextInputPanel as the property component instead of just the text field
-0.13.5
+0.13.5 [API incompatible]
   EntityLookupField, bug fixed, focusLost should only kick in if the focus event is not temporary
+  EntityConnection, insert, update and delete for single Entity/Key instances added

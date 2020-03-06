@@ -77,7 +77,7 @@ public class DefaultLocalEntityConnectionTest {
       connection.beginTransaction();
       final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 40);
       assertEquals(0, connection.delete(new ArrayList<>()));
-      assertEquals(1, connection.delete(singletonList(key)));
+      assertEquals(1, connection.delete(key));
       try {
         connection.selectSingle(key);
         fail();
@@ -115,7 +115,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void deleteReferentialIntegrity() {
     final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 10);
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(singletonList(key)));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(key));
   }
 
   @Test
@@ -123,14 +123,14 @@ public class DefaultLocalEntityConnectionTest {
     final Entity department = DOMAIN.entity(T_DEPARTMENT);
     department.put(DEPARTMENT_ID, 1000);
     department.put(DEPARTMENT_NAME, "SALES");
-    assertThrows(UniqueConstraintException.class, () -> connection.insert(singletonList(department)));
+    assertThrows(UniqueConstraintException.class, () -> connection.insert(department));
   }
 
   @Test
   public void updateUniqueConstraint() throws DatabaseException {
     final Entity department = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_ID, 20);
     department.put(DEPARTMENT_NAME, "SALES");
-    assertThrows(UniqueConstraintException.class, () -> connection.update(singletonList(department)));
+    assertThrows(UniqueConstraintException.class, () -> connection.update(department));
   }
 
   @Test
@@ -140,7 +140,7 @@ public class DefaultLocalEntityConnectionTest {
     emp.put(EMP_NAME, "Testing");
     emp.put(EMP_DEPARTMENT, -1010);//not available
     emp.put(EMP_SALARY, 2000d);
-    assertThrows(ReferentialIntegrityException.class, () -> connection.insert(singletonList(emp)));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.insert(emp));
   }
 
   @Test
@@ -151,7 +151,7 @@ public class DefaultLocalEntityConnectionTest {
     noPk.put(NO_PK_COL3, "10");
     noPk.put(NO_PK_COL4, 10);
 
-    final Entity.Key key = connection.insert(singletonList(noPk)).get(0);
+    final Entity.Key key = connection.insert(noPk);
     assertEquals(0, key.size());
   }
 
@@ -159,13 +159,13 @@ public class DefaultLocalEntityConnectionTest {
   public void updateNoParentKey() throws DatabaseException {
     final Entity emp = connection.selectSingle(T_EMP, EMP_ID, 3);
     emp.put(EMP_DEPARTMENT, -1010);//not available
-    assertThrows(ReferentialIntegrityException.class, () -> connection.update(singletonList(emp)));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.update(emp));
   }
 
   @Test
   public void deleteByKeyWithForeignKeys() throws DatabaseException {
     final Entity accounting = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "ACCOUNTING");
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(singletonList(accounting.getKey())));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(accounting.getKey()));
   }
 
   @Test
@@ -404,7 +404,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       final Entity department = DOMAIN.entity(T_DEPARTMENT);
-      assertThrows(DatabaseException.class, () -> connection.insert(singletonList(department)));
+      assertThrows(DatabaseException.class, () -> connection.insert(department));
     }
     finally {
       connection.rollbackTransaction();
@@ -416,7 +416,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       final Entity department = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_ID, 10);
-      assertThrows(DatabaseException.class, () -> connection.update(singletonList(department)));
+      assertThrows(DatabaseException.class, () -> connection.update(department));
     }
     finally {
       connection.rollbackTransaction();
@@ -437,7 +437,7 @@ public class DefaultLocalEntityConnectionTest {
     final LocalDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP));
     emp.put(EMP_HIRETIME, hiretime);
 
-    emp = connection.selectSingle(connection.insert(singletonList(emp)).get(0));
+    emp = connection.selectSingle(connection.insert(emp));
 
     assertEquals(hiredate, emp.getDate(EMP_HIREDATE));
     assertEquals(hiretime, emp.getTimestamp(EMP_HIRETIME));
@@ -455,28 +455,28 @@ public class DefaultLocalEntityConnectionTest {
     emp.put(EMP_NAME, name);
     emp.put(EMP_SALARY, salary);
 
-    emp = connection.selectSingle(connection.insert(singletonList(emp)).get(0));
+    emp = connection.selectSingle(connection.insert(emp));
     assertEquals(sales, emp.get(EMP_DEPARTMENT_FK));
     assertEquals(name, emp.get(EMP_NAME));
     assertEquals(salary, emp.get(EMP_SALARY));
     assertEquals(defaultCommission, emp.get(EMP_COMMISSION));
-    connection.delete(singletonList(emp.getKey()));
+    connection.delete(emp.getKey());
 
     emp.put(EMP_COMMISSION, null);//default value should not kick in
-    emp = connection.selectSingle(connection.insert(singletonList(emp)).get(0));
+    emp = connection.selectSingle(connection.insert(emp));
     assertEquals(sales, emp.get(EMP_DEPARTMENT_FK));
     assertEquals(name, emp.get(EMP_NAME));
     assertEquals(salary, emp.get(EMP_SALARY));
     assertNull(emp.get(EMP_COMMISSION));
-    connection.delete(singletonList(emp.getKey()));
+    connection.delete(emp.getKey());
 
     emp.remove(EMP_COMMISSION);//default value should kick in
-    emp = connection.selectSingle(connection.insert(singletonList(emp)).get(0));
+    emp = connection.selectSingle(connection.insert(emp));
     assertEquals(sales, emp.get(EMP_DEPARTMENT_FK));
     assertEquals(name, emp.get(EMP_NAME));
     assertEquals(salary, emp.get(EMP_SALARY));
     assertEquals(defaultCommission, emp.get(EMP_COMMISSION));
-    connection.delete(singletonList(emp.getKey()));
+    connection.delete(emp.getKey());
   }
 
   @Test
@@ -512,7 +512,7 @@ public class DefaultLocalEntityConnectionTest {
     employee.put(EMP_ID, -888);//non existing
     employee.saveAll();
     employee.put(EMP_NAME, "New name");
-    assertThrows(UpdateException.class, () -> connection.update(singletonList(employee)));
+    assertThrows(UpdateException.class, () -> connection.update(employee));
   }
 
   @Test
@@ -608,7 +608,7 @@ public class DefaultLocalEntityConnectionTest {
 
       sales.put(DEPARTMENT_LOCATION, "Syracuse");
       try {
-        connection2.update(singletonList(sales));
+        connection2.update(sales);
         fail("Should not be able to update record selected for update by another connection");
       }
       catch (final DatabaseException ignored) {
@@ -618,9 +618,9 @@ public class DefaultLocalEntityConnectionTest {
       connection.select(entitySelectCondition(T_DEPARTMENT));//any query will do
 
       try {
-        sales = connection2.update(singletonList(sales)).get(0);
+        sales = connection2.update(sales);
         sales.put(DEPARTMENT_LOCATION, originalLocation);
-        connection2.update(singletonList(sales));//revert changes to data
+        connection2.update(sales);//revert changes to data
       }
       catch (final DatabaseException ignored) {
         fail("Should be able to update record after other connection released the select for update lock");
@@ -643,11 +643,11 @@ public class DefaultLocalEntityConnectionTest {
 
       allen = connection.selectSingle(condition);
 
-      connection2.delete(singletonList(allen.getKey()));
+      connection2.delete(allen.getKey());
 
       allen.put(EMP_JOB, "CLERK");
       try {
-        connection.update(singletonList(allen));
+        connection.update(allen);
         fail("Should not be able to update record deleted by another connection");
       }
       catch (final RecordModifiedException e) {
@@ -656,7 +656,7 @@ public class DefaultLocalEntityConnectionTest {
       }
 
       try {
-        connection2.insert(singletonList(allen));//revert changes to data
+        connection2.insert(allen);//revert changes to data
       }
       catch (final DatabaseException ignored) {
         fail("Should be able to update record after other connection released the select for update lock");
@@ -679,9 +679,9 @@ public class DefaultLocalEntityConnectionTest {
     try {
       final Entity department = baseConnection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "SALES");
       oldLocation = (String) department.put(DEPARTMENT_LOCATION, "NEWLOC");
-      updatedDepartment = baseConnection.update(singletonList(department)).get(0);
+      updatedDepartment = baseConnection.update(department);
       try {
-        optimisticConnection.update(singletonList(department));
+        optimisticConnection.update(department);
         fail("RecordModifiedException should have been thrown");
       }
       catch (final RecordModifiedException e) {
@@ -693,7 +693,7 @@ public class DefaultLocalEntityConnectionTest {
       try {
         if (updatedDepartment != null && oldLocation != null) {
           updatedDepartment.put(DEPARTMENT_LOCATION, oldLocation);
-          baseConnection.update(singletonList(updatedDepartment));
+          baseConnection.update(updatedDepartment);
         }
       }
       catch (final DatabaseException e) {
@@ -717,13 +717,13 @@ public class DefaultLocalEntityConnectionTest {
 
       final Entity employee = baseConnection.selectSingle(T_EMP, EMP_NAME, "BLAKE");
       employee.put(EMP_DATA, bytes);
-      updatedEmployee = baseConnection.update(singletonList(employee)).get(0);
+      updatedEmployee = baseConnection.update(employee);
 
       random.nextBytes(bytes);
       employee.put(EMP_DATA, bytes);
 
       try {
-        optimisticConnection.update(singletonList(employee));
+        optimisticConnection.update(employee);
         fail("RecordModifiedException should have been thrown");
       }
       catch (final RecordModifiedException e) {
@@ -835,7 +835,7 @@ public class DefaultLocalEntityConnectionTest {
     final Entity scott = connection.selectSingle(T_EMP, EMP_ID, 7);
     scott.put(EMP_DATA_LAZY, lazyBytes);
     scott.put(EMP_DATA, bytes);
-    connection.update(singletonList(scott));
+    connection.update(scott);
     scott.saveAll();
 
     byte[] lazyFromDb = connection.readBlob(scott.getKey(), EMP_DATA_LAZY);
@@ -857,7 +857,7 @@ public class DefaultLocalEntityConnectionTest {
     scott.put(EMP_DATA_LAZY, newLazyBytes);
     scott.put(EMP_DATA, newBytes);
 
-    connection.update(singletonList(scott)).get(0);
+    connection.update(scott);
 
     lazyFromDb = connection.readBlob(scott.getKey(), EMP_DATA_LAZY);
     assertArrayEquals(newLazyBytes, lazyFromDb);
@@ -870,7 +870,7 @@ public class DefaultLocalEntityConnectionTest {
   public void testUUIDPrimaryKeyColumnWithDefaultValue() throws DatabaseException {
     final Entity entity = DOMAIN.entity(T_UUID_TEST_DEFAULT);
     entity.put(UUID_TEST_DEFAULT_DATA, "test");
-    connection.insert(singletonList(entity));
+    connection.insert(entity);
     assertNotNull(entity.get(UUID_TEST_DEFAULT_ID));
     assertEquals("test", entity.getString(UUID_TEST_DEFAULT_DATA));
   }
@@ -879,7 +879,7 @@ public class DefaultLocalEntityConnectionTest {
   public void testUUIDPrimaryKeyColumnWithoutDefaultValue() throws DatabaseException {
     final Entity entity = DOMAIN.entity(T_UUID_TEST_NO_DEFAULT);
     entity.put(UUID_TEST_NO_DEFAULT_DATA, "test");
-    connection.insert(singletonList(entity));
+    connection.insert(entity);
     assertNotNull(entity.get(UUID_TEST_NO_DEFAULT_ID));
     assertEquals("test", entity.getString(UUID_TEST_NO_DEFAULT_DATA));
   }

@@ -320,9 +320,9 @@ public class EntityTestUnit {
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
   private Entity testInsert(final Entity testEntity) throws DatabaseException {
-    final List<Entity.Key> keys = connection.insert(singletonList(testEntity));
+    final Entity.Key key = connection.insert(testEntity);
     try {
-      return connection.selectSingle(keys.get(0));
+      return connection.selectSingle(key);
     }
     catch (final RecordNotFoundException e) {
       fail("Inserted entity of type " + testEntity.getEntityId() + " not returned by select after insert");
@@ -359,7 +359,7 @@ public class EntityTestUnit {
       return;
     }
 
-    final Entity updated = connection.update(singletonList(testEntity)).get(0);
+    final Entity updated = connection.update(testEntity);
     assertEquals(testEntity.getKey(), updated.getKey());
     for (final ColumnProperty property : getDomain().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
       if (!property.isReadOnly() && property.isUpdatable()) {
@@ -415,7 +415,7 @@ public class EntityTestUnit {
         }
       }
 
-      return connection.selectSingle(connection.insert(singletonList(entity)).get(0));
+      return connection.selectSingle(connection.insert(entity));
     }
     catch (final DatabaseException e) {
       LOG.error("EntityTestUnit.insertOrSelect()", e);
