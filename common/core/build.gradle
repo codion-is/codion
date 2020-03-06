@@ -1,17 +1,14 @@
-classes {
-    doFirst {
+task writeVersion {
+    group 'build'
+    def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + '/org/jminor/common/version.properties')
+    inputs.property("version", project.version)
+    outputs.file(versionFile)
+
+    doLast {
         def versionProperties = new Properties()
         versionProperties.put('version', project.version)
-        def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + '/org/jminor/common/version.properties')
-        if (!versionFile.exists()) {
-            versionProperties.store(versionFile.newWriter(), null)
-        }
-        else {
-            versionFile.withInputStream { versionProperties.load(it) }
-            if (!Objects.equals(project.version, versionProperties.get('version'))) {
-                versionProperties.put('version', project.version)
-                versionProperties.store(versionFile.newWriter(), null)
-            }
-        }
+        versionProperties.store(versionFile.newWriter(), null)
     }
 }
+
+classes.dependsOn writeVersion
