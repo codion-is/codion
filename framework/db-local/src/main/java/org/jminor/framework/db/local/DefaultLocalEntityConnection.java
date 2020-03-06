@@ -90,7 +90,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<String, String[]> primaryKeyAndWritableColumnPropertyIds = new HashMap<>();
   private final Map<String, String> allColumnsClauses = new HashMap<>();
 
-  private boolean optimisticLocking = true;
+  private boolean optimisticLockingEnabled = true;
   private boolean limitForeignKeyFetchDepth = true;
 
   /**
@@ -286,7 +286,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String updateQuery = null;
     synchronized (connection) {
       try {
-        performOptimisticLocking(entitiesByEntityId);
+        if (optimisticLockingEnabled) {
+          performOptimisticLocking(entitiesByEntityId);
+        }
 
         final List<ColumnProperty> statementProperties = new ArrayList<>();
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
@@ -598,16 +600,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(condition, CONDITION_PARAM_NAME);
     final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
-    final String baseSelectQuery = selectQuery(Queries.columnsClause(entityDefinition.getPrimaryKeyProperties()),
+    final String subQuery = selectQuery(Queries.columnsClause(entityDefinition.getPrimaryKeyProperties()),
             whereCondition, entityDefinition, connection.getDatabase());
-    final String rowCountSelectQuery = selectQuery("(" + baseSelectQuery + ")", "count(*)", null, null);
+    final String selectQuery = selectQuery("(" + subQuery + ")", "count(*)");
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    QUERY_COUNTER.count(rowCountSelectQuery);
+    QUERY_COUNTER.count(selectQuery);
     synchronized (connection) {
       try {
-        statement = prepareStatement(rowCountSelectQuery);
-        resultSet = executeQuery(statement, rowCountSelectQuery, whereCondition);
+        statement = prepareStatement(selectQuery);
+        resultSet = executeQuery(statement, selectQuery, whereCondition);
         final List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
         if (result.isEmpty()) {
@@ -618,7 +620,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), rowCountSelectQuery, whereCondition.getValues(), e, null), e);
+        LOG.error(createLogMessage(getUser(), selectQuery, whereCondition.getValues(), e, null), e);
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -849,14 +851,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isOptimisticLocking() {
-    return optimisticLocking;
+  public boolean isOptimisticLockingEnabled() {
+    return optimisticLockingEnabled;
   }
 
   /** {@inheritDoc} */
   @Override
-  public LocalEntityConnection setOptimisticLocking(final boolean optimisticLocking) {
-    this.optimisticLocking = optimisticLocking;
+  public LocalEntityConnection setOptimisticLockingEnabled(final boolean optimisticLockingEnabled) {
+    this.optimisticLockingEnabled = optimisticLockingEnabled;
     return this;
   }
 
@@ -884,9 +886,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * the {@code modifiedRow} provided by the exception is null
    */
   private void performOptimisticLocking(final Map<String, List<Entity>> entitiesByEntityId) throws SQLException, RecordModifiedException {
-    if (!optimisticLocking) {
-      return;
-    }
     for (final Map.Entry<String, List<Entity>> entitiesByEntityIdEntry : entitiesByEntityId.entrySet()) {
       final List<Entity.Key> originalKeys = getOriginalKeys(entitiesByEntityIdEntry.getValue());
       final EntitySelectCondition selectForUpdateCondition = entitySelectCondition(originalKeys);

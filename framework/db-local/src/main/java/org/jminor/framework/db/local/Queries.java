@@ -74,6 +74,16 @@ final class Queries {
    * Generates a sql select query with the given parameters
    * @param tableName the name of the table from which to select
    * @param columnsClause the columns to select, example: "col1, col2"
+   * @return the generated sql query
+   */
+  static String selectQuery(final String tableName, final String columnsClause) {
+    return selectQuery(tableName, columnsClause, null, null);
+  }
+
+  /**
+   * Generates a sql select query with the given parameters
+   * @param tableName the name of the table from which to select
+   * @param columnsClause the columns to select, example: "col1, col2"
    * @param whereClause the where condition without the WHERE keyword
    * @param orderByClause a string specifying the columns 'ORDER BY' clause,
    * "col1, col2" as input results in the following order by clause "order by col1, col2"
@@ -100,8 +110,7 @@ final class Queries {
     boolean containsWhereClause = false;
     String selectQuery = entityDefinition.getSelectQuery();
     if (selectQuery == null) {
-      selectQuery = selectQuery(isForUpdate ? entityDefinition.getTableName() : entityDefinition.getSelectTableName(),
-              columnsClause, null, null);
+      selectQuery = selectQuery(isForUpdate ? entityDefinition.getTableName() : entityDefinition.getSelectTableName(), columnsClause);
     }
     else {
       containsWhereClause = entityDefinition.selectQueryContainsWhereClause();

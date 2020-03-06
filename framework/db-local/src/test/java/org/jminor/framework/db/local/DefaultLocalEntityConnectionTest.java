@@ -507,7 +507,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void updateNonExisting() throws DatabaseException {
     //otherwise the optimistic locking triggers an error
-    connection.setOptimisticLocking(false);
+    connection.setOptimisticLockingEnabled(false);
     final Entity employee = connection.selectSingle(T_EMP, EMP_ID, 4);
     employee.put(EMP_ID, -888);//non existing
     employee.saveAll();
@@ -636,7 +636,7 @@ public class DefaultLocalEntityConnectionTest {
   public void optimisticLockingDeleted() throws Exception {
     final DefaultLocalEntityConnection connection = initializeConnection();
     final EntityConnection connection2 = initializeConnection();
-    connection.setOptimisticLocking(true);
+    connection.setOptimisticLockingEnabled(true);
     final Entity allen;
     try {
       final EntitySelectCondition condition = entitySelectCondition(T_EMP, EMP_NAME, ConditionType.LIKE, "ALLEN");
@@ -672,8 +672,8 @@ public class DefaultLocalEntityConnectionTest {
   public void optimisticLockingModified() throws Exception {
     final DefaultLocalEntityConnection baseConnection = initializeConnection();
     final DefaultLocalEntityConnection optimisticConnection = initializeConnection();
-    optimisticConnection.setOptimisticLocking(true);
-    assertTrue(optimisticConnection.isOptimisticLocking());
+    optimisticConnection.setOptimisticLockingEnabled(true);
+    assertTrue(optimisticConnection.isOptimisticLockingEnabled());
     String oldLocation = null;
     Entity updatedDepartment = null;
     try {
@@ -708,7 +708,7 @@ public class DefaultLocalEntityConnectionTest {
   public void optimisticLockingBlob() throws Exception {
     final DefaultLocalEntityConnection baseConnection = initializeConnection();
     final DefaultLocalEntityConnection optimisticConnection = initializeConnection();
-    optimisticConnection.setOptimisticLocking(true);
+    optimisticConnection.setOptimisticLockingEnabled(true);
     Entity updatedEmployee = null;
     try {
       final Random random = new Random();
