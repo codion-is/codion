@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -232,7 +233,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final List<ColumnProperty> insertableProperties =
                   getInsertableProperties(entityDefinition, keyGenerator.isInserted());
 
-          populateStatementPropertiesAndValues(true, entity, insertableProperties, statementProperties, statementValues);
+          populateInsertStatementPropertiesAndValues(entity, insertableProperties, statementProperties, statementValues);
 
           final String[] returnColumns = keyGenerator.returnGeneratedKeys() ? getPrimaryKeyColumnNames(entityDefinition) : null;
           insertQuery = insertQuery(entityDefinition.getTableName(), statementProperties);
@@ -294,7 +295,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
           final List<Entity> entitiesToUpdate = entityIdEntities.getValue();
           for (final Entity entityToUpdate : entitiesToUpdate) {
-            populateStatementPropertiesAndValues(false, entityToUpdate, updatableProperties,
+            populateUpdateStatementPropertiesAndValues(entityToUpdate, updatableProperties,
                     propertiesToUpdate, propertyValuesToSet);
 
             final WhereCondition updateCondition =
@@ -437,6 +438,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     final Map<String, List<Entity.Key>> keysByEntityId = mapKeysToEntityId(keys);
     checkReadOnly(keysByEntityId.keySet());
+
     PreparedStatement statement = null;
     WhereCondition whereCondition = null;
     String deleteQuery = null;
@@ -1265,31 +1267,53 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   /**
-   * @param inserting if true then all properties with values available in {@code entity} are added,
-   * otherwise update is assumed and only properties with modified values are added.
+   * Populates the given lists with all properties and values available in {@code entity}.
    * @param entity the Entity instance
    * @param entityProperties the column properties the entity type is based on
    * @param statementProperties the list to populate with the properties to use in the statement
    * @param statementValues the list to populate with the values to be used in the statement
    * @throws java.sql.SQLException if no properties to populate the values for were found
    */
-  private static void populateStatementPropertiesAndValues(final boolean inserting, final Entity entity,
+  private static void populateInsertStatementPropertiesAndValues(final Entity entity,
+                                                                 final List<ColumnProperty> entityProperties,
+                                                                 final List<ColumnProperty> statementProperties,
+                                                                 final List<Object> statementValues) throws SQLException {
+    populateStatementPropertiesAndValues(entity, entityProperties, statementProperties, statementValues, entity::containsKey,
+            "Unable to insert entity " + entity.getEntityId() + ", no properties to insert");
+  }
+
+  /**
+   * Populates the given lists with all modified properties and values available in {@code entity}.
+   * @param entity the Entity instance
+   * @param entityProperties the column properties the entity type is based on
+   * @param statementProperties the list to populate with the properties to use in the statement
+   * @param statementValues the list to populate with the values to be used in the statement
+   * @throws java.sql.SQLException if no properties to populate the values for were found
+   */
+  private static void populateUpdateStatementPropertiesAndValues(final Entity entity,
+                                                                 final List<ColumnProperty> entityProperties,
+                                                                 final List<ColumnProperty> statementProperties,
+                                                                 final List<Object> statementValues) throws SQLException {
+    populateStatementPropertiesAndValues(entity, entityProperties, statementProperties, statementValues,
+            property -> entity.containsKey(property) && entity.isModified(property),
+            "Unable to update entity " + entity.getEntityId() + ", no modified values found");
+  }
+
+  private static void populateStatementPropertiesAndValues(final Entity entity,
                                                            final List<ColumnProperty> entityProperties,
                                                            final List<ColumnProperty> statementProperties,
-                                                           final List<Object> statementValues) throws SQLException {
+                                                           final List<Object> statementValues,
+                                                           final Predicate<ColumnProperty> includePredicate,
+                                                           final String onNoPropertiesErrorMessage) throws SQLException {
     for (int i = 0; i < entityProperties.size(); i++) {
       final ColumnProperty property = entityProperties.get(i);
-      if (entity.containsKey(property) && (inserting || entity.isModified(property))) {
+      if (includePredicate.test(property)) {
         statementProperties.add(property);
         statementValues.add(entity.get(property));
       }
     }
     if (statementProperties.isEmpty()) {
-      if (inserting) {
-        throw new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert");
-      }
-
-      throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
+      throw new SQLException(onNoPropertiesErrorMessage);
     }
   }
 
