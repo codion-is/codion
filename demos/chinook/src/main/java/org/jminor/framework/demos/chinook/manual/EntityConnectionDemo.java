@@ -179,7 +179,7 @@ public final class EntityConnectionDemo {
     // tag::deleteKey[]
     Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Proper Name");
 
-    int deleteCount = connection.delete(myBand.getKey());
+    boolean deleted = connection.delete(myBand.getKey());
     // end::deleteKey[]
   }
 

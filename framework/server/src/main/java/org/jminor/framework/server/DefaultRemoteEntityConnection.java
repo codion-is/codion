@@ -193,7 +193,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public int delete(final Entity.Key entityKey) throws RemoteException, DatabaseException {
+  public boolean delete(final Entity.Key entityKey) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.delete(entityKey);
     }

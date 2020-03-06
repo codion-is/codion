@@ -424,8 +424,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public int delete(final Entity.Key key) throws DatabaseException {
-    return delete(singletonList(requireNonNull(key, "key")));
+  public boolean delete(final Entity.Key key) throws DatabaseException {
+    return delete(singletonList(requireNonNull(key, "key"))) == 1;
   }
 
   /** {@inheritDoc} */
