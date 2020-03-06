@@ -230,10 +230,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final KeyGenerator keyGenerator = entityDefinition.getKeyGenerator();
           keyGenerator.beforeInsert(entity, connection);
 
-          final List<ColumnProperty> insertableProperties =
-                  getInsertableProperties(entityDefinition, keyGenerator.isInserted());
-
-          populateStatementPropertiesAndValues(entity, insertableProperties, statementProperties, statementValues, entity::containsKey);
+          populatePropertiesAndValues(entity, getInsertProperties(entityDefinition, keyGenerator.isInserted()),
+                  statementProperties, statementValues, entity::containsKey);
           if (statementProperties.isEmpty()) {
             throw new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert");
           }
@@ -294,11 +292,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
         for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
           final EntityDefinition entityDefinition = getEntityDefinition(entityIdEntities.getKey());
-          final List<ColumnProperty> updatableProperties = getUpdatableProperties(entityDefinition);
+          final List<ColumnProperty> updateProperties = getUpdateProperties(entityDefinition);
 
           final List<Entity> entitiesToUpdate = entityIdEntities.getValue();
           for (final Entity entity : entitiesToUpdate) {
-            populateStatementPropertiesAndValues(entity, updatableProperties, statementProperties, statementValues,
+            populatePropertiesAndValues(entity, updateProperties, statementProperties, statementValues,
                     property -> entity.containsKey(property) && entity.isModified(property));
             if (statementProperties.isEmpty()) {
               throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
@@ -354,12 +352,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public int update(final EntityUpdateCondition condition) throws DatabaseException {
-    requireNonNull(condition, CONDITION_PARAM_NAME);
-    if (condition.getPropertyValues().isEmpty()) {
+  public int update(final EntityUpdateCondition updateCondition) throws DatabaseException {
+    requireNonNull(updateCondition, "updateCondition");
+    if (updateCondition.getPropertyValues().isEmpty()) {
       throw new IllegalArgumentException("No property values provided for update");
     }
-    checkReadOnly(condition.getEntityId());
+    checkReadOnly(updateCondition.getEntityId());
 
     PreparedStatement statement = null;
     String updateQuery = null;
@@ -367,8 +365,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         final List<ColumnProperty> statementProperties = new ArrayList<>();
-        final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
-        for (final Map.Entry<String, Object> propertyValue : condition.getPropertyValues().entrySet()) {
+        final EntityDefinition entityDefinition = getEntityDefinition(updateCondition.getEntityId());
+        for (final Map.Entry<String, Object> propertyValue : updateCondition.getPropertyValues().entrySet()) {
           final ColumnProperty columnProperty = entityDefinition.getColumnProperty(propertyValue.getKey());
           if (!columnProperty.isUpdatable()) {
             throw new IllegalArgumentException("Property is not updatable: " + columnProperty.getPropertyId());
@@ -376,11 +374,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           statementProperties.add(columnProperty);
           statementValues.add(columnProperty.validateType(propertyValue.getValue()));
         }
-        final WhereCondition updateCondition = whereCondition(condition, entityDefinition);
-        updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, updateCondition.getWhereClause());
+        final WhereCondition whereCondition = whereCondition(updateCondition, entityDefinition);
+        updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, whereCondition.getWhereClause());
         statement = prepareStatement(updateQuery);
-        statementProperties.addAll(updateCondition.getColumnProperties());
-        statementValues.addAll(updateCondition.getValues());
+        statementProperties.addAll(whereCondition.getColumnProperties());
+        statementValues.addAll(whereCondition.getValues());
         final int updatedRows = executeUpdate(statement, updateQuery, statementProperties, statementValues);
 
         commitIfTransactionIsNotOpen();
@@ -400,12 +398,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public int delete(final EntityCondition condition) throws DatabaseException {
-    requireNonNull(condition, CONDITION_PARAM_NAME);
-    checkReadOnly(condition.getEntityId());
+  public int delete(final EntityCondition deleteCondition) throws DatabaseException {
+    requireNonNull(deleteCondition, "deleteCondition");
+    checkReadOnly(deleteCondition.getEntityId());
 
-    final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
-    final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
+    final EntityDefinition entityDefinition = getEntityDefinition(deleteCondition.getEntityId());
+    final WhereCondition whereCondition = whereCondition(deleteCondition, entityDefinition);
     PreparedStatement statement = null;
     String deleteQuery = null;
     synchronized (connection) {
@@ -537,12 +535,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> select(final EntitySelectCondition condition) throws DatabaseException {
-    requireNonNull(condition, CONDITION_PARAM_NAME);
+  public List<Entity> select(final EntitySelectCondition selectCondition) throws DatabaseException {
+    requireNonNull(selectCondition, "selectCondition");
     synchronized (connection) {
       try {
-        final List<Entity> result = doSelect(condition);
-        if (!isTransactionOpen() && !condition.isForUpdate()) {
+        final List<Entity> result = doSelect(selectCondition);
+        if (!isTransactionOpen() && !selectCondition.isForUpdate()) {
           commitQuietly();
         }
 
@@ -997,7 +995,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private ResultIterator<Entity> entityIterator(final EntitySelectCondition selectCondition) throws SQLException {
-    requireNonNull(selectCondition, CONDITION_PARAM_NAME);
+    requireNonNull(selectCondition, "selectCondition");
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectQuery = null;
@@ -1138,13 +1136,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private List<ColumnProperty> getInsertableProperties(final EntityDefinition entityDefinition,
-                                                       final boolean includePrimaryKeyProperties) {
+  private List<ColumnProperty> getInsertProperties(final EntityDefinition entityDefinition,
+                                                   final boolean includePrimaryKeyProperties) {
     return insertProperties.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
             entityDefinition.getWritableColumnProperties(includePrimaryKeyProperties, true));
   }
 
-  private List<ColumnProperty> getUpdatableProperties(final EntityDefinition entityDefinition) {
+  private List<ColumnProperty> getUpdateProperties(final EntityDefinition entityDefinition) {
     return updateProperties.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
             entityDefinition.getWritableColumnProperties(true, false));
   }
@@ -1273,22 +1271,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   /**
-   * Populates the given lists with all modified properties and values available in {@code entity}.
+   * Populates the given lists with applicable properties and values.
    * @param entity the Entity instance
    * @param entityProperties the column properties the entity type is based on
    * @param statementProperties the list to populate with the properties to use in the statement
    * @param statementValues the list to populate with the values to be used in the statement
-   * @param includePredicate the Predicate to apply when checking to see if the property should be included
-   * @throws java.sql.SQLException if no properties to populate the values for were found
+   * @param includeIf the Predicate to apply when checking to see if the property should be included
    */
-  private static void populateStatementPropertiesAndValues(final Entity entity,
-                                                           final List<ColumnProperty> entityProperties,
-                                                           final List<ColumnProperty> statementProperties,
-                                                           final List<Object> statementValues,
-                                                           final Predicate<ColumnProperty> includePredicate) throws SQLException {
+  private static void populatePropertiesAndValues(final Entity entity,
+                                                  final List<ColumnProperty> entityProperties,
+                                                  final List<ColumnProperty> statementProperties,
+                                                  final List<Object> statementValues,
+                                                  final Predicate<ColumnProperty> includeIf) throws SQLException {
     for (int i = 0; i < entityProperties.size(); i++) {
       final ColumnProperty property = entityProperties.get(i);
-      if (includePredicate.test(property)) {
+      if (includeIf.test(property)) {
         statementProperties.add(property);
         statementValues.add(entity.get(property));
       }
