@@ -153,9 +153,25 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
+  public Entity.Key insert(final Entity entity) throws RemoteException, DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.insert(entity);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.insert(entities);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity update(final Entity entity) throws RemoteException, DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.update(entity);
     }
   }
 
@@ -172,6 +188,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   public int update(final EntityUpdateCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.update(condition);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean delete(final Entity.Key entityKey) throws RemoteException, DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.delete(entityKey);
     }
   }
 

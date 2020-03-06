@@ -31,7 +31,7 @@ public final class LocalEntityConnections {
                                                        final User user) throws DatabaseException {
     return new DefaultLocalEntityConnection(domain, database, user,
             DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get())
-            .setOptimisticLocking(LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get())
+            .setOptimisticLockingEnabled(LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get())
             .setLimitForeignKeyFetchDepth(LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
   }
 
@@ -49,7 +49,7 @@ public final class LocalEntityConnections {
                                                        final Connection connection) throws DatabaseException {
     return new DefaultLocalEntityConnection(domain, database, connection,
             DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get())
-            .setOptimisticLocking(LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get())
+            .setOptimisticLockingEnabled(LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get())
             .setLimitForeignKeyFetchDepth(LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
   }
 }

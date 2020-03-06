@@ -21,7 +21,6 @@ import java.sql.Types;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
 import static org.jminor.framework.domain.Entities.getKeys;
@@ -162,14 +161,14 @@ public final class EntitiesTutorial {
     connection.beginTransaction();
 
     //we insert the Entity, the insert() method returns a List
-    //containing the primary keys of the inserted records, but
-    //we ignore those since we don't need them right now.
+    //containing the primary key of the inserted record, but
+    //we don't need it right now so we ignore it.
     //Note that the primary key of the entity instance is populated
     //during insert, that's because we're running with a local connection,
     //with a remote connections you have to select the entity
     //after insert to get an instance containing the generated key value
     //or use the key received via the return value
-    connection.insert(singletonList(myBand));
+    connection.insert(myBand);
 
     //now for our first album
     Entity album = domain.entity(T_ALBUM);
@@ -179,7 +178,7 @@ public final class EntitiesTutorial {
     album.put(ALBUM_TITLE, "My first album");
 
     //and insert the album
-    connection.insert(singletonList(album));
+    connection.insert(album);
 
     //and finally we commit
     connection.commitTransaction();

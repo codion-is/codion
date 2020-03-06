@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Random;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
@@ -71,7 +70,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         final List<Entity> departments = client.getConnection().select(entitySelectCondition(EmpDept.T_DEPARTMENT));
         final Entity entity = departments.get(new Random().nextInt(departments.size()));
         entity.put(EmpDept.DEPARTMENT_LOCATION, Text.createRandomString(10, 13));
-        client.getConnection().update(singletonList(entity));
+        client.getConnection().update(entity);
       }
       catch (final Exception e) {
         throw new ScenarioException(e);
@@ -134,7 +133,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         department.put(EmpDept.DEPARTMENT_NAME, Text.createRandomString(4, 8));
         department.put(EmpDept.DEPARTMENT_LOCATION, Text.createRandomString(5, 10));
 
-        client.getConnection().insert(singletonList(department));
+        client.getConnection().insert(department);
       }
       catch (final Exception e) {
         throw new ScenarioException(e);
@@ -164,7 +163,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         employee.put(EmpDept.EMPLOYEE_HIREDATE, LocalDate.now());
         employee.put(EmpDept.EMPLOYEE_COMMISSION, random.nextDouble() * 500);
 
-        client.getConnection().insert(singletonList(employee));
+        client.getConnection().insert(employee);
       }
       catch (final Exception e) {
         throw new ScenarioException(e);

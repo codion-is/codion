@@ -96,6 +96,16 @@ public interface RemoteEntityConnection extends Remote {
   void executeProcedure(String procedureId, Object... arguments) throws RemoteException, DatabaseException;
 
   /**
+   * Inserts the given entity, returning the primary key of the inserted entity.
+   * Performs a commit unless a transaction is open.
+   * @param entity the entity to insert
+   * @return the primary key of the inserted entity
+   * @throws DatabaseException in case of a database exception
+   * @throws RemoteException in case of a remote exception
+   */
+  Entity.Key insert(Entity entity) throws RemoteException, DatabaseException;
+
+  /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
    * in the same order as they were received.
    * If the primary key value of a entity is specified the id generation is disregarded.
@@ -106,6 +116,19 @@ public interface RemoteEntityConnection extends Remote {
    * @throws RemoteException in case of a remote exception
    */
   List<Entity.Key> insert(List<Entity> entities) throws RemoteException, DatabaseException;
+
+  /**
+   * Updates the given entity according to its properties. Returns the updated entity.
+   * Throws an exception if the given entity is unmodified.
+   * Performs a commit unless a transaction is open.
+   * @param entity the entity to update
+   * @return the updated entity
+   * @throws DatabaseException in case of a database exception
+   * @throws org.jminor.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
+   * @throws org.jminor.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
+   * @throws RemoteException in case of a remote exception
+   */
+  Entity update(Entity entity) throws RemoteException, DatabaseException;
 
   /**
    * Updates the given entities according to their properties.
@@ -127,6 +150,16 @@ public interface RemoteEntityConnection extends Remote {
    * @throws RemoteException in case of a remote exception
    */
   int update(EntityUpdateCondition condition) throws RemoteException, DatabaseException;
+
+  /**
+   * Deletes an entity according to the given primary key.
+   * Performs a commit unless a transaction is open.
+   * @param entityKey the primary key of the entity to delete
+   * @return true if a record was deleted, false otherwise
+   * @throws DatabaseException in case of a database exception
+   * @throws RemoteException in case of a remote exception
+   */
+  boolean delete(Entity.Key entityKey) throws RemoteException, DatabaseException;
 
   /**
    * Deletes the entities according to the given primary keys.

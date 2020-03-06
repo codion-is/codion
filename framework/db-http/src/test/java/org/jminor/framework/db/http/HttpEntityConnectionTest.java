@@ -96,10 +96,9 @@ public final class HttpEntityConnectionTest {
     entity.put(TestDomain.DEPARTMENT_ID, 33);
     entity.put(TestDomain.DEPARTMENT_NAME, "name");
     entity.put(TestDomain.DEPARTMENT_LOCATION, "loc");
-    final List<Entity.Key> keys = connection.insert(singletonList(entity));
-    assertEquals(1, keys.size());
-    assertEquals(33, keys.get(0).getFirstValue());
-    connection.delete(keys);
+    final Entity.Key key = connection.insert(entity);
+    assertEquals(33, key.getFirstValue());
+    connection.delete(key);
   }
 
   @Test
@@ -128,7 +127,7 @@ public final class HttpEntityConnectionTest {
   public void update() throws IOException, DatabaseException {
     Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     department.put(TestDomain.DEPARTMENT_NAME, "TEstING");
-    connection.update(singletonList(department));
+    connection.update(department);
     department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, department.get(TestDomain.DEPARTMENT_ID));
     assertEquals("TEstING", department.getString(TestDomain.DEPARTMENT_NAME));
   }
@@ -164,7 +163,7 @@ public final class HttpEntityConnectionTest {
     final Entity employee = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "ADAMS");
     try {
       connection.beginTransaction();
-      assertEquals(1, connection.delete(singletonList(employee.getKey())));
+      assertTrue(connection.delete(employee.getKey()));
       final List<Entity> selected = connection.select(singletonList(employee.getKey()));
       assertTrue(selected.isEmpty());
     }

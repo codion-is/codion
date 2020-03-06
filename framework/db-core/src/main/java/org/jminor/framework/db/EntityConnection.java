@@ -24,8 +24,9 @@ import java.util.Map;
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
  * operations specified by a single {@link Domain} model.
  * {@link #executeFunction(String, Object...)} and {@link #executeProcedure(String, Object...)}
- * do not perform any transaction control but {@link #insert(List)}, {@link #update(List)} and
- * {@link #delete(List)} perform a commit unless they are run within a transaction.
+ * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(List)},
+ * {@link #update(Entity)}, {@link #update(List)}, {@link #delete(Entity.Key)} and {@link #delete(List)}
+ * perform a commit unless they are run within a transaction.
  * @see #beginTransaction()
  * @see #rollbackTransaction()
  * @see #commitTransaction()
@@ -93,6 +94,15 @@ public interface EntityConnection {
   void executeProcedure(String procedureId, Object... arguments) throws DatabaseException;
 
   /**
+   * Inserts the given entity, returning the primary key of the inserted entity.
+   * Performs a commit unless a transaction is open.
+   * @param entity the entity to insert
+   * @return the primary key of the inserted entity
+   * @throws DatabaseException in case of a database exception
+   */
+  Entity.Key insert(Entity entity) throws DatabaseException;
+
+  /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
    * in the same order as they were received.
    * Performs a commit unless a transaction is open.
@@ -101,6 +111,18 @@ public interface EntityConnection {
    * @throws DatabaseException in case of a database exception
    */
   List<Entity.Key> insert(List<Entity> entities) throws DatabaseException;
+
+  /**
+   * Updates the given entity according to its properties. Returns the updated entity.
+   * Throws an exception if the given entity is unmodified.
+   * Performs a commit unless a transaction is open.
+   * @param entity the entity to update
+   * @return the updated entity
+   * @throws DatabaseException in case of a database exception
+   * @throws org.jminor.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
+   * @throws org.jminor.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
+   */
+  Entity update(Entity entity) throws DatabaseException;
 
   /**
    * Updates the given entities according to their properties. Returns the updated entities, in no particular order.
@@ -124,7 +146,16 @@ public interface EntityConnection {
   int update(EntityUpdateCondition condition) throws DatabaseException;
 
   /**
-   * Deletes the entities according to the given primary keys.
+   * Deletes the entity with the given primary key.
+   * Performs a commit unless a transaction is open.
+   * @param entityKey the primary key of the entity to delete
+   * @return true if a record was deleted, false otherwise
+   * @throws DatabaseException in case of a database exception
+   */
+  boolean delete(Entity.Key entityKey) throws DatabaseException;
+
+  /**
+   * Deletes the entities with the given primary keys.
    * Performs a commit unless a transaction is open.
    * @param entityKeys the primary keys of the entities to delete
    * @return the number of deleted rows
