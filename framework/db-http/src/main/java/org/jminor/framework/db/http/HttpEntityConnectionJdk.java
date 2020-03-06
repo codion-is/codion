@@ -45,6 +45,7 @@ import java.util.concurrent.ThreadFactory;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 
 /**
@@ -227,6 +228,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
+  public Entity.Key insert(final Entity entity) throws DatabaseException {
+    return insert(singletonList(entity)).get(0);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
@@ -239,6 +246,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity update(final Entity entity) throws DatabaseException {
+    return update(singletonList(entity)).get(0);
   }
 
   /** {@inheritDoc} */
@@ -271,6 +284,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int delete(final Entity.Key entityKey) throws DatabaseException {
+    return delete(singletonList(entityKey));
   }
 
   /** {@inheritDoc} */
