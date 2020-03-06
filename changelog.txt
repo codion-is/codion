@@ -5692,3 +5692,4 @@
   EntityLookupField, bug fixed, focusLost should only kick in if the focus event is not temporary
   EntityConnection, insert, update and delete for single Entity/Key instances added
   EntityConnection.delete(Entity.Key) now returns boolean, true if record was deleted, false otherwise
+  DefaultLocalEntityConnection, populateStatementPropertiesAndValues() refactored
