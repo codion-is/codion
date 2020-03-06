@@ -146,7 +146,7 @@ public interface EntityConnection {
   int update(EntityUpdateCondition condition) throws DatabaseException;
 
   /**
-   * Deletes an entity according to the given primary key.
+   * Deletes the entity with the given primary key.
    * Performs a commit unless a transaction is open.
    * @param entityKey the primary key of the entity to delete
    * @return the number of deleted rows
@@ -155,7 +155,7 @@ public interface EntityConnection {
   int delete(Entity.Key entityKey) throws DatabaseException;
 
   /**
-   * Deletes the entities according to the given primary keys.
+   * Deletes the entities with the given primary keys.
    * Performs a commit unless a transaction is open.
    * @param entityKeys the primary keys of the entities to delete
    * @return the number of deleted rows

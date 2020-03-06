@@ -161,8 +161,8 @@ public final class EntitiesTutorial {
     connection.beginTransaction();
 
     //we insert the Entity, the insert() method returns a List
-    //containing the primary keys of the inserted records, but
-    //we ignore those since we don't need them right now.
+    //containing the primary key of the inserted record, but
+    //we don't need it right now so we ignore it.
     //Note that the primary key of the entity instance is populated
     //during insert, that's because we're running with a local connection,
     //with a remote connections you have to select the entity
