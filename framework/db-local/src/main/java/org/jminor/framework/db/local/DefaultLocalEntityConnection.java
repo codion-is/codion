@@ -84,11 +84,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private final Domain domain;
   private final DatabaseConnection connection;
-  private final Map<String, List<ColumnProperty>> insertProperties = new HashMap<>();
-  private final Map<String, List<ColumnProperty>> updateProperties = new HashMap<>();
-  private final Map<String, List<ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
-  private final Map<String, String[]> primaryKeyAndWritableColumnPropertyIds = new HashMap<>();
-  private final Map<String, String> allColumnsClauses = new HashMap<>();
+  private final Map<String, List<ColumnProperty>> insertPropertiesCache = new HashMap<>();
+  private final Map<String, List<ColumnProperty>> updatePropertiesCache = new HashMap<>();
+  private final Map<String, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
+  private final Map<String, String[]> primaryKeyAndWritableColumnPropertyIdCache = new HashMap<>();
+  private final Map<String, String> allColumnsClauseCache = new HashMap<>();
 
   private boolean optimisticLockingEnabled = true;
   private boolean limitForeignKeyFetchDepth = true;
@@ -1101,7 +1101,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @return all foreign keys in the domain referencing entities of type {@code entityId}
    */
   private Collection<ForeignKeyProperty> getForeignKeyReferences(final String entityId) {
-    return foreignKeyReferenceMap.computeIfAbsent(entityId, e -> {
+    return foreignKeyReferenceCache.computeIfAbsent(entityId, e -> {
       final List<ForeignKeyProperty> foreignKeyReferences = new ArrayList<>();
       for (final EntityDefinition entityDefinition : domain.getEntityDefinitions()) {
         for (final ForeignKeyProperty foreignKeyProperty : entityDefinition.getForeignKeyProperties()) {
@@ -1137,17 +1137,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private List<ColumnProperty> getInsertProperties(final EntityDefinition entityDefinition,
                                                    final boolean includePrimaryKeyProperties) {
-    return insertProperties.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
+    return insertPropertiesCache.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
             entityDefinition.getWritableColumnProperties(includePrimaryKeyProperties, true));
   }
 
   private List<ColumnProperty> getUpdateProperties(final EntityDefinition entityDefinition) {
-    return updateProperties.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
+    return updatePropertiesCache.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
             entityDefinition.getWritableColumnProperties(true, false));
   }
 
   private String[] getPrimaryKeyAndWritableColumnPropertyIds(final String entityId) {
-    return primaryKeyAndWritableColumnPropertyIds.computeIfAbsent(entityId, e -> {
+    return primaryKeyAndWritableColumnPropertyIdCache.computeIfAbsent(entityId, e -> {
       final EntityDefinition entityDefinition = getEntityDefinition(entityId);
       final List<ColumnProperty> writableAndPrimaryKeyProperties =
               new ArrayList<>(entityDefinition.getWritableColumnProperties(true, true));
@@ -1164,7 +1164,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private String columnsClause(final String entityId, final List<String> selectPropertyIds,
                                final List<ColumnProperty> propertiesToSelect) {
     if (selectPropertyIds.isEmpty()) {
-      return allColumnsClauses.computeIfAbsent(entityId, eId -> Queries.columnsClause(propertiesToSelect));
+      return allColumnsClauseCache.computeIfAbsent(entityId, eId -> Queries.columnsClause(propertiesToSelect));
     }
 
     return Queries.columnsClause(propertiesToSelect);
@@ -1281,7 +1281,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                                   final List<ColumnProperty> entityProperties,
                                                   final List<ColumnProperty> statementProperties,
                                                   final List<Object> statementValues,
-                                                  final Predicate<ColumnProperty> includeIf) throws SQLException {
+                                                  final Predicate<ColumnProperty> includeIf) {
     for (int i = 0; i < entityProperties.size(); i++) {
       final ColumnProperty property = entityProperties.get(i);
       if (includeIf.test(property)) {
