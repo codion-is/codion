@@ -192,16 +192,7 @@ public interface EntityEditModel extends Refreshable {
   Entity getForeignKey(String foreignKeyPropertyId);
 
   /**
-   * For every field referencing the given foreign key values, replaces that foreign key instance with
-   * the corresponding entity from {@code foreignKeyValues}, useful when property
-   * values have been changed in the referenced entity that must be reflected in the edit model.
-   * @param foreignKeyEntityId the entity ID of the foreign key values
-   * @param foreignKeyValues the new foreign key entities
-   */
-  void replaceForeignKeyValues(String foreignKeyEntityId, Collection<Entity> foreignKeyValues);
-
-  /**
-   * Instantiates a new Value based on the value identified by {@code propertyId} in this edit model
+   * Instantiates a new Value based on the property identified by {@code propertyId} in this edit model
    * @param propertyId the property id
    * @param <V> the value type
    * @return a Value based on the given edit model value
@@ -455,6 +446,14 @@ public interface EntityEditModel extends Refreshable {
    * @param values the values
    */
   void removeForeignKeyValues(List<Entity> values);
+
+  /**
+   * For every field referencing the given foreign key values, replaces that foreign key instance with
+   * the corresponding entity from {@code values}, useful when property
+   * values have been changed in the referenced entity that must be reflected in the edit model.
+   * @param values the foreign key entities
+   */
+  void replaceForeignKeyValues(Collection<Entity> values);
 
   /**
    * Sets the values in the given list as the values for the respective foreign keys, uses the first

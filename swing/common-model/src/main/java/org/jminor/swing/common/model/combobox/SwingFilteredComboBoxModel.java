@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
@@ -151,6 +152,9 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   /** {@inheritDoc} */
   @Override
   public final List<T> getVisibleItems() {
+    if (visibleItems.isEmpty()) {
+      return emptyList();
+    }
     if (nullValue == null) {
       return unmodifiableList(visibleItems);
     }

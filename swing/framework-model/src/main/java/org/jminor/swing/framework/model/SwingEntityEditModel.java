@@ -14,7 +14,6 @@ import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.model.DefaultEntityEditModel;
 import org.jminor.framework.model.EntityEditModel;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,26 +48,6 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public SwingEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider, final Entity.Validator validator) {
     super(entityId, connectionProvider, validator);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
-    super.replaceForeignKeyValues(foreignKeyEntityId, foreignKeyValues);
-    final List<ForeignKeyProperty> foreignKeyProperties =
-            getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
-    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      if (containsComboBoxModel(foreignKeyProperty.getPropertyId())) {
-        final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty.getPropertyId());
-        foreignKeyValues.forEach(foreignKeyValue -> comboBoxModel.replaceItem(foreignKeyValue, foreignKeyValue));
-      }
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected void refreshDataModels() {
-    refreshComboBoxModels();
   }
 
   /** {@inheritDoc} */
@@ -233,6 +212,22 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
           }
         }
       }
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected void refreshDataModels() {
+    refreshComboBoxModels();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected void replaceForeignKey(final ForeignKeyProperty foreignKeyProperty, final List<Entity> values) {
+    super.replaceForeignKey(foreignKeyProperty, values);
+    if (containsComboBoxModel(foreignKeyProperty.getPropertyId())) {
+      final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty.getPropertyId());
+      values.forEach(foreignKeyValue -> comboBoxModel.replaceItem(foreignKeyValue, foreignKeyValue));
     }
   }
 }

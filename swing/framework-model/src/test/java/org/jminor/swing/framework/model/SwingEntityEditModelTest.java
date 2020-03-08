@@ -5,10 +5,12 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -17,6 +19,7 @@ import org.jminor.framework.model.TestDomain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingEntityEditModelTest {
@@ -81,5 +84,18 @@ public class SwingEntityEditModelTest {
   @Test
   public void getForeignKeyComboBoxModelNonFKProperty() {
     assertThrows(IllegalArgumentException.class, () -> employeeEditModel.getForeignKeyComboBoxModel(jobProperty.getPropertyId()));
+  }
+
+  @Test
+  public void replaceForeignKeyValues() throws DatabaseException {
+    final Entity blake = employeeEditModel.getConnectionProvider().getConnection()
+            .selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "BLAKE");
+    employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK);
+    employeeEditModel.refreshComboBoxModels();
+    assertNotSame(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)
+            .getEntity(blake.getKey()), blake);
+    employeeEditModel.replaceForeignKeyValues(singletonList(blake));
+    assertSame(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)
+            .getEntity(blake.getKey()), blake);
   }
 }
