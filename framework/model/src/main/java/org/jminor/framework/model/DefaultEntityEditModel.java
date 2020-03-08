@@ -971,6 +971,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * For every field referencing the given foreign key values, replaces that foreign key instance with
    * the corresponding entity from {@code values}, useful when property
    * values have been changed in the referenced entity that must be reflected in the edit model.
+   * @param foreignKeyProperty the foreign key property
    * @param values the foreign key entities
    */
   protected void replaceForeignKey(final ForeignKeyProperty foreignKeyProperty, final List<Entity> values) {
