@@ -929,7 +929,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /**
    * Selects the entities referenced by the given entities via foreign keys and sets those
    * as their respective foreign key values. This is done recursively for the entities referenced
-   * by the foreign keys as well, until the condition fetch depth limit is reached.
+   * by the foreign keys as well, until the condition fetch depth limit has been reached.
    * @param entities the entities for which to set the foreign key entity values
    * @param condition the condition
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
