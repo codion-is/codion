@@ -339,7 +339,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   public ColumnProperty getColumnProperty(final String propertyId) {
     final Property property = getProperty(propertyId);
     if (!(property instanceof ColumnProperty)) {
-      throw new IllegalArgumentException(propertyId + ", " + property.getClass() + " does not implement Property.ColumnProperty");
+      throw new IllegalArgumentException(propertyId + " is not a ColumnProperty");
     }
 
     return (ColumnProperty) property;
