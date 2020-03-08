@@ -493,7 +493,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param updatedEntities the updated entities
    */
   protected final void onMasterUpdate(final Map<Entity.Key, Entity> updatedEntities) {
-    editModel.replaceForeignKeyValues(masterModel.getEntityId(), updatedEntities.values());
+    editModel.replaceForeignKeyValues(updatedEntities.values());
     if (containsTableModel()) {
       tableModel.replaceForeignKeyValues(masterModel.getEntityId(), updatedEntities.values());
     }

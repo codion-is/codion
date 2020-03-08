@@ -5718,3 +5718,6 @@
   EntityConnection.delete(Entity.Key) now returns boolean, true if record was deleted, false otherwise
   DefaultLocalEntityConnection, populateStatementPropertiesAndValues() refactored
   DefaultLocalEntityConnection, some renaming and minor refactoring
+  EntityEditModel.replaceForeignKey(ForeignKeyProperty, List<Entity>) added
+  DefaultEntityEditModel.replaceForeignKeyValues(Collection<Entity>) now final, tests added
+  EntityTablePanel, removed unnecessary invokeLater() wrap from a couple of repaint() calls

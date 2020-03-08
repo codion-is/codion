@@ -219,7 +219,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
   /**
    * Returns true if the value of the given foreign key is null, in case of composite
-   * foreign keys a single null value is enough.
+   * foreign keys a single null value of a non-null property is enough.
    * @param foreignKeyProperty the foreign key property
    * @return true if the foreign key value is null
    */
@@ -235,7 +235,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Object put(String propertyId, Object value);
 
   /**
-   * @return true if the this entity instance has a null primary key
+   * @return true if this entity instance has a null primary key
    */
   boolean isKeyNull();
 

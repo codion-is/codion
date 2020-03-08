@@ -190,7 +190,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * as null, use {@link #getForeignKey(ForeignKeyProperty)} to get an empty entity instance
    * @param property the property for which to retrieve the value
    * @return the value associated with the given property.
-   * @see #getForeignKeyValue(ForeignKeyProperty)
+   * @see #getForeignKey(ForeignKeyProperty)
    * @see #getDerivedValue(DerivedProperty)
    * @see #isLoaded(String)
    */

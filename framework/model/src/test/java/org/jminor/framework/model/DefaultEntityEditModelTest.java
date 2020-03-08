@@ -488,6 +488,18 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setWarnAboutUnsavedData(false);
   }
 
+  @Test
+  public void replaceForeignKeyValues() throws DatabaseException {
+    final Entity james = employeeEditModel.getConnectionProvider().getConnection()
+            .selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "JAMES");
+    employeeEditModel.setEntity(james);
+    final Entity blake = employeeEditModel.getConnectionProvider().getConnection()
+            .selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "BLAKE");
+    assertNotSame(employeeEditModel.getForeignKey(TestDomain.EMP_MGR_FK), blake);
+    employeeEditModel.replaceForeignKeyValues(singletonList(blake));
+    assertSame(employeeEditModel.getForeignKey(TestDomain.EMP_MGR_FK), blake);
+  }
+
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
     public TestEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider) {

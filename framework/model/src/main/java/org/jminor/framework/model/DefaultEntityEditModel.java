@@ -350,18 +350,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
-    final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
-            .getForeignKeyReferences(foreignKeyEntityId);
-    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      final Entity currentForeignKeyValue = getForeignKey(foreignKeyProperty.getPropertyId());
-      if (currentForeignKeyValue != null) {
-        for (final Entity newForeignKeyValue : foreignKeyValues) {
-          if (currentForeignKeyValue.equals(newForeignKeyValue)) {
-            put(foreignKeyProperty, null);
-            put(foreignKeyProperty, newForeignKeyValue);
-          }
-        }
+  public final void replaceForeignKeyValues(final Collection<Entity> values) {
+    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(values);
+    for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
+      final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
+              .getForeignKeyReferences(entityIdEntities.getKey());
+      for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+        replaceForeignKey(foreignKeyProperty, entityIdEntities.getValue());
       }
     }
   }
@@ -661,8 +656,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       afterRefreshEvent.onEvent();
     }
   }
-
-  protected void refreshDataModels() {}
 
   /** {@inheritDoc} */
   @Override
@@ -970,6 +963,26 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    */
   protected List<Entity> getModifiedEntities(final List<Entity> entities) {
     return Entities.getModifiedEntities(entities);
+  }
+
+  protected void refreshDataModels() {}
+
+  /**
+   * For every field referencing the given foreign key values, replaces that foreign key instance with
+   * the corresponding entity from {@code values}, useful when property
+   * values have been changed in the referenced entity that must be reflected in the edit model.
+   * @param values the foreign key entities
+   */
+  protected void replaceForeignKey(final ForeignKeyProperty foreignKeyProperty, final List<Entity> values) {
+    final Entity currentForeignKeyValue = getForeignKey(foreignKeyProperty.getPropertyId());
+    if (currentForeignKeyValue != null) {
+      for (final Entity replacementValue : values) {
+        if (currentForeignKeyValue.equals(replacementValue)) {
+          put(foreignKeyProperty, null);
+          put(foreignKeyProperty, replacementValue);
+        }
+      }
+    }
   }
 
   /**
