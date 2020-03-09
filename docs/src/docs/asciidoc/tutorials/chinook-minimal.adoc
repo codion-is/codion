@@ -1,4 +1,5 @@
 = Chinook Minimal Tutorial
+:docinfo: shared-head
 :dir-source: ../../../../../demos/chinook/src/main/java
 
 Below you'll find a full (albeit simple) CRUD client for two tables, chinook.artist and chinook.album, with a master detail relationship.

@@ -1,4 +1,5 @@
 = Entity Basics
+:docinfo: shared-head
 :dir-source: ../../../../../demos/chinook/src/main/java
 
 Entity basics, selecting and modifying.

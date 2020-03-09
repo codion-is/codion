@@ -1,4 +1,5 @@
 = Technical details
+:docinfo: shared-head
 :toclevels: 4
 :basedir: ..
 

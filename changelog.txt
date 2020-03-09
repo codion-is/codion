@@ -5697,3 +5697,4 @@
   EntityEditModel.replaceForeignKey(ForeignKeyProperty, List<Entity>) added
   DefaultEntityEditModel.replaceForeignKeyValues(Collection<Entity>) now final, tests added
   EntityTablePanel, removed unnecessary invokeLater() wrap from a couple of repaint() calls
+  Google analytics added to asciidoc via docinfo (com.puravida.asciidoctor:asciidoctor-extensions did not work)

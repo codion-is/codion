@@ -1,4 +1,5 @@
 = Overview
+:docinfo: shared-head
 :dir-source: ../../../../demos/manual/src/main/java
 
 == Domain model

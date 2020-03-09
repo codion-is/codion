@@ -1,4 +1,5 @@
 = Introduction
+:docinfo: shared-head
 
 == Features
 * JMinor is a full stack framework, modular and minimalistic while providing all the fundamental building blocks required for a rich CRUD client application.
