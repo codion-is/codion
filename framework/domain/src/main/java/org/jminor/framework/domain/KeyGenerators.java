@@ -98,7 +98,7 @@ public final class KeyGenerators {
 
     @Override
     public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
-      final ColumnProperty primaryKeyProperty = entity.getPrimaryKeyProperties().get(0);
+      final ColumnProperty primaryKeyProperty = entity.getDefinition().getPrimaryKeyProperties().get(0);
       if (entity.isNull(primaryKeyProperty)) {
         queryAndPut(entity, primaryKeyProperty, connection);
       }
@@ -120,7 +120,7 @@ public final class KeyGenerators {
 
     @Override
     public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
-      final ColumnProperty primaryKeyProperty = entity.getPrimaryKeyProperties().get(0);
+      final ColumnProperty primaryKeyProperty = entity.getDefinition().getPrimaryKeyProperties().get(0);
       if (entity.isNull(primaryKeyProperty)) {
         queryAndPut(entity, primaryKeyProperty, connection);
       }
@@ -148,7 +148,7 @@ public final class KeyGenerators {
     @Override
     public void afterInsert(final Entity entity, final DatabaseConnection connection,
                             final Statement insertStatement) throws SQLException {
-      queryAndPut(entity, entity.getPrimaryKeyProperties().get(0), connection);
+      queryAndPut(entity, entity.getDefinition().getPrimaryKeyProperties().get(0), connection);
     }
 
     @Override

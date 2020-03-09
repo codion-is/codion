@@ -102,7 +102,7 @@ public class DefaultEntityValidator implements Entity.Validator {
   @Override
   public void validate(final Entity entity) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
-    for (final Property property : entity.getProperties()) {
+    for (final Property property : entity.getDefinition().getProperties()) {
       if (!property.isReadOnly()) {
         validate(entity, property);
       }
@@ -210,7 +210,7 @@ public class DefaultEntityValidator implements Entity.Validator {
 
   private static boolean isNonGeneratedPrimaryKeyProperty(final Entity entity, final Property property) {
     return (property instanceof ColumnProperty
-            && ((ColumnProperty) property).isPrimaryKeyProperty()) && !entity.isKeyGenerated();
+            && ((ColumnProperty) property).isPrimaryKeyProperty()) && !entity.getDefinition().isKeyGenerated();
   }
 
   /**

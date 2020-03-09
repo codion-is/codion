@@ -1,7 +1,9 @@
 = Quickstart
+:docinfo: shared-head
+:dir-source: ../../../../demos/manual/src/main/java
 
 == Rich client
-JMinor is primarily a Swing based framework, the Swing client is mature and stable while the JavaFX client is quite rudimentary and still in the 'proof-of-concept' stage. This artifact pulls in all required framework dependencies.
+JMinor is primarily a Swing based framework, the Swing client is mature and stable while the JavaFX client is quite rudimentary and still in the 'proof-of-concept' stage. The below artifacts pull in all required framework dependencies.
 
 [cols="1,4"]
 |===
@@ -82,4 +84,75 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 }
+----
+
+== Code examples
+
+=== Domain model
+
+The JMinor framework is based around the *Entity* class, a map-like structure, representing a row in a table. The domain is modelled much like an E/R diagram, with an *EntityDefinition* per table, a *Property* for each column and a *ForeignKeyProperty* for each foreign key relationship.
+
+[cols="2,4"]
+|===
+|Modules|Artifacts
+|org.jminor.framework.domain|org.jminor.{jminor-jdk}:jminor-framework-domain:{jminor-version}
+|===
+
+==== Defining entities
+
+The below examples are somewhat simplified, but functionally correct.
+
+First we define a entity based on the table *store.customer*, using String constants to identify the entity type and its properties.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=customer]
+----
+
+Next we define a entity based on the table *store.address*.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=address]
+----
+
+And finally we define a entity based on the _many-to-many_ relationship table *store.customer_address*.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=customerAddress]
+----
+
+.Full code
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=domainModel]
+----
+====
+
+=== EntityConnection
+
+The *EntityConnection* interface provides select, insert, update, and delete methods. It has a few implementations, such as the one used below, which is based on a local JDBC connection.
+
+[cols="2,4,2"]
+|===
+|Modules|Artifacts|Description
+|org.jminor.framework.db.core|org.jminor.{jminor-jdk}:jminor-framework-db-core:{jminor-version}|Database API
+|org.jminor.framework.db.local|org.jminor.{jminor-jdk}:jminor-framework-db-local:{jminor-version}|Local JDBC
+|===
+
+==== Selecting
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=select]
+----
+
+=== Persisting
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=persist]
 ----

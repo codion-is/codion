@@ -357,7 +357,6 @@ public class DefaultEntityTest {
 
     testEntity.setAs(null);
     assertTrue(testEntity.getKey().isNull());
-    assertTrue(testEntity.isKeyNull());
     assertFalse(testEntity.containsKey(TestDomain.DETAIL_DATE));
     assertFalse(testEntity.containsKey(TestDomain.DETAIL_STRING));
     assertFalse(testEntity.containsKey(TestDomain.DETAIL_BOOLEAN));
@@ -368,7 +367,6 @@ public class DefaultEntityTest {
 
     testEntity.clearKeyValues();
     assertTrue(testEntity.getKey().isNull());
-    assertTrue(testEntity.isKeyNull());
     assertTrue(testEntity.containsKey(TestDomain.DETAIL_DATE));
     assertTrue(testEntity.containsKey(TestDomain.DETAIL_STRING));
     assertTrue(testEntity.containsKey(TestDomain.DETAIL_BOOLEAN));

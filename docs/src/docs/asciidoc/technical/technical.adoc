@@ -1,12 +1,13 @@
 = Technical details
+:docinfo: shared-head
 :toclevels: 4
 :basedir: ..
 
 include::{basedir}/technical/project.adoc[leveloffset=+1]
 
-include::{basedir}/technical/client.adoc[leveloffset=+1]
+include::{basedir}/technical/architecture.adoc[leveloffset=+1]
 
-include::{basedir}/technical/database.adoc[leveloffset=+1]
+include::{basedir}/technical/client.adoc[leveloffset=+1]
 
 include::{basedir}/technical/server.adoc[leveloffset=+1]
 

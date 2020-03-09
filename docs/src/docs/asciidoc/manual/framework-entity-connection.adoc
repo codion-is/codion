@@ -4,6 +4,8 @@
 :url-javadoc: link:../api
 :url-entity-connection: {url-javadoc}/org/jminor/framework/db/EntityConnection.html
 
+The JMinor database layer is extremely thin, it doesn't perform any joins and provides no access to DBMS specific funtionality except primary key generation via <<manual.adoc#_keygenerator, KeyGenerator>> strategies. The framework provides implementations for the most common strategies, sequences (with or without triggers) and auto increment columns.
+
 The database layer is specified by the {url-entity-connection}[EntityConnection] class. It provides methods for selecting, inserting, updating and deleting entities, executing procedures and functions, filling reports as well as providing transaction control.
 
 The <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>> is used in the examples below.

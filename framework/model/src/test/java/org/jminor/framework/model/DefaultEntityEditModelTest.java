@@ -138,9 +138,9 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(employee);
     final Entity copyWithPrimaryKeyValue = employeeEditModel.getEntityCopy();
     assertEquals(employee, copyWithPrimaryKeyValue);
-    assertFalse(copyWithPrimaryKeyValue.isKeyNull());
+    assertFalse(copyWithPrimaryKeyValue.getKey().isNull());
     final Entity copyWithoutPrimaryKeyValue = employeeEditModel.getEntityCopy(false);
-    assertTrue(copyWithoutPrimaryKeyValue.isKeyNull());
+    assertTrue(copyWithoutPrimaryKeyValue.getKey().isNull());
   }
 
   @Test
@@ -239,10 +239,10 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(null);
     assertTrue(employeeEditModel.isEntityNew(), "Active entity is new after entity is set to null");
     assertFalse(employeeEditModel.getModifiedObserver().get());
-    assertTrue(employeeEditModel.getEntityCopy().isKeyNull(), "Active entity primary key is not null after entity is set to null");
+    assertTrue(employeeEditModel.getEntityCopy().getKey().isNull(), "Active entity primary key is not null after entity is set to null");
 
     employeeEditModel.setEntity(employee);
-    assertFalse(employeeEditModel.getEntityCopy().isKeyNull(), "Active entity primary key is null after entity is set");
+    assertFalse(employeeEditModel.getEntityCopy().getKey().isNull(), "Active entity primary key is null after entity is set");
 
     final Integer originalEmployeeId = (Integer) employeeEditModel.get(TestDomain.EMP_ID);
     employeeEditModel.put(TestDomain.EMP_ID, null);
@@ -296,7 +296,7 @@ public final class DefaultEntityEditModelTest {
     }
 
     employeeEditModel.setEntity(null);
-    assertTrue(employeeEditModel.getEntityCopy().isKeyNull(), "Active entity is not null after model is cleared");
+    assertTrue(employeeEditModel.getEntityCopy().getKey().isNull(), "Active entity is not null after model is cleared");
 
     employeeEditModel.removeAfterDeleteListener(eventDataListener);
     employeeEditModel.removeAfterInsertListener(eventDataListener);

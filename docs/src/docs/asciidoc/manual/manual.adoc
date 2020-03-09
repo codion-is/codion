@@ -1,4 +1,5 @@
 = Manual
+:docinfo: shared-head
 :toclevels: 4
 :basedir: ..
 

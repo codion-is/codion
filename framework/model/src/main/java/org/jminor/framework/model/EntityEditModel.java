@@ -110,7 +110,7 @@ public interface EntityEditModel extends Refreshable {
    * as in, every time a property value changes.
    * @return true if the active entity is new, that is, does not represent a persistent row
    * @see #getPrimaryKeyNullObserver
-   * @see org.jminor.framework.domain.Entity#isKeyNull()
+   * @see org.jminor.framework.domain.Entity.Key#isNull()
    */
   boolean isEntityNew();
 

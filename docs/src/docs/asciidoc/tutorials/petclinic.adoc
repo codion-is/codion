@@ -1,4 +1,5 @@
 = Petclinic Tutorial
+:docinfo: shared-head
 :dir-source: ../../../../../demos/petclinic/src/main/java
 :dir-test-source: ../../../../../demos/petclinic/src/test/java
 
