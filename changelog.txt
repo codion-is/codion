@@ -5700,3 +5700,4 @@
   Google analytics added to asciidoc via docinfo (com.puravida.asciidoctor:asciidoctor-extensions did not work)
   Entity.isKeyNull() removed, use getKey().isNull() instead
   Entity.getDefinition() added, isKeyGenerated(), getProperties() and getPrimaryKeyProperties() removed
+0.13.6
