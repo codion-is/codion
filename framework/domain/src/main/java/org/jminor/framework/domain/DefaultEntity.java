@@ -384,12 +384,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public boolean isKeyNull() {
-    return getKey().isNull();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public void clearKeyValues() {
     final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {

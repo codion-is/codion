@@ -408,7 +408,7 @@ public class EntityTestUnit {
    */
   private Entity insertOrSelect(final Entity entity) throws DatabaseException {
     try {
-      if (!entity.isKeyNull()) {
+      if (!entity.getKey().isNull()) {
         final List<Entity> selected = connection.select(singletonList(entity.getKey()));
         if (!selected.isEmpty()) {
           return selected.get(0);

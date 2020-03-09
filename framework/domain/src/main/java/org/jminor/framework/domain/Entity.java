@@ -272,12 +272,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Object put(String propertyId, Object value);
 
   /**
-   * @return true if this entity instance has a null primary key
-   * @see Key#isNull()
-   */
-  boolean isKeyNull();
-
-  /**
    * @param propertyId the propertyId
    * @return true if the value associated with the given property has been modified
    */

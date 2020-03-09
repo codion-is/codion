@@ -1101,7 +1101,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       if (valueChangeEvent != null) {
         valueChangeEvent.onEvent(valueChange);
       }
-      primaryKeyNullState.set(entity.isKeyNull());
+      primaryKeyNullState.set(entity.getKey().isNull());
       entityNewState.set(isEntityNew());
     });
   }
