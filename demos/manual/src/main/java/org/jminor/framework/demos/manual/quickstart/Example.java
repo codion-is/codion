@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.manual.overview;
+package org.jminor.framework.demos.manual.quickstart;
 
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
@@ -19,11 +19,11 @@ import org.jminor.swing.framework.ui.EntityPanel;
 import java.sql.Types;
 import java.util.List;
 
-import static org.jminor.framework.demos.manual.overview.Overview.Store.*;
+import static org.jminor.framework.demos.manual.quickstart.Example.Store.*;
 import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
-public final class Overview {
+public final class Example {
 
   // tag::domainModel[]
   static class Store extends Domain {

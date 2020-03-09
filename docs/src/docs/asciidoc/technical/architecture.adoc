@@ -1,0 +1,20 @@
+= Architecture
+:url-javadoc: link:../api
+
+The JMinor framework is based on a three tiered architecture.
+
+* Database layer
+* Model layer
+* UI layer
+
+== Database layer
+
+The {url-javadoc}/org/jminor/framework/db/EntityConnection.html[EntityConnection] class defines the database layer. See <<{basedir}/manual/manual.adoc#_entityconnection, Manual:EntityConnection>>
+
+== Model layer
+
+The {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] class defines the model layer. See <<{basedir}/manual/manual.adoc#_entitymodel, Manual:EntityModel>>.
+
+== UI layer
+
+The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanel] class defines the UI layer. See <<{basedir}/manual/manual.adoc#_entitypanel, Manual:EntityPanel>>.
