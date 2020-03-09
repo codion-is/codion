@@ -34,6 +34,11 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   String getEntityId();
 
   /**
+   * @return the entity definition
+   */
+  EntityDefinition getDefinition();
+
+  /**
    * Returns the primary key of this entity.
    * If the entity has no primary key properties defined, this key contains not values.
    * @return the primary key of this entity
@@ -46,27 +51,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @return the primary key of this entity in its original state
    */
   Key getOriginalKey();
-
-  /**
-   * @return true if the primary key value for this entity is generated
-   * @see EntityDefinition#isKeyGenerated()
-   */
-  boolean isKeyGenerated();
-
-  /**
-   * Returns a list containing all the properties associated with this entity type.
-   * @return the properties comprising this entity
-   * @see EntityDefinition#getProperties()
-   */
-  List<Property> getProperties();
-
-  /**
-   * Returns a list containing all primary key properties associated with this entity type.
-   * If the entity has no primary key properties defined, an empty list is returned.
-   * @return the primary key properties of this entity type, sorted by primary key column index
-   * @see EntityDefinition#getPrimaryKeyProperties()
-   */
-  List<ColumnProperty> getPrimaryKeyProperties();
 
   /**
    * Returns the value associated with the property identified by {@code propertyId}.

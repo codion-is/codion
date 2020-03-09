@@ -5699,3 +5699,4 @@
   EntityTablePanel, removed unnecessary invokeLater() wrap from a couple of repaint() calls
   Google analytics added to asciidoc via docinfo (com.puravida.asciidoctor:asciidoctor-extensions did not work)
   Entity.isKeyNull() removed, use getKey().isNull() instead
+  Entity.getDefinition() added, isKeyGenerated(), getProperties() and getPrimaryKeyProperties() removed

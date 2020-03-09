@@ -60,7 +60,7 @@ public final class Entities {
     }
 
     return entities.stream().anyMatch(entity ->
-            entity.getPrimaryKeyProperties().stream().anyMatch(entity::isModified));
+            entity.getDefinition().getPrimaryKeyProperties().stream().anyMatch(entity::isModified));
   }
 
   /**

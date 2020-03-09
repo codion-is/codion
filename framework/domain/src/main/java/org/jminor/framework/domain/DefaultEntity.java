@@ -121,6 +121,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
+  public EntityDefinition getDefinition() {
+    return definition;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public Key getKey() {
     if (key == null) {
       key = initializeKey(false);
@@ -139,24 +145,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public boolean is(final String entityId) {
     return definition.getEntityId().equals(entityId);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<Property> getProperties() {
-    return definition.getProperties();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<ColumnProperty> getPrimaryKeyProperties() {
-    return definition.getPrimaryKeyProperties();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean isKeyGenerated() {
-    return definition.isKeyGenerated();
   }
 
   /**
