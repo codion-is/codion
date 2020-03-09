@@ -1,6 +1,7 @@
 = Quickstart
 :docinfo: shared-head
 :dir-source: ../../../../demos/manual/src/main/java
+:dir-source-sql: ../../../../demos/manual/src/main/sql
 
 == Rich client
 JMinor is primarily a Swing based framework, the Swing client is mature and stable while the JavaFX client is quite rudimentary and still in the 'proof-of-concept' stage. The below artifacts pull in all required framework dependencies.
@@ -102,7 +103,21 @@ The JMinor framework is based around the *Entity* class, a map-like structure, r
 
 The below examples are somewhat simplified, but functionally correct.
 
-First we define a entity based on the table *store.customer*, using String constants to identify the entity type and its properties.
+.View example schema SQL
+[%collapsible]
+====
+
+NOTE: Not all columns are used in the example code below.
+
+[source,sql,indent=0]
+----
+include::{dir-source-sql}/create_schema.sql[]
+----
+====
+
+First we define a entity based on the table *store.customer*, using String constants to identify the entity type (the *entityId*) and its properties (*propertyIds*).
+
+NOTE: In this example the constants contain the actual table and column names, but these can be specified via parameters if that is preferred (see manual).
 
 [source,java,indent=0]
 ----
@@ -123,14 +138,40 @@ And finally we define a entity based on the _many-to-many_ relationship table *s
 include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=customerAddress]
 ----
 
-.Full code
-[%collapsible]
-====
+=== Swing UI
+
+The *EntityPanel* class provides a Swing UI for viewing and editing entities. It is composed of a *EntityEditPanel* and a *EntityTablePanel*. For each of these panel classes there is a corresponding model class; *SwingEntityModel*, which is composed of a *SwingEntityEditModel* and a *SwingEntityTableModel*. The only class you are required to extend is the *EntityEditPanel*, which provides the input controls for editing a entity.
+
+[cols="2,4"]
+|===
+|Modules|Artifacts
+|org.jminor.swing.framework.ui|org.jminor.{jminor-jdk}:jminor-swing-framework-ui:{jminor-version}
+|===
+
+==== Master panel
+
+Here we extend a *EntityEditPanel* to provide the UI for editing a customer and use that edit panel class when we assemble the *EntityPanel*. We use a default *SwingEntityModel* implementation, which internally, creates a default *SwingEnitityEditModel* and *SwingEntityTableModel*.
+
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=domainModel]
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=customerPanel]
 ----
-====
+
+==== Detail panel
+
+Here we create a panel for viewing and editing customer addresses, much like the one above. We start by creating a default *SwingEntityModel* instance, which we add as a detail model on the customer model. Finally, we create a *EntityPanel* for the customer address and add that as a detail panel on the customer panel.
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=detailPanel]
+----
+
+=== Domain model unit testi
+
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=domainModelTest]
+----
 
 === EntityConnection
 
@@ -150,9 +191,18 @@ The *EntityConnection* interface provides select, insert, update, and delete met
 include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=select]
 ----
 
-=== Persisting
+==== Persisting
 
 [source,java,indent=0]
 ----
 include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=persist]
 ----
+
+.Full code
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[]
+----
+====

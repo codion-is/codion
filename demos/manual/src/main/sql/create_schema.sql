@@ -3,15 +3,6 @@ alter user scott admin true;
 
 create schema store;
 
-create table store.address (
-  id identity not null,
-  street varchar(120) not null,
-  city varchar(50) not null,
-  valid boolean default true not null,
-  constraint address_pk primary key (id),
-  constraint address_uk unique (street, city)
-);
-
 create table store.customer (
   id varchar(36) not null,
   first_name varchar(40) not null,
@@ -20,6 +11,15 @@ create table store.customer (
   is_active boolean default true not null,
   constraint customer_pk primary key (id),
   constraint customer_email_uk unique (email)
+);
+
+create table store.address (
+  id identity not null,
+  street varchar(120) not null,
+  city varchar(50) not null,
+  valid boolean default true not null,
+  constraint address_pk primary key (id),
+  constraint address_uk unique (street, city)
 );
 
 create table store.customer_address (
