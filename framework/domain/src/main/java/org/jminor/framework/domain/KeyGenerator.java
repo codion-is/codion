@@ -22,7 +22,8 @@ public interface KeyGenerator {
 
   /**
    * The default implementation returns true.
-   * @return true if the primary key should be included when entities of this type are inserted
+   * @return true if the primary key value should be included in the
+   * insert query when entities of this type are inserted
    */
   default boolean isInserted() {
     return true;
@@ -31,7 +32,7 @@ public interface KeyGenerator {
   /**
    * Prepares the given entity for insert, that is, generates and fetches any required primary key values
    * and populates the entitys primary key.
-   * The default version does nothing, override to implement.
+   * The default implementation does nothing, override to implement.
    * @param entity the entity to prepare
    * @param connection the connection to use
    * @throws SQLException in case of an exception
@@ -41,7 +42,7 @@ public interface KeyGenerator {
   /**
    * Prepares the given entity after insert, that is, fetches automatically generated primary
    * key values and populates the entitys primary key.
-   * The default version does nothing, override to implement.
+   * The default implementation does nothing, override to implement.
    * @param entity the entity to prepare
    * @param connection the connection to use
    * @param insertStatement the insert statement

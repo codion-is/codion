@@ -34,43 +34,57 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   String getEntityId();
 
   /**
+   * Returns the primary key of this entity.
+   * If the entity has no primary key properties defined, this key contains not values.
    * @return the primary key of this entity
    */
   Key getKey();
 
   /**
+   * Returns the primary key of this entity, in its original state.
+   * If the entity has no primary key properties defined, this key contains not values.
    * @return the primary key of this entity in its original state
    */
   Key getOriginalKey();
 
   /**
    * @return true if the primary key value for this entity is generated
+   * @see EntityDefinition#isKeyGenerated()
    */
   boolean isKeyGenerated();
 
   /**
+   * Returns a list containing all the properties associated with this entity type.
    * @return the properties comprising this entity
+   * @see EntityDefinition#getProperties()
    */
   List<Property> getProperties();
 
   /**
+   * Returns a list containing all primary key properties associated with this entity type.
+   * If the entity has no primary key properties defined, an empty list is returned.
    * @return the primary key properties of this entity type, sorted by primary key column index
+   * @see EntityDefinition#getPrimaryKeyProperties()
    */
   List<ColumnProperty> getPrimaryKeyProperties();
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the given property
    */
   Object get(String propertyId);
 
   /**
+   * Returns the original value associated with the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to retrieve the original value
    * @return the original value of the given property
    */
   Object getOriginal(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is a String.
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is a String
@@ -79,6 +93,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   String getString(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is an Integer.
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is an Integer
@@ -87,6 +103,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Integer getInteger(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is a Long.
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is a Long
@@ -95,6 +113,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Long getLong(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is a Character.
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is a Character
@@ -103,6 +123,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Character getCharacter(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is a Double.
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is a Double.
@@ -112,6 +134,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Double getDouble(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is a BigDecimal.
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is a BigDecimal.
@@ -121,6 +145,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   BigDecimal getBigDecimal(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is a LocalTime.
    * @param propertyId the ID of the date property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is a LocalTime
@@ -129,6 +155,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   LocalTime getTime(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is a LocalDate.
    * @param propertyId the ID of the date property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is a LocalDate
@@ -137,6 +165,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   LocalDate getDate(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is a LocalDateTime.
    * @param propertyId the ID of the date property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is a LocalDatetime
@@ -145,6 +175,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   LocalDateTime getTimestamp(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is a Boolean.
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is a Boolean
@@ -153,6 +185,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Boolean getBoolean(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * assuming it is a byte array.
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
    * assuming it is a byte array
@@ -161,6 +195,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   byte[] getBlob(String propertyId);
 
   /**
+   * Returns the value associated with the property identified by {@code propertyId},
+   * formatted with the given Format.
    * @param propertyId the ID of the property for which to retrieve the formatted value
    * @param format the format object
    * @return the value of the property identified by {@code propertyId}, formatted with {@code format}
@@ -168,6 +204,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   String getFormatted(String propertyId, Format format);
 
   /**
+   * Returns the value associated with the given property, formatted with the given Format.
    * @param property the property for which to retrieve the formatted value
    * @param format the format object
    * @return the value of the given property, formatted with {@code format}
@@ -236,6 +273,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
   /**
    * @return true if this entity instance has a null primary key
+   * @see Key#isNull()
    */
   boolean isKeyNull();
 
