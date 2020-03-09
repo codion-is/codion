@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.manual.quickstart;
 
 import org.jminor.common.User;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
@@ -12,21 +13,29 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.KeyGenerator;
+import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.test.EntityTestUnit;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 
+import org.junit.jupiter.api.Test;
+
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
+import static java.util.UUID.randomUUID;
 import static org.jminor.framework.demos.manual.quickstart.Example.Store.*;
 import static org.jminor.framework.domain.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class Example {
 
-  // tag::domainModel[]
-  static class Store extends Domain {
+  public static class Store extends Domain {
 
     public Store() {
       customer();
@@ -42,10 +51,20 @@ public final class Example {
 
     void customer() {
       define(T_CUSTOMER,
-              primaryKeyProperty(CUSTOMER_ID, Types.INTEGER),
-              columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name"),
-              columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name"))
-              .setKeyGenerator(automatic(T_CUSTOMER));
+              primaryKeyProperty(CUSTOMER_ID, Types.VARCHAR),
+              columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
+                      .setNullable(false).setMaxLength(40),
+              columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
+                      .setNullable(false).setMaxLength(40))
+              .setKeyGenerator(new KeyGenerator() {
+                @Override
+                public void beforeInsert(final Entity entity,
+                                         final DatabaseConnection connection) throws SQLException {
+                  entity.put(CUSTOMER_ID, randomUUID().toString());
+                }
+              })
+              .setStringProvider(new StringProvider(CUSTOMER_LAST_NAME)
+                      .addText(", ").addValue(CUSTOMER_FIRST_NAME));
     }
     // end::customer[]
     // tag::address[]
@@ -57,9 +76,13 @@ public final class Example {
     void address() {
       define(T_ADDRESS,
               primaryKeyProperty(ADDRESS_ID, Types.INTEGER),
-              columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street"),
-              columnProperty(ADDRESS_CITY, Types.VARCHAR, "City"))
-              .setKeyGenerator(automatic(T_ADDRESS));
+              columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street")
+                      .setNullable(false).setMaxLength(120),
+              columnProperty(ADDRESS_CITY, Types.VARCHAR, "City")
+                      .setNullable(false).setMaxLength(50))
+              .setKeyGenerator(automatic(T_ADDRESS))
+              .setStringProvider(new StringProvider(ADDRESS_STREET)
+                      .addText(", ").addValue(ADDRESS_CITY));
     }
     // end::address[]
     // tag::customerAddress[]
@@ -74,27 +97,106 @@ public final class Example {
       define(T_CUSTOMER_ADDRESS,
               primaryKeyProperty(CUSTOMER_ADDRESS_ID, Types.INTEGER),
               foreignKeyProperty(CUSTOMER_ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
-                      columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID)),
+                      columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID, Types.VARCHAR))
+                      .setNullable(false),
               foreignKeyProperty(CUSTOMER_ADDRESS_ADDRESS_FK, "Address", T_ADDRESS,
-                      columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID)))
-              .setKeyGenerator(automatic(T_CUSTOMER_ADDRESS));
+                      columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID, Types.INTEGER))
+                      .setNullable(false))
+              .setKeyGenerator(automatic(T_CUSTOMER_ADDRESS))
+              .setCaption("Customer address");
     }
     // end::customerAddress[]
   }
-  // end::domainModel[]
 
   static void customerPanel() {
     // tag::customerPanel[]
+    class CustomerEditPanel extends EntityEditPanel {
+
+      public CustomerEditPanel(SwingEntityEditModel editModel) {
+        super(editModel);
+      }
+
+      @Override
+      protected void initializeUI() {
+        setInitialFocusProperty(CUSTOMER_FIRST_NAME);
+        createTextField(CUSTOMER_FIRST_NAME).setColumns(12);
+        createTextField(CUSTOMER_LAST_NAME).setColumns(12);
+        addPropertyPanel(CUSTOMER_FIRST_NAME);
+        addPropertyPanel(CUSTOMER_LAST_NAME);
+      }
+    }
+
     EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(Databases.getInstance());
+            new LocalEntityConnectionProvider(Databases.getInstance())
+                    .setDomainClassName(Store.class.getName())
+                    .setUser(User.parseUser("scott:tiger"));
 
     SwingEntityModel customerModel = new SwingEntityModel(T_CUSTOMER, connectionProvider);
-    EntityPanel customerPanel = new EntityPanel(customerModel);
 
+    EntityPanel customerPanel = new EntityPanel(customerModel,
+            new CustomerEditPanel(customerModel.getEditModel()));
+    // end::customerPanel[]
+
+    // tag::detailPanel[]
+    class CustomerAddressEditPanel extends EntityEditPanel {
+
+      public CustomerAddressEditPanel(SwingEntityEditModel editModel) {
+        super(editModel);
+      }
+
+      @Override
+      protected void initializeUI() {
+        setInitialFocusProperty(CUSTOMER_ADDRESS_CUSTOMER_FK);
+        createForeignKeyComboBox(CUSTOMER_ADDRESS_CUSTOMER_FK);
+        createForeignKeyComboBox(CUSTOMER_ADDRESS_ADDRESS_FK);
+        addPropertyPanel(CUSTOMER_ADDRESS_CUSTOMER_FK);
+        addPropertyPanel(CUSTOMER_ADDRESS_ADDRESS_FK);
+      }
+    }
+
+    SwingEntityModel customerAddressModel = new SwingEntityModel(T_CUSTOMER_ADDRESS, connectionProvider);
+
+    customerModel.addDetailModel(customerAddressModel);
+
+    EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
+            new CustomerAddressEditPanel(customerAddressModel.getEditModel()));
+
+    customerPanel.addDetailPanel(customerAddressPanel);
+
+    //lazy initialization of UI components
     customerPanel.initializePanel();
 
+    //populate the model with data from the database
+    customerModel.refresh();
+
     Dialogs.displayInDialog(null, customerPanel, "Customers");
-    // end::customerPanel[]
+    // end::detailPanel[]
+  }
+
+  static void domainModelTest() {
+    // tag::domainModelTest[]
+    class StoreTest extends EntityTestUnit {
+
+      public StoreTest() {
+        super(Store.class.getName(), User.parseUser("scott:tiger"));
+      }
+
+      @Test
+      void customer() throws DatabaseException {
+        test(T_CUSTOMER);
+      }
+
+      @Test
+      void address() throws DatabaseException {
+        test(T_ADDRESS);
+      }
+
+      @Test
+      void customerAddress() throws DatabaseException {
+        test(T_CUSTOMER_ADDRESS);
+      }
+    }
+    // end::domainModelTest[]
   }
 
   static void selectEntities() throws DatabaseException {
@@ -115,6 +217,10 @@ public final class Example {
     Entity customerAddress = customerAddresses.get(0);
 
     Entity address = customerAddress.getForeignKey(CUSTOMER_ADDRESS_ADDRESS_FK);
+
+    String lastName = johnDoe.getString(CUSTOMER_LAST_NAME);
+    String street = address.getString(ADDRESS_STREET);
+    String city = address.getString(ADDRESS_CITY);
     // end::select[]
   }
 
