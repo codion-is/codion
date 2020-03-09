@@ -741,7 +741,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * Initializes a Key for this Entity instance
    * @param originalValues if true then the original values of the properties involved are used
    * @return a Key based on the values in this Entity instance
-   * @throws IllegalArgumentException in case the this entity has no primary key properties defined
    */
   private Key initializeKey(final boolean originalValues) {
     if (!definition.hasPrimaryKey()) {
