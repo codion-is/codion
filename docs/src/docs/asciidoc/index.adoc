@@ -1,5 +1,5 @@
 = JMinor Application Framework
-Björn Darri Sigurðsson <bjorndarri@gmail.com>
+Björn Darri Sigurðsson
 :docinfo: shared-head
 :favicon: favicon.ico
 :toclevels: 1
