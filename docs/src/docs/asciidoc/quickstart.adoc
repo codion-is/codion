@@ -89,13 +89,18 @@ dependencies {
 
 == Code examples
 
+There are at minimum two steps involved in creating a JMinor application:
+
+  * Defining a domain model based on the underlying tables.
+  * Creating edit panels for tables requiring CRUD functionality.
+
 === Domain model
 
 The JMinor framework is based around the *Entity* class, a map-like structure, representing a row in a table. The domain is modelled much like an E/R diagram, with an *EntityDefinition* per table, a *Property* for each column and a *ForeignKeyProperty* for each foreign key relationship.
 
 [cols="2,4"]
 |===
-|Modules|Artifacts
+|Module|Artifact
 |org.jminor.framework.domain|org.jminor.{jminor-jdk}:jminor-framework-domain:{jminor-version}
 |===
 
@@ -140,15 +145,15 @@ include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[
 
 === Swing UI
 
-The *EntityPanel* class provides a Swing UI for viewing and editing entities. It is composed of a *EntityEditPanel* and a *EntityTablePanel*. For each of these panel classes there is a corresponding model class; *SwingEntityModel*, which is composed of a *SwingEntityEditModel* and a *SwingEntityTableModel*. The only class you are required to extend is the *EntityEditPanel*, which provides the input controls for editing a entity.
+The *EntityPanel* class provides a Swing UI for viewing and editing entities. It is composed of a *EntityEditPanel* and a *EntityTablePanel*. For each of these panel classes there is a corresponding model class; *SwingEntityModel*, which is composed of a *SwingEntityEditModel* and a *SwingEntityTableModel*. The only class you are required to extend is the *EntityEditPanel*, which provides the input controls for editing a entity. Below we demonstrate how to set up a simple _master/detail_ panel.
 
 [cols="2,4"]
 |===
-|Modules|Artifacts
+|Module|Artifact
 |org.jminor.swing.framework.ui|org.jminor.{jminor-jdk}:jminor-swing-framework-ui:{jminor-version}
 |===
 
-==== Master panel
+==== Master
 
 Here we extend a *EntityEditPanel* to provide the UI for editing a customer and use that edit panel class when we assemble the *EntityPanel*. We use a default *SwingEntityModel* implementation, which internally, creates a default *SwingEnitityEditModel* and *SwingEntityTableModel*.
 
@@ -157,7 +162,7 @@ Here we extend a *EntityEditPanel* to provide the UI for editing a customer and 
 include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=customerPanel]
 ----
 
-==== Detail panel
+==== Detail
 
 Here we create a panel for viewing and editing customer addresses, much like the one above. We start by creating a default *SwingEntityModel* instance, which we add as a detail model on the customer model. Finally, we create a *EntityPanel* for the customer address and add that as a detail panel on the customer panel.
 
@@ -166,20 +171,28 @@ Here we create a panel for viewing and editing customer addresses, much like the
 include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=detailPanel]
 ----
 
-=== Domain model unit testi
+=== Domain model unit test
+
+The *EntityTestUnit* class provides a way to unit test the domain model. The *test* method performs insert, update, select and delete on a randomly generated entity instance and verifies the results.
+
+[cols="2,4"]
+|===
+|Module|Artifact
+|org.jminor.framework.domain.test|org.jminor.{jminor-jdk}:jminor-framework-domain-test:{jminor-version}
+|===
 
 [source,java,indent=0]
 ----
 include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=domainModelTest]
 ----
 
-=== EntityConnection
+=== Persistance
 
-The *EntityConnection* interface provides select, insert, update, and delete methods. It has a few implementations, such as the one used below, which is based on a local JDBC connection.
+The *EntityConnection* interface provides select, insert, update, and delete methods. It has three available implementations, one of which is based on a local JDBC connection, used below.
 
 [cols="2,4,2"]
 |===
-|Modules|Artifacts|Description
+|Module|Artifact|Description
 |org.jminor.framework.db.core|org.jminor.{jminor-jdk}:jminor-framework-db-core:{jminor-version}|Database API
 |org.jminor.framework.db.local|org.jminor.{jminor-jdk}:jminor-framework-db-local:{jminor-version}|Local JDBC
 |===
