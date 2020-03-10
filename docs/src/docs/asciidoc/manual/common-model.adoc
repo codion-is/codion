@@ -10,7 +10,7 @@ Three common classes used throughout the framework are the {url-javadoc}/org/jmi
 
 === Event
 
-The {url-javadoc}/org/jminor/common/event/Event.html[Event] class is a simple event implementation used throughout the framework to signal object state changes or to indicate that an action is about to start or has ended. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *onEvent()* method, with or without a *data* parameter.
+The {url-javadoc}/org/jminor/common/event/Event.html[Event] class is a simple synchronous event implementation used throughout the framework. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *onEvent()* method, with or without a *data* parameter.
 
 Events are instantiated via the {url-javadoc}/org/jminor/common/event/Events.html[Events] factory class.
 

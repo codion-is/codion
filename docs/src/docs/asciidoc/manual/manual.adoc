@@ -5,6 +5,6 @@
 
 NOTE: Most of the code used throughout this manual is available in the *manual* demo module included in the project.
 
-include::{basedir}/manual/common.adoc[leveloffset=+1]
-
 include::{basedir}/manual/framework.adoc[leveloffset=+1]
+
+include::{basedir}/manual/common.adoc[leveloffset=+1]
