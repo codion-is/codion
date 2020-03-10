@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.jminor.framework.demos.empdept.domain.EmpDept.T_DEPARTMENT;
 import static org.jminor.framework.demos.empdept.domain.EmpDept.T_EMPLOYEE;
 
+// tag::domainTest[]
 public class EmpDeptTest extends EntityTestUnit {
 
   public EmpDeptTest() {
@@ -26,3 +27,4 @@ public class EmpDeptTest extends EntityTestUnit {
     test(T_EMPLOYEE);
   }
 }
+// end::domainTest[]

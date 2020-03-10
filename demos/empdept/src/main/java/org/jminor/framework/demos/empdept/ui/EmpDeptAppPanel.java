@@ -28,6 +28,7 @@ import org.jminor.swing.framework.ui.EntityTablePanel;
 import java.io.File;
 import java.nio.charset.Charset;
 
+// tag::setupEntityPanelProviders[]
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   @Override
@@ -54,14 +55,18 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
     addEntityPanelProvider(departmentPanelProvider);
   }
+// end::setupEntityPanelProviders[]
 
+// tag::importJSON[]
   public void importJSON() throws Exception {
     final File file = Dialogs.selectFile(this, null);
     Dialogs.displayInDialog(this, EntityTablePanel.createReadOnlyEntityTablePanel(
             new EntityJSONParser(getModel().getDomain()).deserializeEntities(
                     Text.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
   }
+// end::importJSON[]
 
+// tag::getToolsControlSet[]
   @Override
   protected ControlSet getToolsControlSet() {
     final ControlSet toolsSet = super.getToolsControlSet();
@@ -69,12 +74,16 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
     return toolsSet;
   }
+// end::getToolsControlSet[]
 
+// tag::initializeApplicationModel[]
   @Override
   protected EmpDeptApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
     return new EmpDeptApplicationModel(connectionProvider);
   }
+// end::initializeApplicationModel[]
 
+// tag::main[]
   public static void main(final String[] args) {
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
@@ -83,14 +92,18 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false,
             Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
   }
+// end::main[]
 
+// tag::applicationModel[]
   public static final class EmpDeptApplicationModel extends SwingEntityApplicationModel {
 
     public EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
     }
   }
+// end::applicationModel[]
 
+// tag::employeeModelProvider[]
   private static final class EmployeeModelProvider extends SwingEntityModelProvider {
     private EmployeeModelProvider() {
       super(EmpDept.T_EMPLOYEE);
@@ -102,7 +115,9 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
       tableModel.getColumnSummaryModel(EmpDept.EMPLOYEE_SALARY).setSummary(ColumnSummary.AVERAGE);
     }
   }
+// end::employeeModelProvider[]
 
+// tag::employeePanelProvider[]
   private static final class EmployeePanelProvider extends EntityPanelProvider {
     private EmployeePanelProvider(final EmployeeModelProvider modelProvider) {
       super(modelProvider);
@@ -114,3 +129,4 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     }
   }
 }
+// end::employeePanelProvider[]

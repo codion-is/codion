@@ -15,6 +15,7 @@ import static java.util.Arrays.asList;
 import static org.jminor.framework.domain.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 
+// tag::departmentConstants[]
 /**
  * This class contains the specification for the EmpDept application domain model
  */
@@ -27,7 +28,9 @@ public final class EmpDept extends Domain {
   public static final String DEPARTMENT_ID = "deptno";
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
+// end::departmentConstants[]
 
+// tag::employeeConstants[]
   /**Entity identifier for the table scott.emp*/
   public static final String T_EMPLOYEE = "scott.emp";
 
@@ -51,13 +54,17 @@ public final class EmpDept extends Domain {
           new Item("ANALYST", "Analyst"), new Item("CLERK", "Clerk"),
           new Item("MANAGER", "Manager"), new Item("PRESIDENT", "President"),
           new Item("SALESMAN", "Salesman"));
+// end::employeeConstants[]
 
+// tag::constructor[]
   /** Initializes this domain model */
   public EmpDept() {
     department();
     employee();
   }
+// end::constructor[]
 
+// tag::defineDepartment[]
   void department() {
     /*Defining the entity type T_DEPARTMENT*/
     define(T_DEPARTMENT,
@@ -72,7 +79,9 @@ public final class EmpDept extends Domain {
             .setStringProvider(new StringProvider(DEPARTMENT_NAME))
             .setCaption("Departments");
   }
+// end::defineDepartment[]
 
+// tag::defineEmployee[]
   void employee() {
     /*Defining the entity type T_EMPLOYEE*/
     define(T_EMPLOYEE,
@@ -108,3 +117,4 @@ public final class EmpDept extends Domain {
             });
   }
 }
+// end::defineEmployee[]
