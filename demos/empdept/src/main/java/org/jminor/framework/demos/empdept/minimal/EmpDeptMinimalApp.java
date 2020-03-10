@@ -12,7 +12,6 @@ import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.StringProvider;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Properties;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
@@ -28,6 +27,7 @@ import java.util.Locale;
 
 import static java.util.Arrays.asList;
 import static org.jminor.framework.domain.KeyGenerators.increment;
+import static org.jminor.framework.domain.property.Properties.*;
 
 /**
  * EmpDept minimal application demo
@@ -44,11 +44,11 @@ public class EmpDeptMinimalApp {
        * We start by defining the entity based on the SCOTT.DEPT table
        */
       define("scott.dept",
-              Properties.primaryKeyProperty("deptno"),
-              Properties.columnProperty("dname", Types.VARCHAR, "Department name")
+              primaryKeyProperty("deptno"),
+              columnProperty("dname", Types.VARCHAR, "Department name")
                       .setNullable(false)
                       .setMaxLength(14),
-              Properties.columnProperty("loc", Types.VARCHAR, "Department location")
+              columnProperty("loc", Types.VARCHAR, "Department location")
                       .setMaxLength(13))
               .setKeyGenerator(increment("scott.dept", "deptno"))
               .setCaption("Departments")
@@ -60,25 +60,25 @@ public class EmpDeptMinimalApp {
        * department as well as the manager
        */
       define("scott.emp",
-              Properties.primaryKeyProperty("empno"),
-              Properties.columnProperty("ename", Types.VARCHAR, "Name")
+              primaryKeyProperty("empno"),
+              columnProperty("ename", Types.VARCHAR, "Name")
                       .setNullable(false)
                       .setMaxLength(10),
-              Properties.foreignKeyProperty("dept_fk", "Department", "scott.dept",
-                      Properties.columnProperty("deptno"))
+              foreignKeyProperty("dept_fk", "Department", "scott.dept",
+                      columnProperty("deptno"))
                       .setNullable(false),
-              Properties.columnProperty("job", Types.VARCHAR, "Job")
+              columnProperty("job", Types.VARCHAR, "Job")
                       .setNullable(false)
                       .setMaxLength(9),
-              Properties.columnProperty("sal", Types.DOUBLE, "Salary")
+              columnProperty("sal", Types.DOUBLE, "Salary")
                       .setNullable(false)
                       .setMaximumFractionDigits(2)
                       .setMin(1000).setMax(10000),
-              Properties.columnProperty("comm", Types.DOUBLE, "Commission")
+              columnProperty("comm", Types.DOUBLE, "Commission")
                       .setMaximumFractionDigits(2),
-              Properties.foreignKeyProperty("mgr_fk", "Manager", "scott.emp",
-                      Properties.columnProperty("mgr")),
-              Properties.columnProperty("hiredate", Types.DATE, "Hiredate")
+              foreignKeyProperty("mgr_fk", "Manager", "scott.emp",
+                      columnProperty("mgr")),
+              columnProperty("hiredate", Types.DATE, "Hiredate")
                       .setNullable(false))
               .setKeyGenerator(increment("scott.emp", "empno"))
               .setCaption("Employees")
