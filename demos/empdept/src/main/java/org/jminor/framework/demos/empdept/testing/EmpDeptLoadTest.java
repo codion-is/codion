@@ -24,6 +24,7 @@ import java.util.Random;
 
 import static java.util.Arrays.asList;
 
+// tag::loadTest[]
 public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final User UNIT_TEST_USER =
@@ -179,3 +180,4 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     }
   }
 }
+// end::loadTest[]

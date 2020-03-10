@@ -15,13 +15,16 @@ import java.util.Objects;
 
 import static java.util.Arrays.asList;
 
+// tag::constructor[]
 public final class EmployeeEditModel extends SwingEntityEditModel {
 
   public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
     super(EmpDept.T_EMPLOYEE, connectionProvider);
     bindEvents();
   }
+// end::constructor[]
 
+// tag::createForeignKeyComboBox[]
   /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
   @Override
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
@@ -40,8 +43,9 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 
     return comboBoxModel;
   }
+// end::createForeignKeyComboBox[]
 
-  //keep event bindings in one place
+// tag::bindEvents[]
   private void bindEvents() {
     //Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
     //in case a new manager got hired, fired or promoted
@@ -58,3 +62,4 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
     });
   }
 }
+// end::bindEvents[]

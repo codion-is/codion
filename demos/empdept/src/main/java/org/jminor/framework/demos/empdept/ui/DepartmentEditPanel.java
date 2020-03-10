@@ -11,12 +11,15 @@ import org.jminor.swing.framework.ui.EntityEditPanel;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
+// tag::constructor[]
 public class DepartmentEditPanel extends EntityEditPanel {
 
   public DepartmentEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
+// end::constructor[]
 
+// tag::initializeUI[]
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
@@ -45,3 +48,4 @@ public class DepartmentEditPanel extends EntityEditPanel {
     addPropertyPanel(EmpDept.DEPARTMENT_LOCATION);
   }
 }
+// end::initializeUI[]

@@ -13,12 +13,15 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+// tag::constructor[]
 public class EmployeeEditPanel extends EntityEditPanel {
 
   public EmployeeEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
+// end::constructor[]
 
+// tag::initializeUI[]
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(EmpDept.EMPLOYEE_NAME);
@@ -48,3 +51,4 @@ public class EmployeeEditPanel extends EntityEditPanel {
     add(new JLabel());
   }
 }
+// end::initializeUI[]

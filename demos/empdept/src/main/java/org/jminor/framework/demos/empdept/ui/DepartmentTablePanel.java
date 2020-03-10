@@ -18,12 +18,15 @@ import org.jminor.swing.framework.ui.reporting.EntityReportUiUtil;
 import java.util.Collection;
 import java.util.HashMap;
 
+// tag::constructor[]
 public class DepartmentTablePanel extends EntityTablePanel {
 
   public DepartmentTablePanel(final SwingEntityTableModel tableModel) {
     super(tableModel);
   }
+// end::constructor[]
 
+// tag::viewEmployeeReport[]
   public void viewEmployeeReport() throws Exception {
     final String reportPath = ReportWrapper.getReportPath() + "/empdept_employees.jasper";
     final Collection departmentNumbers =
@@ -35,7 +38,9 @@ public class DepartmentTablePanel extends EntityTablePanel {
             new JasperReportsWrapper(reportPath, reportParameters),
             new JasperReportsUIWrapper(), "Employee Report", getTableModel().getConnectionProvider());
   }
+// end::viewEmployeeReport[]
 
+// tag::getPrintControls[]
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
@@ -47,3 +52,4 @@ public class DepartmentTablePanel extends EntityTablePanel {
     return printControlSet;
   }
 }
+// end::getPrintControls[]

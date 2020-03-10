@@ -203,6 +203,6 @@ include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[
 ====
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[]
+include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tag=**]
 ----
 ====
