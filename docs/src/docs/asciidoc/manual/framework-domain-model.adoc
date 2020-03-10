@@ -5,12 +5,12 @@
 :dir-world-source: ../../../../../demos/world/src/main/java
 :url-javadoc: link:../api
 
-The domain model is based around two classes, {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property], which represents columns. The
-{url-javadoc}/org/jminor/framework/domain/Domain.html[Domain] class serves as a container for the domain model as well as a factory for Entity and Entity.Key objects.
+The domain model is based around three classes; {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which represents a row in a table, {url-javadoc}/org/jminor/framework/domain/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such) and {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
+{url-javadoc}/org/jminor/framework/domain/Domain.html[Domain] class, which serves as a container for the domain entity definitions and as a factory for *Entity* and *Entity.Key* instances.
 
 == Entities
 
-A row in a table is represented by the Entity class, a map like structure, which maps column values to the property representing each column. Each table is represented by a single entity type, identified by a *entityId*, a String unique within the domain.
+The *Entity* class is a map like structure, which maps column values to the property representing each column. Each table is represented by a entity type, identified by a *entityId*, a String constant unique within the domain.
 
 NOTE: Typically the *entityId* constant contains the underlying table name, but you can use whatever identifying string you want and specify the table name via a *tableName* parameter when defining the entity.
 
@@ -31,7 +31,7 @@ include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[t
 
 === Supported data types
 
-JMinor supports the following column data types:
+The following data types are supported:
 
 * Integer (java.sql.Types.INTEGER)
 * Double (java.sql.Types.DOUBLE)
