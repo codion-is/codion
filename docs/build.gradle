@@ -23,7 +23,7 @@ asciidoctor {
     }
     attributes 'jminor-version': project.version, 'jminor-jdk': project.jdk,
             toc: 'right', sectnums: 4, prewrap: false, experimental: true,
-            googleAnalyticsId: 'UA-159091863-1'
+            reproducible: true, googleAnalyticsId: 'UA-159091863-1'
     asciidoctorj {
         version = '2.2.0'
         modules {
