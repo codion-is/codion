@@ -210,24 +210,24 @@ public class DomainTest {
     key.put(propertyId1, 1);
     key.put(propertyId2, 2);
     key.put(propertyId3, 3);
-    assertFalse(key.isNull());
+    assertTrue(key.isNotNull());
     assertEquals(6, key.hashCode());
 
     key.put(propertyId2, 3);
     assertEquals(7, key.hashCode());
 
     key.put(propertyId3, null);
-    assertFalse(key.isNull());
+    assertTrue(key.isNotNull());
     assertEquals(4, key.hashCode());
     key.put(propertyId2, null);
     assertTrue(key.isNull());
     assertEquals(0, key.hashCode());
     key.put(propertyId2, 4);
-    assertFalse(key.isNull());
+    assertTrue(key.isNotNull());
     assertEquals(5, key.hashCode());
 
     key.put(propertyId2, 42);
-    assertFalse(key.isNull());
+    assertTrue(key.isNotNull());
     assertEquals(43, key.hashCode());
 
     assertThrows(NullPointerException.class, () -> domain.key(null));
@@ -536,12 +536,12 @@ public class DomainTest {
 
   @Test
   public void foreignKeyReferencingUndefinedEntityNonStrict() {
-    EntityDefinition.STRICT_FOREIGN_KEYS.set(false);
+    domain.setStrictForeignKeys(false);
     domain.define("test.entity",
             Properties.primaryKeyProperty("id"),
             Properties.foreignKeyProperty("fk_id_fk", "caption", "test.referenced_entity",
                     Properties.columnProperty("fk_id")));
-    EntityDefinition.STRICT_FOREIGN_KEYS.set(true);
+    domain.setStrictForeignKeys(true);
   }
 
   @Test

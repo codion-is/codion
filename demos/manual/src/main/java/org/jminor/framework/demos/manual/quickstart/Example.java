@@ -58,8 +58,7 @@ public final class Example {
                       .setNullable(false).setMaxLength(40))
               .setKeyGenerator(new KeyGenerator() {
                 @Override
-                public void beforeInsert(final Entity entity,
-                                         final DatabaseConnection connection) throws SQLException {
+                public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
                   entity.put(CUSTOMER_ID, randomUUID().toString());
                 }
               })

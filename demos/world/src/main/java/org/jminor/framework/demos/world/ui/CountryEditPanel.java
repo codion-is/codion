@@ -1,23 +1,23 @@
-/*
- * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.framework.demos.world.ui;
 
 import org.jminor.framework.demos.world.domain.World;
+import org.jminor.framework.domain.Entity;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityPanelProvider;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import java.awt.GridLayout;
 
+import static org.jminor.swing.common.ui.Components.createEastButtonPanel;
 import static org.jminor.swing.common.ui.Components.setPreferredWidth;
 import static org.jminor.swing.common.ui.textfield.TextFields.makeUpperCase;
 
 public final class CountryEditPanel extends EntityEditPanel {
 
-  private static final int COMBOBOX_WIDTH = 120;
-  private static final int TEXT_FIELD_COLUMNS = 12;
-
-  public CountryEditPanel(final SwingEntityEditModel editModel) {
+  public CountryEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 
@@ -25,21 +25,24 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(World.COUNTRY_CODE);
 
-    makeUpperCase(createTextField(World.COUNTRY_CODE)).setColumns(TEXT_FIELD_COLUMNS);
-    makeUpperCase(createTextField(World.COUNTRY_CODE2)).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(World.COUNTRY_NAME).setColumns(TEXT_FIELD_COLUMNS);
-    setPreferredWidth(createPropertyComboBox(World.COUNTRY_CONTINENT), COMBOBOX_WIDTH);
-    setPreferredWidth(createPropertyComboBox(World.COUNTRY_REGION), COMBOBOX_WIDTH);
+    makeUpperCase(createTextField(World.COUNTRY_CODE)).setColumns(12);
+    makeUpperCase(createTextField(World.COUNTRY_CODE2)).setColumns(12);
+    createTextField(World.COUNTRY_NAME).setColumns(12);
+    setPreferredWidth(createValueListComboBox(World.COUNTRY_CONTINENT), 120);
+    setPreferredWidth(createPropertyComboBox(World.COUNTRY_REGION), 120);
     createTextField(World.COUNTRY_SURFACEAREA);
     createTextField(World.COUNTRY_INDEPYEAR);
     createTextField(World.COUNTRY_POPULATION);
     createTextField(World.COUNTRY_LIFEEXPECTANCY);
     createTextField(World.COUNTRY_GNP);
     createTextField(World.COUNTRY_GNPOLD);
-    createTextField(World.COUNTRY_LOCALNAME).setColumns(TEXT_FIELD_COLUMNS);
-    setPreferredWidth(createPropertyComboBox(World.COUNTRY_GOVERNMENTFORM), COMBOBOX_WIDTH);
-    createTextField(World.COUNTRY_HEADOFSTATE).setColumns(TEXT_FIELD_COLUMNS);
-    setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), COMBOBOX_WIDTH);
+    createTextField(World.COUNTRY_LOCALNAME).setColumns(12);
+    setPreferredWidth(createPropertyComboBox(World.COUNTRY_GOVERNMENTFORM, null, true), 120);
+    createTextField(World.COUNTRY_HEADOFSTATE).setColumns(12);
+    EntityComboBox capitalComboBox =
+            setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), 120);
+    JPanel cityPanel = createEastButtonPanel(capitalComboBox,
+            createEditPanelAction(capitalComboBox, new CityPanelProvider()), false);
 
     setLayout(new GridLayout(4, 5, 5, 5));
 
@@ -57,6 +60,32 @@ public final class CountryEditPanel extends EntityEditPanel {
     addPropertyPanel(World.COUNTRY_LOCALNAME);
     addPropertyPanel(World.COUNTRY_GOVERNMENTFORM);
     addPropertyPanel(World.COUNTRY_HEADOFSTATE);
-    addPropertyPanel(World.COUNTRY_CAPITAL_FK);
+    add(createPropertyPanel(World.COUNTRY_CAPITAL_FK, cityPanel));
+  }
+
+  private final class CityPanelProvider extends EntityPanelProvider {
+
+    public CityPanelProvider() {
+      super(World.T_CITY);
+      setEditPanelClass(CityEditPanel.class);
+    }
+
+    @Override
+    protected void configureEditPanel(EntityEditPanel editPanel) {
+      //set the country to the one selected in the CountryEditPanel
+      Entity country = CountryEditPanel.this.getEditModel().getEntityCopy();
+      if (country.getKey().isNotNull()) {
+        //if a country is selected, then we don't allow it to be changed
+        editPanel.getEditModel().put(World.CITY_COUNTRY_FK, country);
+        //initialize the panel components, so we can configure the country component
+        editPanel.initializePanel();
+        //disable the country selection component
+        JComponent countryComponent = editPanel.getComponent(World.CITY_COUNTRY_FK);
+        countryComponent.setEnabled(false);
+        countryComponent.setFocusable(false);
+        //and change the initial focus property
+        editPanel.setInitialFocusProperty(World.CITY_NAME);
+      }
+    }
   }
 }

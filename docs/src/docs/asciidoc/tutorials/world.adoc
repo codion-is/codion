@@ -7,36 +7,56 @@
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/domain/World.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/world/domain/World.java[tag=**]
 ----
 
 == Domain model unit test
 
 [source,java]
 ----
-include::{dir-test-source}/org/jminor/framework/demos/world/domain/WorldTest.java[lines=4..-1]
+include::{dir-test-source}/org/jminor/framework/demos/world/domain/WorldTest.java[tag=**]
+----
+
+== Application model layer
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/model/CountryEditModel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/model/LookupTableModel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/model/WorldAppModel.java[tag=**]
 ----
 
 == Application UI layer
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/ui/CityEditPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/world/ui/CityEditPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/ui/CountryEditPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/world/ui/CountryEditPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/ui/CountryLanguageEditPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/world/ui/CountryLanguageEditPanel.java[tag=**]
 ----
-
-== Main application panel
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/ui/WorldAppPanel.java[lines=4..-1]
+include::{dir-source}/org/jminor/framework/demos/world/ui/LookupTablePanel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/ui/WorldAppPanel.java[tag=**]
 ----

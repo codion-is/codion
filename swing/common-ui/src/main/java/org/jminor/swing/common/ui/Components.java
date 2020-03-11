@@ -120,18 +120,26 @@ public final class Components {
    * Sets the preferred size of the given component to its current height and the given {@code preferredWidth}
    * @param component the component
    * @param preferredWidth the preferred width
+   * @param <T> the component type
+   * @return the component
    */
-  public static void setPreferredWidth(final JComponent component, final int preferredWidth) {
+  public static <T extends JComponent> T setPreferredWidth(final T component, final int preferredWidth) {
     component.setPreferredSize(new Dimension(preferredWidth, component.getPreferredSize().height));
+
+    return component;
   }
 
   /**
    * Sets the preferred size of the given component to its current width and the given {@code preferredHeight}
    * @param component the component
    * @param preferredHeight the preferred height
+   * @param <T> the component type
+   * @return the component
    */
-  public static void setPreferredHeight(final JComponent component, final int preferredHeight) {
+  public static <T extends JComponent> T setPreferredHeight(final T component, final int preferredHeight) {
     component.setPreferredSize(new Dimension(component.getPreferredSize().width, preferredHeight));
+
+    return component;
   }
 
   /**

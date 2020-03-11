@@ -27,7 +27,7 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * Specifies whether it should be possible to define foreign keys referencing entities that have
-   * not been defined, this can be disabled in cases where entities with circular references<br>
+   * not been defined, this can be disabled in cases where entities have circular references.<br>
    * Value type: Boolean<br>
    * Default value: true
    */

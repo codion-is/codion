@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.framework.demos.world.ui;
 
 import org.jminor.framework.demos.world.domain.World;
@@ -13,10 +10,7 @@ import static org.jminor.swing.common.ui.Components.setPreferredWidth;
 
 public final class CountryLanguageEditPanel extends EntityEditPanel {
 
-  private static final int COMBOBOX_WIDTH = 120;
-  private static final int TEXT_FIELD_COLUMNS = 12;
-
-  public CountryLanguageEditPanel(final SwingEntityEditModel editModel) {
+  public CountryLanguageEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 
@@ -24,8 +18,8 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(World.COUNTRYLANGUAGE_COUNTRY_FK);
 
-    setPreferredWidth(createForeignKeyComboBox(World.COUNTRYLANGUAGE_COUNTRY_FK), COMBOBOX_WIDTH);
-    createTextField(World.COUNTRYLANGUAGE_LANGUAGE).setColumns(TEXT_FIELD_COLUMNS);
+    setPreferredWidth(createForeignKeyComboBox(World.COUNTRYLANGUAGE_COUNTRY_FK), 120);
+    createTextField(World.COUNTRYLANGUAGE_LANGUAGE).setColumns(12);
     createCheckBox(World.COUNTRYLANGUAGE_ISOFFICIAL, null, false);
     createTextField(World.COUNTRYLANGUAGE_PERCENTAGE);
 

@@ -136,7 +136,7 @@ public class EntityTestUnit {
       final EntityDefinition entityDefinition = getDomain().getDefinition(entityId);
       if (!entityDefinition.isReadOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityId, foreignKeyEntities), "test entity"));
-        assertFalse(testEntity.getKey().isNull());
+        assertTrue(testEntity.getKey().isNotNull());
         testUpdate(testEntity, initializeReferencedEntities(entityId, foreignKeyEntities));
       }
       testSelect(entityId, testEntity);
@@ -408,7 +408,7 @@ public class EntityTestUnit {
    */
   private Entity insertOrSelect(final Entity entity) throws DatabaseException {
     try {
-      if (!entity.getKey().isNull()) {
+      if (entity.getKey().isNotNull()) {
         final List<Entity> selected = connection.select(singletonList(entity.getKey()));
         if (!selected.isEmpty()) {
           return selected.get(0);
