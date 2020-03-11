@@ -192,6 +192,11 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
+  public boolean isNotNull() {
+    return !isNull();
+  }
+
+  @Override
   public boolean isNull(final String propertyId) {
     return super.isNull(definition.getPrimaryKeyProperty(propertyId));
   }

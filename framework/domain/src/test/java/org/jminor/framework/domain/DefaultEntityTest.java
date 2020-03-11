@@ -203,19 +203,24 @@ public class DefaultEntityTest {
   public void compositeKeyNull() {
     final Entity master = DOMAIN.entity(TestDomain.T_COMPOSITE_MASTER);
     assertTrue(master.getKey().isNull());
+    assertFalse(master.getKey().isNotNull());
 
     master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
     assertFalse(master.getKey().isNull());
+    assertTrue(master.getKey().isNotNull());
 
     master.put(TestDomain.COMPOSITE_MASTER_ID, null);
     assertFalse(master.getKey().isNull());
+    assertTrue(master.getKey().isNotNull());
 
     master.put(TestDomain.COMPOSITE_MASTER_ID, 2);
     master.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
     assertTrue(master.getKey().isNull());
+    assertFalse(master.getKey().isNotNull());
 
     master.put(TestDomain.COMPOSITE_MASTER_ID, null);
     assertTrue(master.getKey().isNull());
+    assertFalse(master.getKey().isNotNull());
   }
 
   @Test
@@ -225,7 +230,7 @@ public class DefaultEntityTest {
     key.put(TestDomain.DETAIL_ID, null);
     assertTrue(key.isNull());
     key.put(TestDomain.DETAIL_ID, 1L);
-    assertFalse(key.isNull());
+    assertTrue(key.isNotNull());
   }
 
   @Test

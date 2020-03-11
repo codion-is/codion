@@ -372,6 +372,11 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     boolean isNull();
 
     /**
+     * @return true if no non-nullable values are null
+     */
+    boolean isNotNull();
+
+    /**
      * Returns true if a null value is mapped to the given property or no mapping exists.
      * @param propertyId the propertyId
      * @return true if the value mapped to the given property is null or none exists

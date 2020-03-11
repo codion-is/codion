@@ -5705,3 +5705,4 @@
   Domain.setStrictForeignKeys() added
   EntityInputComponents.createComboBox() now throws IllegalArgumentException if editable is true and the property is not String based, plus minor fixes
   ControlSet, ImageIcon parameters changed to Icon
+  Entity.Key.isNotNull() added

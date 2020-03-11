@@ -210,24 +210,24 @@ public class DomainTest {
     key.put(propertyId1, 1);
     key.put(propertyId2, 2);
     key.put(propertyId3, 3);
-    assertFalse(key.isNull());
+    assertTrue(key.isNotNull());
     assertEquals(6, key.hashCode());
 
     key.put(propertyId2, 3);
     assertEquals(7, key.hashCode());
 
     key.put(propertyId3, null);
-    assertFalse(key.isNull());
+    assertTrue(key.isNotNull());
     assertEquals(4, key.hashCode());
     key.put(propertyId2, null);
     assertTrue(key.isNull());
     assertEquals(0, key.hashCode());
     key.put(propertyId2, 4);
-    assertFalse(key.isNull());
+    assertTrue(key.isNotNull());
     assertEquals(5, key.hashCode());
 
     key.put(propertyId2, 42);
-    assertFalse(key.isNull());
+    assertTrue(key.isNotNull());
     assertEquals(43, key.hashCode());
 
     assertThrows(NullPointerException.class, () -> domain.key(null));
