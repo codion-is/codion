@@ -5702,3 +5702,4 @@
   Entity.getDefinition() added, isKeyGenerated(), getProperties() and getPrimaryKeyProperties() removed
 0.13.6
   Components.setPreferredWidth() and setPreferredHeight() generified and now return the component
+  Domain.setStrictForeignKeys() added

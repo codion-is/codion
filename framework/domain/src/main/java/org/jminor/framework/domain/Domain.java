@@ -567,6 +567,15 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   }
 
   /**
+   * Specifies whether it should be possible to define foreign keys referencing entities that have
+   * not been defined, this can be disabled in cases where entities have circular references.
+   * @param strictForeignKeys true for strict foreign key validation
+   */
+  protected final void setStrictForeignKeys(final boolean strictForeignKeys) {
+    definitionProvider.strictForeignKeys = strictForeignKeys;
+  }
+
+  /**
    * databaseOperations is transient and only null after deserialization.
    */
   private void checkIfDeserialized() {
@@ -652,6 +661,8 @@ public class Domain implements EntityDefinition.Provider, Serializable {
 
     private final Map<String, EntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
+    private boolean strictForeignKeys = EntityDefinition.STRICT_FOREIGN_KEYS.get();
+
     @Override
     public EntityDefinition getDefinition(final String entityId) {
       final EntityDefinition definition = entityDefinitions.get(requireNonNull(entityId, "entityId"));
@@ -675,7 +686,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
     private void validateForeignKeyProperties(final EntityDefinition definition) {
       for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
         final String entityId = definition.getEntityId();
-        if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && EntityDefinition.STRICT_FOREIGN_KEYS.get()) {
+        if (!entityId.equals(foreignKeyProperty.getForeignEntityId()) && strictForeignKeys) {
           final EntityDefinition foreignEntity = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
           if (foreignEntity == null) {
             throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityId()
