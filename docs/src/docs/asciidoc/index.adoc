@@ -1,7 +1,6 @@
 = JMinor Application Framework
 Björn Darri Sigurðsson
 :docinfo: shared-head
-:favicon: favicon.ico
 :toclevels: 1
 :dir-tutorials: tutorials
 :imagesdir: images
