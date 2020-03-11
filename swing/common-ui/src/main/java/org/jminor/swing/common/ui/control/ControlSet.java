@@ -7,7 +7,7 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 
 import javax.swing.Action;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public final class ControlSet extends Control {
    * @param mnemonic the mnemonic to assign to this control set
    */
   public ControlSet(final String name, final char mnemonic) {
-    this(name, mnemonic, (ImageIcon) null);
+    this(name, mnemonic, (Icon) null);
   }
 
   /**
@@ -51,7 +51,7 @@ public final class ControlSet extends Control {
    * @param mnemonic the mnemonic to assign to this control set
    * @param icon the icon
    */
-  public ControlSet(final String name, final char mnemonic, final ImageIcon icon) {
+  public ControlSet(final String name, final char mnemonic, final Icon icon) {
     this(name, mnemonic, icon, null);
   }
 
@@ -62,7 +62,7 @@ public final class ControlSet extends Control {
    * @param icon the icon
    * @param enabledState the state observer dictating the enable state of this control
    */
-  public ControlSet(final String name, final char mnemonic, final ImageIcon icon,
+  public ControlSet(final String name, final char mnemonic, final Icon icon,
                     final StateObserver enabledState) {
     super(name, enabledState, icon);
     setMnemonic(mnemonic);
@@ -116,7 +116,7 @@ public final class ControlSet extends Control {
    * @param controls the controls to add to this set
    */
   public ControlSet(final String name, final char mnemonic, final State enabledState,
-                    final ImageIcon icon, final Control... controls) {
+                    final Icon icon, final Control... controls) {
     super(name, enabledState, icon);
     setMnemonic(mnemonic);
     for (final Control control : controls) {
