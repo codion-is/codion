@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.framework.demos.world.ui;
 
 import org.jminor.framework.demos.world.domain.World;
@@ -13,10 +10,7 @@ import static org.jminor.swing.common.ui.Components.setPreferredWidth;
 
 public final class CityEditPanel extends EntityEditPanel {
 
-  private static final int COMBOBOX_WIDTH = 120;
-  private static final int TEXT_FIELD_COLUMNS = 12;
-
-  public CityEditPanel(final SwingEntityEditModel editModel) {
+  public CityEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 
@@ -24,9 +18,9 @@ public final class CityEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(World.CITY_COUNTRY_FK);
 
-    setPreferredWidth(createForeignKeyComboBox(World.CITY_COUNTRY_FK), COMBOBOX_WIDTH);
-    createTextField(World.CITY_NAME).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(World.CITY_DISTRICT).setColumns(TEXT_FIELD_COLUMNS);
+    setPreferredWidth(createForeignKeyComboBox(World.CITY_COUNTRY_FK), 120);
+    createTextField(World.CITY_NAME).setColumns(12);
+    createTextField(World.CITY_DISTRICT).setColumns(12);
     createTextField(World.CITY_POPULATION);
 
     setLayout(new GridLayout(2, 2, 5, 5));
