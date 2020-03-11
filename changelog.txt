@@ -5728,3 +5728,4 @@
   Components.setPreferredWidth() and setPreferredHeight() generified and now return the component
   Domain.setStrictForeignKeys() added
   EntityInputComponents.createComboBox() now throws IllegalArgumentException if editable is true and the property is not String based, plus minor fixes
+  ControlSet, ImageIcon parameters changed to Icon
