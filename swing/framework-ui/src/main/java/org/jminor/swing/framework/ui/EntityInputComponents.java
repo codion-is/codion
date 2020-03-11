@@ -407,6 +407,9 @@ public final class EntityInputComponents {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
+    if (editable && !property.isString()) {
+      throw new IllegalArgumentException("Editable property ComboBox is only implemented for String properties");
+    }
     comboBox.setEditable(editable);
     SelectedValues.selectedValueLink(comboBox, value);
     linkToEnabledState(enabledState, comboBox);

@@ -7,6 +7,7 @@
 ** <<{basedir}/tutorials/chinook-ui.adoc#, UI>>.
 * Clients
 ** <<{basedir}/tutorials/empdept.adoc#, EmpDept Tutorial>>.
+** <<{basedir}/tutorials/world.adoc#, World Tutorial>>.
 ** <<{basedir}/tutorials/chinook-minimal.adoc#, Chinook Minimal>>.
 ** <<{basedir}/tutorials/chinook.adoc#, Chinook Tutorial Full (just code)>>.
 ** <<{basedir}/tutorials/petclinic.adoc#, Petclinic Tutorial (just code)>>.

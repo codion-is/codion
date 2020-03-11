@@ -5725,3 +5725,6 @@
   Entity.isKeyNull() removed, use getKey().isNull() instead
   Entity.getDefinition() added, isKeyGenerated(), getProperties() and getPrimaryKeyProperties() removed
 0.13.6
+  Components.setPreferredWidth() and setPreferredHeight() generified and now return the component
+  Domain.setStrictForeignKeys() added
+  EntityInputComponents.createComboBox() now throws IllegalArgumentException if editable is true and the property is not String based, plus minor fixes
