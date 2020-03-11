@@ -145,11 +145,11 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testForeignPrimaryKey() {
-    EntityDefinition.STRICT_FOREIGN_KEYS.set(false);
+    domain.setStrictForeignKeys(false);
     domain.define("entityId",
             Properties.foreignKeyProperty("fkPropertyID", "caption", "parent",
                     Properties.primaryKeyProperty("propertyId")));
-    EntityDefinition.STRICT_FOREIGN_KEYS.set(true);
+    domain.setStrictForeignKeys(true);
   }
 
   @Test

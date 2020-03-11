@@ -536,12 +536,12 @@ public class DomainTest {
 
   @Test
   public void foreignKeyReferencingUndefinedEntityNonStrict() {
-    EntityDefinition.STRICT_FOREIGN_KEYS.set(false);
+    domain.setStrictForeignKeys(false);
     domain.define("test.entity",
             Properties.primaryKeyProperty("id"),
             Properties.foreignKeyProperty("fk_id_fk", "caption", "test.referenced_entity",
                     Properties.columnProperty("fk_id")));
-    EntityDefinition.STRICT_FOREIGN_KEYS.set(true);
+    domain.setStrictForeignKeys(true);
   }
 
   @Test

@@ -661,7 +661,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
 
     private final Map<String, EntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
-    private boolean strictForeignKeys = EntityDefinition.STRICT_FOREIGN_KEYS.get();
+    private transient boolean strictForeignKeys = EntityDefinition.STRICT_FOREIGN_KEYS.get();
 
     @Override
     public EntityDefinition getDefinition(final String entityId) {
