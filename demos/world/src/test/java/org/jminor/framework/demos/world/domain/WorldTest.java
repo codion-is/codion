@@ -30,8 +30,8 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
-    final Entity entity = super.initializeTestEntity(entityId, foreignKeyEntities);
+  protected Entity initializeTestEntity(String entityId, Map<String, Entity> foreignKeyEntities) {
+    Entity entity = super.initializeTestEntity(entityId, foreignKeyEntities);
     if (entityId.equals(World.T_COUNTRY)) {
       entity.put(World.COUNTRY_CODE, "XXX");
       entity.put(World.COUNTRY_CONTINENT, "Asia");
@@ -41,7 +41,7 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected void modifyEntity(final Entity testEntity, final Map<String, Entity> foreignKeyEntities) {
+  protected void modifyEntity(Entity testEntity, Map<String, Entity> foreignKeyEntities) {
     super.modifyEntity(testEntity, foreignKeyEntities);
     if (testEntity.is(World.T_COUNTRY)) {
       testEntity.put(World.COUNTRY_CONTINENT, "Europe");
@@ -49,15 +49,15 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
+  protected Entity initializeReferenceEntity(String entityId, Map<String, Entity> foreignKeyEntities) {
     switch (entityId) {
       case World.T_COUNTRY:
-        final Entity iceland = getDomain().entity(World.T_COUNTRY);
+        Entity iceland = getDomain().entity(World.T_COUNTRY);
         iceland.put(World.COUNTRY_CODE, "ISL");
 
         return iceland;
       case World.T_CITY:
-        final Entity reykjavik = getDomain().entity(World.T_CITY);
+        Entity reykjavik = getDomain().entity(World.T_CITY);
         reykjavik.put(World.CITY_ID, 1449);
 
         return reykjavik;
