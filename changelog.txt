@@ -5735,3 +5735,4 @@
   FilteredTable.setSelectionMode() overridden, delegates to selection model
   FilteredTable.getSingleSelectionModeControl() added
   SwingTableSelectionModel.getSingleSelectionModeState() implemented, setSelectionMode() overridden, updates the state
+  FXEntityListSelectionModel.getSingleSelectionModeState() implemented

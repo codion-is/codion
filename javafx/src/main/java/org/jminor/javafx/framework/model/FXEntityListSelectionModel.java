@@ -15,11 +15,13 @@ import org.jminor.framework.domain.Entity;
 
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.control.SelectionMode;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -33,6 +35,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   private final Event<Integer> selectedIndexChangedEvent = Events.event();
   private final Event<Entity> selectedItemChangedEvent = Events.event();
   private final Event<List<Entity>> selectedItemsChangedEvent = Events.event();
+  private final State singleSelectionModeState = States.state(false);
   private final State selectionEmptyState = States.state(true);
   private final State multipleSelectionState = States.state(false);
   private final State singleSelectionState = States.state(false);
@@ -62,6 +65,12 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
    */
   public javafx.scene.control.SelectionModel<Entity> getSelectionModel() {
     return selectionModel;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public State getSingleSelectionModeState() {
+    return singleSelectionModeState;
   }
 
   /** {@inheritDoc} */
@@ -344,19 +353,28 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
 
   private void bindEvents() {
     if (selectionModel instanceof MultipleSelectionModel) {
-      ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().addListener((ListChangeListener<Entity>) change -> {
-        selectionEmptyState.set(selectionModel.isEmpty());
+      final MultipleSelectionModel<Entity> multipleSelectionModel = (MultipleSelectionModel<Entity>) this.selectionModel;
+      multipleSelectionModel.getSelectedItems().addListener((ListChangeListener<Entity>) change -> {
+        selectionEmptyState.set(this.selectionModel.isEmpty());
         singleSelectionState.set(getSelectedIndexes().size() == 1);
         multipleSelectionState.set(!selectionEmptyState.get() && !singleSelectionState.get());
         selectionChangedEvent.onEvent();
         selectedItemChangedEvent.onEvent(getSelectedItem());
         selectedItemsChangedEvent.onEvent(getSelectedItems());
       });
-      selectionModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+      this.selectionModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
         final int newSelectedIndex = newValue.intValue();
         if (selectedIndex != newSelectedIndex) {
           selectedIndex = newSelectedIndex;
           selectedIndexChangedEvent.onEvent(selectedIndex);
+        }
+      });
+      multipleSelectionModel.selectionModeProperty().addListener((observable, oldValue, newValue) ->
+              singleSelectionModeState.set(Objects.equals(SelectionMode.SINGLE, newValue)));
+      singleSelectionModeState.addDataListener(singleSelection -> {
+        final SelectionMode newMode = singleSelection ? SelectionMode.SINGLE : SelectionMode.MULTIPLE;
+        if (multipleSelectionModel.getSelectionMode() != newMode) {
+          multipleSelectionModel.setSelectionMode(newMode);
         }
       });
     }
