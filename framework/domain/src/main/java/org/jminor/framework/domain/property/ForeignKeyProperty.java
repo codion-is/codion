@@ -14,8 +14,12 @@ import java.util.List;
 public interface ForeignKeyProperty extends Property {
 
   /**
-   * @return true if all reference properties comprising this
-   * foreign key property are updatable
+   * @return true if all reference properties comprising this foreign key property are insertable
+   */
+  boolean isInsertable();
+
+  /**
+   * @return true if all reference properties comprising this foreign key property are updatable
    */
   boolean isUpdatable();
 
@@ -73,5 +77,17 @@ public interface ForeignKeyProperty extends Property {
      * @return this ForeignKeyProperty instance
      */
     ForeignKeyProperty.Builder setSoftReference(boolean softReference);
+
+    /**
+     * @param insertable specifies whether this property should be included during insert operations
+     * @return this instance
+     */
+    ForeignKeyProperty.Builder setInsertable(boolean insertable);
+
+    /**
+     * @param updatable specifies whether this property should be included during update operations
+     * @return this instance
+     */
+    ForeignKeyProperty.Builder setUpdatable(boolean updatable);
   }
 }

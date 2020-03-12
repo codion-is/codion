@@ -12,7 +12,8 @@ class DefaultAuditProperty extends DefaultColumnProperty implements AuditPropert
   DefaultAuditProperty(final String propertyId, final int type, final AuditAction auditAction, final String caption) {
     super(propertyId, type, caption);
     this.auditAction = auditAction;
-    super.setReadOnly(true);
+    super.setInsertable(false);
+    super.setUpdatable(false);
   }
 
   /** {@inheritDoc} */

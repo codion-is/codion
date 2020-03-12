@@ -362,7 +362,7 @@ public class EntityTestUnit {
     final Entity updated = connection.update(testEntity);
     assertEquals(testEntity.getKey(), updated.getKey());
     for (final ColumnProperty property : getDomain().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
-      if (!property.isReadOnly() && property.isUpdatable()) {
+      if (property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property);
         final Object afterUpdate = updated.get(property);
         final String message = "Values of property " + property + " should be equal after update ["

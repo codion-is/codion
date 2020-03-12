@@ -20,7 +20,7 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
   DefaultSubqueryProperty(final String propertyId, final int type, final String caption, final String subquery,
                           final int columnType) {
     super(propertyId, type, caption, columnType);
-    super.setReadOnly(true);
+    super.setInsertable(false);
     super.setUpdatable(false);
     this.subquery = subquery;
   }
@@ -55,8 +55,18 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
     }
 
     @Override
-    public Property.Builder setReadOnly(final boolean readOnly) {
+    public ColumnProperty.Builder setReadOnly(final boolean readOnly) {
       throw new UnsupportedOperationException("Subquery properties are always read only");
+    }
+
+    @Override
+    public SubqueryProperty.Builder setInsertable(final boolean insertable) {
+      throw new UnsupportedOperationException("Subquery properties are never insertable");
+    }
+
+    @Override
+    public SubqueryProperty.Builder setUpdatable(final boolean updatable) {
+      throw new UnsupportedOperationException("Subquery properties are never updatable");
     }
   }
 }

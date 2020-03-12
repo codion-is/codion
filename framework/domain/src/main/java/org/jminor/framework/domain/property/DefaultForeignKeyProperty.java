@@ -61,6 +61,12 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
 
   /** {@inheritDoc} */
   @Override
+  public boolean isInsertable() {
+    return columnProperties.stream().allMatch(ColumnProperty::isInsertable);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public boolean isUpdatable() {
     return columnProperties.stream().allMatch(ColumnProperty::isUpdatable);
   }
@@ -151,22 +157,21 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
 
     @Override
-    public ForeignKeyProperty.Builder setReadOnly(final boolean readOnly) {
-      super.setReadOnly(readOnly);
-      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> {
-        if (builder.get().isReadOnly() != readOnly) {
-          builder.setReadOnly(readOnly);
-        }
-      });
+    public ForeignKeyProperty.Builder setInsertable(final boolean insertable) {
+      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.setInsertable(insertable));
+      return this;
+    }
+
+    @Override
+    public ForeignKeyProperty.Builder setUpdatable(final boolean updatable) {
+      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.setUpdatable(updatable));
       return this;
     }
 
     @Override
     public ForeignKeyProperty.Builder setNullable(final boolean nullable) {
       super.setNullable(nullable);
-      for (final ColumnProperty.Builder propertyBuilder : foreignKeyProperty.columnPropertyBuilders) {
-        propertyBuilder.setNullable(nullable);
-      }
+      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.setNullable(nullable));
       return this;
     }
 

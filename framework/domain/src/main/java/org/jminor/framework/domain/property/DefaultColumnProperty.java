@@ -32,6 +32,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   private final int columnType;
   private int primaryKeyIndex = -1;
   private boolean columnHasDefaultValue = false;
+  private boolean insertable = true;
   private boolean updatable = true;
   private boolean foreignKeyProperty = false;
 
@@ -84,6 +85,12 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   @Override
   public final boolean columnHasDefaultValue() {
     return columnHasDefaultValue;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isInsertable() {
+    return insertable;
   }
 
   /** {@inheritDoc} */
@@ -146,7 +153,11 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     return resultPacker;
   }
 
-  protected void setUpdatable(final boolean updatable) {
+  protected final void setInsertable(final boolean insertable) {
+    this.insertable = insertable;
+  }
+
+  protected final void setUpdatable(final boolean updatable) {
     this.updatable = updatable;
   }
 
@@ -422,7 +433,20 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final ColumnProperty.Builder setUpdatable(final boolean updatable) {
+    public ColumnProperty.Builder setReadOnly(final boolean readOnly) {
+      columnProperty.insertable = !readOnly;
+      columnProperty.updatable = !readOnly;
+      return this;
+    }
+
+    @Override
+    public ColumnProperty.Builder setInsertable(final boolean insertable) {
+      columnProperty.insertable = insertable;
+      return this;
+    }
+
+    @Override
+    public ColumnProperty.Builder setUpdatable(final boolean updatable) {
       columnProperty.updatable = updatable;
       return this;
     }

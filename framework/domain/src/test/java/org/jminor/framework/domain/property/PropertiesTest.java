@@ -154,16 +154,13 @@ public final class PropertiesTest {
   }
 
   @Test
-  public void derivedPropertySetReadOnlyFalse() {
-    assertThrows(UnsupportedOperationException.class, () -> derivedProperty("test", Types.INTEGER, "caption", linkedValues ->
-            null, "linked").setReadOnly(false));
+  public void subqueryPropertySetUpdatableFalse() {
+    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty("test", Types.INTEGER, "caption", "select").setUpdatable(false));
   }
 
   @Test
-  public void denormalizedViewPropertySetReadOnlyFalse() {
-    final ColumnProperty.Builder columnProperty = columnProperty("property", Types.INTEGER);
-    foreignKeyProperty("foreignId", "caption","entityId", columnProperty);
-    assertThrows(UnsupportedOperationException.class, () -> denormalizedViewProperty("test", "foreignId", columnProperty.get(), "caption").setReadOnly(false));
+  public void subqueryPropertySetInsertableFalse() {
+    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty("test", Types.INTEGER, "caption", "select").setInsertable(false));
   }
 
   @Test

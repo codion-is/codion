@@ -19,6 +19,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityDefinition;
 import org.jminor.framework.domain.OrderBy;
 import org.jminor.framework.domain.exception.ValidationException;
+import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
@@ -353,8 +354,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   @Override
   public boolean isCellEditable(final int rowIndex, final int modelColumnIndex) {
-    return editable && !isReadOnly() && isUpdateEnabled() &&
-            !getColumnModel().getColumnIdentifier(modelColumnIndex).isReadOnly();
+    final Property property = getColumnModel().getColumnIdentifier(modelColumnIndex);
+    return editable && !isReadOnly() && isUpdateEnabled() && property instanceof ColumnProperty
+            && ((ColumnProperty) property).isUpdatable();
   }
 
   /**

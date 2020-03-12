@@ -789,7 +789,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     for (final Property property : originalKeySet()) {
       if (property instanceof ColumnProperty) {
         final ColumnProperty columnProperty = (ColumnProperty) property;
-        if (!columnProperty.isReadOnly() && columnProperty.isUpdatable()) {
+        if (columnProperty.isInsertable() && columnProperty.isUpdatable()) {
           return true;
         }
       }

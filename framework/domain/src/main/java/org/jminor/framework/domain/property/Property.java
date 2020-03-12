@@ -282,12 +282,6 @@ public interface Property extends Serializable {
   DateTimeFormatter getDateTimeFormatter();
 
   /**
-   * Specifies whether or not this attribute is read only
-   * @return true if this attribute is read only
-   */
-  boolean isReadOnly();
-
-  /**
    * Builds a Property instance
    */
   interface Builder {
@@ -370,12 +364,6 @@ public interface Property extends Serializable {
      * @return this instance
      */
     Property.Builder setPreferredColumnWidth(int preferredColumnWidth);
-
-    /**
-     * @param readOnly specifies whether this property should be included during insert/update operations
-     * @return this instance
-     */
-    Property.Builder setReadOnly(boolean readOnly);
 
     /**
      * Specifies whether or not this property is nullable, in case of
