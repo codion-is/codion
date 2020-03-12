@@ -12,7 +12,6 @@ import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.DefaultColumnSummaryModel;
 import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.RowColumn;
-import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.model.table.TableSortModel;
 
 import javax.swing.event.TableModelEvent;
@@ -72,7 +71,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The selection model
    */
-  private final SelectionModel<R> selectionModel;
+  private final SwingTableSelectionModel<R> selectionModel;
 
   /**
    * The TableColumnModel
@@ -251,7 +250,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final SelectionModel<R> getSelectionModel() {
+  public final SwingTableSelectionModel<R> getSelectionModel() {
     return selectionModel;
   }
 

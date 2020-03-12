@@ -5,6 +5,7 @@ package org.jminor.common.model.table;
 
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
+import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 
 import java.util.Collection;
@@ -30,6 +31,11 @@ public interface SelectionModel<R> {
    * @return a StateObserver indicating that a single row is selected
    */
   StateObserver getSingleSelectionObserver();
+
+  /**
+   * @return a State controlling the single selection mode of this selection model
+   */
+  State getSingleSelectionModeState();
 
   /**
    * @param listener a listener to be notified each time the selection changes

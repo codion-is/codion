@@ -19,6 +19,7 @@ import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
@@ -84,6 +85,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   public static final char FILTER_INDICATOR = '*';
 
   private static final String SELECT_COLUMNS = "select_columns";
+  private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
   private static final int SELECT_COLUMNS_GRID_ROWS = 15;
   private static final int SEARCH_FIELD_COLUMNS = 8;
   private static final int SORT_ICON_SIZE = 5;
@@ -216,6 +218,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     this.scrollToSelectedItem = scrollToSelectedItem;
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public void setSelectionMode(final int selectionMode) {
+    tableModel.getSelectionModel().setSelectionMode(selectionMode);
+  }
+
   /**
    * Hides or shows the active filter panels for this table panel
    * @param value true if the active filter panels should be shown, false if they should be hidden
@@ -334,6 +342,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   public Control getSelectColumnsControl() {
     return Controls.control(this::selectColumns, MESSAGES.getString(SELECT_COLUMNS) + "...",
             null, MESSAGES.getString(SELECT_COLUMNS));
+  }
+
+  /**
+   * @return a ControlSet for selecting the table selection mode (single or multiple)
+   */
+  public ToggleControl getSingleSelectionModeControl() {
+    return Controls.toggleControl(tableModel.getSelectionModel().getSingleSelectionModeState(), MESSAGES.getString(SINGLE_SELECTION_MODE));
   }
 
   /**

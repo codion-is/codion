@@ -32,6 +32,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   private final Event<Integer> selectedIndexChangedEvent = Events.event();
   private final Event<R> selectedItemChangedEvent = Events.event();
   private final Event<List<R>> selectedItemsChangedEvent = Events.event();
+  private final State singleSelectionModeState = States.state(false);
   private final State selectionEmptyState = States.state(true);
   private final State multipleSelectionState = States.state(false);
   private final State singleSelectionState = States.state(false);
@@ -54,6 +55,23 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     this.tableModel = tableModel;
     this.tableModel.addRowsDeletedListener(interval ->
             SwingTableSelectionModel.super.removeIndexInterval(interval.get(0), interval.get(1)));
+    bindEvents();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setSelectionMode(final int selectionMode) {
+    if (getSelectionMode() != selectionMode) {
+      clearSelection();
+      super.setSelectionMode(selectionMode);
+      singleSelectionModeState.set(selectionMode == SINGLE_SELECTION);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public State getSingleSelectionModeState() {
+    return singleSelectionModeState;
   }
 
   /** {@inheritDoc} */
@@ -349,6 +367,11 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   @Override
   public StateObserver getSelectionEmptyObserver() {
     return selectionEmptyState.getObserver();
+  }
+
+  private void bindEvents() {
+    singleSelectionModeState.addDataListener(singleSelection ->
+            setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
   }
 
   private void checkIndexes(final Collection<Integer> indexes) {
