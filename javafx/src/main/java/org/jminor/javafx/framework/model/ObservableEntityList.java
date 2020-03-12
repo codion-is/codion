@@ -9,7 +9,6 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.state.StateObserver;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
@@ -137,7 +136,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    * @return the selection model
    * @throws IllegalStateException in case the selection model has not been set
    */
-  public final SelectionModel<Entity> getSelectionModel() {
+  public final FXEntityListSelectionModel getSelectionModel() {
     checkIfSelectionModelHasBeenSet();
     return selectionModel;
   }
