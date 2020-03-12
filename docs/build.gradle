@@ -4,7 +4,9 @@ plugins {
 
 apply plugin: 'maven-publish'
 
-def documentationDir = "doc/${project.version}/${project.jdk}"
+def documentationVersion = project.version
+
+def documentationDir = "doc/${documentationVersion}/${project.jdk}"
 
 asciidoctor {
     doFirst {
@@ -21,7 +23,7 @@ asciidoctor {
     sources {
         include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc'
     }
-    attributes 'jminor-version': project.version, 'jminor-jdk': project.jdk,
+    attributes 'jminor-version': documentationVersion, 'jminor-jdk': project.jdk,
             toc: 'right', sectnums: 4, prewrap: false, experimental: true,
             reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1'
     asciidoctorj {
@@ -38,7 +40,7 @@ asciidoctor {
 
 task combinedJavadoc(type: Javadoc) {
     group 'documentation'
-    title "JMinor Framework API $project.version"
+    title "JMinor Framework API ${documentationVersion}"
     failOnError = false
     options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     destinationDir = file("${buildDir}/docs/javadoc")
