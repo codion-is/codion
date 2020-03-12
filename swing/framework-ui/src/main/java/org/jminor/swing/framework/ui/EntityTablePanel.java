@@ -176,6 +176,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static final String UPDATE_SELECTED = "updateSelected";
   public static final String SELECT_COLUMNS = "selectTableColumns";
   public static final String EXPORT_JSON = "exportJSON";
+  public static final String SELECTION_MODE = "selectionMode";
   public static final String CLEAR = "clear";
   public static final String REFRESH = "refresh";
   public static final String TOGGLE_SUMMARY_PANEL = "toggleSummaryPanel";
@@ -1009,6 +1010,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         popupControls.addSeparator();
       }
       popupControls.add(controlMap.get(SELECT_COLUMNS));
+      separatorRequired = true;
+    }
+    if (controlMap.containsKey(SELECTION_MODE)) {
+      if (separatorRequired) {
+        popupControls.addSeparator();
+      }
+      popupControls.add(controlMap.get(SELECTION_MODE));
+      separatorRequired = true;
     }
     if (includeConditionPanel) {
       if (separatorRequired) {
@@ -1155,6 +1164,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     setControl(MOVE_SELECTION_UP, getMoveSelectionDownControl());
     setControl(MOVE_SELECTION_DOWN, getMoveSelectionUpControl());
     setControl(COPY_TABLE_DATA, getCopyControlSet());
+    setControl(SELECTION_MODE, table.getSingleSelectionModeControl());
   }
 
   private void copySelectedCell() {
