@@ -56,7 +56,6 @@ task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
         ant.delete(dir: docFolder)
         ant.copy(todir: docFolder) {
             fileset(dir: "${buildDir}/docs/asciidoc")
-            fileset(file: 'favicon.ico')
         }
         ant.copy(todir: docFolder + '/api') {
             fileset(dir: "${buildDir}/docs/javadoc")
