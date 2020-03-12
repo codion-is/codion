@@ -5736,3 +5736,4 @@
   FilteredTable.getSingleSelectionModeControl() added
   SwingTableSelectionModel.getSingleSelectionModeState() implemented, setSelectionMode() overridden, updates the state
   FXEntityListSelectionModel.getSingleSelectionModeState() implemented
+  ObservableEntityList.getSelectionModel() now returns FXEntityListSelectionModel, FXEntityListSelectionModelTest added
