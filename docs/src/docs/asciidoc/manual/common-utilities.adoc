@@ -22,11 +22,13 @@ JMinor provides a few classes with miscellanous utility functions.
 
 {url-javadoc}/org/jminor/swing/common/ui/Components.html[Components]
 
-{url-javadoc}/org/jminor/swing/common/ui/Dialogs.html[Dialogs]
+{url-javadoc}/org/jminor/swing/common/ui/dialog/Dialogs.html[Dialogs]
 
 {url-javadoc}/org/jminor/swing/common/ui/KeyEvents.html[KeyEvents]
 
 {url-javadoc}/org/jminor/swing/common/ui/layout/Layouts.html[Layouts]
+
+{url-javadoc}/org/jminor/swing/common/ui/textfield/TextFields.html[TextFields]
 
 {url-javadoc}/org/jminor/swing/common/ui/UiUtil.html[UiUtil]
 
