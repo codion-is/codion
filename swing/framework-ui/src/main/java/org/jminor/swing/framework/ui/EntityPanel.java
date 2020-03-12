@@ -1374,13 +1374,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     final ControlSet controlSet = new ControlSet(MESSAGES.getString(MSG_DETAIL_TABLES));
     for (final EntityPanel detailPanel : detailEntityPanels) {
-      controlSet.add(new Control(detailPanel.getCaption()) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          setDetailPanelState(status);
-          detailPanel.activatePanel();
-        }
-      });
+      controlSet.add(Controls.control(() -> {
+        setDetailPanelState(status);
+        detailPanel.activatePanel();
+      }, detailPanel.getCaption()));
     }
 
     return controlSet;

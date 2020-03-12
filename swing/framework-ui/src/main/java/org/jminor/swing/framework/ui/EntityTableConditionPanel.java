@@ -180,26 +180,6 @@ public final class EntityTableConditionPanel extends JPanel {
   }
 
   /**
-   * @param advanced if true then the simple condition panel is shown, if false the advanced condition panel is shown,
-   * note that if either of these is not available calling this method has no effect
-   */
-  private void layoutPanel(final boolean advanced) {
-    if (advanced && advancedConditionPanel == null) {
-      return;
-    }
-    if (!advanced && simpleConditionPanel == null) {
-      return;
-    }
-    removeAll();
-    if (advanced) {
-      add(advancedConditionPanel, BorderLayout.CENTER);
-    }
-    else {
-      add(simpleConditionPanel, BorderLayout.CENTER);
-    }
-  }
-
-  /**
    * Sets the search text in case simple search is enabled
    * @param searchText the search text
    */
@@ -253,6 +233,26 @@ public final class EntityTableConditionPanel extends JPanel {
    */
   public void removeAdvancedListener(final EventDataListener listener) {
     advancedChangedEvent.removeDataListener(listener);
+  }
+
+  /**
+   * @param advanced if true then the simple condition panel is shown, if false the advanced condition panel is shown,
+   * note that if either of these is not available calling this method has no effect
+   */
+  private void layoutPanel(final boolean advanced) {
+    if (advanced && advancedConditionPanel == null) {
+      return;
+    }
+    if (!advanced && simpleConditionPanel == null) {
+      return;
+    }
+    removeAll();
+    if (advanced) {
+      add(advancedConditionPanel, BorderLayout.CENTER);
+    }
+    else {
+      add(simpleConditionPanel, BorderLayout.CENTER);
+    }
   }
 
   private static JPanel initializeSimpleConditionPanel(final EntityTableConditionModel conditionModel) {
