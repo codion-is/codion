@@ -69,13 +69,4 @@ public final class EntityObjectMapper extends ObjectMapper {
     entitySerializer.setIncludeNullValues(includeNullValues);
     return this;
   }
-
-  /**
-   * @param includeReadOnlyValues true if read only values should be included in exported entities
-   * @return this {@link EntityObjectMapper} instance
-   */
-  public EntityObjectMapper setIncludeReadOnlyValues(final boolean includeReadOnlyValues) {
-    entitySerializer.setIncludeReadOnlyValues(includeReadOnlyValues);
-    return this;
-  }
 }

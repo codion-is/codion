@@ -19,6 +19,7 @@ import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
@@ -1094,7 +1095,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a TableCellEditor for the given property
    */
   protected TableCellEditor initializeTableCellEditor(final Property property) {
-    if (property.isReadOnly()) {
+    if (property instanceof ColumnProperty && !((ColumnProperty) property).isUpdatable()) {
       return null;
     }
 

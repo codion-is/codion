@@ -88,12 +88,6 @@ abstract class DefaultProperty implements Property {
   private boolean hidden;
 
   /**
-   * True if this property is for selecting only, implicitly not updatable
-   * and not used in insert statements
-   */
-  private boolean readOnly = false;
-
-  /**
    * The maximum length of the data
    */
   private int maxLength = -1;
@@ -294,12 +288,6 @@ abstract class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isReadOnly() {
-    return this.readOnly;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final boolean hasDefaultValue() {
     return !(this.defaultValueProvider instanceof NullDefaultValueProvider);
   }
@@ -433,10 +421,6 @@ abstract class DefaultProperty implements Property {
     return value;
   }
 
-  protected final void setReadOnly(final boolean readOnly) {
-    this.readOnly = readOnly;
-  }
-
   private Format initializeDefaultFormat() {
     if (isNumerical()) {
       final NumberFormat numberFormat = isInteger() || isLong() ?
@@ -562,12 +546,6 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public Property.Builder setReadOnly(final boolean readOnly) {
-      property.readOnly = readOnly;
-      return this;
-    }
-
-    @Override
     public final Property.Builder setDefaultValue(final Object defaultValue) {
       return setDefaultValueProvider(new DefaultValueProvider(defaultValue));
     }
@@ -639,12 +617,10 @@ abstract class DefaultProperty implements Property {
     public final Property.Builder setFormat(final Format format) {
       requireNonNull(format, "format");
       if (property.isNumerical() && !(format instanceof NumberFormat)) {
-        throw new IllegalArgumentException("NumberFormat required for numerical property: " +
-                property.propertyId);
+        throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.propertyId);
       }
       if (property.isTemporal()) {
-        throw new IllegalArgumentException("Use setDateTimeFormatPattern() for date/time based property: " +
-                property.propertyId);
+        throw new IllegalArgumentException("Use setDateTimeFormatPattern() for temporal properties: " + property.propertyId);
       }
       property.format = format;
       return this;
@@ -653,8 +629,7 @@ abstract class DefaultProperty implements Property {
     @Override
     public final Property.Builder setDateTimeFormatPattern(final String dateTimeFormatPattern) {
       if (!property.isTemporal()) {
-        throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to date/time based property: " +
-                property.propertyId);
+        throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to temporal properties: " + property.propertyId);
       }
       property.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
       property.dateTimeFormatPattern = dateTimeFormatPattern;

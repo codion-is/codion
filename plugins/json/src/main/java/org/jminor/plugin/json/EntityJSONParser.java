@@ -48,7 +48,6 @@ public final class EntityJSONParser {
 
   private boolean includeForeignKeyValues = false;
   private boolean includeNullValues = true;
-  private boolean includeReadOnlyValues = true;
   private int indentation = -1;
 
   /**
@@ -87,22 +86,6 @@ public final class EntityJSONParser {
    */
   public EntityJSONParser setIncludeNullValues(final boolean includeNullValues) {
     this.includeNullValues = includeNullValues;
-    return this;
-  }
-
-  /**
-   * @return true if read only values should be included in exported entities
-   */
-  public boolean isIncludeReadOnlyValues() {
-    return includeReadOnlyValues;
-  }
-
-  /**
-   * @param includeReadOnlyValues true if read only values should be included in exported entities
-   * @return this {@link EntityJSONParser} instance
-   */
-  public EntityJSONParser setIncludeReadOnlyValues(final boolean includeReadOnlyValues) {
-    this.includeReadOnlyValues = includeReadOnlyValues;
     return this;
   }
 
@@ -391,9 +374,6 @@ public final class EntityJSONParser {
       return false;
     }
     if (!includeForeignKeyValues && property instanceof ForeignKeyProperty) {
-      return false;
-    }
-    if (!includeReadOnlyValues && property.isReadOnly()) {
       return false;
     }
     if (!includeNullValues && entity.isNull(property)) {

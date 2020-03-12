@@ -409,7 +409,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   public List<ColumnProperty> getWritableColumnProperties(final boolean includePrimaryKeyProperties,
                                                           final boolean includeNonUpdatable) {
     return columnProperties.stream()
-            .filter(property -> !property.isReadOnly() &&
+            .filter(property -> property.isInsertable() &&
                     (includeNonUpdatable || property.isUpdatable()) &&
                     (includePrimaryKeyProperties || !property.isPrimaryKeyProperty()))
             .collect(toList());
@@ -423,7 +423,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     writableColumnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
     final List<Property> updatable = new ArrayList<>(writableColumnProperties);
     for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      if (!foreignKeyProperty.isReadOnly() && foreignKeyProperty.isUpdatable()) {
+      if (foreignKeyProperty.isUpdatable()) {
         updatable.add(foreignKeyProperty);
       }
     }

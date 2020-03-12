@@ -23,7 +23,6 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
       throw new IllegalArgumentException("No source propertyIds, a derived property must be derived from one or more existing properties");
     }
     this.sourcePropertyIds = asList(sourcePropertyIds);
-    super.setReadOnly(true);
   }
 
   /** {@inheritDoc} */
@@ -59,11 +58,6 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
     @Override
     public DerivedProperty get() {
       return derivedProperty;
-    }
-
-    @Override
-    public Property.Builder setReadOnly(final boolean readOnly) {
-      throw new UnsupportedOperationException("Derived properties are always read only");
     }
   }
 }

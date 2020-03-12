@@ -9,6 +9,7 @@ final class DefaultMirrorProperty extends DefaultColumnProperty implements Mirro
 
   DefaultMirrorProperty(final String propertyId) {
     super(propertyId, -1, null);
-    super.setReadOnly(true);
+    super.setInsertable(false);
+    super.setUpdatable(false);
   }
 }

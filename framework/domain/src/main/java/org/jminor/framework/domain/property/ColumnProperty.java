@@ -66,6 +66,12 @@ public interface ColumnProperty extends Property {
   boolean isSelectable();
 
   /**
+   * Specifies whether or not this property is insertable
+   * @return true if this property is insertable
+   */
+  boolean isInsertable();
+
+  /**
    * Indicates whether or not this column is updatable
    * @return true if this column is updatable
    */
@@ -158,6 +164,18 @@ public interface ColumnProperty extends Property {
      * @return this instance
      */
     ColumnProperty.Builder setColumnName(String columnName);
+
+    /**
+     * @param readOnly specifies whether this property should be included during insert and update operations
+     * @return this instance
+     */
+    ColumnProperty.Builder setReadOnly(boolean readOnly);
+
+    /**
+     * @param insertable specifies whether this property should be included during insert operations
+     * @return this instance
+     */
+    ColumnProperty.Builder setInsertable(boolean insertable);
 
     /**
      * @param updatable specifies whether this property is updatable

@@ -103,9 +103,7 @@ public class DefaultEntityValidator implements Entity.Validator {
   public void validate(final Entity entity) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     for (final Property property : entity.getDefinition().getProperties()) {
-      if (!property.isReadOnly()) {
-        validate(entity, property);
-      }
+      validate(entity, property);
     }
   }
 

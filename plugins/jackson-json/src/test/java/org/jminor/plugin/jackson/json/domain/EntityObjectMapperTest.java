@@ -55,15 +55,7 @@ public final class EntityObjectMapperTest {
 
     jsonString = mapper.writeValueAsString(entity);
 
-    Entity readEntity = mapper.readValue(jsonString, Entity.class);
-    assertTrue(entity.valuesEqual(readEntity));
-
-    mapper.setIncludeReadOnlyValues(false);
-    jsonString = mapper.writeValueAsString(entity);
-
-    readEntity = mapper.readValue(jsonString, Entity.class);
-    assertFalse(entity.valuesEqual(readEntity));
-    assertFalse(readEntity.containsKey(TestDomain.ENTITY_READ_ONLY));
+    assertTrue(entity.valuesEqual(mapper.readValue(jsonString, Entity.class)));
   }
 
   @Test

@@ -96,12 +96,12 @@ public final class EntitiesTest {
     current.put(departmentId, 2);
     current.saveAll();
     assertTrue(Entities.isValueMissingOrModified(current, entity, departmentId));
-    assertEquals(Entities.getModifiedColumnProperties(current, entity).iterator().next(), departmentId);
+    assertEquals(departmentId, Entities.getModifiedColumnProperties(current, entity).iterator().next());
     final Integer id = (Integer) current.remove(departmentId);
     assertEquals(2, id);
     current.saveAll();
     assertTrue(Entities.isValueMissingOrModified(current, entity, departmentId));
-    assertEquals(Entities.getModifiedColumnProperties(current, entity).iterator().next(), departmentId);
+    assertEquals(departmentId, Entities.getModifiedColumnProperties(current, entity).iterator().next());
     current.put(departmentId, 1);
     current.saveAll();
     assertFalse(Entities.isValueMissingOrModified(current, entity, departmentId));
@@ -110,11 +110,11 @@ public final class EntitiesTest {
     current.put(TestDomain.DEPARTMENT_LOCATION, "New location");
     current.saveAll();
     assertTrue(Entities.isValueMissingOrModified(current, entity, departmentLocation));
-    assertEquals(Entities.getModifiedColumnProperties(current, entity).iterator().next(), departmentLocation);
+    assertEquals(departmentLocation, Entities.getModifiedColumnProperties(current, entity).iterator().next());
     current.remove(TestDomain.DEPARTMENT_LOCATION);
     current.saveAll();
     assertTrue(Entities.isValueMissingOrModified(current, entity, departmentLocation));
-    assertEquals(Entities.getModifiedColumnProperties(current, entity).iterator().next(), departmentLocation);
+    assertEquals(departmentLocation, Entities.getModifiedColumnProperties(current, entity).iterator().next());
     current.put(TestDomain.DEPARTMENT_LOCATION, "Location");
     current.saveAll();
     assertFalse(Entities.isValueMissingOrModified(current, entity, departmentLocation));

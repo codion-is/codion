@@ -23,7 +23,6 @@ final class EntitySerializer extends StdSerializer<Entity> {
 
   private boolean includeForeignKeyValues = false;
   private boolean includeNullValues = true;
-  private boolean includeReadOnlyValues = true;
 
   private final EntityObjectMapper mapper;
 
@@ -56,10 +55,6 @@ final class EntitySerializer extends StdSerializer<Entity> {
     this.includeNullValues = includeNullValues;
   }
 
-  void setIncludeReadOnlyValues(final boolean includeReadOnlyValues) {
-    this.includeReadOnlyValues = includeReadOnlyValues;
-  }
-
   private Map<String, Object> getValueMap(final Entity entity) {
     final Map<String, Object> valueMap = new HashMap<>();
     for (final Property property : entity.keySet()) {
@@ -84,9 +79,6 @@ final class EntitySerializer extends StdSerializer<Entity> {
 
   private boolean include(final Property property, final Entity entity) {
     if (!includeForeignKeyValues && property instanceof ForeignKeyProperty) {
-      return false;
-    }
-    if (!includeReadOnlyValues && property.isReadOnly()) {
       return false;
     }
     if (!includeNullValues && entity.isNull(property)) {

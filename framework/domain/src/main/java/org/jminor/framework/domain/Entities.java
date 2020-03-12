@@ -76,7 +76,7 @@ public final class Entities {
   }
 
   /**
-   * Returns all writable {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
+   * Returns all updatable {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
    * Note that lazily loaded blob values are not included in this comparison.
    * @param entity the entity instance to check
@@ -87,7 +87,7 @@ public final class Entities {
     return comparison.keySet().stream().filter(property ->
             (property instanceof ColumnProperty ||
                     (!property.isBlob() || (property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded())))
-                    && !property.isReadOnly()
+                    && ((ColumnProperty) property).isUpdatable()
                     && isValueMissingOrModified(entity, comparison, property))
             .map(property -> (ColumnProperty) property).collect(toList());
   }
