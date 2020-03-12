@@ -155,7 +155,7 @@ The *EntityPanel* class provides a Swing UI for viewing and editing entities. It
 
 ==== Master
 
-Here we extend a *EntityEditPanel* to provide the UI for editing a customer and use that edit panel class when we assemble the *EntityPanel*. We use a default *SwingEntityModel* implementation, which internally, creates a default *SwingEnitityEditModel* and *SwingEntityTableModel*.
+Here we extend a *EntityEditPanel* to provide the UI for editing a customer and use that edit panel class when we assemble the *EntityPanel*. We use a default *SwingEntityModel* implementation, which internally, creates a default *SwingEntityEditModel* and *SwingEntityTableModel*.
 
 [source,java,indent=0]
 ----
