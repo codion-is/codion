@@ -27,6 +27,9 @@ project(':jminor-dbms-h2database').projectDir = file('dbms/h2database')
 include 'jminor-dbms-hsqldb'
 project(':jminor-dbms-hsqldb').projectDir = file('dbms/hsqldb')
 
+include 'jminor-dbms-mariadb'
+project(':jminor-dbms-mariadb').projectDir = file('dbms/mariadb')
+
 include 'jminor-dbms-mysql'
 project(':jminor-dbms-mysql').projectDir = file('dbms/mysql')
 

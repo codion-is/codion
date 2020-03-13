@@ -42,6 +42,7 @@ The most used and tested DBMS modules are:
 |Derby|org.jminor.{jminor-jdk}:jminor-dbms-derby:{jminor-version}
 |H2 Database|org.jminor.{jminor-jdk}:jminor-dbms-h2database:{jminor-version}
 |HSQL|org.jminor.{jminor-jdk}:jminor-dbms-hsql:{jminor-version}
+|MariaDB|org.jminor.{jminor-jdk}:jminor-dbms-mariadb:{jminor-version}
 |MySQL|org.jminor.{jminor-jdk}:jminor-dbms-mysql:{jminor-version}
 |Oracle|org.jminor.{jminor-jdk}:jminor-dbms-oracle:{jminor-version}
 |Postgresql|org.jminor.{jminor-jdk}:jminor-dbms-postgresql:{jminor-version}
