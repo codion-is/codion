@@ -15,7 +15,7 @@ include::{dir-source}/org/jminor/framework/demos/chinook/domain/Chinook.java[lin
 include::{dir-source}/org/jminor/framework/demos/chinook/domain/impl/ChinookImpl.java[lines=4..-1]
 ----
 
-== Domain model unit test
+=== Unit testing
 
 [source,java]
 ----
@@ -32,6 +32,13 @@ include::{dir-source}/org/jminor/framework/demos/chinook/model/TrackTableModel.j
 [source,java]
 ----
 include::{dir-source}/org/jminor/framework/demos/chinook/model/ChinookApplicationModel.java[lines=4..-1]
+----
+
+=== Unit testing
+
+[source,java]
+----
+include::{dir-test-source}/org/jminor/framework/demos/chinook/model/TrackTableModelTest.java[lines=4..-1]
 ----
 
 == Application UI layer
