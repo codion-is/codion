@@ -26,7 +26,7 @@ public final class World extends Domain {
   public static final String T_CITY = "world.city";
   public static final String CITY_ID = "id";
   public static final String CITY_NAME = "name";
-  public static final String CITY_COUNTRYCODE = "countrycode";
+  public static final String CITY_COUNTRY_CODE = "countrycode";
   public static final String CITY_COUNTRY_FK = "country_fk";
   public static final String CITY_DISTRICT = "district";
   public static final String CITY_POPULATION = "population";
@@ -52,7 +52,7 @@ public final class World extends Domain {
   public static final String COUNTRY_FLAG = "flag";
 
   public static final String T_COUNTRYLANGUAGE = "world.countrylanguage";
-  public static final String COUNTRYLANGUAGE_COUNTRYCODE = "countrycode";
+  public static final String COUNTRYLANGUAGE_COUNTRY_CODE = "countrycode";
   public static final String COUNTRYLANGUAGE_COUNTRY_FK = "country_fk";
   public static final String COUNTRYLANGUAGE_LANGUAGE = "language";
   public static final String COUNTRYLANGUAGE_ISOFFICIAL = "isofficial";
@@ -106,7 +106,7 @@ public final class World extends Domain {
                     .setNullable(false)
                     .setMaxLength(35),
             foreignKeyProperty(CITY_COUNTRY_FK, "Country", T_COUNTRY,
-                    columnProperty(CITY_COUNTRYCODE, Types.VARCHAR))
+                    columnProperty(CITY_COUNTRY_CODE, Types.VARCHAR))
                     .setNullable(false),
             columnProperty(CITY_DISTRICT, Types.VARCHAR, "District")
                     .setNullable(false)
@@ -141,7 +141,8 @@ public final class World extends Domain {
                     .setMaxLength(20),
             // tag::columnProperty[]
             columnProperty(COUNTRY_REGION, Types.VARCHAR, "Region")
-                    .setNullable(false),
+                    .setNullable(false)
+                    .setMaxLength(26),
             columnProperty(COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
                     .setNullable(false)
                     .setUseNumberFormatGrouping(true)
@@ -166,7 +167,8 @@ public final class World extends Domain {
                     .setMaxLength(45),
             columnProperty(COUNTRY_GOVERNMENTFORM, Types.VARCHAR, "Government form")
                     .setNullable(false),
-            columnProperty(COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state"),
+            columnProperty(COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state")
+                    .setMaxLength(60),
             // tag::foreignKeyPropertyCapital[]
             foreignKeyProperty(COUNTRY_CAPITAL_FK, "Capital", T_CITY,
                     columnProperty(COUNTRY_CAPITAL)),
@@ -193,7 +195,7 @@ public final class World extends Domain {
     define(T_COUNTRYLANGUAGE,
             // tag::compositePrimaryKey[]
             foreignKeyProperty(COUNTRYLANGUAGE_COUNTRY_FK, "Country", T_COUNTRY,
-                    columnProperty(COUNTRYLANGUAGE_COUNTRYCODE, Types.VARCHAR)
+                    columnProperty(COUNTRYLANGUAGE_COUNTRY_CODE, Types.VARCHAR)
                             .setPrimaryKeyIndex(0)
                             .setUpdatable(true))
                     .setNullable(false),

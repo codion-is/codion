@@ -22,7 +22,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
       addEntitySetListener(selectedCountry -> comboBoxModel.setIncludeCondition(
               city -> selectedCountry != null &&
                       Objects.equals(selectedCountry.get(World.COUNTRY_CODE),
-                              city.get(World.CITY_COUNTRYCODE))));
+                              city.get(World.CITY_COUNTRY_CODE))));
     }
 
     return comboBoxModel;
