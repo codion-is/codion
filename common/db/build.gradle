@@ -16,8 +16,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['org.jminor.dbms.derby,org.jminor.dbms.h2database,org.jminor.dbms.hsqldb,org.jminor.dbms.mysql,org.jminor.dbms.oracle,org.jminor.dbms.postgresql,org.jminor.dbms.sqlite,org.jminor.dbms.sqlserver']
-    testAddReads = ['org.jminor.common.db': 'org.jminor.dbms.derby,org.jminor.dbms.h2database,org.jminor.dbms.hsqldb,org.jminor.dbms.mysql,org.jminor.dbms.oracle,org.jminor.dbms.postgresql,org.jminor.dbms.sqlite,org.jminor.dbms.sqlserver']
+    testAddModules = ['org.jminor.dbms.derby,org.jminor.dbms.h2database,org.jminor.dbms.hsqldb,org.jminor.dbms.mariadb,org.jminor.dbms.mysql,org.jminor.dbms.oracle,org.jminor.dbms.postgresql,org.jminor.dbms.sqlite,org.jminor.dbms.sqlserver']
+    testAddReads = ['org.jminor.common.db': 'org.jminor.dbms.derby,org.jminor.dbms.h2database,org.jminor.dbms.hsqldb,org.jminor.dbms.mariadb,org.jminor.dbms.mysql,org.jminor.dbms.oracle,org.jminor.dbms.postgresql,org.jminor.dbms.sqlite,org.jminor.dbms.sqlserver']
 }
 
 compileTestJava {
