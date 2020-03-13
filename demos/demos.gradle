@@ -156,7 +156,8 @@ task runClientRMI(type: JavaExec) {
             'jminor.report.path'              : 'build/classes/reports',
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/main/config/logback.xml'
+            'logback.configurationFile'       : 'src/main/config/logback.xml',
+            'sun.awt.disablegrab'             : 'true'
     ]
 }
 
@@ -168,7 +169,8 @@ task runClientHttp(type: JavaExec) {
             'jminor.client.http.secure'   : 'false',
             'jminor.client.http.hostname' : 'localhost',
             'jminor.report.path'          : 'build/classes/reports',
-            'logback.configurationFile'   : 'src/main/config/logback.xml'
+            'logback.configurationFile'   : 'src/main/config/logback.xml',
+            'sun.awt.disablegrab'         : 'true'
     ]
 }
 
