@@ -1,14 +1,15 @@
 = JMinor Application Framework
-Björn Darri Sigurðsson
 :docinfo: shared-head
-:toclevels: 1
-:dir-tutorials: tutorials
 :imagesdir: images
 
 image::jminor_logo_medium.png[JMinor Logo,200]
 
-[stripes=none]
-|===
-|<<introduction.adoc#, Introduction>>|<<technical/technical.adoc#, Technical>>|<<quickstart.adoc#, Quickstart>>
-|<<manual/manual.adoc#, Manual>>|<<tutorials/tutorials.adoc#, Tutorials>>|link:api/index.html[Javadocs]
-|===
+== <<quickstart.adoc#, Quickstart>>
+
+== <<technical/technical.adoc#, Technical>>
+
+== <<manual/manual.adoc#, Manual>>
+
+== <<tutorials/tutorials.adoc#, Tutorials>>
+
+== link:api/index.html[Javadocs]
