@@ -41,7 +41,8 @@ public final class CountryEditPanel extends EntityEditPanel {
     createTextField(World.COUNTRY_HEADOFSTATE).setColumns(12);
     EntityComboBox capitalComboBox =
             setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), 120);
-    JPanel cityPanel = createEastButtonPanel(capitalComboBox,
+    //create a panel with a button for adding a new city
+    JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
             createEditPanelAction(capitalComboBox, new CityPanelProvider()), false);
 
     setLayout(new GridLayout(4, 5, 5, 5));
@@ -60,9 +61,10 @@ public final class CountryEditPanel extends EntityEditPanel {
     addPropertyPanel(World.COUNTRY_LOCALNAME);
     addPropertyPanel(World.COUNTRY_GOVERNMENTFORM);
     addPropertyPanel(World.COUNTRY_HEADOFSTATE);
-    add(createPropertyPanel(World.COUNTRY_CAPITAL_FK, cityPanel));
+    add(createPropertyPanel(World.COUNTRY_CAPITAL_FK, capitalPanel));
   }
 
+  /** A EntityPanelProvider for adding a new city */
   private final class CityPanelProvider extends EntityPanelProvider {
 
     public CityPanelProvider() {
