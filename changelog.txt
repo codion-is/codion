@@ -5714,3 +5714,4 @@
   FXEntityListSelectionModel.getSingleSelectionModeState() implemented
   ObservableEntityList.getSelectionModel() now returns FXEntityListSelectionModel, FXEntityListSelectionModelTest added
   Property readOnly status pretty meaningless, replaced with ColumnProperty.insertable
+0.13.7
