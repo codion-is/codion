@@ -4,7 +4,7 @@ plugins {
 
 apply plugin: 'maven-publish'
 
-def documentationVersion = project.version
+def documentationVersion = project.version.replace('-SNAPSHOT', '')
 
 def documentationDir = "doc/${documentationVersion}/${project.jdk}"
 
