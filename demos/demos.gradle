@@ -143,7 +143,8 @@ task runClientLocal(type: JavaExec) {
             'jminor.db.embeddedInMemory'  : 'true',
             'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
             'jminor.report.path'          : 'build/classes/reports',
-            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+            'logback.configurationFile'   : 'src/main/resources/logback.xml',
+            'sun.awt.disablegrab'         : 'true'
     ]
 }
 
