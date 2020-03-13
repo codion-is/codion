@@ -87,6 +87,15 @@ image::modules/dbms/hsqldb/build/reports/dependency-graph/dependency-graph.svg[o
 ====
 
 [discrete]
+=== jminor-dbms-mariadb
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/dbms/mariadb/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
 === jminor-dbms-mysql
 
 .Dependency graph
