@@ -8,6 +8,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.dbms.derby.DerbyDatabase;
 import org.jminor.dbms.h2database.H2Database;
 import org.jminor.dbms.hsqldb.HSQLDatabase;
+import org.jminor.dbms.mariadb.MariaDbDatabase;
 import org.jminor.dbms.mysql.MySQLDatabase;
 import org.jminor.dbms.oracle.OracleDatabase;
 import org.jminor.dbms.postgresql.PostgreSQLDatabase;
@@ -56,6 +57,12 @@ public class DatabasesTest {
       Database.DATABASE_EMBEDDED.set(true);
       database = Databases.getInstance();
       assertTrue(database instanceof HSQLDatabase);
+
+      Database.DATABASE_TYPE.set(Database.Type.MARIADB.toString());
+      Database.DATABASE_PORT.set(3306);
+      Database.DATABASE_SID.set("sid");
+      database = Databases.getInstance();
+      assertTrue(database instanceof MariaDbDatabase);
 
       Database.DATABASE_TYPE.set(Database.Type.MYSQL.toString());
       Database.DATABASE_PORT.set(3306);

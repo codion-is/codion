@@ -4,6 +4,7 @@ dependencies {
     testImplementation project(':jminor-dbms-derby')
     testImplementation project(':jminor-dbms-h2database')
     testImplementation project(':jminor-dbms-hsqldb')
+    testImplementation project(':jminor-dbms-mariadb')
     testImplementation project(':jminor-dbms-mysql')
     testImplementation project(':jminor-dbms-oracle')
     testImplementation project(':jminor-dbms-postgresql')
