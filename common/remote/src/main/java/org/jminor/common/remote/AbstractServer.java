@@ -3,12 +3,13 @@
  */
 package org.jminor.common.remote;
 
-import org.jminor.common.Version;
 import org.jminor.common.remote.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.exception.ConnectionValidationException;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
+import org.jminor.common.version.Version;
+import org.jminor.common.version.Versions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -402,7 +403,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     private final int serverPort;
     private final ZonedDateTime serverStartupTime;
     private final Locale locale = Locale.getDefault();
-    private final Version serverVersion = Version.getVersion();
+    private final Version serverVersion = Versions.getVersion();
 
     private DefaultServerInfo(final UUID serverId, final String serverName, final int serverPort, final ZonedDateTime serverStartupTime) {
       this.serverId = serverId;

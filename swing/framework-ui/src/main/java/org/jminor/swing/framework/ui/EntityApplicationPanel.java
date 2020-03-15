@@ -8,7 +8,6 @@ import org.jminor.common.CredentialsProvider;
 import org.jminor.common.LoggerProxy;
 import org.jminor.common.Memory;
 import org.jminor.common.Text;
-import org.jminor.common.Version;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
@@ -21,6 +20,8 @@ import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
+import org.jminor.common.version.Version;
+import org.jminor.common.version.Versions;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Domain;
@@ -844,7 +845,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(Layouts.createBorderLayout());
-    final String versionString = Version.getVersionAndBuildNumberString();
+    final String versionString = Versions.getVersionAndBuildNumberString();
     panel.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
     final JTextField versionMemoryField = new JTextField(versionString + " (" + Memory.getMemoryUsageString() + ")");
     versionMemoryField.setEditable(false);

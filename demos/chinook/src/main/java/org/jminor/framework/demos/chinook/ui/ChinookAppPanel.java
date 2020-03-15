@@ -3,10 +3,11 @@
  */
 package org.jminor.framework.demos.chinook.ui;
 
-import org.jminor.common.Version;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.user.Users;
+import org.jminor.common.version.Version;
+import org.jminor.common.version.Versions;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.model.ChinookApplicationModel;
 import org.jminor.framework.model.EntityEditModel;
@@ -122,7 +123,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
 
   @Override
   protected Version getClientVersion() {
-    return new Version(0, 1, 0);
+    return Versions.version(0, 1, 0);
   }
 
   @Override
