@@ -11,8 +11,10 @@ module org.jminor.common.core {
 
   exports org.jminor.common;
   exports org.jminor.common.event;
+  exports org.jminor.common.item;
   exports org.jminor.common.i18n;
   exports org.jminor.common.state;
+  exports org.jminor.common.user;
   exports org.jminor.common.value;
   exports org.jminor.common.valuemap;
 
