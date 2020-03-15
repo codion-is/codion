@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 

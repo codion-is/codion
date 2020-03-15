@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.domain;
 
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.StringProvider;
 
@@ -12,6 +12,7 @@ import java.sql.Types;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.jminor.common.item.Items.item;
 import static org.jminor.framework.domain.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 
@@ -51,9 +52,9 @@ public final class EmpDept extends Domain {
   public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
 
   public static final List<Item> JOB_VALUES = asList(
-          new Item("ANALYST", "Analyst"), new Item("CLERK", "Clerk"),
-          new Item("MANAGER", "Manager"), new Item("PRESIDENT", "President"),
-          new Item("SALESMAN", "Salesman"));
+          item("ANALYST", "Analyst"), item("CLERK", "Clerk"),
+          item("MANAGER", "Manager"), item("PRESIDENT", "President"),
+          item("SALESMAN", "Salesman"));
 // end::employeeConstants[]
 
 // tag::constructor[]

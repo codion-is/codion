@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain.property;
 
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
 
 import java.util.List;
 

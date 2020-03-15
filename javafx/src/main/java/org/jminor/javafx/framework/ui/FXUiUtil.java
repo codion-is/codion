@@ -3,10 +3,10 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.Item;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.item.Item;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;

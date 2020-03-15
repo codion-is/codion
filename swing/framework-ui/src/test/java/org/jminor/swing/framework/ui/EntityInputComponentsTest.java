@@ -1,8 +1,8 @@
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.Item;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
+import org.jminor.common.item.Items;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -156,6 +156,6 @@ public class EntityInputComponentsTest {
     final SteppedComboBox comboBox = EntityInputComponents.createValueListComboBox(property, value);
     final ItemComboBoxModel model = (ItemComboBoxModel) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
-    assertTrue(model.contains(new Item(null), true));
+    assertTrue(model.contains(Items.item(null), true));
   }
 }

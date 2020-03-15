@@ -4,7 +4,8 @@
 package org.jminor.javafx.framework.ui.values;
 
 import org.jminor.common.DateParser;
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
+import org.jminor.common.item.Items;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Value;
 import org.jminor.framework.domain.Entity;
@@ -440,7 +441,7 @@ public final class PropertyValues {
 
     @Override
     public void set(final Object value) {
-      selectionModel.select(new Item(value));
+      selectionModel.select(Items.item(value));
     }
 
     @Override

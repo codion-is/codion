@@ -5,7 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.DateFormats;
-import org.jminor.common.Item;
+import org.jminor.common.item.Items;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.PropertyValue;
@@ -760,8 +760,8 @@ public final class EntityInputComponents {
   private static ItemComboBoxModel createValueListComboBoxModel(final ValueListProperty property, final boolean sortItems) {
     final ItemComboBoxModel model = sortItems ?
             new ItemComboBoxModel(property.getValues()) : new ItemComboBoxModel(null, property.getValues());
-    if (property.isNullable() && !model.contains(new Item(null), true)) {
-      model.addItem(new Item(null, EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
+    if (property.isNullable() && !model.contains(Items.item(null), true)) {
+      model.addItem(Items.item(null, EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
     }
 
     return model;

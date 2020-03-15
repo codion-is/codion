@@ -1,6 +1,6 @@
 package org.jminor.framework.demos.world.domain;
 
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
 import org.jminor.framework.domain.DefaultEntityValidator;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static org.jminor.common.Util.notNull;
+import static org.jminor.common.item.Items.item;
 import static org.jminor.framework.domain.KeyGenerators.sequence;
 import static org.jminor.framework.domain.property.Properties.*;
 
@@ -82,9 +83,9 @@ public final class World extends Domain {
   public static final String LOOKUP_CITY_POPULATION = "citypopulation";
 
   private static final List<Item> CONTINENTS = asList(
-          new Item("Africa"), new Item("Antarctica"), new Item("Asia"),
-          new Item("Europe"), new Item("North America"), new Item("Oceania"),
-          new Item("South America")
+          item("Africa"), item("Antarctica"), item("Asia"),
+          item("Europe"), item("North America"), item("Oceania"),
+          item("South America")
   );
 
   public World() {

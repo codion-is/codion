@@ -3,8 +3,8 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.Item;
 import org.jminor.common.db.ConditionType;
+import org.jminor.common.item.Item;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
@@ -27,6 +27,8 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static org.jminor.common.item.Items.item;
 
 /**
  * A View for configuring a query condition for a single property
@@ -95,7 +97,7 @@ public final class PropertyConditionView extends BorderPane {
   private ComboBox<Item<ConditionType>> createConditionTypeComboBox() {
     final ComboBox<Item<ConditionType>> comboBox = new ComboBox<>(
             FXCollections.observableArrayList(getConditionTypes(model.getColumnIdentifier())));
-    comboBox.getSelectionModel().select(new Item<>(model.getConditionType()));
+    comboBox.getSelectionModel().select(item(model.getConditionType()));
     comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setConditionType(newValue.getValue()));
     comboBox.maxWidthProperty().set(Double.MAX_VALUE);
     comboBox.minWidthProperty().set(0);
@@ -192,15 +194,15 @@ public final class PropertyConditionView extends BorderPane {
   private static Collection<Item<ConditionType>> getConditionTypes(final Property property) {
     final Collection<Item<ConditionType>> types = new ArrayList<>();
     if (property instanceof ForeignKeyProperty) {
-      types.add(new Item<>(ConditionType.LIKE, ConditionType.LIKE.getCaption()));
-      types.add(new Item<>(ConditionType.NOT_LIKE, ConditionType.NOT_LIKE.getCaption()));
+      types.add(item(ConditionType.LIKE, ConditionType.LIKE.getCaption()));
+      types.add(item(ConditionType.NOT_LIKE, ConditionType.NOT_LIKE.getCaption()));
     }
     else if (property.isBoolean()) {
-      types.add(new Item<>(ConditionType.LIKE, ConditionType.LIKE.getCaption()));
+      types.add(item(ConditionType.LIKE, ConditionType.LIKE.getCaption()));
     }
     else {
       for (final ConditionType conditionType : ConditionType.values()) {
-        types.add(new Item<>(conditionType, conditionType.getCaption()));
+        types.add(item(conditionType, conditionType.getCaption()));
       }
     }
 

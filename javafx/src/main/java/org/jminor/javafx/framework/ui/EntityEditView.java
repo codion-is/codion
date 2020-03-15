@@ -4,9 +4,9 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.Item;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.item.Item;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.framework.domain.Entity;

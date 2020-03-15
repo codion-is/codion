@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.Item;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.operation.AbstractDatabaseFunction;
 import org.jminor.common.db.operation.AbstractDatabaseProcedure;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
+import static org.jminor.common.item.Items.item;
 import static org.jminor.framework.domain.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 
@@ -102,7 +102,7 @@ public final class TestDomain extends Domain {
                     columnProperty(EMP_DEPARTMENT))
                     .setNullable(false),
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
-                    asList(new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
+                    asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN"))),
             columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)

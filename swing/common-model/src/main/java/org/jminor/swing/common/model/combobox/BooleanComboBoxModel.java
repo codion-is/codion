@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.common.model.combobox;
 
-import org.jminor.common.Item;
 import org.jminor.common.i18n.Messages;
 
 import static java.util.Arrays.asList;
+import static org.jminor.common.item.Items.item;
 
 /**
  * A ComboBoxModel for boolean values, true, false and null.
@@ -35,8 +35,7 @@ public final class BooleanComboBoxModel extends ItemComboBoxModel<Boolean> {
    * @param falseString the string representing the boolean value 'false'
    */
   public BooleanComboBoxModel(final String nullString, final String trueString, final String falseString) {
-    super(null, asList(new Item<>(null, nullString),
-            new Item<>(true, trueString), new Item<>(false, falseString)));
+    super(null, asList(item(null, nullString), item(true, trueString), item(false, falseString)));
     setSelectedItem(null);
   }
 }
