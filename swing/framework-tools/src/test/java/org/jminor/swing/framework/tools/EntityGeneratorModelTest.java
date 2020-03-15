@@ -3,10 +3,11 @@
  */
 package org.jminor.swing.framework.tools;
 
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.table.SortingDirective;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class EntityGeneratorModelTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final String ADDRESS_DEF;
   private static final String TAG_ITEM_DEF;

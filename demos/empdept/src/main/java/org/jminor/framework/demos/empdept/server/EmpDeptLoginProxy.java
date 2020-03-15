@@ -3,12 +3,13 @@
  */
 package org.jminor.framework.demos.empdept.server;
 
-import org.jminor.common.User;
 import org.jminor.common.remote.LoginProxy;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Servers;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Map;
 public final class EmpDeptLoginProxy implements LoginProxy {
 
   private final Map<String, String> users = new HashMap<>();
-  private final User databaseUser = User.parseUser("scott:tiger");
+  private final User databaseUser = Users.parseUser("scott:tiger");
 
   public EmpDeptLoginProxy() {
     users.put("scott", "tiger");

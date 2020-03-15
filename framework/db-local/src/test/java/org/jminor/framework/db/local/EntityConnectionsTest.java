@@ -3,10 +3,11 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.EventDataListener;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class EntityConnectionsTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
   private static final Domain DOMAIN = new TestDomain();
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
@@ -41,7 +42,7 @@ public class EntityConnectionsTest {
   public static void setUp() {
     try {
       final H2Database destinationDatabase = new H2Database("TempDB", "src/test/sql/create_h2_db.sql");
-      DESTINATION_CONNECTION = LocalEntityConnections.createConnection(DOMAIN, destinationDatabase, new User("sa", null));
+      DESTINATION_CONNECTION = LocalEntityConnections.createConnection(DOMAIN, destinationDatabase, Users.user("sa", null));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
       DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_EMP));
       DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_DEPARTMENT));

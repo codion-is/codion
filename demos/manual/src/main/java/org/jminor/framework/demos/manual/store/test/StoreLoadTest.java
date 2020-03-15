@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.manual.store.test;
 
-import org.jminor.common.User;
+import org.jminor.common.user.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.manual.store.domain.Store;

@@ -5,12 +5,12 @@ package org.jminor.swing.common.tools;
 
 import org.jminor.common.Memory;
 import org.jminor.common.TaskScheduler;
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
+import org.jminor.common.user.User;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;

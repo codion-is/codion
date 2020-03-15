@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.demos.chinook.tutorial;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
@@ -101,7 +101,7 @@ public final class ClientArchitecture {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())
                     .setDomainClassName(ChinookImpl.class.getName())
-                    .setUser(User.parseUser("scott:tiger"));
+                    .setUser(Users.parseUser("scott:tiger"));
 
     final EntityPanel artistPanel = artistPanel(connectionProvider);
     //lazy initialization of the UI

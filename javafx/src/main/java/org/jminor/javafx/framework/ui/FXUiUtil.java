@@ -3,7 +3,6 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.item.Item;
@@ -11,6 +10,8 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -826,7 +827,7 @@ public final class FXUiUtil {
 
     dialog.setResultConverter(dialogButton -> {
       if (dialogButton == loginButtonType) {
-        return new User(username.getText(), password.getText().toCharArray());
+        return Users.user(username.getText(), password.getText().toCharArray());
       }
 
       return null;

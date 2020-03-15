@@ -4,9 +4,9 @@
 package org.jminor.common.db.pool;
 
 import org.jminor.common.TaskScheduler;
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.User;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;

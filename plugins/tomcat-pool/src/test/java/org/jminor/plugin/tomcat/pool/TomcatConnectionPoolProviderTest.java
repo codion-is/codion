@@ -3,8 +3,9 @@
  */
 package org.jminor.plugin.tomcat.pool;
 
-import org.jminor.common.User;
 import org.jminor.common.db.pool.ConnectionPool;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;
 
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TomcatConnectionPoolProviderTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   @Test
   public void test() throws Exception {

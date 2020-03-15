@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.chinook.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.model.ChinookApplicationModel;
 import org.jminor.framework.model.EntityEditModel;
@@ -150,6 +150,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.impl.ChinookImpl");
     new ChinookAppPanel().startApplication("Chinook", null, false,
-            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }
 }

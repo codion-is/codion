@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.http;
 
-import org.jminor.common.User;
+import org.jminor.common.user.User;
 import org.jminor.framework.db.EntityConnection;
 
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;

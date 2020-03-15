@@ -4,7 +4,6 @@
 package org.jminor.framework.db.http;
 
 import org.jminor.common.Serializer;
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
@@ -13,6 +12,7 @@ import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.common.user.User;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;

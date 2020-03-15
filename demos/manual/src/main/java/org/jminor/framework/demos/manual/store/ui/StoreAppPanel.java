@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.manual.store.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.framework.demos.manual.store.model.CustomerAddressModel;
@@ -66,7 +66,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.manual.store.domain.Store");
     new StoreAppPanel().startApplication("Store", null, false,
-            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }
 }
 // end::storeAppPanel[]

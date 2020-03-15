@@ -3,7 +3,7 @@
  */
 package org.jminor.plugin.credentials.server;
 
-import org.jminor.common.User;
+import org.jminor.common.user.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

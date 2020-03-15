@@ -3,11 +3,12 @@
  */
 package org.jminor.common.remote;
 
-import org.jminor.common.User;
 import org.jminor.common.remote.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.exception.ConnectionValidationException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.common.remote.exception.ServerException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AbstractServerTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   @Test
   public void testConnectionCount() throws RemoteException, ServerException {
@@ -185,7 +186,7 @@ public class AbstractServerTest {
     final UUID connectionId = UUID.randomUUID();
     final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, connectionId, clientTypeId);
     final ConnectionRequest connectionRequest2 = Clients.connectionRequest(
-            new User(UNIT_TEST_USER.getUsername(), "test".toCharArray()), connectionId, clientTypeId);
+            Users.user(UNIT_TEST_USER.getUsername(), "test".toCharArray()), connectionId, clientTypeId);
 
     server.connect(connectionRequest);
 
@@ -201,7 +202,7 @@ public class AbstractServerTest {
     final UUID connectionId = UUID.randomUUID();
     final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, connectionId, clientTypeId);
     final ConnectionRequest connectionRequest2 = Clients.connectionRequest(
-            new User("test", UNIT_TEST_USER.getPassword()), connectionId, clientTypeId);
+            Users.user("test", UNIT_TEST_USER.getPassword()), connectionId, clientTypeId);
 
     server.connect(connectionRequest);
 

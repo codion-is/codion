@@ -3,7 +3,8 @@
  */
 package org.jminor.framework.demos.empdept.javafx;
 
-import org.jminor.common.User;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.model.EntityModel;
@@ -26,7 +27,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
   @Override
   protected User getDefaultUser() {
-    return User.parseUser("scott:tiger");
+    return Users.parseUser("scott:tiger");
   }
 
   @Override

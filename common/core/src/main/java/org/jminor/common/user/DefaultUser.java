@@ -1,61 +1,48 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package org.jminor.common.user;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * A class encapsulating a username and password.
- */
-public final class User implements Serializable {
+final class DefaultUser implements User {
 
   private static final long serialVersionUID = 1;
 
   private String username;
   private char[] password;
 
-  /**
-   * Instantiates a new User.
-   * @param username the username
-   * @param password the password
-   */
-  public User(final String username, final char[] password) {
+  DefaultUser(final String username, final char[] password) {
     requireNonNull(username, "username");
     this.username = username;
     setPassword(password);
   }
 
-  /**
-   * @return the username
-   */
+  /** {@inheritDoc} */
+  @Override
   public String getUsername() {
     return username;
   }
 
-  /**
-   * @param password the password
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setPassword(final char[] password) {
     this.password = password == null ? new char[0] : password;
   }
 
-  /**
-   * @return the password
-   */
+  /** {@inheritDoc} */
+  @Override
   public char[] getPassword() {
     return password;
   }
 
-  /**
-   * Clears the password
-   */
+  /** {@inheritDoc} */
+  @Override
   public void clearPassword() {
     Arrays.fill(password, (char) 0);
     setPassword(null);
@@ -70,31 +57,13 @@ public final class User implements Serializable {
   /** User objects are equal if the usernames match */
   @Override
   public boolean equals(final Object obj) {
-    return this == obj || obj instanceof User && ((User) obj).username.equals(username);
+    return this == obj || obj instanceof User && ((User) obj).getUsername().equals(username);
   }
 
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return username.hashCode();
-  }
-
-  /**
-   * Parses a User from a string, containing the username and password with a ':' as delimiter, i.e. "user:pass".
-   * Both username and password must be non-empty.
-   * @param userPassword the username and password string
-   * @return a User with the given username and password
-   */
-  public static User parseUser(final String userPassword) {
-    final String[] split = requireNonNull(userPassword).split(":");
-    if (split.length < 2) {
-      throw new IllegalArgumentException("Expecting a string with a single ':' as delimiter");
-    }
-    if (split[0].isEmpty() || split[1].isEmpty()) {
-      throw new IllegalArgumentException("Both username and password are required");
-    }
-
-    return new User(split[0], split[1].toCharArray());
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

@@ -1,8 +1,9 @@
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.item.Items;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -30,7 +31,7 @@ public class EntityInputComponentsTest {
   private static final Domain DOMAIN = new TestDomain();
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 

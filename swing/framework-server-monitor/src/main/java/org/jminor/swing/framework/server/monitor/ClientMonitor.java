@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
-import org.jminor.common.User;
 import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.user.User;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import javax.swing.DefaultListModel;

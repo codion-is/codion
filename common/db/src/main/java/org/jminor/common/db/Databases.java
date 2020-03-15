@@ -4,7 +4,7 @@
 package org.jminor.common.db;
 
 import org.jminor.common.MethodLogger;
-import org.jminor.common.User;
+import org.jminor.common.user.User;
 
 import java.io.Serializable;
 import java.sql.Connection;

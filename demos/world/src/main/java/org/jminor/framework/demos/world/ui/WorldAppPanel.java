@@ -1,7 +1,7 @@
 package org.jminor.framework.demos.world.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.world.domain.World;
 import org.jminor.framework.demos.world.model.WorldAppModel;
@@ -47,6 +47,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.world.domain.World");
     new WorldAppPanel().startApplication("World", null, false,
-            Windows.getScreenSizeRatio(0.8), User.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.8), Users.parseUser("scott:tiger"));
   }
 }

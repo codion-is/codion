@@ -3,8 +3,9 @@
  */
 package org.jminor.framework.demos.schemabrowser.testing;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
@@ -20,7 +21,7 @@ import static java.util.Collections.singletonList;
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final UsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> SCENARIO
           = new AbstractEntityUsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel>() {

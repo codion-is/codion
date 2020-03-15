@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.common.user.User;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;

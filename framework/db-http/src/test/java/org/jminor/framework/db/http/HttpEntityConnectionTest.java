@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.http;
 
-import org.jminor.common.User;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
@@ -13,6 +12,8 @@ import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
@@ -51,7 +52,7 @@ public final class HttpEntityConnectionTest {
 
   private static final Integer WEB_SERVER_PORT_NUMBER = 8089;
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static DefaultEntityConnectionServer server;
 

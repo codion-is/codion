@@ -3,8 +3,9 @@
  */
 package org.jminor.swing.framework.tools.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.LoginPanel;
@@ -91,7 +92,7 @@ public class EntityGeneratorPanel extends JPanel {
           return;
         }
 
-        final User user = new LoginPanel(new User(schemaName, null)).showLoginPanel(null);
+        final User user = new LoginPanel(Users.user(schemaName, null)).showLoginPanel(null);
         final EntityGeneratorModel generatorModel = new EntityGeneratorModel(user, schemaName);
         final EntityGeneratorPanel generatorPanel = new EntityGeneratorPanel(generatorModel);
         final ImageIcon icon = Images.loadImage("jminor_logo32.gif");

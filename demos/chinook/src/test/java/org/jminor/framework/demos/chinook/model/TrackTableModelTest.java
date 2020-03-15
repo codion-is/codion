@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.chinook.model;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
@@ -47,6 +47,6 @@ public final class TrackTableModelTest {
   private EntityConnectionProvider createConnectionProvider() {
     return new LocalEntityConnectionProvider(Databases.getInstance())
             .setDomainClassName(ChinookImpl.class.getName())
-            .setUser(User.parseUser("scott:tiger"));
+            .setUser(Users.parseUser("scott:tiger"));
   }
 }

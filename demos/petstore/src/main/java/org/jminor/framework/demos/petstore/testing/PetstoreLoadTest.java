@@ -3,8 +3,9 @@
  */
 package org.jminor.framework.demos.petstore.testing;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.demos.petstore.model.PetstoreAppModel;
@@ -20,7 +21,7 @@ import static java.util.Collections.singletonList;
 public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel> {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   public PetstoreLoadTest() {
     super(UNIT_TEST_USER, singletonList(new AbstractUsageScenario<PetstoreAppModel>("selectRecords") {

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.server;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
@@ -13,6 +12,7 @@ import org.jminor.common.remote.Servers;
 import org.jminor.common.remote.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.exception.ConnectionValidationException;
 import org.jminor.common.remote.exception.LoginException;
+import org.jminor.common.user.Users;
 import org.jminor.framework.domain.Entity;
 
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ public final class EmployeeServerTest {
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
 
     final EmployeeService employeeService = remoteServer.connect(
-            Clients.connectionRequest(User.parseUser("scott:tiger"),
+            Clients.connectionRequest(Users.parseUser("scott:tiger"),
                     UUID.randomUUID(), "EmployeeServerTest"));
 
     final List<Entity> employees = employeeService.getEmployees();

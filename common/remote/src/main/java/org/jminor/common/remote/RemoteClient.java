@@ -3,7 +3,7 @@
  */
 package org.jminor.common.remote;
 
-import org.jminor.common.User;
+import org.jminor.common.user.User;
 
 /**
  * Contains basic information about a remote client

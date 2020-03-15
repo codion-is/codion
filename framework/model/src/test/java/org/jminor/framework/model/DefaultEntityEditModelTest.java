@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.UpdateException;
@@ -12,6 +11,8 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
@@ -37,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class DefaultEntityEditModelTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));private static final Domain DOMAIN = new TestDomain();
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));private static final Domain DOMAIN = new TestDomain();
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 

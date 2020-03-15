@@ -3,7 +3,8 @@
  */
 package org.jminor.framework.demos.empdept.ui;
 
-import org.jminor.common.User;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.empdept.model.EmployeeEditModel;
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.Test;
 public class EmployeeEditPanelTest extends EntityEditPanelTestUnit {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   public EmployeeEditPanelTest() {
     super(new EmployeeEditModel(EntityConnectionProviders.connectionProvider()

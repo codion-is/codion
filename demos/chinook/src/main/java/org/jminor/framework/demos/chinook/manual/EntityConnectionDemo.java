@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.demos.chinook.manual;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntitySelectCondition;
@@ -237,7 +237,7 @@ public final class EntityConnectionDemo {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())
                     .setDomainClassName(ChinookImpl.class.getName())
-                    .setUser(User.parseUser("scott:tiger"));
+                    .setUser(Users.parseUser("scott:tiger"));
 
     EntityConnection connection = connectionProvider.getConnection();
     selectCondition(connection);

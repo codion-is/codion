@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.manual.quickstart;
 
-import org.jminor.common.User;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
@@ -128,7 +128,7 @@ public final class Example {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())
                     .setDomainClassName(Store.class.getName())
-                    .setUser(User.parseUser("scott:tiger"));
+                    .setUser(Users.parseUser("scott:tiger"));
 
     SwingEntityModel customerModel = new SwingEntityModel(T_CUSTOMER, connectionProvider);
 
@@ -177,7 +177,7 @@ public final class Example {
     class StoreTest extends EntityTestUnit {
 
       public StoreTest() {
-        super(Store.class.getName(), User.parseUser("scott:tiger"));
+        super(Store.class.getName(), Users.parseUser("scott:tiger"));
       }
 
       @Test
@@ -204,7 +204,7 @@ public final class Example {
 
     EntityConnection connection =
             LocalEntityConnections.createConnection(
-                    domain, Databases.getInstance(), User.parseUser("scott:tiger"));
+                    domain, Databases.getInstance(), Users.parseUser("scott:tiger"));
 
     //select customer where last name = Doe
     Entity johnDoe = connection.selectSingle(T_CUSTOMER, CUSTOMER_LAST_NAME, "Doe");
@@ -229,7 +229,7 @@ public final class Example {
 
     EntityConnection connection =
             LocalEntityConnections.createConnection(
-                    domain, Databases.getInstance(), User.parseUser("scott:tiger"));
+                    domain, Databases.getInstance(), Users.parseUser("scott:tiger"));
 
     Entity customer = domain.entity(T_CUSTOMER);
     customer.put(CUSTOMER_FIRST_NAME, "John");

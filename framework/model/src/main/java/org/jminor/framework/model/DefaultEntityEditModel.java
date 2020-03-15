@@ -48,7 +48,7 @@ import static org.jminor.framework.domain.ValueChanges.valueChange;
  * <pre>
  * String entityId = "some.entity";
  * String clientTypeId = "JavadocDemo";
- * User user = new User("scott", "tiger");
+ * User user = Users.user("scott", "tiger");
  *
  * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeId);
  *

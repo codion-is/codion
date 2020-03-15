@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.chinook.tutorial;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.StringProvider;
@@ -132,6 +132,6 @@ public final class ClientTutorial {
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Chinook.class.getName());
     new ApplicationPanel().startApplication("Artists and Albums", null, false,
-            getScreenSizeRatio(0.5), User.parseUser("scott:tiger"));
+            getScreenSizeRatio(0.5), Users.parseUser("scott:tiger"));
   }
 }

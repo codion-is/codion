@@ -4,10 +4,10 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.TaskScheduler;
-import org.jminor.common.User;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
+import org.jminor.common.user.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 

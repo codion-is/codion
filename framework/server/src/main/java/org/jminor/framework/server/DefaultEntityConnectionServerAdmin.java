@@ -5,7 +5,6 @@ package org.jminor.framework.server;
 
 import org.jminor.common.LoggerProxy;
 import org.jminor.common.Memory;
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
@@ -16,6 +15,7 @@ import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.ConnectionRequest;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
+import org.jminor.common.user.User;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
 import org.slf4j.Logger;

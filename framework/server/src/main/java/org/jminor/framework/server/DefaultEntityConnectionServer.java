@@ -6,7 +6,6 @@ package org.jminor.framework.server;
 import org.jminor.common.Configuration;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.Text;
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Version;
 import org.jminor.common.db.Database;
@@ -28,6 +27,8 @@ import org.jminor.common.remote.Servers;
 import org.jminor.common.remote.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
@@ -621,7 +622,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   protected static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
-    return poolUsers.stream().map(User::parseUser).collect(toList());
+    return poolUsers.stream().map(Users::parseUser).collect(toList());
   }
 
   protected static Map<String, Integer> getClientTimeoutValues() {
@@ -780,7 +781,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     final Integer connectionTimeout = Server.SERVER_CONNECTION_TIMEOUT.get();
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
     final String adminUserString = Server.SERVER_ADMIN_USER.get();
-    final User adminUser = nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
+    final User adminUser = nullOrEmpty(adminUserString) ? null : Users.parseUser(adminUserString);
     if (adminUser == null) {
       LOG.info("No admin user specified");
     }
@@ -817,7 +818,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     if (nullOrEmpty(adminUserString)) {
       throw new ServerAuthenticationException("No admin user specified");
     }
-    final User adminUser = User.parseUser(adminUserString);
+    final User adminUser = Users.parseUser(adminUserString);
     Servers.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
     try {
       final Registry registry = Servers.getRegistry(registryPort);

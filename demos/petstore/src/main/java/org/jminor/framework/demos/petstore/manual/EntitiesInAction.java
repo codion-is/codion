@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.petstore.manual;
 
-import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
@@ -23,7 +23,7 @@ public final class EntitiesInAction {
     EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider()
             .setDomainClassName(Petstore.class.getName())
             .setClientTypeId("Manual")
-            .setUser(User.parseUser("scott:tiger"));
+            .setUser(Users.parseUser("scott:tiger"));
 
     Domain store = connectionProvider.getDomain();
 

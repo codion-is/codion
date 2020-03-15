@@ -4,11 +4,12 @@
 package org.jminor.framework.servlet;
 
 import org.jminor.common.Serializer;
-import org.jminor.common.User;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.framework.db.condition.Conditions;
@@ -63,10 +64,10 @@ public class EntityServletServerTest {
   private static final Domain DOMAIN = new TestDomain();
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
-  private static final User ADMIN_USER = User.parseUser("scott:tiger");
+  private static final User ADMIN_USER = Users.parseUser("scott:tiger");
   private static final String HTTPS = "https";
   private static String HOSTNAME;
   private static HttpHost TARGET_HOST;
@@ -177,7 +178,7 @@ public class EntityServletServerTest {
             .build();
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
-    context = createHttpContext(new User("who", "areu".toCharArray()), TARGET_HOST);
+    context = createHttpContext(Users.user("who", "areu".toCharArray()), TARGET_HOST);
     response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()), context);
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();

@@ -4,10 +4,11 @@
 package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.User;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.remote.Server;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
 
 import java.rmi.RemoteException;
@@ -33,7 +34,7 @@ public final class EntityServerMonitor {
   private static final User ADMIN_USER;
 
   static {
-    ADMIN_USER = User.parseUser(Server.SERVER_ADMIN_USER.get());
+    ADMIN_USER = Users.parseUser(Server.SERVER_ADMIN_USER.get());
   }
 
   private final Event<String> hostAddedEvent = Events.event();

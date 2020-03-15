@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
  * <pre>
  * String entityId = "some.entity";
  * String clientTypeId = "JavadocDemo";
- * User user = new User("scott", "tiger");
+ * User user = Users.user("scott", "tiger");
  *
  * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeId);
  *

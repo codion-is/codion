@@ -61,7 +61,7 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
  * <pre>
  * String entityId = "some.entity";
  * String clientTypeId = "JavadocDemo";
- * User user = new User("scott", "tiger");
+ * User user = Users.parseUser("scott:tiger");
  *
  * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeId);
  *

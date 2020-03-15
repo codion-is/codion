@@ -5718,3 +5718,4 @@
   MariaDb database implementation added
   EntityInputComponents.createValueListComboBox() now adds a null item for nullable properties, if the value list does not contain one already
   Item now interface, moved to org.jminor.common.item package, DefaultItem and Items factory class added
+  User now interface, moved to org.jminor.common.user package, DefaultUser and Users factory class added

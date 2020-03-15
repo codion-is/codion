@@ -4,9 +4,9 @@
 package org.jminor.common.db.pool;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.User;
 import org.jminor.common.value.PropertyValue;
 
 import java.sql.Connection;

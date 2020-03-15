@@ -3,9 +3,9 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.User;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;
