@@ -3,12 +3,12 @@
  */
 package org.jminor.swing.framework.tools;
 
-import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.remote.Server;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
+import org.jminor.common.version.Versions;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.model.DefaultEntityApplicationModel;
@@ -39,7 +39,7 @@ public class EntityLoadTestModelTest {
   public static synchronized void setUp() throws Exception {
     configure();
     final Database database = Databases.getInstance();
-    final String serverName = Server.SERVER_NAME_PREFIX.get() + " " + Version.getVersionString()
+    final String serverName = Server.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
             + "@" + (database.getSid() != null ? database.getSid().toUpperCase() : database.getHost().toUpperCase());
     DefaultEntityConnectionServer.startServer();
     server = (Server) LocateRegistry.getRegistry((Server.SERVER_HOST_NAME.get()),

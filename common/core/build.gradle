@@ -1,6 +1,6 @@
 task writeVersion {
     group 'build'
-    def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + '/org/jminor/common/version.properties')
+    def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + '/org/jminor/common/version/version.properties')
     inputs.property("version", project.version)
     outputs.file(versionFile)
 

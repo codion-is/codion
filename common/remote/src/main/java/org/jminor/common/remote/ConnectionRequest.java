@@ -3,8 +3,8 @@
  */
 package org.jminor.common.remote;
 
-import org.jminor.common.Version;
 import org.jminor.common.user.User;
+import org.jminor.common.version.Version;
 
 import java.io.Serializable;
 import java.util.Map;

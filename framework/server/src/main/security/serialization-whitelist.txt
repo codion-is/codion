@@ -68,10 +68,10 @@ net.sf.jasperreports.engine.type.SplitTypeEnum
 net.sf.jasperreports.engine.type.StretchTypeEnum
 net.sf.jasperreports.engine.type.WhenResourceMissingTypeEnum
 org.jminor.common.Conjunction
-org.jminor.common.Version
 org.jminor.common.db.condition.ConditionType
 org.jminor.common.remote.Clients$DefaultConnectionRequest
 org.jminor.common.user.User
+org.jminor.common.version.Version
 org.jminor.framework.db.condition.DefaultConditionSet
 org.jminor.framework.db.condition.DefaultCustomCondition
 org.jminor.framework.db.condition.DefaultEntityCondition

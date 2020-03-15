@@ -3,8 +3,9 @@
  */
 package org.jminor.common.remote;
 
-import org.jminor.common.Version;
 import org.jminor.common.user.User;
+import org.jminor.common.version.Version;
+import org.jminor.common.version.Versions;
 
 import java.util.Collections;
 import java.util.Map;
@@ -54,7 +55,7 @@ public final class Clients {
    */
   public static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId,
                                                     final Version clientVersion, final Map<String, Object> parameters) {
-    return new DefaultConnectionRequest(user, clientId, clientTypeId, clientVersion, Version.getVersion(), parameters);
+    return new DefaultConnectionRequest(user, clientId, clientTypeId, clientVersion, Versions.getVersion(), parameters);
   }
 
   private static final class DefaultConnectionRequest implements ConnectionRequest {

@@ -7,7 +7,6 @@ import org.jminor.common.Configuration;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.Text;
 import org.jminor.common.Util;
-import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.AuthenticationException;
@@ -30,6 +29,7 @@ import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
+import org.jminor.common.version.Versions;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.EntityDefinition;
@@ -617,7 +617,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   protected static String initializeServerName(final String databaseHost, final String sid) {
-    return Server.SERVER_NAME_PREFIX.get() + " " + Version.getVersionString()
+    return Server.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
             + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 

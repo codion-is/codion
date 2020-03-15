@@ -3,9 +3,9 @@
  */
 package org.jminor.common.remote;
 
-import org.jminor.common.Version;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
+import org.jminor.common.version.Versions;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +23,7 @@ public final class ClientsTest {
     assertEquals(user, request.getUser());
     assertEquals(uuid, request.getClientId());
     assertNull(request.getClientVersion());
-    assertEquals(Version.getVersion(), request.getFrameworkVersion());
+    assertEquals(Versions.getVersion(), request.getFrameworkVersion());
     assertEquals(uuid.hashCode(), request.hashCode());
     assertEquals("test", request.getClientTypeId());
     assertTrue(request.toString().contains(user.getUsername()));
