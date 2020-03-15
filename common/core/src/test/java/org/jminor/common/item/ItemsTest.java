@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class ItemsTest {
 
@@ -28,6 +29,9 @@ public class ItemsTest {
     final Item<String> thirdItem = Items.item("hello");
     assertEquals("hello".hashCode(), thirdItem.hashCode());
     assertEquals("hello", thirdItem.getCaption());
+
+    assertEquals(newItem, Items.item("hello"));
+    assertNotEquals(newItem, "hello");
 
     assertEquals(0, Items.item(null).hashCode());
 

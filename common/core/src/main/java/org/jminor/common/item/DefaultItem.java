@@ -57,7 +57,7 @@ final class DefaultItem<T> implements Item<T> {
   /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
-    return obj instanceof Item && Objects.equals(value, ((Item) obj).getValue());
+    return this == obj || obj instanceof Item && Objects.equals(value, ((Item) obj).getValue());
   }
 
   /** {@inheritDoc} */
