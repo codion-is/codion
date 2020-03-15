@@ -16,6 +16,7 @@ public final class Users {
    * Instantiates a new User.
    * @param username the username
    * @param password the password
+   * @return a new User
    */
   public static User user(final String username, final char[] password) {
     return new DefaultUser(username, password);
