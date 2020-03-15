@@ -17,6 +17,7 @@ module org.jminor.common.core {
   exports org.jminor.common.user;
   exports org.jminor.common.value;
   exports org.jminor.common.valuemap;
+  exports org.jminor.common.version;
 
   uses org.jminor.common.LoggerProxy;
   uses org.jminor.common.CredentialsProvider;
