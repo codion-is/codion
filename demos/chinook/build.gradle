@@ -32,8 +32,6 @@ dependencies {
     implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
-    runtimeOnly project(':jminor-plugin-logback-proxy')
-
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
     }
