@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.chinook.server;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
@@ -13,6 +12,8 @@ import org.jminor.common.remote.LoginProxy;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
@@ -35,7 +36,7 @@ public final class ChinookLoginProxy implements LoginProxy {
    * The actual user credentials to return for successfully
    * authenticated users.
    */
-  private final User databaseUser = User.parseUser("scott:tiger");
+  private final User databaseUser = Users.parseUser("scott:tiger");
 
   /**
    * The Database instance we're connecting to.

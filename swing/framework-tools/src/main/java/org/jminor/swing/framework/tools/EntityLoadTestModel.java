@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.tools;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.User;
+import org.jminor.common.user.User;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;

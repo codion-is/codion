@@ -3,7 +3,8 @@
  */
 package org.jminor.framework.demos.chinook.javafx;
 
-import org.jminor.common.User;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.javafx.framework.model.FXEntityModel;
@@ -63,7 +64,7 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
 
   @Override
   protected User getDefaultUser() {
-    return User.parseUser("scott:tiger");
+    return Users.parseUser("scott:tiger");
   }
 
   public static void main(final String[] args) {

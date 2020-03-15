@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.tools;
 
-import org.jminor.common.User;
 import org.jminor.common.event.EventObserver;
+import org.jminor.common.user.User;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;

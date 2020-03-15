@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.MethodLogger;
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
@@ -18,6 +17,8 @@ import org.jminor.common.remote.Server;
 import org.jminor.common.remote.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
@@ -45,9 +46,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultEntityConnectionServerTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static final User ADMIN_USER = User.parseUser("scott:tiger");
+  private static final User ADMIN_USER = Users.parseUser("scott:tiger");
   private static final Map<String, Object> CONNECTION_PARAMS =
           Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, "TestDomain");
   private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;
@@ -104,33 +105,33 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void testWrongPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.connect(Clients.connectionRequest(new User(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()),
+    assertThrows(ServerAuthenticationException.class, () -> server.connect(Clients.connectionRequest(Users.user(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()),
             UUID.randomUUID(), getClass().getSimpleName(), CONNECTION_PARAMS)));
   }
 
   @Test
   public void getServerAdminEmptyPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(new User("test", "".toCharArray())));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test", "".toCharArray())));
   }
 
   @Test
   public void getServerAdminNullPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(new User("test", null)));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test", null)));
   }
 
   @Test
   public void getServerAdminWrongPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(new User("test", "test".toCharArray())));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test", "test".toCharArray())));
   }
 
   @Test
   public void getServerAdminEmptyUsername() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(new User("", "test".toCharArray())));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("", "test".toCharArray())));
   }
 
   @Test
   public void getServerAdminWrongUsername() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(new User("test", "test".toCharArray())));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test", "test".toCharArray())));
   }
 
   @Test
@@ -170,7 +171,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(2, admin.getConnectionCount());
     assertEquals(2, admin.getClients().size());
 
-    Collection<RemoteClient> clients = admin.getClients(new User(UNIT_TEST_USER.getUsername(), null));
+    Collection<RemoteClient> clients = admin.getClients(Users.user(UNIT_TEST_USER.getUsername(), null));
     assertEquals(2, clients.size());
     clients = admin.getClients("ClientTypeID");
     assertEquals(2, clients.size());
@@ -224,12 +225,12 @@ public class DefaultEntityConnectionServerTest {
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
     final String testClientTypeId = "TestLoginProxy";
-    final User john = new User("john", "hello".toCharArray());
+    final User john = Users.user("john", "hello".toCharArray());
     final ConnectionRequest connectionRequestJohn = Clients.connectionRequest(john,
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
-    final ConnectionRequest connectionRequestHelen = Clients.connectionRequest(new User("helen", "juno".toCharArray()),
+    final ConnectionRequest connectionRequestHelen = Clients.connectionRequest(Users.user("helen", "juno".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
-    final ConnectionRequest connectionRequestInvalid = Clients.connectionRequest(new User("foo", "bar".toCharArray()),
+    final ConnectionRequest connectionRequestInvalid = Clients.connectionRequest(Users.user("foo", "bar".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
     server.connect(connectionRequestJohn);
     final RemoteClient clientJohn = admin.getClients(john).iterator().next();

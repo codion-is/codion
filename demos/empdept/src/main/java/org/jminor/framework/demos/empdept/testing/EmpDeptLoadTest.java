@@ -3,8 +3,9 @@
  */
 package org.jminor.framework.demos.empdept.testing;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.empdept.ui.EmpDeptAppPanel;
@@ -28,7 +29,7 @@ import static java.util.Arrays.asList;
 public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   public EmpDeptLoadTest() {
     super(UNIT_TEST_USER, asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),

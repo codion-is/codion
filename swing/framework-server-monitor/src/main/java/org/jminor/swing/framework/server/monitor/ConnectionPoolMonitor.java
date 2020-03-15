@@ -4,13 +4,13 @@
 package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.TaskScheduler;
-import org.jminor.common.User;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
+import org.jminor.common.user.User;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;

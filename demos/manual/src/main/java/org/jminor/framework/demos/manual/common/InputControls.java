@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.manual.common;
 
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;

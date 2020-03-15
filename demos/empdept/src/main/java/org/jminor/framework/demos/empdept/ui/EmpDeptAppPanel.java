@@ -4,9 +4,9 @@
 package org.jminor.framework.demos.empdept.ui;
 
 import org.jminor.common.Text;
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnSummary;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.empdept.model.EmployeeEditModel;
@@ -90,7 +90,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.empdept.domain.EmpDept");
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false,
-            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }
 // end::main[]
 

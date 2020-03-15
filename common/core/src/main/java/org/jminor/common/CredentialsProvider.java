@@ -3,6 +3,8 @@
  */
 package org.jminor.common;
 
+import org.jminor.common.user.User;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ServiceLoader;

@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.common.Item;
 import org.jminor.common.event.EventObserver;
+import org.jminor.common.item.Item;
 import org.jminor.common.value.Value;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;

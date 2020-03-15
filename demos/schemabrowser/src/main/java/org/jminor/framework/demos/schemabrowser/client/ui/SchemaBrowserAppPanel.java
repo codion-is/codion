@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.schemabrowser.client.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 import org.jminor.swing.common.ui.Windows;
@@ -46,7 +46,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser");
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false,
-            Windows.getScreenSizeRatio(0.5), User.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.5), Users.parseUser("scott:tiger"));
   }
 
   public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {

@@ -3,12 +3,13 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.remote.Clients;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Servers;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
@@ -34,17 +35,17 @@ public class DefaultRemoteEntityConnectionTest {
   private static final Domain DOMAIN = new TestDomain();
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   @Test
   public void wrongUsername() throws Exception {
-    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(new User("foo", "bar".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(Users.user("foo", "bar".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1234));
   }
 
   @Test
   public void wrongPassword() throws Exception {
-    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(new User(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(Users.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1235));
   }
 

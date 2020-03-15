@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.model.combobox;
 
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
 
 import org.junit.jupiter.api.Test;
 

@@ -3,8 +3,9 @@
  */
 package org.jminor.swing.common.tools.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.LoadTest;
@@ -179,7 +180,7 @@ public final class LoadTestPanel extends JPanel {
     usernameField.setColumns(LARGE_TEXT_FIELD_COLUMNS);
     final JPasswordField passwordField = new JPasswordField(String.valueOf(user.getPassword()));
     passwordField.setColumns(LARGE_TEXT_FIELD_COLUMNS);
-    final ActionListener userInfoListener = e -> loadTestModel.setUser(new User(usernameField.getText(), passwordField.getPassword()));
+    final ActionListener userInfoListener = e -> loadTestModel.setUser(Users.user(usernameField.getText(), passwordField.getPassword()));
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
     final FlexibleGridLayout layout = Layouts.createFlexibleGridLayout(2, 2, true, false);

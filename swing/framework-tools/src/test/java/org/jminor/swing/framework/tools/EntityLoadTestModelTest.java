@@ -3,11 +3,12 @@
  */
 package org.jminor.swing.framework.tools;
 
-import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.remote.Server;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.model.DefaultEntityApplicationModel;
@@ -26,11 +27,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityLoadTestModelTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final String CONNECTION_TYPE_BEFORE_TEST = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
 
-  private static final User ADMIN_USER = User.parseUser("scott:tiger");
+  private static final User ADMIN_USER = Users.parseUser("scott:tiger");
   private static Server<?, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 

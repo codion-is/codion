@@ -3,8 +3,9 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultDatabaseConnectionTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private final Database DATABASE = Databases.getInstance();
   private DefaultDatabaseConnection dbConnection;
@@ -57,12 +58,12 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   public void wrongUsername() throws Exception {
-    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, new User("foo", "bar".toCharArray())));
+    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, Users.user("foo", "bar".toCharArray())));
   }
 
   @Test
   public void wrongPassword() throws Exception {
-    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, new User(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray())));
+    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, Users.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray())));
   }
 
   @Test

@@ -3,7 +3,8 @@
  */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
+import org.jminor.common.item.Items;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
@@ -47,7 +48,7 @@ final class SelectedItemValue<T> extends AbstractComponentValue<T, JComboBox<Ite
     final ItemComboBoxModel<T> boxModel = new ItemComboBoxModel<>(values);
     final JComboBox<Item<T>> box = new SteppedComboBox<>(boxModel);
     MaximumMatch.enable(box);
-    final Item<T> currentItem = new Item<>(currentValue, "");
+    final Item<T> currentItem = Items.item(currentValue, "");
     final int currentValueIndex = values.indexOf(currentItem);
     if (currentValueIndex >= 0) {
       boxModel.setSelectedItem(values.get(currentValueIndex));

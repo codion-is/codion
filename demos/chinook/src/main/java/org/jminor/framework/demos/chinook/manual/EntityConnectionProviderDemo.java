@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.demos.chinook.manual;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.http.HttpEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnection;
@@ -32,7 +32,7 @@ public class EntityConnectionProviderDemo {
             new LocalEntityConnectionProvider(Databases.getInstance());
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
-    connectionProvider.setUser(User.parseUser("scott:tiger"));
+    connectionProvider.setUser(Users.parseUser("scott:tiger"));
 
     LocalEntityConnection entityConnection =
             (LocalEntityConnection) connectionProvider.getConnection();
@@ -53,7 +53,7 @@ public class EntityConnectionProviderDemo {
             new RemoteEntityConnectionProvider("localhost", -1, 1099);
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
-    connectionProvider.setUser(User.parseUser("scott:tiger"));
+    connectionProvider.setUser(Users.parseUser("scott:tiger"));
     connectionProvider.setClientTypeId(EntityConnectionProviderDemo.class.getSimpleName());
 
     EntityConnection entityConnection =
@@ -74,7 +74,7 @@ public class EntityConnectionProviderDemo {
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
     connectionProvider.setClientTypeId(EntityConnectionProviderDemo.class.getSimpleName());
-    connectionProvider.setUser(User.parseUser("scott:tiger"));
+    connectionProvider.setUser(Users.parseUser("scott:tiger"));
 
     EntityConnection entityConnection = connectionProvider.getConnection();
 

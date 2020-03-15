@@ -3,9 +3,10 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields;
@@ -51,7 +52,7 @@ public final class LoginPanel extends JPanel {
    * @return a User object based on the values found in this LoginPanel
    */
   public User getUser() {
-    return new User(usernameField.getText(), passwordField.getPassword());
+    return Users.user(usernameField.getText(), passwordField.getPassword());
   }
 
   /**

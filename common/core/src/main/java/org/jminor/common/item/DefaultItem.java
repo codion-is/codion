@@ -1,19 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package org.jminor.common.item;
 
-import java.io.Serializable;
+import org.jminor.common.Text;
+
 import java.util.Comparator;
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * A class encapsulating a value and a caption representing the value.
- * @param <T> the type of the value
- */
-public final class Item<T> implements Comparable<Item>, Serializable {
+final class DefaultItem<T> implements Item<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -23,20 +20,12 @@ public final class Item<T> implements Comparable<Item>, Serializable {
   private transient Comparator<String> collator;
 
   /**
-   * Instantiates a new Item, with the caption as item.toString() or an empty string in case of a null value
-   * @param value the value, may be null
-   */
-  public Item(final T value) {
-    this(value, value == null ? "" : value.toString());
-  }
-
-  /**
    * Instantiates a new Item.
    * @param value the value, may be null
    * @param caption the caption
    * @throws NullPointerException if caption is null
    */
-  public Item(final T value, final String caption) {
+  DefaultItem(final T value, final String caption) {
     this.value = value;
     this.caption = requireNonNull(caption, "caption");
   }
@@ -44,6 +33,7 @@ public final class Item<T> implements Comparable<Item>, Serializable {
   /**
    * @return the caption
    */
+  @Override
   public String getCaption() {
     return caption;
   }
@@ -51,6 +41,7 @@ public final class Item<T> implements Comparable<Item>, Serializable {
   /**
    * @return the value
    */
+  @Override
   public T getValue() {
     return value;
   }
@@ -66,7 +57,7 @@ public final class Item<T> implements Comparable<Item>, Serializable {
   /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
-    return obj instanceof Item && Objects.equals(value, ((Item) obj).value);
+    return obj instanceof Item && Objects.equals(value, ((Item) obj).getValue());
   }
 
   /** {@inheritDoc} */
@@ -81,8 +72,8 @@ public final class Item<T> implements Comparable<Item>, Serializable {
    * @return the compare result
    */
   @Override
-  public int compareTo(final Item item) {
-    return getCollator().compare(caption, item.caption);
+  public int compareTo(final Item<T> item) {
+    return getCollator().compare(caption, item.getCaption());
   }
 
   private Comparator<String> getCollator() {

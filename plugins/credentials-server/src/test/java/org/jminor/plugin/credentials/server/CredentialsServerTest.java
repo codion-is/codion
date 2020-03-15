@@ -4,7 +4,8 @@
 package org.jminor.plugin.credentials.server;
 
 import org.jminor.common.CredentialsProvider;
-import org.jminor.common.User;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ public final class CredentialsServerTest {
     final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 
     System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
-    final User scott = User.parseUser("scott:tiger");
+    final User scott = Users.parseUser("scott:tiger");
     final CredentialsServer server = new CredentialsServer(54321, 900, 50);
 
     UUID token = UUID.randomUUID();

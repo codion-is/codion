@@ -3,12 +3,13 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
-import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
@@ -25,9 +26,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityServerMonitorTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static final User ADMIN_USER = User.parseUser("scott:tiger");
+  private static final User ADMIN_USER = Users.parseUser("scott:tiger");
   private static Server<?, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 

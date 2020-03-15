@@ -3,8 +3,9 @@
  */
 package org.jminor.swing.common.tools.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.swing.common.tools.LoadTestModel;
 
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ public class LoadTestPanelTest {
 
   @Test
   public void test() {
-    final LoadTestModel model = new TestLoadTestModel(new User("test", "hello".toCharArray()), 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2, 1000);
     final LoadTestPanel panel = new LoadTestPanel(model);
     assertEquals(model, panel.getModel());
     model.exit();

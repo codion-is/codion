@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.tools;
 
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
@@ -13,6 +12,7 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
+import org.jminor.common.user.User;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;

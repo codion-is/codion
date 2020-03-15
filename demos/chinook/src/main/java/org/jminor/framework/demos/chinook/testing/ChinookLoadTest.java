@@ -3,9 +3,10 @@
  */
 package org.jminor.framework.demos.chinook.testing;
 
-import org.jminor.common.User;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.chinook.model.ChinookApplicationModel;
 import org.jminor.framework.demos.chinook.ui.ChinookAppPanel;
@@ -35,7 +36,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicationModel> {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final UsageScenario<ChinookApplicationModel> UPDATE_TOTALS =
           new AbstractEntityUsageScenario<ChinookApplicationModel>("updateTotals") {

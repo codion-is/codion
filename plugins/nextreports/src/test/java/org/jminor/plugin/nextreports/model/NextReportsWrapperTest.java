@@ -3,9 +3,10 @@
  */
 package org.jminor.plugin.nextreports.model;
 
-import org.jminor.common.User;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
@@ -25,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class NextReportsWrapperTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   @Test
   public void fillReport() throws ReportException, IOException {

@@ -3,9 +3,9 @@
  */
 package org.jminor.common.remote;
 
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Version;
+import org.jminor.common.user.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
 
 import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;

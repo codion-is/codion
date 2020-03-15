@@ -3,13 +3,13 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.Item;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.StringProvider;
 
 import java.sql.Types;
 
 import static java.util.Arrays.asList;
+import static org.jminor.common.item.Items.item;
 import static org.jminor.framework.domain.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 
@@ -63,7 +63,7 @@ public final class TestDomain extends Domain {
                     columnProperty(EMP_DEPARTMENT))
                     .setNullable(false),
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
-                    asList(new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
+                    asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN"))),
             columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)

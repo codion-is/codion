@@ -5,7 +5,6 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.DateFormats;
-import org.jminor.common.User;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
@@ -21,6 +20,8 @@ import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
@@ -55,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultLocalEntityConnectionTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private DefaultLocalEntityConnection connection;
 

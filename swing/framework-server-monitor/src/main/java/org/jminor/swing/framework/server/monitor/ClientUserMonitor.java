@@ -5,12 +5,12 @@ package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.DateFormats;
 import org.jminor.common.TaskScheduler;
-import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.user.User;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;

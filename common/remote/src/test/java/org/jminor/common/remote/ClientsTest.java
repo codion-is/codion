@@ -3,8 +3,9 @@
  */
 package org.jminor.common.remote;
 
-import org.jminor.common.User;
 import org.jminor.common.Version;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ public final class ClientsTest {
 
   @Test
   public void clientUtil() {
-    final User user = User.parseUser("scott:tiger");
+    final User user = Users.parseUser("scott:tiger");
     final UUID uuid = UUID.randomUUID();
     final ConnectionRequest request = Clients.connectionRequest(user, uuid, "test");
     assertEquals(user, request.getUser());

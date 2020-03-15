@@ -4,12 +4,13 @@
 package org.jminor.framework.servlet;
 
 import org.jminor.common.Serializer;
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.remote.Clients;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.common.remote.exception.ServerException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
@@ -619,7 +620,7 @@ public final class EntityService extends Application {
 
     final String basicAuth = basic.get(0);
     if (basicAuth.length() > BASIC_PREFIX_LENGTH && BASIC_PREFIX.equalsIgnoreCase(basicAuth.substring(0, BASIC_PREFIX_LENGTH))) {
-      return User.parseUser(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH))));
+      return Users.parseUser(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH))));
     }
 
     throw new ServerAuthenticationException("Invalid authorization format");

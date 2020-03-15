@@ -3,12 +3,12 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
-import org.jminor.common.User;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.user.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

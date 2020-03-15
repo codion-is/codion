@@ -3,8 +3,8 @@
  */
 package org.jminor.common.remote;
 
-import org.jminor.common.User;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.user.User;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

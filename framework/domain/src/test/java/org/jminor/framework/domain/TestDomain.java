@@ -4,7 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.DateFormats;
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.sql.Types;
@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.jminor.common.item.Items.item;
 import static org.jminor.framework.domain.KeyGenerators.increment;
 import static org.jminor.framework.domain.KeyGenerators.queried;
 import static org.jminor.framework.domain.property.Properties.*;
@@ -85,8 +86,8 @@ public final class TestDomain extends Domain {
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
-  private static final List<Item> ITEMS = asList(new Item(0, "0"), new Item(1, "1"),
-          new Item(2, "2"), new Item(3, "3"));
+  private static final List<Item> ITEMS = asList(item(0, "0"), item(1, "1"),
+          item(2, "2"), item(3, "3"));
 
   void detail() {
     define(T_DETAIL,
@@ -189,8 +190,8 @@ public final class TestDomain extends Domain {
                     .setBeanProperty("department")
                     .setNullable(false),
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
-                    asList(new Item("ANALYST"), new Item("CLERK"),
-                            new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN")))
+                    asList(item("ANALYST"), item("CLERK"),
+                            item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .setBeanProperty("job"),
             columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2)

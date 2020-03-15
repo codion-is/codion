@@ -4,8 +4,9 @@
 package org.jminor.common.db;
 
 import org.jminor.common.MethodLogger;
-import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -377,7 +378,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   private static User getUser(final Connection connection) throws DatabaseException {
     try {
-      return new User(connection.getMetaData().getUserName(), null);
+      return Users.user(connection.getMetaData().getUserName(), null);
     }
     catch (final SQLException e) {
       throw new DatabaseException(e, "Exception while trying to retrieve username from meta data");

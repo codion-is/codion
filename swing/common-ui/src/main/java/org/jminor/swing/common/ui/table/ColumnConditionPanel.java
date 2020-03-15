@@ -4,11 +4,12 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.DateFormats;
-import org.jminor.common.Item;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
+import org.jminor.common.item.Item;
+import org.jminor.common.item.Items;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
@@ -497,7 +498,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
     final ItemComboBoxModel<ConditionType> comboBoxModel = new ItemComboBoxModel<>();
     for (final ConditionType type : ConditionType.values()) {
       if (conditionTypes.contains(type)) {
-        comboBoxModel.addItem(new Item<>(type, type.getCaption()));
+        comboBoxModel.addItem(Items.item(type, type.getCaption()));
       }
     }
     final JComboBox<ConditionType> comboBox = new SteppedComboBox(comboBoxModel);

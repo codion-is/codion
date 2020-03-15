@@ -3,8 +3,9 @@
  */
 package org.jminor.swing.framework.tools.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.swing.framework.tools.EntityGeneratorModel;
 
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import org.junit.jupiter.api.Test;
 public class EntityGeneratorPanelTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   @Test
   public void test() throws ClassNotFoundException, DatabaseException {

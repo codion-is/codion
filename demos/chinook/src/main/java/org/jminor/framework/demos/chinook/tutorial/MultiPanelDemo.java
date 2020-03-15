@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.demos.chinook.tutorial;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
@@ -34,7 +34,7 @@ public final class MultiPanelDemo {
 
     LocalEntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(Databases.getInstance());
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
-    connectionProvider.setUser(User.parseUser("scott:tiger"));
+    connectionProvider.setUser(Users.parseUser("scott:tiger"));
 
     EntityEditModel.POST_EDIT_EVENTS.set(true);
 

@@ -5,19 +5,21 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.CredentialsProvider;
-import org.jminor.common.Item;
 import org.jminor.common.LoggerProxy;
 import org.jminor.common.Memory;
 import org.jminor.common.Text;
-import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.item.Item;
+import org.jminor.common.item.Items;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
@@ -369,7 +371,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public final void selectFontSize() {
     final List<Item<Integer>> values = new ArrayList<>(21);
     for (int i = 100; i <= 200; i += 5) {
-      values.add(new Item<>(i, i + "%"));
+      values.add(Items.item(i, i + "%"));
     }
     final ItemComboBoxModel<Integer> comboBoxModel = new ItemComboBoxModel<>(values);
     final Integer defaultFontSize = getDefaultFontSize();
@@ -1246,7 +1248,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case a login dialog is cancelled
    */
   protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) {
-    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? new User(getDefaultUsername(), null) : defaultUser);
+    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? Users.user(getDefaultUsername(), null) : defaultUser);
     final String loginTitle = (!nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
     final User user = loginPanel.showLoginPanel(null, loginTitle, applicationIcon);
     if (nullOrEmpty(user.getUsername())) {
@@ -1324,7 +1326,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
-      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : new User("", null);
+      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : Users.user("", null);
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }

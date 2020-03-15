@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.empdept.minimal;
 
-import org.jminor.common.User;
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.remote.Server;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
@@ -233,6 +233,6 @@ public class EmpDeptMinimalApp {
 
     //we create an instance of our application panel and start it
     new EmpDeptApplicationPanel().startApplication("EmpDept Minimal", null, false,
-            new Dimension(800, 600), User.parseUser("scott:tiger"));
+            new Dimension(800, 600), Users.parseUser("scott:tiger"));
   }
 }

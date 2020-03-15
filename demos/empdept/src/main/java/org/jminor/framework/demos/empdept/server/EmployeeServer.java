@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.demos.empdept.server;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.user.Users;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -30,7 +30,7 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
     super("Employee Server", serverPort, serverAdminPort, registryPort, database,
             false, -1, null, null,
             null, null, null, true,
-            600000, null, User.parseUser("scott:tiger"));
+            600000, null, Users.parseUser("scott:tiger"));
   }
 
   @Override

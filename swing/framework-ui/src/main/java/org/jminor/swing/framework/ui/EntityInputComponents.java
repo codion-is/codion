@@ -5,6 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.DateFormats;
+import org.jminor.common.item.Items;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.PropertyValue;
@@ -14,6 +15,7 @@ import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
+import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
@@ -362,7 +364,9 @@ public final class EntityInputComponents {
   }
 
   /**
-   * Creates a combo box based on the values in the given value list property
+   * Creates a combo box based on the values in the given value list property.
+   * If the property is nullable and the value list items do not include a null item,
+   * one is added to the combo box model.
    * @param property the property
    * @param value the value to bind to the field
    * @param sortItems if true then the items are sorted
@@ -371,9 +375,8 @@ public final class EntityInputComponents {
    */
   public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
                                                         final boolean sortItems, final StateObserver enabledState) {
-    final ItemComboBoxModel model = sortItems ?
-            new ItemComboBoxModel(property.getValues()) : new ItemComboBoxModel(null, property.getValues());
-    final SteppedComboBox comboBox = createComboBox(property, value, model, enabledState);
+    final SteppedComboBox comboBox = createComboBox(property, value,
+            createValueListComboBoxModel(property, sortItems), enabledState);
     addComboBoxCompletion(comboBox);
 
     return comboBox;
@@ -752,6 +755,16 @@ public final class EntityInputComponents {
     checkBox.setToolTipText(property.getDescription());
 
     return checkBox;
+  }
+
+  private static ItemComboBoxModel createValueListComboBoxModel(final ValueListProperty property, final boolean sortItems) {
+    final ItemComboBoxModel model = sortItems ?
+            new ItemComboBoxModel(property.getValues()) : new ItemComboBoxModel(null, property.getValues());
+    if (property.isNullable() && !model.contains(Items.item(null), true)) {
+      model.addItem(Items.item(null, EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
+    }
+
+    return model;
   }
 
   private static void linkToEnabledState(final StateObserver enabledState, final JComponent component) {

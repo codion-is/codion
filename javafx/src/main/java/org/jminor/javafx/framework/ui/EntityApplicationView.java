@@ -3,8 +3,9 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -159,7 +160,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
   protected User getDefaultUser() {
     final String defaultUserName = EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name");
 
-    return new User(defaultUserName, null);
+    return Users.user(defaultUserName, null);
   }
 
   /**

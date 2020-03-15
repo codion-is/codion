@@ -4,8 +4,9 @@
 package org.jminor.framework.demos.empdept.rest;
 
 import org.jminor.common.Text;
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.http.HttpEntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -25,7 +26,7 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   public EmpDeptServletLoadTest(final User user) {
     super(user, asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),

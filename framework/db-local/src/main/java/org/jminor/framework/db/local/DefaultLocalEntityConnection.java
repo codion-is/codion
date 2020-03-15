@@ -5,7 +5,6 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.MethodLogger;
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.ResultIterator;
@@ -20,6 +19,7 @@ import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.common.user.User;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;

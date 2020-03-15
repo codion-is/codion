@@ -4,9 +4,9 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.event.EventListener;
+import org.jminor.common.user.User;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.Domain;
 

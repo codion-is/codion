@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.common.Item;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
+import org.jminor.common.item.Item;
 import org.jminor.common.value.Value;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 
@@ -15,6 +15,7 @@ import javax.swing.JComboBox;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.jminor.common.item.Items.item;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -36,8 +37,8 @@ public class SelectedValuesTest {
 
   @Test
   public void selectedItemValue() {
-    final List<Item<String>> items = asList(new Item<>(null), new Item<>("one"),
-            new Item<>("two"), new Item<>("three"), new Item<>("four"));
+    final List<Item<String>> items = asList(item(null), item("one"),
+            item("two"), item("three"), item("four"));
     ComponentValue<String, JComboBox<Item<String>>> componentValue = SelectedValues.selectedItemValue("two", items);
     ItemComboBoxModel<String> boxModel = (ItemComboBoxModel<String>) componentValue.getComponent().getModel();
     assertEquals(5, boxModel.getSize());

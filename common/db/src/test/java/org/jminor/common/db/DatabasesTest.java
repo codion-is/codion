@@ -3,8 +3,8 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.Users;
 import org.jminor.dbms.derby.DerbyDatabase;
 import org.jminor.dbms.h2database.H2Database;
 import org.jminor.dbms.hsqldb.HSQLDatabase;
@@ -124,7 +124,7 @@ public class DatabasesTest {
   @Test
   public void validateWithQuery() throws DatabaseException, SQLException {
     final Database testDatabase = new TestDatabase();
-    final Connection connection = testDatabase.createConnection(User.parseUser("scott:tiger"));
+    final Connection connection = testDatabase.createConnection(Users.parseUser("scott:tiger"));
     assertTrue(Databases.isValid(connection, testDatabase, 2));
     connection.close();
     assertFalse(Databases.isValid(connection, testDatabase, 2));

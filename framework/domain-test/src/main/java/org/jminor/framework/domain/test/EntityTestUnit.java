@@ -4,11 +4,12 @@
 package org.jminor.framework.domain.test;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.Item;
 import org.jminor.common.Text;
-import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
+import org.jminor.common.item.Item;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -429,7 +430,7 @@ public class EntityTestUnit {
       throw new IllegalStateException("Required property not available: " + TEST_USER.getProperty());
     }
 
-    return User.parseUser(testUser);
+    return Users.parseUser(testUser);
   }
 
   private static void populateEntity(final Domain domain, final Entity entity, final Collection<ColumnProperty> properties,

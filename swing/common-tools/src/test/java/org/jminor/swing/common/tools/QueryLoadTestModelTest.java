@@ -3,10 +3,11 @@
  */
 package org.jminor.swing.common.tools;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public final class QueryLoadTestModelTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
           new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp where ename not like ?") {

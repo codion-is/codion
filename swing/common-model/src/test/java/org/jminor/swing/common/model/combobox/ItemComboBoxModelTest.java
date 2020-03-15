@@ -3,13 +3,14 @@
  */
 package org.jminor.swing.common.model.combobox;
 
-import org.jminor.common.Item;
+import org.jminor.common.item.Item;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.jminor.common.item.Items.item;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -18,11 +19,11 @@ public class ItemComboBoxModelTest {
   @Test
   public void test() throws Exception {
     new ItemComboBoxModel();
-    final Item<Integer> nullItem = new Item<>(null, "");
-    final Item<Integer> aOne = new Item<>(1, "AOne");
-    final Item<Integer> bTwo = new Item<>(2, "BTwo");
-    final Item<Integer> cThree = new Item<>(3, "CThree");
-    final Item<Integer> dFour = new Item<>(4, "DFour");
+    final Item<Integer> nullItem = item(null, "");
+    final Item<Integer> aOne = item(1, "AOne");
+    final Item<Integer> bTwo = item(2, "BTwo");
+    final Item<Integer> cThree = item(3, "CThree");
+    final Item<Integer> dFour = item(4, "DFour");
 
     final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
     final ItemComboBoxModel<Integer> model = new ItemComboBoxModel<Integer>(items) {
