@@ -1,14 +1,19 @@
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.Item;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
+import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
+import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
+import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.jupiter.api.Test;
@@ -143,4 +148,14 @@ public class EntityInputComponentsTest {
     assertEquals(3, editModel.get(TestDomain.DETAIL_INT));
   }
 
+  @Test
+  public void valueListComboBox() {
+    final Value value = Values.value();
+    final ValueListProperty property = (ValueListProperty) DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(
+            TestDomain.DETAIL_INT_VALUE_LIST);
+    final SteppedComboBox comboBox = EntityInputComponents.createValueListComboBox(property, value);
+    final ItemComboBoxModel model = (ItemComboBoxModel) comboBox.getModel();
+    assertEquals(0, model.indexOf(null));
+    assertTrue(model.contains(new Item(null), true));
+  }
 }
