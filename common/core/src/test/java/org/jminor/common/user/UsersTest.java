@@ -5,8 +5,7 @@ package org.jminor.common.user;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * User: Björn Darri
@@ -29,6 +28,8 @@ public class UsersTest {
     assertEquals("test", String.valueOf(user.getPassword()));
     user.clearPassword();
     assertEquals("", String.valueOf(user.getPassword()));
+    assertNotEquals(user, "scott");
+    assertEquals(user, Users.parseUser("scott:blabla"));
   }
 
   @Test
