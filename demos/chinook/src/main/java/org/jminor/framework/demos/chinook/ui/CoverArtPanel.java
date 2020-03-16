@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -55,8 +54,7 @@ final class CoverArtPanel extends JPanel {
   }
 
   private void bindEvents() {
-    imageBytesValue.addDataListener(imageBytes -> SwingUtilities.invokeLater(() ->
-            imagePanel.setImage(readImage(imageBytes))));
+    imageBytesValue.addDataListener(imageBytes -> imagePanel.setImage(readImage(imageBytes)));
   }
 
   private void setCover() throws IOException {
