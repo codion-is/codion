@@ -136,6 +136,7 @@ public final class TestDomain extends Domain {
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
   public static final String DEPARTMENT_ACTIVE = "active";
+  public static final String DEPARTMENT_DATA = "data";
 
   public static final String T_DEPARTMENT = "domain.scott.dept";
 
@@ -152,7 +153,9 @@ public final class TestDomain extends Domain {
                     .setBeanProperty("location"),
             booleanProperty(DEPARTMENT_ACTIVE, Types.INTEGER, null, 1, 0)
                     .setReadOnly(true)
-                    .setBeanProperty("active"))
+                    .setBeanProperty("active"),
+            blobProperty(DEPARTMENT_DATA)
+                    .setEagerlyLoaded(false))
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
             .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
