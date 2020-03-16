@@ -134,6 +134,7 @@ public final class EntitiesTest {
     final byte[] modifiedBytes = new byte[1024];
     random.nextBytes(modifiedBytes);
 
+    //eagerly loaded blob
     final Entity emp1 = domain.entity(TestDomain.T_EMP);
     emp1.put(TestDomain.EMP_ID, 1);
     emp1.put(TestDomain.EMP_NAME, "name");
@@ -143,8 +144,31 @@ public final class EntitiesTest {
     final Entity emp2 = domain.copyEntity(emp1);
     emp2.put(TestDomain.EMP_DATA, modifiedBytes);
 
-    final List<ColumnProperty> modifiedProperties = Entities.getModifiedColumnProperties(emp1, emp2);
+    List<ColumnProperty> modifiedProperties = Entities.getModifiedColumnProperties(emp1, emp2);
     assertTrue(modifiedProperties.contains(domain.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_DATA)));
+
+    //lazy loaded blob
+    final Entity dept1 = domain.entity(TestDomain.T_DEPARTMENT);
+    dept1.put(TestDomain.DEPARTMENT_NAME, "name");
+    dept1.put(TestDomain.DEPARTMENT_LOCATION, "loc");
+    dept1.put(TestDomain.DEPARTMENT_ACTIVE, true);
+    dept1.put(TestDomain.DEPARTMENT_DATA, bytes);
+
+    final Entity dept2 = domain.copyEntity(dept1);
+    dept2.put(TestDomain.DEPARTMENT_DATA, modifiedBytes);
+
+    final EntityDefinition departmentDefinition = domain.getDefinition(TestDomain.T_DEPARTMENT);
+
+    modifiedProperties = Entities.getModifiedColumnProperties(dept1, dept2);
+    assertFalse(modifiedProperties.contains(departmentDefinition.getColumnProperty(TestDomain.DEPARTMENT_DATA)));
+
+    dept2.put(TestDomain.DEPARTMENT_LOCATION, "new loc");
+    modifiedProperties = Entities.getModifiedColumnProperties(dept1, dept2);
+    assertTrue(modifiedProperties.contains(departmentDefinition.getColumnProperty(TestDomain.DEPARTMENT_LOCATION)));
+
+    dept2.remove(TestDomain.DEPARTMENT_DATA);
+    modifiedProperties = Entities.getModifiedColumnProperties(dept1, dept2);
+    assertFalse(modifiedProperties.contains(departmentDefinition.getColumnProperty(TestDomain.DEPARTMENT_DATA)));
   }
 
   @Test

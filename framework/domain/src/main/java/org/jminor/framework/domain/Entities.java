@@ -20,6 +20,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -78,17 +79,14 @@ public final class Entities {
   /**
    * Returns all updatable {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
-   * Note that lazily loaded blob values are not included in this comparison.
+   * Note that only eagerly loaded blob values are included in this comparison.
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
-   * @return the properties which values differ from the ones in the comparison entity
+   * @return the updatable column properties which values differ from the ones in the comparison entity
+   * @see BlobProperty#isEagerlyLoaded()
    */
   public static List<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
-    return comparison.keySet().stream().filter(property ->
-            (property instanceof ColumnProperty ||
-                    (!property.isBlob() || (property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded())))
-                    && ((ColumnProperty) property).isUpdatable()
-                    && isValueMissingOrModified(entity, comparison, property))
+    return comparison.keySet().stream().filter(new ModifiedColumnPropertiesPredicate(entity, comparison))
             .map(property -> (ColumnProperty) property).collect(toList());
   }
 
@@ -384,5 +382,24 @@ public final class Entities {
     }
 
     return keys;
+  }
+
+  private static final class ModifiedColumnPropertiesPredicate implements Predicate<Property> {
+
+    private final Entity entity;
+    private final Entity comparison;
+
+    private ModifiedColumnPropertiesPredicate(final Entity entity, final Entity comparison) {
+      this.entity = entity;
+      this.comparison = comparison;
+    }
+
+    @Override
+    public boolean test(final Property property) {
+      final boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty) property).isUpdatable();
+      final boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
+
+      return updatableColumnProperty && !lazilyLoadedBlobProperty && isValueMissingOrModified(entity, comparison, property);
+    }
   }
 }

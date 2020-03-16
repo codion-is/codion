@@ -5738,9 +5738,10 @@
   FXEntityListSelectionModel.getSingleSelectionModeState() implemented
   ObservableEntityList.getSelectionModel() now returns FXEntityListSelectionModel, FXEntityListSelectionModelTest added
   Property readOnly status pretty meaningless, replaced with ColumnProperty.insertable
-0.13.7
+0.13.7 [server/client incompatible]
   MariaDb database implementation added
   EntityInputComponents.createValueListComboBox() now adds a null item for nullable properties, if the value list does not contain one already
   Item now interface, moved to org.jminor.common.item package, DefaultItem and Items factory class added
   User now interface, moved to org.jminor.common.user package, DefaultUser and Users factory class added
   Version now interface, moved to org.jminor.common.version package, DefaultVersion and Version factory class added
+  Entities.getModifiedColumnProperties() bug fixed, did not exclude lazy loaded blob properties, test improved, Chinook demo album cover now eagerly loaded
