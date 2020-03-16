@@ -24,10 +24,10 @@ import java.util.ResourceBundle;
  * range validation for numerical properties with max and/or min values specified and string length validation
  * based on the specified max length.
  * This Validator can be extended to provide further validation.
- * @see Property.Builder#setNullable(boolean)
- * @see Property.Builder#setMin(double)
- * @see Property.Builder#setMax(double)
- * @see Property.Builder#setMaxLength(int)
+ * @see Property.Builder#nullable(boolean)
+ * @see Property.Builder#mininumValue(double)
+ * @see Property.Builder#maximumValue(double)
+ * @see Property.Builder#maximumLength(int)
  */
 public class DefaultEntityValidator implements Entity.Validator {
 
@@ -133,13 +133,13 @@ public class DefaultEntityValidator implements Entity.Validator {
     }
 
     final Number value = (Number) entity.get(property);
-    if (value.doubleValue() < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
+    if (value.doubleValue() < (property.getMinimumValue() == null ? Double.NEGATIVE_INFINITY : property.getMinimumValue())) {
       throw new RangeValidationException(property.getPropertyId(), value, "'" + property + "' " +
-              MESSAGES.getString("property_value_too_small") + " " + property.getMin());
+              MESSAGES.getString("property_value_too_small") + " " + property.getMinimumValue());
     }
-    if (value.doubleValue() > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax())) {
+    if (value.doubleValue() > (property.getMaximumValue() == null ? Double.POSITIVE_INFINITY : property.getMaximumValue())) {
       throw new RangeValidationException(property.getPropertyId(), value, "'" + property + "' " +
-              MESSAGES.getString("property_value_too_large") + " " + property.getMax());
+              MESSAGES.getString("property_value_too_large") + " " + property.getMaximumValue());
     }
   }
 
@@ -172,7 +172,7 @@ public class DefaultEntityValidator implements Entity.Validator {
       return;
     }
 
-    final int maxLength = property.getMaxLength();
+    final int maxLength = property.getMaximumLength();
     final String value = (String) entity.get(property);
     if (maxLength != -1 && value.length() > maxLength) {
       throw new LengthValidationException(property.getPropertyId(), value, "'" + property + "' " +

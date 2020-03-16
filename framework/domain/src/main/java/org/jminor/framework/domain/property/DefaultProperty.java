@@ -88,21 +88,22 @@ abstract class DefaultProperty implements Property {
   private boolean hidden;
 
   /**
-   * The maximum length of the data
+   * The maximum length of the data.
+   * Only applicable to string based properties.
    */
-  private int maxLength = -1;
+  private int maximumLength = -1;
 
   /**
    * The maximum value for this property.
    * Only applicable to numerical properties
    */
-  private Double max;
+  private Double maximumValue;
 
   /**
    * The minimum value for this property.
    * Only applicable to numerical properties
    */
-  private Double min;
+  private Double minimumValue;
 
   /**
    * A string describing this property
@@ -306,20 +307,20 @@ abstract class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public final int getMaxLength() {
-    return maxLength;
+  public final int getMaximumLength() {
+    return maximumLength;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Double getMax() {
-    return max;
+  public final Double getMaximumValue() {
+    return maximumValue;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Double getMin() {
-    return min;
+  public final Double getMinimumValue() {
+    return minimumValue;
   }
 
   /** {@inheritDoc} */
@@ -524,7 +525,7 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public Property.Builder setEntityId(final String entityId) {
+    public Property.Builder entityId(final String entityId) {
       if (property.entityId != null) {
         throw new IllegalStateException("entityId (" + property.entityId +
                 ") has already been set for property: " + property.propertyId);
@@ -534,24 +535,24 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public final Property.Builder setBeanProperty(final String beanProperty) {
+    public final Property.Builder beanProperty(final String beanProperty) {
       property.beanProperty = requireNonNull(beanProperty, "beanProperty");
       return this;
     }
 
     @Override
-    public final Property.Builder setHidden(final boolean hidden) {
+    public final Property.Builder hidden(final boolean hidden) {
       property.hidden = hidden;
       return this;
     }
 
     @Override
-    public final Property.Builder setDefaultValue(final Object defaultValue) {
-      return setDefaultValueProvider(new DefaultValueProvider(defaultValue));
+    public final Property.Builder defaultValue(final Object defaultValue) {
+      return defaultValueProvider(new DefaultValueProvider(defaultValue));
     }
 
     @Override
-    public Property.Builder setDefaultValueProvider(final Supplier<Object> provider) {
+    public Property.Builder defaultValueProvider(final Supplier<Object> provider) {
       if (provider != null) {
         property.validateType(provider.get());
       }
@@ -560,34 +561,34 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public Property.Builder setNullable(final boolean nullable) {
+    public Property.Builder nullable(final boolean nullable) {
       property.nullable = nullable;
       return this;
     }
 
     @Override
-    public final Property.Builder setMaxLength(final int maxLength) {
+    public final Property.Builder maximumLength(final int maxLength) {
       if (maxLength <= 0) {
         throw new IllegalArgumentException("Max length must be a positive integer");
       }
-      property.maxLength = maxLength;
+      property.maximumLength = maxLength;
       return this;
     }
 
     @Override
-    public final Property.Builder setMax(final double max) {
-      property.max = max;
+    public final Property.Builder maximumValue(final double maximumValue) {
+      property.maximumValue = maximumValue;
       return this;
     }
 
     @Override
-    public final Property.Builder setMin(final double min) {
-      property.min = min;
+    public final Property.Builder mininumValue(final double minimumValue) {
+      property.minimumValue = minimumValue;
       return this;
     }
 
     @Override
-    public final Property.Builder setUseNumberFormatGrouping(final boolean useGrouping) {
+    public final Property.Builder useNumberFormatGrouping(final boolean useGrouping) {
       if (!(property.format instanceof NumberFormat)) {
         throw new IllegalStateException("Grouping can only be set for number formats");
       }
@@ -596,25 +597,25 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public final Property.Builder setPreferredColumnWidth(final int preferredColumnWidth) {
+    public final Property.Builder preferredColumnWidth(final int preferredColumnWidth) {
       property.preferredColumnWidth = preferredColumnWidth;
       return this;
     }
 
     @Override
-    public final Property.Builder setDescription(final String description) {
+    public final Property.Builder description(final String description) {
       property.description = description;
       return this;
     }
 
     @Override
-    public final Property.Builder setMnemonic(final Character mnemonic) {
+    public final Property.Builder mnemonic(final Character mnemonic) {
       property.mnemonic = mnemonic;
       return this;
     }
 
     @Override
-    public final Property.Builder setFormat(final Format format) {
+    public final Property.Builder format(final Format format) {
       requireNonNull(format, "format");
       if (property.isNumerical() && !(format instanceof NumberFormat)) {
         throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.propertyId);
@@ -627,7 +628,7 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public final Property.Builder setDateTimeFormatPattern(final String dateTimeFormatPattern) {
+    public final Property.Builder dateTimeFormatPattern(final String dateTimeFormatPattern) {
       if (!property.isTemporal()) {
         throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to temporal properties: " + property.propertyId);
       }
@@ -637,7 +638,7 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public final Property.Builder setMaximumFractionDigits(final int maximumFractionDigits) {
+    public final Property.Builder maximumFractionDigits(final int maximumFractionDigits) {
       if (!(property.format instanceof NumberFormat)) {
         throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
       }

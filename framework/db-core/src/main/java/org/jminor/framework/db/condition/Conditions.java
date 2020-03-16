@@ -215,7 +215,7 @@ public final class Conditions {
    * @param conditionId the id of the condition
    * @return a new Condition instance
    * @throws NullPointerException in case the condition id
-   * @see EntityDefinition.Builder#addConditionProvider(String, Entity.ConditionProvider)
+   * @see EntityDefinition.Builder#conditionProvider(String, Entity.ConditionProvider)
    */
   public static CustomCondition customCondition(final String conditionId) {
     return customCondition(conditionId, emptyList(), emptyList());
@@ -228,7 +228,7 @@ public final class Conditions {
    * @param values the values used by this condition string
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
-   * @see EntityDefinition.Builder#addConditionProvider(String, Entity.ConditionProvider)
+   * @see EntityDefinition.Builder#conditionProvider(String, Entity.ConditionProvider)
    */
   public static CustomCondition customCondition(final String conditionId, final List<String> propertyIds, final List values) {
     return new DefaultCustomCondition(conditionId, propertyIds, values);

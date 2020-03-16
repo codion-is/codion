@@ -430,7 +430,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * @param entity the entity to compare with
    * @return the compare result from comparing {@code entity} with this Entity instance
-   * @see EntityDefinition.Builder#setComparator(java.util.Comparator)
+   * @see EntityDefinition.Builder#comparator(java.util.Comparator)
    */
   @Override
   public int compareTo(final Entity entity) {
@@ -447,7 +447,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /**
    * @return a string representation of this entity
-   * @see EntityDefinition.Builder#setStringProvider(java.util.function.Function)
+   * @see EntityDefinition.Builder#stringProvider(java.util.function.Function)
    * @see EntityDefinition#toString(Entity)
    */
   @Override

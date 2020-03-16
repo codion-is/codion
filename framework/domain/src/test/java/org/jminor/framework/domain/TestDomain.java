@@ -37,8 +37,8 @@ public final class TestDomain extends Domain {
 
   void compositeMaster() {
     define(T_COMPOSITE_MASTER,
-            columnProperty(COMPOSITE_MASTER_ID).setPrimaryKeyIndex(0).setNullable(true),
-            columnProperty(COMPOSITE_MASTER_ID_2).setPrimaryKeyIndex(1));
+            columnProperty(COMPOSITE_MASTER_ID).primaryKeyIndex(0).nullable(true),
+            columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1));
   }
 
   public static final String T_COMPOSITE_DETAIL = "domain.composite_detail";
@@ -49,8 +49,8 @@ public final class TestDomain extends Domain {
   void compositeDetail() {
     define(T_COMPOSITE_DETAIL,
             foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
-                    asList(columnProperty(COMPOSITE_DETAIL_MASTER_ID).setPrimaryKeyIndex(0),
-                            columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).setPrimaryKeyIndex(1))));
+                    asList(columnProperty(COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
+                            columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1))));
   }
 
   public static final String T_MASTER = "domain.master_entity";
@@ -63,8 +63,8 @@ public final class TestDomain extends Domain {
             primaryKeyProperty(MASTER_ID, Types.BIGINT),
             columnProperty(MASTER_NAME, Types.VARCHAR),
             columnProperty(MASTER_CODE, Types.INTEGER))
-            .setComparator(Comparator.comparing(o -> o.getInteger(MASTER_CODE)))
-            .setStringProvider(new StringProvider(MASTER_NAME));
+            .comparator(Comparator.comparing(o -> o.getInteger(MASTER_CODE)))
+            .stringProvider(new StringProvider(MASTER_NAME));
   }
 
   public static final String T_DETAIL = "domain.detail_entity";
@@ -94,19 +94,19 @@ public final class TestDomain extends Domain {
             primaryKeyProperty(DETAIL_ID, Types.BIGINT),
             columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
             columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE)
-                    .setColumnHasDefaultValue(true),
+                    .columnHasDefaultValue(true),
             columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string")
-                    .setSelectable(false),
+                    .selectable(false),
             columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE)
-                    .setColumnHasDefaultValue(true),
+                    .columnHasDefaultValue(true),
             columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP),
             columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN)
-                    .setNullable(false)
-                    .setDefaultValue(true)
-                    .setDescription("A boolean property"),
+                    .nullable(false)
+                    .defaultValue(true)
+                    .description("A boolean property"),
             columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
-                    .setColumnHasDefaultValue(true)
-                    .setDefaultValue(true),
+                    .columnHasDefaultValue(true)
+                    .defaultValue(true),
             foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK, T_MASTER,
                     columnProperty(DETAIL_MASTER_ID, Types.BIGINT)),
             denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
@@ -125,11 +125,11 @@ public final class TestDomain extends Domain {
             }, DETAIL_INT),
             denormalizedProperty(DETAIL_MASTER_CODE_DENORM, DETAIL_MASTER_FK,
                     getDefinition(T_MASTER).getProperty(MASTER_CODE)))
-            .setKeyGenerator(queried("select id from dual"))
-            .setOrderBy(orderBy().ascending(DETAIL_STRING))
-            .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
-            .setSmallDataset(true)
-            .setStringProvider(new StringProvider(DETAIL_STRING));
+            .keyGenerator(queried("select id from dual"))
+            .orderBy(orderBy().ascending(DETAIL_STRING))
+            .selectTableName(DETAIL_SELECT_TABLE_NAME)
+            .smallDataset(true)
+            .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
   public static final String DEPARTMENT_ID = "deptno";
@@ -143,25 +143,25 @@ public final class TestDomain extends Domain {
   void department() {
     define(T_DEPARTMENT, "scott.dept",
             primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
-                    .setUpdatable(true).setNullable(false)
-                    .setBeanProperty("deptNo"),
+                    .updatable(true).nullable(false)
+                    .beanProperty("deptNo"),
             columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
-                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false)
-                    .setBeanProperty("name"),
+                    .preferredColumnWidth(120).maximumLength(14).nullable(false)
+                    .beanProperty("name"),
             columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
-                    .setPreferredColumnWidth(150).setMaxLength(13)
-                    .setBeanProperty("location"),
+                    .preferredColumnWidth(150).maximumLength(13)
+                    .beanProperty("location"),
             booleanProperty(DEPARTMENT_ACTIVE, Types.INTEGER, null, 1, 0)
-                    .setReadOnly(true)
-                    .setBeanProperty("active"),
+                    .readOnly(true)
+                    .beanProperty("active"),
             blobProperty(DEPARTMENT_DATA)
-                    .setEagerlyLoaded(false))
-            .setSmallDataset(true)
-            .setSearchPropertyIds(DEPARTMENT_NAME)
-            .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
-            .setStringProvider(new StringProvider(DEPARTMENT_NAME))
-            .setBeanClass(Department.class)
-            .setCaption("Department");
+                    .eagerlyLoaded(false))
+            .smallDataset(true)
+            .searchPropertyIds(DEPARTMENT_NAME)
+            .orderBy(orderBy().ascending(DEPARTMENT_NAME))
+            .stringProvider(new StringProvider(DEPARTMENT_NAME))
+            .beanClass(Department.class)
+            .caption("Department");
   }
 
   public static final String T_EMP = "domain.scott.emp";
@@ -182,38 +182,38 @@ public final class TestDomain extends Domain {
   void employee() {
     define(T_EMP, "scott.emp",
             primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID)
-                    .setColumnName("empno")
-                    .setBeanProperty("id"),
+                    .columnName("empno")
+                    .beanProperty("id"),
             columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
-                    .setColumnName("ename").setMaxLength(10).setNullable(false)
-                    .setBeanProperty("name"),
+                    .columnName("ename").maximumLength(10).nullable(false)
+                    .beanProperty("name"),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
                     (ColumnProperty.Builder) columnProperty(EMP_DEPARTMENT)
-                            .setBeanProperty("deptno"))
-                    .setBeanProperty("department")
-                    .setNullable(false),
+                            .beanProperty("deptno"))
+                    .beanProperty("department")
+                    .nullable(false),
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .setBeanProperty("job"),
+                    .beanProperty("job"),
             columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
-                    .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2)
-                    .setBeanProperty("salary"),
+                    .nullable(false).mininumValue(1000).maximumValue(10000).maximumFractionDigits(2)
+                    .beanProperty("salary"),
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
-                    .setMin(100).setMax(2000).setMaximumFractionDigits(2)
-            .setBeanProperty("commission"),
+                    .mininumValue(100).maximumValue(2000).maximumFractionDigits(2)
+            .beanProperty("commission"),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
                     (ColumnProperty.Builder) columnProperty(EMP_MGR)
-                            .setBeanProperty("mgr"))
-                    .setBeanProperty("manager"),
+                            .beanProperty("mgr"))
+                    .beanProperty("manager"),
             columnProperty(EMP_HIREDATE, Types.TIMESTAMP, EMP_HIREDATE)
-                    .setUpdatable(false)
-                    .setDateTimeFormatPattern(DateFormats.SHORT_DOT)
-                    .setNullable(false)
-                    .setBeanProperty("hiredate"),
+                    .updatable(false)
+                    .dateTimeFormatPattern(DateFormats.SHORT_DOT)
+                    .nullable(false)
+                    .beanProperty("hiredate"),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
-                    DEPARTMENT_LOCATION).setPreferredColumnWidth(100),
+                    DEPARTMENT_LOCATION).preferredColumnWidth(100),
             derivedProperty(EMP_NAME_DEPARTMENT, Types.VARCHAR, null, linkedValues -> {
               final String name = (String) linkedValues.get(EMP_NAME);
               final Entity department = (Entity) linkedValues.get(EMP_DEPARTMENT_FK);
@@ -223,13 +223,13 @@ public final class TestDomain extends Domain {
               return name + " - " + department.getString(DEPARTMENT_NAME);
             }, EMP_NAME, EMP_DEPARTMENT_FK),
             blobProperty(EMP_DATA, "Data")
-                    .setEagerlyLoaded(true))
-            .setKeyGenerator(increment("scott.emp", "empno"))
-            .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
-            .setStringProvider(new StringProvider(EMP_NAME))
-            .setSearchPropertyIds(EMP_NAME, EMP_JOB)
-            .setBeanClass(Employee.class)
-            .setCaption("Employee");
+                    .eagerlyLoaded(true))
+            .keyGenerator(increment("scott.emp", "empno"))
+            .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
+            .stringProvider(new StringProvider(EMP_NAME))
+            .searchPropertyIds(EMP_NAME, EMP_JOB)
+            .beanClass(Employee.class)
+            .caption("Employee");
   }
 
   public static final String T_NO_PK = "no_pk";

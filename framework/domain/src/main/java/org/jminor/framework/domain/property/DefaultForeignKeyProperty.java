@@ -152,37 +152,37 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
 
     @Override
-    public List<ColumnProperty.Builder> getColmnPropertyBuilders() {
+    public List<ColumnProperty.Builder> getColumnPropertyBuilders() {
       return foreignKeyProperty.columnPropertyBuilders;
     }
 
     @Override
-    public ForeignKeyProperty.Builder setInsertable(final boolean insertable) {
-      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.setInsertable(insertable));
+    public ForeignKeyProperty.Builder insertable(final boolean insertable) {
+      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.insertable(insertable));
       return this;
     }
 
     @Override
-    public ForeignKeyProperty.Builder setUpdatable(final boolean updatable) {
-      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.setUpdatable(updatable));
+    public ForeignKeyProperty.Builder updatable(final boolean updatable) {
+      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.updatable(updatable));
       return this;
     }
 
     @Override
-    public ForeignKeyProperty.Builder setNullable(final boolean nullable) {
-      super.setNullable(nullable);
-      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.setNullable(nullable));
+    public ForeignKeyProperty.Builder nullable(final boolean nullable) {
+      super.nullable(nullable);
+      foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.nullable(nullable));
       return this;
     }
 
     @Override
-    public ForeignKeyProperty.Builder setFetchDepth(final int fetchDepth) {
+    public ForeignKeyProperty.Builder fetchDepth(final int fetchDepth) {
       foreignKeyProperty.fetchDepth = fetchDepth;
       return this;
     }
 
     @Override
-    public ForeignKeyProperty.Builder setSoftReference(final boolean softReference) {
+    public ForeignKeyProperty.Builder softReference(final boolean softReference) {
       foreignKeyProperty.softReference = softReference;
       return this;
     }

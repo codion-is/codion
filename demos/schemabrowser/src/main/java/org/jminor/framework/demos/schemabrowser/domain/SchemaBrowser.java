@@ -34,10 +34,10 @@ public final class SchemaBrowser extends Domain {
   void defineSchema() {
     define(T_SCHEMA, bundle.getString("t_schema"),
             primaryKeyProperty(SCHEMA_NAME, Types.VARCHAR, "Name"))
-            .setOrderBy(orderBy().ascending(SCHEMA_NAME))
-            .setReadOnly(true)
-            .setStringProvider(new StringProvider(SCHEMA_NAME))
-            .setCaption("Schemas");
+            .orderBy(orderBy().ascending(SCHEMA_NAME))
+            .readOnly(true)
+            .stringProvider(new StringProvider(SCHEMA_NAME))
+            .caption("Schemas");
   }
 
   public static final String T_TABLE = "table";
@@ -48,12 +48,12 @@ public final class SchemaBrowser extends Domain {
   void defineTable() {
     define(T_TABLE, bundle.getString("t_table"),
             foreignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
-                    primaryKeyProperty(TABLE_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0)),
-            primaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setPrimaryKeyIndex(1))
-            .setOrderBy(orderBy().ascending(TABLE_SCHEMA, TABLE_NAME))
-            .setReadOnly(true)
-            .setStringProvider(new StringProvider(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME))
-            .setCaption("Tables");
+                    primaryKeyProperty(TABLE_SCHEMA, Types.VARCHAR).primaryKeyIndex(0)),
+            primaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").primaryKeyIndex(1))
+            .orderBy(orderBy().ascending(TABLE_SCHEMA, TABLE_NAME))
+            .readOnly(true)
+            .stringProvider(new StringProvider(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME))
+            .caption("Tables");
   }
 
   public static final String T_COLUMN = "column";
@@ -66,14 +66,14 @@ public final class SchemaBrowser extends Domain {
   void defineColumn() {
     define(T_COLUMN, bundle.getString("t_column"),
             foreignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
-                    asList(columnProperty(COLUMN_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            columnProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1))),
-            primaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").setPrimaryKeyIndex(2),
+                    asList(columnProperty(COLUMN_SCHEMA, Types.VARCHAR).primaryKeyIndex(0),
+                            columnProperty(COLUMN_TABLE_NAME, Types.VARCHAR).primaryKeyIndex(1))),
+            primaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").primaryKeyIndex(2),
             columnProperty(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
-            .setOrderBy(orderBy().ascending(COLUMN_SCHEMA, COLUMN_TABLE_NAME, COLUMN_NAME))
-            .setReadOnly(true)
-            .setStringProvider(new StringProvider(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME))
-            .setCaption("Columns");
+            .orderBy(orderBy().ascending(COLUMN_SCHEMA, COLUMN_TABLE_NAME, COLUMN_NAME))
+            .readOnly(true)
+            .stringProvider(new StringProvider(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME))
+            .caption("Columns");
   }
 
   public static final String T_CONSTRAINT = "constraint";
@@ -86,14 +86,14 @@ public final class SchemaBrowser extends Domain {
   void defineConstraint() {
     define(T_CONSTRAINT, bundle.getString("t_constraint"),
             foreignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
-                    asList(columnProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            columnProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1))),
-            primaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setPrimaryKeyIndex(2),
+                    asList(columnProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).primaryKeyIndex(0),
+                            columnProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).primaryKeyIndex(1))),
+            primaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").primaryKeyIndex(2),
             columnProperty(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
-            .setOrderBy(orderBy().ascending(CONSTRAINT_SCHEMA, CONSTRAINT_TABLE_NAME, CONSTRAINT_NAME))
-            .setReadOnly(true)
-            .setStringProvider(new StringProvider(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME))
-            .setCaption("Constraints");
+            .orderBy(orderBy().ascending(CONSTRAINT_SCHEMA, CONSTRAINT_TABLE_NAME, CONSTRAINT_NAME))
+            .readOnly(true)
+            .stringProvider(new StringProvider(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME))
+            .caption("Constraints");
   }
 
   public static final String T_COLUMN_CONSTRAINT = "column_constraint";
@@ -107,13 +107,13 @@ public final class SchemaBrowser extends Domain {
   void defineColumnConstraint() {
     define(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
             foreignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
-                    asList(columnProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            columnProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1),
-                            columnProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setPrimaryKeyIndex(2))),
+                    asList(columnProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).primaryKeyIndex(0),
+                            columnProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).primaryKeyIndex(1),
+                            columnProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).primaryKeyIndex(2))),
             columnProperty(COLUMN_CONSTRAINT_COLUMN_NAME, Types.VARCHAR, "Column name"),
             columnProperty(COLUMN_CONSTRAINT_POSITION, Types.INTEGER, "Position"))
-            .setOrderBy(orderBy().ascending(COLUMN_CONSTRAINT_SCHEMA, COLUMN_CONSTRAINT_TABLE_NAME, COLUMN_CONSTRAINT_CONSTRAINT_NAME))
-            .setReadOnly(true)
-            .setCaption("Column constraints");
+            .orderBy(orderBy().ascending(COLUMN_CONSTRAINT_SCHEMA, COLUMN_CONSTRAINT_TABLE_NAME, COLUMN_CONSTRAINT_CONSTRAINT_NAME))
+            .readOnly(true)
+            .caption("Column constraints");
   }
 }

@@ -152,8 +152,8 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @param entityId the entity id
    * @param valueProvider provides the default value for a given property
    * @return the populated entity
-   * @see ColumnProperty.Builder#setColumnHasDefaultValue(boolean)
-   * @see ColumnProperty.Builder#setDefaultValue(Object)
+   * @see ColumnProperty.Builder#columnHasDefaultValue(boolean)
+   * @see ColumnProperty.Builder#defaultValue(Object)
    */
   public final Entity defaultEntity(final String entityId, final Function<Property, Object> valueProvider) {
     final Entity entity = entity(entityId);
@@ -184,8 +184,8 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * Transforms the given entities into beans according to the information found in this Domain model
    * @param entities the entities to transform
    * @return a List containing the beans derived from the given entities, an empty List if {@code entities} is null or empty
-   * @see EntityDefinition.Builder#setBeanClass(Class)
-   * @see Property.Builder#setBeanProperty(String)
+   * @see EntityDefinition.Builder#beanClass(Class)
+   * @see Property.Builder#beanProperty(String)
    */
   public final List<Object> toBeans(final List<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
@@ -204,8 +204,8 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @param <V> the bean type
    * @param entity the entity to transform
    * @return a bean derived from the given entity
-   * @see EntityDefinition.Builder#setBeanClass(Class)
-   * @see Property.Builder#setBeanProperty(String)
+   * @see EntityDefinition.Builder#beanClass(Class)
+   * @see Property.Builder#beanProperty(String)
    */
   public <V> V toBean(final Entity entity) {
     requireNonNull(entity, ENTITY_PARAM);
@@ -238,8 +238,8 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * Transforms the given beans into a entities according to the information found in this Domain model
    * @param beans the beans to transform
    * @return a List containing the entities derived from the given beans, an empty List if {@code beans} is null or empty
-   * @see EntityDefinition.Builder#setBeanClass(Class)
-   * @see Property.Builder#setBeanProperty(String)
+   * @see EntityDefinition.Builder#beanClass(Class)
+   * @see Property.Builder#beanProperty(String)
    * */
   public final List<Entity> fromBeans(final List beans) {
     if (Util.nullOrEmpty(beans)) {
@@ -258,8 +258,8 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @param bean the bean to convert to an Entity
    * @param <V> the bean type
    * @return a Entity based on the given bean
-   * @see EntityDefinition.Builder#setBeanClass(Class)
-   * @see Property.Builder#setBeanProperty(String)
+   * @see EntityDefinition.Builder#beanClass(Class)
+   * @see Property.Builder#beanProperty(String)
    */
   public <V> Entity fromBean(final V bean) {
     requireNonNull(bean, "bean");
@@ -561,7 +561,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return the {@link EntityDefinition.Builder}
    */
   protected final EntityDefinition.Builder addDefinition(final EntityDefinition.Builder definitionBuilder) {
-    definitionProvider.addDefinition(definitionBuilder.setDomainId(domainId).get());
+    definitionProvider.addDefinition(definitionBuilder.domainId(domainId).get());
 
     return definitionBuilder;
   }

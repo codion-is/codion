@@ -13,7 +13,7 @@ final class DefaultBlobProperty extends DefaultColumnProperty implements BlobPro
 
   DefaultBlobProperty(final String propertyId, final String caption) {
     super(propertyId, Types.BLOB, caption);
-    builder().setHidden(true);
+    builder().hidden(true);
   }
 
   @Override
@@ -44,7 +44,7 @@ final class DefaultBlobProperty extends DefaultColumnProperty implements BlobPro
     }
 
     @Override
-    public BlobProperty.Builder setEagerlyLoaded(final boolean eagerlyLoaded) {
+    public BlobProperty.Builder eagerlyLoaded(final boolean eagerlyLoaded) {
       blobProperty.eagerlyLoaded = eagerlyLoaded;
       return this;
     }

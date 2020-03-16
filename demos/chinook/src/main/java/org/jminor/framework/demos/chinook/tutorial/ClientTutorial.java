@@ -48,23 +48,23 @@ public final class ClientTutorial {
       define(T_ARTIST,
               primaryKeyProperty(ARTIST_ID),
               columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
-                      .setNullable(false).setMaxLength(120))
-              .setKeyGenerator(automatic(T_ARTIST))
-              .setStringProvider(new StringProvider(ARTIST_NAME))
-              .setSmallDataset(true)
-              .setCaption("Artists");
+                      .nullable(false).maximumLength(120))
+              .keyGenerator(automatic(T_ARTIST))
+              .stringProvider(new StringProvider(ARTIST_NAME))
+              .smallDataset(true)
+              .caption("Artists");
 
       define(T_ALBUM,
               primaryKeyProperty(ALBUM_ALBUMID),
               foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
                       columnProperty(ALBUM_ARTISTID))
-                      .setNullable(false),
+                      .nullable(false),
               columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
-                      .setNullable(false).setMaxLength(160))
-              .setKeyGenerator(automatic(T_ALBUM))
-              .setStringProvider(new StringProvider()
+                      .nullable(false).maximumLength(160))
+              .keyGenerator(automatic(T_ALBUM))
+              .stringProvider(new StringProvider()
                       .addValue(ALBUM_ARTIST_FK).addText(" - ").addValue(ALBUM_TITLE))
-              .setCaption("Albums");
+              .caption("Albums");
     }
   }
 

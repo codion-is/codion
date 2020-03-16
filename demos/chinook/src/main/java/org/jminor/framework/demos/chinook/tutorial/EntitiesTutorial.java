@@ -54,36 +54,36 @@ public final class EntitiesTutorial {
       //create properties for the columns in the table 'chinook.artist'
       Property.Builder artistId = primaryKeyProperty(ARTIST_ID);
       Property.Builder artistName = columnProperty(ARTIST_NAME, Types.VARCHAR, "Name");
-      artistName.setNullable(false).setMaxLength(120);
+      artistName.nullable(false).maximumLength(120);
 
       //define an entity based on the table 'chinook.artist',
       //with the above properties
       define(T_ARTIST, artistId, artistName)
-              .setKeyGenerator(automatic("chinook.artist"))
-              .setStringProvider(new StringProvider(ARTIST_NAME))
-              .setSmallDataset(true)
-              .setCaption("Artist");
+              .keyGenerator(automatic("chinook.artist"))
+              .stringProvider(new StringProvider(ARTIST_NAME))
+              .smallDataset(true)
+              .caption("Artist");
 
       //create properties for the columns in the table 'chinook.album'
       Property.Builder albumId = primaryKeyProperty(ALBUM_ALBUMID);
       Property.Builder albumTitle = columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title");
-      albumTitle.setNullable(false).setMaxLength(160);
+      albumTitle.nullable(false).maximumLength(160);
       //we wrap the actual 'artistid' column property in a foreign key
       //referencing the entity identified by T_ARTIST
       Property.Builder albumArtist =
               foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
                       columnProperty(ALBUM_ARTISTID));
-      albumArtist.setNullable(false);
+      albumArtist.nullable(false);
 
       //define an entity based on the table 'chinook.album',
       //with the above properties
       define(T_ALBUM, albumId, albumTitle, albumArtist)
-              .setKeyGenerator(automatic("chinook.album"))
-              .setStringProvider(new StringProvider()
+              .keyGenerator(automatic("chinook.album"))
+              .stringProvider(new StringProvider()
                       .addValue(ALBUM_ARTIST_FK)
                       .addText(" - ")
                       .addValue(ALBUM_TITLE))
-              .setCaption("Album");
+              .caption("Album");
     }
   }
 

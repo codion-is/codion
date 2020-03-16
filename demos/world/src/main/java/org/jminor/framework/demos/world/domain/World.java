@@ -104,26 +104,26 @@ public final class World extends Domain {
     define(T_CITY,
             primaryKeyProperty(CITY_ID),
             columnProperty(CITY_NAME, Types.VARCHAR, "Name")
-                    .setNullable(false)
-                    .setMaxLength(35),
+                    .nullable(false)
+                    .maximumLength(35),
             foreignKeyProperty(CITY_COUNTRY_FK, "Country", T_COUNTRY,
                     columnProperty(CITY_COUNTRY_CODE, Types.VARCHAR))
-                    .setNullable(false),
+                    .nullable(false),
             columnProperty(CITY_DISTRICT, Types.VARCHAR, "District")
-                    .setNullable(false)
-                    .setMaxLength(20),
+                    .nullable(false)
+                    .maximumLength(20),
             columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
-                    .setNullable(false)
-                    .setUseNumberFormatGrouping(true))
+                    .nullable(false)
+                    .useNumberFormatGrouping(true))
             // tag::sequence[]
-            .setKeyGenerator(sequence("world.city_seq"))
+            .keyGenerator(sequence("world.city_seq"))
             // end::sequence[]
-            .setValidator(new CityValidator())
-            .setOrderBy(orderBy().ascending(CITY_NAME))
-            .setSearchPropertyIds(CITY_NAME)
-            .setStringProvider(new StringProvider(CITY_NAME))
-            .setColorProvider(new CityColorProvider())
-            .setCaption("City");
+            .validator(new CityValidator())
+            .orderBy(orderBy().ascending(CITY_NAME))
+            .searchPropertyIds(CITY_NAME)
+            .stringProvider(new StringProvider(CITY_NAME))
+            .colorProvider(new CityColorProvider())
+            .caption("City");
   }
   // end::defineCity[]
 
@@ -131,45 +131,45 @@ public final class World extends Domain {
     define(T_COUNTRY,
             // tag::primaryKey[]
             primaryKeyProperty(COUNTRY_CODE, Types.VARCHAR, "Country code")
-                    .setUpdatable(true)
-                    .setMaxLength(3),
+                    .updatable(true)
+                    .maximumLength(3),
             // end::primaryKey[]
             columnProperty(COUNTRY_NAME, Types.VARCHAR, "Name")
-                    .setNullable(false)
-                    .setMaxLength(52),
+                    .nullable(false)
+                    .maximumLength(52),
             valueListProperty(COUNTRY_CONTINENT, Types.VARCHAR, "Continent", CONTINENTS)
-                    .setNullable(false)
-                    .setMaxLength(20),
+                    .nullable(false)
+                    .maximumLength(20),
             // tag::columnProperty[]
             columnProperty(COUNTRY_REGION, Types.VARCHAR, "Region")
-                    .setNullable(false)
-                    .setMaxLength(26),
+                    .nullable(false)
+                    .maximumLength(26),
             columnProperty(COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
-                    .setNullable(false)
-                    .setUseNumberFormatGrouping(true)
-                    .setMaximumFractionDigits(2),
+                    .nullable(false)
+                    .useNumberFormatGrouping(true)
+                    .maximumFractionDigits(2),
             columnProperty(COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year")
-                    .setMin(-200).setMax(2500),
+                    .mininumValue(-200).maximumValue(2500),
             columnProperty(COUNTRY_POPULATION, Types.INTEGER, "Population")
-                    .setNullable(false)
-                    .setUseNumberFormatGrouping(true),
+                    .nullable(false)
+                    .useNumberFormatGrouping(true),
             columnProperty(COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy")
-                    .setMaximumFractionDigits(1)
-                    .setMin(0).setMax(99),
+                    .maximumFractionDigits(1)
+                    .mininumValue(0).maximumValue(99),
             // end::columnProperty[]
             columnProperty(COUNTRY_GNP, Types.DOUBLE, "GNP")
-                    .setUseNumberFormatGrouping(true)
-                    .setMaximumFractionDigits(2),
+                    .useNumberFormatGrouping(true)
+                    .maximumFractionDigits(2),
             columnProperty(COUNTRY_GNPOLD, Types.DOUBLE, "GNP old")
-                    .setUseNumberFormatGrouping(true)
-                    .setMaximumFractionDigits(2),
+                    .useNumberFormatGrouping(true)
+                    .maximumFractionDigits(2),
             columnProperty(COUNTRY_LOCALNAME, Types.VARCHAR, "Local name")
-                    .setNullable(false)
-                    .setMaxLength(45),
+                    .nullable(false)
+                    .maximumLength(45),
             columnProperty(COUNTRY_GOVERNMENTFORM, Types.VARCHAR, "Government form")
-                    .setNullable(false),
+                    .nullable(false),
             columnProperty(COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state")
-                    .setMaxLength(60),
+                    .maximumLength(60),
             // tag::foreignKeyPropertyCapital[]
             foreignKeyProperty(COUNTRY_CAPITAL_FK, "Capital", T_CITY,
                     columnProperty(COUNTRY_CAPITAL)),
@@ -177,19 +177,19 @@ public final class World extends Domain {
             // tag::denormalizedViewProperty[]
             denormalizedViewProperty(COUNTRY_CAPITAL_POPULATION, COUNTRY_CAPITAL_FK,
                     getDefinition(T_CITY).getProperty(CITY_POPULATION), "Capital pop.")
-                    .setUseNumberFormatGrouping(true),
+                    .useNumberFormatGrouping(true),
             // end::denormalizedViewProperty[]
             // tag::blobProperty[]
             blobProperty(COUNTRY_FLAG, "Flag")
-                    .setEagerlyLoaded(true),
+                    .eagerlyLoaded(true),
             // end::blobProperty[]
             columnProperty(COUNTRY_CODE2, Types.VARCHAR, "Code2")
-                    .setNullable(false)
-                    .setMaxLength(2))
-            .setOrderBy(orderBy().ascending(COUNTRY_NAME))
-            .setSearchPropertyIds(COUNTRY_NAME)
-            .setStringProvider(new StringProvider(COUNTRY_NAME))
-            .setCaption("Country");
+                    .nullable(false)
+                    .maximumLength(2))
+            .orderBy(orderBy().ascending(COUNTRY_NAME))
+            .searchPropertyIds(COUNTRY_NAME)
+            .stringProvider(new StringProvider(COUNTRY_NAME))
+            .caption("Country");
   }
 
   void countryLanguage() {
@@ -197,60 +197,60 @@ public final class World extends Domain {
             // tag::compositePrimaryKey[]
             foreignKeyProperty(COUNTRYLANGUAGE_COUNTRY_FK, "Country", T_COUNTRY,
                     columnProperty(COUNTRYLANGUAGE_COUNTRY_CODE, Types.VARCHAR)
-                            .setPrimaryKeyIndex(0)
-                            .setUpdatable(true))
-                    .setNullable(false),
+                            .primaryKeyIndex(0)
+                            .updatable(true))
+                    .nullable(false),
             columnProperty(COUNTRYLANGUAGE_LANGUAGE, Types.VARCHAR, "Language")
-                    .setPrimaryKeyIndex(1)
-                    .setUpdatable(true),
+                    .primaryKeyIndex(1)
+                    .updatable(true),
             // end::compositePrimaryKey[]
             // tag::booleanProperty[]
             columnProperty(COUNTRYLANGUAGE_ISOFFICIAL, Types.BOOLEAN, "Is official")
-                    .setColumnHasDefaultValue(true)
-                    .setNullable(false),
+                    .columnHasDefaultValue(true)
+                    .nullable(false),
             // end::booleanProperty[]
             columnProperty(COUNTRYLANGUAGE_PERCENTAGE, Types.DOUBLE, "Percentage")
-                    .setNullable(false)
-                    .setMaximumFractionDigits(1)
-                    .setMin(0).setMax(100),
+                    .nullable(false)
+                    .maximumFractionDigits(1)
+                    .mininumValue(0).maximumValue(100),
             // tag::derivedProperty[]
             derivedProperty(COUNTRYLANGUAGE_NO_OF_SPEAKERS, Types.INTEGER, "No. of speakers",
                     new NoOfSpeakersProvider(), COUNTRYLANGUAGE_COUNTRY_FK, COUNTRYLANGUAGE_PERCENTAGE)
-                    .setUseNumberFormatGrouping(true)
+                    .useNumberFormatGrouping(true)
             // end::derivedProperty[]
-    ).setOrderBy(orderBy().ascending(COUNTRYLANGUAGE_LANGUAGE).descending(COUNTRYLANGUAGE_PERCENTAGE))
-            .setCaption("Language");
+    ).orderBy(orderBy().ascending(COUNTRYLANGUAGE_LANGUAGE).descending(COUNTRYLANGUAGE_PERCENTAGE))
+            .caption("Language");
   }
 
   void lookup() {
     define(T_LOOKUP,
-            columnProperty(LOOKUP_COUNTRY_CODE, Types.VARCHAR, "Country code").setPrimaryKeyIndex(0),
+            columnProperty(LOOKUP_COUNTRY_CODE, Types.VARCHAR, "Country code").primaryKeyIndex(0),
             columnProperty(LOOKUP_COUNTRY_NAME, Types.VARCHAR, "Country name"),
             columnProperty(LOOKUP_COUNTRY_CONTINENT, Types.VARCHAR, "Continent"),
             columnProperty(LOOKUP_COUNTRY_REGION, Types.VARCHAR, "Region"),
             columnProperty(LOOKUP_COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
-                    .setUseNumberFormatGrouping(true),
+                    .useNumberFormatGrouping(true),
             columnProperty(LOOKUP_COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year"),
             columnProperty(LOOKUP_COUNTRY_POPULATION, Types.INTEGER, "Country population")
-                    .setUseNumberFormatGrouping(true),
+                    .useNumberFormatGrouping(true),
             columnProperty(LOOKUP_COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy"),
             columnProperty(LOOKUP_COUNTRY_GNP, Types.DOUBLE, "GNP")
-                    .setUseNumberFormatGrouping(true),
+                    .useNumberFormatGrouping(true),
             columnProperty(LOOKUP_COUNTRY_GNPOLD, Types.DOUBLE, "GNP old")
-                    .setUseNumberFormatGrouping(true),
+                    .useNumberFormatGrouping(true),
             columnProperty(LOOKUP_COUNTRY_LOCALNAME, Types.VARCHAR, "Local name"),
             columnProperty(LOOKUP_COUNTRY_GOVERNMENTFORM, Types.VARCHAR, "Government form"),
             columnProperty(LOOKUP_COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state"),
             blobProperty(LOOKUP_COUNTRY_FLAG, "Flag"),
             columnProperty(LOOKUP_COUNTRY_CODE2, Types.VARCHAR, "Code2"),
-            columnProperty(LOOKUP_CITY_ID).setPrimaryKeyIndex(1),
+            columnProperty(LOOKUP_CITY_ID).primaryKeyIndex(1),
             columnProperty(LOOKUP_CITY_NAME, Types.VARCHAR, "Name"),
             columnProperty(LOOKUP_CITY_DISTRICT, Types.VARCHAR, "District"),
             columnProperty(LOOKUP_CITY_POPULATION, Types.INTEGER, "City population")
-                    .setUseNumberFormatGrouping(true)
-    ).setOrderBy(orderBy().ascending(LOOKUP_COUNTRY_NAME).descending(LOOKUP_CITY_POPULATION))
-            .setReadOnly(true)
-            .setCaption("Lookup");
+                    .useNumberFormatGrouping(true)
+    ).orderBy(orderBy().ascending(LOOKUP_COUNTRY_NAME).descending(LOOKUP_CITY_POPULATION))
+            .readOnly(true)
+            .caption("Lookup");
   }
 
   // tag::colorProvider[]

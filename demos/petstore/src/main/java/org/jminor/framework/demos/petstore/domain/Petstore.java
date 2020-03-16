@@ -36,27 +36,27 @@ public final class Petstore extends Domain {
   void address() {
     define(T_ADDRESS, "petstore.address",
             primaryKeyProperty(ADDRESS_ID)
-                    .setColumnName("addressid"),
+                    .columnName("addressid"),
             columnProperty(ADDRESS_STREET_1, Types.VARCHAR, ADDRESS_STREET_1)
-                    .setColumnName("street1").setMaxLength(55).setNullable(false),
+                    .columnName("street1").maximumLength(55).nullable(false),
             columnProperty(ADDRESS_STREET_2, Types.VARCHAR, ADDRESS_STREET_2)
-                    .setColumnName("street2").setMaxLength(55),
+                    .columnName("street2").maximumLength(55),
             columnProperty(ADDRESS_CITY, Types.VARCHAR, ADDRESS_CITY)
-                    .setColumnName("city").setMaxLength(55).setNullable(false),
+                    .columnName("city").maximumLength(55).nullable(false),
             columnProperty(ADDRESS_STATE, Types.VARCHAR, ADDRESS_STATE)
-                    .setColumnName("state").setMaxLength(25).setNullable(false),
+                    .columnName("state").maximumLength(25).nullable(false),
             columnProperty(ADDRESS_ZIP, Types.INTEGER, ADDRESS_ZIP)
-                    .setColumnName("zip").setNullable(false),
+                    .columnName("zip").nullable(false),
             columnProperty(ADDRESS_LATITUDE, Types.DOUBLE, ADDRESS_LATITUDE)
-                    .setColumnName("latitude").setNullable(false).setMaximumFractionDigits(2),
+                    .columnName("latitude").nullable(false).maximumFractionDigits(2),
             columnProperty(ADDRESS_LONGITUDE, Types.DOUBLE, ADDRESS_LONGITUDE)
-                    .setColumnName("longitude").setNullable(false).setMaximumFractionDigits(2))
-            .setKeyGenerator(increment("petstore.address", "addressid"))
-            .setOrderBy(orderBy().ascending(ADDRESS_CITY, ADDRESS_STREET_1, ADDRESS_STREET_2))
-            .setStringProvider(new StringProvider(ADDRESS_STREET_1).addText(" ")
+                    .columnName("longitude").nullable(false).maximumFractionDigits(2))
+            .keyGenerator(increment("petstore.address", "addressid"))
+            .orderBy(orderBy().ascending(ADDRESS_CITY, ADDRESS_STREET_1, ADDRESS_STREET_2))
+            .stringProvider(new StringProvider(ADDRESS_STREET_1).addText(" ")
                     .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
                     .addValue(ADDRESS_ZIP).addText(", ").addValue(ADDRESS_STATE))
-            .setCaption("Addresses");
+            .caption("Addresses");
   }
 
   public static final String T_CATEGORY = "category";
@@ -68,17 +68,17 @@ public final class Petstore extends Domain {
   void category() {
     define(T_CATEGORY, "petstore.category",
             primaryKeyProperty(CATEGORY_ID)
-                    .setColumnName("categoryid"),
+                    .columnName("categoryid"),
             columnProperty(CATEGORY_NAME, Types.VARCHAR, CATEGORY_NAME)
-                    .setColumnName("name").setMaxLength(25).setNullable(false),
+                    .columnName("name").maximumLength(25).nullable(false),
             columnProperty(CATEGORY_DESCRIPTION, Types.VARCHAR, CATEGORY_DESCRIPTION)
-                    .setColumnName("description").setMaxLength(255).setNullable(false),
+                    .columnName("description").maximumLength(255).nullable(false),
             columnProperty(CATEGORY_IMAGE_URL, Types.VARCHAR, CATEGORY_IMAGE_URL)
-                    .setColumnName("imageurl").setHidden(true))
-            .setKeyGenerator(increment("petstore.category", "categoryid"))
-            .setOrderBy(orderBy().ascending(CATEGORY_NAME))
-            .setStringProvider(new StringProvider(CATEGORY_NAME))
-            .setCaption("Categories");
+                    .columnName("imageurl").hidden(true))
+            .keyGenerator(increment("petstore.category", "categoryid"))
+            .orderBy(orderBy().ascending(CATEGORY_NAME))
+            .stringProvider(new StringProvider(CATEGORY_NAME))
+            .caption("Categories");
   }
 
   public static final String T_PRODUCT = "product";
@@ -92,21 +92,21 @@ public final class Petstore extends Domain {
   void product() {
     define(T_PRODUCT, "petstore.product",
             primaryKeyProperty(PRODUCT_ID)
-                    .setColumnName("productid"),
+                    .columnName("productid"),
             foreignKeyProperty(PRODUCT_CATEGORY_FK, PRODUCT_CATEGORY_FK, T_CATEGORY,
                     columnProperty(PRODUCT_CATEGORY_ID)
-                            .setColumnName("categoryid")).setNullable(false),
+                            .columnName("categoryid")).nullable(false),
             columnProperty(PRODUCT_NAME, Types.VARCHAR, PRODUCT_NAME)
-                    .setColumnName("name").setMaxLength(25).setNullable(false),
+                    .columnName("name").maximumLength(25).nullable(false),
             columnProperty(PRODUCT_DESCRIPTION, Types.VARCHAR, PRODUCT_DESCRIPTION)
-                    .setColumnName("description").setMaxLength(255).setNullable(false),
+                    .columnName("description").maximumLength(255).nullable(false),
             columnProperty(PRODUCT_IMAGE_URL, Types.VARCHAR, PRODUCT_IMAGE_URL)
-                    .setColumnName("imageurl").setMaxLength(55).setHidden(true))
-            .setKeyGenerator(increment("petstore.product", "productid"))
-            .setOrderBy(orderBy().ascending(PRODUCT_NAME))
-            .setStringProvider(new StringProvider(PRODUCT_CATEGORY_FK)
+                    .columnName("imageurl").maximumLength(55).hidden(true))
+            .keyGenerator(increment("petstore.product", "productid"))
+            .orderBy(orderBy().ascending(PRODUCT_NAME))
+            .stringProvider(new StringProvider(PRODUCT_CATEGORY_FK)
                     .addText(" - ").addValue(PRODUCT_NAME))
-            .setCaption("Products");
+            .caption("Products");
   }
 
   public static final String T_SELLER_CONTACT_INFO = "sellercontactinfo";
@@ -118,20 +118,20 @@ public final class Petstore extends Domain {
   void sellerContactInfo() {
     define(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
             primaryKeyProperty(SELLER_CONTACT_INFO_ID)
-                    .setColumnName("contactinfoid"),
+                    .columnName("contactinfoid"),
             columnProperty(SELLER_CONTACT_INFO_FIRST_NAME, Types.VARCHAR, SELLER_CONTACT_INFO_FIRST_NAME)
-                    .setColumnName("firstname").setMaxLength(24).setNullable(false),
+                    .columnName("firstname").maximumLength(24).nullable(false),
             columnProperty(SELLER_CONTACT_INFO_LAST_NAME, Types.VARCHAR, SELLER_CONTACT_INFO_LAST_NAME)
-                    .setColumnName("lastname").setMaxLength(24).setNullable(false),
+                    .columnName("lastname").maximumLength(24).nullable(false),
             columnProperty(SELLER_CONTACT_INFO_EMAIL, Types.VARCHAR, SELLER_CONTACT_INFO_EMAIL)
-                    .setColumnName("email").setMaxLength(24).setNullable(false))
-            .setKeyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
-            .setOrderBy(orderBy()
+                    .columnName("email").maximumLength(24).nullable(false))
+            .keyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
+            .orderBy(orderBy()
                     .ascending(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME))
-            .setStringProvider(new StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
+            .stringProvider(new StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
                     .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
-            .setSearchPropertyIds(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME)
-            .setCaption("Seller info");
+            .searchPropertyIds(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME)
+            .caption("Seller info");
   }
 
   public static final String T_ITEM = "item";
@@ -152,34 +152,34 @@ public final class Petstore extends Domain {
   void item() {
     define(T_ITEM, "petstore.item",
             primaryKeyProperty(ITEM_ID)
-                    .setColumnName("itemid"),
+                    .columnName("itemid"),
             foreignKeyProperty(ITEM_PRODUCT_FK, ITEM_PRODUCT_FK, T_PRODUCT,
                     columnProperty(ITEM_PRODUCT_ID)
-                            .setColumnName("productid"))
-                    .setFetchDepth(2).setNullable(false),
+                            .columnName("productid"))
+                    .fetchDepth(2).nullable(false),
             columnProperty(ITEM_NAME, Types.VARCHAR, ITEM_NAME)
-                    .setColumnName("name").setMaxLength(30).setNullable(false),
+                    .columnName("name").maximumLength(30).nullable(false),
             columnProperty(ITEM_DESCRIPTION, Types.VARCHAR, ITEM_DESCRIPTION)
-                    .setColumnName("description").setMaxLength(500).setNullable(false),
+                    .columnName("description").maximumLength(500).nullable(false),
             columnProperty(ITEM_IMAGE_URL, Types.VARCHAR, ITEM_IMAGE_URL)
-                    .setColumnName("imageurl").setMaxLength(55).setHidden(true),
+                    .columnName("imageurl").maximumLength(55).hidden(true),
             columnProperty(ITEM_IMAGE_THUMB_URL, Types.VARCHAR, ITEM_IMAGE_THUMB_URL)
-                    .setColumnName("imagethumburl").setMaxLength(55).setHidden(true),
+                    .columnName("imagethumburl").maximumLength(55).hidden(true),
             columnProperty(ITEM_PRICE, Types.DECIMAL, ITEM_PRICE)
-                    .setColumnName("price").setNullable(false).setMaximumFractionDigits(2),
+                    .columnName("price").nullable(false).maximumFractionDigits(2),
             foreignKeyProperty(ITEM_C0NTACT_INFO_FK, ITEM_C0NTACT_INFO_FK, T_SELLER_CONTACT_INFO,
-                    columnProperty(ITEM_C0NTACT_INFO_ID).setColumnName("contactinfo_contactinfoid"))
-                    .setNullable(false),
+                    columnProperty(ITEM_C0NTACT_INFO_ID).columnName("contactinfo_contactinfoid"))
+                    .nullable(false),
             foreignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
-                    columnProperty(ITEM_ADDRESS_ID).setColumnName("address_addressid"))
-                    .setNullable(false),
+                    columnProperty(ITEM_ADDRESS_ID).columnName("address_addressid"))
+                    .nullable(false),
             booleanProperty(ITEM_DISABLED, Types.INTEGER, ITEM_DISABLED, 1, 0)
-                    .setColumnName("disabled").setDefaultValue(false))
-            .setKeyGenerator(increment("petstore.item", "itemid"))
-            .setOrderBy(orderBy().ascending(ITEM_NAME))
-            .setStringProvider(new StringProvider(ITEM_PRODUCT_FK)
+                    .columnName("disabled").defaultValue(false))
+            .keyGenerator(increment("petstore.item", "itemid"))
+            .orderBy(orderBy().ascending(ITEM_NAME))
+            .stringProvider(new StringProvider(ITEM_PRODUCT_FK)
                     .addText(" - ").addValue(ITEM_NAME))
-            .setCaption("Items");
+            .caption("Items");
   }
 
   public static final String T_TAG = "tag";
@@ -190,17 +190,17 @@ public final class Petstore extends Domain {
   void tag() {
     define(T_TAG, "petstore.tag",
             primaryKeyProperty(TAG_ID)
-                    .setColumnName("tagid"),
+                    .columnName("tagid"),
             columnProperty(TAG_TAG, Types.VARCHAR, TAG_TAG)
-                    .setColumnName("tag").setMaxLength(30).setNullable(false),
+                    .columnName("tag").maximumLength(30).nullable(false),
             subqueryProperty(TAG_REFCOUNT, Types.INTEGER, TAG_REFCOUNT,
                     "select count(*) from petstore.tag_item where tagid = tag.tagid")
-                    .setColumnName("refcount"))
-            .setKeyGenerator(increment("petstore.tag", "tagid"))
-            .setOrderBy(orderBy().ascending(TAG_TAG))
-            .setSelectTableName("petstore.tag tag")
-            .setStringProvider(new StringProvider(TAG_TAG))
-            .setCaption("Tags");
+                    .columnName("refcount"))
+            .keyGenerator(increment("petstore.tag", "tagid"))
+            .orderBy(orderBy().ascending(TAG_TAG))
+            .selectTableName("petstore.tag tag")
+            .stringProvider(new StringProvider(TAG_TAG))
+            .caption("Tags");
   }
 
   public static final String T_TAG_ITEM = "tag_item";
@@ -213,14 +213,14 @@ public final class Petstore extends Domain {
     define(T_TAG_ITEM, "petstore.tag_item",
             foreignKeyProperty(TAG_ITEM_ITEM_FK, TAG_ITEM_ITEM_FK, T_ITEM,
                     primaryKeyProperty(TAG_ITEM_ITEM_ID)
-                            .setColumnName("itemid").setPrimaryKeyIndex(0))
-                    .setNullable(false),
+                            .columnName("itemid").primaryKeyIndex(0))
+                    .nullable(false),
             foreignKeyProperty(TAG_ITEM_TAG_FK, TAG_ITEM_TAG_FK, T_TAG,
                     primaryKeyProperty(TAG_ITEM_TAG_ID)
-                            .setColumnName("tagid").setPrimaryKeyIndex(1))
-                    .setNullable(false))
-            .setStringProvider(new StringProvider(TAG_ITEM_ITEM_FK)
+                            .columnName("tagid").primaryKeyIndex(1))
+                    .nullable(false))
+            .stringProvider(new StringProvider(TAG_ITEM_ITEM_FK)
                     .addText(" - ").addValue(TAG_ITEM_TAG_FK))
-            .setCaption("Item tags");
+            .caption("Item tags");
   }
 }

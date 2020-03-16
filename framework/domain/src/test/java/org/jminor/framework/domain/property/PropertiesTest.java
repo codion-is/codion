@@ -41,27 +41,27 @@ public final class PropertiesTest {
 
   @Test
   public void intPropertyWithDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.INTEGER).setFormat(new SimpleDateFormat(DateFormats.COMPACT)));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.INTEGER).format(new SimpleDateFormat(DateFormats.COMPACT)));
   }
 
   @Test
   public void doublePropertyWithDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.DOUBLE).setFormat(new SimpleDateFormat(DateFormats.COMPACT)));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.DOUBLE).format(new SimpleDateFormat(DateFormats.COMPACT)));
   }
 
   @Test
   public void datePropertyWithNumberFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.DATE).setFormat(NumberFormat.getIntegerInstance()));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.DATE).format(NumberFormat.getIntegerInstance()));
   }
 
   @Test
   public void timestampPropertyWithNumberFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.TIMESTAMP).setFormat(NumberFormat.getIntegerInstance()));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.TIMESTAMP).format(NumberFormat.getIntegerInstance()));
   }
 
   @Test
   public void setMaximumFractionDigitsNotNumerical() {
-    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.DATE).setMaximumFractionDigits(5));
+    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.DATE).maximumFractionDigits(5));
   }
 
   @Test
@@ -71,37 +71,37 @@ public final class PropertiesTest {
 
   @Test
   public void setUserNumberFormatGroupingNotNumerical() {
-    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.DATE).setUseNumberFormatGrouping(false));
+    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.DATE).useNumberFormatGrouping(false));
   }
 
   @Test
   public void setColumnName() {
-    assertEquals("hello", columnProperty("propertyId").setColumnName("hello").get().getColumnName());
+    assertEquals("hello", columnProperty("propertyId").columnName("hello").get().getColumnName());
   }
 
   @Test
   public void setColumnNameNull() {
-    assertThrows(NullPointerException.class, () -> columnProperty("propertyId").setColumnName(null));
+    assertThrows(NullPointerException.class, () -> columnProperty("propertyId").columnName(null));
   }
 
   @Test
   public void description() {
     final String description = "Here is a description";
-    final Property property = columnProperty("propertyId").setDescription(description).get();
+    final Property property = columnProperty("propertyId").description(description).get();
     assertEquals(description, property.getDescription());
   }
 
   @Test
   public void mnemonic() {
     final Character mnemonic = 'M';
-    final Property property = columnProperty("propertyId").setMnemonic(mnemonic).get();
+    final Property property = columnProperty("propertyId").mnemonic(mnemonic).get();
     assertEquals(mnemonic, property.getMnemonic());
   }
 
   @Test
   public void setEntityIdAlreadySet() {
-    final Property.Builder property = columnProperty("propertyId").setEntityId("entityId");
-    assertThrows(IllegalStateException.class, () -> property.setEntityId("test"));
+    final Property.Builder property = columnProperty("propertyId").entityId("entityId");
+    assertThrows(IllegalStateException.class, () -> property.entityId("test"));
   }
 
   @Test
@@ -111,7 +111,7 @@ public final class PropertiesTest {
     final ForeignKeyProperty.Builder foreignKeyProperty =
             foreignKeyProperty("fkPropertyID", "fk", "referenceEntityID",
                     Arrays.asList(columnProperty, columnProperty2));
-    foreignKeyProperty.setNullable(false);
+    foreignKeyProperty.nullable(false);
     assertFalse(columnProperty.get().isNullable());
     assertFalse(columnProperty2.get().isNullable());
     assertFalse(foreignKeyProperty.get().isNullable());
@@ -120,7 +120,7 @@ public final class PropertiesTest {
   @Test
   public void foreignKeyPropertyUpdatable() {
     final ColumnProperty.Builder updatableReferenceProperty = columnProperty("propertyId");
-    final ColumnProperty.Builder nonUpdatableReferenceProperty = columnProperty("propertyId").setUpdatable(false);
+    final ColumnProperty.Builder nonUpdatableReferenceProperty = columnProperty("propertyId").updatable(false);
 
     final ForeignKeyProperty.Builder updatableForeignKeyProperty = foreignKeyProperty("fkProperty", "test",
             "referencedEntityID", updatableReferenceProperty);
@@ -150,21 +150,21 @@ public final class PropertiesTest {
 
   @Test
   public void subqueryPropertySetReadOnlyFalse() {
-    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty("test", Types.INTEGER, "caption", "select").setReadOnly(false));
+    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty("test", Types.INTEGER, "caption", "select").readOnly(false));
   }
 
   @Test
   public void subqueryPropertySetUpdatableFalse() {
-    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty("test", Types.INTEGER, "caption", "select").setUpdatable(false));
+    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty("test", Types.INTEGER, "caption", "select").updatable(false));
   }
 
   @Test
   public void subqueryPropertySetInsertableFalse() {
-    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty("test", Types.INTEGER, "caption", "select").setInsertable(false));
+    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty("test", Types.INTEGER, "caption", "select").insertable(false));
   }
 
   @Test
   public void stringPropertyNegativeMaxLength() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty("property", Types.VARCHAR).setMaxLength(-4));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty("property", Types.VARCHAR).maximumLength(-4));
   }
 }

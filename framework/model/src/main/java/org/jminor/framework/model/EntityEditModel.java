@@ -328,7 +328,7 @@ public interface EntityEditModel extends Refreshable {
    * returns {@code true} for that property in case the value should persist.
    * @param property the property
    * @return the default value for the property
-   * @see Property.Builder#setDefaultValue(Object)
+   * @see Property.Builder#defaultValue(Object)
    * @see #setPersistValue(String, boolean)
    * @see #isPersistValue(Property)
    */

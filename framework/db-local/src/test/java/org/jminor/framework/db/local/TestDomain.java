@@ -54,24 +54,24 @@ public final class TestDomain extends Domain {
   void department() {
     define(T_DEPARTMENT,
             primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
-                    .setUpdatable(true).setNullable(false),
+                    .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
-                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
+                    .preferredColumnWidth(120).maximumLength(14).nullable(false),
             columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
-                    .setPreferredColumnWidth(150).setMaxLength(13))
-            .setSmallDataset(true)
-            .setSearchPropertyIds(DEPARTMENT_NAME)
-            .setStringProvider(new StringProvider(DEPARTMENT_NAME))
-            .addConditionProvider(DEPARTMENT_CONDITION_ID, (propetyIds, values) -> {
+                    .preferredColumnWidth(150).maximumLength(13))
+            .smallDataset(true)
+            .searchPropertyIds(DEPARTMENT_NAME)
+            .stringProvider(new StringProvider(DEPARTMENT_NAME))
+            .conditionProvider(DEPARTMENT_CONDITION_ID, (propetyIds, values) -> {
               final StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .addConditionProvider(DEPARTMENT_CONDITION_SALES_ID, (propetyIds, values) -> "dname = 'SALES'")
-            .addConditionProvider(DEPARTMENT_CONDITION_INVALID_COLUMN_ID, (propetyIds, values) -> "no_column is null")
-            .setCaption("Department");
+            .conditionProvider(DEPARTMENT_CONDITION_SALES_ID, (propetyIds, values) -> "dname = 'SALES'")
+            .conditionProvider(DEPARTMENT_CONDITION_INVALID_COLUMN_ID, (propetyIds, values) -> "no_column is null")
+            .caption("Department");
   }
 
   public static final String EMP_ID = "empno";
@@ -97,35 +97,35 @@ public final class TestDomain extends Domain {
     define(T_EMP,
             primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
-                    .setMaxLength(10).setNullable(false),
+                    .maximumLength(10).nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
                     columnProperty(EMP_DEPARTMENT))
-                    .setNullable(false),
+                    .nullable(false),
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN"))),
             columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
-                    .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
+                    .nullable(false).mininumValue(1000).maximumValue(10000).maximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
-                    .setMin(100).setMax(2000).setMaximumFractionDigits(2),
+                    .mininumValue(100).maximumValue(2000).maximumFractionDigits(2),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
                     columnProperty(EMP_MGR))
                     //not really soft, just for testing purposes
-                    .setSoftReference(true),
+                    .softReference(true),
             columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
-                    .setNullable(false),
+                    .nullable(false),
             columnProperty(EMP_HIRETIME, Types.TIMESTAMP, EMP_HIRETIME),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
-                    DEPARTMENT_LOCATION).setPreferredColumnWidth(100),
+                    DEPARTMENT_LOCATION).preferredColumnWidth(100),
             columnProperty(EMP_DATA_LAZY, Types.BLOB),
             blobProperty(EMP_DATA)
-                    .setEagerlyLoaded(true))
-            .setStringProvider(new StringProvider(EMP_NAME))
-            .setKeyGenerator(increment("scott.emp", "empno"))
-            .setSearchPropertyIds(EMP_NAME, EMP_JOB)
-            .addConditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, (propetyIds, values) -> "ename = 'BLAKE'")
-            .addConditionProvider(EMP_MGR_GREATER_THAN_CONDITION_ID, (propetyIds, values) -> "mgr > ?")
-            .setCaption("Employee");
+                    .eagerlyLoaded(true))
+            .stringProvider(new StringProvider(EMP_NAME))
+            .keyGenerator(increment("scott.emp", "empno"))
+            .searchPropertyIds(EMP_NAME, EMP_JOB)
+            .conditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, (propetyIds, values) -> "ename = 'BLAKE'")
+            .conditionProvider(EMP_MGR_GREATER_THAN_CONDITION_ID, (propetyIds, values) -> "mgr > ?")
+            .caption("Employee");
   }
 
   public static final String T_UUID_TEST_DEFAULT = "scott.uuid_test_default";
@@ -149,7 +149,7 @@ public final class TestDomain extends Domain {
     define(T_UUID_TEST_DEFAULT,
             primaryKeyProperty(UUID_TEST_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
             columnProperty(UUID_TEST_DEFAULT_DATA, Types.VARCHAR, "Data"))
-            .setKeyGenerator(uuidKeyGenerator);
+            .keyGenerator(uuidKeyGenerator);
   }
 
   public static final String T_UUID_TEST_NO_DEFAULT = "scott.uuid_test_no_default";
@@ -166,7 +166,7 @@ public final class TestDomain extends Domain {
     define(T_UUID_TEST_NO_DEFAULT,
             primaryKeyProperty(UUID_TEST_NO_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
             columnProperty(UUID_TEST_NO_DEFAULT_DATA, Types.VARCHAR, "Data"))
-            .setKeyGenerator(uuidKeyGenerator);
+            .keyGenerator(uuidKeyGenerator);
   }
 
   private void operations() {
@@ -188,9 +188,9 @@ public final class TestDomain extends Domain {
   private void groupByQuery() {
     define(GROUP_BY_QUERY_ENTITY_ID, "scott.emp",
             columnProperty("job", Types.VARCHAR)
-                    .setPrimaryKeyIndex(0)
-                    .setGroupingColumn(true))
-            .setHavingClause("job <> 'PRESIDENT'");
+                    .primaryKeyIndex(0)
+                    .groupingColumn(true))
+            .havingClause("job <> 'PRESIDENT'");
   }
 
   public static final String T_NO_PK = "scott.no_pk_table";
@@ -213,7 +213,7 @@ public final class TestDomain extends Domain {
     define(JOINED_QUERY_ENTITY_ID,
             primaryKeyProperty("e.empno"),
             columnProperty("d.deptno", Types.INTEGER))
-            .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
-            .addConditionProvider(JOINED_QUERY_CONDITION_ID, (propetyIds, values) -> "d.deptno = 10");
+            .selectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
+            .conditionProvider(JOINED_QUERY_CONDITION_ID, (propetyIds, values) -> "d.deptno = 10");
   }
 }

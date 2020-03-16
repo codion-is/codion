@@ -29,5 +29,4 @@ public interface AuditProperty extends ColumnProperty {
    * Specifies a audit property with a username value
    */
   interface AuditUserProperty extends AuditProperty {}
-
 }

@@ -46,14 +46,14 @@ public class EmpDeptMinimalApp {
       define("scott.dept",
               primaryKeyProperty("deptno"),
               columnProperty("dname", Types.VARCHAR, "Department name")
-                      .setNullable(false)
-                      .setMaxLength(14),
+                      .nullable(false)
+                      .maximumLength(14),
               columnProperty("loc", Types.VARCHAR, "Department location")
-                      .setMaxLength(13))
-              .setKeyGenerator(increment("scott.dept", "deptno"))
-              .setCaption("Departments")
-              .setSearchPropertyIds("dname")
-              .setStringProvider(new StringProvider("dname"));
+                      .maximumLength(13))
+              .keyGenerator(increment("scott.dept", "deptno"))
+              .caption("Departments")
+              .searchPropertyIds("dname")
+              .stringProvider(new StringProvider("dname"));
       /*
        * We then define the entity based on the SCOTT.EMP table,
        * notice the foreign key wrapper properties, referencing the
@@ -62,28 +62,28 @@ public class EmpDeptMinimalApp {
       define("scott.emp",
               primaryKeyProperty("empno"),
               columnProperty("ename", Types.VARCHAR, "Name")
-                      .setNullable(false)
-                      .setMaxLength(10),
+                      .nullable(false)
+                      .maximumLength(10),
               foreignKeyProperty("dept_fk", "Department", "scott.dept",
                       columnProperty("deptno"))
-                      .setNullable(false),
+                      .nullable(false),
               columnProperty("job", Types.VARCHAR, "Job")
-                      .setNullable(false)
-                      .setMaxLength(9),
+                      .nullable(false)
+                      .maximumLength(9),
               columnProperty("sal", Types.DOUBLE, "Salary")
-                      .setNullable(false)
-                      .setMaximumFractionDigits(2)
-                      .setMin(1000).setMax(10000),
+                      .nullable(false)
+                      .maximumFractionDigits(2)
+                      .mininumValue(1000).maximumValue(10000),
               columnProperty("comm", Types.DOUBLE, "Commission")
-                      .setMaximumFractionDigits(2),
+                      .maximumFractionDigits(2),
               foreignKeyProperty("mgr_fk", "Manager", "scott.emp",
                       columnProperty("mgr")),
               columnProperty("hiredate", Types.DATE, "Hiredate")
-                      .setNullable(false))
-              .setKeyGenerator(increment("scott.emp", "empno"))
-              .setCaption("Employees")
-              .setSearchPropertyIds("ename")
-              .setStringProvider(new StringProvider("ename"));
+                      .nullable(false))
+              .keyGenerator(increment("scott.emp", "empno"))
+              .caption("Employees")
+              .searchPropertyIds("ename")
+              .stringProvider(new StringProvider("ename"));
     }
   }
 

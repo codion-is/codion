@@ -53,16 +53,16 @@ public final class Example {
       define(T_CUSTOMER,
               primaryKeyProperty(CUSTOMER_ID, Types.VARCHAR),
               columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
-                      .setNullable(false).setMaxLength(40),
+                      .nullable(false).maximumLength(40),
               columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
-                      .setNullable(false).setMaxLength(40))
-              .setKeyGenerator(new KeyGenerator() {
+                      .nullable(false).maximumLength(40))
+              .keyGenerator(new KeyGenerator() {
                 @Override
                 public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
                   entity.put(CUSTOMER_ID, randomUUID().toString());
                 }
               })
-              .setStringProvider(new StringProvider(CUSTOMER_LAST_NAME)
+              .stringProvider(new StringProvider(CUSTOMER_LAST_NAME)
                       .addText(", ").addValue(CUSTOMER_FIRST_NAME));
     }
     // end::customer[]
@@ -76,11 +76,11 @@ public final class Example {
       define(T_ADDRESS,
               primaryKeyProperty(ADDRESS_ID, Types.INTEGER),
               columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street")
-                      .setNullable(false).setMaxLength(120),
+                      .nullable(false).maximumLength(120),
               columnProperty(ADDRESS_CITY, Types.VARCHAR, "City")
-                      .setNullable(false).setMaxLength(50))
-              .setKeyGenerator(automatic(T_ADDRESS))
-              .setStringProvider(new StringProvider(ADDRESS_STREET)
+                      .nullable(false).maximumLength(50))
+              .keyGenerator(automatic(T_ADDRESS))
+              .stringProvider(new StringProvider(ADDRESS_STREET)
                       .addText(", ").addValue(ADDRESS_CITY));
     }
     // end::address[]
@@ -97,12 +97,12 @@ public final class Example {
               primaryKeyProperty(CUSTOMER_ADDRESS_ID, Types.INTEGER),
               foreignKeyProperty(CUSTOMER_ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
                       columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID, Types.VARCHAR))
-                      .setNullable(false),
+                      .nullable(false),
               foreignKeyProperty(CUSTOMER_ADDRESS_ADDRESS_FK, "Address", T_ADDRESS,
                       columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID, Types.INTEGER))
-                      .setNullable(false))
-              .setKeyGenerator(automatic(T_CUSTOMER_ADDRESS))
-              .setCaption("Customer address");
+                      .nullable(false))
+              .keyGenerator(automatic(T_CUSTOMER_ADDRESS))
+              .caption("Customer address");
     }
     // end::customerAddress[]
   }

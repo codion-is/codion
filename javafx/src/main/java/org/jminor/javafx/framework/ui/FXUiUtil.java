@@ -936,7 +936,7 @@ public final class FXUiUtil {
     }
 
     private static boolean isValid(final Property property, final String value) {
-      final int maxLength = property.getMaxLength();
+      final int maxLength = property.getMaximumLength();
       if (maxLength > -1 && value != null && value.length() > maxLength) {
         return false;
       }
@@ -974,8 +974,8 @@ public final class FXUiUtil {
     }
 
     private static boolean isWithinRange(final Property property, final Number value) {
-      final double min = property.getMin() != null ? Math.min(property.getMin(), 0) : Double.NEGATIVE_INFINITY;
-      final double max = property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax();
+      final double min = property.getMinimumValue() != null ? Math.min(property.getMinimumValue(), 0) : Double.NEGATIVE_INFINITY;
+      final double max = property.getMaximumValue() == null ? Double.POSITIVE_INFINITY : property.getMaximumValue();
       final double doubleValue = value.doubleValue();
 
       return doubleValue >= min && doubleValue <= max;

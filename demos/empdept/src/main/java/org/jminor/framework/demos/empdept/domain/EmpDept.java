@@ -70,15 +70,15 @@ public final class EmpDept extends Domain {
     /*Defining the entity type T_DEPARTMENT*/
     define(T_DEPARTMENT,
             primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, "Department no.")
-                    .setUpdatable(true).setNullable(false),
+                    .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, Types.VARCHAR, "Department name")
-                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
+                    .preferredColumnWidth(120).maximumLength(14).nullable(false),
             columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, "Location")
-                    .setPreferredColumnWidth(150).setMaxLength(13))
-            .setSmallDataset(true)
-            .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
-            .setStringProvider(new StringProvider(DEPARTMENT_NAME))
-            .setCaption("Departments");
+                    .preferredColumnWidth(150).maximumLength(13))
+            .smallDataset(true)
+            .orderBy(orderBy().ascending(DEPARTMENT_NAME))
+            .stringProvider(new StringProvider(DEPARTMENT_NAME))
+            .caption("Departments");
   }
 // end::defineDepartment[]
 
@@ -88,28 +88,28 @@ public final class EmpDept extends Domain {
     define(T_EMPLOYEE,
             primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, "Employee no."),
             columnProperty(EMPLOYEE_NAME, Types.VARCHAR, "Name")
-                    .setMaxLength(10).setNullable(false),
+                    .maximumLength(10).nullable(false),
             foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, "Department", T_DEPARTMENT,
                     columnProperty(EMPLOYEE_DEPARTMENT))
-                    .setNullable(false),
+                    .nullable(false),
             valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, "Job", JOB_VALUES),
             columnProperty(EMPLOYEE_SALARY, Types.DECIMAL, "Salary")
-                    .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
+                    .nullable(false).mininumValue(1000).maximumValue(10000).maximumFractionDigits(2),
             columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, "Commission")
-                    .setMin(100).setMax(2000).setMaximumFractionDigits(2),
+                    .mininumValue(100).maximumValue(2000).maximumFractionDigits(2),
             foreignKeyProperty(EMPLOYEE_MGR_FK, "Manager", T_EMPLOYEE,
                     columnProperty(EMPLOYEE_MGR)),
             columnProperty(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate")
-                    .setNullable(false),
+                    .nullable(false),
             denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION), "Location")
-                    .setPreferredColumnWidth(100))
-            .setKeyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID))
-            .setOrderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
-            .setSearchPropertyIds(EMPLOYEE_NAME)
-            .setStringProvider(new StringProvider(EMPLOYEE_NAME))
-            .setCaption("Employee")
-            .setColorProvider((entity, property) -> {
+                    .preferredColumnWidth(100))
+            .keyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID))
+            .orderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
+            .searchPropertyIds(EMPLOYEE_NAME)
+            .stringProvider(new StringProvider(EMPLOYEE_NAME))
+            .caption("Employee")
+            .colorProvider((entity, property) -> {
               if (property.is(EMPLOYEE_JOB) && "MANAGER".equals(entity.get(EMPLOYEE_JOB))) {
                 return Color.CYAN;
               }

@@ -81,7 +81,7 @@ public final class Properties {
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
   public static ColumnProperty.Builder primaryKeyProperty(final String propertyId, final int type, final String caption) {
-    return columnProperty(propertyId, type, caption).setPrimaryKeyIndex(0);
+    return columnProperty(propertyId, type, caption).primaryKeyIndex(0);
   }
 
   /**
@@ -266,7 +266,7 @@ public final class Properties {
   public static ColumnProperty.Builder booleanProperty(final String propertyId, final int columnType, final String caption,
                                                        final Object trueValue, final Object falseValue) {
     return new DefaultColumnProperty(propertyId, Types.BOOLEAN, caption, columnType).builder()
-            .setValueConverter(booleanValueConverter(trueValue, falseValue));
+            .valueConverter(booleanValueConverter(trueValue, falseValue));
   }
 
   /**

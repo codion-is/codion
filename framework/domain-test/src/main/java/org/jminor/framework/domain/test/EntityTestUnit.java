@@ -450,7 +450,7 @@ public class EntityTestUnit {
   }
 
   private static String getRandomString(final Property property) {
-    final int length = property.getMaxLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaxLength();
+    final int length = property.getMaximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaximumLength();
 
     return Text.createRandomString(length, length);
   }
@@ -482,15 +482,15 @@ public class EntityTestUnit {
   }
 
   private static int getRandomInteger(final Property property) {
-    final int min = (int) (property.getMin() == null ? MININUM_RANDOM_NUMBER : property.getMin());
-    final int max = (int) (property.getMax() == null ? MAXIMUM_RANDOM_NUMBER : property.getMax());
+    final int min = (int) (property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue());
+    final int max = (int) (property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue());
 
     return RANDOM.nextInt((max - min) + 1) + min;
   }
 
   private static double getRandomDouble(final Property property) {
-    final double min = property.getMin() == null ? MININUM_RANDOM_NUMBER : property.getMin();
-    final double max = property.getMax() == null ? MAXIMUM_RANDOM_NUMBER : property.getMax();
+    final double min = property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue();
+    final double max = property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue();
 
     return RANDOM.nextDouble() * (max - min) + min;
   }

@@ -32,14 +32,14 @@ public final class TestDomain extends Domain {
 
   void testEntity() {
     define(T_ENTITY,
-            columnProperty(ENTITY_DECIMAL, Types.DECIMAL).setPrimaryKeyIndex(0),
-            columnProperty(ENTITY_DATE_TIME, Types.TIMESTAMP).setPrimaryKeyIndex(1),
+            columnProperty(ENTITY_DECIMAL, Types.DECIMAL).primaryKeyIndex(0),
+            columnProperty(ENTITY_DATE_TIME, Types.TIMESTAMP).primaryKeyIndex(1),
             columnProperty(ENTITY_BLOB, Types.BLOB),
             columnProperty(ENTITY_READ_ONLY, Types.VARCHAR)
-                    .setReadOnly(true),
+                    .readOnly(true),
             columnProperty(ENTITY_BOOLEAN, Types.BOOLEAN),
             columnProperty(ENTITY_TIME, Types.TIME))
-            .addConditionProvider(ENTITY_CONDITION_ID, (propertyIds, values) -> "1 = 2");
+            .conditionProvider(ENTITY_CONDITION_ID, (propertyIds, values) -> "1 = 2");
   }
 
   public static final String DEPARTMENT_ID = "deptno";
@@ -52,16 +52,16 @@ public final class TestDomain extends Domain {
   void department() {
     define(T_DEPARTMENT,
             primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
-                    .setUpdatable(true).setNullable(false),
+                    .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
-                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
+                    .preferredColumnWidth(120).maximumLength(14).nullable(false),
             columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
-                    .setPreferredColumnWidth(150).setMaxLength(13),
+                    .preferredColumnWidth(150).maximumLength(13),
             columnProperty(DEPARTMENT_LOGO, Types.BLOB))
-            .setSmallDataset(true)
-            .setSearchPropertyIds(DEPARTMENT_NAME)
-            .setStringProvider(new StringProvider(DEPARTMENT_NAME))
-            .setCaption("Department");
+            .smallDataset(true)
+            .searchPropertyIds(DEPARTMENT_NAME)
+            .stringProvider(new StringProvider(DEPARTMENT_NAME))
+            .caption("Department");
   }
 
   public static final String EMP_ID = "empno";
@@ -81,26 +81,26 @@ public final class TestDomain extends Domain {
     define(T_EMP,
             primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
-                    .setMaxLength(10).setNullable(false),
+                    .maximumLength(10).nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
                     columnProperty(EMP_DEPARTMENT))
-                    .setNullable(false),
+                    .nullable(false),
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN"))),
             columnProperty(EMP_SALARY, Types.DECIMAL, EMP_SALARY)
-                    .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
+                    .nullable(false).mininumValue(1000).maximumValue(10000).maximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
-                    .setMin(100).setMax(2000).setMaximumFractionDigits(2),
+                    .mininumValue(100).maximumValue(2000).maximumFractionDigits(2),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
                     columnProperty(EMP_MGR)),
             columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
-                    .setNullable(false),
+                    .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
-                    DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
-            .setStringProvider(new StringProvider(EMP_NAME))
-            .setKeyGenerator(increment("scott.emp", "empno"))
-            .setSearchPropertyIds(EMP_NAME, EMP_JOB)
-            .setCaption("Employee");
+                    DEPARTMENT_LOCATION).preferredColumnWidth(100))
+            .stringProvider(new StringProvider(EMP_NAME))
+            .keyGenerator(increment("scott.emp", "empno"))
+            .searchPropertyIds(EMP_NAME, EMP_JOB)
+            .caption("Employee");
   }
 }
