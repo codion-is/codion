@@ -163,31 +163,31 @@ public interface ColumnProperty extends Property {
      * @param columnName the column name
      * @return this instance
      */
-    ColumnProperty.Builder setColumnName(String columnName);
+    ColumnProperty.Builder columnName(String columnName);
 
     /**
      * @param readOnly specifies whether this property should be included during insert and update operations
      * @return this instance
      */
-    ColumnProperty.Builder setReadOnly(boolean readOnly);
+    ColumnProperty.Builder readOnly(boolean readOnly);
 
     /**
      * @param insertable specifies whether this property should be included during insert operations
      * @return this instance
      */
-    ColumnProperty.Builder setInsertable(boolean insertable);
+    ColumnProperty.Builder insertable(boolean insertable);
 
     /**
      * @param updatable specifies whether this property is updatable
      * @return this instance
      */
-    ColumnProperty.Builder setUpdatable(boolean updatable);
+    ColumnProperty.Builder updatable(boolean updatable);
 
     /**
      * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
      * @return this instance
      */
-    ColumnProperty.Builder setColumnHasDefaultValue(boolean columnHasDefaultValue);
+    ColumnProperty.Builder columnHasDefaultValue(boolean columnHasDefaultValue);
 
     /**
      * Sets the zero based primary key index of this property.
@@ -196,37 +196,37 @@ public interface ColumnProperty extends Property {
      * @param index the zero based index
      * @return this instance
      * @throws IllegalArgumentException in case index is a negative number
-     * @see #setNullable(boolean)
-     * @see #setUpdatable(boolean)
+     * @see #nullable(boolean)
+     * @see #updatable(boolean)
      */
-    ColumnProperty.Builder setPrimaryKeyIndex(int index);
+    ColumnProperty.Builder primaryKeyIndex(int index);
 
     /**
      * @param groupingColumn true if this column should be used in a group by clause
      * @throws IllegalStateException in case the column has already been defined as an aggregate column
      * @return this instance
      */
-    ColumnProperty.Builder setGroupingColumn(boolean groupingColumn);
+    ColumnProperty.Builder groupingColumn(boolean groupingColumn);
 
     /**
      * @param aggregateColumn true if this column is an aggregate function column
      * @throws IllegalStateException in case the column has already been defined as a grouping column
      * @return this instance
      */
-    ColumnProperty.Builder setAggregateColumn(boolean aggregateColumn);
+    ColumnProperty.Builder aggregateColumn(boolean aggregateColumn);
 
     /**
      * @param selectable false if this property should not be included in select queries
      * @return this instance
      */
-    ColumnProperty.Builder setSelectable(boolean selectable);
+    ColumnProperty.Builder selectable(boolean selectable);
 
     /**
      * Set a value converter, for converting to and from a sql representation of the value
      * @param valueConverter the converter
      * @return this instance
      */
-    ColumnProperty.Builder setValueConverter(ValueConverter<?, ?> valueConverter);
+    ColumnProperty.Builder valueConverter(ValueConverter<?, ?> valueConverter);
 
     /**
      * @param foreignKeyProperty true if this property is part of a foreign key

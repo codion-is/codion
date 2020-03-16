@@ -55,17 +55,17 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
     }
 
     @Override
-    public ColumnProperty.Builder setReadOnly(final boolean readOnly) {
+    public ColumnProperty.Builder readOnly(final boolean readOnly) {
       throw new UnsupportedOperationException("Subquery properties are always read only");
     }
 
     @Override
-    public SubqueryProperty.Builder setInsertable(final boolean insertable) {
+    public SubqueryProperty.Builder insertable(final boolean insertable) {
       throw new UnsupportedOperationException("Subquery properties are never insertable");
     }
 
     @Override
-    public SubqueryProperty.Builder setUpdatable(final boolean updatable) {
+    public SubqueryProperty.Builder updatable(final boolean updatable) {
       throw new UnsupportedOperationException("Subquery properties are never updatable");
     }
   }

@@ -245,7 +245,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * Returns the properties to search by when looking up entities of the type identified by {@code entityId}
    * @return the properties to use when searching
-   * @see Builder#setSearchPropertyIds(String...)
+   * @see Builder#searchPropertyIds(String...)
    */
   Collection<ColumnProperty> getSearchProperties();
 
@@ -394,13 +394,13 @@ public interface EntityDefinition extends Serializable {
      * @return this {@link Builder} instance
      * @throws IllegalStateException in case the domain id has already been set
      */
-    Builder setDomainId(String domainId);
+    Builder domainId(String domainId);
 
     /**
      * @param validator the validator for this entity type
      * @return this {@link Builder} instance
      */
-    Builder setValidator(Entity.Validator validator);
+    Builder validator(Entity.Validator validator);
 
     /**
      * Adds a {@link Entity.ConditionProvider} which provides a dynamic query condition string.
@@ -410,27 +410,27 @@ public interface EntityDefinition extends Serializable {
      * @param conditionProvider the condition provider
      * @return this Entity.Definer instance
      */
-    Builder addConditionProvider(String conditionId, Entity.ConditionProvider conditionProvider);
+    Builder conditionProvider(String conditionId, Entity.ConditionProvider conditionProvider);
 
     /**
      * @param colorProvider the background color provider
      * @return this {@link Builder} instance
      */
-    Builder setColorProvider(Entity.ColorProvider colorProvider);
+    Builder colorProvider(Entity.ColorProvider colorProvider);
 
     /**
      * Sets the caption for this entity type
      * @param caption the caption
      * @return this {@link Builder} instance
      */
-    Builder setCaption(String caption);
+    Builder caption(String caption);
 
     /**
      * Sets the bean class to associate with this entity type
      * @param beanClass the bean class
      * @return this {@link Builder} instance
      */
-    Builder setBeanClass(Class beanClass);
+    Builder beanClass(Class beanClass);
 
     /**
      * Specifies whether or not this entity should be regarded as based on a small dataset,
@@ -439,7 +439,7 @@ public interface EntityDefinition extends Serializable {
      * @param smallDataset true if the underlying table is small enough for displaying the contents in a combo box
      * @return this {@link Builder} instance
      */
-    Builder setSmallDataset(boolean smallDataset);
+    Builder smallDataset(boolean smallDataset);
 
     /**
      * Specifies whether or not this entity should be regarded as based on a static dataset, that is,
@@ -448,7 +448,7 @@ public interface EntityDefinition extends Serializable {
      * @param staticData true if the underlying table data is static
      * @return this {@link Builder} instance
      */
-    Builder setStaticData(boolean staticData);
+    Builder staticData(boolean staticData);
 
     /**
      * Sets the read only value, if true then it should not be possible to
@@ -456,21 +456,21 @@ public interface EntityDefinition extends Serializable {
      * @param readOnly true if this entity type should be read only
      * @return this {@link Builder} instance
      */
-    Builder setReadOnly(boolean readOnly);
+    Builder readOnly(boolean readOnly);
 
     /**
      * Sets the primary key generator
      * @param keyGenerator the primary key generator
      * @return this {@link Builder} instance
      */
-    Builder setKeyGenerator(KeyGenerator keyGenerator);
+    Builder keyGenerator(KeyGenerator keyGenerator);
 
     /**
      * Sets the order by clause for this entity type.
      * @param orderBy the order by clause
      * @return this {@link Builder} instance
      */
-    Builder setOrderBy(OrderBy orderBy);
+    Builder orderBy(OrderBy orderBy);
 
     /**
      * Sets the having clause for this entity type, this clause should not
@@ -480,7 +480,7 @@ public interface EntityDefinition extends Serializable {
      * @throws IllegalStateException in case a having clause has already been set,
      * for example automatically, based on grouping properties
      */
-    Builder setHavingClause(String havingClause);
+    Builder havingClause(String havingClause);
 
     /**
      * Sets the group by clause for this entity type, this clause should not
@@ -489,9 +489,9 @@ public interface EntityDefinition extends Serializable {
      * @return this {@link Builder} instance
      * @throws IllegalStateException in case a group by clause has already been set,
      * for example automatically, based on grouping properties
-     * @see ColumnProperty.Builder#setGroupingColumn(boolean)
+     * @see ColumnProperty.Builder#groupingColumn(boolean)
      */
-    Builder setGroupByClause(String groupByClause);
+    Builder groupByClause(String groupByClause);
 
     /**
      * Sets the name of the table to use when selecting entities of this type,
@@ -499,7 +499,7 @@ public interface EntityDefinition extends Serializable {
      * @param selectTableName the name of the table
      * @return this {@link Builder} instance
      */
-    Builder setSelectTableName(String selectTableName);
+    Builder selectTableName(String selectTableName);
 
     /**
      * Sets the select query to use when selecting entities of this type,
@@ -509,27 +509,27 @@ public interface EntityDefinition extends Serializable {
      * @param containsWhereClause true if the given query contains a where clause
      * @return this {@link Builder} instance
      */
-    Builder setSelectQuery(String selectQuery, boolean containsWhereClause);
+    Builder selectQuery(String selectQuery, boolean containsWhereClause);
 
     /**
      * Sets the string provider, that is, the object responsible for providing toString values for this entity type
      * @param stringProvider the string provider
      * @return this {@link Builder} instance
      */
-    Builder setStringProvider(Function<Entity, String> stringProvider);
+    Builder stringProvider(Function<Entity, String> stringProvider);
 
     /**
      * Sets the comparator to use when comparing this entity type to other entities
      * @param comparator the comparator
      * @return this {@link Builder} instance
      */
-    Builder setComparator(Comparator<Entity> comparator);
+    Builder comparator(Comparator<Entity> comparator);
 
     /**
      * Sets the IDs of the properties to use when performing a default lookup for this entity type
      * @param searchPropertyIds the search property IDs
      * @return this {@link Builder} instance
      */
-    Builder setSearchPropertyIds(String... searchPropertyIds);
+    Builder searchPropertyIds(String... searchPropertyIds);
   }
 }

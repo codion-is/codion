@@ -63,7 +63,7 @@ public final class EntityTableCellRenderers {
    * @param property the property
    * @return the table cell renderer
    * @see Entity.ColorProvider
-   * @see EntityDefinition.Builder#setColorProvider(Entity.ColorProvider)
+   * @see EntityDefinition.Builder#colorProvider(Entity.ColorProvider)
    */
   public static EntityTableCellRenderer createTableCellRenderer(final SwingEntityTableModel tableModel, final Property property) {
     if (!Objects.equals(tableModel.getEntityId(), property.getEntityId())) {

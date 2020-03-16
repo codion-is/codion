@@ -53,28 +53,28 @@ public final class ChinookImpl extends Domain implements Chinook {
     define(T_USER, "chinook.user",
             primaryKeyProperty(USER_USERID),
             columnProperty(USER_USERNAME, Types.VARCHAR, "Username")
-                    .setNullable(false)
-                    .setMaxLength(20),
+                    .nullable(false)
+                    .maximumLength(20),
             columnProperty(USER_PASSWORD_HASH, Types.INTEGER, "Password hash"))
-            .setKeyGenerator(automatic("chinook.user"))
-            .setOrderBy(orderBy().ascending(USER_USERNAME))
-            .setStringProvider(new StringProvider(USER_USERNAME))
-            .setSearchPropertyIds(USER_USERNAME)
-            .setCaption("Users");
+            .keyGenerator(automatic("chinook.user"))
+            .orderBy(orderBy().ascending(USER_USERNAME))
+            .stringProvider(new StringProvider(USER_USERNAME))
+            .searchPropertyIds(USER_USERNAME)
+            .caption("Users");
   }
 
   void artist() {
     define(T_ARTIST, "chinook.artist",
             primaryKeyProperty(ARTIST_ARTISTID, Types.BIGINT),
             columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
-                    .setNullable(false)
-                    .setMaxLength(120)
-                    .setPreferredColumnWidth(160))
-            .setKeyGenerator(automatic("chinook.artist"))
-            .setOrderBy(orderBy().ascending(ARTIST_NAME))
-            .setStringProvider(new StringProvider(ARTIST_NAME))
-            .setSearchPropertyIds(ARTIST_NAME)
-            .setCaption("Artists");
+                    .nullable(false)
+                    .maximumLength(120)
+                    .preferredColumnWidth(160))
+            .keyGenerator(automatic("chinook.artist"))
+            .orderBy(orderBy().ascending(ARTIST_NAME))
+            .stringProvider(new StringProvider(ARTIST_NAME))
+            .searchPropertyIds(ARTIST_NAME)
+            .caption("Artists");
   }
 
   void album() {
@@ -82,125 +82,125 @@ public final class ChinookImpl extends Domain implements Chinook {
             primaryKeyProperty(ALBUM_ALBUMID, Types.BIGINT),
             foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
                     columnProperty(ALBUM_ARTISTID, Types.BIGINT))
-                    .setNullable(false)
-                    .setPreferredColumnWidth(160),
+                    .nullable(false)
+                    .preferredColumnWidth(160),
             columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
-                    .setNullable(false)
-                    .setMaxLength(160)
-                    .setPreferredColumnWidth(160),
+                    .nullable(false)
+                    .maximumLength(160)
+                    .preferredColumnWidth(160),
             blobProperty(ALBUM_COVER, "Cover")
-                    .setEagerlyLoaded(true),
+                    .eagerlyLoaded(true),
             derivedProperty(ALBUM_COVER_IMAGE, Types.JAVA_OBJECT, null,
                     new CoverArtImageProvider(), ALBUM_COVER))
-            .setKeyGenerator(automatic("chinook.album"))
-            .setOrderBy(orderBy().ascending(ALBUM_ARTISTID, ALBUM_TITLE))
-            .setStringProvider(new StringProvider(ALBUM_TITLE))
-            .setSearchPropertyIds(ALBUM_TITLE)
-            .setCaption("Albums");
+            .keyGenerator(automatic("chinook.album"))
+            .orderBy(orderBy().ascending(ALBUM_ARTISTID, ALBUM_TITLE))
+            .stringProvider(new StringProvider(ALBUM_TITLE))
+            .searchPropertyIds(ALBUM_TITLE)
+            .caption("Albums");
   }
 
   void employee() {
     define(T_EMPLOYEE, "chinook.employee",
             primaryKeyProperty(EMPLOYEE_EMPLOYEEID, Types.BIGINT),
             columnProperty(EMPLOYEE_LASTNAME, Types.VARCHAR, "Last name")
-                    .setNullable(false)
-                    .setMaxLength(20),
+                    .nullable(false)
+                    .maximumLength(20),
             columnProperty(EMPLOYEE_FIRSTNAME, Types.VARCHAR, "First name")
-                    .setNullable(false)
-                    .setMaxLength(20),
+                    .nullable(false)
+                    .maximumLength(20),
             columnProperty(EMPLOYEE_TITLE, Types.VARCHAR, "Title")
-                    .setMaxLength(30),
+                    .maximumLength(30),
             foreignKeyProperty(EMPLOYEE_REPORTSTO_FK, "Reports to", T_EMPLOYEE,
                     columnProperty(EMPLOYEE_REPORTSTO, Types.BIGINT)),
             columnProperty(EMPLOYEE_BIRTHDATE, Types.DATE, "Birthdate"),
             columnProperty(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate"),
             columnProperty(EMPLOYEE_ADDRESS, Types.VARCHAR, "Address")
-                    .setMaxLength(70),
+                    .maximumLength(70),
             columnProperty(EMPLOYEE_CITY, Types.VARCHAR, "City")
-                    .setMaxLength(40),
+                    .maximumLength(40),
             columnProperty(EMPLOYEE_STATE, Types.VARCHAR, "State")
-                    .setMaxLength(40),
+                    .maximumLength(40),
             columnProperty(EMPLOYEE_COUNTRY, Types.VARCHAR, "Country")
-                    .setMaxLength(40),
+                    .maximumLength(40),
             columnProperty(EMPLOYEE_POSTALCODE, Types.VARCHAR, "Postal code")
-                    .setMaxLength(10),
+                    .maximumLength(10),
             columnProperty(EMPLOYEE_PHONE, Types.VARCHAR, "Phone")
-                    .setMaxLength(24),
+                    .maximumLength(24),
             columnProperty(EMPLOYEE_FAX, Types.VARCHAR, "Fax")
-                    .setMaxLength(24),
+                    .maximumLength(24),
             columnProperty(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
-                    .setMaxLength(60))
-            .setKeyGenerator(automatic("chinook.employee"))
-            .setOrderBy(orderBy().ascending(EMPLOYEE_LASTNAME, EMPLOYEE_FIRSTNAME))
-            .setStringProvider(new StringProvider(EMPLOYEE_LASTNAME)
+                    .maximumLength(60))
+            .keyGenerator(automatic("chinook.employee"))
+            .orderBy(orderBy().ascending(EMPLOYEE_LASTNAME, EMPLOYEE_FIRSTNAME))
+            .stringProvider(new StringProvider(EMPLOYEE_LASTNAME)
                     .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
-            .setSearchPropertyIds(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
-            .setCaption("Employees");
+            .searchPropertyIds(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
+            .caption("Employees");
   }
 
   void customer() {
     define(T_CUSTOMER, "chinook.customer",
             primaryKeyProperty(CUSTOMER_CUSTOMERID, Types.BIGINT),
             columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
-                    .setNullable(false)
-                    .setMaxLength(20),
+                    .nullable(false)
+                    .maximumLength(20),
             columnProperty(CUSTOMER_FIRSTNAME, Types.VARCHAR, "First name")
-                    .setNullable(false)
-                    .setMaxLength(40),
+                    .nullable(false)
+                    .maximumLength(40),
             columnProperty(CUSTOMER_COMPANY, Types.VARCHAR, "Company")
-                    .setMaxLength(80),
+                    .maximumLength(80),
             columnProperty(CUSTOMER_ADDRESS, Types.VARCHAR, "Address")
-                    .setMaxLength(70),
+                    .maximumLength(70),
             columnProperty(CUSTOMER_CITY, Types.VARCHAR, "City")
-                    .setMaxLength(40),
+                    .maximumLength(40),
             columnProperty(CUSTOMER_STATE, Types.VARCHAR, "State")
-                    .setMaxLength(40),
+                    .maximumLength(40),
             columnProperty(CUSTOMER_COUNTRY, Types.VARCHAR, "Country")
-                    .setMaxLength(40),
+                    .maximumLength(40),
             columnProperty(CUSTOMER_POSTALCODE, Types.VARCHAR, "Postal code")
-                    .setMaxLength(10),
+                    .maximumLength(10),
             columnProperty(CUSTOMER_PHONE, Types.VARCHAR, "Phone")
-                    .setMaxLength(24),
+                    .maximumLength(24),
             columnProperty(CUSTOMER_FAX, Types.VARCHAR, "Fax")
-                    .setMaxLength(24),
+                    .maximumLength(24),
             columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
-                    .setNullable(false)
-                    .setMaxLength(60),
+                    .nullable(false)
+                    .maximumLength(60),
             foreignKeyProperty(CUSTOMER_SUPPORTREP_FK, "Support rep", T_EMPLOYEE,
                     columnProperty(CUSTOMER_SUPPORTREPID, Types.BIGINT)))
-            .setKeyGenerator(automatic("chinook.customer"))
-            .setOrderBy(orderBy().ascending(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME))
-            .setStringProvider(new CustomerStringProvider())
-            .setSearchPropertyIds(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
-            .setCaption("Customers");
+            .keyGenerator(automatic("chinook.customer"))
+            .orderBy(orderBy().ascending(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME))
+            .stringProvider(new CustomerStringProvider())
+            .searchPropertyIds(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
+            .caption("Customers");
   }
 
   void genre() {
     define(T_GENRE, "chinook.genre",
             primaryKeyProperty(GENRE_GENREID, Types.BIGINT),
             columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
-                    .setNullable(false)
-                    .setMaxLength(120)
-                    .setPreferredColumnWidth(160))
-            .setKeyGenerator(automatic("chinook.genre"))
-            .setOrderBy(orderBy().ascending(GENRE_NAME))
-            .setStringProvider(new StringProvider(GENRE_NAME))
-            .setSearchPropertyIds(GENRE_NAME)
-            .setSmallDataset(true)
-            .setCaption("Genres");
+                    .nullable(false)
+                    .maximumLength(120)
+                    .preferredColumnWidth(160))
+            .keyGenerator(automatic("chinook.genre"))
+            .orderBy(orderBy().ascending(GENRE_NAME))
+            .stringProvider(new StringProvider(GENRE_NAME))
+            .searchPropertyIds(GENRE_NAME)
+            .smallDataset(true)
+            .caption("Genres");
   }
 
   void mediaType() {
     define(T_MEDIATYPE, "chinook.mediatype",
             primaryKeyProperty(MEDIATYPE_MEDIATYPEID, Types.BIGINT),
             columnProperty(MEDIATYPE_NAME, Types.VARCHAR, "Name")
-                    .setNullable(false)
-                    .setMaxLength(120)
-                    .setPreferredColumnWidth(160))
-            .setKeyGenerator(automatic("chinook.mediatype"))
-            .setStringProvider(new StringProvider(MEDIATYPE_NAME))
-            .setSmallDataset(true)
-            .setCaption("Media types");
+                    .nullable(false)
+                    .maximumLength(120)
+                    .preferredColumnWidth(160))
+            .keyGenerator(automatic("chinook.mediatype"))
+            .stringProvider(new StringProvider(MEDIATYPE_NAME))
+            .smallDataset(true)
+            .caption("Media types");
   }
 
   void track() {
@@ -208,73 +208,73 @@ public final class ChinookImpl extends Domain implements Chinook {
             primaryKeyProperty(TRACK_TRACKID, Types.BIGINT),
             denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUM_FK,
                     getDefinition(T_ALBUM).getProperty(ALBUM_ARTIST_FK), "Artist")
-                    .setPreferredColumnWidth(160),
+                    .preferredColumnWidth(160),
             foreignKeyProperty(TRACK_ALBUM_FK, "Album", T_ALBUM,
                     columnProperty(TRACK_ALBUMID, Types.BIGINT))
-                    .setFetchDepth(2)
-                    .setPreferredColumnWidth(160),
+                    .fetchDepth(2)
+                    .preferredColumnWidth(160),
             columnProperty(TRACK_NAME, Types.VARCHAR, "Name")
-                    .setNullable(false)
-                    .setMaxLength(200)
-                    .setPreferredColumnWidth(160),
+                    .nullable(false)
+                    .maximumLength(200)
+                    .preferredColumnWidth(160),
             foreignKeyProperty(TRACK_GENRE_FK, "Genre", T_GENRE,
                     columnProperty(TRACK_GENREID, Types.BIGINT)),
             columnProperty(TRACK_COMPOSER, Types.VARCHAR, "Composer")
-                    .setMaxLength(220)
-                    .setPreferredColumnWidth(160),
+                    .maximumLength(220)
+                    .preferredColumnWidth(160),
             foreignKeyProperty(TRACK_MEDIATYPE_FK, "Media type", T_MEDIATYPE,
                     columnProperty(TRACK_MEDIATYPEID, Types.BIGINT))
-                    .setNullable(false),
+                    .nullable(false),
             columnProperty(TRACK_MILLISECONDS, Types.INTEGER, "Duration (ms)")
-                    .setNullable(false)
-                    .setFormat(NumberFormat.getIntegerInstance()),
+                    .nullable(false)
+                    .format(NumberFormat.getIntegerInstance()),
             derivedProperty(TRACK_MINUTES_SECONDS_DERIVED, Types.VARCHAR, "Duration (min/sec)",
                     TRACK_MIN_SEC_PROVIDER, TRACK_MILLISECONDS),
             columnProperty(TRACK_BYTES, Types.INTEGER, "Bytes")
-                    .setFormat(NumberFormat.getIntegerInstance()),
+                    .format(NumberFormat.getIntegerInstance()),
             columnProperty(TRACK_UNITPRICE, Types.DECIMAL, "Price")
-                    .setNullable(false)
-                    .setMaximumFractionDigits(2))
-            .setKeyGenerator(automatic("chinook.track"))
-            .setOrderBy(orderBy().ascending(TRACK_NAME))
-            .setStringProvider(new StringProvider(TRACK_NAME))
-            .setSearchPropertyIds(TRACK_NAME)
-            .setCaption("Tracks");
+                    .nullable(false)
+                    .maximumFractionDigits(2))
+            .keyGenerator(automatic("chinook.track"))
+            .orderBy(orderBy().ascending(TRACK_NAME))
+            .stringProvider(new StringProvider(TRACK_NAME))
+            .searchPropertyIds(TRACK_NAME)
+            .caption("Tracks");
   }
 
   void invoice() {
     define(T_INVOICE, "chinook.invoice",
             primaryKeyProperty(INVOICE_INVOICEID, Types.BIGINT, "Invoice no."),
             columnProperty(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
-                    .setReadOnly(true)
-                    .setHidden(true),
+                    .readOnly(true)
+                    .hidden(true),
             foreignKeyProperty(INVOICE_CUSTOMER_FK, "Customer", T_CUSTOMER,
                     columnProperty(INVOICE_CUSTOMERID, Types.BIGINT))
-                    .setNullable(false),
+                    .nullable(false),
             columnProperty(INVOICE_INVOICEDATE, Types.TIMESTAMP, "Date/time")
-                    .setNullable(false),
+                    .nullable(false),
             columnProperty(INVOICE_BILLINGADDRESS, Types.VARCHAR, "Billing address")
-                    .setMaxLength(70),
+                    .maximumLength(70),
             columnProperty(INVOICE_BILLINGCITY, Types.VARCHAR, "Billing city")
-                    .setMaxLength(40),
+                    .maximumLength(40),
             columnProperty(INVOICE_BILLINGSTATE, Types.VARCHAR, "Billing state")
-                    .setMaxLength(40),
+                    .maximumLength(40),
             columnProperty(INVOICE_BILLINGCOUNTRY, Types.VARCHAR, "Billing country")
-                    .setMaxLength(40),
+                    .maximumLength(40),
             columnProperty(INVOICE_BILLINGPOSTALCODE, Types.VARCHAR, "Billing postal code")
-                    .setMaxLength(10),
+                    .maximumLength(10),
             columnProperty(INVOICE_TOTAL, Types.DECIMAL, "Total")
-                    .setMaximumFractionDigits(2)
-                    .setHidden(true),
+                    .maximumFractionDigits(2)
+                    .hidden(true),
             subqueryProperty(INVOICE_TOTAL_SUB, Types.DECIMAL, "Calculated total",
                     "select sum(unitprice * quantity) from chinook.invoiceline " +
                             "where invoiceid = invoice.invoiceid")
-                    .setMaximumFractionDigits(2))
-            .setKeyGenerator(automatic("chinook.invoice"))
-            .setOrderBy(orderBy().ascending(INVOICE_CUSTOMERID).descending(INVOICE_INVOICEDATE))
-            .setStringProvider(new StringProvider(INVOICE_INVOICEID))
-            .setSearchPropertyIds(INVOICE_INVOICEID_AS_STRING)
-            .setCaption("Invoices");
+                    .maximumFractionDigits(2))
+            .keyGenerator(automatic("chinook.invoice"))
+            .orderBy(orderBy().ascending(INVOICE_CUSTOMERID).descending(INVOICE_INVOICEDATE))
+            .stringProvider(new StringProvider(INVOICE_INVOICEID))
+            .searchPropertyIds(INVOICE_INVOICEID_AS_STRING)
+            .caption("Invoices");
   }
 
   void invoiceLine() {
@@ -282,60 +282,60 @@ public final class ChinookImpl extends Domain implements Chinook {
             primaryKeyProperty(INVOICELINE_INVOICELINEID, Types.BIGINT),
             foreignKeyProperty(INVOICELINE_INVOICE_FK, "Invoice", T_INVOICE,
                     columnProperty(INVOICELINE_INVOICEID, Types.BIGINT))
-                    .setFetchDepth(0)
-                    .setNullable(false),
+                    .fetchDepth(0)
+                    .nullable(false),
             foreignKeyProperty(INVOICELINE_TRACK_FK, "Track", T_TRACK,
                     columnProperty(INVOICELINE_TRACKID, Types.BIGINT))
-                    .setNullable(false)
-                    .setPreferredColumnWidth(100),
+                    .nullable(false)
+                    .preferredColumnWidth(100),
             denormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACK_FK,
                     getDefinition(T_TRACK).getProperty(TRACK_UNITPRICE), "Unit price")
-                    .setNullable(false),
+                    .nullable(false),
             columnProperty(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
-                    .setNullable(false),
+                    .nullable(false),
             derivedProperty(INVOICELINE_TOTAL, Types.DOUBLE, "Total", INVOICELINE_TOTAL_PROVIDER,
                     INVOICELINE_QUANTITY, INVOICELINE_UNITPRICE))
-            .setKeyGenerator(automatic("chinook.invoiceline"))
-            .setCaption("Invoice lines");
+            .keyGenerator(automatic("chinook.invoiceline"))
+            .caption("Invoice lines");
   }
 
   void playlist() {
     define(T_PLAYLIST, "chinook.playlist",
             primaryKeyProperty(PLAYLIST_PLAYLISTID, Types.BIGINT),
             columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
-                    .setNullable(false)
-                    .setMaxLength(120)
-                    .setPreferredColumnWidth(160))
-            .setKeyGenerator(automatic("chinook.playlist"))
-            .setOrderBy(orderBy().ascending(PLAYLIST_NAME))
-            .setStringProvider(new StringProvider(PLAYLIST_NAME))
-            .setSearchPropertyIds(PLAYLIST_NAME)
-            .setCaption("Playlists");
+                    .nullable(false)
+                    .maximumLength(120)
+                    .preferredColumnWidth(160))
+            .keyGenerator(automatic("chinook.playlist"))
+            .orderBy(orderBy().ascending(PLAYLIST_NAME))
+            .stringProvider(new StringProvider(PLAYLIST_NAME))
+            .searchPropertyIds(PLAYLIST_NAME)
+            .caption("Playlists");
   }
 
   void playlistTrack() {
     define(T_PLAYLISTTRACK, "chinook.playlisttrack",
             foreignKeyProperty(PLAYLISTTRACK_PLAYLIST_FK, "Playlist", T_PLAYLIST,
                     primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID, Types.BIGINT)
-                            .setUpdatable(true))
-                    .setNullable(false)
-                    .setPreferredColumnWidth(120),
+                            .updatable(true))
+                    .nullable(false)
+                    .preferredColumnWidth(120),
             denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
                     getDefinition(T_ALBUM).getProperty(ALBUM_ARTIST_FK), "Artist")
-                    .setPreferredColumnWidth(160),
+                    .preferredColumnWidth(160),
             foreignKeyProperty(PLAYLISTTRACK_TRACK_FK, "Track", T_TRACK,
                     primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.BIGINT)
-                            .setPrimaryKeyIndex(1)
-                            .setUpdatable(true))
-                    .setFetchDepth(3)
-                    .setNullable(false)
-                    .setPreferredColumnWidth(160),
+                            .primaryKeyIndex(1)
+                            .updatable(true))
+                    .fetchDepth(3)
+                    .nullable(false)
+                    .preferredColumnWidth(160),
             denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACK_FK,
                     getDefinition(T_TRACK).getProperty(TRACK_ALBUM_FK), "Album")
-                    .setPreferredColumnWidth(160))
-            .setStringProvider(new StringProvider(PLAYLISTTRACK_PLAYLIST_FK)
+                    .preferredColumnWidth(160))
+            .stringProvider(new StringProvider(PLAYLISTTRACK_PLAYLIST_FK)
                     .addText(" - ").addValue(PLAYLISTTRACK_TRACK_FK))
-            .setCaption("Playlist tracks");
+            .caption("Playlist tracks");
   }
 
   void dbOperations() {

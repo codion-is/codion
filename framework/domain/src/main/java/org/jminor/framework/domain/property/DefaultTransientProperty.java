@@ -48,7 +48,7 @@ class DefaultTransientProperty extends DefaultProperty implements TransientPrope
     }
 
     @Override
-    public TransientProperty.Builder setModifiesEntity(final boolean modifiesEntity) {
+    public TransientProperty.Builder modifiesEntity(final boolean modifiesEntity) {
       transientProperty.modifiesEntity = modifiesEntity;
       return this;
     }

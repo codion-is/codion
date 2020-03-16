@@ -50,15 +50,15 @@ public final class Store extends Domain {
     define(T_CUSTOMER,
             primaryKeyProperty(CUSTOMER_ID, Types.VARCHAR),
             columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
-                    .setNullable(false).setMaxLength(40),
+                    .nullable(false).maximumLength(40),
             columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
-                    .setNullable(false).setMaxLength(40),
+                    .nullable(false).maximumLength(40),
             columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email"),
             columnProperty(CUSTOMER_IS_ACTIVE, Types.BOOLEAN, "Is active")
-                    .setColumnHasDefaultValue(true).setDefaultValue(true))
-            .setKeyGenerator(new UUIDKeyGenerator())
-            .setStringProvider(new CustomerToString())
-            .setCaption("Customer");
+                    .columnHasDefaultValue(true).defaultValue(true))
+            .keyGenerator(new UUIDKeyGenerator())
+            .stringProvider(new CustomerToString())
+            .caption("Customer");
     // end::customer[]
   }
 
@@ -67,16 +67,16 @@ public final class Store extends Domain {
     define(T_ADDRESS,
             primaryKeyProperty(ADDRESS_ID, Types.INTEGER),
             columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street")
-                    .setNullable(false).setMaxLength(120),
+                    .nullable(false).maximumLength(120),
             columnProperty(ADDRESS_CITY, Types.VARCHAR, "City")
-                    .setNullable(false).setMaxLength(50),
+                    .nullable(false).maximumLength(50),
             columnProperty(ADDRESS_VALID, Types.BOOLEAN, "Valid")
-                    .setColumnHasDefaultValue(true).setNullable(false))
-            .setStringProvider(new StringProvider(ADDRESS_STREET)
+                    .columnHasDefaultValue(true).nullable(false))
+            .stringProvider(new StringProvider(ADDRESS_STREET)
                     .addText(", ").addValue(ADDRESS_CITY))
-            .setKeyGenerator(automatic(T_ADDRESS))
-            .setSmallDataset(true)
-            .setCaption("Address");
+            .keyGenerator(automatic(T_ADDRESS))
+            .smallDataset(true)
+            .caption("Address");
     // end::address[]
   }
 
@@ -86,12 +86,12 @@ public final class Store extends Domain {
             primaryKeyProperty(CUSTOMER_ADDRESS_ID),
             foreignKeyProperty(CUSTOMER_ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
                     columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID, Types.VARCHAR))
-                    .setNullable(false),
+                    .nullable(false),
             foreignKeyProperty(CUSTOMER_ADDRESS_ADDRESS_FK, "Address", T_ADDRESS,
                     columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID))
-                    .setNullable(false))
-            .setKeyGenerator(automatic(T_CUSTOMER_ADDRESS))
-            .setCaption("Customer address");
+                    .nullable(false))
+            .keyGenerator(automatic(T_CUSTOMER_ADDRESS))
+            .caption("Customer address");
     // end::customerAddress[]
   }
 

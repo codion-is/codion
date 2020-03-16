@@ -629,7 +629,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   private static void initializeForeignKeyProperty(final String entityId, final Map<String, Property> propertyMap,
                                                    final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
-    for (final ColumnProperty.Builder propertyBuilder : foreignKeyPropertyBuilder.getColmnPropertyBuilders()) {
+    for (final ColumnProperty.Builder propertyBuilder : foreignKeyPropertyBuilder.getColumnPropertyBuilders()) {
       if (!(propertyBuilder.get() instanceof MirrorProperty)) {
         validateAndAddProperty(propertyBuilder, entityId, propertyMap);
       }
@@ -640,7 +640,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
                                              final Map<String, Property> propertyMap) {
     final Property property = propertyBuilder.get();
     checkIfUniquePropertyId(property, entityId, propertyMap);
-    propertyBuilder.setEntityId(entityId);
+    propertyBuilder.entityId(entityId);
     propertyMap.put(property.getPropertyId(), property);
   }
 
@@ -797,7 +797,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder setDomainId(final String domainId) {
+    public Builder domainId(final String domainId) {
       rejectNullOrEmpty(domainId, "domainId");
       if (definition.domainId != null) {
         throw new IllegalStateException("Domain id has already been set: " + definition.domainId);
@@ -807,7 +807,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder addConditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
+    public Builder conditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
       rejectNullOrEmpty(conditionId, "contitionId");
       requireNonNull(conditionProvider, "conditionProvider");
       if (definition.conditionProviders == null) {
@@ -821,44 +821,44 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder setCaption(final String caption) {
+    public Builder caption(final String caption) {
       definition.caption = requireNonNull(caption, "caption");
       return this;
     }
 
     @Override
-    public Builder setBeanClass(final Class beanClass) {
+    public Builder beanClass(final Class beanClass) {
       definition.beanClass = requireNonNull(beanClass, "beanClass");
       return this;
     }
 
     @Override
-    public Builder setSmallDataset(final boolean smallDataset) {
+    public Builder smallDataset(final boolean smallDataset) {
       definition.smallDataset = smallDataset;
       return this;
     }
 
     @Override
-    public Builder setStaticData(final boolean staticData) {
+    public Builder staticData(final boolean staticData) {
       definition.staticData = staticData;
       return this;
     }
 
     @Override
-    public Builder setReadOnly(final boolean readOnly) {
+    public Builder readOnly(final boolean readOnly) {
       definition.readOnly = readOnly;
       return this;
     }
 
     @Override
-    public Builder setKeyGenerator(final KeyGenerator keyGenerator) {
+    public Builder keyGenerator(final KeyGenerator keyGenerator) {
       definition.keyGenerator = requireNonNull(keyGenerator, "keyGenerator");
       definition.keyGenerated = true;
       return this;
     }
 
     @Override
-    public Builder setOrderBy(final OrderBy orderBy) {
+    public Builder orderBy(final OrderBy orderBy) {
       requireNonNull(orderBy, "orderBy");
       if (definition.orderBy != null) {
         throw new IllegalStateException("Order by has already been set: " + definition.orderBy);
@@ -868,7 +868,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder setGroupByClause(final String groupByClause) {
+    public Builder groupByClause(final String groupByClause) {
       requireNonNull(groupByClause, "groupByClause");
       if (definition.groupByClause != null) {
         throw new IllegalStateException("Group by clause has already been set: " + definition.groupByClause);
@@ -878,7 +878,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder setHavingClause(final String havingClause) {
+    public Builder havingClause(final String havingClause) {
       requireNonNull(havingClause, "havingClause");
       if (definition.havingClause != null) {
         throw new IllegalStateException("Having clause has already been set: " + definition.havingClause);
@@ -888,32 +888,32 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder setSelectTableName(final String selectTableName) {
+    public Builder selectTableName(final String selectTableName) {
       definition.selectTableName = requireNonNull(selectTableName, "selectTableName");
       return this;
     }
 
     @Override
-    public Builder setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
+    public Builder selectQuery(final String selectQuery, final boolean containsWhereClause) {
       definition.selectQuery = requireNonNull(selectQuery, "selectQuery");
       definition.selectQueryContainsWhereClause = containsWhereClause;
       return this;
     }
 
     @Override
-    public Builder setComparator(final Comparator<Entity> comparator) {
+    public Builder comparator(final Comparator<Entity> comparator) {
       definition.comparator = requireNonNull(comparator, "comparator");
       return this;
     }
 
     @Override
-    public Builder setStringProvider(final Function<Entity, String> stringProvider) {
+    public Builder stringProvider(final Function<Entity, String> stringProvider) {
       definition.stringProvider = requireNonNull(stringProvider, "stringProvider");
       return this;
     }
 
     @Override
-    public Builder setSearchPropertyIds(final String... searchPropertyIds) {
+    public Builder searchPropertyIds(final String... searchPropertyIds) {
       requireNonNull(searchPropertyIds, "searchPropertyIds");
       for (final String propertyId : searchPropertyIds) {
         final Property property = definition.propertyMap.get(propertyId);
@@ -931,13 +931,13 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder setColorProvider(final Entity.ColorProvider colorProvider) {
+    public Builder colorProvider(final Entity.ColorProvider colorProvider) {
       definition.colorProvider = requireNonNull(colorProvider, "colorProvider");
       return this;
     }
 
     @Override
-    public Builder setValidator(final Entity.Validator validator) {
+    public Builder validator(final Entity.Validator validator) {
       definition.validator = requireNonNull(validator, "validator");
       return this;
     }

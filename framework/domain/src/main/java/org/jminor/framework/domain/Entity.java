@@ -482,7 +482,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws NullValidationException in case the property value is null and the property is not nullable
-     * @see Property.Builder#setNullable(boolean)
+     * @see Property.Builder#nullable(boolean)
      * @see Property#isNullable()
      */
     void performNullValidation(Entity entity, Property property) throws NullValidationException;
@@ -492,8 +492,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws RangeValidationException in case the value of the given property is outside the legal range
-     * @see Property.Builder#setMax(double)
-     * @see Property.Builder#setMin(double)
+     * @see Property.Builder#maximumValue(double)
+     * @see Property.Builder#mininumValue(double)
      */
     void performRangeValidation(Entity entity, Property property) throws RangeValidationException;
 
@@ -502,7 +502,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws LengthValidationException in case the length of the value of the given property
-     * @see Property.Builder#setMaxLength(int)
+     * @see Property.Builder#maximumLength(int)
      */
     void performLengthValidation(Entity entity, Property property) throws LengthValidationException;
 

@@ -61,33 +61,33 @@ public interface ForeignKeyProperty extends Property {
     ForeignKeyProperty get();
 
     /**
-     * @return the builders for the underlying column properties
+     * @return the builders for the underlying column properties comprising this foreign key
      */
-    List<ColumnProperty.Builder> getColmnPropertyBuilders();
+    List<ColumnProperty.Builder> getColumnPropertyBuilders();
 
     /**
      * @param fetchDepth the default query fetch depth for this foreign key
      * @return this ForeignKeyProperty instance
      */
-    ForeignKeyProperty.Builder setFetchDepth(int fetchDepth);
+    ForeignKeyProperty.Builder fetchDepth(int fetchDepth);
 
     /**
      * @param softReference true if this foreign key is not based on a physical (table) foreign key
      * and should not prevent deletion
      * @return this ForeignKeyProperty instance
      */
-    ForeignKeyProperty.Builder setSoftReference(boolean softReference);
+    ForeignKeyProperty.Builder softReference(boolean softReference);
 
     /**
      * @param insertable specifies whether this property should be included during insert operations
      * @return this instance
      */
-    ForeignKeyProperty.Builder setInsertable(boolean insertable);
+    ForeignKeyProperty.Builder insertable(boolean insertable);
 
     /**
      * @param updatable specifies whether this property should be included during update operations
      * @return this instance
      */
-    ForeignKeyProperty.Builder setUpdatable(boolean updatable);
+    ForeignKeyProperty.Builder updatable(boolean updatable);
   }
 }

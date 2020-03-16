@@ -293,7 +293,7 @@ public final class DefaultEntityEditModelTest {
       assertEquals(50d, e.getValue());
       final Property property = DOMAIN.getDefinition(TestDomain.T_EMP).getProperty(e.getPropertyId());
       assertTrue(e.getMessage().contains(property.toString()));
-      assertTrue(e.getMessage().contains(property.getMin().toString()));
+      assertTrue(e.getMessage().contains(property.getMinimumValue().toString()));
     }
 
     employeeEditModel.setEntity(null);

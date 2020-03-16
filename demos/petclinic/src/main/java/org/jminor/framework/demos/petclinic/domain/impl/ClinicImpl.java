@@ -28,45 +28,45 @@ public final class ClinicImpl extends Domain {
     define(T_VET,
             primaryKeyProperty(VET_ID),
             columnProperty(VET_FIRST_NAME, Types.VARCHAR, "First name")
-                    .setMaxLength(30)
-                    .setNullable(false),
+                    .maximumLength(30)
+                    .nullable(false),
             columnProperty(VET_LAST_NAME, Types.VARCHAR, "Last name")
-                    .setMaxLength(30)
-                    .setNullable(false))
-            .setKeyGenerator(automatic(T_VET))
-            .setCaption("Vets")
-            .setSearchPropertyIds(VET_FIRST_NAME, VET_LAST_NAME)
-            .setStringProvider(new StringProvider(VET_LAST_NAME)
+                    .maximumLength(30)
+                    .nullable(false))
+            .keyGenerator(automatic(T_VET))
+            .caption("Vets")
+            .searchPropertyIds(VET_FIRST_NAME, VET_LAST_NAME)
+            .stringProvider(new StringProvider(VET_LAST_NAME)
                     .addText(", ").addValue(VET_FIRST_NAME))
-            .setOrderBy(orderBy().ascending(VET_LAST_NAME, VET_FIRST_NAME))
-            .setSmallDataset(true);
+            .orderBy(orderBy().ascending(VET_LAST_NAME, VET_FIRST_NAME))
+            .smallDataset(true);
   }
 
   private void specialty() {
     define(T_SPECIALTY,
             primaryKeyProperty(SPECIALTY_ID),
             columnProperty(SPECIALTY_NAME, Types.VARCHAR, "Name")
-                    .setMaxLength(80)
-                    .setNullable(false))
-            .setKeyGenerator(automatic(T_SPECIALTY))
-            .setCaption("Specialties")
-            .setSearchPropertyIds(SPECIALTY_NAME)
-            .setStringProvider(new StringProvider(SPECIALTY_NAME))
-            .setSmallDataset(true);
+                    .maximumLength(80)
+                    .nullable(false))
+            .keyGenerator(automatic(T_SPECIALTY))
+            .caption("Specialties")
+            .searchPropertyIds(SPECIALTY_NAME)
+            .stringProvider(new StringProvider(SPECIALTY_NAME))
+            .smallDataset(true);
   }
 
   private void vetSpecialty() {
     define(T_VET_SPECIALTY,
             foreignKeyProperty(VET_SPECIALTY_VET_FK, "Vet", T_VET,
                     columnProperty(VET_SPECIALTY_VET)
-                            .setPrimaryKeyIndex(0))
-                    .setNullable(false),
+                            .primaryKeyIndex(0))
+                    .nullable(false),
             foreignKeyProperty(VET_SPECIALTY_SPECIALTY_FK, "Specialty", T_SPECIALTY,
                     primaryKeyProperty(VET_SPECIALTY_SPECIALTY)
-                            .setPrimaryKeyIndex(1))
-                    .setNullable(false))
-            .setCaption("Vet specialties")
-            .setStringProvider(new StringProvider(VET_SPECIALTY_VET_FK).addText(" - ")
+                            .primaryKeyIndex(1))
+                    .nullable(false))
+            .caption("Vet specialties")
+            .stringProvider(new StringProvider(VET_SPECIALTY_VET_FK).addText(" - ")
                     .addValue(VET_SPECIALTY_SPECIALTY_FK));
   }
 
@@ -74,57 +74,57 @@ public final class ClinicImpl extends Domain {
     define(T_PET_TYPE,
             primaryKeyProperty(PET_TYPE_ID),
             columnProperty(PET_TYPE_NAME, Types.VARCHAR, "Name")
-                    .setMaxLength(80)
-                    .setNullable(false))
-            .setKeyGenerator(automatic(T_PET_TYPE))
-            .setCaption("Pet types")
-            .setSearchPropertyIds(PET_TYPE_NAME)
-            .setStringProvider(new StringProvider(PET_TYPE_NAME))
-            .setOrderBy(orderBy().ascending(PET_TYPE_NAME))
-            .setSmallDataset(true);
+                    .maximumLength(80)
+                    .nullable(false))
+            .keyGenerator(automatic(T_PET_TYPE))
+            .caption("Pet types")
+            .searchPropertyIds(PET_TYPE_NAME)
+            .stringProvider(new StringProvider(PET_TYPE_NAME))
+            .orderBy(orderBy().ascending(PET_TYPE_NAME))
+            .smallDataset(true);
   }
 
   private void owner() {
     define(T_OWNER,
             primaryKeyProperty(OWNER_ID),
             columnProperty(OWNER_FIRST_NAME, Types.VARCHAR, "First name")
-                    .setMaxLength(30)
-                    .setNullable(false),
+                    .maximumLength(30)
+                    .nullable(false),
             columnProperty(OWNER_LAST_NAME, Types.VARCHAR, "Last name")
-                    .setMaxLength(30)
-                    .setNullable(false),
+                    .maximumLength(30)
+                    .nullable(false),
             columnProperty(OWNER_ADDRESS, Types.VARCHAR, "Address")
-                    .setMaxLength(255),
+                    .maximumLength(255),
             columnProperty(OWNER_CITY, Types.VARCHAR, "City")
-                    .setMax(80),
+                    .maximumValue(80),
             columnProperty(OWNER_TELEPHONE, Types.VARCHAR, "Telephone")
-                    .setMaxLength(20))
-            .setKeyGenerator(automatic(T_OWNER))
-            .setCaption("Owners")
-            .setSearchPropertyIds(OWNER_FIRST_NAME, OWNER_LAST_NAME)
-            .setStringProvider(new StringProvider(OWNER_LAST_NAME).addText(", ")
+                    .maximumLength(20))
+            .keyGenerator(automatic(T_OWNER))
+            .caption("Owners")
+            .searchPropertyIds(OWNER_FIRST_NAME, OWNER_LAST_NAME)
+            .stringProvider(new StringProvider(OWNER_LAST_NAME).addText(", ")
                     .addValue(OWNER_FIRST_NAME))
-            .setOrderBy(orderBy().ascending(OWNER_LAST_NAME, OWNER_FIRST_NAME));
+            .orderBy(orderBy().ascending(OWNER_LAST_NAME, OWNER_FIRST_NAME));
   }
 
   private void pet() {
     define(T_PET,
             primaryKeyProperty(PET_ID),
             columnProperty(PET_NAME, Types.VARCHAR, "Name")
-                    .setMaxLength(30)
-                    .setNullable(false),
+                    .maximumLength(30)
+                    .nullable(false),
             columnProperty(PET_BIRTH_DATE, Types.DATE, "Birth date"),
             foreignKeyProperty(PET_PET_TYPE_FK, "Pet type", T_PET_TYPE,
                     columnProperty(PET_PET_TYPE_ID))
-                    .setNullable(false),
+                    .nullable(false),
             foreignKeyProperty(PET_OWNER_FK, "Owner", T_OWNER,
                     columnProperty(PET_OWNER_ID))
-                    .setNullable(false))
-            .setKeyGenerator(automatic(T_PET))
-            .setCaption("Pets")
-            .setSearchPropertyIds(PET_NAME)
-            .setStringProvider(new StringProvider(PET_NAME))
-            .setOrderBy(orderBy().ascending(PET_NAME));
+                    .nullable(false))
+            .keyGenerator(automatic(T_PET))
+            .caption("Pets")
+            .searchPropertyIds(PET_NAME)
+            .stringProvider(new StringProvider(PET_NAME))
+            .orderBy(orderBy().ascending(PET_NAME));
   }
 
   private void visit() {
@@ -132,13 +132,13 @@ public final class ClinicImpl extends Domain {
             primaryKeyProperty(VISIT_ID),
             foreignKeyProperty(VISIT_PET_FK, "Pet", T_PET,
                     columnProperty(VISIT_PET_ID))
-                    .setNullable(false),
+                    .nullable(false),
             columnProperty(VISIT_DATE, Types.DATE, "Date")
-                    .setNullable(false),
+                    .nullable(false),
             columnProperty(VISIT_DESCRIPTION, Types.VARCHAR, "Description")
-                    .setMaxLength(255))
-            .setKeyGenerator(automatic(T_VISIT))
-            .setOrderBy(orderBy().ascending(VISIT_PET_ID).descending(VISIT_DATE))
-            .setCaption("Visits");
+                    .maximumLength(255))
+            .keyGenerator(automatic(T_VISIT))
+            .orderBy(orderBy().ascending(VISIT_PET_ID).descending(VISIT_DATE))
+            .caption("Visits");
   }
 }

@@ -199,8 +199,8 @@ public class DomainTest {
     final String propertyId3 = "id3";
     domain.define(entityId,
             Properties.primaryKeyProperty(propertyId1),
-            Properties.primaryKeyProperty(propertyId2).setPrimaryKeyIndex(1),
-            Properties.primaryKeyProperty(propertyId3).setPrimaryKeyIndex(2).setNullable(true));
+            Properties.primaryKeyProperty(propertyId2).primaryKeyIndex(1),
+            Properties.primaryKeyProperty(propertyId3).primaryKeyIndex(2).nullable(true));
 
     final Entity.Key key = domain.key(entityId);
     assertEquals(0, key.hashCode());
@@ -250,9 +250,9 @@ public class DomainTest {
   @Test
   public void keyWithSameIndex() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("keyWithSameIndex",
-            Properties.primaryKeyProperty("1").setPrimaryKeyIndex(0),
-            Properties.primaryKeyProperty("2").setPrimaryKeyIndex(1),
-            Properties.primaryKeyProperty("3").setPrimaryKeyIndex(1)));
+            Properties.primaryKeyProperty("1").primaryKeyIndex(0),
+            Properties.primaryKeyProperty("2").primaryKeyIndex(1),
+            Properties.primaryKeyProperty("3").primaryKeyIndex(1)));
   }
 
   @Test
@@ -549,7 +549,7 @@ public class DomainTest {
     assertThrows(IllegalArgumentException.class, () -> domain.define("spids",
             Properties.primaryKeyProperty("1"),
             Properties.columnProperty("test"))
-            .setSearchPropertyIds("invalid"));
+            .searchPropertyIds("invalid"));
   }
 
   @Test
@@ -557,19 +557,19 @@ public class DomainTest {
     String entityId = "hasSingleIntegerPrimaryKey";
     domain.define(entityId,
             Properties.columnProperty("test")
-                    .setPrimaryKeyIndex(0));
+                    .primaryKeyIndex(0));
     assertTrue(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
     entityId = "hasSingleIntegerPrimaryKey2";
     domain.define(entityId,
             Properties.columnProperty("test")
-                    .setPrimaryKeyIndex(0),
+                    .primaryKeyIndex(0),
             Properties.columnProperty("test2")
-                    .setPrimaryKeyIndex(1));
+                    .primaryKeyIndex(1));
     assertFalse(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
     entityId = "hasSingleIntegerPrimaryKey3";
     domain.define(entityId,
             Properties.columnProperty("test", Types.VARCHAR)
-                    .setPrimaryKeyIndex(0));
+                    .primaryKeyIndex(0));
     assertFalse(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
   }
 
@@ -577,7 +577,7 @@ public class DomainTest {
   public void havingClause() {
     final String havingClause = "p1 > 1";
     domain.define("entityId3",
-            Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
+            Properties.primaryKeyProperty("p0")).havingClause(havingClause);
     assertEquals(havingClause, domain.getDefinition("entityId3").getHavingClause());
   }
 
@@ -632,13 +632,13 @@ public class DomainTest {
   @Test
   public void conditionProvider() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("nullConditionProvider1",
-            Properties.primaryKeyProperty("id")).addConditionProvider(null, (propetyIds, values) -> null));
+            Properties.primaryKeyProperty("id")).conditionProvider(null, (propetyIds, values) -> null));
     assertThrows(NullPointerException.class, () -> domain.define("nullConditionProvider2",
-            Properties.primaryKeyProperty("id")).addConditionProvider("id", null));
+            Properties.primaryKeyProperty("id")).conditionProvider("id", null));
     assertThrows(IllegalStateException.class, () -> domain.define("nullConditionProvider3",
             Properties.primaryKeyProperty("id"))
-            .addConditionProvider("id", (propetyIds, values) -> null)
-            .addConditionProvider("id", (propetyIds, values) -> null));
+            .conditionProvider("id", (propetyIds, values) -> null)
+            .conditionProvider("id", (propetyIds, values) -> null));
   }
 
   @Test

@@ -75,7 +75,7 @@ public class EntityComponentValues {
       case Types.CHAR:
         return TextValues.textValue(property.getCaption(), (String) initialValue, 1);
       case Types.VARCHAR:
-        return TextValues.textValue(property.getCaption(), (String) initialValue, property.getMaxLength());
+        return TextValues.textValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
       case Types.BLOB:
         return FileValues.fileInputValue();
       default:

@@ -28,6 +28,6 @@ public interface BlobProperty extends ColumnProperty {
      * @param eagerlyLoaded if true then this value is loaded automatically when entities are selected
      * @return this instance
      */
-    BlobProperty.Builder setEagerlyLoaded(boolean eagerlyLoaded);
+    BlobProperty.Builder eagerlyLoaded(boolean eagerlyLoaded);
   }
 }

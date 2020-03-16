@@ -114,8 +114,8 @@ The above assumes the below master definition.
 [source,java]
 ----
 define(T_MASTER,
-    columnProperty(ID_1).setPrimaryKeyIndex(0),
-    columnProperty(ID_2).setPrimaryKeyIndex(1)
+    columnProperty(ID_1).primaryKeyIndex(0),
+    columnProperty(ID_2).primaryKeyIndex(1)
     ...
 );
 ----
@@ -249,10 +249,10 @@ For auto-increment columns the **valueSource** parameter should be the table nam
 [source,java]
 ----
 //Auto increment column in the 'store.customer' table
-.setKeyGenerator(automatic("store.customer"));
+.keyGenerator(automatic("store.customer"));
 
 //Trigger and sequence named 'store.customer_seq'
-.setKeyGenerator(automatic("store.customer_seq"));
+.keyGenerator(automatic("store.customer_seq"));
 ----
 
 === Sequence
@@ -271,7 +271,7 @@ The framework can select new primary key values from a query.
 [source,java]
 ----
 //Using a query returning the new value
-.setKeyGenerator(queried(
+.keyGenerator(queried(
     "select new_id
      from store.id_values
      where table_name = 'store.customer'"));
@@ -283,7 +283,7 @@ The framework can automatically increment the primary key value by selecting the
 
 [source,java]
 ----
-.setKeyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID))
+.keyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID))
 ----
 
 === Custom

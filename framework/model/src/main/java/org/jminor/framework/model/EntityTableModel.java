@@ -200,7 +200,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param row the row for which to retrieve the background color
    * @param property the property for which to retrieve the background color
    * @return an Object representing the background color for this row and property, specified by the row entity
-   * @see EntityDefinition.Builder#setColorProvider(Entity.ColorProvider)
+   * @see EntityDefinition.Builder#colorProvider(Entity.ColorProvider)
    */
   Object getPropertyBackgroundColor(int row, Property property);
 

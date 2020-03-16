@@ -481,7 +481,7 @@ public final class EntityInputComponents {
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField field = createTextField(property, value, null, updateOnKeystroke);
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
-    panel.setMaxLength(property.getMaxLength());
+    panel.setMaxLength(property.getMaximumLength());
 
     return panel;
   }
@@ -534,8 +534,8 @@ public final class EntityInputComponents {
     final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
-    if (property.getMaxLength() > 0) {
-      ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new LengthDocumentFilter(property.getMaxLength()));
+    if (property.getMaximumLength() > 0) {
+      ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new LengthDocumentFilter(property.getMaximumLength()));
     }
     linkToEnabledState(enabledState, textArea);
 
@@ -685,8 +685,8 @@ public final class EntityInputComponents {
     final JTextField field = createTextField(property, formatMaskString, valueContainsLiteralCharacters);
     linkToEnabledState(enabledState, field);
     field.setToolTipText(property.getDescription());
-    if (property.getMaxLength() > 0 && field.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) field.getDocument()).setMaxLength(property.getMaxLength());
+    if (property.getMaximumLength() > 0 && field.getDocument() instanceof SizedDocument) {
+      ((SizedDocument) field.getDocument()).setMaxLength(property.getMaximumLength());
     }
 
     return field;
@@ -723,8 +723,8 @@ public final class EntityInputComponents {
 
   private static JTextField initializeDecimalField(final Property property) {
     final DecimalField field = new DecimalField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
-    if (property.getMin() != null && property.getMax() != null) {
-      field.setRange(Math.min(property.getMin(), 0), property.getMax());
+    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
+      field.setRange(Math.min(property.getMinimumValue(), 0), property.getMaximumValue());
     }
 
     return field;
@@ -732,8 +732,8 @@ public final class EntityInputComponents {
 
   private static JTextField initializeIntField(final Property property) {
     final IntegerField field = new IntegerField(cloneFormat((NumberFormat) property.getFormat()));
-    if (property.getMin() != null && property.getMax() != null) {
-      field.setRange(property.getMin(), property.getMax());
+    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
+      field.setRange(property.getMinimumValue(), property.getMaximumValue());
     }
 
     return field;
@@ -741,8 +741,8 @@ public final class EntityInputComponents {
 
   private static JTextField initializeLongField(final Property property) {
     final LongField field = new LongField(cloneFormat((NumberFormat) property.getFormat()));
-    if (property.getMin() != null && property.getMax() != null) {
-      field.setRange(property.getMin(), property.getMax());
+    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
+      field.setRange(property.getMinimumValue(), property.getMaximumValue());
     }
 
     return field;

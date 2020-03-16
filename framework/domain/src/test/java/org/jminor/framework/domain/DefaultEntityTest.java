@@ -66,7 +66,7 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, null, invalidTypeOriginalValues));
 
-    final Property invalid = Properties.columnProperty("invalid", Types.INTEGER).setEntityId(TestDomain.T_MASTER).get();
+    final Property invalid = Properties.columnProperty("invalid", Types.INTEGER).entityId(TestDomain.T_MASTER).get();
     final Map<Property, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
 
@@ -664,7 +664,7 @@ public class DefaultEntityTest {
     entity.put("trans", 1);
     assertTrue(entity.isModified());
 
-    transientProperty.setModifiesEntity(false);
+    transientProperty.modifiesEntity(false);
     assertFalse(entity.isModified());
 
     final Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));

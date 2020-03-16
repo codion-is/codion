@@ -421,49 +421,49 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final ColumnProperty.Builder setColumnName(final String columnName) {
+    public final ColumnProperty.Builder columnName(final String columnName) {
       columnProperty.columnName = requireNonNull(columnName, "columnName");
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
+    public final ColumnProperty.Builder columnHasDefaultValue(final boolean columnHasDefaultValue) {
       columnProperty.columnHasDefaultValue = columnHasDefaultValue;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder setReadOnly(final boolean readOnly) {
+    public ColumnProperty.Builder readOnly(final boolean readOnly) {
       columnProperty.insertable = !readOnly;
       columnProperty.updatable = !readOnly;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder setInsertable(final boolean insertable) {
+    public ColumnProperty.Builder insertable(final boolean insertable) {
       columnProperty.insertable = insertable;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder setUpdatable(final boolean updatable) {
+    public ColumnProperty.Builder updatable(final boolean updatable) {
       columnProperty.updatable = updatable;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder setPrimaryKeyIndex(final int index) {
+    public final ColumnProperty.Builder primaryKeyIndex(final int index) {
       if (index < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0");
       }
       columnProperty.primaryKeyIndex = index;
-      setNullable(false);
-      setUpdatable(false);
+      nullable(false);
+      updatable(false);
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder setGroupingColumn(final boolean groupingColumn) {
+    public final ColumnProperty.Builder groupingColumn(final boolean groupingColumn) {
       if (columnProperty.aggregateColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is an aggregate column");
       }
@@ -472,7 +472,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final ColumnProperty.Builder setAggregateColumn(final boolean aggregateColumn) {
+    public final ColumnProperty.Builder aggregateColumn(final boolean aggregateColumn) {
       if (columnProperty.groupingColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is a grouping column");
       }
@@ -481,13 +481,13 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final ColumnProperty.Builder setSelectable(final boolean selectable) {
+    public final ColumnProperty.Builder selectable(final boolean selectable) {
       columnProperty.selectable = selectable;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder setValueConverter(final ValueConverter<?, ?> valueConverter) {
+    public final ColumnProperty.Builder valueConverter(final ValueConverter<?, ?> valueConverter) {
       requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueConverter = (ValueConverter<Object, Object>) valueConverter;
       return this;

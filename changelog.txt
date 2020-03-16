@@ -5745,3 +5745,4 @@
   User now interface, moved to org.jminor.common.user package, DefaultUser and Users factory class added
   Version now interface, moved to org.jminor.common.version package, DefaultVersion and Version factory class added
   Entities.getModifiedColumnProperties() bug fixed, did not exclude lazy loaded blob properties, test improved, Chinook demo album cover now eagerly loaded
+  set prefix removed from Builder methods
