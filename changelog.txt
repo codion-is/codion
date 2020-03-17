@@ -5729,3 +5729,4 @@
   Dialogs.showExceptionDialog() bug fixed, ExceptionDialog now disposed after it's closed
   ExceptionDialog bug fixed, escape and enter key events now onKeyPressed, enter was sometimes triggered in edit panel, after update exception
   Property.Builder, typo fixed, mininumValue -> minimumValue
+0.13.9
