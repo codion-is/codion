@@ -5724,3 +5724,4 @@
   set prefix removed from Builder methods
 0.13.8
   ForeignKeyProperty.Builder.readOnly() added
+  NavigableImagePanel bug fixed, constructor with image parameter did not call default constructor
