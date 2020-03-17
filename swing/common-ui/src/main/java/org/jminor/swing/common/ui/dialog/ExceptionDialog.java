@@ -86,7 +86,6 @@ final class ExceptionDialog extends JDialog {
   }
 
   private void initializeUI() {
-    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(this::dispose));
     final JPanel basePanel = new JPanel(Layouts.createBorderLayout());
     basePanel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
     basePanel.add(createNorthPanel(), BorderLayout.NORTH);
@@ -180,8 +179,8 @@ final class ExceptionDialog extends JDialog {
     final Control closeControl = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
     closeControl.setDescription(MESSAGES.getString("close_dialog"));
     closeControl.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
-    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true, closeControl);
-    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true, closeControl);
+    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, false, closeControl);
+    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, false, closeControl);
     final Control saveControl = Controls.control(() ->
                     Files.write(Dialogs.selectFileToSave(detailsArea, null, "error.txt").toPath(),
                             Arrays.asList(detailsArea.getText().split("\\r?\\n"))),
@@ -231,7 +230,7 @@ final class ExceptionDialog extends JDialog {
     setLocation(p);
   }
 
-  void showForThrowable(final String title, final String message, final Throwable throwable, final boolean modal) {
+  ExceptionDialog showForThrowable(final String title, final String message, final Throwable throwable, final boolean modal) {
     setModal(modal);
     setTitle(title);
 
@@ -256,6 +255,8 @@ final class ExceptionDialog extends JDialog {
     detailsArea.setCaretPosition(0);
     initializeDetailView(false);
     setVisible(true);
+
+    return this;
   }
 
   private static String truncateMessage(final String message) {

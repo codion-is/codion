@@ -337,7 +337,7 @@ public interface Property extends Serializable {
      * @param minimumValue the minimum allowed value for this property
      * @return this instance
      */
-    Property.Builder mininumValue(double minimumValue);
+    Property.Builder minimumValue(double minimumValue);
 
     /**
      * Sets the maximum fraction digits to show for this property, only applicable to properties based on Types.DOUBLE.

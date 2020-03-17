@@ -217,6 +217,7 @@ public class NavigableImagePanel extends JPanel {
    * @param image the default image
    */
   public NavigableImagePanel(final BufferedImage image) {
+    this();
     setImage(image);
   }
 

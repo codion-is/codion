@@ -5747,3 +5747,9 @@
   Entities.getModifiedColumnProperties() bug fixed, did not exclude lazy loaded blob properties, test improved, Chinook demo album cover now eagerly loaded
   set prefix removed from Builder methods
 0.13.8
+  ForeignKeyProperty.Builder.readOnly() added
+  NavigableImagePanel bug fixed, constructor with image parameter did not call default constructor
+  ExceptionDialog.showForThrowable() now returns the dialog
+  Dialogs.showExceptionDialog() bug fixed, ExceptionDialog now disposed after it's closed
+  ExceptionDialog bug fixed, escape and enter key events now onKeyPressed, enter was sometimes triggered in edit panel, after update exception
+  Property.Builder, typo fixed, mininumValue -> minimumValue

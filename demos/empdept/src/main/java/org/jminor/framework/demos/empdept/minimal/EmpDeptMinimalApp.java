@@ -73,7 +73,7 @@ public class EmpDeptMinimalApp {
               columnProperty("sal", Types.DOUBLE, "Salary")
                       .nullable(false)
                       .maximumFractionDigits(2)
-                      .mininumValue(1000).maximumValue(10000),
+                      .minimumValue(1000).maximumValue(10000),
               columnProperty("comm", Types.DOUBLE, "Commission")
                       .maximumFractionDigits(2),
               foreignKeyProperty("mgr_fk", "Manager", "scott.emp",
