@@ -493,7 +493,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param property the property
      * @throws RangeValidationException in case the value of the given property is outside the legal range
      * @see Property.Builder#maximumValue(double)
-     * @see Property.Builder#mininumValue(double)
+     * @see Property.Builder#minimumValue(double)
      */
     void performRangeValidation(Entity entity, Property property) throws RangeValidationException;
 

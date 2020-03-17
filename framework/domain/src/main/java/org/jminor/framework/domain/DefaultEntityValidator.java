@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
  * based on the specified max length.
  * This Validator can be extended to provide further validation.
  * @see Property.Builder#nullable(boolean)
- * @see Property.Builder#mininumValue(double)
+ * @see Property.Builder#minimumValue(double)
  * @see Property.Builder#maximumValue(double)
  * @see Property.Builder#maximumLength(int)
  */

@@ -65,9 +65,9 @@ public final class TestDomain extends Domain {
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN"))),
             columnProperty(EMP_SALARY, Types.DECIMAL, EMP_SALARY)
-                    .nullable(false).mininumValue(1000).maximumValue(10000).maximumFractionDigits(2),
+                    .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
-                    .mininumValue(100).maximumValue(2000).maximumFractionDigits(2),
+                    .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
                     columnProperty(EMP_MGR)),
             columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)

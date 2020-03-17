@@ -197,10 +197,10 @@ public final class TestDomain extends Domain {
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .beanProperty("job"),
             columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
-                    .nullable(false).mininumValue(1000).maximumValue(10000).maximumFractionDigits(2)
+                    .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2)
                     .beanProperty("salary"),
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
-                    .mininumValue(100).maximumValue(2000).maximumFractionDigits(2)
+                    .minimumValue(100).maximumValue(2000).maximumFractionDigits(2)
             .beanProperty("commission"),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
                     (ColumnProperty.Builder) columnProperty(EMP_MGR)

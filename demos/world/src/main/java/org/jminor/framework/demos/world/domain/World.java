@@ -149,13 +149,13 @@ public final class World extends Domain {
                     .useNumberFormatGrouping(true)
                     .maximumFractionDigits(2),
             columnProperty(COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year")
-                    .mininumValue(-200).maximumValue(2500),
+                    .minimumValue(-200).maximumValue(2500),
             columnProperty(COUNTRY_POPULATION, Types.INTEGER, "Population")
                     .nullable(false)
                     .useNumberFormatGrouping(true),
             columnProperty(COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy")
                     .maximumFractionDigits(1)
-                    .mininumValue(0).maximumValue(99),
+                    .minimumValue(0).maximumValue(99),
             // end::columnProperty[]
             columnProperty(COUNTRY_GNP, Types.DOUBLE, "GNP")
                     .useNumberFormatGrouping(true)
@@ -212,7 +212,7 @@ public final class World extends Domain {
             columnProperty(COUNTRYLANGUAGE_PERCENTAGE, Types.DOUBLE, "Percentage")
                     .nullable(false)
                     .maximumFractionDigits(1)
-                    .mininumValue(0).maximumValue(100),
+                    .minimumValue(0).maximumValue(100),
             // tag::derivedProperty[]
             derivedProperty(COUNTRYLANGUAGE_NO_OF_SPEAKERS, Types.INTEGER, "No. of speakers",
                     new NoOfSpeakersProvider(), COUNTRYLANGUAGE_COUNTRY_FK, COUNTRYLANGUAGE_PERCENTAGE)

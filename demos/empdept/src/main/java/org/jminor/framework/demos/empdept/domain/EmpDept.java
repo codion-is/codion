@@ -94,9 +94,9 @@ public final class EmpDept extends Domain {
                     .nullable(false),
             valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, "Job", JOB_VALUES),
             columnProperty(EMPLOYEE_SALARY, Types.DECIMAL, "Salary")
-                    .nullable(false).mininumValue(1000).maximumValue(10000).maximumFractionDigits(2),
+                    .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
             columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, "Commission")
-                    .mininumValue(100).maximumValue(2000).maximumFractionDigits(2),
+                    .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
             foreignKeyProperty(EMPLOYEE_MGR_FK, "Manager", T_EMPLOYEE,
                     columnProperty(EMPLOYEE_MGR)),
             columnProperty(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate")

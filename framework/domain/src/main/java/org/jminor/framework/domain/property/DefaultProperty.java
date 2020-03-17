@@ -582,7 +582,7 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public final Property.Builder mininumValue(final double minimumValue) {
+    public final Property.Builder minimumValue(final double minimumValue) {
       property.minimumValue = minimumValue;
       return this;
     }
