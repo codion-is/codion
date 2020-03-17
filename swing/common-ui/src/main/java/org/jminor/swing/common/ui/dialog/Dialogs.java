@@ -281,10 +281,11 @@ public final class Dialogs {
                                          final Throwable throwable, final boolean modal) {
     try {
       if (SwingUtilities.isEventDispatchThread()) {
-        new ExceptionDialog(window).showForThrowable(title, message, throwable, modal);
+        System.out.println("eventDispatchThread");
+        new ExceptionDialog(window).showForThrowable(title, message, throwable, modal).dispose();
       }
       else {
-        SwingUtilities.invokeAndWait(() -> new ExceptionDialog(window).showForThrowable(title, message, throwable, modal));
+        SwingUtilities.invokeAndWait(() -> new ExceptionDialog(window).showForThrowable(title, message, throwable, modal).dispose());
       }
     }
     catch (final Exception e) {
