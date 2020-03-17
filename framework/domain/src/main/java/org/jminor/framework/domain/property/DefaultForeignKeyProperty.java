@@ -169,6 +169,13 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
 
     @Override
+    public ForeignKeyProperty.Builder readOnly(final boolean readOnly) {
+      insertable(!readOnly);
+      updatable(!readOnly);
+      return this;
+    }
+
+    @Override
     public ForeignKeyProperty.Builder nullable(final boolean nullable) {
       super.nullable(nullable);
       foreignKeyProperty.columnPropertyBuilders.forEach(builder -> builder.nullable(nullable));

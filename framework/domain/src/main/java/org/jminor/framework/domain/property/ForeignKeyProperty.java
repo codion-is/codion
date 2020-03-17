@@ -89,5 +89,11 @@ public interface ForeignKeyProperty extends Property {
      * @return this instance
      */
     ForeignKeyProperty.Builder updatable(boolean updatable);
+
+    /**
+     * @param readOnly specifies whether this property should be included during insert and update operations
+     * @return this instance
+     */
+    ForeignKeyProperty.Builder readOnly(boolean readOnly);
   }
 }

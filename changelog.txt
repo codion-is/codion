@@ -5723,3 +5723,4 @@
   Entities.getModifiedColumnProperties() bug fixed, did not exclude lazy loaded blob properties, test improved, Chinook demo album cover now eagerly loaded
   set prefix removed from Builder methods
 0.13.8
+  ForeignKeyProperty.Builder.readOnly() added
