@@ -122,6 +122,7 @@ public final class KeyEvents {
   /**
    * Instantiates an Action for transferring keyboard focus forward.
    * @param component the component
+   * @return an Action for transferring focus
    */
   public static Action transferFocusForwardAction(final JComponent component) {
     return new TransferFocusAction(component);
@@ -130,6 +131,7 @@ public final class KeyEvents {
   /**
    * Instantiates an Action for transferring keyboard focus backward.
    * @param component the component
+   * @return an Action for transferring focus
    */
   public static Action transferFocusBackwardAction(final JComponent component) {
     return new TransferFocusAction(component, true);
