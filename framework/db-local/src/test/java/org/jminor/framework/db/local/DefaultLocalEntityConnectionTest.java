@@ -583,7 +583,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectValues() throws Exception {
-    List<Object> result = connection.selectValues(DEPARTMENT_NAME, entityCondition(T_DEPARTMENT));
+    List<String> result = connection.selectValues(DEPARTMENT_NAME, entityCondition(T_DEPARTMENT));
     assertEquals("ACCOUNTING", result.get(0));
     assertEquals("OPERATIONS", result.get(1));
     assertEquals("RESEARCH", result.get(2));

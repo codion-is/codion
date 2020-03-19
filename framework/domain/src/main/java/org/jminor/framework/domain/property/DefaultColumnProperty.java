@@ -36,8 +36,8 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   private boolean updatable = true;
   private boolean foreignKeyProperty = false;
 
-  private final transient ValueFetcher<Object> valueFetcher;
-  private final transient ResultPacker<Object> resultPacker;
+  private final transient ValueFetcher valueFetcher;
+  private final transient ResultPacker resultPacker;
   private transient String columnName;
   private transient ValueConverter<Object, Object> valueConverter;
   private transient boolean groupingColumn = false;
@@ -143,14 +143,14 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
 
   /** {@inheritDoc} */
   @Override
-  public final Object fetchValue(final ResultSet resultSet, final int index) throws SQLException {
-    return valueFetcher.fetchValue(resultSet, index);
+  public final <T> T fetchValue(final ResultSet resultSet, final int index) throws SQLException {
+    return (T) valueFetcher.fetchValue(resultSet, index);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final ResultPacker<Object> getResultPacker() {
-    return resultPacker;
+  public final <T> ResultPacker<T> getResultPacker() {
+    return (ResultPacker<T>) resultPacker;
   }
 
   protected final void setInsertable(final boolean insertable) {
@@ -182,7 +182,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     return DEFAULT_VALUE_CONVERTER;
   }
 
-  private static ValueFetcher<Object> initializeValueFetcher(final ColumnProperty property) {
+  private static ValueFetcher initializeValueFetcher(final ColumnProperty property) {
     if (property instanceof MirrorProperty) {
       return null;
     }

@@ -5,20 +5,19 @@ package org.jminor.common.db.operation;
 
 import org.jminor.common.db.exception.DatabaseException;
 
-import java.util.List;
-
 /**
  * A database function
  * @param <C> the connection type required by this function
+ * @param <T> the result type
  */
-public interface DatabaseFunction<C> extends DatabaseOperation {
+public interface DatabaseFunction<C, T> extends DatabaseOperation {
 
   /**
    * Executes this function with the given connection
    * @param connection the connection to use when executing
    * @param arguments the function arguments, if any
-   * @return the function return arguments
+   * @return the function return argument
    * @throws DatabaseException in case of an exception during the execution
    */
-  List execute(C connection, Object... arguments) throws DatabaseException;
+  T execute(C connection, Object... arguments) throws DatabaseException;
 }

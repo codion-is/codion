@@ -471,11 +471,12 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   /**
    * Retrievs the function with the given id.
    * @param <C> the type of the database connection this function requires
+   * @param <T> the result type
    * @param functionId the function id
    * @return the function
    * @throws IllegalArgumentException in case the function is not found
    */
-  public final <C> DatabaseFunction<C> getFunction(final String functionId) {
+  public final <C, T> DatabaseFunction<C, T> getFunction(final String functionId) {
     requireNonNull(functionId, "functionId");
     checkIfDeserialized();
     final DatabaseOperation operation = databaseOperations.get(functionId);
@@ -483,7 +484,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
       throw new IllegalArgumentException("Function not found: " + functionId);
     }
 
-    return (DatabaseFunction<C>) operation;
+    return (DatabaseFunction<C, T>) operation;
   }
 
   /**

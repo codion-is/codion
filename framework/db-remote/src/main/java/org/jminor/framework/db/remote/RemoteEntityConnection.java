@@ -80,11 +80,12 @@ public interface RemoteEntityConnection extends Remote {
    * Executes the function with the given id
    * @param functionId the function ID
    * @param arguments the arguments, if any
-   * @return the function return arguments
+   * @param <T> the result type
+   * @return the function return argument
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  List executeFunction(String functionId, Object... arguments) throws RemoteException, DatabaseException;
+  <T> T executeFunction(String functionId, Object... arguments) throws RemoteException, DatabaseException;
 
   /**
    * Executes the procedure with the given id
@@ -185,13 +186,14 @@ public interface RemoteEntityConnection extends Remote {
    * Selects ordered and distinct non-null values of the given property
    * @param propertyId the ID of the property
    * @param condition the condition
+   * @param <T> the value type
    * @return the values in the given column (Property)
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException in case the given property is not a column based property
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
-  List<Object> selectValues(String propertyId, EntityCondition condition)
+  <T> List<T> selectValues(String propertyId, EntityCondition condition)
           throws RemoteException, DatabaseException;
 
   /**

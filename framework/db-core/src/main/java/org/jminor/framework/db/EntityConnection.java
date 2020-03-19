@@ -80,10 +80,11 @@ public interface EntityConnection {
    * Executes the function with the given id
    * @param functionId the function ID
    * @param arguments the arguments, if any
+   * @param <T> the result type
    * @return the function return arguments
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  List executeFunction(String functionId, Object... arguments) throws DatabaseException;
+  <T> T executeFunction(String functionId, Object... arguments) throws DatabaseException;
 
   /**
    * Executes the procedure with the given id
@@ -177,12 +178,13 @@ public interface EntityConnection {
    * must be of type {@link ColumnProperty}.
    * @param propertyId the ID of the property
    * @param condition the condition
+   * @param <T> the value type
    * @return the values in the given column (Property)
    * @throws DatabaseException in case of a database exception
    * @throws IllegalArgumentException in case the given property is not a column based property
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  List<Object> selectValues(String propertyId, EntityCondition condition) throws DatabaseException;
+  <T> List<T> selectValues(String propertyId, EntityCondition condition) throws DatabaseException;
 
   /**
    * Selects a single entity

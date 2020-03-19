@@ -113,7 +113,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public List executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
+  public <T> T executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.executeFunction(functionId, arguments);
     }
@@ -217,7 +217,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
+  public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectValues(propertyId, condition);
     }

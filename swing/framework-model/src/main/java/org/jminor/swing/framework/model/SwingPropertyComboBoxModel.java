@@ -33,7 +33,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
                                     final ColumnProperty property, final T nullValue) {
     this(() -> {
       try {
-        return (Collection<T>) connectionProvider.getConnection().selectValues(property.getPropertyId(),
+        return connectionProvider.getConnection().selectValues(property.getPropertyId(),
                 entityCondition(entityId));
       }
       catch (final DatabaseException e) {
