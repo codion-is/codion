@@ -97,7 +97,7 @@ public final class TestDomain extends Domain {
       public void execute(final EntityConnection connection, final Object... objects) throws DatabaseException {}
     });
 
-    addOperation(new AbstractDatabaseFunction<EntityConnection>(FUNCTION_ID, "Test Function") {
+    addOperation(new AbstractDatabaseFunction<EntityConnection, List>(FUNCTION_ID, "Test Function") {
       @Override
       public List execute(final EntityConnection connection, final Object... objects) throws DatabaseException {
         return emptyList();

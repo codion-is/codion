@@ -174,7 +174,7 @@ public final class TestDomain extends Domain {
       @Override
       public void execute(final EntityConnection connection, final Object... arguments) {}
     });
-    addOperation(new AbstractDatabaseFunction<EntityConnection>(FUNCTION_ID, "executeFunction") {
+    addOperation(new AbstractDatabaseFunction<EntityConnection, List>(FUNCTION_ID, "executeFunction") {
       @Override
       public List execute(final EntityConnection connection, final Object... arguments) {
         return null;

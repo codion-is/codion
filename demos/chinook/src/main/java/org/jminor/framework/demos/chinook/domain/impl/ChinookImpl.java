@@ -374,14 +374,14 @@ public final class ChinookImpl extends Domain implements Chinook {
     }
   }
 
-  private static final class RaisePriceFunction extends AbstractDatabaseFunction<LocalEntityConnection> {
+  private static final class RaisePriceFunction extends AbstractDatabaseFunction<LocalEntityConnection, List<Entity>> {
 
     private RaisePriceFunction() {
       super(F_RAISE_PRICE, "Raise track prices");
     }
 
     @Override
-    public List execute(final LocalEntityConnection entityConnection,
+    public List<Entity> execute(final LocalEntityConnection entityConnection,
                         final Object... arguments) throws DatabaseException {
       final List<Long> trackIds = (List<Long>) arguments[0];
       final BigDecimal priceIncrease = (BigDecimal) arguments[1];

@@ -656,12 +656,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
+  public <T> T executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
       logAccess("executeFunction: " + functionId, arguments);
       synchronized (connection) {
-        return domain.getFunction(functionId).execute(this, arguments);
+        return (T) domain.getFunction(functionId).execute(this, arguments);
       }
     }
     catch (final DatabaseException e) {

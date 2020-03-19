@@ -65,13 +65,11 @@ import static org.jminor.framework.db.condition.Conditions.entitySelectCondition
  */
 final class HttpEntityConnection implements EntityConnection {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName(),
+          Locale.getDefault());
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnection.class);
 
-  private static final String PROPERTY_ID_PARAM = "propertyId";
-  private static final String FUNCTION_ID_PARAM = "functionId";
-  private static final String PROCEDURE_ID_PARAM = "procedureId";
   private static final String DOMAIN_ID = "domainId";
   private static final String CLIENT_TYPE_ID = "clientTypeId";
   private static final String CLIENT_ID = "clientId";
@@ -214,10 +212,10 @@ final class HttpEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
+  public <T> T executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
     Objects.requireNonNull(functionId);
     try {
-      return executeOperation("function", FUNCTION_ID_PARAM, functionId, arguments);
+      return executeOperation("function", "functionId", functionId, arguments);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -233,7 +231,7 @@ final class HttpEntityConnection implements EntityConnection {
   public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
     Objects.requireNonNull(procedureId);
     try {
-      executeOperation("procedure", PROCEDURE_ID_PARAM, procedureId, arguments);
+      executeOperation("procedure", "procedureId", procedureId, arguments);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -349,7 +347,7 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(condition);
     try {
       return onResponse(execute(createHttpPost(createURIBuilder("values")
-              .addParameter(PROPERTY_ID_PARAM, propertyId), condition)));
+              .addParameter("propertyId", propertyId), condition)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -522,8 +520,8 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  private List executeOperation(final String path, final String operationIdParam, final String operationId,
-                                final Object... arguments) throws Exception {
+  private <T> T executeOperation(final String path, final String operationIdParam, final String operationId,
+                                 final Object... arguments) throws Exception {
     return onResponse(execute(createHttpPost(createURIBuilder(path)
                     .addParameter(operationIdParam, operationId),
             Util.notNull(arguments) ? asList(arguments) : emptyList())));

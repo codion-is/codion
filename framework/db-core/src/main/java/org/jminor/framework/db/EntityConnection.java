@@ -80,10 +80,11 @@ public interface EntityConnection {
    * Executes the function with the given id
    * @param functionId the function ID
    * @param arguments the arguments, if any
+   * @param <T> the result type
    * @return the function return arguments
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  List executeFunction(String functionId, Object... arguments) throws DatabaseException;
+  <T> T executeFunction(String functionId, Object... arguments) throws DatabaseException;
 
   /**
    * Executes the procedure with the given id

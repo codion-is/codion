@@ -80,11 +80,12 @@ public interface RemoteEntityConnection extends Remote {
    * Executes the function with the given id
    * @param functionId the function ID
    * @param arguments the arguments, if any
-   * @return the function return arguments
+   * @param <T> the result type
+   * @return the function return argument
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  List executeFunction(String functionId, Object... arguments) throws RemoteException, DatabaseException;
+  <T> T executeFunction(String functionId, Object... arguments) throws RemoteException, DatabaseException;
 
   /**
    * Executes the procedure with the given id
