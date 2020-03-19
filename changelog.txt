@@ -5730,3 +5730,6 @@
   ExceptionDialog bug fixed, escape and enter key events now onKeyPressed, enter was sometimes triggered in edit panel, after update exception
   Property.Builder, typo fixed, mininumValue -> minimumValue
 0.13.9
+  Dialogs.prepareScrollPaneDialog() refactored and renamed prepareOkCancelButtonDialog()
+  Components.createOkCancelButtonPanel() added
+  EntityLookupField bug fixed, SelectionProvider.setPreferredSize() added, scroll pane now contained in a base panel, so setting the preferred size works

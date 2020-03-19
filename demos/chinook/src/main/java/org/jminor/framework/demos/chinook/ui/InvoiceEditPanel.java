@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
@@ -78,6 +79,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     final SwingEntityTableModel tableModel = customerSelectionProvider.getTable().getModel();
     tableModel.setColumns(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME, CUSTOMER_EMAIL);
     tableModel.setSortingDirective(CUSTOMER_LASTNAME, SortingDirective.ASCENDING);
+    customerSelectionProvider.setPreferredSize(new Dimension(500, 300));
     customerField.setSelectionProvider(customerSelectionProvider);
   }
 }

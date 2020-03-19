@@ -48,6 +48,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -56,6 +57,7 @@ import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -218,7 +220,7 @@ public final class EntityLookupField extends JTextField {
 
   private void selectEntities(final List<Entity> entities) {
     final JDialog dialog = new JDialog(Windows.getParentWindow(this), MESSAGES.getString("select_entity"));
-    Dialogs.prepareScrollPanelDialog(dialog, this, selectionProvider.getSelectionComponent(entities),
+    Dialogs.prepareOkCancelDialog(dialog, this, selectionProvider.getSelectionComponent(entities),
             selectionProvider.getSelectControl(), Controls.control(dialog::dispose));
     dialog.setVisible(true);
   }
@@ -435,11 +437,18 @@ public final class EntityLookupField extends JTextField {
    * Provides a JComponent for selecting one or more of a given set of entities
    */
   public interface SelectionProvider {
+
     /**
      * @param entities the entities to display in the component
      * @return the component to display for selecting entities
      */
     JComponent getSelectionComponent(List<Entity> entities);
+
+    /**
+     * Sets the preferred size of the selection component.
+     * @param preferredSize the preferred selection component size
+     */
+    void setPreferredSize(Dimension preferredSize);
 
     /**
      * @return a Control which sets the selected entities in the underlying {@link EntityLookupModel}
@@ -453,19 +462,24 @@ public final class EntityLookupField extends JTextField {
    */
   public static final class ListSelectionProvider implements SelectionProvider {
 
-    private final JList list = new JList();
+    private final JList<Entity> list = new JList<>();
+    private final JScrollPane scrollPane = new JScrollPane(list);
+    private final JPanel basePanel = new JPanel(Layouts.createBorderLayout());
     private final Control selectControl;
 
     /**
-     * @param model the {@link EntityLookupModel}
+     * @param lookupModel the {@link EntityLookupModel}
      */
-    public ListSelectionProvider(final EntityLookupModel model) {
+    public ListSelectionProvider(final EntityLookupModel lookupModel) {
+      requireNonNull(lookupModel, "lookupModel");
       this.selectControl = Controls.control(() -> {
-        model.setSelectedEntities(list.getSelectedValuesList());
+        lookupModel.setSelectedEntities(list.getSelectedValuesList());
         Windows.getParentDialog(list).dispose();
       }, Messages.get(Messages.OK));
-      list.setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
+      list.setSelectionMode(lookupModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
+      list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+              KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
       list.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseClicked(final MouseEvent e) {
@@ -474,6 +488,7 @@ public final class EntityLookupField extends JTextField {
           }
         }
       });
+      basePanel.add(scrollPane, BorderLayout.CENTER);
     }
 
     /** {@inheritDoc} */
@@ -483,7 +498,12 @@ public final class EntityLookupField extends JTextField {
       list.removeSelectionInterval(0, list.getModel().getSize());
       list.scrollRectToVisible(list.getCellBounds(0, 0));
 
-      return list;
+      return basePanel;
+    }
+
+    @Override
+    public void setPreferredSize(final Dimension preferredSize) {
+      basePanel.setPreferredSize(preferredSize);
     }
 
     /** {@inheritDoc} */
@@ -499,13 +519,16 @@ public final class EntityLookupField extends JTextField {
   public static final class TableSelectionProvider implements SelectionProvider {
 
     private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
+    private final JScrollPane scrollPane;
+    private final JPanel basePanel = new JPanel(Layouts.createBorderLayout());
     private final Control selectControl;
 
     /**
-     * @param model the {@link EntityLookupModel}
+     * @param lookupModel the {@link EntityLookupModel}
      */
-    public TableSelectionProvider(final EntityLookupModel model) {
-      final SwingEntityTableModel tableModel = new SwingEntityTableModel(model.getEntityId(), model.getConnectionProvider()) {
+    public TableSelectionProvider(final EntityLookupModel lookupModel) {
+      requireNonNull(lookupModel, "lookupModel");
+      final SwingEntityTableModel tableModel = new SwingEntityTableModel(lookupModel.getEntityId(), lookupModel.getConnectionProvider()) {
         @Override
         protected List<Entity> performQuery() {
           return emptyList();
@@ -513,23 +536,25 @@ public final class EntityLookupField extends JTextField {
       };
       table = new FilteredTable<>(tableModel);
       selectControl = control(() -> {
-        model.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
+        lookupModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
         Windows.getParentDialog(table).dispose();
       }, Messages.get(Messages.OK));
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
       final String enterActionKey = "EntityLookupField.enter";
       table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
       table.getActionMap().put(enterActionKey, selectControl);
-      final Collection<ColumnProperty> lookupProperties = model.getLookupProperties();
+      final Collection<ColumnProperty> lookupProperties = lookupModel.getLookupProperties();
       tableModel.getColumnModel().setColumns(lookupProperties.toArray(new Property[0]));
       tableModel.setSortingDirective(lookupProperties.iterator().next().getPropertyId(), SortingDirective.ASCENDING);
-      table.setSelectionMode(model.getMultipleSelectionEnabledValue().get() ?
+      table.setSelectionMode(lookupModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);
+      scrollPane = new JScrollPane(table);
+      basePanel.add(scrollPane, BorderLayout.CENTER);
     }
 
     /**
-     * @return the underlying EntityTablePanel
+     * @return the underlying FilteredTablePanel
      */
     public FilteredTable<Entity, Property, SwingEntityTableModel> getTable() {
       return table;
@@ -542,7 +567,12 @@ public final class EntityLookupField extends JTextField {
       table.getModel().addEntities(entities, false, false);
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
 
-      return table;
+      return basePanel;
+    }
+
+    @Override
+    public void setPreferredSize(final Dimension preferredSize) {
+      basePanel.setPreferredSize(preferredSize);
     }
 
     /** {@inheritDoc} */
