@@ -97,15 +97,17 @@ public interface ColumnProperty extends Property {
    * Fetches a value for this property from a ResultSet
    * @param resultSet the ResultSet
    * @param index the index of the column to fetch
+   * @param <T> the value type
    * @return a single value fetched from the given ResultSet
    * @throws java.sql.SQLException in case of an exception
    */
-  Object fetchValue(ResultSet resultSet, int index) throws SQLException;
+  <T> T fetchValue(ResultSet resultSet, int index) throws SQLException;
 
   /**
+   * @param <T> the result type
    * @return a ResultPacker responsible for packing this property
    */
-  ResultPacker<Object> getResultPacker();
+  <T> ResultPacker<T> getResultPacker();
 
   /**
    * Fetches a single value from a result set.

@@ -20,5 +20,5 @@ public interface DatabaseFunction<C> extends DatabaseOperation {
    * @return the function return arguments
    * @throws DatabaseException in case of an exception during the execution
    */
-  List execute(C connection, Object... arguments) throws DatabaseException;
+  <T> List<T> execute(C connection, Object... arguments) throws DatabaseException;
 }

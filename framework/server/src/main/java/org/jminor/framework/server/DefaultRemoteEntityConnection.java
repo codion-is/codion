@@ -217,7 +217,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
+  public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectValues(propertyId, condition);
     }

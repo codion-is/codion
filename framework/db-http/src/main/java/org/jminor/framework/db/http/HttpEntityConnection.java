@@ -344,7 +344,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
+  public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(propertyId);
     Objects.requireNonNull(condition);
     try {

@@ -557,7 +557,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
+  public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
     final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
     if (entityDefinition.getSelectQuery() != null) {
@@ -577,7 +577,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         statement = prepareStatement(selectQuery);
         resultSet = executeQuery(statement, selectQuery, combinedCondition);
-        final List<Object> result = propertyToSelect.getResultPacker().pack(resultSet, -1);
+        final List<T> result = propertyToSelect.<T>getResultPacker().pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
 
         return result;
