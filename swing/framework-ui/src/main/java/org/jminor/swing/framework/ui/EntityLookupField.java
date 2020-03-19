@@ -99,8 +99,8 @@ public final class EntityLookupField extends JTextField {
   private final EntityLookupModel model;
   private final TextFieldHint searchHint;
   private final SettingsPanel settingsPanel;
-  private final Action transferFocusAction = new KeyEvents.TransferFocusAction(this);
-  private final Action transferFocusBackwardAction = new KeyEvents.TransferFocusAction(this, true);
+  private final Action transferFocusAction = KeyEvents.transferFocusForwardAction(this);
+  private final Action transferFocusBackwardAction = KeyEvents.transferFocusBackwardAction(this);
   /**
    * A hack used to prevent the lookup being triggered by the closing of
    * the "empty result" message, which happens on windows

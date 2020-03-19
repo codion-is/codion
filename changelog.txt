@@ -5759,3 +5759,4 @@
   EntityLookupField bug fixed, SelectionProvider.setPreferredSize() added, scroll pane now contained in a base panel, so setting the preferred size works
   EntityConnection.selectValues() now "type safe"
   EntityConnection.executeFunction() now "type safe"
+  KeyEvents.TransferFocusAction now private, transferFocusForwardAction() and transferFocusBackwardAction() added
