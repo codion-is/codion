@@ -120,9 +120,25 @@ public final class KeyEvents {
   }
 
   /**
+   * Instantiates an Action for transferring keyboard focus forward.
+   * @param component the component
+   */
+  public static Action transferFocusForwardAction(final JComponent component) {
+    return new TransferFocusAction(component);
+  }
+
+  /**
+   * Instantiates an Action for transferring keyboard focus backward.
+   * @param component the component
+   */
+  public static Action transferFocusBackwardAction(final JComponent component) {
+    return new TransferFocusAction(component, true);
+  }
+
+  /**
    * An action which transfers focus either forward or backward for a given component
    */
-  public static final class TransferFocusAction extends AbstractAction {
+  private static final class TransferFocusAction extends AbstractAction {
 
     private final JComponent component;
     private final boolean backward;
@@ -131,7 +147,7 @@ public final class KeyEvents {
      * Instantiates an Action for transferring keyboard focus.
      * @param component the component
      */
-    public TransferFocusAction(final JComponent component) {
+    private TransferFocusAction(final JComponent component) {
       this(component, false);
     }
 
@@ -139,7 +155,7 @@ public final class KeyEvents {
      * @param component the component
      * @param backward if true the focus is transferred backward
      */
-    public TransferFocusAction(final JComponent component, final boolean backward) {
+    private TransferFocusAction(final JComponent component, final boolean backward) {
       super(backward ? "KeyEvents.transferFocusBackward" : "KeyEvents.transferFocusForward");
       this.component = component;
       this.backward = backward;
