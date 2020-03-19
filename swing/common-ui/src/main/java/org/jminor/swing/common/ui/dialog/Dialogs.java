@@ -5,7 +5,6 @@ package org.jminor.swing.common.ui.dialog;
 
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventObserver;
-import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
@@ -17,7 +16,6 @@ import org.jminor.swing.common.ui.layout.Layouts;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -36,7 +34,6 @@ import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -312,7 +309,7 @@ public final class Dialogs {
     final JDialog dialog = new JDialog(dialogOwner, title, modal ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);
     if (enterAction != null) {
       KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, true,
-                enterAction);
+              enterAction);
     }
 
     final Action disposeAction = new DisposeDialogAction(dialog);
@@ -416,34 +413,23 @@ public final class Dialogs {
   }
 
   /**
-   * Prepares a dialog for displaying {@code toScroll}, with OK and Cancel buttons.
-   * Note that the default Enter key action is disabled on the {@code toScroll} component.
+   * Prepares a dialog for displaying {@code component}, with OK and Cancel buttons.
+   * Note that the default Enter key action is disabled on the {@code component} component.
    * @param dialog the dialog
    * @param dialogOwner the dialog owner
-   * @param toScroll added to a central scroll pane
+   * @param component added to the center position
    * @param okAction the action for the OK button
    * @param cancelAction the action for the cancel button
    */
-  public static void prepareScrollPanelDialog(final JDialog dialog, final JComponent dialogOwner, final JComponent toScroll,
-                                              final Action okAction, final Action cancelAction) {
+  public static void prepareOkCancelDialog(final JDialog dialog, final JComponent dialogOwner, final JComponent component,
+                                           final Action okAction, final Action cancelAction) {
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, cancelAction);
     KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, false, okAction);
-    toScroll.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    final JButton okButton = new JButton(okAction);
-    final JButton cancelButton = new JButton(cancelAction);
-    okButton.setText(Messages.get(Messages.OK));
-    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    cancelButton.setText(Messages.get(Messages.CANCEL));
-    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
     dialog.setLayout(Layouts.createBorderLayout());
-    dialog.add(new JScrollPane(toScroll), BorderLayout.CENTER);
-    final JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
-    buttonPanel.add(okButton);
-    buttonPanel.add(cancelButton);
+    dialog.add(component, BorderLayout.CENTER);
     final JPanel buttonBasePanel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
-    buttonBasePanel.add(buttonPanel);
+    buttonBasePanel.add(Components.createOkCancelButtonPanel(okAction, cancelAction));
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();
     if (dialogOwner != null) {
@@ -685,7 +671,9 @@ public final class Dialogs {
     if (singleSelection) {
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
-    prepareScrollPanelDialog(dialog, dialogOwner, list, okAction, cancelAction);
+    list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+    prepareOkCancelDialog(dialog, dialogOwner, new JScrollPane(list), okAction, cancelAction);
     list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {

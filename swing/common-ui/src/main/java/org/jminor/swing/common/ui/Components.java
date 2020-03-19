@@ -6,6 +6,7 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.state.StateObserver;
 import org.jminor.swing.common.ui.layout.Layouts;
 
@@ -26,6 +27,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.WindowAdapter;
@@ -255,6 +257,26 @@ public final class Components {
     panel.add(button, BorderLayout.EAST);
 
     return panel;
+  }
+
+  /**
+   * Creates a JPanel with two buttons, based on the given ok and cancel actions.
+   * @param okAction the OK button action
+   * @param cancelAction the cancel button action
+   * @return a ok/cancel button panel
+   */
+  public static JPanel createOkCancelButtonPanel(final Action okAction, final Action cancelAction) {
+    final JButton okButton = new JButton(okAction);
+    final JButton cancelButton = new JButton(cancelAction);
+    okButton.setText(Messages.get(Messages.OK));
+    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    cancelButton.setText(Messages.get(Messages.CANCEL));
+    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
+    final JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
+    buttonPanel.add(okButton);
+    buttonPanel.add(cancelButton);
+
+    return buttonPanel;
   }
 
   /**
