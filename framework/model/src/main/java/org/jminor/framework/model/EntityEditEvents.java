@@ -45,8 +45,7 @@ public final class EntityEditEvents {
    * @param entityId the type of entity to listen for
    * @param listener the listener
    */
-  public static void addDeleteListener(final String entityId,
-                                       final EventDataListener<List<Entity>> listener) {
+  public static void addDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     EVENT_OBSERVER.addDeleteListener(entityId, listener);
   }
 
@@ -55,7 +54,7 @@ public final class EntityEditEvents {
    * @param entityId the entity id
    * @param listener the listener to remove
    */
-  public static void removeInsertListener(final String entityId, final EventDataListener listener) {
+  public static void removeInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     EVENT_OBSERVER.removeInsertListener(entityId, listener);
   }
 
@@ -64,7 +63,7 @@ public final class EntityEditEvents {
    * @param entityId the entity id
    * @param listener the listener to remove
    */
-  public static void removeUpdateListener(final String entityId, final EventDataListener listener) {
+  public static void removeUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
     EVENT_OBSERVER.removeUpdateListener(entityId, listener);
   }
 
@@ -73,7 +72,7 @@ public final class EntityEditEvents {
    * @param entityId the entity id
    * @param listener the listener to remove
    */
-  public static void removeDeleteListener(final String entityId, final EventDataListener listener) {
+  public static void removeDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     EVENT_OBSERVER.removeDeleteListener(entityId, listener);
   }
 

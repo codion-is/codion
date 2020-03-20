@@ -402,7 +402,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSelectionListener(final EventDataListener listener) {
+  public final void removeSelectionListener(final EventDataListener<T> listener) {
     selectionChangedEvent.removeDataListener(listener);
   }
 

@@ -246,7 +246,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelAddedListener(EventDataListener listener);
+  void removeLinkedDetailModelAddedListener(EventDataListener<M> listener);
 
     /**
    * @param listener a listener to be notified each time a linked detail model is removed
@@ -256,7 +256,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
     /**
    * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelRemovedListener(EventDataListener listener);
+  void removeLinkedDetailModelRemovedListener(EventDataListener<M> listener);
 
   /**
    * Saves any user preferences

@@ -47,19 +47,19 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
 
   /** {@inheritDoc} */
   @Override
-  public void removeInsertListener(final String entityId, final EventDataListener listener) {
+  public void removeInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     getInsertObserver(entityId).removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeUpdateListener(final String entityId, final EventDataListener listener) {
+  public void removeUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
     getUpdateObserver(entityId).removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeDeleteListener(final String entityId, final EventDataListener listener) {
+  public void removeDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     getDeleteObserver(entityId).removeDataListener(listener);
   }
 

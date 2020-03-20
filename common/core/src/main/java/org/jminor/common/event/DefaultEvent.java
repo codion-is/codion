@@ -52,7 +52,7 @@ final class DefaultEvent<T> implements Event<T> {
   }
 
   @Override
-  public void removeDataListener(final EventDataListener listener) {
+  public void removeDataListener(final EventDataListener<T> listener) {
     getObserver().removeDataListener(listener);
   }
 }

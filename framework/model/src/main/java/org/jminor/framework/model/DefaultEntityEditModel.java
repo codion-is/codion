@@ -754,7 +754,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueEditListener(final String propertyId, final EventDataListener listener) {
+  public final void removeValueEditListener(final String propertyId, final EventDataListener<ValueChange> listener) {
     if (valueEditEventMap.containsKey(propertyId)) {
       valueEditEventMap.get(propertyId).removeDataListener(listener);
     }
@@ -768,7 +768,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueListener(final String propertyId, final EventDataListener listener) {
+  public final void removeValueListener(final String propertyId, final EventDataListener<ValueChange> listener) {
     if (valueChangeEventMap.containsKey(propertyId)) {
       valueChangeEventMap.get(propertyId).removeDataListener(listener);
     }
@@ -782,7 +782,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeEntitySetListener(final EventDataListener listener) {
+  public final void removeEntitySetListener(final EventDataListener<Entity> listener) {
     entitySetEvent.removeDataListener(listener);
   }
 
@@ -794,7 +794,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeInsertListener(final EventDataListener listener) {
+  public final void removeBeforeInsertListener(final EventDataListener<List<Entity>> listener) {
     beforeInsertEvent.removeDataListener(listener);
   }
 
@@ -806,7 +806,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterInsertListener(final EventDataListener listener) {
+  public final void removeAfterInsertListener(final EventDataListener<List<Entity>> listener) {
     afterInsertEvent.removeDataListener(listener);
   }
 
@@ -818,7 +818,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeUpdateListener(final EventDataListener listener) {
+  public final void removeBeforeUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
     beforeUpdateEvent.removeDataListener(listener);
   }
 
@@ -830,7 +830,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterUpdateListener(final EventDataListener listener) {
+  public final void removeAfterUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
     afterUpdateEvent.removeDataListener(listener);
   }
 
@@ -848,13 +848,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeDeleteListener(final EventDataListener listener) {
+  public final void removeBeforeDeleteListener(final EventDataListener<List<Entity>> listener) {
     beforeDeleteEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterDeleteListener(final EventDataListener listener) {
+  public final void removeAfterDeleteListener(final EventDataListener<List<Entity>> listener) {
     afterDeleteEvent.removeDataListener(listener);
   }
 
@@ -908,7 +908,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public void removeConfirmSetEntityObserver(final EventDataListener listener) {
+  public void removeConfirmSetEntityObserver(final EventDataListener<State> listener) {
     confirmSetEntityEvent.removeDataListener(listener);
   }
 

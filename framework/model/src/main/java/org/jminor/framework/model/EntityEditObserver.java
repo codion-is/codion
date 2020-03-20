@@ -42,21 +42,21 @@ public interface EntityEditObserver {
    * @param entityId the entity id
    * @param listener the listener to remove
    */
-  void removeInsertListener(String entityId, EventDataListener listener);
+  void removeInsertListener(String entityId, EventDataListener<List<Entity>> listener);
 
   /**
    * Removes the given listener
    * @param entityId the entity id
    * @param listener the listener to remove
    */
-  void removeUpdateListener(String entityId, EventDataListener listener);
+  void removeUpdateListener(String entityId, EventDataListener<Map<Entity.Key, Entity>> listener);
 
   /**
    * Removes the given listener
    * @param entityId the entity id
    * @param listener the listener to remove
    */
-  void removeDeleteListener(String entityId, EventDataListener listener);
+  void removeDeleteListener(String entityId, EventDataListener<List<Entity>> listener);
 
   /**
    * Notifies insert

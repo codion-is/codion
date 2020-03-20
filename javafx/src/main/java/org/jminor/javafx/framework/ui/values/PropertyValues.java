@@ -128,7 +128,7 @@ public final class PropertyValues {
    * @return a {@link LocalDate} {@link StringValue} based on the given string property
    */
   public static StringValue<LocalDate> datePropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
-    return new DefaultStringValue<>(property, new DateConverter(dateTimeFormatter, LocalDate::parse));
+    return new DefaultStringValue<>(property, new DateConverter<>(dateTimeFormatter, LocalDate::parse));
   }
 
   /**
@@ -137,7 +137,7 @@ public final class PropertyValues {
    * @return a {@link LocalDateTime} {@link StringValue} based on the given string property
    */
   public static StringValue<LocalDateTime> timestampPropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
-    return new DefaultStringValue<>(property, new DateConverter(dateTimeFormatter, LocalDateTime::parse));
+    return new DefaultStringValue<>(property, new DateConverter<>(dateTimeFormatter, LocalDateTime::parse));
   }
 
   /**
@@ -146,7 +146,7 @@ public final class PropertyValues {
    * @return a {@link LocalTime} {@link StringValue} based on the given string property
    */
   public static StringValue<LocalTime> timePropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
-    return new DefaultStringValue<>(property, new DateConverter(dateTimeFormatter, LocalTime::parse));
+    return new DefaultStringValue<>(property, new DateConverter<>(dateTimeFormatter, LocalTime::parse));
   }
 
   /**
@@ -430,22 +430,22 @@ public final class PropertyValues {
     }
   }
 
-  private static final class SelectedItemValue extends AbstractValue {
+  private static final class SelectedItemValue<T> extends AbstractValue<T> {
 
-    private final SelectionModel<Item> selectionModel;
+    private final SelectionModel<Item<T>> selectionModel;
 
-    public SelectedItemValue(final SelectionModel<Item> selectionModel) {
+    public SelectedItemValue(final SelectionModel<Item<T>> selectionModel) {
       this.selectionModel = selectionModel;
       this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> notifyValueChange());
     }
 
     @Override
-    public void set(final Object value) {
+    public void set(final T value) {
       selectionModel.select(Items.item(value));
     }
 
     @Override
-    public Object get() {
+    public T get() {
       return selectionModel.getSelectedItem().getValue();
     }
 

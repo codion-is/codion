@@ -118,7 +118,7 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
   /**
    * @param listener the listener to remove
    */
-  public void removeButtonClickListener(final EventDataListener listener) {
+  public void removeButtonClickListener(final EventDataListener<Integer> listener) {
     buttonClickedEvent.removeDataListener(listener);
   }
 

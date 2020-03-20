@@ -34,13 +34,13 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
-  public final void removeDataListener(final EventDataListener listener) {
+  public final void removeDataListener(final EventDataListener<V> listener) {
     changeEvent.removeDataListener(listener);
   }
 
   @Override
   public final void link(final Value<V> linkedValue) {
-    new ValueLink<V>(this, linkedValue);
+    new ValueLink<>(this, linkedValue);
   }
 
   /**

@@ -121,7 +121,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * Removes the given listener.
    * @param listener the listener to remove
    */
-  public void removeStateListener(final EventDataListener listener) {
+  public void removeStateListener(final EventDataListener<Boolean> listener) {
     buttonState.removeDataListener(listener);
   }
 

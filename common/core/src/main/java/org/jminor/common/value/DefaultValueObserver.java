@@ -42,7 +42,7 @@ final class DefaultValueObserver<V> implements ValueObserver<V> {
   }
 
   @Override
-  public void removeDataListener(final EventDataListener listener) {
+  public void removeDataListener(final EventDataListener<V> listener) {
     value.removeDataListener(listener);
   }
 }

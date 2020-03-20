@@ -155,7 +155,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void addRowsDeletedListener(final EventDataListener<List<Integer>> listener) {}
     @Override
-    public void removeRowsDeletedListener(final EventDataListener listener) {}
+    public void removeRowsDeletedListener(final EventDataListener<List<Integer>> listener) {}
     @Override
     public Domain getDomain() {return null;}
     @Override
@@ -273,7 +273,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public EntityConnectionProvider getConnectionProvider() {return connectionProvider;}
     @Override
-    public EntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean value) {return null;}
+    public EntityTableModel<TestEntityEditModel> setRefreshOnForeignKeyConditionValuesSet(final boolean value) {return null;}
     @Override
     public boolean isRefreshOnForeignKeyConditionValuesSet() {return false;}
   }

@@ -231,7 +231,7 @@ public final class EntityTableConditionPanel extends JPanel {
   /**
    * @param listener the listener to remove
    */
-  public void removeAdvancedListener(final EventDataListener listener) {
+  public void removeAdvancedListener(final EventDataListener<Boolean> listener) {
     advancedChangedEvent.removeDataListener(listener);
   }
 

@@ -25,7 +25,7 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   }
 
   @Override
-  public void removeDataListener(final EventDataListener listener) {
+  public void removeDataListener(final EventDataListener<T> listener) {
     synchronized (lock) {
       getDataListeners().remove(listener);
     }

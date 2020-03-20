@@ -79,7 +79,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
   /**
    * @param listener the listener to remove
    */
-  void removeRowsDeletedListener(EventDataListener listener);
+  void removeRowsDeletedListener(EventDataListener<List<Integer>> listener);
 
   /**
    * @return true if an impending selection change should be allowed

@@ -26,7 +26,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
   /**
    * @param listener a selection listener to remove
    */
-  void removeSelectionListener(EventDataListener listener);
+  void removeSelectionListener(EventDataListener<T> listener);
 
   /**
    * Resets the contents of this model using the values found in {@code contents},

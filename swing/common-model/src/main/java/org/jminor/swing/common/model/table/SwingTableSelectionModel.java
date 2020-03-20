@@ -311,7 +311,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   /** {@inheritDoc} */
   @Override
-  public void removeSelectedIndexListener(final EventDataListener listener) {
+  public void removeSelectedIndexListener(final EventDataListener<Integer> listener) {
     selectedIndexChangedEvent.removeDataListener(listener);
   }
 
@@ -335,7 +335,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   /** {@inheritDoc} */
   @Override
-  public void removeSelectedItemListener(final EventDataListener listener) {
+  public void removeSelectedItemListener(final EventDataListener<R> listener) {
     selectedItemChangedEvent.removeDataListener(listener);
   }
 
@@ -347,7 +347,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   /** {@inheritDoc} */
   @Override
-  public void removeSelectedItemsListener(final EventDataListener listener) {
+  public void removeSelectedItemsListener(final EventDataListener<List<R>> listener) {
     selectedItemsChangedEvent.removeDataListener(listener);
   }
 

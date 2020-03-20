@@ -332,7 +332,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   /**
    * @param listener the listener to remove
    */
-  public final void removeAdvancedListener(final EventDataListener listener) {
+  public final void removeAdvancedListener(final EventDataListener<Boolean> listener) {
     advancedConditionState.removeDataListener(listener);
   }
 

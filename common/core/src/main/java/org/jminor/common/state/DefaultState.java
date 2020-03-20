@@ -73,7 +73,7 @@ class DefaultState implements State {
   }
 
   @Override
-  public void removeDataListener(final EventDataListener listener) {
+  public void removeDataListener(final EventDataListener<Boolean> listener) {
     getObserver().removeDataListener(listener);
   }
 

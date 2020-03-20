@@ -394,7 +394,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /** {@inheritDoc} */
   @Override
-  public final void removeLinkedDetailModelAddedListener(final EventDataListener listener) {
+  public final void removeLinkedDetailModelAddedListener(final EventDataListener<M> listener) {
     linkedDetailModelAddedEvent.removeDataListener(listener);
   }
 
@@ -406,7 +406,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /** {@inheritDoc} */
   @Override
-  public final void removeLinkedDetailModelRemovedListener(final EventDataListener listener) {
+  public final void removeLinkedDetailModelRemovedListener(final EventDataListener<M> listener) {
     linkedDetailModelRemovedEvent.removeDataListener(listener);
   }
 
@@ -513,7 +513,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     return activeEntities;
   }
 
-  private void setTableEditModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
+  private void setTableEditModel(final E editModel, final EntityTableModel<E> tableModel) {
     if (tableModel != null && !editModel.getEntityId().equals(tableModel.getEntityId())) {
       throw new IllegalArgumentException("Table model entityId mismatch, found: " + tableModel.getEntityId() + ", required: " + editModel.getEntityId());
     }
