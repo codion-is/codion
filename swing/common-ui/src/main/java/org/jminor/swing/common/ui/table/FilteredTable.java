@@ -38,7 +38,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
@@ -151,8 +150,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param conditionPanelProvider the column condition panel provider
    */
   public FilteredTable(final T tableModel, final ColumnConditionPanelProvider<R, C> conditionPanelProvider) {
-    super(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
-            (ListSelectionModel) tableModel.getSelectionModel());
+    super(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(), tableModel.getSelectionModel());
     this.tableModel = tableModel;
     this.conditionPanelProvider = requireNonNull(conditionPanelProvider, "conditionPanelProvider");
     this.searchField = initializeSearchField();
@@ -387,7 +385,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * @param listener the listener to remove
    */
-  public void removeDoubleClickListener(final EventDataListener listener) {
+  public void removeDoubleClickListener(final EventDataListener<MouseEvent> listener) {
     doubleClickedEvent.removeDataListener(listener);
   }
 

@@ -70,7 +70,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   /**
    * @param listener the listener to remove
    */
-  public void removeSelectedItemListener(final EventDataListener listener) {
+  public void removeSelectedItemListener(final EventDataListener<List<ItemRandomizer.RandomItem<T>>> listener) {
     selectedItemChangedEvent.removeDataListener(listener);
   }
 

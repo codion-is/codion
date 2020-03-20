@@ -35,5 +35,5 @@ public interface EventObserver<T> {
    * Removes {@code listener} from this EventObserver
    * @param listener the listener to remove
    */
-  void removeDataListener(EventDataListener listener);
+  void removeDataListener(EventDataListener<T> listener);
 }

@@ -17,7 +17,7 @@ public interface EntityUpdateCondition extends EntityCondition {
    * @param value the new value
    * @return this {@link EntityUpdateCondition} instance
    */
-  EntityUpdateCondition set(final String propertyId, final Object value);
+  EntityUpdateCondition set(String propertyId, Object value);
 
   /**
    * @return the new values mapped to their respective propertyIds

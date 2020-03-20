@@ -29,7 +29,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 // tag::viewEmployeeReport[]
   public void viewEmployeeReport() throws Exception {
     final String reportPath = ReportWrapper.getReportPath() + "/empdept_employees.jasper";
-    final Collection departmentNumbers =
+    final Collection<Integer> departmentNumbers =
             Entities.getDistinctValues(EmpDept.DEPARTMENT_ID,
                     getTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();

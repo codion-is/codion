@@ -26,7 +26,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
         extends Refreshable {
 
   /**
-   * Specifies whether a table model should be automatically search by the inserted entity
+   * Specifies whether a table model should automatically search by the inserted entity
    * when an insert is performed in a master model.
    * Value type: Boolean<br>
    * Default value: false
@@ -246,7 +246,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelAddedListener(EventDataListener listener);
+  void removeLinkedDetailModelAddedListener(EventDataListener<M> listener);
 
     /**
    * @param listener a listener to be notified each time a linked detail model is removed
@@ -256,7 +256,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
     /**
    * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelRemovedListener(EventDataListener listener);
+  void removeLinkedDetailModelRemovedListener(EventDataListener<M> listener);
 
   /**
    * Saves any user preferences

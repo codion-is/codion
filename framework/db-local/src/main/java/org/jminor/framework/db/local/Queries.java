@@ -25,7 +25,7 @@ final class Queries {
   /**
    * @param tableName the table name
    * @param insertProperties the properties used to insert the given entity type
-   * @return a query for inserting this entity instance
+   * @return a query for inserting
    */
   static String insertQuery(final String tableName, final List<ColumnProperty> insertProperties) {
     final StringBuilder queryBuilder = new StringBuilder("insert ").append("into ").append(tableName).append("(");
@@ -46,7 +46,7 @@ final class Queries {
    * @param tableName the table name
    * @param updateProperties the properties being updated
    * @param whereClause the where clause, without the WHERE keyword
-   * @return a query for updating this entity instance
+   * @return a query for updating
    */
   static String updateQuery(final String tableName, final List<ColumnProperty> updateProperties,
                             final String whereClause) {

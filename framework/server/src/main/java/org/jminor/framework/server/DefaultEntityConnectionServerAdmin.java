@@ -62,7 +62,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
    * The server being administrated
    */
   private final DefaultEntityConnectionServer server;
-  private final LinkedList<GcEvent> gcEventList = new LinkedList();
+  private final LinkedList<GcEvent> gcEventList = new LinkedList<>();
   private final Util.PropertyWriter propertyWriter = new SystemPropertyWriter();
 
   private final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();

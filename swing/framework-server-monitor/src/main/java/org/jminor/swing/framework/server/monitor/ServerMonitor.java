@@ -48,7 +48,7 @@ public final class ServerMonitor {
   private static final String GC_EVENT_PREFIX = "GC ";
 
   private final Event serverShutDownEvent = Events.event();
-  private final Event<String> statisticsUpdatedEvent = Events.event();
+  private final Event statisticsUpdatedEvent = Events.event();
   private final Event loggingLevelChangedEvent = Events.event();
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 

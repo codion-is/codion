@@ -349,7 +349,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * Removes the given value listener if it has been registered with this Entity.
    * @param valueListener the listener to remove
    */
-  void removeValueListener(EventDataListener valueListener);
+  void removeValueListener(EventDataListener<ValueChange> valueListener);
 
   /**
    * A class representing a primary key.

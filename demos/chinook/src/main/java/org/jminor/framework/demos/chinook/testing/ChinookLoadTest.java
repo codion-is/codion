@@ -95,7 +95,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
                 selectRandomRow(customerModel);
 
                 final String reportPath = ReportWrapper.getReportPath() + "/customer_report.jasper";
-                final Collection customerIDs =
+                final Collection<Long> customerIDs =
                         Entities.getDistinctValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
                 final HashMap<String, Object> reportParameters = new HashMap<>();
                 reportParameters.put("CUSTOMER_IDS", customerIDs);

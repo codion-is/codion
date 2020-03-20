@@ -51,7 +51,7 @@ final class StateValue implements Value<Boolean>  {
   }
 
   @Override
-  public void removeDataListener(final EventDataListener listener) {
+  public void removeDataListener(final EventDataListener<Boolean> listener) {
     state.removeDataListener(listener);
   }
 

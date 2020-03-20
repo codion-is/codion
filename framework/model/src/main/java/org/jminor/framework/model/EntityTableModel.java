@@ -353,7 +353,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @see #setForeignKeyConditionValues(ForeignKeyProperty, Collection)
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel setRefreshOnForeignKeyConditionValuesSet(boolean value);
+  EntityTableModel<E> setRefreshOnForeignKeyConditionValuesSet(boolean value);
 
   /**
    * @return true if this table model automatically refreshes when foreign key condition values are set

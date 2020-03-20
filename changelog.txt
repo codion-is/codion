@@ -5760,3 +5760,4 @@
   EntityConnection.selectValues() now "type safe"
   EntityConnection.executeFunction() now "type safe"
   KeyEvents.TransferFocusAction now private, transferFocusForwardAction() and transferFocusBackwardAction() added
+  Lots of raw use of parameterized class fixed, mostly EventDataListeners

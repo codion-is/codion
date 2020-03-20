@@ -93,6 +93,7 @@ public final class EntityLookupField extends JTextField {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityLookupField.class.getName(), Locale.getDefault());
 
+  private static final String LOOKUP_MODEL = "lookupModel";
   private static final int BORDER_SIZE = 15;
   private static final int ENABLE_LOOKUP_DELAY = 250;
 
@@ -118,7 +119,7 @@ public final class EntityLookupField extends JTextField {
    * @param lookupModel the lookup model on which to base this lookup field
    */
   public EntityLookupField(final EntityLookupModel lookupModel) {
-    requireNonNull(lookupModel, "lookupModel");
+    requireNonNull(lookupModel, LOOKUP_MODEL);
     this.model = lookupModel;
     this.settingsPanel = new SettingsPanel(lookupModel);
     this.selectionProvider = new ListSelectionProvider(model);
@@ -361,7 +362,7 @@ public final class EntityLookupField extends JTextField {
                                              final String lookupCaption, final String dialogTitle) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
     lookupModel.getMultipleSelectionEnabledValue().set(!singleSelection);
-    final ComponentValuePanel inputPanel = new ComponentValuePanel(lookupCaption,
+    final ComponentValuePanel<Entity, EntityLookupField> inputPanel = new ComponentValuePanel<>(lookupCaption,
             new ComponentValue(lookupModel, null));
     Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, true,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
@@ -468,10 +469,11 @@ public final class EntityLookupField extends JTextField {
     private final Control selectControl;
 
     /**
+     * Instantiates a new {@link JList} based {@link SelectionProvider}.
      * @param lookupModel the {@link EntityLookupModel}
      */
     public ListSelectionProvider(final EntityLookupModel lookupModel) {
-      requireNonNull(lookupModel, "lookupModel");
+      requireNonNull(lookupModel, LOOKUP_MODEL);
       this.selectControl = Controls.control(() -> {
         lookupModel.setSelectedEntities(list.getSelectedValuesList());
         Windows.getParentDialog(list).dispose();
@@ -524,10 +526,11 @@ public final class EntityLookupField extends JTextField {
     private final Control selectControl;
 
     /**
+     * Instantiates a new {@link FilteredTable} based {@link SelectionProvider}.
      * @param lookupModel the {@link EntityLookupModel}
      */
     public TableSelectionProvider(final EntityLookupModel lookupModel) {
-      requireNonNull(lookupModel, "lookupModel");
+      requireNonNull(lookupModel, LOOKUP_MODEL);
       final SwingEntityTableModel tableModel = new SwingEntityTableModel(lookupModel.getEntityId(), lookupModel.getConnectionProvider()) {
         @Override
         protected List<Entity> performQuery() {

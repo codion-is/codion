@@ -101,12 +101,12 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public void removeDataListener(final EventDataListener listener) {
+  public void removeDataListener(final EventDataListener<V> listener) {
     changeEvent.removeDataListener(listener);
   }
 
   @Override
   public void link(final Value<V> linkedValue) {
-    new ValueLink<V>(this, linkedValue);
+    new ValueLink<>(this, linkedValue);
   }
 }

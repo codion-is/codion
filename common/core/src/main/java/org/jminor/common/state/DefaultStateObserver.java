@@ -57,7 +57,7 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public void removeDataListener(final EventDataListener listener) {
+  public void removeDataListener(final EventDataListener<Boolean> listener) {
     getEventObserver().removeDataListener(listener);
   }
 

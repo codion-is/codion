@@ -55,7 +55,7 @@ public interface SelectionModel<R> {
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedIndexListener(EventDataListener listener);
+  void removeSelectedIndexListener(EventDataListener<Integer> listener);
 
   /**
    * @param listener a listener to be notified each time the selected item changes
@@ -65,7 +65,7 @@ public interface SelectionModel<R> {
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedItemListener(EventDataListener listener);
+  void removeSelectedItemListener(EventDataListener<R> listener);
 
   /**
    * @param listener a listener to be notified each time the selected items change
@@ -75,7 +75,7 @@ public interface SelectionModel<R> {
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedItemsListener(EventDataListener listener);
+  void removeSelectedItemsListener(EventDataListener<List<R>> listener);
 
   /**
    * Moves all selected indexes down one index, wraps around.

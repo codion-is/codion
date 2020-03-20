@@ -366,7 +366,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
 
   /** {@inheritDoc} */
   @Override
-  public final void removeConditionTypeListener(final EventDataListener listener) {
+  public final void removeConditionTypeListener(final EventDataListener<ConditionType> listener) {
     conditionTypeValue.removeDataListener(listener);
   }
 

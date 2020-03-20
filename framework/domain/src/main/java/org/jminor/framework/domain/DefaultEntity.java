@@ -518,7 +518,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public void removeValueListener(final EventDataListener valueListener) {
+  public void removeValueListener(final EventDataListener<ValueChange> valueListener) {
     if (valueChangedEvent != null) {
       valueChangedEvent.removeDataListener(valueListener);
     }

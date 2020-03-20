@@ -94,7 +94,7 @@ public final class NumericalValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<Double, SpinnerNumberModel> doubleValue(final SpinnerNumberModel spinnerModel) {
-    return new SpinnerNumberValue(spinnerModel);
+    return new SpinnerNumberValue<>(spinnerModel);
   }
 
   /**
@@ -247,7 +247,7 @@ public final class NumericalValues {
    * @return a Value bound to the given model
    */
   public static ComponentValue<Integer, SpinnerNumberModel> integerValue(final SpinnerNumberModel spinnerModel) {
-    return new SpinnerNumberValue(spinnerModel);
+    return new SpinnerNumberValue<>(spinnerModel);
   }
 
   /**

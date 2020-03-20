@@ -239,7 +239,7 @@ public interface ColumnConditionModel<R, C> {
   /**
    * @param listener the listener to remove
    */
-  void removeConditionTypeListener(EventDataListener listener);
+  void removeConditionTypeListener(EventDataListener<ConditionType> listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound changes

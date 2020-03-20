@@ -105,7 +105,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSummaryListener(final EventDataListener listener) {
+  public final void removeSummaryListener(final EventDataListener<Summary> listener) {
     summaryChangedEvent.removeDataListener(listener);
   }
 }
