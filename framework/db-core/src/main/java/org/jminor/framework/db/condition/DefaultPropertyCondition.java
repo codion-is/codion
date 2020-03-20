@@ -36,7 +36,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   /**
    * The values used in this condition
    */
-  private final ArrayList values;
+  private final List values;
 
   /**
    * True if this condition tests for null
@@ -116,8 +116,8 @@ final class DefaultPropertyCondition implements PropertyCondition {
     return this;
   }
 
-  private static ArrayList initializeValues(final Object value) {
-    final ArrayList values = new ArrayList();
+  private static List initializeValues(final Object value) {
+    final List values = new ArrayList();
     if (value instanceof Collection) {
       values.addAll((Collection) value);
     }

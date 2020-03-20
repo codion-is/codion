@@ -69,7 +69,7 @@ public final class BooleanValues {
    * @param owner the value owner
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @return a ButtomModel based on the value
+   * @return a ButtonModel based on the value
    */
   public static ButtonModel booleanValueLink(final Object owner, final String propertyName, final EventObserver<Boolean> valueChangeEvent) {
     final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
