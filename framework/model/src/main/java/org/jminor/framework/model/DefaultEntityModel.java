@@ -57,11 +57,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   private final Event<M> linkedDetailModelRemovedEvent = Events.event();
 
   /**
-   * The entity ID
-   */
-  private final String entityId;
-
-  /**
    * The EntityEditModel instance
    */
   private final E editModel;
@@ -114,7 +109,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   public DefaultEntityModel(final E editModel, final T tableModel) {
     requireNonNull(editModel, "editModel");
-    this.entityId = editModel.getEntityId();
     this.connectionProvider = editModel.getConnectionProvider();
     this.editModel = editModel;
     this.tableModel = tableModel;
@@ -129,13 +123,13 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + entityId;
+    return getClass().getSimpleName() + ": " + getEntityId();
   }
 
   /** {@inheritDoc} */
   @Override
   public final String getEntityId() {
-    return entityId;
+    return editModel.getEntityId();
   }
 
   /** {@inheritDoc} */
@@ -465,7 +459,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
         detailModel.initialize(detailModelForeignKeys.get(detailModel), activeEntities);
       }
       else {
-        detailModel.initialize(entityId, activeEntities);
+        detailModel.initialize(getEntityId(), activeEntities);
       }
     }
   }
@@ -520,8 +514,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void setTableEditModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
-    if (tableModel != null && !entityId.equals(tableModel.getEntityId())) {
-      throw new IllegalArgumentException("Table model entityId mismatch, found: " + tableModel.getEntityId() + ", required: " + entityId);
+    if (tableModel != null && !editModel.getEntityId().equals(tableModel.getEntityId())) {
+      throw new IllegalArgumentException("Table model entityId mismatch, found: " + tableModel.getEntityId() + ", required: " + editModel.getEntityId());
     }
     if (tableModel != null) {
       if (tableModel.hasEditModel()) {
@@ -539,12 +533,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     final EventListener initializer = this::initializeDetailModels;
     linkedDetailModelAddedEvent.addListener(initializer);
     linkedDetailModelRemovedEvent.addListener(initializer);
-    editModel.addAfterInsertListener(insertEvent ->
-            detailModels.forEach(detailModel -> detailModel.onMasterInsert(insertEvent)));
-    editModel.addAfterUpdateListener(updateEvent ->
-            detailModels.forEach(detailModel -> detailModel.onMasterUpdate(updateEvent)));
-    editModel.addAfterDeleteListener(deleteEvent ->
-            detailModels.forEach(detailModel -> detailModel.onMasterDelete(deleteEvent)));
+    editModel.addAfterInsertListener(insertedEntities ->
+            detailModels.forEach(detailModel -> detailModel.onMasterInsert(insertedEntities)));
+    editModel.addAfterUpdateListener(updatedEntities ->
+            detailModels.forEach(detailModel -> detailModel.onMasterUpdate(updatedEntities)));
+    editModel.addAfterDeleteListener(deletedEntities ->
+            detailModels.forEach(detailModel -> detailModel.onMasterDelete(deletedEntities)));
     if (containsTableModel()) {
       getTableModel().addSelectionChangedListener(initializer);
     }
