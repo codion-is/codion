@@ -1358,7 +1358,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void onStartupException(final JDialog startupDialog, final EntityConnectionProvider connectionProvider, final Throwable e) {
-    LOG.error("Exception during startup", e);
     try {
       if (connectionProvider != null) {
         connectionProvider.disconnect();

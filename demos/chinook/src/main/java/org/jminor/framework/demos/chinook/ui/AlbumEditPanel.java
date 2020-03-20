@@ -34,9 +34,7 @@ public class AlbumEditPanel extends EntityEditPanel {
     final JPanel inputBasePanel = new JPanel(new BorderLayout(5, 5));
     inputBasePanel.add(inputPanel, BorderLayout.NORTH);
 
-    final CoverArtPanel coverArtPanel = new CoverArtPanel(getEditModel().value(ALBUM_COVER));
-
     add(inputBasePanel, BorderLayout.WEST);
-    add(coverArtPanel, BorderLayout.CENTER);
+    add(new CoverArtPanel(getEditModel().value(ALBUM_COVER)), BorderLayout.CENTER);
   }
 }
