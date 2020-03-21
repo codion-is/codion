@@ -295,10 +295,10 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   }
 
   /**
-   * @param value true if advanced condition should be enabled
+   * @param advanced true if advanced condition should be enabled
    */
-  public final void setAdvanced(final boolean value) {
-    advancedConditionState.set(value);
+  public final void setAdvanced(final boolean advanced) {
+    advancedConditionState.set(advanced);
   }
 
   /**

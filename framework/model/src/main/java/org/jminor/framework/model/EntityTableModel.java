@@ -262,11 +262,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   boolean isRemoveEntitiesOnDelete();
 
   /**
-   * @param value true if entities that are deleted via the associated edit model
+   * @param removeEntitiesOnDelete true if entities that are deleted via the associated edit model
    * should be automatically removed from this table model
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel<E> setRemoveEntitiesOnDelete(boolean value);
+  EntityTableModel<E> setRemoveEntitiesOnDelete(boolean removeEntitiesOnDelete);
 
   /**
    * @return the action performed when entities are inserted via the associated edit model
@@ -349,11 +349,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void addSelectionChangedListener(EventListener listener);
 
   /**
-   * @param value true if this table model should automatically refresh when foreign key condition values are set
+   * @param refreshOnForeignKeyConditionValuesSet true if this table model should automatically refresh when foreign key condition values are set
    * @see #setForeignKeyConditionValues(ForeignKeyProperty, Collection)
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel<E> setRefreshOnForeignKeyConditionValuesSet(boolean value);
+  EntityTableModel<E> setRefreshOnForeignKeyConditionValuesSet(boolean refreshOnForeignKeyConditionValuesSet);
 
   /**
    * @return true if this table model automatically refreshes when foreign key condition values are set

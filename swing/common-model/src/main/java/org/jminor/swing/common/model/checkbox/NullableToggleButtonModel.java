@@ -97,17 +97,17 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 
   /**
    * Does nothing.
-   * @param value the value
+   * @param armed the value
    */
   @Override
-  public void setArmed(final boolean value) {/*Not implemented*/}
+  public void setArmed(final boolean armed) {/*Not implemented*/}
 
   /**
    * Does nothing.
-   * @param value the value
+   * @param pressed the value
    */
   @Override
-  public void setPressed(final boolean value) {/*Not implemented*/}
+  public void setPressed(final boolean pressed) {/*Not implemented*/}
 
   /**
    * Adds a listener notified each time the state changes.

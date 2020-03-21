@@ -5742,3 +5742,4 @@
   DefaultEntityKey now validates type on single value construction
   EntityApplicationPanel.showEntityPanelDialog() renamed to displayEntityPanelDialog(), plus som minor refactoring
   EntityEditPanel.getActiveObserver() replaced with isActive() and addActiveListener()
+  Boolean setter parameters renamed to reflect method name

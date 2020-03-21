@@ -251,8 +251,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityTableModel setRemoveEntitiesOnDelete(final boolean value) {
-    this.removeEntitiesOnDelete = value;
+  public final SwingEntityTableModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
+    this.removeEntitiesOnDelete = removeEntitiesOnDelete;
     return this;
   }
 
@@ -310,8 +310,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean value) {
-    this.refreshOnForeignKeyConditionValuesSet = value;
+  public final SwingEntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
+    this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
     return this;
   }
 

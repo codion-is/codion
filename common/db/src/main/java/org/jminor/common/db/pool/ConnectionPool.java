@@ -83,12 +83,12 @@ public interface ConnectionPool {
   boolean isCollectFineGrainedStatistics();
 
   /**
-   * Specifies whether or not fine grained usage statistics should be collected.
-   * @param value the value
+   * Specifies whether to collect fine grained usage statistics.
+   * @param collectFineGrainedStatistics the value
    * @see #getStatistics(long)
    * @see ConnectionPoolStatistics#getFineGrainedStatistics()
    */
-  void setCollectFineGrainedStatistics(boolean value);
+  void setCollectFineGrainedStatistics(boolean collectFineGrainedStatistics);
 
   /**
    * @return the pool cleanup interval in milliseconds
