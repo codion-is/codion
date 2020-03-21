@@ -64,7 +64,7 @@ task buildReports(dependsOn: 'compileJava') {
         }
     }
 }
-classes.dependsOn buildReports
+compileJava.finalizedBy buildReports
 
 startScripts {
     mainClassName = mainClass
