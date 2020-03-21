@@ -43,9 +43,9 @@ public interface ColumnSummaryModel {
   boolean isLocked();
 
   /**
-   * @param value if true then changing summary type is disable
+   * @param locked if true then changing summary type is disable
    */
-  void setLocked(boolean value);
+  void setLocked(boolean locked);
 
   /**
    * @return a list containing the available summaries

@@ -245,9 +245,9 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setCollectFineGrainedStatistics(final boolean value) {
+    public void setCollectFineGrainedStatistics(final boolean collectFineGrainedStatistics) {
       try {
-        server.setCollectFineGrainedPoolStatistics(user, value);
+        server.setCollectFineGrainedPoolStatistics(user, collectFineGrainedStatistics);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);

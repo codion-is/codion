@@ -125,8 +125,8 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
 
   /** {@inheritDoc} */
   @Override
-  public final void setLocked(final boolean value) {
-    lockedState.set(value);
+  public final void setLocked(final boolean locked) {
+    lockedState.set(locked);
   }
 
   /** {@inheritDoc} */

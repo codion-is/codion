@@ -341,8 +341,8 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   /** {@inheritDoc} */
   @Override
-  public void setFilterSelectedItem(final boolean value) {
-    this.filterSelectedItem = value;
+  public void setFilterSelectedItem(final boolean filterSelectedItem) {
+    this.filterSelectedItem = filterSelectedItem;
   }
 
   /** {@inheritDoc} */

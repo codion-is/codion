@@ -211,7 +211,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public boolean isRemoveEntitiesOnDelete() {return false;}
     @Override
-    public EntityTableModel<TestEntityEditModel> setRemoveEntitiesOnDelete(final boolean value) {return null;}
+    public EntityTableModel<TestEntityEditModel> setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {return null;}
     @Override
     public InsertAction getInsertAction() {return null;}
     @Override
@@ -273,7 +273,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public EntityConnectionProvider getConnectionProvider() {return connectionProvider;}
     @Override
-    public EntityTableModel<TestEntityEditModel> setRefreshOnForeignKeyConditionValuesSet(final boolean value) {return null;}
+    public EntityTableModel<TestEntityEditModel> setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {return null;}
     @Override
     public boolean isRefreshOnForeignKeyConditionValuesSet() {return false;}
   }

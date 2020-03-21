@@ -88,11 +88,11 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   /**
-   * @param value true if the parent frame should be always on top
+   * @param alwaysOnTop true if the parent frame should be always on top
    */
-  public void setAlwaysOnTop(final boolean value) {
-    monitorFrame.setAlwaysOnTop(value);
-    alwaysOnTopChangedEvent.onEvent(value);
+  public void setAlwaysOnTop(final boolean alwaysOnTop) {
+    monitorFrame.setAlwaysOnTop(alwaysOnTop);
+    alwaysOnTopChangedEvent.onEvent(alwaysOnTop);
   }
 
   public void runJConsole() throws IOException {

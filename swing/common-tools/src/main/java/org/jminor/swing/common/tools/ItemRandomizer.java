@@ -110,9 +110,9 @@ public interface ItemRandomizer<T> {
 
   /**
    * @param item the item
-   * @param value true if the item should be enabled
+   * @param enabled true if the item should be enabled
    */
-  void setItemEnabled(T item, boolean value);
+  void setItemEnabled(T item, boolean enabled);
 
   /**
    * Wraps an item for usage in the ItemRandomizer
@@ -146,9 +146,9 @@ public interface ItemRandomizer<T> {
     boolean isEnabled();
 
     /**
-     * @param value true if this item should be enabled
+     * @param enabled true if this item should be enabled
      */
-    void setEnabled(boolean value);
+    void setEnabled(boolean enabled);
 
     /**
      * @return the item this random item represents

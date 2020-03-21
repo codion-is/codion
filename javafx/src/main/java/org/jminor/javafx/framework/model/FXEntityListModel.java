@@ -294,8 +294,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final FXEntityListModel setRefreshOnForeignKeyConditionValuesSet(final boolean value) {
-    this.refreshOnForeignKeyConditionValuesSet = value;
+  public final FXEntityListModel setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
+    this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
     return this;
   }
 

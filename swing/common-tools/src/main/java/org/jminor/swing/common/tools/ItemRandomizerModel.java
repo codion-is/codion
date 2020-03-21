@@ -235,8 +235,8 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
 
     @Override
-    public void setEnabled(final boolean value) {
-      this.enabled = value;
+    public void setEnabled(final boolean enabled) {
+      this.enabled = enabled;
     }
 
     @Override

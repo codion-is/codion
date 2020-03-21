@@ -224,11 +224,11 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   /**
    * Hides or shows the active filter panels for this table panel
-   * @param value true if the active filter panels should be shown, false if they should be hidden
+   * @param filterPanelsVisible true if the active filter panels should be shown, false if they should be hidden
    */
-  public void setFilterPanelsVisible(final boolean value) {
+  public void setFilterPanelsVisible(final boolean filterPanelsVisible) {
     columnFilterPanels.values().forEach(columnFilterPanel -> SwingUtilities.invokeLater(() -> {
-      if (value) {
+      if (filterPanelsVisible) {
         columnFilterPanel.showDialog();
       }
       else {

@@ -45,8 +45,8 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   /** {@inheritDoc} */
   @Override
-  public void setLocked(final boolean value) {
-    this.locked = value;
+  public void setLocked(final boolean locked) {
+    this.locked = locked;
   }
 
   /** {@inheritDoc} */

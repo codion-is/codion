@@ -251,11 +251,11 @@ public final class ConnectionPoolMonitor {
   }
 
   /**
-   * @param value true if fine grained stats should be collected
+   * @param collectFineGrainedStatistics true if fine grained stats should be collected
    */
-  public void setCollectFineGrainedStatistics(final boolean value) {
-    connectionPool.setCollectFineGrainedStatistics(value);
-    collectFineGrainedStatisticsChangedEvent.onEvent(value);
+  public void setCollectFineGrainedStatistics(final boolean collectFineGrainedStatistics) {
+    connectionPool.setCollectFineGrainedStatistics(collectFineGrainedStatistics);
+    collectFineGrainedStatisticsChangedEvent.onEvent(collectFineGrainedStatistics);
   }
 
   /**

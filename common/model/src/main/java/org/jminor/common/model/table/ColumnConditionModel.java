@@ -112,9 +112,9 @@ public interface ColumnConditionModel<R, C> {
   boolean include(Comparable comparable);
 
   /**
-   * @param value true to lock this model, false to unlock
+   * @param locked true to lock this model, false to unlock
    */
-  void setLocked(boolean value);
+  void setLocked(boolean locked);
 
   /**
    * @return true if this model is locked
@@ -186,9 +186,9 @@ public interface ColumnConditionModel<R, C> {
   boolean isEnabled();
 
   /**
-   * @param value true to enable, false to disable
+   * @param enabled true to enable, false to disable
    */
-  void setEnabled(boolean value);
+  void setEnabled(boolean enabled);
 
   /**
    * Disables and clears this condition model, that is, sets the upper and lower bounds to null

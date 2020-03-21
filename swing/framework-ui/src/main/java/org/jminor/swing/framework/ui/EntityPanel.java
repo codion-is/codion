@@ -669,12 +669,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     final List<? extends HierarchyPanel> siblingPanels = getParentPanel().getChildPanels();
     if (siblingPanels.contains(this)) {
       final int index = siblingPanels.indexOf(this);
-      if (index == 0) {
+      if (index == 0) {//wrap around
         return siblingPanels.get(siblingPanels.size() - 1);
       }
-      else {
-        return siblingPanels.get(index - 1);
-      }
+
+      return siblingPanels.get(index - 1);
     }
 
     return null;
@@ -689,12 +688,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     final List<? extends HierarchyPanel> siblingPanels = getParentPanel().getChildPanels();
     if (siblingPanels.contains(this)) {
       final int index = siblingPanels.indexOf(this);
-      if (index == siblingPanels.size() - 1) {
+      if (index == siblingPanels.size() - 1) {//wrap around
         return siblingPanels.get(0);
       }
-      else {
-        return siblingPanels.get(index + 1);
-      }
+
+      return siblingPanels.get(index + 1);
     }
 
     return null;

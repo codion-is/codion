@@ -402,8 +402,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /** {@inheritDoc} */
   @Override
-  public final void setPaused(final boolean value) {
-    this.paused = value;
+  public final void setPaused(final boolean paused) {
+    this.paused = paused;
     pausedChangedEvent.onEvent(this.paused);
   }
 
@@ -415,8 +415,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /** {@inheritDoc} */
   @Override
-  public final void setCollectChartData(final boolean value) {
-    this.collectChartData = value;
+  public final void setCollectChartData(final boolean collectChartData) {
+    this.collectChartData = collectChartData;
     collectChartDataChangedEvent.onEvent(this.collectChartData);
   }
 

@@ -109,9 +109,9 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * from the model, otherwise the selected item can potentially represent a value
    * which is not currently visible in the model.
    * By default this is true.
-   * @param value if true then the selected item is changed when it is filtered out,
+   * @param filterSelectedItem if true then the selected item is changed when it is filtered out,
    */
-  void setFilterSelectedItem(boolean value);
+  void setFilterSelectedItem(boolean filterSelectedItem);
 
   /**
    * Specifies whether or not filtering can change the selected item, if true then

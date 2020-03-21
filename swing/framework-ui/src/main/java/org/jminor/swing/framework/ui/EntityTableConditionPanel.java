@@ -99,21 +99,21 @@ public final class EntityTableConditionPanel extends JPanel {
   }
 
   /**
-   * @param value true if advanced search should be enabled in the full condition panel,
+   * @param advanced true if advanced search should be enabled in the full condition panel,
    * does not apply when simple search is enabled
    */
-  public void setAdvanced(final boolean value) {
+  public void setAdvanced(final boolean advanced) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
         if (panel instanceof ColumnConditionPanel) {
-          ((ColumnConditionPanel) panel).setAdvanced(value);
+          ((ColumnConditionPanel) panel).setAdvanced(advanced);
         }
       });
     }
     else {
-      layoutPanel(value);
+      layoutPanel(advanced);
     }
-    advancedChangedEvent.onEvent(value);
+    advancedChangedEvent.onEvent(advanced);
   }
 
   /**

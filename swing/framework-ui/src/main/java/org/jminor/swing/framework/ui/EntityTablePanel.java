@@ -344,34 +344,34 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * @param value true if the south panel should be included
+   * @param includeSouthPanel true if the south panel should be included
    * @see #initializeSouthPanel()
    * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void setIncludeSouthPanel(final boolean value) {
+  public final void setIncludeSouthPanel(final boolean includeSouthPanel) {
     checkIfInitialized();
-    this.includeSouthPanel = value;
+    this.includeSouthPanel = includeSouthPanel;
   }
 
   /**
-   * @param value true if the condition panel should be included
+   * @param includeConditionPanel true if the condition panel should be included
    * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void setIncludeConditionPanel(final boolean value) {
+  public final void setIncludeConditionPanel(final boolean includeConditionPanel) {
     checkIfInitialized();
-    this.includeConditionPanel = value;
+    this.includeConditionPanel = includeConditionPanel;
   }
 
   /**
-   * @param value true if a popup menu should be included
+   * @param includePopupMenu true if a popup menu should be included
    * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void setIncludePopupMenu(final boolean value) {
+  public final void setIncludePopupMenu(final boolean includePopupMenu) {
     checkIfInitialized();
-    this.includePopupMenu = value;
+    this.includePopupMenu = includePopupMenu;
   }
 
   /**
@@ -674,8 +674,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Handles the given exception. If the referential error handling is {@link EntityTablePanel.ReferentialIntegrityErrorHandling#DEPENDENCIES}, the dependencies of the given entity are displayed
-   * to the user, otherwise {@link #onException(Exception)} is called.
+   * Handles the given exception. If the referential error handling is {@link EntityTablePanel.ReferentialIntegrityErrorHandling#DEPENDENCIES},
+   * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Exception)} is called.
    * @param exception the exception
    * @param entities the entities causing the exception
    * @see #setReferentialIntegrityErrorHandling(EntityTablePanel.ReferentialIntegrityErrorHandling)

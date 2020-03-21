@@ -53,9 +53,9 @@ public interface LoadTest {
 
   /**
    * @param scenarioName the scenario name
-   * @param value true if the scenario should be enabled
+   * @param enabled true if the scenario should be enabled
    */
-  void setScenarioEnabled(String scenarioName, boolean value);
+  void setScenarioEnabled(String scenarioName, boolean enabled);
 
   /**
    * @return the usage scenarios used by this load test;
@@ -109,9 +109,9 @@ public interface LoadTest {
   boolean isPaused();
 
   /**
-   * @param value true if load testing should be paused
+   * @param paused true if load testing should be paused
    */
-  void setPaused(boolean value);
+  void setPaused(boolean paused);
 
   /**
    * @return the maximum number of milliseconds that should pass between work requests
@@ -153,9 +153,9 @@ public interface LoadTest {
   boolean isCollectChartData();
 
   /**
-   * @param value true if chart data should be collected
+   * @param collectChartData true if chart data should be collected
    */
-  void setCollectChartData(boolean value);
+  void setCollectChartData(boolean collectChartData);
 
   /**
    * @return an observer notified each time the application count changes
