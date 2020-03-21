@@ -137,11 +137,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("jminor.swing.showStartupDialog", true);
 
   /**
-   * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.showEntityPanelDialog} method
-   * should be persisted, or kept in memory, when the dialog is closed.<br>
+   * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.displayEntityPanelDialog} method
+   * should be persisted, or kept in memory, when the dialog is closed, instead of being created each time.<br>
    * Value type: Boolean<br>
    * Default value: false
-   * @see EntityApplicationPanel#showEntityPanelDialog(EntityPanelProvider)
+   * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanelProvider)
    */
   public static final PropertyValue<Boolean> PERSIST_ENTITY_PANELS = Configuration.booleanValue("jminor.swing.persistEntityPanels", false);
 
@@ -291,14 +291,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @param value the new value
+   * @param alwaysOnTop the new value
    * @see #addAlwaysOnTopListener(EventDataListener)
    */
-  public final void setAlwaysOnTop(final boolean value) {
+  public final void setAlwaysOnTop(final boolean alwaysOnTop) {
     final Window parent = getParentWindow();
     if (parent != null) {
-      parent.setAlwaysOnTop(value);
-      alwaysOnTopChangedEvent.onEvent(value);
+      parent.setAlwaysOnTop(alwaysOnTop);
+      alwaysOnTopChangedEvent.onEvent(alwaysOnTop);
     }
   }
 
@@ -481,7 +481,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /** {@inheritDoc} */
   @Override
   public final EntityPanel getSelectedChildPanel() {
-    return getEntityPanels().get(0);
+    if (applicationTabPane != null) {//initializeUI() may have been overridden
+      applicationTabPane.getSelectedComponent();
+    }
+
+    return entityPanels.isEmpty() ? null : entityPanels.get(0);
   }
 
   /** {@inheritDoc} */
@@ -921,7 +925,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     });
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
-    supportPanelProviders.forEach(panelProvider -> controlSet.add(Controls.control(() -> showEntityPanelDialog(panelProvider),
+    supportPanelProviders.forEach(panelProvider -> controlSet.add(Controls.control(() -> displayEntityPanelDialog(panelProvider),
             panelProvider.getCaption() == null ?
                     domain.getDefinition(panelProvider.getEntityId()).getCaption() : panelProvider.getCaption())));
 
@@ -932,8 +936,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows a dialog containing the entity panel provided by the given panel provider
    * @param panelProvider the entity panel provider
    */
-  protected final void showEntityPanelDialog(final EntityPanelProvider panelProvider) {
-    showEntityPanelDialog(panelProvider, false);
+  protected final void displayEntityPanelDialog(final EntityPanelProvider panelProvider) {
+    displayEntityPanelDialog(panelProvider, false);
   }
 
   /**
@@ -941,7 +945,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param panelProvider the entity panel provider
    * @param modalDialog if true the dialog is made modal
    */
-  protected final void showEntityPanelDialog(final EntityPanelProvider panelProvider, final boolean modalDialog) {
+  protected final void displayEntityPanelDialog(final EntityPanelProvider panelProvider, final boolean modalDialog) {
     try {
       Components.showWaitCursor(this);
       final EntityPanel entityPanel;
@@ -1000,24 +1004,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected void initializeUI() {
     setLayout(new BorderLayout());
-    applicationTabPane = new JTabbedPane(TAB_PLACEMENT.get());
-    applicationTabPane.setFocusable(false);
-    applicationTabPane.addChangeListener(e -> ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel());
-    for (final EntityPanel entityPanel : entityPanels) {
-      applicationTabPane.addTab(entityPanel.getCaption(), entityPanel);
-      if (entityPanel.getEditPanel() != null) {
-        entityPanel.getEditPanel().getActiveObserver().addDataListener(active -> {
-          if (active) {
-            LOG.debug("{} selectApplicationTab", entityPanel.getEditModel().getEntityId());
-            applicationTabPane.setSelectedComponent(entityPanel);
-          }
-        });
-      }
-    }
-    //initialize first panel
-    if (applicationTabPane.getTabCount() > 0) {
-      ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
-    }
+    applicationTabPane = initializeApplicationTabPane();
     add(applicationTabPane, BorderLayout.CENTER);
 
     final JPanel northPanel = initializeNorthPanel();
@@ -1297,6 +1284,28 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private void clearEntityPanelProviders() {
     entityPanelProviders.clear();
     supportPanelProviders.clear();
+  }
+
+  private JTabbedPane initializeApplicationTabPane() {
+    final JTabbedPane tabbedPane = new JTabbedPane(TAB_PLACEMENT.get());
+    tabbedPane.setFocusable(false);
+    tabbedPane.addChangeListener(e -> ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel());
+    for (final EntityPanel entityPanel : entityPanels) {
+      tabbedPane.addTab(entityPanel.getCaption(), entityPanel);
+      if (entityPanel.getEditPanel() != null) {
+        entityPanel.getEditPanel().getActiveObserver().addDataListener(panelActivated -> {
+          if (panelActivated) {
+            setSelectedChildPanel(entityPanel);
+          }
+        });
+      }
+    }
+    //initialize first panel
+    if (tabbedPane.getTabCount() > 0) {
+      ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel();
+    }
+
+    return tabbedPane;
   }
 
   /**
