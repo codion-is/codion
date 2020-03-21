@@ -1293,7 +1293,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     for (final EntityPanel entityPanel : entityPanels) {
       tabbedPane.addTab(entityPanel.getCaption(), entityPanel);
       if (entityPanel.getEditPanel() != null) {
-        entityPanel.getEditPanel().getActiveObserver().addDataListener(panelActivated -> {
+        entityPanel.getEditPanel().addActiveListener(panelActivated -> {
           if (panelActivated) {
             setSelectedChildPanel(entityPanel);
           }

@@ -9,7 +9,6 @@ import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.state.State;
-import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -166,11 +165,24 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Indicates whether this panel is active and ready to receive input
-   * @return a state indicating whether the active is active and ready to receive input
+   * @param listener a listener notified each time the active state changes
    */
-  public final StateObserver getActiveObserver() {
-    return activeState.getObserver();
+  public final void addActiveListener(final EventDataListener<Boolean> listener) {
+    activeState.addDataListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public final void removeActiveListener(final EventDataListener<Boolean> listener) {
+    activeState.removeDataListener(listener);
+  }
+
+  /**
+   * @return true if this edit panel is active, enabled and ready to receive input
+   */
+  public final boolean isActive() {
+    return activeState.get();
   }
 
   /**
@@ -248,7 +260,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Controls.control(getEditModel()::refresh, FrameworkMessages.get(FrameworkMessages.REFRESH),
-            getActiveObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
+            activeState, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
                     + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
 
@@ -259,7 +271,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return Controls.control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
-                    getActiveObserver(),
+                    activeState,
                     getEditModel().getDeleteEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0), null,
@@ -272,7 +284,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return Controls.control(this::clearAndRequestFocus, FrameworkMessages.get(FrameworkMessages.CLEAR),
-            getActiveObserver(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
+            activeState, FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
 
@@ -283,7 +295,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return Controls.control(this::update, FrameworkMessages.get(FrameworkMessages.UPDATE),
             States.aggregateState(Conjunction.AND,
-                    getActiveObserver(),
+                    activeState,
                     getEditModel().getUpdateEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver(),
                     getEditModel().getModifiedObserver()),
@@ -297,7 +309,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.control(this::insert, FrameworkMessages.get(FrameworkMessages.INSERT),
-            States.aggregateState(Conjunction.AND, getActiveObserver(), getEditModel().getInsertEnabledObserver()),
+            States.aggregateState(Conjunction.AND, activeState, getEditModel().getInsertEnabledObserver()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_ADD_16));
   }
@@ -312,7 +324,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
             States.aggregateState(Conjunction.AND, getEditModel().getUpdateEnabledObserver(),
                     getEditModel().getModifiedObserver()));
     return Controls.control(this::save, FrameworkMessages.get(FrameworkMessages.SAVE),
-            States.aggregateState(Conjunction.AND, getActiveObserver(), insertUpdateState),
+            States.aggregateState(Conjunction.AND, activeState, insertUpdateState),
             FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_ADD_16));
   }

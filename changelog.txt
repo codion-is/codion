@@ -5741,3 +5741,4 @@
   org.jminor.framework.domain.entity package added, populated with Entity related classes
   DefaultEntityKey now validates type on single value construction
   EntityApplicationPanel.showEntityPanelDialog() renamed to displayEntityPanelDialog(), plus som minor refactoring
+  EntityEditPanel.getActiveObserver() replaced with isActive() and addActiveListener()
