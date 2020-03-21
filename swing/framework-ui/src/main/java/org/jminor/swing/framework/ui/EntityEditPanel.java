@@ -13,7 +13,7 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;

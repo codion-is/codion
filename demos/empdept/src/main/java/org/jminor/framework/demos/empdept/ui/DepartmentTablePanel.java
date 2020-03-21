@@ -6,7 +6,7 @@ package org.jminor.framework.demos.empdept.ui;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.state.StateObserver;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
 import org.jminor.plugin.jasperreports.ui.JasperReportsUIWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;

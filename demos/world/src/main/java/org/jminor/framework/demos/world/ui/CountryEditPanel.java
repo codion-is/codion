@@ -1,7 +1,7 @@
 package org.jminor.framework.demos.world.ui;
 
 import org.jminor.framework.demos.world.domain.World;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;

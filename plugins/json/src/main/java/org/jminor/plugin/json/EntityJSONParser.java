@@ -4,8 +4,8 @@
 package org.jminor.plugin.json;
 
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;

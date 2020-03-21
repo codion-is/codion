@@ -1,7 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.entity;
+
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,17 +16,17 @@ public final class OrderByTest {
   public void test() {
     final TestDomain domain = new TestDomain();
     final EntityDefinition definition = domain.getDefinition(TestDomain.T_DEPARTMENT);
-    OrderBy orderBy = Domain.orderBy().ascending(TestDomain.DEPARTMENT_LOCATION)
+    OrderBy orderBy = new OrderBy().ascending(TestDomain.DEPARTMENT_LOCATION)
             .descending(TestDomain.DEPARTMENT_NAME);
     assertEquals("loc, dname desc", orderBy.getOrderByString(definition));
-    orderBy = Domain.orderBy().ascending(TestDomain.DEPARTMENT_LOCATION)
+    orderBy = new OrderBy().ascending(TestDomain.DEPARTMENT_LOCATION)
             .descending(TestDomain.DEPARTMENT_NAME).ascending(TestDomain.DEPARTMENT_ID);
     assertEquals("loc, dname desc, deptno", orderBy.getOrderByString(definition));
   }
 
   @Test
   public void samePropertyTwice() {
-    assertThrows(IllegalArgumentException.class, () -> Domain.orderBy().ascending(TestDomain.DEPARTMENT_LOCATION)
+    assertThrows(IllegalArgumentException.class, () -> new OrderBy().ascending(TestDomain.DEPARTMENT_LOCATION)
             .descending(TestDomain.DEPARTMENT_LOCATION));
   }
 }

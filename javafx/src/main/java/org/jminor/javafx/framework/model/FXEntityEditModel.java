@@ -4,8 +4,8 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entities;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.DefaultEntityEditModel;
 

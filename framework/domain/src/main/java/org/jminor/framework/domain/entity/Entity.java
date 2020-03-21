@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.entity;
 
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;

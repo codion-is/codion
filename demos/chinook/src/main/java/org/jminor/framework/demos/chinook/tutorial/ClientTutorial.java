@@ -7,7 +7,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.entity.StringProvider;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -21,7 +21,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
-import static org.jminor.framework.domain.KeyGenerators.automatic;
+import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 import static org.jminor.swing.common.ui.Components.setPreferredWidth;
 import static org.jminor.swing.common.ui.Windows.getScreenSizeRatio;

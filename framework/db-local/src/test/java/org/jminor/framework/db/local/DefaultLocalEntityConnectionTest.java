@@ -28,8 +28,8 @@ import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entities;
+import org.jminor.framework.domain.entity.Entity;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +50,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.db.local.TestDomain.*;
-import static org.jminor.framework.domain.Entities.getKeys;
+import static org.jminor.framework.domain.entity.Entities.getKeys;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultLocalEntityConnectionTest {

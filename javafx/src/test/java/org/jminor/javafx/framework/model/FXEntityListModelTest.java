@@ -3,7 +3,7 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.AbstractEntityTableModelTest;
 import org.jminor.framework.model.TestDomain;
 import org.jminor.javafx.framework.ui.EntityTableView;

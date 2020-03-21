@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.entity;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -17,8 +17,6 @@ public final class OrderBy implements Serializable {
   private static final long serialVersionUID = 1;
 
   private final List<OrderByProperty> orderByProperties = new LinkedList<>();
-
-  OrderBy() {}
 
   /**
    * Adds an 'ascending' order by for the given properties

@@ -4,7 +4,7 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;

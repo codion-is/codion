@@ -16,7 +16,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

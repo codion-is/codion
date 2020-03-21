@@ -19,8 +19,8 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import org.slf4j.Logger;

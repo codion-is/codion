@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.entity;
 
 import org.jminor.common.valuemap.DefaultValueMap;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.io.IOException;
@@ -318,7 +319,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
 
   private static Map<ColumnProperty, Object> createSingleValueMap(final ColumnProperty keyProperty, final Object value) {
     final Map<ColumnProperty, Object> values = new HashMap<>(1);
-    values.put(keyProperty, value);
+    values.put(keyProperty, keyProperty.validateType(value));
 
     return values;
   }

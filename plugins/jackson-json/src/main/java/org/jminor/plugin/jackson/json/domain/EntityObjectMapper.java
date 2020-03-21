@@ -4,7 +4,7 @@
 package org.jminor.plugin.jackson.json.domain;
 
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;

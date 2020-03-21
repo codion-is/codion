@@ -25,7 +25,7 @@ import org.jminor.common.version.Versions;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityApplicationModel;

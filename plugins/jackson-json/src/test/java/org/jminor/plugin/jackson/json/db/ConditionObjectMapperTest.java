@@ -9,7 +9,7 @@ import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.CustomCondition;
 import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.plugin.jackson.json.TestDomain;
 import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
 

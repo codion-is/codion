@@ -5,7 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.db.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.ForeignKeyConditionModel;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;

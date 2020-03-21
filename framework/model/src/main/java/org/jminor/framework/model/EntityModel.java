@@ -10,7 +10,7 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;

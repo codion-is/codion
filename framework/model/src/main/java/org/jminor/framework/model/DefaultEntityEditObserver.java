@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.event.EventDataListener;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.map;
-import static org.jminor.framework.domain.Entities.mapToEntityId;
+import static org.jminor.framework.domain.entity.Entities.mapToEntityId;
 
 /**
  * A default {@link EntityEditObserver} implementation.

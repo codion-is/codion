@@ -1,11 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.entity;
 
 import org.jminor.common.FileUtil;
 import org.jminor.common.Serializer;
 import org.jminor.common.event.EventDataListener;
+import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;
@@ -650,11 +652,15 @@ public class DefaultEntityTest {
 
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
-    final Domain domain = new Domain("transient").registerDomain();
     final TransientProperty.Builder transientProperty = Properties.transientProperty("trans", Types.INTEGER);
-    domain.define("entityId",
-            Properties.primaryKeyProperty("id"),
-            transientProperty);
+    class TestDomain extends Domain {
+      public TestDomain() {
+        super("transient");
+        define("entityId",
+                Properties.primaryKeyProperty("id"),
+                transientProperty);  }
+    }
+    final Domain domain = new TestDomain().registerDomain();
 
     final Entity entity = domain.entity("entityId");
     entity.put("id", 42);

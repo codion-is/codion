@@ -7,8 +7,8 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.db.TestDomain;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import org.junit.jupiter.api.Test;

@@ -10,7 +10,7 @@ import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.http.HttpEntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.tools.ui.LoadTestPanel;
 

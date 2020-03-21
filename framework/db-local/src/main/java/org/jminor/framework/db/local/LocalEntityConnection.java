@@ -11,7 +11,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 /**
  * EntityConnection implementation based on a local JDBC connection.

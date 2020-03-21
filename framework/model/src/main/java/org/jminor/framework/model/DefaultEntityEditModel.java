@@ -17,10 +17,10 @@ import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
-import org.jminor.framework.domain.ValueChange;
+import org.jminor.framework.domain.entity.Entities;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
+import org.jminor.framework.domain.entity.ValueChange;
 import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -39,8 +39,8 @@ import java.util.function.Function;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.domain.Entities.mapToOriginalPrimaryKey;
-import static org.jminor.framework.domain.ValueChanges.valueChange;
+import static org.jminor.framework.domain.entity.Entities.mapToOriginalPrimaryKey;
+import static org.jminor.framework.domain.entity.ValueChanges.valueChange;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -106,7 +106,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /**
    * Fired when the active entity is set.
-   * @see #setEntity(org.jminor.framework.domain.Entity)
+   * @see #setEntity(Entity)
    */
   private final Event<Entity> entitySetEvent = Events.event();
 

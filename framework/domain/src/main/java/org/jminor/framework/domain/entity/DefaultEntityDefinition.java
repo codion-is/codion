@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.entity;
 
 import org.jminor.common.Text;
 import org.jminor.framework.domain.property.BlobProperty;
@@ -149,7 +149,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private transient boolean selectQueryContainsWhereClause = false;
 
   /**
-   * The {@link org.jminor.framework.domain.Entity.ConditionProvider}s
+   * The {@link Entity.ConditionProvider}s
    * mapped to their respective conditionIds
    */
   private transient Map<String, Entity.ConditionProvider> conditionProviders;

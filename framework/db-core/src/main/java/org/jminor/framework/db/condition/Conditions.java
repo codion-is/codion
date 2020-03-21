@@ -5,8 +5,8 @@ package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.ConditionType;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -25,7 +25,7 @@ import static org.jminor.common.Conjunction.AND;
 import static org.jminor.common.Conjunction.OR;
 import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.common.db.ConditionType.LIKE;
-import static org.jminor.framework.domain.Entities.getValues;
+import static org.jminor.framework.domain.entity.Entities.getValues;
 
 /**
  * A factory class for {@link Condition}, {@link EntityCondition} and {@link EntitySelectCondition} instances

@@ -6,7 +6,7 @@ package org.jminor.plugin.jackson.json.db;
 import org.jminor.common.Conjunction;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.entity.EntityDefinition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.empdept.server;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -32,7 +32,7 @@ import org.jminor.common.value.PropertyValue;
 import org.jminor.common.version.Versions;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.entity.EntityDefinition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

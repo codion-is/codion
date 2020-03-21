@@ -4,7 +4,7 @@
 package org.jminor.plugin.jasperreports.model;
 
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesHolder;

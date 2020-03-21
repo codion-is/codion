@@ -11,8 +11,8 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.StringProvider;
 import org.jminor.framework.domain.property.DerivedProperty;
 
 import javax.imageio.ImageIO;
@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
-import static org.jminor.framework.domain.Entities.getModifiedEntities;
-import static org.jminor.framework.domain.KeyGenerators.automatic;
+import static org.jminor.framework.domain.entity.Entities.getModifiedEntities;
+import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class ChinookImpl extends Domain implements Chinook {

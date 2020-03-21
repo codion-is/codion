@@ -1,13 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.entity;
 
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.valuemap.DefaultValueMap;
 import org.jminor.common.valuemap.ValueMap;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -36,7 +37,7 @@ import java.util.Set;
 
 import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.domain.ValueChanges.valueChange;
+import static org.jminor.framework.domain.entity.ValueChanges.valueChange;
 
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.

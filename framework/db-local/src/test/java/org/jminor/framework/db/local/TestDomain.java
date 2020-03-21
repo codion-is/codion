@@ -8,9 +8,9 @@ import org.jminor.common.db.operation.AbstractDatabaseFunction;
 import org.jminor.common.db.operation.AbstractDatabaseProcedure;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.KeyGenerator;
-import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.KeyGenerator;
+import org.jminor.framework.domain.entity.StringProvider;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +21,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static org.jminor.common.item.Items.item;
-import static org.jminor.framework.domain.KeyGenerators.increment;
+import static org.jminor.framework.domain.entity.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {
