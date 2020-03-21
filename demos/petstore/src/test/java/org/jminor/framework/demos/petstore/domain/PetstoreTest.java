@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.petstore.domain;
 
-import org.jminor.framework.domain.test.EntityTestUnit;
+import org.jminor.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 

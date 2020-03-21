@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain.property;
 
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import java.sql.Types;
 import java.util.List;

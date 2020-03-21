@@ -15,7 +15,7 @@ import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.plugin.jasperreports.model.JasperReportsResult;
 import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
 

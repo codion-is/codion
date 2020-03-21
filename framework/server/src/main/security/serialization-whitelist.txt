@@ -77,8 +77,8 @@ org.jminor.framework.db.condition.DefaultCustomCondition
 org.jminor.framework.db.condition.DefaultEntityCondition
 org.jminor.framework.db.condition.DefaultEntitySelectCondition
 org.jminor.framework.db.condition.DefaultPropertyCondition
-org.jminor.framework.domain.DefaultEntity
-org.jminor.framework.domain.DefaultEntity$DefaultKey
-org.jminor.framework.domain.Entities$DefaultOrderBy
-org.jminor.framework.domain.Entity$OrderBy$SortOrder
+org.jminor.framework.domain.entity.DefaultEntity
+org.jminor.framework.domain.entity.DefaultEntity$DefaultKey
+org.jminor.framework.domain.entity.Entities$DefaultOrderBy
+org.jminor.framework.domain.entity.Entity$OrderBy$SortOrder
 org.jminor.plugin.jasperreports.model.JasperReportsWrapper

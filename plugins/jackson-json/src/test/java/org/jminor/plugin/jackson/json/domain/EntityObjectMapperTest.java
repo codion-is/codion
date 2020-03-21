@@ -3,7 +3,7 @@
  */
 package org.jminor.plugin.jackson.json.domain;
 
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.plugin.jackson.json.TestDomain;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

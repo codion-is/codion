@@ -6,7 +6,7 @@ package org.jminor.framework.db;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.EventDataListener;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.Collections;

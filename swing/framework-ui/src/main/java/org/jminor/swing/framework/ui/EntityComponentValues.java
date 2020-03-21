@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.item.Item;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;

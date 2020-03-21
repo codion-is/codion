@@ -4,12 +4,12 @@
 package org.jminor.framework.demos.petclinic.domain.impl;
 
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.entity.StringProvider;
 
 import java.sql.Types;
 
 import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
-import static org.jminor.framework.domain.KeyGenerators.automatic;
+import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class ClinicImpl extends Domain {

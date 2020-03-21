@@ -5738,3 +5738,5 @@
   KeyEvents.TransferFocusAction now private, transferFocusForwardAction() and transferFocusBackwardAction() added
   Lots of raw use of parameterized class fixed, mostly EventDataListeners
 0.14.0
+  org.jminor.framework.domain.entity package added, populated with Entity related classes
+  DefaultEntityKey now validates type on single value construction

@@ -17,8 +17,8 @@ import org.jminor.common.user.Users;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entities;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.servlet.EntityServletServer;
 

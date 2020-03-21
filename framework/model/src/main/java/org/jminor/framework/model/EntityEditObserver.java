@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.event.EventDataListener;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import java.util.List;
 import java.util.Map;

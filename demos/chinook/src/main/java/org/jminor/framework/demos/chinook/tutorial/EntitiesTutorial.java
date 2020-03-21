@@ -13,8 +13,8 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.StringProvider;
 import org.jminor.framework.domain.property.Property;
 
 import java.sql.Types;
@@ -23,8 +23,8 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
-import static org.jminor.framework.domain.Entities.getKeys;
-import static org.jminor.framework.domain.KeyGenerators.automatic;
+import static org.jminor.framework.domain.entity.Entities.getKeys;
+import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
 /**

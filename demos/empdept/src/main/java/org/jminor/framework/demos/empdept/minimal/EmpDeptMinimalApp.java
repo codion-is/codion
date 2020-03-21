@@ -10,7 +10,7 @@ import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.entity.StringProvider;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
@@ -26,7 +26,7 @@ import java.sql.Types;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.domain.KeyGenerators.increment;
+import static org.jminor.framework.domain.entity.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 
 /**

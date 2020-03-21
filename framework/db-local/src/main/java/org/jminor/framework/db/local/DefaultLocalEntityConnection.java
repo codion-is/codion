@@ -26,9 +26,9 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.condition.WhereCondition;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
-import org.jminor.framework.domain.KeyGenerator;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
+import org.jminor.framework.domain.entity.KeyGenerator;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -62,7 +62,7 @@ import static org.jminor.common.db.DatabaseConnections.createConnection;
 import static org.jminor.common.db.Databases.*;
 import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.db.local.Queries.*;
-import static org.jminor.framework.domain.Entities.*;
+import static org.jminor.framework.domain.entity.Entities.*;
 
 /**
  * A default LocalEntityConnection implementation

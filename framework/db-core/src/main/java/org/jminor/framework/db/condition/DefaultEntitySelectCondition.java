@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.framework.domain.OrderBy;
+import org.jminor.framework.domain.entity.OrderBy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -10,7 +10,7 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.common.value.Value;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;

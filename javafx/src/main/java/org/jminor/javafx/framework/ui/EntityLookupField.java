@@ -4,7 +4,7 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.javafx.framework.ui.values.PropertyValues;

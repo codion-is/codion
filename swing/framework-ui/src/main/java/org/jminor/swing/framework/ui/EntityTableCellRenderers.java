@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.ValueListProperty;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;

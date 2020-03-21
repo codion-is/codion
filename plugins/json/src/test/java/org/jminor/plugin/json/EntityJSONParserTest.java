@@ -4,7 +4,7 @@
 package org.jminor.plugin.json;
 
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;

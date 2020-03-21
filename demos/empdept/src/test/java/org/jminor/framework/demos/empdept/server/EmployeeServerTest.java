@@ -13,7 +13,7 @@ import org.jminor.common.remote.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.exception.ConnectionValidationException;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.user.Users;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import org.junit.jupiter.api.Test;
 

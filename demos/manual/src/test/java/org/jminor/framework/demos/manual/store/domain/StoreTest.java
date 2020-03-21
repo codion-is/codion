@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.manual.store.domain;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.domain.test.EntityTestUnit;
+import org.jminor.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 

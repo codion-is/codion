@@ -7,8 +7,8 @@ import org.jminor.common.db.Database;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.WhereCondition;
-import org.jminor.framework.domain.EntityDefinition;
-import org.jminor.framework.domain.OrderBy;
+import org.jminor.framework.domain.entity.EntityDefinition;
+import org.jminor.framework.domain.entity.OrderBy;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.SubqueryProperty;
 

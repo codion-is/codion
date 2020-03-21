@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.Property;
 
 /**

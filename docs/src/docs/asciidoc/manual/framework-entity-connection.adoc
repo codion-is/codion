@@ -50,7 +50,7 @@ For selecting single rows.
 include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleCondition]
 ----
 
-{url-entity-connection}#selectSingle-org.jminor.framework.domain.Entity.Key-[selectSingle(Entity.Key key)]
+{url-entity-connection}#selectSingle-org.jminor.framework.domain.entity.Entity.Key-[selectSingle(Entity.Key key)]
 
 [source,java,indent=0]
 ----

@@ -8,7 +8,7 @@ import org.jminor.common.item.Item;
 import org.jminor.common.item.Items;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Value;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.EntityLookupModel;
 
 import javafx.beans.property.BooleanProperty;

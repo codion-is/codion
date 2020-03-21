@@ -4,7 +4,7 @@
 package org.jminor.plugin.jasperreports.model;
 
 import org.jminor.common.db.reports.ReportDataWrapper;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;

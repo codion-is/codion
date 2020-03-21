@@ -5,7 +5,7 @@ package org.jminor.framework.db;
 
 import org.jminor.common.item.Item;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.entity.StringProvider;
 
 import java.sql.Types;
 import java.util.Comparator;

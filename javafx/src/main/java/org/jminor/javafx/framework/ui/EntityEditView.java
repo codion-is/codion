@@ -9,7 +9,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.item.Item;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.Properties;
 import org.jminor.framework.domain.property.Property;

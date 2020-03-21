@@ -12,8 +12,8 @@ import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.state.State;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityDefinition;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -234,7 +234,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow updating
-   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
+   * @see Entity.Validator#validate(java.util.Collection)
    */
   void update(List<Entity> entities) throws ValidationException, DatabaseException;
 

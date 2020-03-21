@@ -1,10 +1,10 @@
 package org.jminor.framework.demos.world.domain;
 
 import org.jminor.common.item.Item;
-import org.jminor.framework.domain.DefaultEntityValidator;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.entity.DefaultEntityValidator;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.StringProvider;
 import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.Property;
@@ -18,7 +18,7 @@ import java.util.Objects;
 import static java.util.Arrays.asList;
 import static org.jminor.common.Util.notNull;
 import static org.jminor.common.item.Items.item;
-import static org.jminor.framework.domain.KeyGenerators.sequence;
+import static org.jminor.framework.domain.entity.KeyGenerators.sequence;
 import static org.jminor.framework.domain.property.Properties.*;
 
 // tag::entityAndPropertyIds[]

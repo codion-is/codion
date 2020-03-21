@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.tools;
 
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.entity.StringProvider;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -12,7 +12,7 @@ import java.util.Comparator;
 
 import static java.util.Arrays.asList;
 import static org.jminor.common.item.Items.item;
-import static org.jminor.framework.domain.KeyGenerators.increment;
+import static org.jminor.framework.domain.entity.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {

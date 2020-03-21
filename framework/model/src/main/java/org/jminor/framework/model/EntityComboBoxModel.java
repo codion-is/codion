@@ -8,7 +8,7 @@ import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.value.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import java.util.Collection;
 import java.util.List;

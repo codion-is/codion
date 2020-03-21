@@ -4,8 +4,8 @@
 package org.jminor.framework.demos.manual.store.ui;
 
 import org.jminor.framework.demos.manual.store.domain.Store;
-import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entities;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
 import org.jminor.plugin.jasperreports.ui.JasperReportsUIWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;

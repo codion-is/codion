@@ -12,10 +12,10 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.KeyGenerator;
-import org.jminor.framework.domain.StringProvider;
-import org.jminor.framework.domain.test.EntityTestUnit;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.KeyGenerator;
+import org.jminor.framework.domain.entity.StringProvider;
+import org.jminor.framework.domain.entity.test.EntityTestUnit;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -30,7 +30,7 @@ import java.util.List;
 
 import static java.util.UUID.randomUUID;
 import static org.jminor.framework.demos.manual.quickstart.Example.Store.*;
-import static org.jminor.framework.domain.KeyGenerators.automatic;
+import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class Example {

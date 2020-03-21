@@ -5,16 +5,16 @@ package org.jminor.framework.demos.manual.store.domain;
 
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.KeyGenerator;
-import org.jminor.framework.domain.StringProvider;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.KeyGenerator;
+import org.jminor.framework.domain.entity.StringProvider;
 
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static org.jminor.framework.domain.KeyGenerators.automatic;
+import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class Store extends Domain {

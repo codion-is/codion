@@ -5,7 +5,7 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.model.AbstractEntityModelTest;
 import org.jminor.framework.model.EntityComboBoxModel;

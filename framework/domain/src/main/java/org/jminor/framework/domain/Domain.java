@@ -9,6 +9,11 @@ import org.jminor.common.db.operation.DatabaseFunction;
 import org.jminor.common.db.operation.DatabaseOperation;
 import org.jminor.common.db.operation.DatabaseProcedure;
 import org.jminor.common.value.PropertyValue;
+import org.jminor.framework.domain.entity.Entities;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
+import org.jminor.framework.domain.entity.EntityDefinitions;
+import org.jminor.framework.domain.entity.OrderBy;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -43,7 +48,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   private static final long serialVersionUID = 1;
 
   /**
-   * Specifies whether or not to enable entities to be re-defined, that is,
+   * Specifies whether to enable entities to be re-defined, that is,
    * allow a new definition to replace an old one.
    * Value type: Boolean<br>
    * Default value: false
@@ -114,7 +119,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return a new {@link Entity} instance
    */
   public final Entity entity(final Entity.Key key) {
-    return new DefaultEntity(this, key);
+    return Entities.entity(this, key);
   }
 
   /**
@@ -140,7 +145,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    */
   public final Entity entity(final EntityDefinition entityDefinition, final Map<Property, Object> values,
                              final Map<Property, Object> originalValues) {
-    return new DefaultEntity(this, entityDefinition, values, originalValues);
+    return Entities.entity(this, entityDefinition, values, originalValues);
   }
 
   /**
@@ -291,12 +296,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return a new {@link Entity.Key} instance
    */
   public final Entity.Key key(final String entityId) {
-    final EntityDefinition definition = getDefinition(entityId);
-    if (definition.hasPrimaryKey()) {
-      return new DefaultEntityKey(definition, null);
-    }
-
-    return new DefaultEntityKey(definition);
+    return Entities.key(getDefinition(entityId));
   }
 
   /**
@@ -308,7 +308,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @throws NullPointerException in case entityId or value is null
    */
   public final Entity.Key key(final String entityId, final Integer value) {
-    return new DefaultEntityKey(getDefinition(entityId), value);
+    return Entities.key(getDefinition(entityId), value);
   }
 
   /**
@@ -320,7 +320,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @throws NullPointerException in case entityId or value is null
    */
   public final Entity.Key key(final String entityId, final Long value) {
-    return new DefaultEntityKey(getDefinition(entityId), value);
+    return Entities.key(getDefinition(entityId), value);
   }
 
   /**

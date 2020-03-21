@@ -5,7 +5,7 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

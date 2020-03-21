@@ -11,7 +11,7 @@ import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.MultipleSelectionModel;

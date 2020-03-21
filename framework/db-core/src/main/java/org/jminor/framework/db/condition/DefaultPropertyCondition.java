@@ -4,7 +4,7 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.db.ConditionType;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.SubqueryProperty;
 
