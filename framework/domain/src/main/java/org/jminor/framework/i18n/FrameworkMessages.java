@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.i18n;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -11,7 +10,7 @@ import java.util.ResourceBundle;
  */
 public final class FrameworkMessages {
 
-  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(FrameworkMessages.class.getName(), Locale.getDefault());
+  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(FrameworkMessages.class.getName());
 
   public static final String FILE = "file";
   public static final String FILE_MNEMONIC = "file_mnemonic";

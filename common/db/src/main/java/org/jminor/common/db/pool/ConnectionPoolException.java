@@ -5,7 +5,6 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.db.exception.DatabaseException;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -13,7 +12,7 @@ import java.util.ResourceBundle;
  */
 public class ConnectionPoolException extends DatabaseException {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ConnectionPoolException.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ConnectionPoolException.class.getName());
 
   ConnectionPoolException(final String reason) {
     super(reason);

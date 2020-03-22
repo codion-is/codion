@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -11,7 +10,7 @@ import java.util.ResourceBundle;
  */
 public final class SwingMessages {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingMessages.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingMessages.class.getName());
 
   private SwingMessages() {}
 

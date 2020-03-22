@@ -48,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -75,7 +74,7 @@ import static org.jminor.swing.framework.ui.EntityPanel.PanelState.*;
  */
 public class EntityPanel extends JPanel implements HierarchyPanel {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
 
   private static final String ENTITY_MODEL_PARAM = "entityModel";
   private static final String MSG_DETAIL_TABLES = "detail_tables";

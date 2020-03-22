@@ -17,7 +17,6 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import java.awt.Dimension;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -25,7 +24,7 @@ import java.util.ResourceBundle;
  */
 public final class EntityReportUiUtil {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityReportUiUtil.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityReportUiUtil.class.getName());
 
   private static final Dimension MINIMUM_REPORT_WINDOW_SIZE = new Dimension(800, 600);
   private static final double SCREEN_SIZE_RATIO = 0.8;

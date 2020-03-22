@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Hashtable;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static java.util.Arrays.asList;
@@ -112,7 +111,7 @@ import static java.util.Arrays.asList;
  */
 public class NavigableImagePanel extends JPanel {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(NavigableImagePanel.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(NavigableImagePanel.class.getName());
 
   /**
    * <p>Identifies a change to the zoom level.</p>

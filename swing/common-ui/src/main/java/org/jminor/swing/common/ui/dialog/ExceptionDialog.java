@@ -40,7 +40,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -48,7 +47,7 @@ import java.util.ResourceBundle;
  */
 final class ExceptionDialog extends JDialog {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ExceptionDialog.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ExceptionDialog.class.getName());
 
   private static final int DESCRIPTION_LABEL_WIDTH = 250;
   private static final int MESSAGE_LABEL_WIDTH = 50;

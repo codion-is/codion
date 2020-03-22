@@ -9,7 +9,6 @@ import org.jminor.common.value.PropertyValue;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -21,7 +20,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class OracleDatabase extends AbstractDatabase {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(OracleDatabase.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(OracleDatabase.class.getName());
 
   static final String DRIVER_CLASS_NAME = "oracle.jdbc.OracleDriver";
   static final String URL_PREFIX = "jdbc:oracle:thin:@";

@@ -96,7 +96,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
@@ -112,7 +111,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         extends JPanel implements DialogExceptionHandler, HierarchyPanel {
 
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
-  private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName(), Locale.getDefault());
+  private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
 
   private static final String SET_LOG_LEVEL = "set_log_level";
   private static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";

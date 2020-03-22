@@ -47,7 +47,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
@@ -69,7 +68,7 @@ import static org.jminor.framework.domain.entity.Entities.*;
  */
 final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalEntityConnection.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalEntityConnection.class.getName());
   private static final String RECORD_MODIFIED_EXCEPTION = "record_modified_exception";
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);

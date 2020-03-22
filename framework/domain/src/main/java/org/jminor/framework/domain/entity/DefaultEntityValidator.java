@@ -15,7 +15,6 @@ import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -33,7 +32,7 @@ public class DefaultEntityValidator implements Validator {
 
   private static final long serialVersionUID = 1;
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultEntityValidator.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultEntityValidator.class.getName());
 
   private static final String ENTITY_PARAM = "entity";
   private static final String PROPERTY_PARAM = "property";

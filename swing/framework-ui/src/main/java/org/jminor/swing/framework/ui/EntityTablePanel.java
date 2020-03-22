@@ -82,7 +82,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -126,7 +125,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
 
   /**
    * Specifies whether or not columns can be rearranged in tables<br>

@@ -3,7 +3,6 @@
  */
 package org.jminor.common.i18n;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -11,7 +10,7 @@ import java.util.ResourceBundle;
  */
 public final class Messages {
 
-  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(Messages.class.getName(), Locale.getDefault());
+  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(Messages.class.getName());
 
   public static final String CANCEL = "cancel";
   public static final String CANCEL_MNEMONIC = "cancel_mnemonic";

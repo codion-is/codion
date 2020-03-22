@@ -31,7 +31,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -39,7 +38,7 @@ import java.util.ResourceBundle;
  */
 public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalDateInputPanel.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalDateInputPanel.class.getName());
 
   private JButton button;
 
