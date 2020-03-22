@@ -31,24 +31,27 @@ public interface KeyGenerator {
 
   /**
    * Prepares the given entity for insert, that is, generates and fetches any required primary key values
-   * and populates the entitys primary key.
+   * and populates the entity's primary key.
    * The default implementation does nothing, override to implement.
-   * @param entity the entity to prepare
+   * @param definition the definition of the entity about to be inserted
+   * @param entity the entity about to be inserted
    * @param connection the connection to use
    * @throws SQLException in case of an exception
    */
-  default void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {/*for overriding*/}
+  default void beforeInsert(final EntityDefinition definition, final Entity entity,
+                            final DatabaseConnection connection) throws SQLException {/*for overriding*/}
 
   /**
    * Prepares the given entity after insert, that is, fetches automatically generated primary
-   * key values and populates the entitys primary key.
+   * key values and populates the entity's primary key.
    * The default implementation does nothing, override to implement.
-   * @param entity the entity to prepare
+   * @param definition the definition of the inserted entity
+   * @param entity the inserted entity
    * @param connection the connection to use
    * @param insertStatement the insert statement
    * @throws SQLException in case of an exception
    */
-  default void afterInsert(final Entity entity, final DatabaseConnection connection,
+  default void afterInsert(final EntityDefinition definition, final Entity entity, final DatabaseConnection connection,
                            final Statement insertStatement) throws SQLException {/*for overriding*/}
 
   /**

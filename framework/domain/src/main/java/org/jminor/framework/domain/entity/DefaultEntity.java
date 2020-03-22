@@ -122,12 +122,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public EntityDefinition getDefinition() {
-    return definition;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public Key getKey() {
     if (key == null) {
       key = initializeKey(false);

@@ -19,49 +19,57 @@ import java.util.Collection;
 public interface Validator extends Serializable {
 
   /**
-   * @param entity the entity
+   * Returns true if the given property accepts a null value for the given entity,
+   * by default this method simply returns {@code property.isNullable()}
+   * @param entity the entity being validated
    * @param property the property
-   * @return true if this value is allowed to be null in the given value map
+   * @return true if the property accepts a null value
    */
   boolean isNullable(Entity entity, Property property);
 
   /**
+   * Returns true if the given entity contains only valid values.
+   * @param definition the definition of the entity to validate
    * @param entity the entity
    * @return true if the given entity contains only valid values
    */
-  boolean isValid(Entity entity);
+  boolean isValid(EntityDefinition definition, Entity entity);
 
   /**
    * Checks if the values in the given entity are valid
+   * @param definition the definition of the entity to validate
    * @param entity the entity
    * @throws ValidationException in case of an invalid value
    */
-  void validate(Entity entity) throws ValidationException;
+  void validate(EntityDefinition definition, Entity entity) throws ValidationException;
 
   /**
    * Checks if the value associated with the give property is valid, throws a ValidationException if not
+   * @param definition the definition of the entity to validate
    * @param entity the entity to validate
    * @param property the property the value is associated with
    * @throws ValidationException if the given value is not valid for the given property
    */
-  void validate(Entity entity, Property property) throws ValidationException;
+  void validate(EntityDefinition definition, Entity entity, Property property) throws ValidationException;
 
   /**
-   * Validates the given Entity objects.
+   * Validates the given entities, assumes they are all of the same type.
+   * @param definition the definition of the entity to validate
    * @param entities the entities to validate
    * @throws ValidationException in case the validation fails
    */
-  void validate(Collection<Entity> entities) throws ValidationException;
+  void validate(EntityDefinition definition, Collection<Entity> entities) throws ValidationException;
 
   /**
    * Performs a null validation on the given property
+   * @param definition the definition of the entity to validate
    * @param entity the entity
    * @param property the property
    * @throws NullValidationException in case the property value is null and the property is not nullable
    * @see Property.Builder#nullable(boolean)
    * @see Property#isNullable()
    */
-  void performNullValidation(Entity entity, Property property) throws NullValidationException;
+  void performNullValidation(EntityDefinition definition, Entity entity, Property property) throws NullValidationException;
 
   /**
    * Performs a range validation on the given number based property

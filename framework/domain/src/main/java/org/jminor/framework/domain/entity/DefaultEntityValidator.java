@@ -44,14 +44,14 @@ public class DefaultEntityValidator implements Validator {
   private transient Event revalidateEvent;
 
   /**
-   * Instantiates a new {@link Validator}
+   * Instantiates a new {@link DefaultEntityValidator}
    */
   public DefaultEntityValidator() {
     this(true);
   }
 
   /**
-   * Instantiates a new {@link Validator}
+   * Instantiates a new {@link DefaultEntityValidator}
    * @param performNullValidation if true then automatic null validation is performed
    */
   public DefaultEntityValidator(final boolean performNullValidation) {
@@ -60,9 +60,9 @@ public class DefaultEntityValidator implements Validator {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isValid(final Entity entity) {
+  public boolean isValid(final EntityDefinition definition, final Entity entity) {
     try {
-      validate(entity);
+      validate(definition, entity);
       return true;
     }
     catch (final ValidationException e) {
@@ -70,50 +70,36 @@ public class DefaultEntityValidator implements Validator {
     }
   }
 
-  /**
-   * Returns true if the given property accepts a null value for the given entity,
-   * by default this method simply returns {@code property.isNullable()}
-   * @param entity the entity being validated
-   * @param property the property
-   * @return true if the property accepts a null value
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isNullable(final Entity entity, final Property property) {
     return property.isNullable();
   }
 
-  /**
-   * Validates all writable properties in the given entities
-   * @param entities the entities to validate
-   * @throws ValidationException in case validation fails
-   */
+  /** {@inheritDoc} */
   @Override
-  public final void validate(final Collection<Entity> entities) throws ValidationException {
+  public final void validate(final EntityDefinition definition, final Collection<Entity> entities) throws ValidationException {
     for (final Entity entity : entities) {
-      validate(entity);
-    }
-  }
-
-  /**
-   * Validates all writable properties in the given entity
-   * @param entity the entity to validate
-   * @throws ValidationException in case validation fails
-   */
-  @Override
-  public void validate(final Entity entity) throws ValidationException {
-    Objects.requireNonNull(entity, ENTITY_PARAM);
-    for (final Property property : entity.getDefinition().getProperties()) {
-      validate(entity, property);
+      validate(definition, entity);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public void validate(final Entity entity, final Property property) throws ValidationException {
+  public void validate(final EntityDefinition definition, final Entity entity) throws ValidationException {
+    Objects.requireNonNull(entity, ENTITY_PARAM);
+    for (final Property property : definition.getProperties()) {
+      validate(definition, entity, property);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void validate(final EntityDefinition definition, final Entity entity, final Property property) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (performNullValidation && !isForeignKeyProperty(property)) {
-      performNullValidation(entity, property);
+      performNullValidation(definition, entity, property);
     }
     if (property.isNumerical()) {
       performRangeValidation(entity, property);
@@ -145,14 +131,15 @@ public class DefaultEntityValidator implements Validator {
 
   /** {@inheritDoc} */
   @Override
-  public final void performNullValidation(final Entity entity, final Property property) throws NullValidationException {
+  public final void performNullValidation(final EntityDefinition definition, final Entity entity,
+                                          final Property property) throws NullValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (!isNullable(entity, property) && entity.isNull(property)) {
       if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
         final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
-        final boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(entity, property);
+        final boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(definition, property);
         if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
           throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
         }
@@ -206,9 +193,9 @@ public class DefaultEntityValidator implements Validator {
     return revalidateEvent;
   }
 
-  private static boolean isNonGeneratedPrimaryKeyProperty(final Entity entity, final Property property) {
+  private static boolean isNonGeneratedPrimaryKeyProperty(final EntityDefinition definition, final Property property) {
     return (property instanceof ColumnProperty
-            && ((ColumnProperty) property).isPrimaryKeyProperty()) && !entity.getDefinition().isKeyGenerated();
+            && ((ColumnProperty) property).isPrimaryKeyProperty()) && !definition.isKeyGenerated();
   }
 
   /**

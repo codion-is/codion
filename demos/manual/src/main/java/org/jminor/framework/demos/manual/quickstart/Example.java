@@ -13,6 +13,7 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.KeyGenerator;
 import org.jminor.framework.domain.entity.StringProvider;
 import org.jminor.framework.domain.entity.test.EntityTestUnit;
@@ -58,7 +59,8 @@ public final class Example {
                       .nullable(false).maximumLength(40))
               .keyGenerator(new KeyGenerator() {
                 @Override
-                public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
+                public void beforeInsert(EntityDefinition definition, Entity entity,
+                                         DatabaseConnection connection) throws SQLException {
                   entity.put(CUSTOMER_ID, randomUUID().toString());
                 }
               })

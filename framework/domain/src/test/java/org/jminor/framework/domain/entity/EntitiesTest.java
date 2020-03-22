@@ -54,23 +54,25 @@ public final class EntitiesTest {
 
   @Test
   public void isKeyModified() {
-    assertFalse(Entities.isKeyModified(null));
-    assertFalse(Entities.isKeyModified(emptyList()));
+    final EntityDefinition definition = domain.getDefinition(TestDomain.T_DEPARTMENT);
+
+    assertFalse(Entities.isKeyModified(definition, null));
+    assertFalse(Entities.isKeyModified(definition, emptyList()));
 
     final Entity department = domain.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 1);
     department.put(TestDomain.DEPARTMENT_NAME, "name");
     department.put(TestDomain.DEPARTMENT_LOCATION, "loc");
-    assertFalse(Entities.isKeyModified(singletonList(department)));
+    assertFalse(Entities.isKeyModified(definition, singletonList(department)));
 
     department.put(TestDomain.DEPARTMENT_NAME, "new name");
-    assertFalse(Entities.isKeyModified(singletonList(department)));
+    assertFalse(Entities.isKeyModified(definition, singletonList(department)));
 
     department.put(TestDomain.DEPARTMENT_ID, 2);
-    assertTrue(Entities.isKeyModified(singletonList(department)));
+    assertTrue(Entities.isKeyModified(definition, singletonList(department)));
 
     department.revert(TestDomain.DEPARTMENT_ID);
-    assertFalse(Entities.isKeyModified(singletonList(department)));
+    assertFalse(Entities.isKeyModified(definition, singletonList(department)));
   }
 
   @Test

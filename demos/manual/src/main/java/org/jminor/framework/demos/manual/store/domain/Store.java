@@ -6,6 +6,7 @@ package org.jminor.framework.demos.manual.store.domain;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.KeyGenerator;
 import org.jminor.framework.domain.entity.StringProvider;
 
@@ -119,7 +120,8 @@ public final class Store extends Domain {
   private static final class UUIDKeyGenerator implements KeyGenerator {
 
     @Override
-    public void beforeInsert(final Entity entity, final DatabaseConnection connection)
+    public void beforeInsert(final EntityDefinition definition, final Entity entity,
+                             final DatabaseConnection connection)
             throws SQLException {
       entity.put(CUSTOMER_ID, UUID.randomUUID().toString());
     }

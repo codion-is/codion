@@ -28,11 +28,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   String getEntityId();
 
   /**
-   * @return the entity definition
-   */
-  EntityDefinition getDefinition();
-
-  /**
    * Returns the primary key of this entity.
    * If the entity has no primary key properties defined, this key contains not values.
    * @return the primary key of this entity
