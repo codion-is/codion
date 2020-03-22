@@ -29,6 +29,7 @@ import java.util.function.Function;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.domain.entity.Entities.getModifiedEntities;
 import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
+import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class ChinookImpl extends Domain implements Chinook {

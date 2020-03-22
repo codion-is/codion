@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class SchemaBrowser extends Domain {

@@ -6,7 +6,6 @@ package org.jminor.framework.db.condition;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.ConditionType;
 import org.jminor.framework.db.TestDomain;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.*;
+import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class WhereConditionTest {
@@ -203,7 +203,7 @@ public final class WhereConditionTest {
     final EntityDefinition departmentDefinition = DOMAIN.getDefinition(TestDomain.T_DEPARTMENT);
     final WhereCondition condition = whereCondition(entitySelectCondition(TestDomain.T_DEPARTMENT,
             Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID))
-            .setOrderBy(Domain.orderBy().ascending(TestDomain.DEPARTMENT_NAME)), departmentDefinition);
+            .setOrderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME)), departmentDefinition);
 
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getColumnProperties().isEmpty());
@@ -224,7 +224,7 @@ public final class WhereConditionTest {
   @Test
   public void selectConditionOrderByDuplicate() {
     assertThrows(IllegalArgumentException.class, () -> Conditions.entitySelectCondition(TestDomain.T_EMP)
-            .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_NAME).descending(TestDomain.EMP_NAME)));
+            .setOrderBy(orderBy().ascending(TestDomain.EMP_NAME).descending(TestDomain.EMP_NAME)));
   }
 
   @Test

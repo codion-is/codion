@@ -12,6 +12,7 @@ import org.jminor.framework.domain.entity.OrderBy;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.SubqueryProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.jminor.common.Util.nullOrEmpty;
@@ -151,6 +152,24 @@ final class Queries {
     return stringBuilder.toString();
   }
 
+  /**
+   * Returns a order by clause based on the given {@link OrderBy}.
+   * @param entityDefinition the entity definition
+   * @return a order by string
+   */
+  static String getOrderByClause(final OrderBy orderBy, final EntityDefinition entityDefinition) {
+    if (orderBy.getOrderByProperties().isEmpty()) {
+      throw new IllegalArgumentException("An order by clause must contain at least a single property");
+    }
+    final List<String> orderBys = new ArrayList<>(orderBy.getOrderByProperties().size());
+    for (final OrderBy.OrderByProperty property : orderBy.getOrderByProperties()) {
+      orderBys.add(entityDefinition.getColumnProperty(property.getPropertyId()).getColumnName() +
+              (property.isAscending() ? "" : " desc"));
+    }
+
+    return "order by " + String.join(", ", orderBys);
+  }
+
   private static void addForUpdate(final StringBuilder queryBuilder, final Database database) {
     if (database.supportsSelectForUpdate()) {
       queryBuilder.append(" for update");
@@ -175,7 +194,7 @@ final class Queries {
       final EntitySelectCondition selectCondition = (EntitySelectCondition) condition;
       final OrderBy orderBy = selectCondition.getOrderBy();
       if (orderBy != null) {
-        queryBuilder.append(" order by ").append(orderBy.getOrderByString(entityDefinition));
+        queryBuilder.append(" ").append(getOrderByClause(orderBy, entityDefinition));
       }
       if (selectCondition.getLimit() > 0) {
         queryBuilder.append(" limit ").append(selectCondition.getLimit());

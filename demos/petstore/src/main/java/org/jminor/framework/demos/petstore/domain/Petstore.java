@@ -9,6 +9,7 @@ import org.jminor.framework.domain.entity.StringProvider;
 import java.sql.Types;
 
 import static org.jminor.framework.domain.entity.KeyGenerators.increment;
+import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class Petstore extends Domain {

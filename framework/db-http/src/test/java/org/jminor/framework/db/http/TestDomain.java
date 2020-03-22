@@ -17,6 +17,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.jminor.common.item.Items.item;
 import static org.jminor.framework.domain.entity.KeyGenerators.increment;
+import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {
