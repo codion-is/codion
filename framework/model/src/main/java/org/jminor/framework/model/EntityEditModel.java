@@ -369,7 +369,7 @@ public interface EntityEditModel extends Refreshable {
    * @return the inserted entity
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
-   * @see Validator#validate(java.util.Collection)
+   * @see Validator#validate(EntityDefinition, Collection)
    */
   Entity insert() throws DatabaseException, ValidationException;
 
@@ -381,7 +381,7 @@ public interface EntityEditModel extends Refreshable {
    * @throws ValidationException in case validation fails
    * @see #addBeforeInsertListener(EventDataListener)
    * @see #addAfterInsertListener(EventDataListener)
-   * @see Validator#validate(java.util.Collection)
+   * @see Validator#validate(EntityDefinition, Collection)
    */
   List<Entity> insert(List<Entity> entities) throws DatabaseException, ValidationException;
 
@@ -392,7 +392,7 @@ public interface EntityEditModel extends Refreshable {
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @throws org.jminor.common.db.exception.UpdateException in case the active entity is not modified
-   * @see Validator#validate(java.util.Collection)
+   * @see Validator#validate(EntityDefinition, Collection)
    */
   Entity update() throws DatabaseException, ValidationException;
 
@@ -406,7 +406,7 @@ public interface EntityEditModel extends Refreshable {
    * @throws ValidationException in case validation fails
    * @see #addBeforeUpdateListener(EventDataListener)
    * @see #addAfterUpdateListener(EventDataListener)
-   * @see Validator#validate(java.util.Collection)
+   * @see Validator#validate(EntityDefinition, Collection)
    */
   List<Entity> update(List<Entity> entities) throws DatabaseException, ValidationException;
 
@@ -500,7 +500,7 @@ public interface EntityEditModel extends Refreshable {
    * @param key the key the value is associated with
    * @return true if the value is valid
    * @see #validate(Property)
-   * @see Validator#validate(Entity)
+   * @see Validator#validate(EntityDefinition, Entity)
    */
   boolean isValid(Property key);
 

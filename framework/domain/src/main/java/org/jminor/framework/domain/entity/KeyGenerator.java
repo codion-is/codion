@@ -56,7 +56,7 @@ public interface KeyGenerator {
 
   /**
    * Specifies whether the insert statement should return the primary key column values via the resulting
-   * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(Entity, DatabaseConnection, Statement)}.
+   * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(EntityDefinition, Entity, DatabaseConnection, Statement)}.
    * The default implementation returns false.
    * @return true if the primary key column values should be returned via the insert statement resultSet
    * @see Statement#getGeneratedKeys()
