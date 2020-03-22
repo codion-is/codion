@@ -13,7 +13,7 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.exception.ValidationException;
+import org.jminor.framework.domain.entity.exception.ValidationException;
 
 import org.junit.jupiter.api.Test;
 

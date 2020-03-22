@@ -12,9 +12,11 @@ import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.state.State;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.ColorProvider;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.exception.ValidationException;
+import org.jminor.framework.domain.entity.Validator;
+import org.jminor.framework.domain.entity.exception.ValidationException;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -200,7 +202,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param row the row for which to retrieve the background color
    * @param property the property for which to retrieve the background color
    * @return an Object representing the background color for this row and property, specified by the row entity
-   * @see EntityDefinition.Builder#colorProvider(Entity.ColorProvider)
+   * @see EntityDefinition.Builder#colorProvider(ColorProvider)
    */
   Object getPropertyBackgroundColor(int row, Property property);
 
@@ -234,7 +236,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow updating
-   * @see Entity.Validator#validate(java.util.Collection)
+   * @see Validator#validate(java.util.Collection)
    */
   void update(List<Entity> entities) throws ValidationException, DatabaseException;
 

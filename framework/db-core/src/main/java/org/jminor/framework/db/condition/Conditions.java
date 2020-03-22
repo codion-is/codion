@@ -5,6 +5,7 @@ package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.ConditionType;
+import org.jminor.framework.domain.entity.ConditionProvider;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -215,7 +216,7 @@ public final class Conditions {
    * @param conditionId the id of the condition
    * @return a new Condition instance
    * @throws NullPointerException in case the condition id
-   * @see EntityDefinition.Builder#conditionProvider(String, Entity.ConditionProvider)
+   * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
    */
   public static CustomCondition customCondition(final String conditionId) {
     return customCondition(conditionId, emptyList(), emptyList());
@@ -228,7 +229,7 @@ public final class Conditions {
    * @param values the values used by this condition string
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
-   * @see EntityDefinition.Builder#conditionProvider(String, Entity.ConditionProvider)
+   * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
    */
   public static CustomCondition customCondition(final String conditionId, final List<String> propertyIds, final List values) {
     return new DefaultCustomCondition(conditionId, propertyIds, values);

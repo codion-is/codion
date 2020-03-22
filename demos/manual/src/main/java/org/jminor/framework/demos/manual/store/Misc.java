@@ -10,7 +10,7 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.framework.demos.manual.store.model.CustomerEditModel;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.exception.ValidationException;
+import org.jminor.framework.domain.entity.exception.ValidationException;
 
 public final class Misc {
 

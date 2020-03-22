@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.framework.domain.entity.ColorProvider;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.Property;
@@ -62,8 +63,8 @@ public final class EntityTableCellRenderers {
    * @param tableModel the table model
    * @param property the property
    * @return the table cell renderer
-   * @see Entity.ColorProvider
-   * @see EntityDefinition.Builder#colorProvider(Entity.ColorProvider)
+   * @see ColorProvider
+   * @see EntityDefinition.Builder#colorProvider(ColorProvider)
    */
   public static EntityTableCellRenderer createTableCellRenderer(final SwingEntityTableModel tableModel, final Property property) {
     if (!Objects.equals(tableModel.getEntityId(), property.getEntityId())) {

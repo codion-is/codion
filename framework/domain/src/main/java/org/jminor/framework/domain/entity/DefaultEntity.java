@@ -73,9 +73,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private Key key;
 
   /**
-   * Fired when a value changes, null until initialized by a call to getValueChangedEvent().
+   * Fired when a value changes, null until initialized by a call to {@link #getValueChangeEvent()}.
    */
-  private Event<ValueChange> valueChangedEvent;
+  private Event<ValueChange> valueChangeEvent;
 
   /**
    * Instantiates a new DefaultEntity
@@ -435,7 +435,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public int compareTo(final Entity entity) {
-    return definition.compareTo(this, entity);
+    return definition.getComparator().compare(this, entity);
   }
 
   /**
@@ -449,12 +449,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * @return a string representation of this entity
    * @see EntityDefinition.Builder#stringProvider(java.util.function.Function)
-   * @see EntityDefinition#toString(Entity)
+   * @see EntityDefinition#getStringProvider()
    */
   @Override
   public String toString() {
     if (toString == null) {
-      toString = definition.toString(this);
+      toString = definition.getStringProvider().apply(this);
     }
 
     return toString;
@@ -463,7 +463,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public Object getColor(final Property property) {
-    return definition.getColor(this, property);
+    return definition.getColorProvider().getColor(this, property);
   }
 
   /** {@inheritDoc} */
@@ -514,14 +514,14 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public void addValueListener(final EventDataListener<ValueChange> valueListener) {
-    getValueChangedEvent().addDataListener(valueListener);
+    getValueChangeEvent().addDataListener(valueListener);
   }
 
   /** {@inheritDoc} */
   @Override
   public void removeValueListener(final EventDataListener<ValueChange> valueListener) {
-    if (valueChangedEvent != null) {
-      valueChangedEvent.removeDataListener(valueListener);
+    if (valueChangeEvent != null) {
+      valueChangeEvent.removeDataListener(valueListener);
     }
   }
 
@@ -575,13 +575,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   protected void onValueChanged(final Property property, final Object currentValue, final Object previousValue, final boolean initialization) {
-    if (valueChangedEvent != null) {
-      valueChangedEvent.onEvent(valueChange(property, currentValue, previousValue, initialization));
+    if (valueChangeEvent != null) {
+      valueChangeEvent.onEvent(valueChange(property, currentValue, previousValue, initialization));
       if (definition.hasDerivedProperties()) {
         final Collection<DerivedProperty> derivedProperties = definition.getDerivedProperties(property.getPropertyId());
         for (final DerivedProperty derivedProperty : derivedProperties) {
           final Object derivedValue = getDerivedValue(derivedProperty);
-          valueChangedEvent.onEvent(valueChange(derivedProperty, derivedValue, derivedValue));
+          valueChangeEvent.onEvent(valueChange(derivedProperty, derivedValue, derivedValue));
         }
       }
     }
@@ -802,12 +802,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return false;
   }
 
-  private Event<ValueChange> getValueChangedEvent() {
-    if (valueChangedEvent == null) {
-      valueChangedEvent = Events.event();
+  private Event<ValueChange> getValueChangeEvent() {
+    if (valueChangeEvent == null) {
+      valueChangeEvent = Events.event();
     }
 
-    return valueChangedEvent;
+    return valueChangeEvent;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

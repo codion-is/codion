@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.exception;
+package org.jminor.framework.domain.entity.exception;
 
 import static java.util.Objects.requireNonNull;
 
