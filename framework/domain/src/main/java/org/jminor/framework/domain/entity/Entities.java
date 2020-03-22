@@ -113,16 +113,17 @@ public final class Entities {
 
   /**
    * Checks if the primary key of any of the given entities is modified
+   * @param definition the definition of the entity
    * @param entities the entities to check
    * @return true if any of the given entities has a modified primary key
    */
-  public static boolean isKeyModified(final Collection<Entity> entities) {
+  public static boolean isKeyModified(final EntityDefinition definition, final Collection<Entity> entities) {
     if (nullOrEmpty(entities)) {
       return false;
     }
 
     return entities.stream().anyMatch(entity ->
-            entity.getDefinition().getPrimaryKeyProperties().stream().anyMatch(entity::isModified));
+            definition.getPrimaryKeyProperties().stream().anyMatch(entity::isModified));
   }
 
   /**

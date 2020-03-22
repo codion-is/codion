@@ -497,7 +497,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final void validate(final Property property) throws ValidationException {
-    validator.validate(entity, property);
+    validator.validate(getEntityDefinition(), entity, property);
   }
 
   /** {@inheritDoc} */
@@ -516,7 +516,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void validate(final Collection<Entity> entities) throws ValidationException {
     for (final Entity entityToValidate : entities) {
-      validator.validate(entityToValidate);
+      validator.validate(getDomain().getDefinition(entityToValidate.getEntityId()), entityToValidate);
     }
   }
 
@@ -524,7 +524,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final boolean isValid(final Property property) {
     try {
-      validator.validate(entity, requireNonNull(property, PROPERTY));
+      validator.validate(getEntityDefinition(), entity, requireNonNull(property, PROPERTY));
       return true;
     }
     catch (final ValidationException e) {
@@ -1097,7 +1097,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     afterUpdateEvent.addListener(entitiesChangedEvent);
     entity.addValueListener(valueChange -> {
       entityModifiedState.set(entity.isModified());
-      validState.set(validator.isValid(entity));
+      validState.set(validator.isValid(getEntityDefinition(), entity));
       final Event<ValueChange> valueChangeEvent = valueChangeEventMap.get(valueChange.getProperty().getPropertyId());
       if (valueChangeEvent != null) {
         valueChangeEvent.onEvent(valueChange);
