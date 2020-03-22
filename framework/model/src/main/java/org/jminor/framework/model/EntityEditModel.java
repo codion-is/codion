@@ -16,6 +16,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
+import org.jminor.framework.domain.entity.Validator;
 import org.jminor.framework.domain.entity.ValueChange;
 import org.jminor.framework.domain.exception.ValidationException;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -368,7 +369,7 @@ public interface EntityEditModel extends Refreshable {
    * @return the inserted entity
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
-   * @see Entity.Validator#validate(java.util.Collection)
+   * @see Validator#validate(java.util.Collection)
    */
   Entity insert() throws DatabaseException, ValidationException;
 
@@ -380,7 +381,7 @@ public interface EntityEditModel extends Refreshable {
    * @throws ValidationException in case validation fails
    * @see #addBeforeInsertListener(EventDataListener)
    * @see #addAfterInsertListener(EventDataListener)
-   * @see Entity.Validator#validate(java.util.Collection)
+   * @see Validator#validate(java.util.Collection)
    */
   List<Entity> insert(List<Entity> entities) throws DatabaseException, ValidationException;
 
@@ -391,7 +392,7 @@ public interface EntityEditModel extends Refreshable {
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @throws org.jminor.common.db.exception.UpdateException in case the active entity is not modified
-   * @see Entity.Validator#validate(java.util.Collection)
+   * @see Validator#validate(java.util.Collection)
    */
   Entity update() throws DatabaseException, ValidationException;
 
@@ -405,7 +406,7 @@ public interface EntityEditModel extends Refreshable {
    * @throws ValidationException in case validation fails
    * @see #addBeforeUpdateListener(EventDataListener)
    * @see #addAfterUpdateListener(EventDataListener)
-   * @see Entity.Validator#validate(java.util.Collection)
+   * @see Validator#validate(java.util.Collection)
    */
   List<Entity> update(List<Entity> entities) throws DatabaseException, ValidationException;
 
@@ -465,7 +466,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * @return the validator
    */
-  Entity.Validator getValidator();
+  Validator getValidator();
 
   /**
    * Checks if the value associated with the given property is valid, throws a ValidationException if not
@@ -499,7 +500,7 @@ public interface EntityEditModel extends Refreshable {
    * @param key the key the value is associated with
    * @return true if the value is valid
    * @see #validate(Property)
-   * @see Entity.Validator#validate(Entity)
+   * @see Validator#validate(Entity)
    */
   boolean isValid(Property key);
 

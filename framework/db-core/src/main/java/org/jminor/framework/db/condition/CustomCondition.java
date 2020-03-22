@@ -4,7 +4,7 @@
 package org.jminor.framework.db.condition;
 
 /**
- * A Condition based on a custom {@link org.jminor.framework.domain.entity.Entity.ConditionProvider}
+ * A Condition based on a custom {@link org.jminor.framework.domain.entity.ConditionProvider}
  * associated with {@link CustomCondition#getConditionId()}
  */
 public interface CustomCondition extends Condition {

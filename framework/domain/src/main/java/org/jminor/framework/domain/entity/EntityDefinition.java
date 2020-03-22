@@ -44,12 +44,12 @@ public interface EntityDefinition extends Serializable {
   String getTableName();
 
   /**
-   * Returns the {@link Entity.ConditionProvider} associated with the given id
+   * Returns the {@link ConditionProvider} associated with the given id
    * @param conditionId the condition id
    * @return the condition provider associated with the given id
    * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionId
    */
-  Entity.ConditionProvider getConditionProvider(String conditionId);
+  ConditionProvider getConditionProvider(String conditionId);
 
   /**
    * @return the ID of the domain this entity type belongs to
@@ -59,7 +59,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the validator for this entity type
    */
-  Entity.Validator getValidator();
+  Validator getValidator();
 
   /**
    * @return the caption to use when presenting entities of this type
@@ -346,25 +346,10 @@ public interface EntityDefinition extends Serializable {
   List<ForeignKeyProperty> getForeignKeyProperties(String columnPropertyId);
 
   /**
-   * Compares the given entities.
-   * @param entity the first entity
-   * @param entityToCompare the second entity
-   * @return the compare result
+   * Returns the color provider, never null
+   * @return the color provider
    */
-  int compareTo(Entity entity, Entity entityToCompare);
-
-  /**
-   * @param entity the entity
-   * @return a string representation of the given entity
-   */
-  String toString(Entity entity);
-
-  /**
-   * @param entity the entity
-   * @param property the property
-   * @return the background color to use for this entity and property, null if none is specified
-   */
-  Object getColor(Entity entity, Property property);
+  ColorProvider getColorProvider();
 
   /**
    * Provides {@link EntityDefinition}s
@@ -400,23 +385,23 @@ public interface EntityDefinition extends Serializable {
      * @param validator the validator for this entity type
      * @return this {@link Builder} instance
      */
-    Builder validator(Entity.Validator validator);
+    Builder validator(Validator validator);
 
     /**
-     * Adds a {@link Entity.ConditionProvider} which provides a dynamic query condition string.
+     * Adds a {@link ConditionProvider} which provides a dynamic query condition string.
      * The condition string should not include the WHERE keyword and use the ?
      * substitution character where values should be inserted.
      * @param conditionId the condition id
      * @param conditionProvider the condition provider
      * @return this Entity.Definer instance
      */
-    Builder conditionProvider(String conditionId, Entity.ConditionProvider conditionProvider);
+    Builder conditionProvider(String conditionId, ConditionProvider conditionProvider);
 
     /**
      * @param colorProvider the background color provider
      * @return this {@link Builder} instance
      */
-    Builder colorProvider(Entity.ColorProvider colorProvider);
+    Builder colorProvider(ColorProvider colorProvider);
 
     /**
      * Sets the caption for this entity type

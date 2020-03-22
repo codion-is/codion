@@ -435,7 +435,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public int compareTo(final Entity entity) {
-    return definition.compareTo(this, entity);
+    return definition.getComparator().compare(this, entity);
   }
 
   /**
@@ -449,12 +449,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * @return a string representation of this entity
    * @see EntityDefinition.Builder#stringProvider(java.util.function.Function)
-   * @see EntityDefinition#toString(Entity)
+   * @see EntityDefinition#getStringProvider()
    */
   @Override
   public String toString() {
     if (toString == null) {
-      toString = definition.toString(this);
+      toString = definition.getStringProvider().apply(this);
     }
 
     return toString;
@@ -463,7 +463,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public Object getColor(final Property property) {
-    return definition.getColor(this, property);
+    return definition.getColorProvider().getColor(this, property);
   }
 
   /** {@inheritDoc} */

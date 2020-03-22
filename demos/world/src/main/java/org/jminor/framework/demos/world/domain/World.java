@@ -2,6 +2,7 @@ package org.jminor.framework.demos.world.domain;
 
 import org.jminor.common.item.Item;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.ColorProvider;
 import org.jminor.framework.domain.entity.DefaultEntityValidator;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.StringProvider;
@@ -254,7 +255,7 @@ public final class World extends Domain {
   }
 
   // tag::colorProvider[]
-  private static final class CityColorProvider implements Entity.ColorProvider {
+  private static final class CityColorProvider implements ColorProvider {
 
     @Override
     public Object getColor(Entity city, Property property) {

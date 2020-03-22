@@ -5745,3 +5745,4 @@
   Boolean setter parameters renamed to reflect method name
   valueLink() methods removed, replaced with value.link(value)
   DefaultEntity.getValueChangedEvent() renamed to getValueChangeEvent()
+  Some refactoring of org.jminor.framework.domain.entity package, inner classes moved up, cyclical dependencies reduced (but not eliminated)

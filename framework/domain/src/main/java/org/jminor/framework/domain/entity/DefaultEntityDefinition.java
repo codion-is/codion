@@ -13,7 +13,6 @@ import org.jminor.framework.domain.property.MirrorProperty;
 import org.jminor.framework.domain.property.Property;
 import org.jminor.framework.domain.property.TransientProperty;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -95,7 +94,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * Provides the color
    */
-  private Entity.ColorProvider colorProvider;
+  private ColorProvider colorProvider = new NullColorProvider();
 
   /**
    * The comparator
@@ -105,7 +104,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The validator
    */
-  private Entity.Validator validator = new DefaultEntityValidator();
+  private Validator validator = new DefaultEntityValidator();
 
   /**
    * The IDs of the properties to use when performing a string based lookup on this entity
@@ -149,10 +148,10 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private transient boolean selectQueryContainsWhereClause = false;
 
   /**
-   * The {@link Entity.ConditionProvider}s
+   * The {@link ConditionProvider}s
    * mapped to their respective conditionIds
    */
-  private transient Map<String, Entity.ConditionProvider> conditionProviders;
+  private transient Map<String, ConditionProvider> conditionProviders;
 
   private final Map<String, Property> propertyMap;
   private final List<Property> properties;
@@ -165,7 +164,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private final Map<String, ColumnProperty> primaryKeyPropertyMap;
   private final List<ForeignKeyProperty> foreignKeyProperties;
   private final Map<String, ForeignKeyProperty> foreignKeyPropertyMap;
-  private final Map<String, List<ForeignKeyProperty>> columpPropertyForeignKeyProperties;
+  private final Map<String, List<ForeignKeyProperty>> columnPropertyForeignKeyProperties;
   private final Map<String, Set<DerivedProperty>> derivedProperties;
   private final List<TransientProperty> transientProperties;
   private final Map<String, List<DenormalizedProperty>> denormalizedProperties;
@@ -189,7 +188,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
     this.foreignKeyProperties = unmodifiableList(getForeignKeyProperties(propertyMap.values()));
     this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap(foreignKeyProperties);
-    this.columpPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties(foreignKeyProperties);
+    this.columnPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties(foreignKeyProperties);
     this.derivedProperties = initializeDerivedProperties(propertyMap.values());
     this.transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
     this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties(propertyMap.values()));
@@ -211,10 +210,10 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.ConditionProvider getConditionProvider(final String conditionId) {
+  public ConditionProvider getConditionProvider(final String conditionId) {
     requireNonNull(conditionId);
     if (conditionProviders != null) {
-      final Entity.ConditionProvider conditionProvider = conditionProviders.get(conditionId);
+      final ConditionProvider conditionProvider = conditionProviders.get(conditionId);
       if (conditionProvider != null) {
         return conditionProvider;
       }
@@ -463,7 +462,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /** {@inheritDoc} */
   @Override
   public List<ForeignKeyProperty> getForeignKeyProperties(final String columnPropertyId) {
-    return columpPropertyForeignKeyProperties.computeIfAbsent(columnPropertyId, propertyId -> Collections.emptyList());
+    return columnPropertyForeignKeyProperties.computeIfAbsent(columnPropertyId, propertyId -> Collections.emptyList());
   }
 
   /** {@inheritDoc} */
@@ -572,32 +571,14 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Validator getValidator() {
+  public Validator getValidator() {
     return validator;
   }
 
   /** {@inheritDoc} */
   @Override
-  public int compareTo(final Entity entity, final Entity entityToCompare) {
-    requireNonNull(entity, "entity");
-    requireNonNull(entityToCompare, "entityToCompare");
-    return comparator.compare(entity, entityToCompare);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String toString(final Entity entity) {
-    return stringProvider.apply(requireNonNull(entity, "entity"));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Object getColor(final Entity entity, final Property property) {
-    if (colorProvider == null) {
-      return null;
-    }
-
-    return colorProvider.getColor(entity, property);
+  public ColorProvider getColorProvider() {
+    return colorProvider;
   }
 
   /**
@@ -807,7 +788,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder conditionProvider(final String conditionId, final Entity.ConditionProvider conditionProvider) {
+    public Builder conditionProvider(final String conditionId, final ConditionProvider conditionProvider) {
       rejectNullOrEmpty(conditionId, "contitionId");
       requireNonNull(conditionProvider, "conditionProvider");
       if (definition.conditionProviders == null) {
@@ -931,28 +912,15 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder colorProvider(final Entity.ColorProvider colorProvider) {
+    public Builder colorProvider(final ColorProvider colorProvider) {
       definition.colorProvider = requireNonNull(colorProvider, "colorProvider");
       return this;
     }
 
     @Override
-    public Builder validator(final Entity.Validator validator) {
+    public Builder validator(final Validator validator) {
       definition.validator = requireNonNull(validator, "validator");
       return this;
-    }
-  }
-
-  /**
-   * A ToString implementation using the entityId plus primary key value.
-   */
-  private static final class DefaultStringProvider implements Function<Entity, String>, Serializable {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public String apply(final Entity entity) {
-      return entity.getEntityId() + ": " + entity.getKey();
     }
   }
 }
