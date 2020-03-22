@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static java.util.Arrays.asList;
@@ -60,7 +59,7 @@ import static org.jminor.common.Util.nullOrEmpty;
  */
 public final class Dialogs {
 
-  public static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Dialogs.class.getName(), Locale.getDefault());
+  public static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Dialogs.class.getName());
   private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
   /**
    * Caching the file chooser instances since the constructor is quite slow, especially on Win. with many mapped network drives

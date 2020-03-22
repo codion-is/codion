@@ -3,7 +3,6 @@
  */
 package org.jminor.common.remote.exception;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -11,7 +10,7 @@ import java.util.ResourceBundle;
  */
 public final class ConnectionNotAvailableException extends ServerException {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ConnectionNotAvailableException.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ConnectionNotAvailableException.class.getName());
 
   /**
    * Instantiates a new {@link ConnectionNotAvailableException}

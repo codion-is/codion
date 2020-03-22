@@ -4,7 +4,6 @@
 package org.jminor.common.model.table;
 
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.ResourceBundle;
@@ -114,7 +113,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
   };
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSummary.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSummary.class.getName());
 
   protected String addSubsetIndicator(final String text, final ColumnSummaryModel.ColumnValueProvider valueProvider) {
     return text.isEmpty() ? text : text + (valueProvider.isValueSubset() ? "*" : "");

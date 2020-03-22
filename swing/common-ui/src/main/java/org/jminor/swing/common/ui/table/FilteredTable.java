@@ -64,7 +64,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -79,7 +78,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C>> extends JTable {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
 
   public static final char FILTER_INDICATOR = '*';
 

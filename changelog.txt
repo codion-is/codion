@@ -5773,3 +5773,4 @@
   domain.exception package moved to domain.entity.exception
   OrderBy now interface, getOrderByString() moved to Queries, Domain.orderBy() moved to OrderBy
   Entity.getDefinition() removed, EntityDefinition added as parameter wherever it was used, cyclic dependencies reduced some more
+  Removed redundant Locale.getDefault() parameters when fetching resource bundles

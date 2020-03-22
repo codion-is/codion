@@ -66,7 +66,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -91,7 +90,7 @@ import static org.jminor.swing.common.ui.control.Controls.control;
  */
 public final class EntityLookupField extends JTextField {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityLookupField.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityLookupField.class.getName());
 
   private static final String LOOKUP_MODEL = "lookupModel";
   private static final int BORDER_SIZE = 15;

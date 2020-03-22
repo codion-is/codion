@@ -38,7 +38,6 @@ import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -47,7 +46,7 @@ import java.util.ResourceBundle;
  */
 public final class EntityTableConditionPanel extends JPanel {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTableConditionPanel.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTableConditionPanel.class.getName());
 
   private final Event<Boolean> advancedChangedEvent = Events.event();
 

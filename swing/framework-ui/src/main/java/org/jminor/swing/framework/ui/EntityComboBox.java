@@ -20,7 +20,6 @@ import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -29,7 +28,7 @@ import java.util.ResourceBundle;
  */
 public final class EntityComboBox extends SteppedComboBox<Entity> {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityComboBox.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityComboBox.class.getName());
 
   /**
    * Instantiates a new EntityComboBox

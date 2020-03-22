@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -20,7 +19,7 @@ public enum ConditionType {
   WITHIN_RANGE("\u2265 \u2264", "within_range", Values.TWO),
   OUTSIDE_RANGE("\u2264 \u2265", "outside_range", Values.TWO);
 
-  private final ResourceBundle messages = ResourceBundle.getBundle(ConditionType.class.getName(), Locale.getDefault());
+  private final ResourceBundle messages = ResourceBundle.getBundle(ConditionType.class.getName());
 
   private final String caption;
   private final String description;
