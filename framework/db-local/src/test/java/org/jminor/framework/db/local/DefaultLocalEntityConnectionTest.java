@@ -27,7 +27,6 @@ import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
@@ -51,6 +50,7 @@ import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.db.local.TestDomain.*;
 import static org.jminor.framework.domain.entity.Entities.getKeys;
+import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultLocalEntityConnectionTest {
@@ -216,7 +216,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectLimitOffset() throws Exception {
     final EntitySelectCondition condition = entitySelectCondition(T_EMP)
-            .setOrderBy(Domain.orderBy().ascending(EMP_NAME)).setLimit(2);
+            .setOrderBy(orderBy().ascending(EMP_NAME)).setLimit(2);
     List<Entity> result = connection.select(condition);
     assertEquals(2, result.size());
     condition.setLimit(3);

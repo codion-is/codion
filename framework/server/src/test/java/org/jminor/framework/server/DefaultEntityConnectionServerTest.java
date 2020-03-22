@@ -41,6 +41,7 @@ import java.util.UUID;
 
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityConnectionServerTest {
@@ -184,7 +185,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
     final EntitySelectCondition selectCondition = entitySelectCondition(TestDomain.T_EMP)
-            .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_NAME));
+            .setOrderBy(orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.select(selectCondition);
 
     admin.getDatabaseStatistics();

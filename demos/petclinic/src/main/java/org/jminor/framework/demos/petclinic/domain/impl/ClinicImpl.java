@@ -10,6 +10,7 @@ import java.sql.Types;
 
 import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
 import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
+import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class ClinicImpl extends Domain {

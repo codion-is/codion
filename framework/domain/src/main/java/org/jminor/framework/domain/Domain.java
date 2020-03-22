@@ -13,7 +13,6 @@ import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.EntityDefinitions;
-import org.jminor.framework.domain.entity.OrderBy;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -495,13 +494,6 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    */
   public final Domain registerDomain() {
     return registerDomain(domainId, this);
-  }
-
-  /**
-   * @return a new OrderBy instance
-   */
-  public static final OrderBy orderBy() {
-    return new OrderBy();
   }
 
   /**

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Comparator;
 
 import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
+import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityDefinitionTest {
@@ -28,7 +29,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.primaryKeyProperty("id"),
                 Properties.columnProperty("name", Types.VARCHAR))
                 .selectQuery("select * from dual", false)
-                .orderBy(Domain.orderBy().descending("name"))
+                .orderBy(orderBy().descending("name"))
                 .readOnly(true).selectTableName("selectTableName").groupByClause("name")
                 .stringProvider(stringProvider).comparator(comparator);
       }
