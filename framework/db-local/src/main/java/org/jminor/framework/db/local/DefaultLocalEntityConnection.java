@@ -1026,7 +1026,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException exception = null;
     QUERY_COUNTER.count(query);
     try {
-      logAccess("executeUpdate", new Object[] {query, statementValues});
+      logAccess("executeStatement", new Object[] {query, statementValues});
       setParameterValues(statement, statementProperties, statementValues);
 
       return statement.executeUpdate();
@@ -1036,7 +1036,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      final MethodLogger.Entry entry = logExit("executeUpdate", exception, null);
+      final MethodLogger.Entry entry = logExit("executeStatement", exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), query, statementValues, exception, entry));
       }
@@ -1049,7 +1049,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     QUERY_COUNTER.count(query);
     final List statementValues = whereCondition.getValues();
     try {
-      logAccess("executePreparedSelect", statementValues == null ?
+      logAccess("executeStatement", statementValues == null ?
               new Object[] {query} : new Object[] {query, statementValues});
       setParameterValues(statement, whereCondition.getColumnProperties(), statementValues);
 
@@ -1060,7 +1060,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      final MethodLogger.Entry entry = logExit("executePreparedSelect", exception, null);
+      final MethodLogger.Entry entry = logExit("executeStatement", exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), query, statementValues, exception, entry));
       }
