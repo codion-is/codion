@@ -28,6 +28,7 @@ public interface Validator extends Serializable {
   boolean isNullable(Entity entity, Property property);
 
   /**
+   * Returns true if the given entity contains only valid values.
    * @param definition the definition of the entity to validate
    * @param entity the entity
    * @return true if the given entity contains only valid values
