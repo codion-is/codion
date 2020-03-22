@@ -239,7 +239,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final String[] returnColumns = keyGenerator.returnGeneratedKeys() ? getPrimaryKeyColumnNames(entityDefinition) : null;
           insertQuery = insertQuery(entityDefinition.getTableName(), statementProperties);
           statement = prepareStatement(insertQuery, returnColumns);
-          executeUpdate(statement, insertQuery, statementProperties, statementValues);
+          executeStatement(statement, insertQuery, statementProperties, statementValues);
           keyGenerator.afterInsert(entityDefinition, entity, connection, statement);
 
           insertedKeys.add(entity.getKey());
@@ -310,7 +310,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statement = prepareStatement(updateQuery);
             statementProperties.addAll(updateCondition.getColumnProperties());
             statementValues.addAll(updateCondition.getValues());
-            final int updatedRows = executeUpdate(statement, updateQuery, statementProperties, statementValues);
+            final int updatedRows = executeStatement(statement, updateQuery, statementProperties, statementValues);
             if (updatedRows == 0) {
               throw new UpdateException("Update did not affect any rows");
             }
@@ -381,7 +381,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         statement = prepareStatement(updateQuery);
         statementProperties.addAll(whereCondition.getColumnProperties());
         statementValues.addAll(whereCondition.getValues());
-        final int updatedRows = executeUpdate(statement, updateQuery, statementProperties, statementValues);
+        final int updatedRows = executeStatement(statement, updateQuery, statementProperties, statementValues);
 
         commitIfTransactionIsNotOpen();
 
@@ -412,7 +412,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         deleteQuery = deleteQuery(entityDefinition.getTableName(), whereCondition.getWhereClause());
         statement = prepareStatement(deleteQuery);
-        final int deleteCount = executeUpdate(statement, deleteQuery,
+        final int deleteCount = executeStatement(statement, deleteQuery,
                 whereCondition.getColumnProperties(), whereCondition.getValues());
         commitIfTransactionIsNotOpen();
 
@@ -456,7 +456,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           whereCondition = whereCondition(entityCondition(entityIdKeys.getValue()), entityDefinition);
           deleteQuery = deleteQuery(entityDefinition.getTableName(), whereCondition.getWhereClause());
           statement = prepareStatement(deleteQuery);
-          deleteCount += executeUpdate(statement, deleteQuery,
+          deleteCount += executeStatement(statement, deleteQuery,
                   whereCondition.getColumnProperties(), whereCondition.getValues());
           statement.close();
         }
@@ -576,7 +576,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         statement = prepareStatement(selectQuery);
-        resultSet = executeQuery(statement, selectQuery, combinedCondition);
+        resultSet = executeStatement(statement, selectQuery, combinedCondition);
         final List<T> result = propertyToSelect.<T>getResultPacker().pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
 
@@ -609,7 +609,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         statement = prepareStatement(selectQuery);
-        resultSet = executeQuery(statement, selectQuery, whereCondition);
+        resultSet = executeStatement(statement, selectQuery, whereCondition);
         final List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
         if (result.isEmpty()) {
@@ -1008,7 +1008,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               selectCondition.getSelectPropertyIds(), propertiesToSelect), whereCondition,
               entityDefinition, connection.getDatabase());
       statement = prepareStatement(selectQuery);
-      resultSet = executeQuery(statement, selectQuery, whereCondition);
+      resultSet = executeStatement(statement, selectQuery, whereCondition);
 
       return new EntityResultIterator(statement, resultSet, new EntityResultPacker(
               domain, entityDefinition, propertiesToSelect), selectCondition.getFetchCount());
@@ -1021,9 +1021,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private int executeUpdate(final PreparedStatement statement, final String query,
-                            final List<ColumnProperty> statementProperties,
-                            final List statementValues) throws SQLException {
+  private int executeStatement(final PreparedStatement statement, final String query,
+                               final List<ColumnProperty> statementProperties,
+                               final List statementValues) throws SQLException {
     SQLException exception = null;
     QUERY_COUNTER.count(query);
     try {
@@ -1044,8 +1044,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private ResultSet executeQuery(final PreparedStatement statement, final String query,
-                                 final WhereCondition whereCondition) throws SQLException {
+  private ResultSet executeStatement(final PreparedStatement statement, final String query,
+                                     final WhereCondition whereCondition) throws SQLException {
     SQLException exception = null;
     QUERY_COUNTER.count(query);
     final List statementValues = whereCondition.getValues();
