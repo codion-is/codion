@@ -6,7 +6,7 @@ import org.jminor.framework.domain.entity.ColorProvider;
 import org.jminor.framework.domain.entity.DefaultEntityValidator;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.StringProvider;
-import org.jminor.framework.domain.exception.ValidationException;
+import org.jminor.framework.domain.entity.exception.ValidationException;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.Property;
 

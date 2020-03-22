@@ -18,7 +18,7 @@ import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.Validator;
 import org.jminor.framework.domain.entity.ValueChange;
-import org.jminor.framework.domain.exception.ValidationException;
+import org.jminor.framework.domain.entity.exception.ValidationException;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 

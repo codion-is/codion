@@ -9,7 +9,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.Validator;
-import org.jminor.framework.domain.exception.ValidationException;
+import org.jminor.framework.domain.entity.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;

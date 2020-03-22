@@ -4,10 +4,10 @@
 package org.jminor.framework.domain.entity;
 
 import org.jminor.common.event.EventListener;
-import org.jminor.framework.domain.exception.LengthValidationException;
-import org.jminor.framework.domain.exception.NullValidationException;
-import org.jminor.framework.domain.exception.RangeValidationException;
-import org.jminor.framework.domain.exception.ValidationException;
+import org.jminor.framework.domain.entity.exception.LengthValidationException;
+import org.jminor.framework.domain.entity.exception.NullValidationException;
+import org.jminor.framework.domain.entity.exception.RangeValidationException;
+import org.jminor.framework.domain.entity.exception.ValidationException;
 import org.jminor.framework.domain.property.Property;
 
 import java.io.Serializable;
