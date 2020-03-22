@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.common.value.Value;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
 
 import javax.swing.JFormattedTextField;
@@ -52,29 +51,6 @@ public final class TemporalValues {
   }
 
   /**
-   * Links a date value with a given text component
-   * @param textComponent the text component to link with the value
-   * @param value the model value
-   * @param dateFormat the data format
-   */
-  public static void localTimeValueLink(final JFormattedTextField textComponent, final Value<LocalTime> value,
-                                        final String dateFormat) {
-    localTimeValueLink(textComponent, value, dateFormat, true);
-  }
-
-  /**
-   * Links a date value with a given text component
-   * @param textComponent the text component to link with the value
-   * @param value the model value
-   * @param dateFormat the data format
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   */
-  public static void localTimeValueLink(final JFormattedTextField textComponent, final Value<LocalTime> value,
-                                        final String dateFormat, final boolean updateOnKeystroke) {
-    value.link(localTimeValue(textComponent, dateFormat, updateOnKeystroke));
-  }
-
-  /**
    * @param textComponent the component
    * @param dateFormat the date format
    * @return a Value bound to the given component
@@ -97,29 +73,6 @@ public final class TemporalValues {
   }
 
   /**
-   * Links a date value with a given text component
-   * @param textComponent the text component to link with the value
-   * @param value the model value
-   * @param dateFormat the data format
-   */
-  public static void localDateValueLink(final JFormattedTextField textComponent, final Value<LocalDate> value,
-                                        final String dateFormat) {
-    localDateValueLink(textComponent, value, dateFormat, true);
-  }
-
-  /**
-   * Links a date value with a given text component
-   * @param textComponent the text component to link with the value
-   * @param value the model value
-   * @param dateFormat the data format
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   */
-  public static void localDateValueLink(final JFormattedTextField textComponent, final Value<LocalDate> value,
-                                        final String dateFormat, final boolean updateOnKeystroke) {
-    value.link(localDateValue(textComponent, dateFormat, updateOnKeystroke));
-  }
-
-  /**
    * @param textComponent the component
    * @param dateFormat the date format
    * @return a Value bound to the given component
@@ -139,28 +92,5 @@ public final class TemporalValues {
                                                                                       final String dateFormat,
                                                                                       final boolean updateOnKeystroke) {
     return new TemporalFieldValue<>(textComponent, dateFormat, updateOnKeystroke, LocalDateTime::parse);
-  }
-
-  /**
-   * Links a date value with a given text component
-   * @param textComponent the text component to link with the value
-   * @param value the model value
-   * @param dateFormat the data format
-   */
-  public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Value<LocalDateTime> value,
-                                            final String dateFormat) {
-    localDateTimeValueLink(textComponent, value, dateFormat, true);
-  }
-
-  /**
-   * Links a date value with a given text component
-   * @param textComponent the text component to link with the value
-   * @param value the model value
-   * @param dateFormat the data format
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   */
-  public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Value<LocalDateTime> value,
-                                            final String dateFormat, final boolean updateOnKeystroke) {
-    value.link(localDateTimeValue(textComponent, dateFormat, updateOnKeystroke));
   }
 }

@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.common.value.Value;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
 
 import javax.swing.JTextField;
@@ -78,24 +77,5 @@ public final class TextValues {
   public static ComponentValue<String, TextInputPanel> textValue(final String inputDialogTitle, final String initialValue,
                                                                  final int maxLength) {
     return new TextInputPanelValue(inputDialogTitle, initialValue, maxLength);
-  }
-
-  /**
-   * @param textComponent the text component to link with the value
-   * @param value the value to link with the component
-   */
-  public static void textValueLink(final JTextComponent textComponent, final Value<String> value) {
-    textValueLink(textComponent, value, null, true);
-  }
-
-  /**
-   * @param textComponent the text component to link with the value
-   * @param value the value to link with the component
-   * @param format the format to use when displaying the linked value, null if no formatting should be performed
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   */
-  public static void textValueLink(final JTextComponent textComponent, final Value<String> value, final Format format,
-                                   final boolean updateOnKeystroke) {
-    value.link(textValue(textComponent, format, updateOnKeystroke));
   }
 }

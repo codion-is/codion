@@ -6,6 +6,7 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.DateFormats;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields;
@@ -149,19 +150,19 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getConfigurationPanel() {
     final JPanel configBase = new JPanel(Layouts.createGridLayout(0, 1));
 
-    final JSpinner timeoutSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model, "pooledConnectionTimeout",
+    final JSpinner timeoutSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model, "pooledConnectionTimeout",
             model.getStatisticsObserver()));
-    final JSpinner cleanupIntervalSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model, "poolCleanupInterval",
+    final JSpinner cleanupIntervalSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model, "poolCleanupInterval",
             model.getStatisticsObserver()));
-    final JSpinner maximumSizeSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model, "maximumPoolSize",
+    final JSpinner maximumSizeSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model, "maximumPoolSize",
             model.getStatisticsObserver()));
-    final JSpinner minimumSizeSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model, "minimumPoolSize",
+    final JSpinner minimumSizeSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model, "minimumPoolSize",
             model.getStatisticsObserver()));
-    final JSpinner maximumRetryWaitSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model, "maximumRetryWaitPeriod",
+    final JSpinner maximumRetryWaitSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model, "maximumRetryWaitPeriod",
             model.getStatisticsObserver()));
-    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model, "maximumCheckOutTime",
+    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model, "maximumCheckOutTime",
             model.getStatisticsObserver()));
-    final JSpinner newConnectionThresholdSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model, "newConnectionThreshold",
+    final JSpinner newConnectionThresholdSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model, "newConnectionThreshold",
             model.getStatisticsObserver()));
 
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setEditable(false);
@@ -222,7 +223,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(Layouts.createFlexibleGridLayout(1, 3, true, false));
-    final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
@@ -232,8 +233,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(updateIntervalSpinner);
 
     final JCheckBox collectStatisticsCheckBox = new JCheckBox("Fine grained statistics");
-    collectStatisticsCheckBox.setModel(BooleanValues.booleanValueLink(model, "collectFineGrainedStatistics",
-            model.getCollectFineGrainedStatisticsObserver()));
+    Values.propertyValue(model, "collectFineGrainedStatistics", boolean.class, model.getCollectFineGrainedStatisticsObserver())
+            .link(BooleanValues.booleanButtonModelValue(collectStatisticsCheckBox.getModel()));
     collectStatisticsCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
 
     chartConfig.add(collectStatisticsCheckBox);

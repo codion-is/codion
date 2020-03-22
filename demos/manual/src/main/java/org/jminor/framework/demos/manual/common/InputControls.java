@@ -49,7 +49,7 @@ public final class InputControls {
     JToggleButton.ToggleButtonModel buttonModel =
             new JToggleButton.ToggleButtonModel();
 
-    BooleanValues.booleanValueLink(buttonModel, booleanValue);
+    booleanValue.link(BooleanValues.booleanButtonModelValue(buttonModel));
 
     JCheckBox checkBox = new JCheckBox();
     checkBox.setModel(buttonModel);
@@ -64,7 +64,7 @@ public final class InputControls {
     NullableToggleButtonModel buttonModel =
             new NullableToggleButtonModel();
 
-    BooleanValues.booleanValueLink(buttonModel, booleanValue);
+    booleanValue.link(BooleanValues.booleanButtonModelValue(buttonModel));
 
     NullableCheckBox checkBox = new NullableCheckBox(buttonModel);
     // end::nullableCheckBox[]
@@ -76,7 +76,7 @@ public final class InputControls {
 
     JComboBox<Item<Boolean>> comboBox = new JComboBox<>(new BooleanComboBoxModel());
 
-    BooleanValues.booleanValueLink(comboBox, booleanValue);
+    booleanValue.link(BooleanValues.booleanComboBoxValue(comboBox));
     // end::booleanComboBox[]
   }
 
@@ -86,7 +86,7 @@ public final class InputControls {
 
     JTextField textField = new JTextField();
 
-    TextValues.textValueLink(textField, stringValue);
+    stringValue.link(TextValues.textValue(textField));
     // end::textField[]
   }
 
@@ -96,7 +96,7 @@ public final class InputControls {
 
     JTextArea textArea = new JTextArea();
 
-    TextValues.textValueLink(textArea, stringValue);
+    stringValue.link(TextValues.textValue(textArea));
     // end::textArea[]
   }
 
@@ -106,7 +106,7 @@ public final class InputControls {
 
     IntegerField integerField = new IntegerField();
 
-    NumericalValues.integerValueLink(integerField, integerValue);
+    integerValue.link(NumericalValues.integerValue(integerField));
     // end::integerField[]
   }
 
@@ -116,7 +116,7 @@ public final class InputControls {
 
     LongField longField = new LongField();
 
-    NumericalValues.longValueLink(longField, longValue);
+    longValue.link(NumericalValues.longValue(longField));
     // end::longField[]
   }
 
@@ -126,7 +126,7 @@ public final class InputControls {
 
     DecimalField doubleField = new DecimalField();
 
-    NumericalValues.doubleValueLink(doubleField, doubleValue);
+    doubleValue.link(NumericalValues.doubleValue(doubleField));
     // end::doubleField[]
   }
 
@@ -136,7 +136,7 @@ public final class InputControls {
 
     DecimalField bigDecimalField = new DecimalField();
 
-    NumericalValues.bigDecimalValueLink(bigDecimalField, bigDecimalValue);
+    bigDecimalValue.link(NumericalValues.bigDecimalValue(bigDecimalField));
     // end::bigDecimalField[]
   }
 
@@ -146,7 +146,7 @@ public final class InputControls {
 
     JFormattedTextField textField = new JFormattedTextField();
 
-    TemporalValues.localTimeValueLink(textField, localTimeValue, "HH:mm:ss");
+    localTimeValue.link(TemporalValues.localTimeValue(textField, "HH:mm:ss"));
     // end::localTime[]
   }
 
@@ -156,7 +156,7 @@ public final class InputControls {
 
     JFormattedTextField textField = new JFormattedTextField();
 
-    TemporalValues.localDateValueLink(textField, localDateValue, "dd-MM-yyyy");
+    localDateValue.link(TemporalValues.localDateValue(textField, "dd-MM-yyyy"));
     // end::localDate[]
   }
 
@@ -166,7 +166,7 @@ public final class InputControls {
 
     JFormattedTextField textField = new JFormattedTextField();
 
-    TemporalValues.localDateTimeValueLink(textField, localDateTimeValue, "dd-MM-yyyy HH:mm");
+    localDateTimeValue.link(TemporalValues.localDateTimeValue(textField, "dd-MM-yyyy HH:mm"));
     // end::localDateTime[]
   }
 
@@ -176,7 +176,7 @@ public final class InputControls {
 
     JComboBox<String> comboBox = new JComboBox<>(new String[] {"one", "two", "three"});
 
-    SelectedValues.selectedValueLink(comboBox, stringValue);
+    stringValue.link(SelectedValues.selectedValue(comboBox));
     // end::selectionComboBox[]
   }
 

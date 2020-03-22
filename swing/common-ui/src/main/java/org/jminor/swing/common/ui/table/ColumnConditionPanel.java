@@ -14,6 +14,7 @@ import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.Components;
@@ -416,39 +417,39 @@ public class ColumnConditionPanel<R, C> extends JPanel {
     }
 
     private void createToggleProperty(final JCheckBox checkBox, final boolean upperBound) {
-      BooleanValues.booleanValueLink(checkBox.getModel(),
-              upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue());
+      final Value<Boolean> value = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
+      value.link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
     }
 
     private void createTextProperty(final JComponent component, final boolean upperBound) {
-      final Value modelValue = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
+      final Value value = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
       final Class typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Integer.class)) {
-        NumericalValues.integerValueLink((IntegerField) component, modelValue);
+        value.link(NumericalValues.integerValue((IntegerField) component));
       }
       else if (typeClass.equals(Double.class)) {
-        NumericalValues.doubleValueLink((DecimalField) component, modelValue);
+        value.link(NumericalValues.doubleValue((DecimalField) component));
       }
       else if (typeClass.equals(BigDecimal.class)) {
-        NumericalValues.bigDecimalValueLink((DecimalField) component, modelValue);
+        value.link(NumericalValues.bigDecimalValue((DecimalField) component));
       }
       else if (typeClass.equals(Long.class)) {
-        NumericalValues.longValueLink((LongField) component, modelValue);
+        value.link(NumericalValues.longValue((LongField) component));
       }
       else if (typeClass.equals(LocalTime.class)) {
-        TemporalValues.localTimeValueLink((JFormattedTextField) component, modelValue,
-                columnConditionModel.getDateTimeFormatPattern());
+        value.link(TemporalValues.localTimeValue((JFormattedTextField) component,
+                columnConditionModel.getDateTimeFormatPattern()));
       }
       else if (typeClass.equals(LocalDateTime.class)) {
-        TemporalValues.localDateTimeValueLink((JFormattedTextField) component, modelValue,
-                columnConditionModel.getDateTimeFormatPattern());
+        value.link(TemporalValues.localDateTimeValue((JFormattedTextField) component,
+                columnConditionModel.getDateTimeFormatPattern()));
       }
       else if (typeClass.equals(LocalDate.class)) {
-        TemporalValues.localDateValueLink((JFormattedTextField) component, modelValue,
-                columnConditionModel.getDateTimeFormatPattern());
+        value.link(TemporalValues.localDateValue((JFormattedTextField) component,
+                columnConditionModel.getDateTimeFormatPattern()));
       }
       else {
-        TextValues.textValueLink((JTextField) component, modelValue);
+        value.link(TextValues.textValue((JTextField) component));
       }
     }
   }
@@ -502,7 +503,8 @@ public class ColumnConditionPanel<R, C> extends JPanel {
       }
     }
     final JComboBox<ConditionType> comboBox = new SteppedComboBox(comboBoxModel);
-    SelectedValues.selectedValueLink(comboBox, conditionModel, "conditionType", ConditionType.class, conditionModel.getConditionTypeObserver());
+    Values.propertyValue(conditionModel, "conditionType", ConditionType.class, conditionModel.getConditionTypeObserver())
+            .link(SelectedValues.selectedValue(comboBox));
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,

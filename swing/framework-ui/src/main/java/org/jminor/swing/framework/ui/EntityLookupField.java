@@ -394,11 +394,11 @@ public final class EntityLookupField extends JTextField {
       }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
-      BooleanValues.booleanValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionEnabledValue());
+      lookupModel.getMultipleSelectionEnabledValue().link(BooleanValues.booleanButtonModelValue(boxAllowMultipleValues.getModel()));
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
       final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
-      TextValues.textValueLink(multipleValueSeparatorField, lookupModel.getMultipleItemSeparatorValue());
+      lookupModel.getMultipleItemSeparatorValue().link(TextValues.textValue(multipleValueSeparatorField));
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.createGridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
@@ -420,11 +420,11 @@ public final class EntityLookupField extends JTextField {
     private static JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
       final JPanel panel = new JPanel(Layouts.createGridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
-      BooleanValues.booleanValueLink(boxCaseSensitive.getModel(), settings.getCaseSensitiveValue());
+      settings.getCaseSensitiveValue().link(BooleanValues.booleanButtonModelValue(boxCaseSensitive.getModel()));
       final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
-      BooleanValues.booleanValueLink(boxPrefixWildcard.getModel(), settings.getWildcardPrefixValue());
+      settings.getWildcardPrefixValue().link(BooleanValues.booleanButtonModelValue(boxPrefixWildcard.getModel()));
       final JCheckBox boxPostfixWildcard = new JCheckBox(MESSAGES.getString("postfix_wildcard"));
-      BooleanValues.booleanValueLink(boxPostfixWildcard.getModel(), settings.getWildcardPostfixValue());
+      settings.getWildcardPostfixValue().link(BooleanValues.booleanButtonModelValue(boxPostfixWildcard.getModel()));
 
       panel.add(boxCaseSensitive);
       panel.add(boxPrefixWildcard);

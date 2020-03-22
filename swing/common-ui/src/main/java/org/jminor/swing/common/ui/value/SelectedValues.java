@@ -3,14 +3,10 @@
  */
 package org.jminor.swing.common.ui.value;
 
-import org.jminor.common.event.EventObserver;
 import org.jminor.common.item.Item;
-import org.jminor.common.value.Value;
 
 import javax.swing.JComboBox;
 import java.util.List;
-
-import static org.jminor.common.value.Values.propertyValue;
 
 /**
  * Utility class for selection {@link ComponentValue} instances.
@@ -37,27 +33,5 @@ public final class SelectedValues {
    */
   public static <V> ComponentValue<V, JComboBox<V>> selectedValue(final JComboBox<V> comboBox) {
     return new SelectedValue<>(comboBox);
-  }
-
-  /**
-   * @param <V> the value type
-   * @param comboBox the combo box to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueClass the value class
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   */
-  public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Object owner, final String propertyName,
-                                           final Class<V> valueClass, final EventObserver<V> valueChangeEvent) {
-    selectedValueLink(comboBox, propertyValue(owner, propertyName, valueClass, valueChangeEvent));
-  }
-
-  /**
-   * @param <V> the value type
-   * @param comboBox the combo box to link with the value
-   * @param value the model value
-   */
-  public static <V> void selectedValueLink(final JComboBox<V> comboBox, final Value<V> value) {
-    value.link(selectedValue(comboBox));
   }
 }

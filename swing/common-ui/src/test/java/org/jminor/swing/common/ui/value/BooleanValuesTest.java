@@ -7,6 +7,7 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.item.Item;
 import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 
@@ -36,7 +37,8 @@ public class BooleanValuesTest {
   @Test
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
-    BooleanValues.booleanValueLink(checkBox.getModel(), this, "booleanValue", booleanValueChangedEvent);
+    Values.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent)
+            .link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
     assertFalse(checkBox.isSelected());
     setBooleanValue(true);
     assertTrue(checkBox.isSelected());

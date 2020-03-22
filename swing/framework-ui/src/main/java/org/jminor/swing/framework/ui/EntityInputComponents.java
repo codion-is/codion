@@ -287,7 +287,7 @@ public final class EntityInputComponents {
     requireNonNull(comboBoxModel, "comboBoxModel");
     comboBoxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    SelectedValues.selectedValueLink(comboBox, value);
+    value.link(SelectedValues.selectedValue(comboBox));
     linkToEnabledState(enabledState, comboBox);
     addComboBoxCompletion(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
@@ -414,7 +414,7 @@ public final class EntityInputComponents {
       throw new IllegalArgumentException("Editable property ComboBox is only implemented for String properties");
     }
     comboBox.setEditable(editable);
-    SelectedValues.selectedValueLink(comboBox, value);
+    value.link(SelectedValues.selectedValue(comboBox));
     linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
 
@@ -539,7 +539,7 @@ public final class EntityInputComponents {
     }
     linkToEnabledState(enabledState, textArea);
 
-    TextValues.textValueLink(textArea, value, null, updateOnKeystroke);
+    value.link(TextValues.textValue(textArea, null, updateOnKeystroke));
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -601,31 +601,28 @@ public final class EntityInputComponents {
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiteralCharacters);
     if (property.isString()) {
-      TextValues.textValueLink(textField, value, property.getFormat(), updateOnKeystroke);
+      value.link(TextValues.textValue(textField, property.getFormat(), updateOnKeystroke));
     }
     else if (property.isInteger()) {
-      NumericalValues.integerValueLink((IntegerField) textField, value, true, updateOnKeystroke);
+      value.link(NumericalValues.integerValue((IntegerField) textField, true, updateOnKeystroke));
     }
     else if (property.isDouble()) {
-      NumericalValues.doubleValueLink((DecimalField) textField, value, true, updateOnKeystroke);
+      value.link(NumericalValues.doubleValue((DecimalField) textField, true, updateOnKeystroke));
     }
     else if (property.isBigDecimal()) {
-      NumericalValues.bigDecimalValueLink((DecimalField) textField, value, updateOnKeystroke);
+      value.link(NumericalValues.bigDecimalValue((DecimalField) textField, updateOnKeystroke));
     }
     else if (property.isLong()) {
-      NumericalValues.longValueLink((LongField) textField, value, true, updateOnKeystroke);
+      value.link(NumericalValues.longValue((LongField) textField, true, updateOnKeystroke));
     }
     else if (property.isDate()) {
-      TemporalValues.localDateValueLink((JFormattedTextField) textField, value,
-              property.getDateTimeFormatPattern(), updateOnKeystroke);
+      value.link(TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOnKeystroke));
     }
     else if (property.isTime()) {
-      TemporalValues.localTimeValueLink((JFormattedTextField) textField, value,
-              property.getDateTimeFormatPattern(), updateOnKeystroke);
+      value.link(TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOnKeystroke));
     }
     else if (property.isTimestamp()) {
-      TemporalValues.localDateTimeValueLink((JFormattedTextField) textField, value,
-              property.getDateTimeFormatPattern(), updateOnKeystroke);
+      value.link(TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOnKeystroke));
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);
@@ -750,7 +747,7 @@ public final class EntityInputComponents {
 
   private static JCheckBox initializeCheckBox(final Property property, final Value value,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
-    BooleanValues.booleanValueLink(checkBox.getModel(), value);
+    value.link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
     linkToEnabledState(enabledState, checkBox);
     checkBox.setToolTipText(property.getDescription());
 

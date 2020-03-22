@@ -6,6 +6,7 @@ package org.jminor.swing.common.ui.value;
 import org.jminor.common.Formats;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
@@ -15,8 +16,6 @@ import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
-import static org.jminor.common.value.Values.propertyValue;
 
 /**
  * Utility class for numerical {@link ComponentValue} instances.
@@ -69,24 +68,6 @@ public final class NumericalValues {
   public static ComponentValue<BigDecimal, DecimalField> bigDecimalValue(final DecimalField decimalField,
                                                                          final boolean updateOnKeystroke) {
     return new BigDecimalFieldValue(decimalField, updateOnKeystroke);
-  }
-
-  /**
-   * @param decimalField the decimal field to link with the value
-   * @param value the model value
-   */
-  public static void bigDecimalValueLink(final DecimalField decimalField, final Value<BigDecimal> value) {
-    bigDecimalValueLink(decimalField, value, true);
-  }
-
-  /**
-   * @param decimalField the decimal field to link with the value
-   * @param value the model value
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   */
-  public static void bigDecimalValueLink(final DecimalField decimalField, final Value<BigDecimal> value,
-                                         final boolean updateOnKeystroke) {
-    value.link(bigDecimalValue(decimalField, updateOnKeystroke));
   }
 
   /**
@@ -154,34 +135,6 @@ public final class NumericalValues {
   public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField, final boolean nullable,
                                                                  final boolean updateOnKeystroke) {
     return new DecimalFieldValue(decimalField, nullable, updateOnKeystroke);
-  }
-
-  /**
-   * @param decimalField the decimal field to link with the value
-   * @param value the model value
-   */
-  public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value) {
-    doubleValueLink(decimalField, value, true);
-  }
-
-  /**
-   * @param decimalField the decimal field to link with the value
-   * @param value the model value
-   * @param nullable if false then 0 is used instead of null
-   */
-  public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable) {
-    doubleValueLink(decimalField, value, nullable, true);
-  }
-
-  /**
-   * @param decimalField the decimal field to link with the value
-   * @param value the model value
-   * @param nullable if false then 0 is used instead of null
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   */
-  public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable,
-                                     final boolean updateOnKeystroke) {
-    value.link(doubleValue(decimalField, nullable, updateOnKeystroke));
   }
 
   /**
@@ -259,75 +212,30 @@ public final class NumericalValues {
   }
 
   /**
-   * @param integerField the int field to link with the value
-   * @param value the model value
-   */
-  public static void integerValueLink(final IntegerField integerField, final Value<Integer> value) {
-    integerValueLink(integerField, value, true);
-  }
-
-  /**
-   * @param integerField the int field to link with the value
-   * @param value the model value
-   * @param nullable if false then 0 is used instead of null
-   */
-  public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean nullable) {
-    integerValueLink(integerField, value, nullable, true);
-  }
-
-  /**
-   * @param integerField the int field to link with the value
-   * @param value the model value
-   * @param nullable if false then 0 is used instead of null
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   */
-  public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean nullable,
-                                      final boolean updateOnKeystroke) {
-    value.link(integerValue(integerField, nullable, updateOnKeystroke));
-  }
-
-  /**
+   * Creates a SpinnerNumberModel based on an integer property value
    * @param owner the value owner
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @return a SpinnerNumberModel based on the value
    */
-  public static SpinnerNumberModel integerSpinnerValueLink(final Object owner, final String propertyName,
-                                                           final EventObserver<Integer> valueChangeEvent) {
+  public static SpinnerNumberModel integerValueSpinnerModel(final Object owner, final String propertyName,
+                                                            final EventObserver<Integer> valueChangeEvent) {
     final SpinnerNumberModel numberModel = new SpinnerNumberModel();
-    integerSpinnerValueLink(owner, propertyName, valueChangeEvent, numberModel);
+    Values.propertyValue(owner, propertyName, int.class, valueChangeEvent).link(integerValue(numberModel));
 
     return numberModel;
   }
 
   /**
+   * Creates a SpinnerNumberModel based on an integer value
    * @param integerValue the value
    * @return a SpinnerNumberModel based on the value
    */
-  public static SpinnerNumberModel integerSpinnerValueLink(final Value<Integer> integerValue) {
+  public static SpinnerNumberModel integerValueSpinnerModel(final Value<Integer> integerValue) {
     final SpinnerNumberModel numberModel = new SpinnerNumberModel();
-    integerSpinnerValueLink(numberModel, integerValue);
+    integerValue.link(integerValue(numberModel));
 
     return numberModel;
-  }
-
-  /**
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param spinnerModel the spinner model to use
-   */
-  public static void integerSpinnerValueLink(final Object owner, final String propertyName, final EventObserver<Integer> valueChangeEvent,
-                                             final SpinnerNumberModel spinnerModel) {
-    integerSpinnerValueLink(spinnerModel, propertyValue(owner, propertyName, int.class, valueChangeEvent));
-  }
-
-  /**
-   * @param spinnerModel the spinner model
-   * @param integerValue the value
-   */
-  public static void integerSpinnerValueLink(final SpinnerNumberModel spinnerModel, final Value<Integer> integerValue) {
-    integerValue.link(integerValue(spinnerModel));
   }
 
   /**
@@ -386,33 +294,5 @@ public final class NumericalValues {
   public static ComponentValue<Long, LongField> longValue(final LongField longField, final boolean nullable,
                                                           final boolean updateOnKeystroke) {
     return new LongFieldValue(longField, nullable, updateOnKeystroke);
-  }
-
-  /**
-   * @param longField the long field to link with the value
-   * @param value the model value
-   */
-  public static void longValueLink(final LongField longField, final Value<Long> value) {
-    longValueLink(longField, value, true);
-  }
-
-  /**
-   * @param longField the long field to link with the value
-   * @param value the model value
-   * @param nullable if false then 0 is used instead of null
-   */
-  public static void longValueLink(final LongField longField, final Value<Long> value, final boolean nullable) {
-    longValueLink(longField, value, nullable, true);
-  }
-
-  /**
-   * @param longField the long field to link with the value
-   * @param value the model value
-   * @param nullable if false then 0 is used instead of null
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
-   */
-  public static void longValueLink(final LongField longField, final Value<Long> value, final boolean nullable,
-                                   final boolean updateOnKeystroke) {
-    value.link(longValue(longField, nullable, updateOnKeystroke));
   }
 }

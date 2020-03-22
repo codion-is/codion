@@ -7,6 +7,7 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.item.Item;
 import org.jminor.common.value.Value;
+import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class SelectedValuesTest {
   @Test
   public void selectedItemValueLink() throws Exception {
     final JComboBox box = new JComboBox(new String[] {"b", "d", "s"});
-    SelectedValues.selectedValueLink(box, this, "selectedItem", String.class, selectedItemChangedEvent);
+    Values.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent).link(SelectedValues.selectedValue(box));
     assertNull(selectedItem);
     setSelectedItem("s");
     assertEquals("s", box.getSelectedItem());

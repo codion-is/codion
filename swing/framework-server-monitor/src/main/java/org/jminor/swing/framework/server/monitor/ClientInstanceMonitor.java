@@ -8,10 +8,12 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.value.Values;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.swing.common.ui.value.BooleanValues;
 
 import javax.swing.ButtonModel;
+import javax.swing.JToggleButton;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.rmi.RemoteException;
@@ -33,7 +35,7 @@ public final class ClientInstanceMonitor {
   private final EntityConnectionServerAdmin server;
   private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
-  private final ButtonModel loggingEnabledButtonModel;
+  private final ButtonModel loggingEnabledButtonModel = new JToggleButton.ToggleButtonModel();
 
   /**
    * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
@@ -43,7 +45,8 @@ public final class ClientInstanceMonitor {
   public ClientInstanceMonitor(final EntityConnectionServerAdmin server, final RemoteClient remoteClient) {
     this.remoteClient = remoteClient;
     this.server = server;
-    this.loggingEnabledButtonModel = BooleanValues.booleanValueLink(this, "loggingEnabled", loggingStatusChangedEvent);
+    Values.propertyValue(this, "loggingEnabled", boolean.class, loggingStatusChangedEvent)
+            .link(BooleanValues.booleanButtonModelValue(loggingEnabledButtonModel));
   }
 
   /**

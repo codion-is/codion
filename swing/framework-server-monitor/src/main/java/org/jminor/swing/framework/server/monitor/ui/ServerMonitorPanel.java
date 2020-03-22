@@ -110,7 +110,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(initializeConnectionCountField());
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
     final JSpinner connectionLimitSpinner = new JSpinner(
-            NumericalValues.integerSpinnerValueLink(model, "connectionLimit", model.getConnectionLimitObserver()));
+            NumericalValues.integerValueSpinnerModel(model, "connectionLimit", model.getConnectionLimitObserver()));
     ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     infoPanel.add(connectionLimitSpinner);
     infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
@@ -133,7 +133,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JPanel initializePerformancePanel() {
     final JPanel controlPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
 
-    final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
@@ -207,8 +207,8 @@ public final class ServerMonitorPanel extends JPanel {
     final IntegerField connectionCountField = new IntegerField(4);
     connectionCountField.setEditable(false);
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
-    NumericalValues.integerValueLink(connectionCountField, Values.propertyValue(model, "connectionCount",
-            int.class, model.getStatisticsUpdatedObserver()), false);
+    Values.propertyValue(model, "connectionCount", int.class, model.getStatisticsUpdatedObserver())
+            .link(NumericalValues.integerValue(connectionCountField, false));
 
     return connectionCountField;
   }
@@ -217,8 +217,8 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField memoryField = new JTextField(8);
     memoryField.setEditable(false);
     memoryField.setHorizontalAlignment(JLabel.CENTER);
-    TextValues.textValueLink(memoryField, Values.propertyValue(model, "memoryUsage", String.class,
-            model.getStatisticsUpdatedObserver()));
+    Values.propertyValue(model, "memoryUsage", String.class,
+            model.getStatisticsUpdatedObserver()).link(TextValues.textValue(memoryField));
 
     return memoryField;
   }
@@ -227,7 +227,8 @@ public final class ServerMonitorPanel extends JPanel {
     final DefaultComboBoxModel comboModel = new DefaultComboBoxModel(model.getLoggingLevels().toArray());
 
     final JComboBox box = new JComboBox<>(comboModel);
-    SelectedValues.selectedValueLink(box, model, "loggingLevel", Object.class, model.getLoggingLevelObserver());
+    Values.propertyValue(model, "loggingLevel", Object.class, model.getLoggingLevelObserver())
+            .link(SelectedValues.selectedValue(box));
 
     return box;
   }
