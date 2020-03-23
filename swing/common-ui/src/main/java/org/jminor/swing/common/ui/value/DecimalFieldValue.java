@@ -7,8 +7,8 @@ import org.jminor.swing.common.ui.textfield.DecimalField;
 
 final class DecimalFieldValue extends AbstractTextComponentValue<Double, DecimalField> {
 
-  DecimalFieldValue(final DecimalField decimalField, final boolean nullable, final boolean updateOnKeystroke) {
-    super(decimalField, nullable, updateOnKeystroke);
+  DecimalFieldValue(final DecimalField decimalField, final boolean nullable, final UpdateOn updateOn) {
+    super(decimalField, nullable, updateOn);
   }
 
   @Override

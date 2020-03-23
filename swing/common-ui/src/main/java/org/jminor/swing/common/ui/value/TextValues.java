@@ -31,7 +31,7 @@ public final class TextValues {
    * @return a Value bound to the given component
    */
   public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent) {
-    return new AbstractTextComponentValue<String, C>(textComponent, true, true) {
+    return new AbstractTextComponentValue<String, C>(textComponent, true, UpdateOn.KEYSTROKE) {
       @Override
       protected String getComponentValue(final C component) {
         final String text = component.getText();
@@ -52,19 +52,19 @@ public final class TextValues {
    * @return a Value bound to the given component
    */
   public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent, final Format format) {
-    return textValue(textComponent, format, true);
+    return textValue(textComponent, format, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param textComponent the component
    * @param format the format
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn the update on
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
   public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent, final Format format,
-                                                                               final boolean updateOnKeystroke) {
-    return new FormattedTextComponentValue<>(textComponent, format, updateOnKeystroke);
+                                                                               final UpdateOn updateOn) {
+    return new FormattedTextComponentValue<>(textComponent, format, updateOn);
   }
 
   /**

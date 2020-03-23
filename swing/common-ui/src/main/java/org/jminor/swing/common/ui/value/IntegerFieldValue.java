@@ -7,8 +7,8 @@ import org.jminor.swing.common.ui.textfield.IntegerField;
 
 final class IntegerFieldValue extends AbstractTextComponentValue<Integer, IntegerField> {
 
-  IntegerFieldValue(final IntegerField integerField, final boolean nullable, final boolean updateOnKeystroke) {
-    super(integerField, nullable, updateOnKeystroke);
+  IntegerFieldValue(final IntegerField integerField, final boolean nullable, final UpdateOn updateOn) {
+    super(integerField, nullable, updateOn);
   }
 
   @Override

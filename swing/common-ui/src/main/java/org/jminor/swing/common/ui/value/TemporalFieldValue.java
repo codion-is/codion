@@ -16,8 +16,8 @@ final class TemporalFieldValue<V extends Temporal> extends FormattedTextComponen
   private final DateParser<V> dateParser;
 
   TemporalFieldValue(final JFormattedTextField textComponent, final String dateFormat,
-                     final boolean updateOnKeystroke, final DateParser<V> dateParser) {
-    super(textComponent, null, updateOnKeystroke);
+                     final UpdateOn updateOn, final DateParser<V> dateParser) {
+    super(textComponent, null, updateOn);
     this.formatter = DateTimeFormatter.ofPattern(dateFormat);
     this.dateParser = dateParser;
   }

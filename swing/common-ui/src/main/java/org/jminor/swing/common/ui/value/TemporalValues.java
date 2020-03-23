@@ -35,19 +35,19 @@ public final class TemporalValues {
    */
   public static ComponentValue<LocalTime, JFormattedTextField> localTimeValue(final JFormattedTextField textComponent,
                                                                               final String dateFormat) {
-    return localTimeValue(textComponent, dateFormat, true);
+    return localTimeValue(textComponent, dateFormat, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param textComponent the component
    * @param dateFormat the date format
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
   public static ComponentValue<LocalTime, JFormattedTextField> localTimeValue(final JFormattedTextField textComponent,
                                                                               final String dateFormat,
-                                                                              final boolean updateOnKeystroke) {
-    return new TemporalFieldValue<>(textComponent, dateFormat, updateOnKeystroke, LocalTime::parse);
+                                                                              final UpdateOn updateOn) {
+    return new TemporalFieldValue<>(textComponent, dateFormat, updateOn, LocalTime::parse);
   }
 
   /**
@@ -57,19 +57,19 @@ public final class TemporalValues {
    */
   public static ComponentValue<LocalDate, JFormattedTextField> localDateValue(final JFormattedTextField textComponent,
                                                                               final String dateFormat) {
-    return localDateValue(textComponent, dateFormat, true);
+    return localDateValue(textComponent, dateFormat, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param textComponent the component
    * @param dateFormat the date format
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
   public static ComponentValue<LocalDate, JFormattedTextField> localDateValue(final JFormattedTextField textComponent,
                                                                               final String dateFormat,
-                                                                              final boolean updateOnKeystroke) {
-    return new TemporalFieldValue<>(textComponent, dateFormat, updateOnKeystroke, LocalDate::parse);
+                                                                              final UpdateOn updateOn) {
+    return new TemporalFieldValue<>(textComponent, dateFormat, updateOn, LocalDate::parse);
   }
 
   /**
@@ -79,18 +79,18 @@ public final class TemporalValues {
    */
   public static ComponentValue<LocalDateTime, JFormattedTextField> localDateTimeValue(final JFormattedTextField textComponent,
                                                                                       final String dateFormat) {
-    return localDateTimeValue(textComponent, dateFormat, true);
+    return localDateTimeValue(textComponent, dateFormat, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param textComponent the component
    * @param dateFormat the date format
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
   public static ComponentValue<LocalDateTime, JFormattedTextField> localDateTimeValue(final JFormattedTextField textComponent,
                                                                                       final String dateFormat,
-                                                                                      final boolean updateOnKeystroke) {
-    return new TemporalFieldValue<>(textComponent, dateFormat, updateOnKeystroke, LocalDateTime::parse);
+                                                                                      final UpdateOn updateOn) {
+    return new TemporalFieldValue<>(textComponent, dateFormat, updateOn, LocalDateTime::parse);
   }
 }

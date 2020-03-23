@@ -41,6 +41,7 @@ import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.TemporalValues;
 import org.jminor.swing.common.ui.value.TextValues;
+import org.jminor.swing.common.ui.value.UpdateOn;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -135,7 +136,7 @@ public final class EntityInputComponents {
       case Types.BIGINT:
       case Types.CHAR:
       case Types.VARCHAR:
-        return createTextField(property, value, null, true, enabledState);
+        return createTextField(property, value, null, UpdateOn.KEYSTROKE, enabledState);
       case Types.BLOB:
       default:
         throw new IllegalArgumentException("No input component available for property: " +
@@ -425,26 +426,26 @@ public final class EntityInputComponents {
    * Creates a panel with a date input field and a button for opening a date input dialog
    * @param property the property
    * @param value the value to bind to the field
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @param includeButton if true then a button for opening a date input dialog is included (only available for LocalDate)
    * @return a date input panel
    */
   public static TemporalInputPanel createTemporalInputPanel(final Property property, final Value value,
-                                                            final boolean updateOnKeystroke, final boolean includeButton) {
-    return createTemporalInputPanel(property, value, updateOnKeystroke, includeButton, null);
+                                                            final UpdateOn updateOn, final boolean includeButton) {
+    return createTemporalInputPanel(property, value, updateOn, includeButton, null);
   }
 
   /**
    * Creates a panel with a date input field and a button for opening a date input dialog (if applicable)
    * @param property the property
    * @param value the value to bind to the field
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @param includeCalendarButton if true then a button for opening a calendar dialog is included
    * @param enabledState the state controlling the enabled state of the panel
    * @return a date input panel
    */
   public static TemporalInputPanel createTemporalInputPanel(final Property property, final Value value,
-                                                            final boolean updateOnKeystroke, final boolean includeCalendarButton,
+                                                            final UpdateOn updateOn, final boolean includeCalendarButton,
                                                             final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     if (!property.isTemporal()) {
@@ -453,7 +454,7 @@ public final class EntityInputComponents {
 
     final String formatString = property.getDateTimeFormatPattern();
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, value,
-            DateFormats.getDateMask(formatString), updateOnKeystroke, enabledState);
+            DateFormats.getDateMask(formatString), updateOn, enabledState);
     if (property.isDate()) {
       return new LocalDateInputPanel(field, formatString, includeCalendarButton, enabledState);
     }
@@ -471,15 +472,15 @@ public final class EntityInputComponents {
    * Creates a panel with a text field and a button for opening a dialog with a text area
    * @param property the property
    * @param value the value to bind to the field
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @param buttonFocusable if true then the dialog button is focusable
    * @return a text input panel
    */
   public static TextInputPanel createTextInputPanel(final Property property, final Value value,
-                                                    final boolean updateOnKeystroke, final boolean buttonFocusable) {
+                                                    final UpdateOn updateOn, final boolean buttonFocusable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    final JTextField field = createTextField(property, value, null, updateOnKeystroke);
+    final JTextField field = createTextField(property, value, null, updateOn);
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
     panel.setMaxLength(property.getMaximumLength());
 
@@ -490,12 +491,11 @@ public final class EntityInputComponents {
    * Creates a text area based on the given property
    * @param property the property
    * @param value the value to bind to the field
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @return a text area
    */
-  public static JTextArea createTextArea(final Property property, final Value value,
-                                         final boolean updateOnKeystroke) {
-    return createTextArea(property, value, -1, -1, updateOnKeystroke);
+  public static JTextArea createTextArea(final Property property, final Value value, final UpdateOn updateOn) {
+    return createTextArea(property, value, -1, -1, updateOn);
   }
 
   /**
@@ -504,12 +504,12 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param rows the number of rows
    * @param columns the number of columns
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @return a text area
    */
   public static JTextArea createTextArea(final Property property, final Value value,
-                                         final int rows, final int columns, final boolean updateOnKeystroke) {
-    return createTextArea(property, value, rows, columns, updateOnKeystroke, null);
+                                         final int rows, final int columns, final UpdateOn updateOn) {
+    return createTextArea(property, value, rows, columns, updateOn, null);
   }
 
   /**
@@ -518,12 +518,12 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param rows the number of rows
    * @param columns the number of columns
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @param enabledState a state indicating when the text area should be enabled
    * @return a text area
    */
   public static JTextArea createTextArea(final Property property, final Value value,
-                                         final int rows, final int columns, final boolean updateOnKeystroke,
+                                         final int rows, final int columns, final UpdateOn updateOn,
                                          final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
@@ -539,7 +539,7 @@ public final class EntityInputComponents {
     }
     linkToEnabledState(enabledState, textArea);
 
-    value.link(TextValues.textValue(textArea, null, updateOnKeystroke));
+    value.link(TextValues.textValue(textArea, null, updateOn));
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -552,7 +552,7 @@ public final class EntityInputComponents {
    * @return a text field for the given property
    */
   public static JTextField createTextField(final Property property, final Value value) {
-    return createTextField(property, value, null, true);
+    return createTextField(property, value, null, UpdateOn.KEYSTROKE);
   }
 
   /**
@@ -560,12 +560,12 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @return a text field for the given property
    */
   public static JTextField createTextField(final Property property, final Value value,
-                                           final String formatMaskString, final boolean updateOnKeystroke) {
-    return createTextField(property, value, formatMaskString, updateOnKeystroke, null);
+                                           final String formatMaskString, final UpdateOn updateOn) {
+    return createTextField(property, value, formatMaskString, updateOn, null);
   }
 
   /**
@@ -573,14 +573,14 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @param enabledState the state controlling the enabled state of the panel
    * @return a text field for the given property
    */
   public static JTextField createTextField(final Property property, final Value value,
-                                           final String formatMaskString, final boolean updateOnKeystroke,
+                                           final String formatMaskString, final UpdateOn updateOn,
                                            final StateObserver enabledState) {
-    return createTextField(property, value, formatMaskString, updateOnKeystroke, enabledState, false);
+    return createTextField(property, value, formatMaskString, updateOn, enabledState, false);
   }
 
   /**
@@ -588,41 +588,41 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @param enabledState the state controlling the enabled state of the panel
    * @param valueContainsLiteralCharacters whether or not the value should contain any literal characters
    * associated with a the format mask
    * @return a text field for the given property
    */
   public static JTextField createTextField(final Property property, final Value value, final String formatMaskString,
-                                           final boolean updateOnKeystroke, final StateObserver enabledState,
+                                           final UpdateOn updateOn, final StateObserver enabledState,
                                            final boolean valueContainsLiteralCharacters) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiteralCharacters);
     if (property.isString()) {
-      value.link(TextValues.textValue(textField, property.getFormat(), updateOnKeystroke));
+      value.link(TextValues.textValue(textField, property.getFormat(), updateOn));
     }
     else if (property.isInteger()) {
-      value.link(NumericalValues.integerValue((IntegerField) textField, true, updateOnKeystroke));
+      value.link(NumericalValues.integerValue((IntegerField) textField, true, updateOn));
     }
     else if (property.isDouble()) {
-      value.link(NumericalValues.doubleValue((DecimalField) textField, true, updateOnKeystroke));
+      value.link(NumericalValues.doubleValue((DecimalField) textField, true, updateOn));
     }
     else if (property.isBigDecimal()) {
-      value.link(NumericalValues.bigDecimalValue((DecimalField) textField, updateOnKeystroke));
+      value.link(NumericalValues.bigDecimalValue((DecimalField) textField, updateOn));
     }
     else if (property.isLong()) {
-      value.link(NumericalValues.longValue((LongField) textField, true, updateOnKeystroke));
+      value.link(NumericalValues.longValue((LongField) textField, true, updateOn));
     }
     else if (property.isDate()) {
-      value.link(TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOnKeystroke));
+      value.link(TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
     else if (property.isTime()) {
-      value.link(TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOnKeystroke));
+      value.link(TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
     else if (property.isTimestamp()) {
-      value.link(TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOnKeystroke));
+      value.link(TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);
