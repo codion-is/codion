@@ -7,7 +7,7 @@ import org.jminor.swing.common.ui.textfield.LongField;
 
 final class LongFieldValue extends AbstractTextComponentValue<Long, LongField> {
 
-  LongFieldValue(final LongField longField, final boolean nullable, final UpdateOn updateOn) {
+  LongFieldValue(final LongField longField, final Nullable nullable, final UpdateOn updateOn) {
     super(longField, nullable, updateOn);
   }
 

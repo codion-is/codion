@@ -12,7 +12,7 @@ import java.awt.event.FocusEvent;
 
 abstract class AbstractTextComponentValue<V, C extends JTextComponent> extends AbstractComponentValue<V, C> {
 
-  AbstractTextComponentValue(final C component, final boolean nullable, final UpdateOn updateOn) {
+  AbstractTextComponentValue(final C component, final Nullable nullable, final UpdateOn updateOn) {
     super(component, nullable);
     if (updateOn == UpdateOn.KEYSTROKE) {
       component.getDocument().addDocumentListener(new NotifyOnContentsChanged());

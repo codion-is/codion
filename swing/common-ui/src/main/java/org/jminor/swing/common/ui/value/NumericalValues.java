@@ -106,7 +106,7 @@ public final class NumericalValues {
     final DecimalField decimalField = new DecimalField(format);
     decimalField.setDouble(initialValue);
 
-    return doubleValue(decimalField, true);
+    return doubleValue(decimalField, Nullable.YES);
   }
 
   /**
@@ -114,25 +114,25 @@ public final class NumericalValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField) {
-    return doubleValue(decimalField, true);
+    return doubleValue(decimalField, Nullable.YES);
   }
 
   /**
    * @param decimalField the component
-   * @param nullable if false then the resulting Value translates null to 0
+   * @param nullable if {@link Nullable#NO} then the resulting Value translates null to 0
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField, final boolean nullable) {
+  public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField, final Nullable nullable) {
     return doubleValue(decimalField, nullable, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param decimalField the component
-   * @param nullable if false then the resulting Value translates null to 0
+   * @param nullable if {@link Nullable#NO} then the resulting Value translates null to 0
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField, final boolean nullable,
+  public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField, final Nullable nullable,
                                                                  final UpdateOn updateOn) {
     return new DecimalFieldValue(decimalField, nullable, updateOn);
   }
@@ -172,25 +172,25 @@ public final class NumericalValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<Integer, IntegerField> integerValue(final IntegerField integerField) {
-    return integerValue(integerField, true);
+    return integerValue(integerField, Nullable.YES);
   }
 
   /**
    * @param integerField the component
-   * @param nullable if false then the resulting Value translates null to 0
+   * @param nullable if {@link Nullable#NO} then the resulting Value translates null to 0
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Integer, IntegerField> integerValue(final IntegerField integerField, final boolean nullable) {
+  public static ComponentValue<Integer, IntegerField> integerValue(final IntegerField integerField, final Nullable nullable) {
     return integerValue(integerField, nullable, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param integerField the component
-   * @param nullable if false then the resulting Value translates null to 0
+   * @param nullable if {@link Nullable#NO} then the resulting Value translates null to 0
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Integer, IntegerField> integerValue(final IntegerField integerField, final boolean nullable,
+  public static ComponentValue<Integer, IntegerField> integerValue(final IntegerField integerField, final Nullable nullable,
                                                                    final UpdateOn updateOn) {
     return new IntegerFieldValue(integerField, nullable, updateOn);
   }
@@ -273,25 +273,25 @@ public final class NumericalValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<Long, LongField> longValue(final LongField longField) {
-    return longValue(longField, true);
+    return longValue(longField, Nullable.YES);
   }
 
   /**
    * @param longField the component
-   * @param nullable if false then the resulting Value translates null to 0
+   * @param nullable if {@link Nullable#NO} then the resulting Value translates null to 0
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Long, LongField> longValue(final LongField longField, final boolean nullable) {
+  public static ComponentValue<Long, LongField> longValue(final LongField longField, final Nullable nullable) {
     return longValue(longField, nullable, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param longField the component
-   * @param nullable if false then the resulting Value translates null to 0
+   * @param nullable if {@link Nullable#NO} then the resulting Value translates null to 0
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Long, LongField> longValue(final LongField longField, final boolean nullable,
+  public static ComponentValue<Long, LongField> longValue(final LongField longField, final Nullable nullable,
                                                           final UpdateOn updateOn) {
     return new LongFieldValue(longField, nullable, updateOn);
   }

@@ -8,7 +8,7 @@ import javax.swing.BoundedRangeModel;
 final class IntegerBoundedRangeModelValue extends AbstractComponentValue<Integer, BoundedRangeModel> {
 
   IntegerBoundedRangeModelValue(final BoundedRangeModel rangeModel) {
-    super(rangeModel, false);
+    super(rangeModel, Nullable.NO);
     rangeModel.addChangeListener(e -> notifyValueChange());
   }
 

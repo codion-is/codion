@@ -37,6 +37,7 @@ import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.LocalTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
 import org.jminor.swing.common.ui.value.BooleanValues;
+import org.jminor.swing.common.ui.value.Nullable;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.TemporalValues;
@@ -604,16 +605,16 @@ public final class EntityInputComponents {
       value.link(TextValues.textValue(textField, property.getFormat(), updateOn));
     }
     else if (property.isInteger()) {
-      value.link(NumericalValues.integerValue((IntegerField) textField, true, updateOn));
+      value.link(NumericalValues.integerValue((IntegerField) textField, Nullable.YES, updateOn));
     }
     else if (property.isDouble()) {
-      value.link(NumericalValues.doubleValue((DecimalField) textField, true, updateOn));
+      value.link(NumericalValues.doubleValue((DecimalField) textField, Nullable.YES, updateOn));
     }
     else if (property.isBigDecimal()) {
       value.link(NumericalValues.bigDecimalValue((DecimalField) textField, updateOn));
     }
     else if (property.isLong()) {
-      value.link(NumericalValues.longValue((LongField) textField, true, updateOn));
+      value.link(NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn));
     }
     else if (property.isDate()) {
       value.link(TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));

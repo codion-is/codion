@@ -8,7 +8,7 @@ import javax.swing.ButtonModel;
 final class BooleanButtonModelValue extends AbstractComponentValue<Boolean, ButtonModel> {
 
   BooleanButtonModelValue(final ButtonModel buttonModel) {
-    super(buttonModel, false);
+    super(buttonModel, Nullable.NO);
     buttonModel.addItemListener(itemEvent -> notifyValueChange());
   }
 

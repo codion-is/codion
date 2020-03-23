@@ -6,7 +6,6 @@ package org.jminor.swing.common.ui.value;
 import org.jminor.common.Formats;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import java.text.Format;
 import java.text.ParseException;
@@ -19,8 +18,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
   private final Format format;
 
   FormattedTextComponentValue(final C textComponent, final Format format, final UpdateOn updateOn) {
-    super(textComponent, true, updateOn);
-    final Document document = textComponent.getDocument();
+    super(textComponent, Nullable.YES, updateOn);
     if (textComponent instanceof JFormattedTextField) {
       this.formatter = ((JFormattedTextField) textComponent).getFormatter();
     }
