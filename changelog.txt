@@ -5752,3 +5752,4 @@
   Removed redundant Locale.getDefault() parameters when fetching resource bundles
   DefaultProperty, some validation added
   EntityEditModel.getEntityCopy(includePrimaryKeyValues) removed
+  EntityTableConditionModel.setEnabled(propertyId, enabled) replaced with enable(propertyId) and disable(propertyId)

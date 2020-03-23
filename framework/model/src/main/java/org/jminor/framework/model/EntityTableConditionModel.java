@@ -73,11 +73,16 @@ public interface EntityTableConditionModel extends Refreshable {
   boolean isEnabled(String propertyId);
 
   /**
-   * Enables/disables the search for the given property
-   * @param propertyId the id of the property for which to enable/disable the search
-   * @param enabled if true the search is enabled, otherwise it is disabled
+   * Enables the search for the given property
+   * @param propertyId the id of the property for which to enable the search
    */
-  void setEnabled(String propertyId, boolean enabled);
+  void enable(String propertyId);
+
+  /**
+   * Disables the search for the given property
+   * @param propertyId the id of the property for which to disable the search
+   */
+  void disable(String propertyId);
 
   /**
    * Remembers the current condition model state, any subsequent changes to condition
