@@ -119,7 +119,7 @@ public final class NumericalValues {
 
   /**
    * @param decimalField the component
-   * @param nullable if false then the resulting Value returns 0 instead of null
+   * @param nullable if false then the resulting Value translates null to 0
    * @return a Value bound to the given component
    */
   public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField, final boolean nullable) {
@@ -128,7 +128,7 @@ public final class NumericalValues {
 
   /**
    * @param decimalField the component
-   * @param nullable if false then the resulting Value returns 0 instead of null
+   * @param nullable if false then the resulting Value translates null to 0
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
@@ -177,7 +177,7 @@ public final class NumericalValues {
 
   /**
    * @param integerField the component
-   * @param nullable if false then the resulting Value returns 0 instead of null
+   * @param nullable if false then the resulting Value translates null to 0
    * @return a Value bound to the given component
    */
   public static ComponentValue<Integer, IntegerField> integerValue(final IntegerField integerField, final boolean nullable) {
@@ -186,7 +186,7 @@ public final class NumericalValues {
 
   /**
    * @param integerField the component
-   * @param nullable if false then the resulting Value returns 0 instead of null
+   * @param nullable if false then the resulting Value translates null to 0
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
@@ -278,7 +278,7 @@ public final class NumericalValues {
 
   /**
    * @param longField the component
-   * @param nullable if false then the resulting Value returns 0 instead of null
+   * @param nullable if false then the resulting Value translates null to 0
    * @return a Value bound to the given component
    */
   public static ComponentValue<Long, LongField> longValue(final LongField longField, final boolean nullable) {
@@ -287,7 +287,7 @@ public final class NumericalValues {
 
   /**
    * @param longField the component
-   * @param nullable if false then the resulting Value returns 0 instead of null
+   * @param nullable if false then the resulting Value translates null to 0
    * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
