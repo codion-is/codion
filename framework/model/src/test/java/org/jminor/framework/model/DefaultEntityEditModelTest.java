@@ -140,8 +140,6 @@ public final class DefaultEntityEditModelTest {
     final Entity copyWithPrimaryKeyValue = employeeEditModel.getEntityCopy();
     assertEquals(employee, copyWithPrimaryKeyValue);
     assertTrue(copyWithPrimaryKeyValue.getKey().isNotNull());
-    final Entity copyWithoutPrimaryKeyValue = employeeEditModel.getEntityCopy(false);
-    assertTrue(copyWithoutPrimaryKeyValue.getKey().isNull());
   }
 
   @Test

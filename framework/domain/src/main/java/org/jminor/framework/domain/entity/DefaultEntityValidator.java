@@ -38,23 +38,24 @@ public class DefaultEntityValidator implements Validator {
   private static final String PROPERTY_PARAM = "property";
   private static final String VALUE_REQUIRED_KEY = "property_value_is_required";
 
-  private final boolean performNullValidation;
+  private boolean performNullValidation = true;
 
   private transient Event revalidateEvent;
 
   /**
-   * Instantiates a new {@link DefaultEntityValidator}
+   * @return true if this validator performs null validation
    */
-  public DefaultEntityValidator() {
-    this(true);
+  public boolean isPerformNullValidation() {
+    return performNullValidation;
   }
 
   /**
-   * Instantiates a new {@link DefaultEntityValidator}
-   * @param performNullValidation if true then automatic null validation is performed
+   * @param performNullValidation true if this validator should perform null validation
+   * @return this validator instance
    */
-  public DefaultEntityValidator(final boolean performNullValidation) {
+  public DefaultEntityValidator setPerformNullValidation(final boolean performNullValidation) {
     this.performNullValidation = performNullValidation;
+    return this;
   }
 
   /** {@inheritDoc} */

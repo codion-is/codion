@@ -796,7 +796,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   private void onColumnHidden(final Property property) {
     //disable the condition model for the column to be hidden, to prevent confusion
-    conditionModel.setEnabled(property.getPropertyId(), false);
+    conditionModel.disable(property.getPropertyId());
   }
 
   private org.json.JSONObject createPreferences() throws Exception {

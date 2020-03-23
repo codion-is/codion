@@ -5775,3 +5775,7 @@
   Entity.getDefinition() removed, EntityDefinition added as parameter wherever it was used, cyclic dependencies reduced some more
   Removed redundant Locale.getDefault() parameters when fetching resource bundles
   DefaultProperty, some validation added
+  EntityEditModel.getEntityCopy(includePrimaryKeyValues) removed
+  EntityTableConditionModel.setEnabled(propertyId, enabled) replaced with enable(propertyId) and disable(propertyId)
+  DefaultEntityValidator, removed constructor with performNullValidation parameter, setter/getter added instead
+  SerializationWhitelist refactored to remove boolean parameter

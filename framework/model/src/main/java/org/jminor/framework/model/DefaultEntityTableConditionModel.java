@@ -275,9 +275,17 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   /** {@inheritDoc} */
   @Override
-  public void setEnabled(final String propertyId, final boolean enabled) {
+  public void enable(final String propertyId) {
     if (containsPropertyConditionModel(propertyId)) {
-      getPropertyConditionModel(propertyId).setEnabled(enabled);
+      getPropertyConditionModel(propertyId).setEnabled(true);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void disable(final String propertyId) {
+    if (containsPropertyConditionModel(propertyId)) {
+      getPropertyConditionModel(propertyId).setEnabled(false);
     }
   }
 
