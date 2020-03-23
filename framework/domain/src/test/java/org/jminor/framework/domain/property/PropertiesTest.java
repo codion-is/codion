@@ -75,6 +75,30 @@ public final class PropertiesTest {
   }
 
   @Test
+  public void setMinimumValueNonNumerical() {
+    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.DATE).minimumValue(5));
+  }
+
+  @Test
+  public void setMaximumValueNonNumerical() {
+    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.DATE).maximumValue(5));
+  }
+
+  @Test
+  public void setMaximumLengthNonString() {
+    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.VARCHAR).maximumFractionDigits(5));
+  }
+
+  @Test
+  public void minimumMaximumValue() {
+    final ColumnProperty.Builder builder = columnProperty("propertyId", Types.DOUBLE);
+    builder.minimumValue(5);
+    assertThrows(IllegalArgumentException.class, () -> builder.maximumValue(4));
+    builder.maximumValue(6);
+    assertThrows(IllegalArgumentException.class, () -> builder.minimumValue(7));
+  }
+
+  @Test
   public void setColumnName() {
     assertEquals("hello", columnProperty("propertyId").columnName("hello").get().getColumnName());
   }

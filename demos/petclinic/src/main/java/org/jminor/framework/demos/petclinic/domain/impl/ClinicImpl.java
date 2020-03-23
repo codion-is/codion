@@ -97,7 +97,7 @@ public final class ClinicImpl extends Domain {
             columnProperty(OWNER_ADDRESS, Types.VARCHAR, "Address")
                     .maximumLength(255),
             columnProperty(OWNER_CITY, Types.VARCHAR, "City")
-                    .maximumValue(80),
+                    .maximumLength(80),
             columnProperty(OWNER_TELEPHONE, Types.VARCHAR, "Telephone")
                     .maximumLength(20))
             .keyGenerator(automatic(T_OWNER))
