@@ -57,17 +57,17 @@ public final class NumericalValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<BigDecimal, DecimalField> bigDecimalValue(final DecimalField decimalField) {
-    return bigDecimalValue(decimalField, true);
+    return bigDecimalValue(decimalField, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param decimalField the component
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
   public static ComponentValue<BigDecimal, DecimalField> bigDecimalValue(final DecimalField decimalField,
-                                                                         final boolean updateOnKeystroke) {
-    return new BigDecimalFieldValue(decimalField, updateOnKeystroke);
+                                                                         final UpdateOn updateOn) {
+    return new BigDecimalFieldValue(decimalField, updateOn);
   }
 
   /**
@@ -123,18 +123,18 @@ public final class NumericalValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField, final boolean nullable) {
-    return doubleValue(decimalField, nullable, true);
+    return doubleValue(decimalField, nullable, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param decimalField the component
    * @param nullable if false then the resulting Value translates null to 0
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
   public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField, final boolean nullable,
-                                                                 final boolean updateOnKeystroke) {
-    return new DecimalFieldValue(decimalField, nullable, updateOnKeystroke);
+                                                                 final UpdateOn updateOn) {
+    return new DecimalFieldValue(decimalField, nullable, updateOn);
   }
 
   /**
@@ -181,18 +181,18 @@ public final class NumericalValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<Integer, IntegerField> integerValue(final IntegerField integerField, final boolean nullable) {
-    return integerValue(integerField, nullable, true);
+    return integerValue(integerField, nullable, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param integerField the component
    * @param nullable if false then the resulting Value translates null to 0
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
   public static ComponentValue<Integer, IntegerField> integerValue(final IntegerField integerField, final boolean nullable,
-                                                                   final boolean updateOnKeystroke) {
-    return new IntegerFieldValue(integerField, nullable, updateOnKeystroke);
+                                                                   final UpdateOn updateOn) {
+    return new IntegerFieldValue(integerField, nullable, updateOn);
   }
 
   /**
@@ -282,17 +282,17 @@ public final class NumericalValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<Long, LongField> longValue(final LongField longField, final boolean nullable) {
-    return longValue(longField, nullable, true);
+    return longValue(longField, nullable, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param longField the component
    * @param nullable if false then the resulting Value translates null to 0
-   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
   public static ComponentValue<Long, LongField> longValue(final LongField longField, final boolean nullable,
-                                                          final boolean updateOnKeystroke) {
-    return new LongFieldValue(longField, nullable, updateOnKeystroke);
+                                                          final UpdateOn updateOn) {
+    return new LongFieldValue(longField, nullable, updateOn);
   }
 }

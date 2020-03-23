@@ -10,6 +10,7 @@ import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
+import org.jminor.swing.common.ui.value.UpdateOn;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
@@ -98,7 +99,7 @@ public final class EntityEditPanels {
       TextInputPanel inputPanel = createTextInputPanel(Domain.LONG_TEXT_PROPERTY);
 
       JFormattedTextField formattedField = (JFormattedTextField)
-              createTextField(Domain.FORMATTED_TEXT_PROPERTY, true, "###:###");
+              createTextField(Domain.FORMATTED_TEXT_PROPERTY, UpdateOn.KEYSTROKE, "###:###");
       // end::textValue[]
     }
 

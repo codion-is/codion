@@ -18,8 +18,8 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
   private final JFormattedTextField.AbstractFormatter formatter;
   private final Format format;
 
-  FormattedTextComponentValue(final C textComponent, final Format format, final boolean updateOnKeystroke) {
-    super(textComponent, true, updateOnKeystroke);
+  FormattedTextComponentValue(final C textComponent, final Format format, final UpdateOn updateOn) {
+    super(textComponent, true, updateOn);
     final Document document = textComponent.getDocument();
     if (textComponent instanceof JFormattedTextField) {
       this.formatter = ((JFormattedTextField) textComponent).getFormatter();
