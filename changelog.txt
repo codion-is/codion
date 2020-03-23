@@ -5754,3 +5754,4 @@
   EntityEditModel.getEntityCopy(includePrimaryKeyValues) removed
   EntityTableConditionModel.setEnabled(propertyId, enabled) replaced with enable(propertyId) and disable(propertyId)
   DefaultEntityValidator, removed constructor with performNullValidation parameter, setter/getter added instead
+  SerializationWhitelist refactored to remove boolean parameter

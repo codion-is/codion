@@ -33,16 +33,23 @@ public final class SerializationWhitelist {
 
   /**
    * Configures a serialization whitelist, does nothing if {@code whitelist} is null or empty.
-   * @param whitelistFile the path to the file containing the whitelisted class names, or the
-   * file to write to in case of a dry-run
-   * @param dryRun if true then a dry-run is assumed, with the whitelist written to
-   * {@code whitelist} on a call to {@link #writeDryRunWhitelist()}
+   * @param whitelistFile the path to the file containing the whitelisted class names
    */
-  public static void configureSerializationWhitelist(final String whitelistFile, final boolean dryRun) {
+  public static void configure(final String whitelistFile) {
     if (!nullOrEmpty(whitelistFile)) {
-      sun.misc.ObjectInputFilter.Config.setSerialFilter(dryRun ?
-              new SerializationFilterDryRun(whitelistFile) : new SerializationFilter(whitelistFile));
-      LOG.debug("Serialization filter whitelist set: " + whitelistFile + " (dry run: " + dryRun + ")");
+      sun.misc.ObjectInputFilter.Config.setSerialFilter(new SerializationFilter(whitelistFile));
+      LOG.debug("Serialization filter whitelist set: " + whitelistFile);
+    }
+  }
+
+  /**
+   * Configures a serialization whitelist for a dry run, does nothing if {@code dryRunFile} is null or empty.
+   * @param dryRunFile the dry-run results file to write to
+   */
+  public static void configureDryRun(final String dryRunFile) {
+    if (!nullOrEmpty(dryRunFile)) {
+      sun.misc.ObjectInputFilter.Config.setSerialFilter(new SerializationFilterDryRun(dryRunFile));
+      LOG.debug("Serialization filter whitelist set for dry-run: " + dryRunFile);
     }
   }
 
