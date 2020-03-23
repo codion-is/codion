@@ -20,6 +20,7 @@ import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.TextFields;
+import org.jminor.swing.common.ui.value.Nullable;
 import org.jminor.swing.common.ui.value.NumericalValues;
 
 import org.jfree.chart.ChartFactory;
@@ -200,7 +201,7 @@ public final class LoadTestPanel extends JPanel {
     final IntegerField applicationCountField = new IntegerField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
     Values.propertyValue(loadTestModel, "applicationCount", int.class,
-            loadTestModel.applicationCountObserver()).link(NumericalValues.integerValue(applicationCountField, false));
+            loadTestModel.applicationCountObserver()).link(NumericalValues.integerValue(applicationCountField, Nullable.NO));
     final JPanel applicationPanel = new JPanel(Layouts.createBorderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 

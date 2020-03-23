@@ -24,17 +24,17 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
    * @param component the component
    */
   public AbstractComponentValue(final C component) {
-    this(component, true);
+    this(component, Nullable.YES);
   }
 
   /**
    * Instantiates a new {@link AbstractComponentValue}
    * @param component the component
-   * @param nullable true if this value can be null
+   * @param nullable {@link Nullable#NO} if this value can not be null
    */
-  public AbstractComponentValue(final C component, final boolean nullable) {
+  public AbstractComponentValue(final C component, final Nullable nullable) {
     this.component = requireNonNull(component, "component");
-    this.nullable = nullable;
+    this.nullable = nullable == Nullable.YES;
   }
 
   /** {@inheritDoc} */

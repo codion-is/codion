@@ -8,6 +8,7 @@ import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
+import org.jminor.swing.common.ui.value.Nullable;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.TextValues;
@@ -208,7 +209,7 @@ public final class ServerMonitorPanel extends JPanel {
     connectionCountField.setEditable(false);
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
     Values.propertyValue(model, "connectionCount", int.class, model.getStatisticsUpdatedObserver())
-            .link(NumericalValues.integerValue(connectionCountField, false));
+            .link(NumericalValues.integerValue(connectionCountField, Nullable.NO));
 
     return connectionCountField;
   }

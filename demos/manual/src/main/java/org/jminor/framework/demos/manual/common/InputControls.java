@@ -17,6 +17,7 @@ import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.value.AbstractComponentValue;
 import org.jminor.swing.common.ui.value.BooleanValues;
+import org.jminor.swing.common.ui.value.Nullable;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.TemporalValues;
@@ -253,7 +254,7 @@ public final class InputControls {
                     int.class, Components.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
 
     Value<Integer> fieldValue =
-            NumericalValues.integerValue(horizontalAlignmentField, /*nullable*/ false);
+            NumericalValues.integerValue(horizontalAlignmentField, Nullable.NO);
 
     horizontalAlignmentValue.link(fieldValue);
 

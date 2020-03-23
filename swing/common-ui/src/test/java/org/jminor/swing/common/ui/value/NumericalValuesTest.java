@@ -113,7 +113,7 @@ public class NumericalValuesTest {  private Long longValue;
     final LongField longField = new LongField();
     final Value<Long> longPrimitivePropertyValue = Values.propertyValue(this, "longPrimitiveValue",
             long.class, longPrimitiveValueChangedEvent);
-    longPrimitivePropertyValue.link(NumericalValues.longValue(longField, false));
+    longPrimitivePropertyValue.link(NumericalValues.longValue(longField, Nullable.NO));
     assertEquals(Long.valueOf(0), longField.getLong());
     setLongPrimitiveValue(2);
     assertEquals(2, longField.getLong().longValue());
@@ -143,7 +143,7 @@ public class NumericalValuesTest {  private Long longValue;
     final IntegerField integerField = new IntegerField();
         final Value<Integer> integerPropertyValue = Values.propertyValue(this, "intValue",
             int.class, intValueChangedEvent);
-    integerPropertyValue.link(NumericalValues.integerValue(integerField, false));
+    integerPropertyValue.link(NumericalValues.integerValue(integerField, Nullable.NO));
     assertEquals((Integer) 0, integerField.getInteger());
     setIntValue(2);
     assertEquals(2, integerField.getInteger().intValue());
@@ -191,7 +191,7 @@ public class NumericalValuesTest {  private Long longValue;
     decimalField.setSeparators('.', ',');
     final Value doublePrimitivePropertyValue = Values.propertyValue(this, "doublePrimitiveValue",
             double.class, doublePrimitiveValueValueChangedEvent);
-    doublePrimitivePropertyValue.link(NumericalValues.doubleValue(decimalField, false));
+    doublePrimitivePropertyValue.link(NumericalValues.doubleValue(decimalField, Nullable.NO));
     assertEquals((Double) 0.0, decimalField.getDouble());
     setDoublePrimitiveValue(2.2);
     assertEquals(Double.valueOf(2.2), decimalField.getDouble());
@@ -320,7 +320,7 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void integerPrimitiveTextUiValue() {
     final IntegerField integerField = new IntegerField();
-    final Value<Integer> value = NumericalValues.integerValue(integerField, false);
+    final Value<Integer> value = NumericalValues.integerValue(integerField, Nullable.NO);
 
     assertEquals(Integer.valueOf(0), value.get());
     integerField.setText("122");
@@ -363,7 +363,7 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void longPrimitiveTextUiValue() {
     final LongField longField = new LongField();
-    final Value<Long> value = NumericalValues.longValue(longField, false);
+    final Value<Long> value = NumericalValues.longValue(longField, Nullable.NO);
 
     assertEquals(Long.valueOf(0), value.get());
     longField.setText("122");
@@ -395,7 +395,7 @@ public class NumericalValuesTest {  private Long longValue;
   public void doublePrimitiveTextUiValue() {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    final Value<Double> value = NumericalValues.doubleValue(decimalField, false);
+    final Value<Double> value = NumericalValues.doubleValue(decimalField, Nullable.NO);
 
     assertEquals(Double.valueOf(0), value.get());
     decimalField.setText("122.2");

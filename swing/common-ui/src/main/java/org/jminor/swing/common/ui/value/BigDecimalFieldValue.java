@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 final class BigDecimalFieldValue extends AbstractTextComponentValue<BigDecimal, DecimalField> {
 
   BigDecimalFieldValue(final DecimalField decimalField, final UpdateOn updateOn) {
-    super(decimalField, true, updateOn);
+    super(decimalField, Nullable.YES, updateOn);
   }
 
   @Override
