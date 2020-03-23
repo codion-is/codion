@@ -365,18 +365,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final Entity getEntityCopy() {
-    return getEntityCopy(true);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Entity getEntityCopy(final boolean includePrimaryKeyValues) {
-    final Entity copy = getDomain().deepCopyEntity(getEntity());
-    if (!includePrimaryKeyValues) {
-      copy.clearKeyValues();
-    }
-
-    return copy;
+    return getDomain().deepCopyEntity(getEntity());
   }
 
   /** {@inheritDoc} */
@@ -405,7 +394,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void setForeignKeyValues(final List<Entity> values) {
+  public final void setForeignKeyValues(final Collection<Entity> values) {
     final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(values);
     for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition()
@@ -541,8 +530,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final Entity insert() throws DatabaseException, ValidationException {
-    final boolean includePrimaryKeyValues = !getEntityDefinition().isKeyGenerated();
-    final Entity toInsert = getEntityCopy(includePrimaryKeyValues);
+    final Entity toInsert = getEntityCopy();
+    if (getEntityDefinition().isKeyGenerated()) {
+      toInsert.clearKeyValues();
+    }
     toInsert.saveAll();
     final List<Entity> insertedEntities = insertEntities(singletonList(toInsert));
     if (insertedEntities.isEmpty()) {

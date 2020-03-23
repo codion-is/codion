@@ -5751,3 +5751,4 @@
   Entity.getDefinition() removed, EntityDefinition added as parameter wherever it was used, cyclic dependencies reduced some more
   Removed redundant Locale.getDefault() parameters when fetching resource bundles
   DefaultProperty, some validation added
+  EntityEditModel.getEntityCopy(includePrimaryKeyValues) removed

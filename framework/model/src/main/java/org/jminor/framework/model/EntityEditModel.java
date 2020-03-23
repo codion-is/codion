@@ -98,13 +98,6 @@ public interface EntityEditModel extends Refreshable {
   Entity getEntityCopy();
 
   /**
-   * @param includePrimaryKeyValues if false then the primary key values are excluded
-   * @return a deep copy of the active entity
-   * @see org.jminor.framework.domain.Domain#copyEntity(Entity)
-   */
-  Entity getEntityCopy(boolean includePrimaryKeyValues);
-
-  /**
    * Returns true if the active entity is new or false if it represents a row already persisted.
    * By default an entity is new if either its primary key or the original primary key are null.
    * It is not recommended to base the result of this function on a database query since it is called frequently,
@@ -461,7 +454,7 @@ public interface EntityEditModel extends Refreshable {
    * value found for each entity type in case of multiple entities of that type
    * @param values the entities
    */
-  void setForeignKeyValues(List<Entity> values);
+  void setForeignKeyValues(Collection<Entity> values);
 
   /**
    * @return the validator
