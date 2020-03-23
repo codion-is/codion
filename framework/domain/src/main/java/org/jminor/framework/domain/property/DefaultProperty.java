@@ -568,8 +568,11 @@ abstract class DefaultProperty implements Property {
 
     @Override
     public final Property.Builder maximumLength(final int maxLength) {
+      if (!property.isString()) {
+        throw new IllegalStateException("maximumLength is only applicable to string properties");
+      }
       if (maxLength <= 0) {
-        throw new IllegalArgumentException("Max length must be a positive integer");
+        throw new IllegalArgumentException("Maximum length must be a positive integer");
       }
       property.maximumLength = maxLength;
       return this;
@@ -577,20 +580,32 @@ abstract class DefaultProperty implements Property {
 
     @Override
     public final Property.Builder maximumValue(final double maximumValue) {
+      if (!property.isNumerical()) {
+        throw new IllegalStateException("maximumValue is only applicable to numerical properties");
+      }
+      if (property.minimumValue != null && property.minimumValue > maximumValue) {
+        throw new IllegalArgumentException("Maximum value must be larger than minimum value");
+      }
       property.maximumValue = maximumValue;
       return this;
     }
 
     @Override
     public final Property.Builder minimumValue(final double minimumValue) {
+      if (!property.isNumerical()) {
+        throw new IllegalStateException("minimumValue is only applicable to numerical properties");
+      }
+      if (property.maximumValue != null && property.maximumValue < minimumValue) {
+        throw new IllegalArgumentException("Minimum value must be smaller than maximum value");
+      }
       property.minimumValue = minimumValue;
       return this;
     }
 
     @Override
     public final Property.Builder useNumberFormatGrouping(final boolean useGrouping) {
-      if (!(property.format instanceof NumberFormat)) {
-        throw new IllegalStateException("Grouping can only be set for number formats");
+      if (!property.isNumerical()) {
+        throw new IllegalStateException("useNumberFormatGrouping is only applicable to numerical properties");
       }
       ((NumberFormat) property.format).setGroupingUsed(useGrouping);
       return this;
@@ -639,8 +654,8 @@ abstract class DefaultProperty implements Property {
 
     @Override
     public final Property.Builder maximumFractionDigits(final int maximumFractionDigits) {
-      if (!(property.format instanceof NumberFormat)) {
-        throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
+     if (!property.isDecimal()) {
+        throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties");
       }
       ((NumberFormat) property.format).setMaximumFractionDigits(maximumFractionDigits);
       return this;
