@@ -58,7 +58,7 @@ public final class TextValues {
   /**
    * @param textComponent the component
    * @param format the format
-   * @param updateOn the update on
+   * @param updateOn specifies when the underlying value should be updated
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
