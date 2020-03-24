@@ -13,6 +13,7 @@ import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.dialog.DisposeOnEscape;
 import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
@@ -1467,7 +1468,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (CENTER_APPLICATION_DIALOGS.get()) {
       dialogOwner = Windows.getParentWindow(this);
     }
-    editPanelDialog = Dialogs.displayInDialog(dialogOwner, editControlPanel, caption, Modal.NO, disposeEditDialogOnEscape,
+    editPanelDialog = Dialogs.displayInDialog(dialogOwner, editControlPanel, caption, Modal.NO,
+            disposeEditDialogOnEscape ? DisposeOnEscape.YES : DisposeOnEscape.NO,
             Controls.control(() -> setEditPanelState(HIDDEN)));
   }
 
