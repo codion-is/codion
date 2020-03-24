@@ -3,7 +3,6 @@ apply from: '../demos.gradle'
 dependencies {
     implementation project(':jminor-swing-framework-ui')
 
-    implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
     testImplementation project(':jminor-framework-domain-test')
