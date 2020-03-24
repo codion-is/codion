@@ -12,6 +12,7 @@ import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.demos.chinook.ui.EmployeeEditPanel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityPanel;
 
@@ -49,6 +50,6 @@ public final class MultiPanelDemo {
       basePanel.add(employeePanel);
     }
 
-    Dialogs.displayInDialog(null, basePanel, "Multi Panel Demo", false, false, null);
+    Dialogs.displayInDialog(null, basePanel, "Multi Panel Demo", Modal.NO, false, null);
   }
 }

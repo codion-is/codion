@@ -45,6 +45,7 @@ import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
@@ -337,14 +338,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Displays in a dialog a tree describing the application layout
    */
   public final void viewApplicationTree() {
-    Dialogs.displayInDialog(this, initializeApplicationTree(), resourceBundle.getString("view_application_tree"), false);
+    Dialogs.displayInDialog(this, initializeApplicationTree(), resourceBundle.getString("view_application_tree"), Modal.NO);
   }
 
   /**
    * Shows a dialog containing a dependency tree view of all defined entities
    */
   public final void viewDependencyTree() {
-    Dialogs.displayInDialog(this, initializeDependencyTree(), FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), false);
+    Dialogs.displayInDialog(this, initializeDependencyTree(), FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), Modal.NO);
   }
 
   /**

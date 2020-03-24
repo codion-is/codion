@@ -36,6 +36,7 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
@@ -588,7 +589,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Object initialValue = values.size() == 1 ? values.iterator().next() : null;
     final ComponentValuePanel inputPanel = new ComponentValuePanel(propertyToUpdate.getCaption(),
             componentValues.createComponentValue(propertyToUpdate, tableModel.getEditModel(), initialValue));
-    Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
+    Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
       Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);

@@ -7,6 +7,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.demos.world.model.CountryTableModel;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import org.jfree.chart.ChartFactory;
@@ -20,7 +21,7 @@ public final class CountryTablePanel extends EntityTablePanel {
 
   public CountryTablePanel(CountryTableModel tableModel) {
     super(tableModel);
-    cityPieChart = ChartFactory.createPieChart("Cities", ((CountryTableModel) getTableModel()).getCityChartDataset());
+    cityPieChart = ChartFactory.createPieChart("Cities", tableModel.getCityChartDataset());
     cityChartPanel = new ChartPanel(cityPieChart);
     getTable().setDoubleClickAction(Controls.control(this::displayCityPieChart,
             "displayPieChart", tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver()));
@@ -28,7 +29,7 @@ public final class CountryTablePanel extends EntityTablePanel {
 
   private void displayCityPieChart() throws DatabaseException {
     if (!cityChartPanel.isShowing()) {
-      Dialogs.displayInDialog(this, cityChartPanel, null, false);
+      Dialogs.displayInDialog(this, cityChartPanel, null, Modal.NO);
     }
   }
 }

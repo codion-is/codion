@@ -13,6 +13,7 @@ import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
@@ -1438,7 +1439,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
     detailPanelDialog = Dialogs.displayInDialog(EntityPanel.this, detailPanelTabbedPane,
-            caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES), false,
+            caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES), Modal.NO,
             Controls.control(() -> {
               //the dialog can be closed when embedding the panel, don't hide if that's the case
               if (getDetailPanelState() != EMBEDDED) {
@@ -1466,7 +1467,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (CENTER_APPLICATION_DIALOGS.get()) {
       dialogOwner = Windows.getParentWindow(this);
     }
-    editPanelDialog = Dialogs.displayInDialog(dialogOwner, editControlPanel, caption, false, disposeEditDialogOnEscape,
+    editPanelDialog = Dialogs.displayInDialog(dialogOwner, editControlPanel, caption, Modal.NO, disposeEditDialogOnEscape,
             Controls.control(() -> setEditPanelState(HIDDEN)));
   }
 
