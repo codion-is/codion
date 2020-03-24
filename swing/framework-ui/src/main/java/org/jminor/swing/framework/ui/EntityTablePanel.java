@@ -504,7 +504,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
-    final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver();
+    final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
     final StateObserver enabled = States.aggregateState(Conjunction.AND, selectionNotEmpty, updateEnabled);
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
@@ -526,7 +526,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final Control getViewDependenciesControl() {
     return control(this::viewSelectionDependencies,
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
-            tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
+            tableModel.getSelectionModel().getSelectionNotEmptyObserver(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
 
@@ -541,7 +541,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
                     tableModel.getEditModel().getDeleteEnabledObserver(),
-                    tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver()),
+                    tableModel.getSelectionModel().getSelectionNotEmptyObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -738,7 +738,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final Control getClearSelectionControl() {
     final Control clearSelection = control(tableModel.getSelectionModel()::clearSelection, null,
-            tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver(), null, -1, null,
+            tableModel.getSelectionModel().getSelectionNotEmptyObserver(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(MESSAGES.getString("clear_selection_tip"));
 
@@ -1054,7 +1054,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected final Control getCopyCellControl() {
     return control(this::copySelectedCell, FrameworkMessages.get(FrameworkMessages.COPY_CELL),
-            tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver());
+            tableModel.getSelectionModel().getSelectionNotEmptyObserver());
   }
 
   protected final Control getCopyTableWithHeaderControl() {

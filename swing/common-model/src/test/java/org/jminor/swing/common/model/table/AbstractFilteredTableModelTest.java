@@ -475,6 +475,7 @@ public final class AbstractFilteredTableModelTest {
 
     assertFalse(selectionModel.getSingleSelectionObserver().get());
     assertTrue(selectionModel.getSelectionEmptyObserver().get());
+    assertFalse(selectionModel.getSelectionNotEmptyObserver().get());
     assertFalse(selectionModel.getMultipleSelectionObserver().get());
 
     tableModel.refresh();
@@ -593,6 +594,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.clear();
     assertTrue(selectionModel.getSelectionEmptyObserver().get());
+    assertFalse(selectionModel.getSelectionNotEmptyObserver().get());
     assertNull(selectionModel.getSelectedItem());
 
     selectionModel.clearSelection();

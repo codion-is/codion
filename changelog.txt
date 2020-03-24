@@ -5784,3 +5784,4 @@
   EntityPanelProvider now accepts EntityEditPanel and EntityTablePanel constructors with edit and table model subclass types
   JFreeChart usage example added to World demo
   Dialogs, modal boolean parameter replaced with Modal enum
+  SelectionModel.getSelectionNotEmptyObserver() added
