@@ -5758,3 +5758,4 @@
   updateOnKeystroke parameter replaced with UpdateOn enum
   nullable parameter replaced with Nullable enum
   EntityPanelProvider now accepts EntityEditPanel and EntityTablePanel constructors with edit and table model subclass types
+  JFreeChart usage example added to World demo

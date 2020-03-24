@@ -1,8 +1,8 @@
 package org.jminor.framework.demos.world.ui;
 
 import org.jminor.framework.demos.world.domain.World;
+import org.jminor.framework.demos.world.model.CountryEditModel;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
@@ -17,7 +17,7 @@ import static org.jminor.swing.common.ui.textfield.TextFields.makeUpperCase;
 
 public final class CountryEditPanel extends EntityEditPanel {
 
-  public CountryEditPanel(SwingEntityEditModel editModel) {
+  public CountryEditPanel(CountryEditModel editModel) {
     super(editModel);
   }
 
