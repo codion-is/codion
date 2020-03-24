@@ -36,7 +36,7 @@ public final class CommandControlTest {
   @Test
   public void test() throws Exception {
     final State enabledState = States.state();
-    final Control control = Controls.control(this::method, "test", enabledState);
+    final Control control = Controls.control(this::method, enabledState);
     final JButton button = new JButton(control);
     assertFalse(button.isEnabled());
     enabledState.set(true);
@@ -47,19 +47,19 @@ public final class CommandControlTest {
 
   @Test
   public void exceptionOnExecute() {
-    final Control control = Controls.control(this::errorMethod, "test", null);
+    final Control control = Controls.control(this::errorMethod);
     assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
   }
 
   @Test
   public void runtimeExceptionOnExecute() {
-    final Control control = Controls.control(this::runtimeErrorMethod, "test", null);
+    final Control control = Controls.control(this::runtimeErrorMethod);
     assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
   }
 
   @Test
   public void cancelOnExecute() {
-    final Control control = Controls.control(this::cancelMethod, "test", null);
+    final Control control = Controls.control(this::cancelMethod);
     control.actionPerformed(null);
   }
 }

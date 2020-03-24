@@ -5786,3 +5786,4 @@
   Dialogs, modal boolean parameter replaced with Modal enum
   SelectionModel.getSelectionNotEmptyObserver() added
   Redundant jfreechart dependencies removed from demo projects, pulled in automatically via swing-common-ui module
+  Controls.control(Command, StateObserver) overload added
