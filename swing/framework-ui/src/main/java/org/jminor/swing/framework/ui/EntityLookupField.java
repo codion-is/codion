@@ -236,7 +236,7 @@ public final class EntityLookupField extends JTextField {
     final Control escapeControl = Controls.control(() -> {
       getModel().refreshSearchText();
       selectAll();
-    }, "EntityLookupField.escape", getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver());
+    }, getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver());
     KeyEvents.addKeyEvent(this, KeyEvent.VK_ESCAPE, escapeControl);
   }
 
