@@ -14,6 +14,7 @@ import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.dialog.DisposeOnEscape;
 import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields;
@@ -133,7 +134,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
       datePanel.add(buttonPanel, BorderLayout.SOUTH);
 
       KeyEvents.addKeyEvent(datePanel, KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
-      Dialogs.displayInDialog(parent, datePanel, message, Modal.YES, okControl, closeEvent, true, null);
+      Dialogs.displayInDialog(parent, datePanel, message, Modal.YES, okControl, closeEvent, DisposeOnEscape.YES);
 
       return cancel.get() ? null : Instant.ofEpochMilli(returnTime.getTime().getTime())
               .atZone(ZoneId.systemDefault())

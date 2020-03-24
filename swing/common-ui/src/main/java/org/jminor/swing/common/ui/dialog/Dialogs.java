@@ -73,7 +73,6 @@ public final class Dialogs {
    * Displays the given component in a modal dialog
    * @param owner the dialog owner
    * @param component the component to display
-   * @param title the dialog title
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component) {
@@ -84,6 +83,7 @@ public final class Dialogs {
    * Displays the given component in a modal dialog
    * @param owner the dialog owner
    * @param component the component to display
+   * @param modal the dialog modal status
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final Modal modal) {
@@ -166,6 +166,20 @@ public final class Dialogs {
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
                                         final Modal modal, final Action onClosedAction) {
     return displayInDialog(owner, component, title, modal, DisposeOnEscape.YES, onClosedAction);
+  }
+
+  /**
+   * Displays the given component in a dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @param modal the dialog modal status
+   * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed
+   * @return the dialog used to display the component
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
+                                        final Modal modal, final DisposeOnEscape disposeOnEscape) {
+    return displayInDialog(owner, component, title, modal, disposeOnEscape, null);
   }
 
   /**
@@ -307,6 +321,24 @@ public final class Dialogs {
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Displays the given component in a dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @param modal the dialog modal status
+   * @param enterAction the action to associate with the ENTER key
+   * @param closeEvent if specified the dialog will be disposed of when and only when this event occurs
+   * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed,
+   * has no effect if a <code>closeEvent</code> is specified
+   * @return the dialog used to display the component
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
+                                        final Modal modal, final Action enterAction, final EventObserver closeEvent,
+                                        final DisposeOnEscape disposeOnEscape) {
+    return displayInDialog(owner, component, title, modal, enterAction, closeEvent, disposeOnEscape, null);
   }
 
   /**
