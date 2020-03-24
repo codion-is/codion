@@ -76,6 +76,27 @@ public final class Dialogs {
    * @param title the dialog title
    * @return the dialog used to display the component
    */
+  public static JDialog displayInDialog(final Container owner, final JComponent component) {
+    return displayInDialog(owner, component, (Modal) null);
+  }
+
+  /**
+   * Displays the given component in a modal dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @return the dialog used to display the component
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final Modal modal) {
+    return displayInDialog(owner, component, null, modal);
+  }
+
+  /**
+   * Displays the given component in a modal dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @return the dialog used to display the component
+   */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title) {
     return displayInDialog(owner, component, title, Modal.YES);
   }
@@ -90,11 +111,11 @@ public final class Dialogs {
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
                                         final Modal modal) {
-    return displayInDialog(owner, component, title, modal, null, null, true, null);
+    return displayInDialog(owner, component, title, modal, null, null, DisposeOnEscape.YES, null);
   }
 
   /**
-   * Displays the given component in a dialog
+   * Displays the given component in a dialog.
    * @param owner the dialog owner
    * @param component the component to display
    * @param title the dialog title
@@ -107,7 +128,7 @@ public final class Dialogs {
   }
 
   /**
-   * Displays the given component in a dialog
+   * Displays the given component in a dialog.
    * @param owner the dialog owner
    * @param component the component to display
    * @param title the dialog title
@@ -117,7 +138,7 @@ public final class Dialogs {
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
                                         final Modal modal, final EventObserver closeEvent) {
-    return displayInDialog(owner, component, title, modal, null, closeEvent, true, null);
+    return displayInDialog(owner, component, title, modal, null, closeEvent, DisposeOnEscape.YES, null);
   }
 
   /**
@@ -144,7 +165,7 @@ public final class Dialogs {
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
                                         final Modal modal, final Action onClosedAction) {
-    return displayInDialog(owner, component, title, modal, true, onClosedAction);
+    return displayInDialog(owner, component, title, modal, DisposeOnEscape.YES, onClosedAction);
   }
 
   /**
@@ -153,12 +174,12 @@ public final class Dialogs {
    * @param component the component to display
    * @param title the dialog title
    * @param modal the dialog modal status
-   * @param disposeOnEscape if true then the dialog is disposed when the ESC button is pressed
+   * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed
    * @param onClosedAction this action will be registered as a windowClosed action for the dialog
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final Modal modal, final boolean disposeOnEscape, final Action onClosedAction) {
+                                        final Modal modal, final DisposeOnEscape disposeOnEscape, final Action onClosedAction) {
     return displayInDialog(owner, component, title, modal, null, null, disposeOnEscape, onClosedAction);
   }
 
@@ -173,7 +194,7 @@ public final class Dialogs {
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title, final Modal modal,
-                                        final Action enterAction, final boolean disposeOnEscape) {
+                                        final Action enterAction, final DisposeOnEscape disposeOnEscape) {
     return displayInDialog(owner, component, title, modal, enterAction, null, disposeOnEscape, null);
   }
 
@@ -189,7 +210,7 @@ public final class Dialogs {
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title, final Modal modal,
                                         final Action enterAction, final EventObserver closeEvent) {
-    return displayInDialog(owner, component, title, modal, enterAction, closeEvent, false, null);
+    return displayInDialog(owner, component, title, modal, enterAction, closeEvent, DisposeOnEscape.NO, null);
   }
 
   /**
@@ -296,14 +317,14 @@ public final class Dialogs {
    * @param modal the dialog modal status
    * @param enterAction the action to associate with the ENTER key
    * @param closeEvent if specified the dialog will be disposed of when and only when this event occurs
-   * @param disposeOnEscape if true then the dialog is disposed when the ESC button is pressed,
+   * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed,
    * has no effect if a <code>closeEvent</code> is specified
    * @param onClosedAction this action will be registered as a windowClosed action for the dialog
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
                                         final Modal modal, final Action enterAction, final EventObserver closeEvent,
-                                        final boolean disposeOnEscape, final Action onClosedAction) {
+                                        final DisposeOnEscape disposeOnEscape, final Action onClosedAction) {
     final Window dialogOwner = owner instanceof Window ? (Window) owner : Windows.getParentWindow(owner);
     final JDialog dialog = new JDialog(dialogOwner, title, modal == Modal.YES ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);
     if (enterAction != null) {
@@ -314,7 +335,7 @@ public final class Dialogs {
     final Action disposeAction = new DisposeDialogAction(dialog);
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      if (disposeOnEscape) {
+      if (disposeOnEscape == DisposeOnEscape.YES) {
         KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, false,
                 new DisposeDialogOnEscapeAction(dialog));
       }
