@@ -44,8 +44,8 @@ public class DepartmentTablePanel extends EntityTablePanel {
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
-    final StateObserver selectionNotEmptyObserver = getTableModel().getSelectionModel()
-            .getSelectionEmptyObserver().getReversedObserver();
+    final StateObserver selectionNotEmptyObserver =
+            getTableModel().getSelectionModel().getSelectionNotEmptyObserver();
     printControlSet.add(Controls.control(this::viewEmployeeReport,
             "Employee Report", selectionNotEmptyObserver));
 

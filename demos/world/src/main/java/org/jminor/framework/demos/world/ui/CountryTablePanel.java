@@ -21,7 +21,7 @@ public final class CountryTablePanel extends EntityTablePanel {
     super(tableModel);
     cityChartPanel = new ChartPanel(ChartFactory.createPieChart("Cities", tableModel.getCityChartDataset()));
     getTable().setDoubleClickAction(Controls.control(this::displayCityPieChart, "displayPieChart",
-            tableModel.getSelectionModel().getSelectionEmptyObserver().getReversedObserver()));
+            tableModel.getSelectionModel().getSelectionNotEmptyObserver()));
   }
 
   private void displayCityPieChart() throws DatabaseException {

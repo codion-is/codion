@@ -369,6 +369,12 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     return selectionEmptyState.getObserver();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public StateObserver getSelectionNotEmptyObserver() {
+    return selectionEmptyState.getReversedObserver();
+  }
+
   private void bindEvents() {
     singleSelectionModeState.addDataListener(singleSelection ->
             setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));

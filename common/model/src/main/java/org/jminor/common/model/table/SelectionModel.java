@@ -23,6 +23,11 @@ public interface SelectionModel<R> {
   StateObserver getSelectionEmptyObserver();
 
   /**
+   * @return a StateObserver indicating that one or more items are selected
+   */
+  StateObserver getSelectionNotEmptyObserver();
+
+  /**
    * @return a StateObserver indicating that multiple rows are selected
    */
   StateObserver getMultipleSelectionObserver();

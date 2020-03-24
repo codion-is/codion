@@ -499,7 +499,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private List<Entity> getActiveEntities() {
     final List<Entity> activeEntities;
-    if (containsTableModel() && !tableModel.getSelectionModel().getSelectionEmptyObserver().get()) {
+    if (containsTableModel() && tableModel.getSelectionModel().getSelectionNotEmptyObserver().get()) {
       activeEntities = tableModel.getSelectionModel().getSelectedItems();
     }
     else {

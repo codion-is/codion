@@ -29,7 +29,7 @@ public class CustomerTablePanel extends EntityTablePanel {
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
     printControlSet.add(Controls.control(this::viewCustomerReport, "Customer report",
-            getTable().getModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()));
+            getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver()));
 
     return printControlSet;
   }
