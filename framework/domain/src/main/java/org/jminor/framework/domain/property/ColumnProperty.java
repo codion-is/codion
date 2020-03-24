@@ -78,6 +78,11 @@ public interface ColumnProperty extends Property {
   boolean isUpdatable();
 
   /**
+   * @return true if this property is neither insertable nor updatable.
+   */
+  boolean isReadOnly();
+
+  /**
    * @return true if this column is a denormalized column, one should which receives a value
    * from a column in a table referenced via a foreign key
    */

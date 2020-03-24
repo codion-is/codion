@@ -101,6 +101,12 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
 
   /** {@inheritDoc} */
   @Override
+  public final boolean isReadOnly() {
+    return !insertable && !updatable;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public boolean isDenormalized() {
     return false;
   }
