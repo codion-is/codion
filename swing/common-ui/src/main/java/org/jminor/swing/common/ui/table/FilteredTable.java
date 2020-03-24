@@ -125,7 +125,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private boolean sortingEnabled = true;
 
   /**
-   * If true then the JTable scrolls to the item selected in the table model
+   * If true then this table scrolls to the item selected in the table model
    */
   private boolean scrollToSelectedItem = true;
 

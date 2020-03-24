@@ -39,7 +39,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   private final Event<C> columnShownEvent = Events.event();
 
   /**
-   * The columns available to this table model
+   * All columns in this column model, visible and hidden
    */
   private final List<TableColumn> columns;
 
@@ -59,8 +59,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   private final int[] columnIndexCache;
 
   /**
-   * Instantiates a new SwingFilteredTableColumnModel, note that the TableColumnModel
-   * this model is to be based on must contain all the columns when this constructor is called
+   * Instantiates a new SwingFilteredTableColumnModel.
    * @param columns the columns to base this model on
    * @param columnFilterModels the filter models if any
    */
@@ -212,7 +211,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
    * {@code modelColumnIndex} to the index of the column
    * in the view. Returns the index of the
    * corresponding column in the view; returns -1 if this column is not
-   * being displayed.  If {@code modelColumnIndex} is less than zero,
+   * being displayed. If {@code modelColumnIndex} is less than zero,
    * this returns {@code modelColumnIndex}.
    * @param modelColumnIndex the index of the column in the model
    * @return the index of the corresponding column in the view

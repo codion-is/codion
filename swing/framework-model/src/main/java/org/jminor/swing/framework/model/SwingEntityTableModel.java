@@ -167,7 +167,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
     this.conditionModel = conditionModel;
-    bindEvents();
+    bindEventsInternal();
     applyPreferences();
   }
 
@@ -711,7 +711,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     PreferencesUtil.removeUserPreference(getUserPreferencesKey());
   }
 
-  private void bindEvents() {
+  private void bindEventsInternal() {
     getColumnModel().addColumnHiddenListener(this::onColumnHidden);
     conditionModel.addSimpleConditionListener(this::refresh);
   }

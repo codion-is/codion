@@ -9,6 +9,7 @@ import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityModelProvider;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -384,7 +385,7 @@ public class EntityPanelProvider {
       throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityId() + ", required: " + getEntityId());
     }
     try {
-      final EntityEditPanel editPanel = editPanelClass.getConstructor(SwingEntityEditModel.class).newInstance(editModel);
+      final EntityEditPanel editPanel = findEditModelConstructor(editPanelClass).newInstance(editModel);
       configureEditPanel(editPanel);
 
       return editPanel;
@@ -402,7 +403,7 @@ public class EntityPanelProvider {
       if (!tableModel.getEntityId().equals(getEntityId())) {
         throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityId() + ", required: " + getEntityId());
       }
-      final EntityTablePanel tablePanel = tablePanelClass.getConstructor(SwingEntityTableModel.class).newInstance(tableModel);
+      final EntityTablePanel tablePanel = findTableModelConstructor(tablePanelClass).newInstance(tableModel);
       configureTablePanel(tablePanel);
 
       return tablePanel;
@@ -413,5 +414,29 @@ public class EntityPanelProvider {
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static Constructor<EntityEditPanel> findEditModelConstructor(final Class<? extends EntityEditPanel> editPanelClass)
+          throws NoSuchMethodException {
+    for (final Constructor<?> constructor : editPanelClass.getConstructors()) {
+      if (constructor.getParameterCount() == 1 &&
+              SwingEntityEditModel.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
+        return (Constructor<EntityEditPanel>) constructor;
+      }
+    }
+
+    throw new NoSuchMethodException("Constructor with a single parameter of type SwingEntityEditModel (or subclass) not found in class: " + editPanelClass);
+  }
+
+  private static Constructor<EntityTablePanel> findTableModelConstructor(final Class<? extends EntityTablePanel> tablePanelClass)
+          throws NoSuchMethodException {
+    for (final Constructor<?> constructor : tablePanelClass.getConstructors()) {
+      if (constructor.getParameterCount() == 1 &&
+              SwingEntityTableModel.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
+        return (Constructor<EntityTablePanel>) constructor;
+      }
+    }
+
+    throw new NoSuchMethodException("Constructor with a single parameter of type SwingEntityTableModel (or subclass) not found in class: " + tablePanelClass);
   }
 }

@@ -3,7 +3,6 @@ package org.jminor.framework.demos.world.ui;
 import org.jminor.framework.demos.world.model.LookupTableModel;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import java.io.File;
@@ -15,7 +14,7 @@ import static org.jminor.swing.common.ui.worker.ProgressWorker.runWithProgressBa
 
 public final class LookupTablePanel extends EntityTablePanel {
 
-  public LookupTablePanel(SwingEntityTableModel tableModel) {
+  public LookupTablePanel(LookupTableModel tableModel) {
     super(tableModel);
     setConditionPanelVisible(true);
   }

@@ -13,7 +13,9 @@ public final class WorldAppModel extends SwingEntityApplicationModel {
   }
 
   private void setupEntityModels(EntityConnectionProvider connectionProvider) {
-    SwingEntityModel countryModel = new SwingEntityModel(new CountryEditModel(connectionProvider));
+    SwingEntityModel countryModel = new SwingEntityModel(
+            new CountryEditModel(connectionProvider),
+            new CountryTableModel(connectionProvider));
     SwingEntityModel cityModel = new SwingEntityModel(World.T_CITY, connectionProvider);
     SwingEntityModel countryLanguageModel = new SwingEntityModel(World.T_COUNTRYLANGUAGE, connectionProvider);
     countryModel.addDetailModels(cityModel, countryLanguageModel);

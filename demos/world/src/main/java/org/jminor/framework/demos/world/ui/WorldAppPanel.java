@@ -19,6 +19,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   protected void setupEntityPanelProviders() {
     EntityPanelProvider countryPanelProvider = new EntityPanelProvider(World.T_COUNTRY);
     countryPanelProvider.setEditPanelClass(CountryEditPanel.class);
+    countryPanelProvider.setTablePanelClass(CountryTablePanel.class);
 
     EntityPanelProvider cityPanelProvider = new EntityPanelProvider(World.T_CITY);
     cityPanelProvider.setEditPanelClass(CityEditPanel.class);

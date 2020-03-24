@@ -27,6 +27,7 @@ import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
+import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
@@ -363,7 +364,7 @@ public final class EntityLookupField extends JTextField {
     lookupModel.getMultipleSelectionEnabledValue().set(!singleSelection);
     final ComponentValuePanel<Entity, EntityLookupField> inputPanel = new ComponentValuePanel<>(lookupCaption,
             new ComponentValue(lookupModel, null));
-    Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, true,
+    Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
       return lookupModel.getSelectedEntities();
