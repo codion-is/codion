@@ -26,7 +26,7 @@ public final class CountryTablePanel extends EntityTablePanel {
 
   private void displayCityPieChart() throws DatabaseException {
     if (!cityChartPanel.isShowing()) {
-      Dialogs.displayInDialog(this, cityChartPanel, null, Modal.NO);
+      Dialogs.displayInDialog(this, cityChartPanel, Modal.NO);
     }
   }
 }

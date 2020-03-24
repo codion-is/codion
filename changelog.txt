@@ -5787,3 +5787,4 @@
   SelectionModel.getSelectionNotEmptyObserver() added
   Redundant jfreechart dependencies removed from demo projects, pulled in automatically via swing-common-ui module
   Controls.control(Command, StateObserver) overload added
+  Dialogs, disposeOnEscape boolean parameter replaced with DisposeOnEscape enum
