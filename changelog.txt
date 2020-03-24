@@ -5789,3 +5789,4 @@
   Controls.control(Command, StateObserver) overload added
   Dialogs, disposeOnEscape boolean parameter replaced with DisposeOnEscape enum
   ColumnProperty.isReadOnly() added, based on insertable and updatable
+0.14.1
