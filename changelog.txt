@@ -5785,3 +5785,4 @@
   JFreeChart usage example added to World demo
   Dialogs, modal boolean parameter replaced with Modal enum
   SelectionModel.getSelectionNotEmptyObserver() added
+  Redundant jfreechart dependencies removed from demo projects, pulled in automatically via swing-common-ui module

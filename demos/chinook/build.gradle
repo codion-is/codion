@@ -29,9 +29,6 @@ dependencies {
 
     testImplementation project(':jminor-framework-domain-test')
 
-    implementation "org.jfree:jcommon:${jcommonVersion}"
-    implementation "org.jfree:jfreechart:${jfreeChartVersion}"
-
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
     }
