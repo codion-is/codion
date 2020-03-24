@@ -20,8 +20,6 @@ dependencies {
     testImplementation project(':jminor-swing-framework-ui-test')
 
     implementation 'javax.ws.rs:jsr311-api:1.1.1'
-    implementation "org.jfree:jcommon:${jcommonVersion}"
-    implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
     runtimeOnly project(':jminor-plugin-logback-proxy')
 
