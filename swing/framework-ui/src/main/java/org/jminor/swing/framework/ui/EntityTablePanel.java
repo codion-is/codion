@@ -1458,7 +1458,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     @Override
     public ColumnConditionPanel<Entity, Property> createColumnConditionPanel(final TableColumn column) {
       return new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
-              ((Property) column.getIdentifier()).getPropertyId()), true, true);
+              ((Property) column.getIdentifier()).getPropertyId()));
     }
   }
 }

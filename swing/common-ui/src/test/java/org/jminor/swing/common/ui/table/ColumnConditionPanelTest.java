@@ -17,7 +17,7 @@ public class ColumnConditionPanelTest {
   public void test() {
     final String key = "key";
     final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>(key, String.class, "%");
-    final ColumnConditionPanel<String, String> panel = new ColumnConditionPanel<>(model, true, true);
+    final ColumnConditionPanel<String, String> panel = new ColumnConditionPanel<>(model, true);
     assertEquals(model, panel.getModel());
     assertNotNull(panel.getUpperBoundField());
     assertNotNull(panel.getLowerBoundField());
@@ -33,6 +33,6 @@ public class ColumnConditionPanelTest {
 
   @Test
   public void constructorNullConditionModel() {
-    assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String>(null, true, true, (ConditionType) null));
+    assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String>(null, true, (ConditionType) null));
   }
 }

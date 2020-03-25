@@ -23,19 +23,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, C
    * @param model the model to base this panel on
    */
   public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty> model) {
-    this(model, false, false);
-  }
-
-  /**
-   * Instantiates a new PropertyConditionPanel.
-   * @param model the model to base this panel on
-   * @param includeToggleEnabledButton if true an activation button is included
-   * @param includeToggleAdvancedConditionButton if true an advanced toggle button is included
-   */
-  public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty> model,
-                                final boolean includeToggleEnabledButton, final boolean includeToggleAdvancedConditionButton) {
-    super(model, includeToggleEnabledButton, includeToggleAdvancedConditionButton,
-            new PropertyInputFieldProvider(model), getConditionTypes(model));
+    super(model, false, new PropertyInputFieldProvider(model), getConditionTypes(model));
   }
 
   private static ConditionType[] getConditionTypes(final ColumnConditionModel<Entity, ColumnProperty> model) {
