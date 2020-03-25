@@ -103,9 +103,9 @@ final class Queries {
     return queryBuilder.toString();
   }
 
-  static String selectQuery(final String columnsClause, final WhereCondition whereCondition,
-                            final EntityDefinition entityDefinition, final Database database) {
-    final EntityCondition entityCondition = whereCondition.getEntityCondition();
+  static String selectQuery(final String columnsClause, final EntityCondition entityCondition,
+                            final WhereCondition whereCondition, final EntityDefinition entityDefinition,
+                            final Database database) {
     final boolean isForUpdate = entityCondition instanceof EntitySelectCondition &&
             ((EntitySelectCondition) entityCondition).isForUpdate();
     boolean containsWhereClause = false;

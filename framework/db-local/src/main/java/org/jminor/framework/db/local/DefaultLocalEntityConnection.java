@@ -600,7 +600,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
     final String subQuery = selectQuery(Queries.columnsClause(entityDefinition.getPrimaryKeyProperties()),
-            whereCondition, entityDefinition, connection.getDatabase());
+            condition, whereCondition, entityDefinition, connection.getDatabase());
     final String selectQuery = selectQuery("(" + subQuery + ")", "count(*)");
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -1004,7 +1004,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.getSelectableColumnProperties(selectCondition.getSelectPropertyIds());
     try {
       selectQuery = selectQuery(columnsClause(entityDefinition.getEntityId(),
-              selectCondition.getSelectPropertyIds(), propertiesToSelect), whereCondition,
+              selectCondition.getSelectPropertyIds(), propertiesToSelect), selectCondition, whereCondition,
               entityDefinition, connection.getDatabase());
       statement = prepareStatement(selectQuery);
       resultSet = executeStatement(statement, selectQuery, whereCondition);

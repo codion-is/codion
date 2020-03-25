@@ -12,23 +12,15 @@ import java.util.List;
 final class DefaultWhereCondition implements WhereCondition {
 
   private final EntityDefinition entityDefinition;
-  private final EntityCondition entityCondition;
   private final Condition condition;
   private final List values;
   private final List<ColumnProperty> columnProperties;
 
-  DefaultWhereCondition(final EntityCondition entityCondition, final Condition expandedCondition,
-                        final EntityDefinition entityDefinition) {
+  DefaultWhereCondition(final Condition expandedCondition, final EntityDefinition entityDefinition) {
     this.entityDefinition = entityDefinition;
-    this.entityCondition = entityCondition;
     this.condition = expandedCondition;
     this.values = condition.getValues();
     this.columnProperties = entityDefinition.getColumnProperties(condition.getPropertyIds());
-  }
-
-  @Override
-  public EntityCondition getEntityCondition() {
-    return entityCondition;
   }
 
   @Override
