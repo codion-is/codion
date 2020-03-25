@@ -297,10 +297,10 @@ public final class EntityTableConditionPanel extends JPanel {
      */
     private static ColumnConditionPanel initializeConditionPanel(final ColumnConditionModel propertyConditionModel) {
       if (propertyConditionModel instanceof ForeignKeyConditionModel) {
-        return new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel, true, false);
+        return new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
       }
 
-      return new PropertyConditionPanel(propertyConditionModel, true, false);
+      return new PropertyConditionPanel(propertyConditionModel);
     }
   }
 }

@@ -5790,3 +5790,5 @@
   Dialogs, disposeOnEscape boolean parameter replaced with DisposeOnEscape enum
   ColumnProperty.isReadOnly() added, based on insertable and updatable
 0.14.1
+  AutoCompletion normalize boolean character replaced with Normalize enum, showPopupOnMatch parameter (and functionality) removed
+  ColumnConditionPanel, includeToggleEnabledButton parameter removed, always true

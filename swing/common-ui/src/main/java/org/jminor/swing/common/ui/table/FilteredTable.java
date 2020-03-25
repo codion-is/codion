@@ -140,7 +140,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public FilteredTable(final T tableModel) {
     this(tableModel, column -> new ColumnConditionPanel<>(tableModel.getColumnModel().getColumnFilterModel(
-            (C) column.getIdentifier()), true, true));
+            (C) column.getIdentifier()), true));
   }
 
   /**

@@ -26,19 +26,7 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
    * @param model the model to base this panel on
    */
   public ForeignKeyConditionPanel(final ForeignKeyConditionModel model) {
-    this(model, true, false);
-  }
-
-  /**
-   * Instantiates a new ForeignKeyConditionPanel.
-   * @param model the model to base this panel on
-   * @param includeToggleEnabledButton if true a toggle button for enabling/disabling is included
-   * @param includeToggleAdvancedConditionButton if true an advanced toggle button is included
-   */
-  public ForeignKeyConditionPanel(final ForeignKeyConditionModel model, final boolean includeToggleEnabledButton,
-                                  final boolean includeToggleAdvancedConditionButton) {
-    super(model, includeToggleEnabledButton, includeToggleAdvancedConditionButton,
-            new ForeignKeyInputFieldProvider(model), ConditionType.LIKE, ConditionType.NOT_LIKE);
+    super(model, false, new ForeignKeyInputFieldProvider(model), ConditionType.LIKE, ConditionType.NOT_LIKE);
   }
 
   private static final class ForeignKeyInputFieldProvider implements InputFieldProvider {

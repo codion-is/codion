@@ -19,18 +19,7 @@ public final class PropertyFilterPanel extends ColumnConditionPanel<Entity, Prop
    * @param model the model to base this panel on
    */
   public PropertyFilterPanel(final ColumnConditionModel<Entity, Property> model) {
-    this(model, false, false);
-  }
-
-  /**
-   * Instantiates a new PropertyFilterPanel.
-   * @param model the model to base this panel on
-   * @param includeToggleFilterEnabledButton if true an activation button is include
-   * @param includeToggleAdvancedFilterButton if true an advanced toggle button is include
-   */
-  public PropertyFilterPanel(final ColumnConditionModel<Entity, Property> model, final boolean includeToggleFilterEnabledButton,
-                             final boolean includeToggleAdvancedFilterButton) {
-    super(model, includeToggleFilterEnabledButton, includeToggleAdvancedFilterButton, getConditionTypes(model));
+    super(model, true, getConditionTypes(model));
   }
 
   private static ConditionType[] getConditionTypes(final ColumnConditionModel<Entity, Property> model) {
