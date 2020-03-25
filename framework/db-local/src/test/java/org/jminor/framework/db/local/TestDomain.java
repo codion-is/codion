@@ -63,15 +63,15 @@ public final class TestDomain extends Domain {
             .smallDataset(true)
             .searchPropertyIds(DEPARTMENT_NAME)
             .stringProvider(new StringProvider(DEPARTMENT_NAME))
-            .conditionProvider(DEPARTMENT_CONDITION_ID, (propetyIds, values) -> {
+            .conditionProvider(DEPARTMENT_CONDITION_ID, (propertyIds, values) -> {
               final StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .conditionProvider(DEPARTMENT_CONDITION_SALES_ID, (propetyIds, values) -> "dname = 'SALES'")
-            .conditionProvider(DEPARTMENT_CONDITION_INVALID_COLUMN_ID, (propetyIds, values) -> "no_column is null")
+            .conditionProvider(DEPARTMENT_CONDITION_SALES_ID, (propertyIds, values) -> "dname = 'SALES'")
+            .conditionProvider(DEPARTMENT_CONDITION_INVALID_COLUMN_ID, (propertyIds, values) -> "no_column is null")
             .caption("Department");
   }
 
@@ -124,8 +124,8 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
             .searchPropertyIds(EMP_NAME, EMP_JOB)
-            .conditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, (propetyIds, values) -> "ename = 'BLAKE'")
-            .conditionProvider(EMP_MGR_GREATER_THAN_CONDITION_ID, (propetyIds, values) -> "mgr > ?")
+            .conditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, (propertyIds, values) -> "ename = 'BLAKE'")
+            .conditionProvider(EMP_MGR_GREATER_THAN_CONDITION_ID, (propertyIds, values) -> "mgr > ?")
             .caption("Employee");
   }
 
@@ -217,6 +217,6 @@ public final class TestDomain extends Domain {
             primaryKeyProperty("e.empno"),
             columnProperty("d.deptno", Types.INTEGER))
             .selectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
-            .conditionProvider(JOINED_QUERY_CONDITION_ID, (propetyIds, values) -> "d.deptno = 10");
+            .conditionProvider(JOINED_QUERY_CONDITION_ID, (propertyIds, values) -> "d.deptno = 10");
   }
 }

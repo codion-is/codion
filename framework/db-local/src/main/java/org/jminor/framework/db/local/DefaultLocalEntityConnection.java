@@ -86,7 +86,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<String, List<ColumnProperty>> insertablePropertiesCache = new HashMap<>();
   private final Map<String, List<ColumnProperty>> updatablePropertiesCache = new HashMap<>();
   private final Map<String, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
-  private final Map<String, String[]> primaryKeyAndWritableColumnPropertyIdCache = new HashMap<>();
+  private final Map<String, String[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
   private final Map<String, String> allColumnsClauseCache = new HashMap<>();
 
   private boolean optimisticLockingEnabled = true;
@@ -303,8 +303,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
             }
 
-            final WhereCondition updateCondition =
-                    whereCondition(entityCondition(entity.getOriginalKey()), entityDefinition);
+            final WhereCondition updateCondition = whereCondition(entityCondition(entity.getOriginalKey()), entityDefinition);
             updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, updateCondition.getWhereClause());
             statement = prepareStatement(updateQuery);
             statementProperties.addAll(updateCondition.getColumnProperties());
@@ -1146,7 +1145,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private String[] getPrimaryKeyAndWritableColumnPropertyIds(final String entityId) {
-    return primaryKeyAndWritableColumnPropertyIdCache.computeIfAbsent(entityId, e -> {
+    return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityId, e -> {
       final EntityDefinition entityDefinition = getEntityDefinition(entityId);
       final List<ColumnProperty> writableAndPrimaryKeyProperties =
               new ArrayList<>(entityDefinition.getWritableColumnProperties(true, true));

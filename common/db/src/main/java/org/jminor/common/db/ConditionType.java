@@ -44,7 +44,7 @@ public enum ConditionType {
   }
 
   /**
-   * The number of values expected for a Condition.Type
+   * The number of values expected for a ConditionType
    */
   public enum Values {
     ONE, TWO, MANY
