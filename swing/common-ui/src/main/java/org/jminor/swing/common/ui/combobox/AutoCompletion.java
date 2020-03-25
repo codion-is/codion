@@ -13,36 +13,26 @@ public final class AutoCompletion extends CompletionDocument {
 
   /**
    * @param comboBox the combo box to auto complete
-   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
    * @param normalize if true then accented characters are normalized before matching
    */
-  public AutoCompletion(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {
-    super(comboBox, showPopupOnMatch, normalize);
+  public AutoCompletion(final JComboBox comboBox, final Normalize normalize) {
+    super(comboBox, normalize);
   }
 
   /**
    * @param comboBox the combobox on which to enable autocompletion
    */
   public static void enable(final JComboBox comboBox) {
-    enable(comboBox, false);
+    enable(comboBox, Normalize.YES);
   }
 
   /**
    * @param comboBox the combobox on which to enable autocompletion
-   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
+   * @param normalize if YES then accented characters are normalized before matching
    */
-  public static void enable(final JComboBox comboBox, final boolean showPopupOnMatch) {
-    enable(comboBox, showPopupOnMatch, true);
-  }
-
-  /**
-   * @param comboBox the combobox on which to enable autocompletion
-   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
-   * @param normalize if true then accented characters are normalized before matching
-   */
-  public static void enable(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {
+  public static void enable(final JComboBox comboBox, final Normalize normalize) {
     comboBox.setEditable(true);
-    new AutoCompletion(comboBox, showPopupOnMatch, normalize);
+    new AutoCompletion(comboBox, normalize);
   }
 
   /** {@inheritDoc} */

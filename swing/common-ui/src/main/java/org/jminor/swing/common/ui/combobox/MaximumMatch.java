@@ -15,36 +15,27 @@ public final class MaximumMatch extends CompletionDocument {
   /**
    * Enables MaximumMatch on the given combobox
    * @param comboBox the combobox
-   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
-   * @param normalize if true then accented characters are normalized before matching
+   * @param normalize if YES then accented characters are normalized before matching
    */
-  private MaximumMatch(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {
-    super(comboBox, showPopupOnMatch, normalize);
+  private MaximumMatch(final JComboBox comboBox, final Normalize normalize) {
+    super(comboBox, normalize);
   }
 
   /**
    * @param comboBox the combobox on which to enable maximum match
    */
   public static void enable(final JComboBox comboBox) {
-    enable(comboBox, false);
+    enable(comboBox, Normalize.YES);
   }
 
   /**
    * @param comboBox the combobox on which to enable maximum match
-   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
+   * @param showPopupOnMatch if NO the popup menu is not displayed while selecting items via matching
+   * @param normalize if YES then accented characters are normalized before matching
    */
-  public static void enable(final JComboBox comboBox, final boolean showPopupOnMatch) {
-    enable(comboBox, showPopupOnMatch, true);
-  }
-
-  /**
-   * @param comboBox the combobox on which to enable maximum match
-   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
-   * @param normalize if true then accented characters are normalized before matching
-   */
-  public static void enable(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {
+  public static void enable(final JComboBox comboBox, final Normalize normalize) {
     comboBox.setEditable(true);
-    new MaximumMatch(comboBox, showPopupOnMatch, normalize);
+    new MaximumMatch(comboBox, normalize);
   }
 
   /** {@inheritDoc} */

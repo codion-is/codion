@@ -27,9 +27,9 @@ class CompletionDocument extends PlainDocument {
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
 
-  protected CompletionDocument(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {
+  protected CompletionDocument(final JComboBox comboBox, final Normalize normalize) {
     this.comboBox = comboBox;
-    this.normalize = normalize;
+    this.normalize = normalize == Normalize.YES;
     model = comboBox.getModel();
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
     editor.setDocument(this);
@@ -38,7 +38,7 @@ class CompletionDocument extends PlainDocument {
         highlightCompletedText(0);
       }
     });
-    editor.addKeyListener(new MatchKeyAdapter(showPopupOnMatch));
+    editor.addKeyListener(new MatchKeyAdapter());
     editor.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
@@ -159,17 +159,8 @@ class CompletionDocument extends PlainDocument {
 
   private final class MatchKeyAdapter extends KeyAdapter {
 
-    private final boolean showPopupOnMatch;
-
-    private MatchKeyAdapter(final boolean showPopupOnMatch) {
-      this.showPopupOnMatch = showPopupOnMatch;
-    }
-
     @Override
     public void keyPressed(final KeyEvent e) {
-      if (showPopupOnMatch && comboBox.isDisplayable()) {
-        comboBox.setPopupVisible(true);
-      }
       hitBackspace = false;
       switch (e.getKeyCode()) {
         // determine if the pressed key is backspace (needed by the remove method)
