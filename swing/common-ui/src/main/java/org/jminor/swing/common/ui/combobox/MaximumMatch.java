@@ -30,7 +30,6 @@ public final class MaximumMatch extends CompletionDocument {
 
   /**
    * @param comboBox the combobox on which to enable maximum match
-   * @param showPopupOnMatch if NO the popup menu is not displayed while selecting items via matching
    * @param normalize if YES then accented characters are normalized before matching
    */
   public static void enable(final JComboBox comboBox, final Normalize normalize) {
