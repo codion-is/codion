@@ -58,6 +58,8 @@ public final class OracleDatabase extends AbstractDatabase {
     ERROR_CODE_MAP.put(VIEW_HAS_ERRORS_ERROR, MESSAGES.getString("view_has_errors_error"));
   }
 
+  private boolean useLegacySid = USE_LEGACY_SID.get();
+
   /**
    * Instantiates a new OracleDatabase.
    */
@@ -91,7 +93,7 @@ public final class OracleDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
-    return URL_PREFIX + getHost() + ":" + getPort() + (USE_LEGACY_SID.get() ? ":" : "/") + getSid() + getUrlAppend();
+    return URL_PREFIX + getHost() + ":" + getPort() + (useLegacySid ? ":" : "/") + getSid() + getUrlAppend();
   }
 
   /**
@@ -146,5 +148,15 @@ public final class OracleDatabase extends AbstractDatabase {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_KEY_ERROR;
+  }
+
+  /**
+   * Set to true for Oracle databases version 11 and below
+   * @param useLegacySid true if legacy SID url configuration should be used
+   * @return this instance
+   */
+  public OracleDatabase setUseLegacySid(final boolean useLegacySid) {
+    this.useLegacySid = useLegacySid;
+    return this;
   }
 }
