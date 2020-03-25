@@ -286,6 +286,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
 
   /**
+   * if true then keyboard navigation is enabled
+   */
+  private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
+
+  /**
    * True after {@code initializePanel()} has been called
    */
   private boolean panelInitialized = false;
@@ -563,6 +568,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
+   * Returns the panel containing the edit panel and the edit controls panel.
    * @return the edit control panel
    */
   public final JPanel getEditControlPanel() {
@@ -845,6 +851,21 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
+   * @return true if keyboard navigation is enabled
+   */
+  public boolean isUseKeyboardNavigation() {
+    return useKeyboardNavigation;
+  }
+
+  /**
+   * @param useKeyboardNavigation true if keyboard navigation should be enabled
+   */
+  public void setUseKeyboardNavigation(final boolean useKeyboardNavigation) {
+    checkIfInitialized();
+    this.useKeyboardNavigation = useKeyboardNavigation;
+  }
+
+  /**
    * Toggles the detail panel state between DIALOG, HIDDEN and EMBEDDED
    */
   public final void toggleDetailPanelState() {
@@ -1006,7 +1027,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void requestInitialFocus() {
-    if (editPanel != null && editPanelState != HIDDEN) {
+    if (editPanel != null && editPanel.isShowing()) {
       editPanel.requestInitialFocus();
     }
     else if (tablePanel != null) {
@@ -1080,8 +1101,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (containsEditPanel()) {
       updateEditPanelState();
     }
-    setupKeyboardActions();
-    if (USE_KEYBOARD_NAVIGATION.get()) {
+    initializeKeyboardActions();
+    if (useKeyboardNavigation) {
       initializeNavigation();
     }
     initializeResizing();
@@ -1142,7 +1163,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * CTR-S transfers focus to the condition panel, CTR-C opens a select control dialog
    * and CTR-F selects the table search field
    */
-  private void setupKeyboardActions() {
+  protected final void initializeKeyboardActions() {
     final Control selectEditPanelControl =
             Controls.control(this::selectEditPanel, "EntityPanel.selectEditPanel");
     final Control selectInputComponentControl =
@@ -1183,7 +1204,49 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  private void initializeEditControlPanel() {
+  protected final void initializeResizing() {
+    addKeyEvent(this, VK_UP, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
+    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
+    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
+    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
+    if (containsEditPanel()) {
+      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
+      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
+      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
+      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
+    }
+  }
+
+  protected final void initializeNavigation() {
+    addKeyEvent(this, VK_UP, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, UP));
+    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, DOWN));
+    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, RIGHT));
+    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, LEFT));
+    if (containsEditPanel()) {
+      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, UP));
+      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, DOWN));
+      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, RIGHT));
+      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, LEFT));
+    }
+  }
+
+  protected void initializeEditControlPanel() {
     editPanel.initializePanel();
     editControlPanel.setMinimumSize(new Dimension(0, 0));
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
@@ -1281,48 +1344,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     return tabbedPane;
-  }
-
-  private void initializeResizing() {
-    addKeyEvent(this, VK_UP, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
-    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
-    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
-    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
-    if (containsEditPanel()) {
-      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
-      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
-      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
-      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
-    }
-  }
-
-  private void initializeNavigation() {
-    addKeyEvent(this, VK_UP, ALT_DOWN_MASK + CTRL_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, UP));
-    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + CTRL_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, DOWN));
-    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, RIGHT));
-    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, LEFT));
-    if (containsEditPanel()) {
-      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + CTRL_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, UP));
-      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK + CTRL_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, DOWN));
-      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, RIGHT));
-      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, LEFT));
-    }
   }
 
   /**

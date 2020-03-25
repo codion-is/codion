@@ -5770,3 +5770,6 @@
   ColumnConditionPanel, includeToggleEnabledButton parameter removed, always true
   OracleDatabase.setUseLegacySid() added
   WhereCondition.getEntityCondition() removed and related refactoring
+  EntityPanel.requestInitialFocus() now relies on editPanel.isShowing()
+  EntityPanel.useKeyboardNavigation property added
+  EntityPanel.initializeKeyboardActions(), initializeResizing() and initializeNavigation() now protected instead of private
