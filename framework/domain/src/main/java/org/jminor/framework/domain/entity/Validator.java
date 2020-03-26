@@ -29,47 +29,47 @@ public interface Validator extends Serializable {
 
   /**
    * Returns true if the given entity contains only valid values.
-   * @param definition the definition of the entity to validate
    * @param entity the entity
+   * @param definition the definition of the entity to validate
    * @return true if the given entity contains only valid values
    */
-  boolean isValid(EntityDefinition definition, Entity entity);
+  boolean isValid(Entity entity, EntityDefinition definition);
 
   /**
    * Checks if the values in the given entity are valid
-   * @param definition the definition of the entity to validate
    * @param entity the entity
+   * @param definition the definition of the entity to validate
    * @throws ValidationException in case of an invalid value
    */
-  void validate(EntityDefinition definition, Entity entity) throws ValidationException;
+  void validate(Entity entity, EntityDefinition definition) throws ValidationException;
 
   /**
    * Checks if the value associated with the give property is valid, throws a ValidationException if not
-   * @param definition the definition of the entity to validate
    * @param entity the entity to validate
+   * @param definition the definition of the entity to validate
    * @param property the property the value is associated with
    * @throws ValidationException if the given value is not valid for the given property
    */
-  void validate(EntityDefinition definition, Entity entity, Property property) throws ValidationException;
+  void validate(Entity entity, EntityDefinition definition, Property property) throws ValidationException;
 
   /**
    * Validates the given entities, assumes they are all of the same type.
-   * @param definition the definition of the entity to validate
    * @param entities the entities to validate
+   * @param definition the definition of the entity to validate
    * @throws ValidationException in case the validation fails
    */
-  void validate(EntityDefinition definition, Collection<Entity> entities) throws ValidationException;
+  void validate(Collection<Entity> entities, EntityDefinition definition) throws ValidationException;
 
   /**
    * Performs a null validation on the given property
-   * @param definition the definition of the entity to validate
    * @param entity the entity
+   * @param definition the definition of the entity to validate
    * @param property the property
    * @throws NullValidationException in case the property value is null and the property is not nullable
    * @see Property.Builder#nullable(boolean)
    * @see Property#isNullable()
    */
-  void performNullValidation(EntityDefinition definition, Entity entity, Property property) throws NullValidationException;
+  void performNullValidation(Entity entity, EntityDefinition definition, Property property) throws NullValidationException;
 
   /**
    * Performs a range validation on the given number based property

@@ -410,7 +410,7 @@ public class DomainTest {
 
     final DefaultEntityValidator validator = new DefaultEntityValidator();
     try {
-      validator.validate(definition, emp);
+      validator.validate(emp, definition);
       fail();
     }
     catch (final ValidationException e) {
@@ -419,14 +419,14 @@ public class DomainTest {
     }
     emp.put(TestDomain.EMP_DEPARTMENT, 1);
     try {
-      validator.validate(definition, emp);
+      validator.validate(emp, definition);
     }
     catch (final ValidationException e) {
       fail();
     }
     emp.put(TestDomain.EMP_SALARY, null);
     try {
-      validator.validate(definition, emp);
+      validator.validate(emp, definition);
       fail();
     }
     catch (final ValidationException e) {
@@ -444,9 +444,9 @@ public class DomainTest {
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
     final DefaultEntityValidator validator = new DefaultEntityValidator();
-    assertDoesNotThrow(() -> validator.validate(definition, singletonList(emp)));
+    assertDoesNotThrow(() -> validator.validate(singletonList(emp), definition));
     emp.put(TestDomain.EMP_NAME, "LooooongName");
-    assertThrows(LengthValidationException.class, () -> validator.validate(definition, emp));
+    assertThrows(LengthValidationException.class, () -> validator.validate(emp, definition));
   }
 
   @Test
@@ -459,11 +459,11 @@ public class DomainTest {
     emp.put(TestDomain.EMP_SALARY, 1200d);
     emp.put(TestDomain.EMP_COMMISSION, 300d);
     final DefaultEntityValidator validator = new DefaultEntityValidator();
-    assertDoesNotThrow(() -> validator.validate(definition, singletonList(emp)));
+    assertDoesNotThrow(() -> validator.validate(singletonList(emp), definition));
     emp.put(TestDomain.EMP_COMMISSION, 10d);
-    assertThrows(RangeValidationException.class, () -> validator.validate(definition, emp));
+    assertThrows(RangeValidationException.class, () -> validator.validate(emp, definition));
     emp.put(TestDomain.EMP_COMMISSION, 2100d);
-    assertThrows(RangeValidationException.class, () -> validator.validate(definition, emp));
+    assertThrows(RangeValidationException.class, () -> validator.validate(emp, definition));
   }
 
   @Test

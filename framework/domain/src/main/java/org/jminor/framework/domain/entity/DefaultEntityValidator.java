@@ -60,9 +60,9 @@ public class DefaultEntityValidator implements Validator {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isValid(final EntityDefinition definition, final Entity entity) {
+  public boolean isValid(final Entity entity, final EntityDefinition definition) {
     try {
-      validate(definition, entity);
+      validate(entity, definition);
       return true;
     }
     catch (final ValidationException e) {
@@ -78,28 +78,28 @@ public class DefaultEntityValidator implements Validator {
 
   /** {@inheritDoc} */
   @Override
-  public final void validate(final EntityDefinition definition, final Collection<Entity> entities) throws ValidationException {
+  public final void validate(final Collection<Entity> entities, final EntityDefinition definition) throws ValidationException {
     for (final Entity entity : entities) {
-      validate(definition, entity);
+      validate(entity, definition);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public void validate(final EntityDefinition definition, final Entity entity) throws ValidationException {
+  public void validate(final Entity entity, final EntityDefinition definition) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     for (final Property property : definition.getProperties()) {
-      validate(definition, entity, property);
+      validate(entity, definition, property);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public void validate(final EntityDefinition definition, final Entity entity, final Property property) throws ValidationException {
+  public void validate(final Entity entity, final EntityDefinition definition, final Property property) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (performNullValidation && !isForeignKeyProperty(property)) {
-      performNullValidation(definition, entity, property);
+      performNullValidation(entity, definition, property);
     }
     if (property.isNumerical()) {
       performRangeValidation(entity, property);
@@ -131,7 +131,7 @@ public class DefaultEntityValidator implements Validator {
 
   /** {@inheritDoc} */
   @Override
-  public final void performNullValidation(final EntityDefinition definition, final Entity entity,
+  public final void performNullValidation(final Entity entity, final EntityDefinition definition,
                                           final Property property) throws NullValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);

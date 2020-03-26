@@ -87,7 +87,7 @@ final class EntityPopupMenu extends JPopupMenu {
       for (final ForeignKeyProperty property : fkProperties) {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         final boolean isLoaded = entity.isLoaded(property.getPropertyId());
-        final boolean valid = isValid(validator, definition, entity, property);
+        final boolean valid = isValid(validator, entity, definition, property);
         final boolean modified = entity.isModified(property);
         final String toolTipText = getForeignKeyColumnNames(property);
         if (!fkValueNull) {
@@ -140,7 +140,7 @@ final class EntityPopupMenu extends JPopupMenu {
     final EntityDefinition definition = domain.getDefinition(entity.getEntityId());
     final Validator validator = definition.getValidator();
     for (final Property property : properties) {
-      final boolean valid = isValid(validator, definition, entity, property);
+      final boolean valid = isValid(validator, entity, definition, property);
       final boolean modified = entity.isModified(property);
       final boolean isForeignKeyProperty = property instanceof ColumnProperty
               && ((ColumnProperty) property).isForeignKeyProperty();
@@ -197,9 +197,9 @@ final class EntityPopupMenu extends JPopupMenu {
     return " | " + (originalValue == null ? "<null>" : originalValue.toString());
   }
 
-  private static boolean isValid(final Validator validator, final EntityDefinition definition, final Entity entity, final Property property) {
+  private static boolean isValid(final Validator validator, final Entity entity, final EntityDefinition definition, final Property property) {
     try {
-      validator.validate(definition, entity, property);
+      validator.validate(entity, definition, property);
       return true;
     }
     catch (final ValidationException e) {
