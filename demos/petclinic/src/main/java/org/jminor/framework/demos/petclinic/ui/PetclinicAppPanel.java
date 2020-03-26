@@ -56,21 +56,25 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
   @Override
   protected void setupEntityPanelProviders() {
     EntityPanelProvider petTypePanelProvider =
-            new EntityPanelProvider(T_PET_TYPE, "Pet types")
-                    .setEditPanelClass(PetTypeEditPanel.class);
+            new EntityPanelProvider(T_PET_TYPE)
+                    .setEditPanelClass(PetTypeEditPanel.class)
+                    .setCaption("Pet types");
     EntityPanelProvider specialtiesPanelProvider =
-            new EntityPanelProvider(T_SPECIALTY, "Specialties")
-                    .setEditPanelClass(SpecialtyEditPanel.class);
+            new EntityPanelProvider(T_SPECIALTY)
+                    .setEditPanelClass(SpecialtyEditPanel.class)
+                    .setCaption("Specialties");
 
     EntityPanelProvider vetsPanelProvider =
-            new EntityPanelProvider(T_VET, "Vets")
-                    .setEditPanelClass(VetEditPanel.class);
+            new EntityPanelProvider(T_VET)
+                    .setEditPanelClass(VetEditPanel.class)
+                    .setCaption("Vets");
     SwingEntityModelProvider vetSpecialtyModelProvider =
             new SwingEntityModelProvider(T_VET_SPECIALTY)
                     .setEditModelClass(VetSpecialtyEditModel.class);
     EntityPanelProvider vetSpecialtiesPanelProvider =
-            new EntityPanelProvider(vetSpecialtyModelProvider, "Specialties")
-                    .setEditPanelClass(VetSpecialtyEditPanel.class);
+            new EntityPanelProvider(vetSpecialtyModelProvider)
+                    .setEditPanelClass(VetSpecialtyEditPanel.class)
+                    .setCaption("Specialties");
     vetsPanelProvider.addDetailPanelProvider(vetSpecialtiesPanelProvider);
 
     addSupportPanelProviders(petTypePanelProvider, specialtiesPanelProvider, vetsPanelProvider);

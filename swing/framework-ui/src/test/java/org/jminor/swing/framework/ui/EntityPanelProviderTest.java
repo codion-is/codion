@@ -33,8 +33,10 @@ public class EntityPanelProviderTest {
     final SwingEntityModel customerModel = customerModelProvider.createModel(CONNECTION_PROVIDER);
 
     final String customerCaption = "A department caption";
-    final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(TestDomain.T_DEPARTMENT, customerCaption);
-    final EntityPanelProvider invoicePanelProvider = new EntityPanelProvider(TestDomain.T_EMP, "empCaption");
+    final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(TestDomain.T_DEPARTMENT)
+            .setCaption(customerCaption);
+    final EntityPanelProvider invoicePanelProvider = new EntityPanelProvider(TestDomain.T_EMP)
+            .setCaption("empCaption");
 
     customerPanelProvider.addDetailPanelProvider(invoicePanelProvider);
 

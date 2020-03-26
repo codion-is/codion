@@ -23,7 +23,7 @@ public class EntityPanelProvider {
 
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
 
-  private final String caption;
+  private String caption;
   private boolean refreshOnInit = true;
   private EntityPanel.PanelState detailPanelState = EntityPanel.PanelState.EMBEDDED;
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
@@ -42,28 +42,18 @@ public class EntityPanelProvider {
    * @param entityId the entity ID
    */
   public EntityPanelProvider(final String entityId) {
-    this(entityId, null);
-  }
-
-  /**
-   * Instantiates a new EntityPanelProvider for the given entity type
-   * @param entityId the entity ID
-   * @param caption the panel caption
-   */
-  public EntityPanelProvider(final String entityId, final String caption) {
-    this(entityId, caption, SwingEntityModel.class, EntityPanel.class);
+    this(entityId, SwingEntityModel.class, EntityPanel.class);
   }
 
   /**
    * Instantiates a new EntityPanelProvider
    * @param entityId the entityId
-   * @param caption the caption to use when this EntityPanelProvider is shown in f.x. menus
    * @param entityModelClass the Class of the EntityModel
    * @param entityPanelClass the Class of the EntityPanel
    */
-  public EntityPanelProvider(final String entityId, final String caption, final Class<? extends SwingEntityModel> entityModelClass,
+  public EntityPanelProvider(final String entityId, final Class<? extends SwingEntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
-    this(new SwingEntityModelProvider(entityId, entityModelClass), caption);
+    this(new SwingEntityModelProvider(entityId, entityModelClass));
     setPanelClass(entityPanelClass);
   }
 
@@ -72,17 +62,7 @@ public class EntityPanelProvider {
    * @param modelProvider the EntityModelProvider to base this panel provider on
    */
   public EntityPanelProvider(final SwingEntityModelProvider modelProvider) {
-    this(modelProvider, null);
-  }
-
-  /**
-   * Instantiates a new EntityPanelProvider
-   * @param modelProvider the EntityModelProvider to base this panel provider on
-   * @param caption the panel caption to use
-   */
-  public EntityPanelProvider(final SwingEntityModelProvider modelProvider, final String caption) {
     this.modelProvider = requireNonNull(modelProvider, "modelProvider");
-    this.caption = caption;
   }
 
   /**
@@ -97,6 +77,15 @@ public class EntityPanelProvider {
    */
   public final SwingEntityModelProvider getModelProvider() {
     return modelProvider;
+  }
+
+  /**
+   * @param caption the panel caption
+   * @return this EntityPanelProvider instance
+   */
+  public final EntityPanelProvider setCaption(final String caption) {
+    this.caption = caption;
+    return this;
   }
 
   /**
@@ -358,14 +347,14 @@ public class EntityPanelProvider {
       if (panelClass.equals(EntityPanel.class)) {
         final EntityTablePanel tablePanel = entityModel.containsTableModel() ? initializeTablePanel(entityModel.getTableModel()) : null;
         final EntityEditPanel editPanel = editPanelClass == null ? null : initializeEditPanel(entityModel.getEditModel());
-        final String panelCaption = caption == null ? entityModel.getConnectionProvider()
-                .getDomain().getDefinition(entityModel.getEntityId()).getCaption() : caption;
-        entityPanel = panelClass.getConstructor(SwingEntityModel.class, String.class, EntityEditPanel.class, EntityTablePanel.class)
-                .newInstance(entityModel, panelCaption, editPanel, tablePanel);
+        entityPanel = panelClass.getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
+                .newInstance(entityModel, editPanel, tablePanel);
       }
       else {
         entityPanel = panelClass.getConstructor(SwingEntityModel.class).newInstance(entityModel);
       }
+      entityPanel.setCaption(caption == null ? entityModel.getConnectionProvider()
+              .getDomain().getDefinition(entityModel.getEntityId()).getCaption() : caption);
 
       return entityPanel;
     }
