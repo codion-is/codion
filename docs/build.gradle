@@ -24,7 +24,7 @@ asciidoctor {
         include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc'
     }
     attributes 'jminor-version': documentationVersion, 'jminor-jdk': project.jdk,
-            revnumber: documentationVersion, toc: 'right', sectnums: 4, prewrap: false,
+            revnumber: documentationVersion, toc: 'left', sectnums: 4, prewrap: false,
             experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1'
     asciidoctorj {
         version = '2.2.0'
