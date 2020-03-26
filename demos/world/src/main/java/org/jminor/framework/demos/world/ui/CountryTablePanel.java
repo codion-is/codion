@@ -29,7 +29,7 @@ public final class CountryTablePanel extends EntityTablePanel {
     languageChartPanel.getChart().removeLegend();
     pieChartPane.addTab("Cities", cityChartPanel);
     pieChartPane.addTab("Languages", languageChartPanel);
-    getTable().setDoubleClickAction(Controls.control(this::displayCityPieChart,
+    getTable().setDoubleClickAction(Controls.control(this::displayChartPanel,
             tableModel.getSelectionModel().getSelectionNotEmptyObserver()));
   }
 
@@ -41,7 +41,7 @@ public final class CountryTablePanel extends EntityTablePanel {
     return languageChartPanel;
   }
 
-  private void displayCityPieChart() throws DatabaseException {
+  private void displayChartPanel() throws DatabaseException {
     if (!pieChartPane.isShowing()) {
       Dialogs.displayInDialog(this, pieChartPane, Modal.NO);
     }

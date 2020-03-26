@@ -294,7 +294,7 @@ public final class World extends Domain {
       Double percentage = (Double) sourceValues.get(COUNTRYLANGUAGE_PERCENTAGE);
       Entity country = (Entity) sourceValues.get(COUNTRYLANGUAGE_COUNTRY_FK);
       if (notNull(percentage, country) && country.isNotNull(COUNTRY_POPULATION)) {
-        Double.valueOf(country.getInteger(COUNTRY_POPULATION) * (percentage / 100)).intValue();
+        return Double.valueOf(country.getInteger(COUNTRY_POPULATION) * (percentage / 100)).intValue();
       }
 
       return null;
