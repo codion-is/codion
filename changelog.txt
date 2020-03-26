@@ -5774,3 +5774,4 @@
   EntityPanel.useKeyboardNavigation property added
   EntityPanel.initializeKeyboardActions(), initializeResizing() and initializeNavigation() now protected instead of private
   EntityPanel, caption no longer final, removed from constructor, setter added
+  EntityPanelProvider, caption no longer final, removed from constructor, setter added
