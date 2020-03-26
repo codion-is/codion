@@ -4,6 +4,8 @@
 package org.jminor.framework.demos.world.model;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.world.domain.World;
 import org.jminor.framework.domain.entity.Entity;
@@ -17,9 +19,11 @@ import java.util.List;
 public final class CountryTableModel extends SwingEntityTableModel {
 
   private final DefaultPieDataset cityPieDataset = new DefaultPieDataset();
+  private final DefaultPieDataset languagePieDataset = new DefaultPieDataset();
 
   public CountryTableModel(EntityConnectionProvider connectionProvider) {
     super(World.T_COUNTRY, connectionProvider);
+    configureConditionModels();
     bindEvents();
   }
 
@@ -27,12 +31,27 @@ public final class CountryTableModel extends SwingEntityTableModel {
     return cityPieDataset;
   }
 
-  private void bindEvents() {
-    getSelectionModel().addSelectedItemListener(this::updateCityPieDataset);
+  public DefaultPieDataset getLanguagePieDataset() {
+    return languagePieDataset;
   }
 
-  private void updateCityPieDataset(final Entity selectedCountry) {
+  private void configureConditionModels() {
+    getConditionModel().getPropertyConditionModels().stream().filter(model ->
+            model.getColumnIdentifier().isString()).forEach(this::configureConditionModel);
+  }
+
+  private void configureConditionModel(ColumnConditionModel model) {
+    model.setCaseSensitive(false);
+    model.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
+  }
+
+  private void bindEvents() {
+    getSelectionModel().addSelectedItemListener(this::updateChartDatasets);
+  }
+
+  private void updateChartDatasets(final Entity selectedCountry) {
     cityPieDataset.clear();
+    languagePieDataset.clear();
     try {
       if (selectedCountry != null) {
         List<Entity> cities = getConnectionProvider()
@@ -40,6 +59,12 @@ public final class CountryTableModel extends SwingEntityTableModel {
         cities.forEach(city -> cityPieDataset.setValue(
                 city.getString(World.CITY_NAME),
                 city.getInteger(World.CITY_POPULATION)));
+
+        List<Entity> languages = getConnectionProvider()
+                .getConnection().select(World.T_COUNTRYLANGUAGE, World.COUNTRYLANGUAGE_COUNTRY_FK, selectedCountry);
+        languages.forEach(language -> languagePieDataset.setValue(
+                language.getString(World.COUNTRYLANGUAGE_LANGUAGE),
+                language.getInteger(World.COUNTRYLANGUAGE_NO_OF_SPEAKERS)));
       }
     }
     catch (DatabaseException e) {

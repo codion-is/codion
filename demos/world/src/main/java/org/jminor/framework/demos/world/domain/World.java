@@ -53,6 +53,8 @@ public final class World extends Domain {
   public static final String COUNTRY_CAPITAL_FK = "capital_fk";
   public static final String COUNTRY_CODE2 = "code2";
   public static final String COUNTRY_CAPITAL_POPULATION = "capital_population";
+  public static final String COUNTRY_NO_OF_CITIES = "no_of_cities";
+  public static final String COUNTRY_NO_OF_LANGUAGES = "no_of_languages";
   public static final String COUNTRY_FLAG = "flag";
 
   public static final String T_COUNTRYLANGUAGE = "world.countrylanguage";
@@ -182,6 +184,12 @@ public final class World extends Domain {
                     getDefinition(T_CITY).getProperty(CITY_POPULATION), "Capital pop.")
                     .useNumberFormatGrouping(true),
             // end::denormalizedViewProperty[]
+            // tag::subqueryProperty[]
+            subqueryProperty(COUNTRY_NO_OF_CITIES, Types.INTEGER, "No. of cities",
+                    "select count(*) from world.city where countrycode = code"),
+            // end::subqueryProperty[]
+            subqueryProperty(COUNTRY_NO_OF_LANGUAGES, Types.INTEGER, "No. of languages",
+                    "select count(*) from world.countrylanguage where countrycode = code"),
             // tag::blobProperty[]
             blobProperty(COUNTRY_FLAG, "Flag")
                     .eagerlyLoaded(true),
@@ -286,7 +294,7 @@ public final class World extends Domain {
       Double percentage = (Double) sourceValues.get(COUNTRYLANGUAGE_PERCENTAGE);
       Entity country = (Entity) sourceValues.get(COUNTRYLANGUAGE_COUNTRY_FK);
       if (notNull(percentage, country) && country.isNotNull(COUNTRY_POPULATION)) {
-        return country.getInteger(COUNTRY_POPULATION) * (percentage / 100);
+        Double.valueOf(country.getInteger(COUNTRY_POPULATION) * (percentage / 100)).intValue();
       }
 
       return null;
