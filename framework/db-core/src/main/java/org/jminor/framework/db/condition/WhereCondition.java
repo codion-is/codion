@@ -13,11 +13,6 @@ import java.util.List;
 public interface WhereCondition {
 
   /**
-   * @return the EntityCondition
-   */
-  EntityCondition getEntityCondition();
-
-  /**
    * @return the values
    */
   List getValues();

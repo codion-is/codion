@@ -78,7 +78,7 @@ public final class TestDomain extends Domain {
                     DEPARTMENT_LOCATION).preferredColumnWidth(100))
             .stringProvider(new StringProvider(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
-            .conditionProvider(EMP_MGR_CONDITION_ID, (propetyIds, values) -> "mgr > ?")
+            .conditionProvider(EMP_MGR_CONDITION_ID, (propertyIds, values) -> "mgr > ?")
             .searchPropertyIds(EMP_NAME, EMP_JOB)
             .caption("Employee");
   }

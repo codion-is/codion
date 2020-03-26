@@ -641,13 +641,13 @@ public class DomainTest {
   @Test
   public void conditionProvider() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("nullConditionProvider1",
-            Properties.primaryKeyProperty("id")).conditionProvider(null, (propetyIds, values) -> null));
+            Properties.primaryKeyProperty("id")).conditionProvider(null, (propertyIds, values) -> null));
     assertThrows(NullPointerException.class, () -> domain.define("nullConditionProvider2",
             Properties.primaryKeyProperty("id")).conditionProvider("id", null));
     assertThrows(IllegalStateException.class, () -> domain.define("nullConditionProvider3",
             Properties.primaryKeyProperty("id"))
-            .conditionProvider("id", (propetyIds, values) -> null)
-            .conditionProvider("id", (propetyIds, values) -> null));
+            .conditionProvider("id", (propertyIds, values) -> null)
+            .conditionProvider("id", (propertyIds, values) -> null));
   }
 
   @Test

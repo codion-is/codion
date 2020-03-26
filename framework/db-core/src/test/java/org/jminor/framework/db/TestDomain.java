@@ -27,8 +27,6 @@ public final class TestDomain extends Domain {
     registerDomain();
   }
 
-
-
   public static final String T_SUPER = "db.super_entity";
   public static final String SUPER_ID = "id";
 
@@ -137,14 +135,14 @@ public final class TestDomain extends Domain {
             .searchPropertyIds(DEPARTMENT_NAME)
             .orderBy(orderBy().ascending(DEPARTMENT_NAME))
             .stringProvider(new StringProvider(DEPARTMENT_NAME))
-            .conditionProvider(DEPARTMENT_CONDITION_ID, (propetyIds, values) -> {
+            .conditionProvider(DEPARTMENT_CONDITION_ID, (propertyIds, values) -> {
               final StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .conditionProvider(DEPARTMENT_NAME_NOT_NULL_CONDITION_ID, (propetyIds, values) -> "department name is not null")
+            .conditionProvider(DEPARTMENT_NAME_NOT_NULL_CONDITION_ID, (propertyIds, values) -> "department name is not null")
             .caption("Department");
   }
 

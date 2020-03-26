@@ -254,10 +254,8 @@ public final class Conditions {
    * @param entityDefinition the definition
    * @return a WhereCondition
    */
-  public static WhereCondition whereCondition(final EntityCondition entityCondition,
-                                               final EntityDefinition entityDefinition) {
-    return new DefaultWhereCondition(entityCondition,
-            expand(entityCondition.getCondition(), entityDefinition), entityDefinition);
+  public static WhereCondition whereCondition(final EntityCondition entityCondition, final EntityDefinition entityDefinition) {
+    return new DefaultWhereCondition(expand(entityCondition.getCondition(), entityDefinition), entityDefinition);
   }
 
   /**

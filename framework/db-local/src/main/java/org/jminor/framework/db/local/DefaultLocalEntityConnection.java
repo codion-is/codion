@@ -86,7 +86,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<String, List<ColumnProperty>> insertablePropertiesCache = new HashMap<>();
   private final Map<String, List<ColumnProperty>> updatablePropertiesCache = new HashMap<>();
   private final Map<String, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
-  private final Map<String, String[]> primaryKeyAndWritableColumnPropertyIdCache = new HashMap<>();
+  private final Map<String, String[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
   private final Map<String, String> allColumnsClauseCache = new HashMap<>();
 
   private boolean optimisticLockingEnabled = true;
@@ -303,8 +303,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
             }
 
-            final WhereCondition updateCondition =
-                    whereCondition(entityCondition(entity.getOriginalKey()), entityDefinition);
+            final WhereCondition updateCondition = whereCondition(entityCondition(entity.getOriginalKey()), entityDefinition);
             updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, updateCondition.getWhereClause());
             statement = prepareStatement(updateQuery);
             statementProperties.addAll(updateCondition.getColumnProperties());
@@ -600,7 +599,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
     final String subQuery = selectQuery(Queries.columnsClause(entityDefinition.getPrimaryKeyProperties()),
-            whereCondition, entityDefinition, connection.getDatabase());
+            condition, whereCondition, entityDefinition, connection.getDatabase());
     final String selectQuery = selectQuery("(" + subQuery + ")", "count(*)");
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -1004,7 +1003,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.getSelectableColumnProperties(selectCondition.getSelectPropertyIds());
     try {
       selectQuery = selectQuery(columnsClause(entityDefinition.getEntityId(),
-              selectCondition.getSelectPropertyIds(), propertiesToSelect), whereCondition,
+              selectCondition.getSelectPropertyIds(), propertiesToSelect), selectCondition, whereCondition,
               entityDefinition, connection.getDatabase());
       statement = prepareStatement(selectQuery);
       resultSet = executeStatement(statement, selectQuery, whereCondition);
@@ -1146,7 +1145,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private String[] getPrimaryKeyAndWritableColumnPropertyIds(final String entityId) {
-    return primaryKeyAndWritableColumnPropertyIdCache.computeIfAbsent(entityId, e -> {
+    return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityId, e -> {
       final EntityDefinition entityDefinition = getEntityDefinition(entityId);
       final List<ColumnProperty> writableAndPrimaryKeyProperties =
               new ArrayList<>(entityDefinition.getWritableColumnProperties(true, true));

@@ -68,5 +68,10 @@ include::{dir-source}/org/jminor/framework/demos/world/ui/LookupTablePanel.java[
 
 [source,java]
 ----
+include::{dir-source}/org/jminor/framework/demos/world/ui/CustomCountryPanel.java[tag=**]
+----
+
+[source,java]
+----
 include::{dir-source}/org/jminor/framework/demos/world/ui/WorldAppPanel.java[tag=**]
 ----
