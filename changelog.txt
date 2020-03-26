@@ -5773,3 +5773,4 @@
   EntityPanel.requestInitialFocus() now relies on editPanel.isShowing()
   EntityPanel.useKeyboardNavigation property added
   EntityPanel.initializeKeyboardActions(), initializeResizing() and initializeNavigation() now protected instead of private
+  EntityPanel, caption no longer final, removed from constructor, setter added

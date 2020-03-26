@@ -184,11 +184,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private final SwingEntityModel entityModel;
 
   /**
-   * The caption to use when presenting this entity panel
-   */
-  private final String caption;
-
-  /**
    * A List containing the detail panels, if any
    */
   private final List<EntityPanel> detailEntityPanels = new ArrayList<>();
@@ -207,6 +202,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * The base edit panel which contains the controls required for editing a entity
    */
   private final JPanel editControlPanel = new JPanel(Layouts.createBorderLayout());
+
+  /**
+   * The caption to use when presenting this entity panel
+   */
+  private String caption;
 
   /**
    * The horizontal split pane, which is used in case this entity panel has detail panels.
@@ -305,21 +305,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
-   * The default caption of the underlying entity is used.
    * @param entityModel the EntityModel
    */
   public EntityPanel(final SwingEntityModel entityModel) {
-    this(entityModel, requireNonNull(entityModel, ENTITY_MODEL_PARAM)
-            .getEditModel().getEntityDefinition().getCaption());
-  }
-
-  /**
-   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
-   * @param entityModel the EntityModel
-   * @param caption the caption to use when presenting this entity panel
-   */
-  public EntityPanel(final SwingEntityModel entityModel, final String caption) {
-    this(entityModel, caption, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
+    this(entityModel, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
   }
 
   /**
@@ -328,8 +317,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel) {
-    this(entityModel, requireNonNull(entityModel, ENTITY_MODEL_PARAM)
-            .getEditModel().getEntityDefinition().getCaption(), editPanel);
+    this(entityModel, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
   }
 
   /**
@@ -338,28 +326,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityTablePanel tablePanel) {
-    this(entityModel, requireNonNull(entityModel, ENTITY_MODEL_PARAM)
-            .getEditModel().getEntityDefinition().getCaption(), tablePanel);
-  }
-
-  /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
-   * @param entityModel the EntityModel
-   * @param caption the caption to use when presenting this entity panel
-   * @param editPanel the edit panel
-   */
-  public EntityPanel(final SwingEntityModel entityModel, final String caption, final EntityEditPanel editPanel) {
-    this(entityModel, caption, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
-  }
-
-  /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
-   * @param entityModel the EntityModel
-   * @param caption the caption to use when presenting this entity panel
-   * @param tablePanel the table panel
-   */
-  public EntityPanel(final SwingEntityModel entityModel, final String caption, final EntityTablePanel tablePanel) {
-    this(entityModel, caption, null, tablePanel);
+    this(entityModel, null, tablePanel);
   }
 
   /**
@@ -369,22 +336,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel, final EntityTablePanel tablePanel) {
-    this(entityModel, requireNonNull(entityModel, ENTITY_MODEL_PARAM)
-            .getEditModel().getEntityDefinition().getCaption(), editPanel, tablePanel);
-  }
-
-  /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
-   * @param entityModel the EntityModel
-   * @param caption the caption to use when presenting this entity panel
-   * @param editPanel the edit panel
-   * @param tablePanel the table panel
-   */
-  public EntityPanel(final SwingEntityModel entityModel, final String caption, final EntityEditPanel editPanel,
-                     final EntityTablePanel tablePanel) {
     requireNonNull(entityModel, ENTITY_MODEL_PARAM);
     this.entityModel = entityModel;
-    this.caption = caption == null ? entityModel.getEditModel().getEntityDefinition().getCaption() : caption;
+    this.caption = entityModel.getEditModel().getEntityDefinition().getCaption();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
   }
@@ -614,6 +568,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + caption;
+  }
+
+  /**
+   * Sets the caption to use when this panel is displayed.
+   * @param caption the caption
+   */
+  public final void setCaption(final String caption) {
+    this.caption = caption;
   }
 
   /**
