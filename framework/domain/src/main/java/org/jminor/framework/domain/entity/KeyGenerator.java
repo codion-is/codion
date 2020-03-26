@@ -15,7 +15,7 @@ import java.sql.Statement;
  * key value on insert, i.e. with a table trigger or identity columns.
  * Implementations should override either {@code beforeInsert()} or {@code afterInsert()}.
  * If {@link #isInserted()} returns true the primary key value should be included in the
- * insert statement, meaning that {@link #beforeInsert(EntityDefinition, Entity, DatabaseConnection)} should be used
+ * insert statement, meaning that {@link #beforeInsert(Entity, EntityDefinition, DatabaseConnection)} should be used
  * to populate the entity's primary key values.
  * If {@link #isInserted()} returns false then it is assumed that the database generates the primary key
  * values automatically, meaning that {@code afterInsert()} should be used to fetch the generated primary
@@ -36,30 +36,30 @@ public interface KeyGenerator {
    * Prepares the given entity for insert, that is, generates and fetches any required primary key values
    * and populates the entity's primary key.
    * The default implementation does nothing, override to implement.
-   * @param definition the definition of the entity about to be inserted
    * @param entity the entity about to be inserted
+   * @param definition the definition of the entity about to be inserted
    * @param connection the connection to use
    * @throws SQLException in case of an exception
    */
-  default void beforeInsert(final EntityDefinition definition, final Entity entity,
+  default void beforeInsert(final Entity entity, final EntityDefinition definition,
                             final DatabaseConnection connection) throws SQLException {/*for overriding*/}
 
   /**
    * Prepares the given entity after insert, that is, fetches automatically generated primary
    * key values and populates the entity's primary key.
    * The default implementation does nothing, override to implement.
-   * @param definition the definition of the inserted entity
    * @param entity the inserted entity
+   * @param definition the definition of the inserted entity
    * @param connection the connection to use
    * @param insertStatement the insert statement
    * @throws SQLException in case of an exception
    */
-  default void afterInsert(final EntityDefinition definition, final Entity entity, final DatabaseConnection connection,
+  default void afterInsert(final Entity entity, final EntityDefinition definition, final DatabaseConnection connection,
                            final Statement insertStatement) throws SQLException {/*for overriding*/}
 
   /**
    * Specifies whether the insert statement should return the primary key column values via the resulting
-   * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(EntityDefinition, Entity, DatabaseConnection, Statement)}.
+   * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(Entity, EntityDefinition, DatabaseConnection, Statement)}.
    * The default implementation returns false.
    * @return true if the primary key column values should be returned via the insert statement resultSet
    * @see Statement#getGeneratedKeys()

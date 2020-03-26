@@ -306,8 +306,8 @@ public final class World extends Domain {
   private static final class CityValidator extends DefaultEntityValidator {
 
     @Override
-    public void validate(EntityDefinition cityDefinition, Entity city) throws ValidationException {
-      super.validate(cityDefinition, city);
+    public void validate(Entity city, EntityDefinition cityDefinition) throws ValidationException {
+      super.validate(city, cityDefinition);
       //after a call to super.validate() property values that are not nullable
       //(such as country and population) are guaranteed to be non-null
       Entity country = city.getForeignKey(CITY_COUNTRY_FK);

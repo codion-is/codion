@@ -59,7 +59,7 @@ public final class Example {
                       .nullable(false).maximumLength(40))
               .keyGenerator(new KeyGenerator() {
                 @Override
-                public void beforeInsert(EntityDefinition definition, Entity entity,
+                public void beforeInsert(Entity entity, EntityDefinition definition,
                                          DatabaseConnection connection) throws SQLException {
                   entity.put(CUSTOMER_ID, randomUUID().toString());
                 }

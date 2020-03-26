@@ -120,7 +120,7 @@ public final class Store extends Domain {
   private static final class UUIDKeyGenerator implements KeyGenerator {
 
     @Override
-    public void beforeInsert(final EntityDefinition definition, final Entity entity,
+    public void beforeInsert(final Entity entity, final EntityDefinition definition,
                              final DatabaseConnection connection)
             throws SQLException {
       entity.put(CUSTOMER_ID, UUID.randomUUID().toString());

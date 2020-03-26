@@ -136,7 +136,7 @@ public final class TestDomain extends Domain {
   private void uuidTestDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
       @Override
-      public void afterInsert(final EntityDefinition definition, final Entity entity,
+      public void afterInsert(final Entity entity, final EntityDefinition definition,
                               final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
         final ResultSet generatedKeys = insertStatement.getGeneratedKeys();
         if (generatedKeys.next()) {
@@ -161,7 +161,7 @@ public final class TestDomain extends Domain {
   private void uuidTestNoDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
       @Override
-      public void beforeInsert(final EntityDefinition definition, final Entity entity,
+      public void beforeInsert(final Entity entity, final EntityDefinition definition,
                                final DatabaseConnection connection) throws SQLException {
         entity.put(UUID_TEST_NO_DEFAULT_ID, UUID.randomUUID());
       }
