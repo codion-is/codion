@@ -4,6 +4,4 @@ dependencies {
 
     api project(':jminor-swing-common-tools')
     implementation project(':jminor-swing-common-ui')
-
-    implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 }
