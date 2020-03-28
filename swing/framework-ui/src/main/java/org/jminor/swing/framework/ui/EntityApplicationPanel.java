@@ -49,6 +49,8 @@ import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1026,19 +1028,52 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected List<EntityPanel> initializeEntityPanels(final M applicationModel) {
     final List<EntityPanel> panels = new ArrayList<>();
-    for (final EntityPanelBuilder provider : entityPanelBuilders) {
+    for (final EntityPanelBuilder panelBuilder : entityPanelBuilders) {
+      final SwingEntityModel entityModel = initializeEntityModel(applicationModel, panelBuilder.getModelBuilder());
       final EntityPanel entityPanel;
-      if (applicationModel.containsEntityModel(provider.getEntityId())) {
-        entityPanel = provider.createPanel(applicationModel.getEntityModel(provider.getEntityId()));
+      if (applicationModel.containsEntityModel(panelBuilder.getEntityId())) {
+        entityPanel = panelBuilder.createPanel(entityModel);
       }
       else {
-        entityPanel = provider.createPanel(applicationModel.getConnectionProvider());
+        entityPanel = panelBuilder.createPanel(applicationModel.getConnectionProvider());
         applicationModel.addEntityModel(entityPanel.getModel());
       }
       panels.add(entityPanel);
     }
 
     return panels;
+  }
+
+  /**
+   * Initializes a {@link SwingEntityModel}, according to the given {@link SwingEntityModelBuilder},
+   * either by fetching it from the application model or creating one and adding it to the application model.
+   * @param applicationModel the application model
+   * @param modelBuilder the model builder
+   * @return an initialized {@link SwingEntityModel} instance.
+   */
+  protected final SwingEntityModel initializeEntityModel(final M applicationModel, final SwingEntityModelBuilder modelBuilder) {
+    final SwingEntityModel entityModel;
+    final Class<? extends SwingEntityModel> modelClass = modelBuilder.getModelClass();
+    if (!modelClass.equals(SwingEntityModel.class)) {
+      if (applicationModel.containsEntityModel(modelClass)) {
+        entityModel = applicationModel.getEntityModel(modelClass);
+      }
+      else {
+        entityModel = modelBuilder.createModel(applicationModel.getConnectionProvider());
+        applicationModel.addEntityModel(entityModel);
+      }
+    }
+    else {
+      if (applicationModel.containsEntityModel(modelBuilder.getEntityId())) {
+        entityModel = applicationModel.getEntityModel(modelBuilder.getEntityId());
+      }
+      else {
+        entityModel = modelBuilder.createModel(applicationModel.getConnectionProvider());
+        applicationModel.addEntityModel(entityModel);
+      }
+    }
+
+    return entityModel;
   }
 
   /**
