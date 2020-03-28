@@ -29,7 +29,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
     return citiesDataset;
   }
 
-  public DefaultPieDataset getLanguagesDataset() {
+  public PieDataset getLanguagesDataset() {
     return languagesDataset;
   }
 
