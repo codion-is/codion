@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.framework.demos.world.model;
 
 import org.jminor.common.db.exception.DatabaseException;
@@ -19,8 +16,8 @@ import java.util.List;
 
 public final class CountryTableModel extends SwingEntityTableModel {
 
-  private final DefaultPieDataset cityPieDataset = new DefaultPieDataset();
-  private final DefaultPieDataset languagePieDataset = new DefaultPieDataset();
+  private final DefaultPieDataset citiesDataset = new DefaultPieDataset();
+  private final DefaultPieDataset languagesDataset = new DefaultPieDataset();
 
   public CountryTableModel(EntityConnectionProvider connectionProvider) {
     super(World.T_COUNTRY, connectionProvider);
@@ -28,12 +25,12 @@ public final class CountryTableModel extends SwingEntityTableModel {
     bindEvents();
   }
 
-  public PieDataset getCityChartDataset() {
-    return cityPieDataset;
+  public PieDataset getCitiesDataset() {
+    return citiesDataset;
   }
 
-  public DefaultPieDataset getLanguagePieDataset() {
-    return languagePieDataset;
+  public DefaultPieDataset getLanguagesDataset() {
+    return languagesDataset;
   }
 
   private void configureConditionModels() {
@@ -51,19 +48,19 @@ public final class CountryTableModel extends SwingEntityTableModel {
   }
 
   private void updateChartDatasets(final List<Entity> selectedCountries) {
-    cityPieDataset.clear();
-    languagePieDataset.clear();
+    citiesDataset.clear();
+    languagesDataset.clear();
     try {
       if (!selectedCountries.isEmpty()) {
         final EntityConnection connection = getConnectionProvider().getConnection();
 
         List<Entity> cities = connection.select(World.T_CITY, World.CITY_COUNTRY_FK, selectedCountries.toArray());
-        cities.forEach(city -> cityPieDataset.setValue(
+        cities.forEach(city -> citiesDataset.setValue(
                 city.getString(World.CITY_NAME),
                 city.getInteger(World.CITY_POPULATION)));
 
         List<Entity> languages = connection.select(World.T_COUNTRYLANGUAGE, World.COUNTRYLANGUAGE_COUNTRY_FK, selectedCountries.toArray());
-        languages.forEach(language -> languagePieDataset.setValue(
+        languages.forEach(language -> languagesDataset.setValue(
                 language.getString(World.COUNTRYLANGUAGE_LANGUAGE),
                 language.getInteger(World.COUNTRYLANGUAGE_NO_OF_SPEAKERS)));
       }

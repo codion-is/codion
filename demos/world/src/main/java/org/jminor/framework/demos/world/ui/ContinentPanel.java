@@ -1,8 +1,6 @@
 package org.jminor.framework.demos.world.ui;
 
 import org.jminor.framework.demos.world.model.ContinentModel;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
@@ -14,6 +12,9 @@ import java.awt.Dimension;
 
 import static org.jfree.chart.ChartFactory.createBarChart;
 import static org.jfree.chart.ChartFactory.createPieChart;
+import static org.jminor.swing.common.ui.Components.setPreferredHeight;
+import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class ContinentPanel extends EntityPanel {
 
@@ -27,30 +28,31 @@ public final class ContinentPanel extends EntityPanel {
 
     EntityTablePanel tablePanel = getTablePanel();
     tablePanel.initializePanel();
-    Components.setPreferredHeight(tablePanel, 200);
+    setPreferredHeight(tablePanel, 200);
 
     ChartPanel populationChartPanel = new ChartPanel(createPieChart("Population",
-            model.getPopulationChartDataset()));
+            model.getPopulationDataset()));
     populationChartPanel.setPreferredSize(new Dimension(300, 300));
     ChartPanel surfaceAreaChartPanel = new ChartPanel(createPieChart("Surface area",
-            model.getSurfaceAreaChartDataset()));
+            model.getSurfaceAreaDataset()));
     surfaceAreaChartPanel.setPreferredSize(new Dimension(300, 300));
     ChartPanel gnpAreaChartPanel = new ChartPanel(createPieChart("GNP",
-            model.getGNPChartDataset()));
+            model.getGNPDataset()));
     gnpAreaChartPanel.setPreferredSize(new Dimension(300, 300));
     ChartPanel lifeExpectancyChartPanel = new ChartPanel(createBarChart("Life expectancy",
-            "Continent", "Years", model.getLifeExpectancyDataset()));
+            "Continent", "Years",
+            model.getLifeExpectancyDataset()));
 
-    JPanel centerPanel = new JPanel(Layouts.borderLayout());
+    JPanel centerPanel = new JPanel(borderLayout());
     centerPanel.add(tablePanel, BorderLayout.NORTH);
     centerPanel.add(lifeExpectancyChartPanel, BorderLayout.CENTER);
 
-    JPanel southChartPanel = new JPanel(Layouts.gridLayout(1, 3));
+    JPanel southChartPanel = new JPanel(gridLayout(1, 3));
     southChartPanel.add(populationChartPanel);
     southChartPanel.add(surfaceAreaChartPanel);
     southChartPanel.add(gnpAreaChartPanel);
 
-    setLayout(Layouts.borderLayout());
+    setLayout(borderLayout());
 
     add(centerPanel, BorderLayout.CENTER);
     add(southChartPanel, BorderLayout.SOUTH);
