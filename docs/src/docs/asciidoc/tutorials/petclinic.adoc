@@ -3,7 +3,7 @@
 :dir-source: ../../../../../demos/petclinic/src/main/java
 :dir-test-source: ../../../../../demos/petclinic/src/test/java
 
-== Domain model
+== Domain
 
 [source,java]
 ----
@@ -15,14 +15,14 @@ include::{dir-source}/org/jminor/framework/demos/petclinic/domain/Clinic.java[li
 include::{dir-source}/org/jminor/framework/demos/petclinic/domain/impl/ClinicImpl.java[lines=4..-1]
 ----
 
-== Domain model unit test
+== Domain unit test
 
 [source,java]
 ----
 include::{dir-test-source}/org/jminor/framework/demos/petclinic/domain/ClinicTest.java[lines=4..-1]
 ----
 
-== Application model layer
+== Model
 
 [source,java]
 ----
@@ -34,7 +34,7 @@ include::{dir-source}/org/jminor/framework/demos/petclinic/model/VetSpecialtyEdi
 include::{dir-source}/org/jminor/framework/demos/petclinic/model/PetclinicAppModel.java[lines=4..-1]
 ----
 
-== Application UI layer
+== UI
 
 [source,java]
 ----
@@ -71,7 +71,7 @@ include::{dir-source}/org/jminor/framework/demos/petclinic/ui/VetSpecialtyEditPa
 include::{dir-source}/org/jminor/framework/demos/petclinic/ui/VisitEditPanel.java[lines=4..-1]
 ----
 
-== Main application panel
+=== Main application panel
 
 [source,java]
 ----

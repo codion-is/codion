@@ -233,10 +233,10 @@ include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[t
 ----
 
 === Examples
-* <<{dir-tutorials}/world.adoc#_domain_model, World domain model>>
-* <<{dir-tutorials}/empdept.adoc#_domain_model, EmpDept domain model>>
-* <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>>
-* <<{dir-tutorials}/petstore.adoc#_domain_model, Petstore domain model>>
+* <<{dir-tutorials}/world.adoc#_domain, World domain model>>
+* <<{dir-tutorials}/empdept.adoc#_domain, EmpDept domain model>>
+* <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>>
+* <<{dir-tutorials}/petstore.adoc#_domain, Petstore domain model>>
 
 == KeyGenerator
 
@@ -334,9 +334,9 @@ include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[t
 
 == Examples
 
-* <<{dir-tutorials}/empdept.adoc#_domain_model, EmpDept domain model>>
-* <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>>
-* <<{dir-tutorials}/petstore.adoc#_domain_model, Petstore domain model>>
+* <<{dir-tutorials}/empdept.adoc#_domain, EmpDept domain model>>
+* <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>>
+* <<{dir-tutorials}/petstore.adoc#_domain, Petstore domain model>>
 
 == Entities in action
 
@@ -372,6 +372,6 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/domain/StoreTest.j
 
 === Examples
 
-* <<{dir-tutorials}/empdept.adoc#_domain_model_unit_test, EmpDept domain model test>>
-* <<{dir-tutorials}/chinook.adoc#_domain_model_unit_test, Chinook domain model test>>
-* <<{dir-tutorials}/petstore.adoc#_domain_model_unit_test, Petstore domain model test>>
+* <<{dir-tutorials}/empdept.adoc#_domain_unit_test, EmpDept domain model test>>
+* <<{dir-tutorials}/chinook.adoc#_domain_unit_test, Chinook domain model test>>
+* <<{dir-tutorials}/petstore.adoc#_domain_unit_test, Petstore domain model test>>

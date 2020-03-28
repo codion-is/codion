@@ -3,28 +3,30 @@
 :dir-source: ../../../../../demos/petstore/src/main/java
 :dir-test-source: ../../../../../demos/petstore/src/test/java
 
-== Domain model
+== Domain
 
 [source,java]
 ----
 include::{dir-source}/org/jminor/framework/demos/petstore/domain/Petstore.java[lines=4..-1]
 ----
 
-== Domain model unit test
+=== Domain unit test
 
 [source,java]
 ----
 include::{dir-test-source}/org/jminor/framework/demos/petstore/domain/PetstoreTest.java[lines=4..-1]
 ----
 
-== Main application model
+== Model
+
+=== Main application model
 
 [source,java]
 ----
 include::{dir-source}/org/jminor/framework/demos/petstore/model/PetstoreAppModel.java[lines=4..-1]
 ----
 
-== Application UI layer
+== UI
 
 [source,java]
 ----
@@ -68,7 +70,7 @@ include::{dir-source}/org/jminor/framework/demos/petstore/ui/TagEditPanel.java[l
 include::{dir-source}/org/jminor/framework/demos/petstore/ui/PetstoreAppPanel.java[lines=4..-1]
 ----
 
-== Application load test
+== Load test
 
 [source,java]
 ----

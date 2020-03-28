@@ -6,7 +6,7 @@
 
 The {url-conditions}[Conditions] class is a factory for conditions, used when querying entities.
 
-The <<{dir-tutorials}/chinook.adoc#_domain_model, Chinook domain model>> is used in the examples below.
+The <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
 
 == Condition
 

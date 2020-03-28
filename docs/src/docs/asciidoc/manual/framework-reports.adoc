@@ -37,4 +37,4 @@ public Object getFieldValue(JRField jrField) {
 
 == Examples
 
-* <<{dir-tutorials}/empdept.adoc#_application_ui_layer, EmpDept UI layer>>
+* <<{dir-tutorials}/empdept.adoc#_ui, EmpDept UI layer>>

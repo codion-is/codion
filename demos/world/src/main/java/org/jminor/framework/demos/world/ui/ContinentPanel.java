@@ -36,9 +36,9 @@ public final class ContinentPanel extends EntityPanel {
     ChartPanel surfaceAreaChartPanel = new ChartPanel(createPieChart("Surface area",
             model.getSurfaceAreaDataset()));
     surfaceAreaChartPanel.setPreferredSize(new Dimension(300, 300));
-    ChartPanel gnpAreaChartPanel = new ChartPanel(createPieChart("GNP",
-            model.getGNPDataset()));
-    gnpAreaChartPanel.setPreferredSize(new Dimension(300, 300));
+    ChartPanel gnpChartPanel = new ChartPanel(createPieChart("GNP",
+            model.getGnpDataset()));
+    gnpChartPanel.setPreferredSize(new Dimension(300, 300));
     ChartPanel lifeExpectancyChartPanel = new ChartPanel(createBarChart("Life expectancy",
             "Continent", "Years",
             model.getLifeExpectancyDataset()));
@@ -50,7 +50,7 @@ public final class ContinentPanel extends EntityPanel {
     JPanel southChartPanel = new JPanel(gridLayout(1, 3));
     southChartPanel.add(populationChartPanel);
     southChartPanel.add(surfaceAreaChartPanel);
-    southChartPanel.add(gnpAreaChartPanel);
+    southChartPanel.add(gnpChartPanel);
 
     setLayout(borderLayout());
 

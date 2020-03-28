@@ -95,7 +95,7 @@ There are at minimum two steps involved in creating a JMinor application:
   * Defining a domain model based on the underlying tables.
   * Creating edit panels for tables requiring CRUD functionality.
 
-=== Domain model
+=== Domain
 
 The JMinor framework is based around the *Entity* class, a map-like structure, representing a row in a table. The domain is modelled much like an E/R diagram, with an *EntityDefinition* per table, a *Property* for each column and a *ForeignKeyProperty* for each foreign key relationship.
 
@@ -144,7 +144,7 @@ And finally we define a entity based on the _many-to-many_ relationship table *s
 include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=customerAddress]
 ----
 
-=== Swing UI
+=== UI
 
 The *EntityPanel* class provides a Swing UI for viewing and editing entities. It is composed of a *EntityEditPanel* and a *EntityTablePanel*. For each of these panel classes there is a corresponding model class; *SwingEntityModel*, which is composed of a *SwingEntityEditModel* and a *SwingEntityTableModel*. The only class you are required to extend is the *EntityEditPanel*, which provides the input controls for editing a entity. Below we demonstrate how to set up a simple _master/detail_ panel.
 
@@ -172,7 +172,7 @@ Here we create a panel for viewing and editing customer addresses, much like the
 include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=detailPanel]
 ----
 
-=== Domain model unit test
+=== Domain unit test
 
 The *EntityTestUnit* class provides a way to unit test the domain model. The *test* method performs insert, update, select and delete on a randomly generated entity instance and verifies the results.
 
