@@ -18,7 +18,7 @@ import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModelProvider;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -196,18 +196,18 @@ public class EmpDeptMinimalApp {
   private static final class EmpDeptApplicationPanel extends EntityApplicationPanel<EmpDeptApplicationModel> {
 
     @Override
-    protected void setupEntityPanelProviders() {
+    protected void setupEntityPanelBuilders() {
       //now, let's assemble our application
-      final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept")
+      final EntityPanelBuilder departmentProvider = new EntityPanelBuilder("scott.dept")
               .setEditPanelClass(DepartmentEditPanel.class);
       final SwingEntityModelProvider employeeModelProvider = new SwingEntityModelProvider("scott.emp")
               .setEditModelClass(EmployeeEditModel.class);
-      final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider)
+      final EntityPanelBuilder employeeProvider = new EntityPanelBuilder(employeeModelProvider)
               .setEditPanelClass(EmployeeEditPanel.class);
-      departmentProvider.addDetailPanelProvider(employeeProvider);
+      departmentProvider.addDetailPanelBuilder(employeeProvider);
 
       //the department panel is the main (or root) application panel
-      addEntityPanelProvider(departmentProvider);
+      addEntityPanelBuilder(departmentProvider);
     }
 
     @Override

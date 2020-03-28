@@ -16,7 +16,7 @@ import org.jminor.swing.framework.model.SwingEntityModelProvider;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import java.util.List;
@@ -54,30 +54,30 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
   }
 
   @Override
-  protected void setupEntityPanelProviders() {
-    EntityPanelProvider petTypePanelProvider =
-            new EntityPanelProvider(T_PET_TYPE)
+  protected void setupEntityPanelBuilders() {
+    EntityPanelBuilder petTypePanelProvider =
+            new EntityPanelBuilder(T_PET_TYPE)
                     .setEditPanelClass(PetTypeEditPanel.class)
                     .setCaption("Pet types");
-    EntityPanelProvider specialtiesPanelProvider =
-            new EntityPanelProvider(T_SPECIALTY)
+    EntityPanelBuilder specialtiesPanelProvider =
+            new EntityPanelBuilder(T_SPECIALTY)
                     .setEditPanelClass(SpecialtyEditPanel.class)
                     .setCaption("Specialties");
 
-    EntityPanelProvider vetsPanelProvider =
-            new EntityPanelProvider(T_VET)
+    EntityPanelBuilder vetsPanelProvider =
+            new EntityPanelBuilder(T_VET)
                     .setEditPanelClass(VetEditPanel.class)
                     .setCaption("Vets");
     SwingEntityModelProvider vetSpecialtyModelProvider =
             new SwingEntityModelProvider(T_VET_SPECIALTY)
                     .setEditModelClass(VetSpecialtyEditModel.class);
-    EntityPanelProvider vetSpecialtiesPanelProvider =
-            new EntityPanelProvider(vetSpecialtyModelProvider)
+    EntityPanelBuilder vetSpecialtiesPanelProvider =
+            new EntityPanelBuilder(vetSpecialtyModelProvider)
                     .setEditPanelClass(VetSpecialtyEditPanel.class)
                     .setCaption("Specialties");
-    vetsPanelProvider.addDetailPanelProvider(vetSpecialtiesPanelProvider);
+    vetsPanelProvider.addDetailPanelBuilder(vetSpecialtiesPanelProvider);
 
-    addSupportPanelProviders(petTypePanelProvider, specialtiesPanelProvider, vetsPanelProvider);
+    addSupportPanelBuilders(petTypePanelProvider, specialtiesPanelProvider, vetsPanelProvider);
   }
 
   public static void main(final String[] args) throws CancelException {

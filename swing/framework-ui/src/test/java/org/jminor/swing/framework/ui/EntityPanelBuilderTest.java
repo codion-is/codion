@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EntityPanelProviderTest {
+public class EntityPanelBuilderTest {
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -33,12 +33,12 @@ public class EntityPanelProviderTest {
     final SwingEntityModel customerModel = customerModelProvider.createModel(CONNECTION_PROVIDER);
 
     final String customerCaption = "A department caption";
-    final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(TestDomain.T_DEPARTMENT)
+    final EntityPanelBuilder customerPanelProvider = new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
             .setCaption(customerCaption);
-    final EntityPanelProvider invoicePanelProvider = new EntityPanelProvider(TestDomain.T_EMP)
+    final EntityPanelBuilder invoicePanelProvider = new EntityPanelBuilder(TestDomain.T_EMP)
             .setCaption("empCaption");
 
-    customerPanelProvider.addDetailPanelProvider(invoicePanelProvider);
+    customerPanelProvider.addDetailPanelBuilder(invoicePanelProvider);
 
     final EntityPanel customerPanel = customerPanelProvider.createPanel(customerModel);
     assertEquals(customerCaption, customerPanel.getCaption());

@@ -8,7 +8,7 @@ import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.Action;
 import javax.swing.JPanel;
@@ -29,7 +29,7 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
             createForeignKeyComboBox(Store.CUSTOMER_ADDRESS_ADDRESS_FK);
     Components.setPreferredWidth(addressComboBox, 200);
     Action newAddressAction = EntityEditPanel.createEditPanelAction(addressComboBox,
-            new EntityPanelProvider(Store.T_ADDRESS)
+            new EntityPanelBuilder(Store.T_ADDRESS)
                     .setEditPanelClass(AddressEditPanel.class));
     JPanel addressPanel = Components.createEastButtonPanel(addressComboBox, newAddressAction, false);
 

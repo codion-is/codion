@@ -9,7 +9,7 @@ import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.Action;
 import javax.swing.JLabel;
@@ -33,12 +33,12 @@ public class TrackEditPanel extends EntityEditPanel {
     createTextField(TRACK_NAME).setColumns(18);
     final EntityComboBox mediaTypeBox = createForeignKeyComboBox(TRACK_MEDIATYPE_FK);
     final Action newMediaTypeAction = EntityEditPanel.createEditPanelAction(mediaTypeBox,
-            new EntityPanelProvider(T_MEDIATYPE)
+            new EntityPanelBuilder(T_MEDIATYPE)
                     .setEditPanelClass(MediaTypeEditPanel.class));
     final JPanel mediaTypePanel = Components.createEastButtonPanel(mediaTypeBox, newMediaTypeAction, false);
     final EntityComboBox genreBox = createForeignKeyComboBox(TRACK_GENRE_FK);
     final Action newGenreAction = EntityEditPanel.createEditPanelAction(genreBox,
-            new EntityPanelProvider(T_GENRE)
+            new EntityPanelBuilder(T_GENRE)
                     .setEditPanelClass(GenreEditPanel.class));
     final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction, false);
     createTextInputPanel(TRACK_COMPOSER).getTextField().setColumns(18);

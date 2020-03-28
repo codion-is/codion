@@ -9,7 +9,7 @@ import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_ITEM_FK;
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_TAG_FK;
@@ -30,7 +30,7 @@ public class TagItemEditPanel extends EntityEditPanel {
     addPropertyPanel(TAG_ITEM_ITEM_FK);
     final EntityComboBox itemTagBox = createForeignKeyComboBox(TAG_ITEM_TAG_FK);
     add(createPropertyPanel(TAG_ITEM_TAG_FK, Components.createEastButtonPanel(itemTagBox,
-            createEditPanelAction(itemTagBox, new EntityPanelProvider(Petstore.T_TAG)
+            createEditPanelAction(itemTagBox, new EntityPanelBuilder(Petstore.T_TAG)
                     .setEditPanelClass(TagEditPanel.class)), false)));
   }
 }

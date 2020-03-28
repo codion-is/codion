@@ -5780,3 +5780,4 @@
   EntityPopupMenu bug fixed, cyclical dependency OOM exception prevented
   Layouts, removed create prefix from method names
   EntityPanelProvider now accepts EntityPanel constructors with model subclass types
+  EntityPanelProvider renamed to EntityPanelBuilder

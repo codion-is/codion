@@ -10,7 +10,7 @@ import org.jminor.swing.common.ui.textfield.TextInputPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
@@ -47,10 +47,10 @@ public class ItemEditPanel extends EntityEditPanel {
     add(createPropertyPanel(ITEM_DESCRIPTION));
     addPropertyPanel(ITEM_PRICE);
     add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
-            createEditPanelAction(contactInfoBox, new EntityPanelProvider(T_SELLER_CONTACT_INFO)
+            createEditPanelAction(contactInfoBox, new EntityPanelBuilder(T_SELLER_CONTACT_INFO)
                     .setEditPanelClass(ContactInfoEditPanel.class)), false)));
     add(createPropertyPanel(ITEM_ADDRESS_FK, Components.createEastButtonPanel(addressBox,
-            createEditPanelAction(addressBox, new EntityPanelProvider(T_ADDRESS)
+            createEditPanelAction(addressBox, new EntityPanelBuilder(T_ADDRESS)
                     .setEditPanelClass(AddressEditPanel.class)), false)));
     addPropertyPanel(ITEM_IMAGE_URL);
     addPropertyPanel(ITEM_IMAGE_THUMB_URL);
