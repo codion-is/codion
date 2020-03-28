@@ -321,9 +321,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Shows a dialog for setting the logging level
+   * Shows a dialog for setting the log level
    */
-  public final void setLoggingLevel() {
+  public final void setLogLevel() {
     final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
     if (loggerProxy == null) {
       throw new RuntimeException("No LoggerProxy implementation available");
@@ -690,7 +690,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected ControlSet getSettingsControlSet() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
-    controlSet.add(createLoggingLevelControl());
+    controlSet.add(createLogLevelControl());
 
     return controlSet;
   }
@@ -747,16 +747,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return a Control for setting the logging level
+   * @return a Control for setting the log level
    */
-  protected final Control createLoggingLevelControl() {
+  protected final Control createLogLevelControl() {
     final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_LOGGING);
-    final Control setLoggingLevel = Controls.control(this::setLoggingLevel,
+    final Control setLogLevel = Controls.control(this::setLogLevel,
             resourceBundle.getString(SET_LOG_LEVEL));
-    setLoggingLevel.setDescription(resourceBundle.getString(SET_LOG_LEVEL_DESC));
-    setLoggingLevel.setIcon(setLoggingIcon);
+    setLogLevel.setDescription(resourceBundle.getString(SET_LOG_LEVEL_DESC));
+    setLogLevel.setIcon(setLoggingIcon);
 
-    return setLoggingLevel;
+    return setLogLevel;
   }
 
   /**

@@ -117,7 +117,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
     infoPanel.add(initializeMemoryField());
     infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
-    infoPanel.add(initializeLoggingLevelField());
+    infoPanel.add(initializeLogLevelField());
     infoPanel.add(new JButton(Controls.control(this::shutdownServer, "Shutdown")));
 
     setLayout(new BorderLayout());
@@ -224,11 +224,11 @@ public final class ServerMonitorPanel extends JPanel {
     return memoryField;
   }
 
-  private JComboBox initializeLoggingLevelField() {
-    final DefaultComboBoxModel comboModel = new DefaultComboBoxModel(model.getLoggingLevels().toArray());
+  private JComboBox initializeLogLevelField() {
+    final DefaultComboBoxModel comboModel = new DefaultComboBoxModel(model.getLogLevels().toArray());
 
     final JComboBox box = new JComboBox<>(comboModel);
-    Values.propertyValue(model, "loggingLevel", Object.class, model.getLoggingLevelObserver())
+    Values.propertyValue(model, "logLevel", Object.class, model.getLogLevelObserver())
             .link(SelectedValues.selectedValue(box));
 
     return box;

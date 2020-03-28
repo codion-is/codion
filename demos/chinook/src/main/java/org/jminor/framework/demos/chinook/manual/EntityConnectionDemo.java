@@ -70,7 +70,7 @@ public final class EntityConnectionDemo {
     // tag::selectValue[]
     List<Entity> aliceInChains = connection.select(T_ARTIST, ARTIST_NAME, "Alice In Chains");
 
-    List<Entity> albums = connection.select(T_ALBUM, ALBUM_ARTIST_FK, aliceInChains.toArray());
+    List<Entity> albums = connection.select(T_ALBUM, ALBUM_ARTIST_FK, aliceInChains);
     // end::selectValue[]
   }
 

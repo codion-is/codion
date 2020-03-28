@@ -44,22 +44,24 @@ public final class CountryTableModel extends SwingEntityTableModel {
   }
 
   private void bindEvents() {
-    getSelectionModel().addSelectedItemsListener(this::updateChartDatasets);
+    getSelectionModel().addSelectedItemsListener(this::refreshChartDatasets);
   }
 
-  private void updateChartDatasets(final List<Entity> selectedCountries) {
+  private void refreshChartDatasets(List<Entity> selectedCountries) {
     citiesDataset.clear();
     languagesDataset.clear();
     try {
       if (!selectedCountries.isEmpty()) {
         final EntityConnection connection = getConnectionProvider().getConnection();
 
-        List<Entity> cities = connection.select(World.T_CITY, World.CITY_COUNTRY_FK, selectedCountries.toArray());
+        List<Entity> cities = connection.select(World.T_CITY,
+                World.CITY_COUNTRY_FK, selectedCountries);
         cities.forEach(city -> citiesDataset.setValue(
                 city.getString(World.CITY_NAME),
                 city.getInteger(World.CITY_POPULATION)));
 
-        List<Entity> languages = connection.select(World.T_COUNTRYLANGUAGE, World.COUNTRYLANGUAGE_COUNTRY_FK, selectedCountries.toArray());
+        List<Entity> languages = connection.select(World.T_COUNTRYLANGUAGE,
+                World.COUNTRYLANGUAGE_COUNTRY_FK, selectedCountries);
         languages.forEach(language -> languagesDataset.setValue(
                 language.getString(World.COUNTRYLANGUAGE_LANGUAGE),
                 language.getInteger(World.COUNTRYLANGUAGE_NO_OF_SPEAKERS)));

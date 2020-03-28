@@ -49,7 +49,7 @@ public final class ServerMonitor {
 
   private final Event serverShutDownEvent = Events.event();
   private final Event statisticsUpdatedEvent = Events.event();
-  private final Event loggingLevelChangedEvent = Events.event();
+  private final Event logLevelChangedEvent = Events.event();
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
   private final String hostName;
@@ -202,7 +202,7 @@ public final class ServerMonitor {
   /**
    * @return the available log levels
    */
-  public List getLoggingLevels() {
+  public List getLogLevels() {
     if (loggerProxy == null) {
       return emptyList();
     }
@@ -211,20 +211,20 @@ public final class ServerMonitor {
   }
 
   /**
-   * @return the server logging level
+   * @return the server log level
    * @throws RemoteException in case of an exception
    */
-  public Object getLoggingLevel() throws RemoteException {
-    return server.getLoggingLevel();
+  public Object getLogLevel() throws RemoteException {
+    return server.getLogLevel();
   }
 
   /**
-   * @param level the server logging level
+   * @param level the server log level
    * @throws RemoteException in case of an exception
    */
-  public void setLoggingLevel(final Object level) throws RemoteException {
-    server.setLoggingLevel(level);
-    loggingLevelChangedEvent.onEvent(level);
+  public void setLogLevel(final Object level) throws RemoteException {
+    server.setLogLevel(level);
+    logLevelChangedEvent.onEvent(level);
   }
 
   /**
@@ -384,10 +384,10 @@ public final class ServerMonitor {
   }
 
   /**
-   * @return a listener notified when the logging level has changed
+   * @return a listener notified when the log level has changed
    */
-  public EventObserver getLoggingLevelObserver() {
-    return loggingLevelChangedEvent.getObserver();
+  public EventObserver getLogLevelObserver() {
+    return logLevelChangedEvent.getObserver();
   }
 
   private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException, ServerAuthenticationException {

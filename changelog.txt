@@ -5810,3 +5810,4 @@
   EntityTableModel.add/removeRefreshListener() added
   FilteredModel.getAllItems() renamed to getItems()
   SwingEntityModelBuilder, EntityPanelBuilder, added validation, unit test added
+  DefaultLocalEntityConnection.select(entityId, propertyId, Object...) now accepts collection as values parameter

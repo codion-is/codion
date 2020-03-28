@@ -126,7 +126,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public Object getLoggingLevel() {
+  public Object getLogLevel() {
     if (loggerProxy != null) {
       return loggerProxy.getLogLevel();
     }
@@ -136,8 +136,8 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public void setLoggingLevel(final Object level) {
-    LOG.info("setLoggingLevel({})", level);
+  public void setLogLevel(final Object level) {
+    LOG.info("setLogLevel({})", level);
     if (loggerProxy != null) {
       loggerProxy.setLogLevel(level);
     }

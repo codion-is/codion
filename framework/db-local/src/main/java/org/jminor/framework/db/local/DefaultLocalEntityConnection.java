@@ -530,7 +530,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> select(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
-    return select(entitySelectCondition(entityId, propertyId, LIKE, values == null ? null : asList(values)));
+    return select(entitySelectCondition(entityId, propertyId, LIKE, createValueList(values)));
   }
 
   /** {@inheritDoc} */
@@ -1233,6 +1233,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.logAccess(method, arguments);
     }
+  }
+
+  private static List createValueList(final Object... values) {
+    if (values == null || values.length == 0) {
+      return null;
+    }
+    else if (values.length == 1 && values[0] instanceof Collection) {
+      return new ArrayList((Collection) values[0]);
+    }
+
+    return asList(values);
   }
 
   private static void setParameterValues(final PreparedStatement statement, final List<ColumnProperty> statementProperties,
