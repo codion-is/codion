@@ -59,4 +59,4 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerMode
 ----
 
 == Examples
-* <<{dir-tutorials}/empdept.adoc#_application_model_layer, EmpDept entity models>>
+* <<{dir-tutorials}/empdept.adoc#_model, EmpDept entity models>>

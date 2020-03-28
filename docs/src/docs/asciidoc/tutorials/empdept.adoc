@@ -5,7 +5,7 @@
 :dir-test-source: ../../../../../demos/empdept/src/test/java
 :url-javadoc: link:../api
 
-== Domain model
+== Domain
 
 We start by creating a class named EmpDept in a package of our choosing, extending Domain and define the constants required for the department {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which is based on the SCOTT.DEPT table. One constant defines the entity itself and will be referred to as the *entityId* (here prefixed with T_), the other three represent the columns in the table and will be referred to as *propertyIds*. The entityId in this example contains the actual table name (scott.dept), but the table name can be specified via a __tableName__ parameter when the entity is defined. The propertyIds contain the actual column names from the table, but that is not required either.
 
@@ -42,7 +42,7 @@ Next we define the employee entity. Here we set the *keyGenerator* to *Entities.
 include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[tags=defineEmployee]
 ----
 
-== Domain model unit test
+=== Domain unit test
 
 To unit test the the domain model we extend {url-javadoc}/org/jminor/framework/tools/testing/EntityTestUnit.html[EntityTestUnit] and create a public test method for each entity we want tested and within that method call *test(entityId)*. The *EntityTestUnit* relies on information from the domain model to construct random entity instances and run insert, update, select and delete tests. The tests are run within their own transactions which are then rolled back. We can provide our own entity instances if we'd like by overriding *initializeTestEntity(entityId, foreignKeyEntities)* handling the cases we'd like and delegating the rest to the superclass implementation. The same can be done for entities that are referenced via foreign keys and are required in order to be able to insert records. We override *getTestUser()*, the default implementation simply prompts for login credentials.
 
@@ -61,7 +61,7 @@ Here are the parameters required for running the EmpDept test on the default H2 
 
 For further information on parameters required for running JMinor applications see <<{basedir}/technical/client.adoc#_configuration, client configuration>> and <<{basedir}/technical/server.adoc#_configuration, server configuration>>.
 
-== Application model layer
+== Model
 
 In many cases we can use the default model implementations, but here we will customize the employee edit model by extending {url-javadoc}/org/jminor/swing/framework/model/SwingEntityEditModel.html[SwingEntityEditModel].
 
@@ -90,7 +90,7 @@ Finally we bind a couple of events, for further information see <<{basedir}/manu
 include::{dir-source}/org/jminor/framework/demos/empdept/model/EmployeeEditModel.java[tags=bindEvents]
 ----
 
-== Application UI layer
+== UI
 
 If we want to do any editing we must provide a *EntityEditPanel* implementation for the entity, we start by creating a *DepartmentEditPanel*.
 
@@ -145,7 +145,7 @@ All we have to do is override *initializeUI*.
 include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmployeeEditPanel.java[tags=initializeUI]
 ----
 
-== Main application panel
+=== Main application panel
 
 We create a main application panel by extending {url-javadoc}/org/jminor/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *setupEntityPanelBuilders()* we configure two sets of *SwingEntityModelBuilder* and *EntityPanelBuilder* objects, which allow lazy initialization of UI components. We'll define the *EmployeePanelBuilder* class later. We call *addEntityPanelBuilder()* making the department panel the main application panel.
 
@@ -203,7 +203,7 @@ We create a *EmployeePanelBuilder* by extending *EntityPanelBuilder*, in order t
 include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=employeePanelBuilder]
 ----
 
-== Application load test
+== Load test
 
 [source,java]
 ----
@@ -212,28 +212,28 @@ include::{dir-source}/org/jminor/framework/demos/empdept/testing/EmpDeptLoadTest
 
 == Full Demo Source
 
-=== Domain model
+=== Domain
 
 [source,java]
 ----
 include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[tag=**]
 ----
 
-=== Domain model test
+=== Domain unit test
 
 [source,java]
 ----
 include::{dir-test-source}/org/jminor/framework/demos/empdept/domain/EmpDeptTest.java[tag=**]
 ----
 
-=== Application model
+=== Model
 
 [source,java]
 ----
 include::{dir-source}/org/jminor/framework/demos/empdept/model/EmployeeEditModel.java[tag=**]
 ----
 
-=== Application UI
+=== UI
 
 [source,java]
 ----

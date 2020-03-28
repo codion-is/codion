@@ -3,7 +3,7 @@
 :dir-source: ../../../../../demos/chinook/src/main/java
 :dir-test-source: ../../../../../demos/chinook/src/test/java
 
-== Domain model
+== Domain
 
 [source,java]
 ----
@@ -15,14 +15,14 @@ include::{dir-source}/org/jminor/framework/demos/chinook/domain/Chinook.java[lin
 include::{dir-source}/org/jminor/framework/demos/chinook/domain/impl/ChinookImpl.java[lines=4..-1]
 ----
 
-=== Unit testing
+=== Domain unit test
 
 [source,java]
 ----
 include::{dir-test-source}/org/jminor/framework/demos/chinook/domain/ChinookTest.java[lines=4..-1]
 ----
 
-== Application model layer
+== Model
 
 [source,java]
 ----
@@ -34,14 +34,14 @@ include::{dir-source}/org/jminor/framework/demos/chinook/model/TrackTableModel.j
 include::{dir-source}/org/jminor/framework/demos/chinook/model/ChinookApplicationModel.java[lines=4..-1]
 ----
 
-=== Unit testing
+=== Model unit test
 
 [source,java]
 ----
 include::{dir-test-source}/org/jminor/framework/demos/chinook/model/TrackTableModelTest.java[lines=4..-1]
 ----
 
-== Application UI layer
+== UI
 
 [source,java]
 ----
@@ -108,7 +108,7 @@ include::{dir-source}/org/jminor/framework/demos/chinook/ui/TrackEditPanel.java[
 include::{dir-source}/org/jminor/framework/demos/chinook/ui/TrackTablePanel.java[lines=4..-1]
 ----
 
-== Main application panel
+=== Main application panel
 
 [source,java]
 ----
@@ -122,7 +122,7 @@ include::{dir-source}/org/jminor/framework/demos/chinook/ui/ChinookAppPanel.java
 include::{dir-source}/org/jminor/framework/demos/chinook/server/ChinookLoginProxy.java[lines=4..-1]
 ----
 
-== Application load test
+== Load test
 
 [source,java]
 ----
