@@ -5787,3 +5787,4 @@
   FilteredModel.getAllItems() renamed to getItems()
   SwingEntityModelBuilder, EntityPanelBuilder, added validation, unit test added
   DefaultLocalEntityConnection.select(entityId, propertyId, Object...) now accepts collection as values parameter
+  DefaultDatabaseConnection now caches Users from connection meta data based on username

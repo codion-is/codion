@@ -16,6 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,6 +36,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * The default timoeout in seconds when checking if this connection is valid
    */
   private static final int DEFAULT_VALIDITY_CHECK_TIMEOUT = 2;
+
+  private static final Map<String, User> META_DATA_USER_CACHE = new ConcurrentHashMap<>();
 
   private final User user;
   private final Database database;
@@ -378,7 +382,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   private static User getUser(final Connection connection) throws DatabaseException {
     try {
-      return Users.user(connection.getMetaData().getUserName(), null);
+      return META_DATA_USER_CACHE.computeIfAbsent(connection.getMetaData().getUserName(),
+              userName -> Users.user(userName, null));
     }
     catch (final SQLException e) {
       throw new DatabaseException(e, "Exception while trying to retrieve username from meta data");
