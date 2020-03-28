@@ -383,12 +383,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       return null;
     }
     if (horizontal) {
-      final JPanel panel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
+      final JPanel panel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
       panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControlSet));
       return panel;
     }
     else {
-      final JPanel panel = new JPanel(Layouts.createBorderLayout());
+      final JPanel panel = new JPanel(Layouts.borderLayout());
       panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControlSet), BorderLayout.NORTH);
       return panel;
     }

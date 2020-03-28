@@ -201,7 +201,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * The base edit panel which contains the controls required for editing a entity
    */
-  private final JPanel editControlPanel = new JPanel(Layouts.createBorderLayout());
+  private final JPanel editControlPanel = new JPanel(Layouts.borderLayout());
 
   /**
    * The caption to use when presenting this entity panel
@@ -1055,7 +1055,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       horizontalSplitPane = initializeHorizontalSplitPane();
       detailPanelTabbedPane = initializeDetailTabPane();
     }
-    setLayout(Layouts.createBorderLayout());
+    setLayout(Layouts.borderLayout());
     if (detailPanelTabbedPane != null || tablePanel != null) {
       initializeDetailAndTablePanels();
     }
@@ -1213,7 +1213,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     editControlPanel.setMinimumSize(new Dimension(0, 0));
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-    final JPanel propertyBase = new JPanel(Layouts.createFlowLayout(alignment));
+    final JPanel propertyBase = new JPanel(Layouts.flowLayout(alignment));
     propertyBase.add(editPanel);
     editControlPanel.add(propertyBase, BorderLayout.CENTER);
     if (includeControlPanel) {
@@ -1254,7 +1254,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     else {
       if (compactDetailLayout) {
-        compactBase = new JPanel(Layouts.createBorderLayout());
+        compactBase = new JPanel(Layouts.borderLayout());
         compactBase.add(tablePanel, BorderLayout.CENTER);
         horizontalSplitPane.setLeftComponent(compactBase);
       }

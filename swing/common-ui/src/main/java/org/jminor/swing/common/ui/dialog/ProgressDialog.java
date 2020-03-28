@@ -76,13 +76,13 @@ public class ProgressDialog extends JDialog {
    * @param buttonControls if specified buttons based on these controls are added to this dialog
    */
   protected void initializeUI(final JPanel northPanel, final ControlSet buttonControls) {
-    setLayout(Layouts.createBorderLayout());
+    setLayout(Layouts.borderLayout());
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
     }
     add(progressBar, BorderLayout.CENTER);
     if (buttonControls != null) {
-      final JPanel southPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.TRAILING));
+      final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
       southPanel.add(initializeButtonPanel(buttonControls));
       add(southPanel, BorderLayout.SOUTH);
     }

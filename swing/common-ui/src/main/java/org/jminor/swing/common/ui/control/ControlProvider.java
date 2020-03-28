@@ -42,7 +42,7 @@ public final class ControlProvider {
    * @return the button panel
    */
   public static JPanel createVerticalButtonPanel(final ControlSet controlSet) {
-    final JPanel panel = new JPanel(Layouts.createGridLayout(0, 1));
+    final JPanel panel = new JPanel(Layouts.gridLayout(0, 1));
     controlSet.getActions().forEach(new ButtonControlHandler(panel, true));
 
     return panel;
@@ -54,7 +54,7 @@ public final class ControlProvider {
    * @return the button panel
    */
   public static JPanel createHorizontalButtonPanel(final ControlSet controlSet) {
-    final JPanel panel = new JPanel(Layouts.createGridLayout(1, 0));
+    final JPanel panel = new JPanel(Layouts.gridLayout(1, 0));
     controlSet.getActions().forEach(new ButtonControlHandler(panel, false));
 
     return panel;

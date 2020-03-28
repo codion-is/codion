@@ -78,19 +78,19 @@ public final class ClientUserMonitorPanel extends JPanel {
     userList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     userList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel((ClientMonitor) userList.getSelectedValue()));
 
-    final JPanel clientTypeBase = new JPanel(Layouts.createBorderLayout());
+    final JPanel clientTypeBase = new JPanel(Layouts.borderLayout());
     final JScrollPane clientTypeScroller = new JScrollPane(clientTypeList);
     final JScrollPane userScroller = new JScrollPane(userList);
     clientTypeScroller.setBorder(BorderFactory.createTitledBorder("Client types"));
     userScroller.setBorder(BorderFactory.createTitledBorder("Users"));
-    final JPanel clientUserBase = new JPanel(Layouts.createGridLayout(2, 1));
+    final JPanel clientUserBase = new JPanel(Layouts.gridLayout(2, 1));
     clientUserBase.add(clientTypeScroller);
     clientUserBase.add(userScroller);
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
     clientTypeBase.add(new JButton(Controls.control(model::refresh, "Refresh")), BorderLayout.SOUTH);
 
-    final JPanel actionBase = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
+    final JPanel actionBase = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
     actionBase.add(initializeMaintenanceIntervalComponent());
 
@@ -113,7 +113,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     splitPane.setLeftComponent(clientTypeBase);
 
-    final JPanel currentConnectionsPanel = new JPanel(Layouts.createBorderLayout());
+    final JPanel currentConnectionsPanel = new JPanel(Layouts.borderLayout());
     currentConnectionsPanel.add(actionBase, BorderLayout.NORTH);
     currentConnectionsPanel.add(clientTypeMonitorPanel, BorderLayout.CENTER);
 
@@ -123,7 +123,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JPanel createConnectionHistoryPanel() {
-    final JPanel configPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
+    final JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
@@ -133,13 +133,13 @@ public final class ClientUserMonitorPanel extends JPanel {
     configPanel.add(new JLabel("Update interval (s)"));
     configPanel.add(updateIntervalSpinner);
 
-    final JPanel configBase = new JPanel(Layouts.createBorderLayout());
+    final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);
     configBase.add(new JButton(Controls.control(model::resetHistory, "Reset")), BorderLayout.EAST);
 
     final FilteredTable userHistoryTable = new FilteredTable(model.getUserHistoryTableModel());
 
-    final JPanel connectionHistoryPanel = new JPanel(Layouts.createBorderLayout());
+    final JPanel connectionHistoryPanel = new JPanel(Layouts.borderLayout());
     connectionHistoryPanel.add(new JScrollPane(userHistoryTable), BorderLayout.CENTER);
     connectionHistoryPanel.add(configBase, BorderLayout.SOUTH);
 

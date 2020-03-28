@@ -110,7 +110,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
       final Method getCalendar = jCalendarClass.getMethod("getCalendar");
       final Constructor constructor = jCalendarClass.getConstructor(Calendar.class);
       final JPanel calendarPanel = (JPanel) constructor.newInstance(cal);
-      final JPanel datePanel = new JPanel(Layouts.createBorderLayout());
+      final JPanel datePanel = new JPanel(Layouts.borderLayout());
       datePanel.add(calendarPanel, BorderLayout.NORTH);
 
       final Event closeEvent = Events.event();
@@ -127,7 +127,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
         closeEvent.onEvent();
       }, Messages.get(Messages.CANCEL));
       final JButton cancelButton = new JButton(cancelControl);
-      final JPanel buttonPanel = new JPanel(Layouts.createGridLayout(1, 2));
+      final JPanel buttonPanel = new JPanel(Layouts.gridLayout(1, 2));
       buttonPanel.add(okButton);
       buttonPanel.add(cancelButton);
 

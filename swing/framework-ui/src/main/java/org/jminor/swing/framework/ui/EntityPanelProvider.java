@@ -351,7 +351,7 @@ public class EntityPanelProvider {
                 .newInstance(entityModel, editPanel, tablePanel);
       }
       else {
-        entityPanel = panelClass.getConstructor(SwingEntityModel.class).newInstance(entityModel);
+        entityPanel = findModelConstructor(panelClass).newInstance(entityModel);
       }
       entityPanel.setCaption(caption == null ? entityModel.getConnectionProvider()
               .getDomain().getDefinition(entityModel.getEntityId()).getCaption() : caption);
@@ -403,6 +403,18 @@ public class EntityPanelProvider {
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static Constructor<EntityPanel> findModelConstructor(final Class<? extends EntityPanel> panelClass)
+          throws NoSuchMethodException {
+    for (final Constructor<?> constructor : panelClass.getConstructors()) {
+      if (constructor.getParameterCount() == 1 &&
+              SwingEntityModel.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
+        return (Constructor<EntityPanel>) constructor;
+      }
+    }
+
+    throw new NoSuchMethodException("Constructor with a single parameter of type SwingEntityModel (or subclass) not found in class: " + panelClass);
   }
 
   private static Constructor<EntityEditPanel> findEditModelConstructor(final Class<? extends EntityEditPanel> editPanelClass)

@@ -848,7 +848,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the panel shown when Help -&#62; About is selected
    */
   protected JPanel getAboutPanel() {
-    final JPanel panel = new JPanel(Layouts.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.borderLayout());
     final String versionString = Versions.getVersionAndBuildNumberString();
     panel.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
     final JTextField versionMemoryField = new JTextField(versionString + " (" + Memory.getMemoryUsageString() + ")");

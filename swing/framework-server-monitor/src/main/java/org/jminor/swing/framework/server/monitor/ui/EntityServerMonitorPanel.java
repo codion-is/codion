@@ -198,7 +198,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private static JPanel initializeSouthPanel() {
-    final JPanel southPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.TRAILING));
+    final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
     southPanel.setBorder(BorderFactory.createEtchedBorder());
     southPanel.add(new JLabel("Memory usage:"));
     southPanel.add(UiUtil.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));

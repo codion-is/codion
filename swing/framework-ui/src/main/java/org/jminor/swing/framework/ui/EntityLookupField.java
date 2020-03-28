@@ -332,11 +332,11 @@ public final class EntityLookupField extends JTextField {
             Controls.control(okButton::doClick));
     KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_FOCUSED, true,
             Controls.control(closeEvent::onEvent));
-    final JPanel buttonPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
+    final JPanel buttonPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     buttonPanel.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
     messageLabel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE));
-    final JPanel messagePanel = new JPanel(Layouts.createBorderLayout());
+    final JPanel messagePanel = new JPanel(Layouts.borderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     messagePanel.add(buttonPanel, BorderLayout.SOUTH);
     disableLookup();
@@ -400,25 +400,25 @@ public final class EntityLookupField extends JTextField {
       final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
       lookupModel.getMultipleItemSeparatorValue().link(TextValues.textValue(multipleValueSeparatorField));
 
-      final JPanel generalSettingsPanel = new JPanel(Layouts.createGridLayout(2, 1));
+      final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
 
       generalSettingsPanel.add(boxAllowMultipleValues);
 
-      final JPanel valueSeparatorPanel = new JPanel(Layouts.createBorderLayout());
+      final JPanel valueSeparatorPanel = new JPanel(Layouts.borderLayout());
       valueSeparatorPanel.add(multipleValueSeparatorField, BorderLayout.WEST);
       valueSeparatorPanel.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
 
       generalSettingsPanel.add(valueSeparatorPanel);
 
-      setLayout(Layouts.createBorderLayout());
+      setLayout(Layouts.borderLayout());
       add(new JComboBox<>(propertyComboBoxModel), BorderLayout.NORTH);
       add(propertyBasePanel, BorderLayout.CENTER);
       add(generalSettingsPanel, BorderLayout.SOUTH);
     }
 
     private static JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
-      final JPanel panel = new JPanel(Layouts.createGridLayout(3, 1));
+      final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
       settings.getCaseSensitiveValue().link(BooleanValues.booleanButtonModelValue(boxCaseSensitive.getModel()));
       final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
@@ -465,7 +465,7 @@ public final class EntityLookupField extends JTextField {
 
     private final JList<Entity> list = new JList<>();
     private final JScrollPane scrollPane = new JScrollPane(list);
-    private final JPanel basePanel = new JPanel(Layouts.createBorderLayout());
+    private final JPanel basePanel = new JPanel(Layouts.borderLayout());
     private final Control selectControl;
 
     /**
@@ -522,7 +522,7 @@ public final class EntityLookupField extends JTextField {
 
     private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
     private final JScrollPane scrollPane;
-    private final JPanel basePanel = new JPanel(Layouts.createBorderLayout());
+    private final JPanel basePanel = new JPanel(Layouts.borderLayout());
     private final Control selectControl;
 
     /**

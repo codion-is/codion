@@ -106,7 +106,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    final JPanel infoPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
+    final JPanel infoPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     infoPanel.add(new JLabel("Connections", JLabel.RIGHT));
     infoPanel.add(initializeConnectionCountField());
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
@@ -132,7 +132,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel initializePerformancePanel() {
-    final JPanel controlPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
+    final JPanel controlPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
 
     final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
@@ -143,28 +143,28 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanel.add(new JLabel("Update interval (s)"));
     controlPanel.add(updateIntervalSpinner);
 
-    final JPanel controlPanelBase = new JPanel(Layouts.createBorderLayout());
+    final JPanel controlPanelBase = new JPanel(Layouts.borderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
     controlPanelBase.add(new JButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
-    final JPanel chartPanelLeft = new JPanel(Layouts.createGridLayout(3, 1));
-    final JPanel chartPanelRight = new JPanel(Layouts.createGridLayout(3, 1));
+    final JPanel chartPanelLeft = new JPanel(Layouts.gridLayout(3, 1));
+    final JPanel chartPanelRight = new JPanel(Layouts.gridLayout(3, 1));
     chartPanelLeft.add(requestsPerSecondChartPanel);
     chartPanelLeft.add(connectionCountChartPanel);
     chartPanelLeft.add(systemLoadChartPanel);
     chartPanelRight.add(threadCountChartPanel);
     chartPanelRight.add(memoryUsageChartPanel);
     chartPanelRight.add(gcEventsChartPanel);
-    final JPanel chartPanel = new JPanel(Layouts.createGridLayout(1, 2));
+    final JPanel chartPanel = new JPanel(Layouts.gridLayout(1, 2));
     chartPanel.add(chartPanelLeft);
     chartPanel.add(chartPanelRight);
     chartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel overviewPanel = new JPanel(Layouts.createBorderLayout());
+    final JPanel overviewPanel = new JPanel(Layouts.borderLayout());
     overviewPanel.add(controlPanelBase, BorderLayout.SOUTH);
     overviewPanel.add(chartPanel, BorderLayout.CENTER);
 
-    final JPanel panel = new JPanel(Layouts.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(overviewPanel, BorderLayout.CENTER);
 
     return panel;
@@ -179,12 +179,12 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel initializeDomainModelPanel() {
-    final JPanel panel = new JPanel(Layouts.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.borderLayout());
     final JTable table = new JTable(model.getDomainTableModel());
     table.setRowSorter(new TableRowSorter<>(model.getDomainTableModel()));
     final JScrollPane scroller = new JScrollPane(table);
 
-    final JPanel refreshPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.RIGHT));
+    final JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
     refreshPanel.add(new JButton(Controls.control(model::refreshDomainList, "Refresh")));
     panel.add(refreshPanel, BorderLayout.NORTH);
     panel.add(scroller, BorderLayout.CENTER);

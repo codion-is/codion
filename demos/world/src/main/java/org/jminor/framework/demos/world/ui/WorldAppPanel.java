@@ -34,11 +34,13 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     countryPanelProvider.addDetailPanelProvider(cityPanelProvider);
     countryPanelProvider.addDetailPanelProvider(countryLanguagePanelProvider);
 
+    EntityPanelProvider continentPanelProvider = new EntityPanelProvider(World.T_CONTINENT)
+            .setPanelClass(ContinentPanel.class);
     EntityPanelProvider lookupPanelProvider = new EntityPanelProvider(World.T_LOOKUP)
             .setTablePanelClass(LookupTablePanel.class)
             .setRefreshOnInit(false);
 
-    addEntityPanelProviders(countryPanelProvider, customCountryPanelProvider, lookupPanelProvider);
+    addEntityPanelProviders(countryPanelProvider, customCountryPanelProvider, continentPanelProvider, lookupPanelProvider);
   }
   // end::setupEntityPanelProviders[]
 

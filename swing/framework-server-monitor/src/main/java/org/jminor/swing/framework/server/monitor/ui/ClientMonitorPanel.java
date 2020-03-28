@@ -52,7 +52,7 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    setLayout(Layouts.createBorderLayout());
+    setLayout(Layouts.borderLayout());
     clientInstanceList.getSelectionModel().addListSelectionListener(e -> {
       try {
         final ClientInstanceMonitor clientMonitor = clientInstanceList.getSelectedValue();
@@ -67,7 +67,7 @@ public final class ClientMonitorPanel extends JPanel {
     });
     clientInstanceList.setComponentPopupMenu(initializePopupMenu());
 
-    final JPanel clientInstanceBase = new JPanel(Layouts.createBorderLayout());
+    final JPanel clientInstanceBase = new JPanel(Layouts.borderLayout());
     final JScrollPane clientInstanceScroller = new JScrollPane(clientInstanceList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);

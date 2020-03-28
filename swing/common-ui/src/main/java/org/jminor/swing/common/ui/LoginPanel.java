@@ -117,15 +117,15 @@ public final class LoginPanel extends JPanel {
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(passwordField);
 
-    final JPanel basePanel = new JPanel(Layouts.createFlexibleGridLayout(GRID_SIZE, GRID_SIZE, true, false));
+    final JPanel basePanel = new JPanel(Layouts.flexibleGridLayout(GRID_SIZE, GRID_SIZE, true, false));
     basePanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));
     basePanel.add(usernameField);
     basePanel.add(new JLabel(Messages.get(Messages.PASSWORD), JLabel.RIGHT));
     basePanel.add(passwordField);
 
-    final JPanel centerPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
+    final JPanel centerPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     centerPanel.add(basePanel);
-    setLayout(Layouts.createBorderLayout());
+    setLayout(Layouts.borderLayout());
     add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().length() == 0) {
       Components.addInitialFocusHack(usernameField, Controls.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));

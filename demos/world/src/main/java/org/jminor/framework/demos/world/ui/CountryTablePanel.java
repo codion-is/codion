@@ -10,10 +10,11 @@ import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 
 import javax.swing.JTabbedPane;
+
+import static org.jfree.chart.ChartFactory.createPieChart;
 
 public final class CountryTablePanel extends EntityTablePanel {
 
@@ -23,9 +24,9 @@ public final class CountryTablePanel extends EntityTablePanel {
 
   public CountryTablePanel(CountryTableModel tableModel) {
     super(tableModel);
-    cityChartPanel = new ChartPanel(ChartFactory.createPieChart("Cities", tableModel.getCityChartDataset()));
+    cityChartPanel = new ChartPanel(createPieChart("Cities", tableModel.getCityChartDataset()));
     cityChartPanel.getChart().removeLegend();
-    languageChartPanel = new ChartPanel(ChartFactory.createPieChart("Languages", tableModel.getLanguagePieDataset()));
+    languageChartPanel = new ChartPanel(createPieChart("Languages", tableModel.getLanguagePieDataset()));
     languageChartPanel.getChart().removeLegend();
     pieChartPane.addTab("Cities", cityChartPanel);
     pieChartPane.addTab("Languages", languageChartPanel);

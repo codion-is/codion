@@ -59,7 +59,7 @@ public final class DatabaseMonitorPanel extends JPanel {
   }
 
   private JPanel getChartPanel() {
-    final JPanel chartConfig = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
+    final JPanel chartConfig = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
@@ -69,11 +69,11 @@ public final class DatabaseMonitorPanel extends JPanel {
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(updateIntervalSpinner);
 
-    final JPanel configBase = new JPanel(Layouts.createBorderLayout());
+    final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(chartConfig, BorderLayout.CENTER);
     configBase.add(new JButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
-    final JPanel panel = new JPanel(Layouts.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.borderLayout());
     queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
     panel.add(queriesPerSecondChartPanel, BorderLayout.CENTER);
     panel.add(configBase, BorderLayout.SOUTH);

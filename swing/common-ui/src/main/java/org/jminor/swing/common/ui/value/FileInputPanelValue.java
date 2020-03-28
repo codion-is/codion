@@ -52,7 +52,7 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
     private FileInputPanel() {
       filePathField.setEditable(false);
       filePathField.setFocusable(false);
-      setLayout(Layouts.createBorderLayout());
+      setLayout(Layouts.borderLayout());
       add(filePathField, BorderLayout.CENTER);
       final JButton browseButton = new JButton(new AbstractAction("...") {
         @Override

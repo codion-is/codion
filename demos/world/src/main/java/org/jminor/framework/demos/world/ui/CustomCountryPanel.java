@@ -66,11 +66,11 @@ public final class CustomCountryPanel extends EntityPanel {
     ChartPanel languageChartPanel = countryTablePanel.getLanguageChartPanel();
     languageChartPanel.setPreferredSize(new Dimension(300, 300));
 
-    JPanel southTablePanel = new JPanel(Layouts.createGridLayout(1, 2));
+    JPanel southTablePanel = new JPanel(Layouts.gridLayout(1, 2));
     southTablePanel.add(cityPanel);
     southTablePanel.add(languagePanel);
 
-    JPanel southChartPanel = new JPanel(Layouts.createGridLayout(1, 2));
+    JPanel southChartPanel = new JPanel(Layouts.gridLayout(1, 2));
     southChartPanel.add(cityChartPanel);
     southChartPanel.add(languageChartPanel);
 
@@ -78,7 +78,7 @@ public final class CustomCountryPanel extends EntityPanel {
     southTabbedPane.addTab("Tables", southTablePanel);
     southTabbedPane.addTab("Charts", southChartPanel);
 
-    setLayout(Layouts.createBorderLayout());
+    setLayout(Layouts.borderLayout());
 
     add(countryTablePanel, BorderLayout.CENTER);
     add(southTabbedPane, BorderLayout.SOUTH);
