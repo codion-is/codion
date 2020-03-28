@@ -192,8 +192,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       return;
     }
 
-    final RemoteClientConnection<T> remoteClientConnection;
-    remoteClientConnection = connections.remove(clientId);
+    final RemoteClientConnection<T> remoteClientConnection = connections.remove(clientId);
     if (remoteClientConnection != null) {
       doDisconnect(remoteClientConnection.getConnection());
       final RemoteClient remoteClient = remoteClientConnection.getClient();

@@ -162,7 +162,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private final Registry registry;
   private final boolean sslEnabled;
   private final boolean clientLoggingEnabled;
-  private final Map<String, Integer> clientTimeouts = new HashMap<>();
+  private final Map<String, Integer> clientTypeConnectionTimeouts = new HashMap<>();
   private final Thread shutdownHook;
   private final Collection<AuxiliaryServer> auxiliaryServers = new LinkedList<>();
 
@@ -221,7 +221,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       this.clientLoggingEnabled = clientLoggingEnabled;
       this.adminUser = adminUser;
       setConnectionTimeout(connectionTimeout);
-      setClientSpecificConnectionTimeout(clientSpecificConnectionTimeouts);
+      setClientTypeConnectionTimeouts(clientSpecificConnectionTimeouts);
       loadDomainModels(domainModelClassNames);
       initializeConnectionPools(database, startupPoolUsers);
       loadLoginProxies(loginProxyClassNames);
@@ -357,11 +357,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * @param clientSpecificTimeouts the timeout values mapped to each clientTypeId
+   * @param clientTypeConnectionTimeouts the timeout values mapped to each clientTypeId
    */
-  final void setClientSpecificConnectionTimeout(final Map<String, Integer> clientSpecificTimeouts) {
-    if (clientSpecificTimeouts != null) {
-      this.clientTimeouts.putAll(clientSpecificTimeouts);
+  final void setClientTypeConnectionTimeouts(final Map<String, Integer> clientTypeConnectionTimeouts) {
+    if (clientTypeConnectionTimeouts != null) {
+      this.clientTypeConnectionTimeouts.putAll(clientTypeConnectionTimeouts);
     }
   }
 
@@ -659,7 +659,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   private boolean hasConnectionTimedOut(final String clientTypeId, final AbstractRemoteEntityConnection connection) {
-    Integer timeout = clientTimeouts.get(clientTypeId);
+    Integer timeout = clientTypeConnectionTimeouts.get(clientTypeId);
     if (timeout == null) {
       timeout = connectionTimeout;
     }
