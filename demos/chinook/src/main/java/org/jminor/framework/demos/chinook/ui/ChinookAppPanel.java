@@ -17,7 +17,7 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
@@ -41,27 +41,27 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
    *     INVOICELINE
    */
   @Override
-  protected void setupEntityPanelProviders() {
-    final EntityPanelProvider trackProvider = new EntityPanelProvider(T_TRACK);
-    trackProvider.setEditPanelClass(TrackEditPanel.class).setTablePanelClass(TrackTablePanel.class);
+  protected void setupEntityPanelBuilders() {
+    final EntityPanelBuilder trackBuilder = new EntityPanelBuilder(T_TRACK);
+    trackBuilder.setEditPanelClass(TrackEditPanel.class).setTablePanelClass(TrackTablePanel.class);
 
-    final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER);
-    customerProvider.setEditPanelClass(CustomerEditPanel.class);
-    customerProvider.setTablePanelClass(CustomerTablePanel.class);
+    final EntityPanelBuilder customerBuilder = new EntityPanelBuilder(T_CUSTOMER);
+    customerBuilder.setEditPanelClass(CustomerEditPanel.class);
+    customerBuilder.setTablePanelClass(CustomerTablePanel.class);
 
-    final EntityPanelProvider genreProvider = new EntityPanelProvider(T_GENRE);
-    genreProvider.setEditPanelClass(GenreEditPanel.class);
-    genreProvider.addDetailPanelProvider(trackProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanelBuilder genreBuilder = new EntityPanelBuilder(T_GENRE);
+    genreBuilder.setEditPanelClass(GenreEditPanel.class);
+    genreBuilder.addDetailPanelBuilder(trackBuilder).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanelProvider mediaTypeProvider = new EntityPanelProvider(T_MEDIATYPE);
-    mediaTypeProvider.setEditPanelClass(MediaTypeEditPanel.class);
-    mediaTypeProvider.addDetailPanelProvider(trackProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanelBuilder mediaTypeBuilder = new EntityPanelBuilder(T_MEDIATYPE);
+    mediaTypeBuilder.setEditPanelClass(MediaTypeEditPanel.class);
+    mediaTypeBuilder.addDetailPanelBuilder(trackBuilder).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanelProvider employeeProvider = new EntityPanelProvider(T_EMPLOYEE);
-    employeeProvider.setEditPanelClass(EmployeeEditPanel.class);
-    employeeProvider.addDetailPanelProvider(customerProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanelBuilder employeeBuilder = new EntityPanelBuilder(T_EMPLOYEE);
+    employeeBuilder.setEditPanelClass(EmployeeEditPanel.class);
+    employeeBuilder.addDetailPanelBuilder(customerBuilder).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    addSupportPanelProviders(genreProvider, mediaTypeProvider, employeeProvider);
+    addSupportPanelBuilders(genreBuilder, mediaTypeBuilder, employeeBuilder);
   }
 
   @Override

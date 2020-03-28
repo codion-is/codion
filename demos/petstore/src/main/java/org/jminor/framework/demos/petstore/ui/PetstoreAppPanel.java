@@ -10,7 +10,7 @@ import org.jminor.framework.demos.petstore.model.PetstoreAppModel;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import java.util.Locale;
 
@@ -19,36 +19,36 @@ import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
   @Override
-  protected void setupEntityPanelProviders() {
+  protected void setupEntityPanelBuilders() {
     /* CATEGORY
      *   PRODUCT
      *     ITEM
      *       ITEMTAG
      */
-    final EntityPanelProvider tagItemProvider = new EntityPanelProvider(T_TAG_ITEM)
+    final EntityPanelBuilder tagItemProvider = new EntityPanelBuilder(T_TAG_ITEM)
             .setEditPanelClass(TagItemEditPanel.class);
-    final EntityPanelProvider itemProvider = new EntityPanelProvider(T_ITEM)
+    final EntityPanelBuilder itemProvider = new EntityPanelBuilder(T_ITEM)
             .setEditPanelClass(ItemEditPanel.class);
-    itemProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
-    final EntityPanelProvider productProvider = new EntityPanelProvider(T_PRODUCT)
+    itemProvider.addDetailPanelBuilder(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanelBuilder productProvider = new EntityPanelBuilder(T_PRODUCT)
             .setEditPanelClass(ProductEditPanel.class);
-    productProvider.addDetailPanelProvider(itemProvider).setDetailSplitPanelResizeWeight(0.3);
-    final EntityPanelProvider categoryProvider = new EntityPanelProvider(T_CATEGORY)
+    productProvider.addDetailPanelBuilder(itemProvider).setDetailSplitPanelResizeWeight(0.3);
+    final EntityPanelBuilder categoryProvider = new EntityPanelBuilder(T_CATEGORY)
             .setEditPanelClass(CategoryEditPanel.class);
-    categoryProvider.addDetailPanelProvider(productProvider).setDetailSplitPanelResizeWeight(0.3);
+    categoryProvider.addDetailPanelBuilder(productProvider).setDetailSplitPanelResizeWeight(0.3);
 
-    addEntityPanelProvider(categoryProvider);
+    addEntityPanelBuilder(categoryProvider);
 
-    final EntityPanelProvider addressProvider = new EntityPanelProvider(T_ADDRESS)
+    final EntityPanelBuilder addressProvider = new EntityPanelBuilder(T_ADDRESS)
             .setEditPanelClass(AddressEditPanel.class);
-    final EntityPanelProvider contactInfoProvider = new EntityPanelProvider(T_SELLER_CONTACT_INFO)
+    final EntityPanelBuilder contactInfoProvider = new EntityPanelBuilder(T_SELLER_CONTACT_INFO)
             .setEditPanelClass(ContactInfoEditPanel.class);
-    contactInfoProvider.addDetailPanelProvider(itemProvider);
-    final EntityPanelProvider tagProvider = new EntityPanelProvider(T_TAG)
+    contactInfoProvider.addDetailPanelBuilder(itemProvider);
+    final EntityPanelBuilder tagProvider = new EntityPanelBuilder(T_TAG)
             .setEditPanelClass(TagEditPanel.class);
-    tagProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
+    tagProvider.addDetailPanelBuilder(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    addSupportPanelProviders(addressProvider, contactInfoProvider, tagProvider);
+    addSupportPanelBuilders(addressProvider, contactInfoProvider, tagProvider);
   }
 
   @Override

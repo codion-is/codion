@@ -2,6 +2,7 @@ package org.jminor.framework.demos.world.ui;
 
 import org.jminor.common.model.table.ColumnSummary;
 import org.jminor.framework.demos.world.domain.World;
+import org.jminor.framework.demos.world.model.CountryCustomModel;
 import org.jminor.framework.demos.world.model.CountryEditModel;
 import org.jminor.framework.demos.world.model.CountryTableModel;
 import org.jminor.swing.common.ui.control.Controls;
@@ -20,9 +21,9 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-public final class CustomCountryPanel extends EntityPanel {
+public final class CountryCustomPanel extends EntityPanel {
 
-  public CustomCountryPanel(final SwingEntityModel entityModel) {
+  public CountryCustomPanel(final CountryCustomModel entityModel) {
     super(entityModel,
             new CountryEditPanel((CountryEditModel) entityModel.getEditModel()),
             new CountryTablePanel((CountryTableModel) entityModel.getTableModel()));
@@ -66,19 +67,21 @@ public final class CustomCountryPanel extends EntityPanel {
     ChartPanel languageChartPanel = countryTablePanel.getLanguageChartPanel();
     languageChartPanel.setPreferredSize(new Dimension(300, 300));
 
-    JPanel southTablePanel = new JPanel(Layouts.createGridLayout(1, 2));
+    JPanel southTablePanel = new JPanel(Layouts.gridLayout(1, 2));
     southTablePanel.add(cityPanel);
     southTablePanel.add(languagePanel);
 
-    JPanel southChartPanel = new JPanel(Layouts.createGridLayout(1, 2));
+    JPanel southChartPanel = new JPanel(Layouts.gridLayout(1, 2));
     southChartPanel.add(cityChartPanel);
     southChartPanel.add(languageChartPanel);
 
     JTabbedPane southTabbedPane = new JTabbedPane(SwingConstants.BOTTOM);
     southTabbedPane.addTab("Tables", southTablePanel);
     southTabbedPane.addTab("Charts", southChartPanel);
+    southTabbedPane.setMnemonicAt(0, 'T');
+    southTabbedPane.setMnemonicAt(1, 'C');
 
-    setLayout(Layouts.createBorderLayout());
+    setLayout(Layouts.borderLayout());
 
     add(countryTablePanel, BorderLayout.CENTER);
     add(southTabbedPane, BorderLayout.SOUTH);

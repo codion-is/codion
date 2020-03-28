@@ -64,13 +64,13 @@ public class SwingEntityEditModelTest {
     final EntityComboBoxModel model = employeeEditModel.getForeignKeyComboBoxModel(deptProperty);
     assertNotNull(model);
     assertTrue(model.isCleared());
-    assertTrue(model.getAllItems().isEmpty());
+    assertTrue(model.getItems().isEmpty());
     employeeEditModel.refreshComboBoxModels();
     assertFalse(model.isCleared());
-    assertFalse(model.getAllItems().isEmpty());
+    assertFalse(model.getItems().isEmpty());
     employeeEditModel.clearComboBoxModels();
     assertTrue(model.isCleared());
-    assertTrue(model.getAllItems().isEmpty());
+    assertTrue(model.getItems().isEmpty());
   }
 
   @Test
@@ -78,7 +78,7 @@ public class SwingEntityEditModelTest {
     final EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(deptProperty);
     assertNotNull(model);
     assertTrue(model.isCleared());
-    assertTrue(model.getAllItems().isEmpty());
+    assertTrue(model.getItems().isEmpty());
     assertEquals(deptProperty.getForeignEntityId(), model.getEntityId());
   }
 

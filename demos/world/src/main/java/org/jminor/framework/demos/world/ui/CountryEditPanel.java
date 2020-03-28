@@ -5,7 +5,7 @@ import org.jminor.framework.demos.world.model.CountryEditModel;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -43,7 +43,7 @@ public final class CountryEditPanel extends EntityEditPanel {
             setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), 120);
     //create a panel with a button for adding a new city
     JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
-            createEditPanelAction(capitalComboBox, new CityPanelProvider()), false);
+            createEditPanelAction(capitalComboBox, new CityPanelBuilder()), false);
 
     setLayout(new GridLayout(4, 5, 5, 5));
 
@@ -64,10 +64,10 @@ public final class CountryEditPanel extends EntityEditPanel {
     add(createPropertyPanel(World.COUNTRY_CAPITAL_FK, capitalPanel));
   }
 
-  /** A EntityPanelProvider for adding a new city */
-  private final class CityPanelProvider extends EntityPanelProvider {
+  /** A EntityPanelBuilder for adding a new city */
+  private final class CityPanelBuilder extends EntityPanelBuilder {
 
-    public CityPanelProvider() {
+    public CityPanelBuilder() {
       super(World.T_CITY);
       setEditPanelClass(CityEditPanel.class);
     }

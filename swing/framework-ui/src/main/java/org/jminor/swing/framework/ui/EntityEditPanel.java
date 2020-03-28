@@ -383,12 +383,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       return null;
     }
     if (horizontal) {
-      final JPanel panel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
+      final JPanel panel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
       panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControlSet));
       return panel;
     }
     else {
-      final JPanel panel = new JPanel(Layouts.createBorderLayout());
+      final JPanel panel = new JPanel(Layouts.borderLayout());
       panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControlSet), BorderLayout.NORTH);
       return panel;
     }
@@ -599,10 +599,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * Creates a new Action which shows the edit panel provided by {@code panelProvider} and if an insert is performed
    * selects the new entity in the {@code lookupField}.
    * @param comboBox the combo box in which to select the new entity, if created
-   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
+   * @param panelProvider the EntityPanelBuilder for providing the EntityEditPanel to use for creating the new entity
    * @return the Action
    */
-  public static Action createEditPanelAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
+  public static Action createEditPanelAction(final EntityComboBox comboBox, final EntityPanelBuilder panelProvider) {
     return new InsertEntityAction(comboBox, panelProvider);
   }
 
@@ -610,10 +610,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * Creates a new Action which shows the edit panel provided by {@code panelProvider} and if an insert is performed
    * selects the new entity in the {@code lookupField}.
    * @param lookupField the lookup field in which to select the new entity, if created
-   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
+   * @param panelProvider the EntityPanelBuilder for providing the EntityEditPanel to use for creating the new entity
    * @return the Action
    */
-  public static Action createEditPanelAction(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
+  public static Action createEditPanelAction(final EntityLookupField lookupField, final EntityPanelBuilder panelProvider) {
     return new InsertEntityAction(lookupField, panelProvider);
   }
 
@@ -621,12 +621,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * Creates a new Action which shows the edit panel provided by {@code panelProvider} and if an insert is performed
    * {@code insertListener} is notified.
    * @param component this component used as dialog parent, receives the focus after insert
-   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
+   * @param panelProvider the EntityPanelBuilder for providing the EntityEditPanel to use for creating the new entity
    * @param connectionProvider the connection provider
    * @param insertListener the listener notified when insert has been performed
    * @return the Action
    */
-  public static Action createEditPanelAction(final JComponent component, final EntityPanelProvider panelProvider,
+  public static Action createEditPanelAction(final JComponent component, final EntityPanelBuilder panelProvider,
                                              final EntityConnectionProvider connectionProvider,
                                              final EventDataListener<List<Entity>> insertListener) {
     return new InsertEntityAction(component, panelProvider, connectionProvider, insertListener);
@@ -818,12 +818,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   private static final class InsertEntityAction extends AbstractAction {
 
     private final JComponent component;
-    private final EntityPanelProvider panelProvider;
+    private final EntityPanelBuilder panelProvider;
     private final EntityConnectionProvider connectionProvider;
     private final EventDataListener<List<Entity>> insertListener;
     private final List<Entity> insertedEntities = new ArrayList<>();
 
-    private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
+    private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelBuilder panelProvider) {
       this(comboBox, panelProvider, comboBox.getModel().getConnectionProvider(), inserted -> {
         final EntityComboBoxModel comboBoxModel = comboBox.getModel();
         final Entity item = inserted.get(0);
@@ -832,12 +832,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       });
     }
 
-    private InsertEntityAction(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
+    private InsertEntityAction(final EntityLookupField lookupField, final EntityPanelBuilder panelProvider) {
       this(lookupField, panelProvider, lookupField.getModel().getConnectionProvider(), inserted ->
               lookupField.getModel().setSelectedEntities(inserted));
     }
 
-    private InsertEntityAction(final JComponent component, final EntityPanelProvider panelProvider,
+    private InsertEntityAction(final JComponent component, final EntityPanelBuilder panelProvider,
                                final EntityConnectionProvider connectionProvider,
                                final EventDataListener<List<Entity>> insertListener) {
       super("", Images.loadImage(Images.IMG_ADD_16));

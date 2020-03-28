@@ -6,7 +6,7 @@ package org.jminor.swing.framework.ui;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import java.lang.reflect.Constructor;
@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A class providing EntityPanel instances.
  */
-public class EntityPanelProvider {
+public class EntityPanelBuilder {
 
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
 
@@ -33,63 +33,63 @@ public class EntityPanelProvider {
   private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;
   private Class<? extends EntityEditPanel> editPanelClass;
 
-  private final SwingEntityModelProvider modelProvider;
+  private final SwingEntityModelBuilder modelBuilder;
 
-  private final List<EntityPanelProvider> detailPanelProviders = new ArrayList<>();
+  private final List<EntityPanelBuilder> detailPanelBuilders = new ArrayList<>();
 
   /**
-   * Instantiates a new EntityPanelProvider for the given entity type
+   * Instantiates a new EntityPanelBuilder for the given entity type
    * @param entityId the entity ID
    */
-  public EntityPanelProvider(final String entityId) {
+  public EntityPanelBuilder(final String entityId) {
     this(entityId, SwingEntityModel.class, EntityPanel.class);
   }
 
   /**
-   * Instantiates a new EntityPanelProvider
+   * Instantiates a new EntityPanelBuilder
    * @param entityId the entityId
    * @param entityModelClass the Class of the EntityModel
    * @param entityPanelClass the Class of the EntityPanel
    */
-  public EntityPanelProvider(final String entityId, final Class<? extends SwingEntityModel> entityModelClass,
-                             final Class<? extends EntityPanel> entityPanelClass) {
-    this(new SwingEntityModelProvider(entityId, entityModelClass));
+  public EntityPanelBuilder(final String entityId, final Class<? extends SwingEntityModel> entityModelClass,
+                            final Class<? extends EntityPanel> entityPanelClass) {
+    this(new SwingEntityModelBuilder(entityId).setModelClass(entityModelClass));
     setPanelClass(entityPanelClass);
   }
 
   /**
-   * Instantiates a new EntityPanelProvider
-   * @param modelProvider the EntityModelProvider to base this panel provider on
+   * Instantiates a new EntityPanelBuilder
+   * @param modelBuilder the EntityModelBuilder to base this panel provider on
    */
-  public EntityPanelProvider(final SwingEntityModelProvider modelProvider) {
-    this.modelProvider = requireNonNull(modelProvider, "modelProvider");
+  public EntityPanelBuilder(final SwingEntityModelBuilder modelBuilder) {
+    this.modelBuilder = requireNonNull(modelBuilder, "modelBuilder");
   }
 
   /**
    * @return the entity ID
    */
   public final String getEntityId() {
-    return modelProvider.getEntityId();
+    return modelBuilder.getEntityId();
   }
 
   /**
-   * @return the EntityModelProvider this panel provider is based on
+   * @return the EntityModelBuilder this panel provider is based on
    */
-  public final SwingEntityModelProvider getModelProvider() {
-    return modelProvider;
+  public final SwingEntityModelBuilder getModelBuilder() {
+    return modelBuilder;
   }
 
   /**
    * @param caption the panel caption
-   * @return this EntityPanelProvider instance
+   * @return this EntityPanelBuilder instance
    */
-  public final EntityPanelProvider setCaption(final String caption) {
+  public final EntityPanelBuilder setCaption(final String caption) {
     this.caption = caption;
     return this;
   }
 
   /**
-   * @return the caption to use when this EntityPanelProvider is shown in f.x. menus
+   * @return the caption to use when this EntityPanelBuilder is shown in f.x. menus
    */
   public final String getCaption() {
     return caption;
@@ -97,14 +97,14 @@ public class EntityPanelProvider {
 
   /**
    * Adds the given panel provider as a detail panel provider for this panel provider instance
-   * @param panelProvider the detail panel provider
-   * @return this EntityPanelProvider instance
+   * @param panelBuilder the detail panel provider
+   * @return this EntityPanelBuilder instance
    */
-  public final EntityPanelProvider addDetailPanelProvider(final EntityPanelProvider panelProvider) {
-    if (!detailPanelProviders.contains(panelProvider)) {
-      detailPanelProviders.add(panelProvider);
-      if (!modelProvider.containsDetailModelProvider(panelProvider.getModelProvider())) {
-        modelProvider.addDetailModelProvider(panelProvider.getModelProvider());//todo not very clean
+  public final EntityPanelBuilder addDetailPanelBuilder(final EntityPanelBuilder panelBuilder) {
+    if (!detailPanelBuilders.contains(panelBuilder)) {
+      detailPanelBuilders.add(panelBuilder);
+      if (!modelBuilder.containsDetailModelBuilder(panelBuilder.getModelBuilder())) {
+        modelBuilder.addDetailModelBuilder(panelBuilder.getModelBuilder());//todo not very clean
       }
     }
 
@@ -114,8 +114,8 @@ public class EntityPanelProvider {
   /**
    * @return an unmodifiable view of the detail panel providers
    */
-  public final List<EntityPanelProvider> getDetailPanelProviders() {
-    return Collections.unmodifiableList(detailPanelProviders);
+  public final List<EntityPanelBuilder> getDetailPanelBuilders() {
+    return Collections.unmodifiableList(detailPanelBuilders);
   }
 
   /**
@@ -128,9 +128,9 @@ public class EntityPanelProvider {
   /**
    * @param refreshOnInit if true then the data model this panel is based on will be refreshed when
    * the panel is initialized
-   * @return this EntityPanelProvider instance
+   * @return this EntityPanelBuilder instance
    */
-  public final EntityPanelProvider setRefreshOnInit(final boolean refreshOnInit) {
+  public final EntityPanelBuilder setRefreshOnInit(final boolean refreshOnInit) {
     this.refreshOnInit = refreshOnInit;
     return this;
   }
@@ -144,9 +144,9 @@ public class EntityPanelProvider {
 
   /**
    * @param tableConditionPanelVisible if true then the table condition panel is made visible when the panel is initialized
-   * @return this EntityPanelProvider instance
+   * @return this EntityPanelBuilder instance
    */
-  public final EntityPanelProvider setTableConditionPanelVisible(final boolean tableConditionPanelVisible) {
+  public final EntityPanelBuilder setTableConditionPanelVisible(final boolean tableConditionPanelVisible) {
     this.tableConditionPanelVisible = tableConditionPanelVisible;
     return this;
   }
@@ -160,9 +160,9 @@ public class EntityPanelProvider {
 
   /**
    * @param detailPanelState the state of the detail panels when this panel is initialized
-   * @return this EntityPanelProvider instance
+   * @return this EntityPanelBuilder instance
    */
-  public final EntityPanelProvider setDetailPanelState(final EntityPanel.PanelState detailPanelState) {
+  public final EntityPanelBuilder setDetailPanelState(final EntityPanel.PanelState detailPanelState) {
     this.detailPanelState = detailPanelState;
     return this;
   }
@@ -178,9 +178,9 @@ public class EntityPanelProvider {
   /**
    * @param detailSplitPanelResizeWeight the split panel resize weight to use when initializing this panel
    * with its detail panels
-   * @return this EntityPanelProvider instance
+   * @return this EntityPanelBuilder instance
    */
-  public final EntityPanelProvider setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
+  public final EntityPanelBuilder setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
     return this;
   }
@@ -188,9 +188,9 @@ public class EntityPanelProvider {
   /**
    * Note that setting the EntityPanel class overrides any table panel or edit panel classes that have been set.
    * @param panelClass the EntityPanel class to use when providing this panel
-   * @return this EntityPanelProvider instance
+   * @return this EntityPanelBuilder instance
    */
-  public final EntityPanelProvider setPanelClass(final Class<? extends EntityPanel> panelClass) {
+  public final EntityPanelBuilder setPanelClass(final Class<? extends EntityPanel> panelClass) {
     requireNonNull(panelClass, "panelClass");
     this.panelClass = panelClass;
     return this;
@@ -198,18 +198,18 @@ public class EntityPanelProvider {
 
   /**
    * @param editPanelClass the EntityEditPanel class to use when providing this panel
-   * @return this EntityPanelProvider instance
+   * @return this EntityPanelBuilder instance
    */
-  public final EntityPanelProvider setEditPanelClass(final Class<? extends EntityEditPanel> editPanelClass) {
+  public final EntityPanelBuilder setEditPanelClass(final Class<? extends EntityEditPanel> editPanelClass) {
     this.editPanelClass = editPanelClass;
     return this;
   }
 
   /**
    * @param tablePanelClass the EntityTablePanel class to use when providing this panel
-   * @return this EntityPanelProvider instance
+   * @return this EntityPanelBuilder instance
    */
-  public final EntityPanelProvider setTablePanelClass(final Class<? extends EntityTablePanel> tablePanelClass) {
+  public final EntityPanelBuilder setTablePanelClass(final Class<? extends EntityTablePanel> tablePanelClass) {
     this.tablePanelClass = tablePanelClass;
     return this;
   }
@@ -238,15 +238,15 @@ public class EntityPanelProvider {
   /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
-    return obj instanceof EntityPanelProvider &&
-            ((EntityPanelProvider) obj).modelProvider.getEntityId().equals(modelProvider.getEntityId()) &&
-            ((EntityPanelProvider) obj).modelProvider.getModelClass().equals(modelProvider.getModelClass());
+    return obj instanceof EntityPanelBuilder &&
+            ((EntityPanelBuilder) obj).modelBuilder.getEntityId().equals(modelBuilder.getEntityId()) &&
+            ((EntityPanelBuilder) obj).modelBuilder.getModelClass().equals(modelBuilder.getModelClass());
   }
 
   /** {@inheritDoc} */
   @Override
   public final int hashCode() {
-    return modelProvider.getEntityId().hashCode() + modelProvider.getModelClass().hashCode();
+    return modelBuilder.getEntityId().hashCode() + modelBuilder.getModelClass().hashCode();
   }
 
   /**
@@ -257,7 +257,7 @@ public class EntityPanelProvider {
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, "connectionProvider");
     try {
-      final SwingEntityModel entityModel = modelProvider.createModel(connectionProvider);
+      final SwingEntityModel entityModel = modelBuilder.createModel(connectionProvider);
 
       return createPanel(entityModel);
     }
@@ -281,12 +281,12 @@ public class EntityPanelProvider {
       if (entityPanel.getTablePanel() != null && tableConditionPanelVisible) {
         entityPanel.getTablePanel().setConditionPanelVisible(tableConditionPanelVisible);
       }
-      if (!detailPanelProviders.isEmpty()) {
+      if (!detailPanelBuilders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
-        for (final EntityPanelProvider detailPanelProvider : detailPanelProviders) {
-          final SwingEntityModel detailModel = model.getDetailModel(detailPanelProvider.getEntityId());
-          final EntityPanel detailPanel = detailPanelProvider.createPanel(detailModel);
+        for (final EntityPanelBuilder detailPanelBuilder : detailPanelBuilders) {
+          final SwingEntityModel detailModel = model.getDetailModel(detailPanelBuilder.getEntityId());
+          final EntityPanel detailPanel = detailPanelBuilder.createPanel(detailModel);
           entityPanel.addDetailPanel(detailPanel);
         }
       }
@@ -311,7 +311,7 @@ public class EntityPanelProvider {
    * @return an EntityEditPanel based on this provider
    */
   public final EntityEditPanel createEditPanel(final EntityConnectionProvider connectionProvider) {
-    return initializeEditPanel(modelProvider.createEditModel(connectionProvider));
+    return initializeEditPanel(modelBuilder.createEditModel(connectionProvider));
   }
 
   /**
@@ -320,7 +320,7 @@ public class EntityPanelProvider {
    * @return an EntityTablePanel based on this provider
    */
   public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider) {
-    return initializeTablePanel(modelProvider.createTableModel(connectionProvider));
+    return initializeTablePanel(modelBuilder.createTableModel(connectionProvider));
   }
 
   /**
@@ -351,7 +351,7 @@ public class EntityPanelProvider {
                 .newInstance(entityModel, editPanel, tablePanel);
       }
       else {
-        entityPanel = panelClass.getConstructor(SwingEntityModel.class).newInstance(entityModel);
+        entityPanel = findModelConstructor(panelClass).newInstance(entityModel);
       }
       entityPanel.setCaption(caption == null ? entityModel.getConnectionProvider()
               .getDomain().getDefinition(entityModel.getEntityId()).getCaption() : caption);
@@ -403,6 +403,18 @@ public class EntityPanelProvider {
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static Constructor<EntityPanel> findModelConstructor(final Class<? extends EntityPanel> panelClass)
+          throws NoSuchMethodException {
+    for (final Constructor<?> constructor : panelClass.getConstructors()) {
+      if (constructor.getParameterCount() == 1 &&
+              SwingEntityModel.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
+        return (Constructor<EntityPanel>) constructor;
+      }
+    }
+
+    throw new NoSuchMethodException("Constructor with a single parameter of type SwingEntityModel (or subclass) not found in class: " + panelClass);
   }
 
   private static Constructor<EntityEditPanel> findEditModelConstructor(final Class<? extends EntityEditPanel> editPanelClass)

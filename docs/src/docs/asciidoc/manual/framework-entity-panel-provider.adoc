@@ -1,10 +1,10 @@
-= EntityPanelProvider
+= EntityPanelBuilder
 :dir-source: ../../../../../demos/world/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanelProvider.html[EntityPanelProvider] class provides lazy initialization for {url-javadoc}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanels]. Using the *EntityPanelProvider* class instead of instantiating *EntityPanels* directly means the panels are not initialized until made visible.
+The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanelBuilder.html[EntityPanelBuilder] class provides lazy initialization for {url-javadoc}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanels]. Using the *EntityPanelBuilder* class instead of instantiating *EntityPanels* directly means the panels are not initialized until made visible.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/ui/WorldAppPanel.java[tag=setupEntityPanelProviders]
+include::{dir-source}/org/jminor/framework/demos/world/ui/WorldAppPanel.java[tag=setupEntityPanelBuilders]
 ----

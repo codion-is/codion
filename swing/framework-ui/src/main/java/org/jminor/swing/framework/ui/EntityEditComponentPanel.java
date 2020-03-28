@@ -339,7 +339,7 @@ public class EntityEditComponentPanel extends JPanel {
     if (labelComponent instanceof JLabel) {
       setLabelForComponent((JLabel) labelComponent, inputComponent);
     }
-    final JPanel panel = new JPanel(Layouts.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(inputComponent, BorderLayout.CENTER);
     panel.add(labelComponent, labelBorderLayoutConstraints);
 

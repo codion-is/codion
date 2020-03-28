@@ -9,14 +9,14 @@ import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EntityPanelProviderTest {
+public class EntityPanelBuilderTest {
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -24,23 +24,23 @@ public class EntityPanelProviderTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void testDetailPanelProvider() {
-    final SwingEntityModelProvider customerModelProvider = new SwingEntityModelProvider(TestDomain.T_DEPARTMENT);
-    final SwingEntityModelProvider invoiceModelProvider = new SwingEntityModelProvider(TestDomain.T_EMP);
+  public void testDetailPanelBuilder() {
+    final SwingEntityModelBuilder customerModelBuilder = new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT);
+    final SwingEntityModelBuilder invoiceModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);
 
-    customerModelProvider.addDetailModelProvider(invoiceModelProvider);
+    customerModelBuilder.addDetailModelBuilder(invoiceModelBuilder);
 
-    final SwingEntityModel customerModel = customerModelProvider.createModel(CONNECTION_PROVIDER);
+    final SwingEntityModel customerModel = customerModelBuilder.createModel(CONNECTION_PROVIDER);
 
     final String customerCaption = "A department caption";
-    final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(TestDomain.T_DEPARTMENT)
+    final EntityPanelBuilder customerPanelBuilder = new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
             .setCaption(customerCaption);
-    final EntityPanelProvider invoicePanelProvider = new EntityPanelProvider(TestDomain.T_EMP)
+    final EntityPanelBuilder invoicePanelBuilder = new EntityPanelBuilder(TestDomain.T_EMP)
             .setCaption("empCaption");
 
-    customerPanelProvider.addDetailPanelProvider(invoicePanelProvider);
+    customerPanelBuilder.addDetailPanelBuilder(invoicePanelBuilder);
 
-    final EntityPanel customerPanel = customerPanelProvider.createPanel(customerModel);
+    final EntityPanel customerPanel = customerPanelBuilder.createPanel(customerModel);
     assertEquals(customerCaption, customerPanel.getCaption());
     assertTrue(customerPanel.containsDetailPanel(TestDomain.T_EMP));
     final EntityPanel invoicePanel = customerPanel.getDetailPanel(TestDomain.T_EMP);

@@ -66,6 +66,19 @@ public final class World extends Domain {
   public static final String COUNTRYLANGUAGE_NO_OF_SPEAKERS = "no_of_speakers";
   // end::entityAndPropertyIds[]
 
+  public static final String T_CONTINENT = "continent";
+  public static final String CONTINENT_NAME = "continent";
+  public static final String CONTINENT_SURFACE_AREA = "sum(surfacearea)";
+  public static final String CONTINENT_POPULATION = "sum(population)";
+  public static final String CONTINENT_MIN_LIFE_EXPECTANCY = "min(lifeexpectancy)";
+  public static final String CONTINENT_MAX_LIFE_EXPECTANCY = "max(lifeexpectancy)";
+  public static final String CONTINENT_MIN_INDEPENDENCE_YEAR = "min(indepyear)";
+  public static final String CONTINENT_MAX_INDEPENDENCE_YEAR = "max(indepyear)";
+  public static final String CONTINENT_GNP = "sum(gnp)";
+  private static final String CONTINENT_QUERY = "select continent, sum(surfacearea), sum(population), " +
+          "min(lifeexpectancy), max(lifeexpectancy), min(indepyear), max(indepyear), " +
+          "sum(gnp) from world.country where continent <> 'Antarctica'";
+
   public static final String T_LOOKUP = "world.country_city_v";
   public static final String LOOKUP_COUNTRY_CODE = "countrycode";
   public static final String LOOKUP_COUNTRY_NAME = "countryname";
@@ -102,6 +115,7 @@ public final class World extends Domain {
     country();
     countryLanguage();
     lookup();
+    continent();
   }
 
   // tag::defineCity[]
@@ -154,7 +168,7 @@ public final class World extends Domain {
                     .useNumberFormatGrouping(true)
                     .maximumFractionDigits(2),
             columnProperty(COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year")
-                    .minimumValue(-200).maximumValue(2500),
+                    .minimumValue(-2000).maximumValue(2500),
             columnProperty(COUNTRY_POPULATION, Types.INTEGER, "Population")
                     .nullable(false)
                     .useNumberFormatGrouping(true),
@@ -258,10 +272,36 @@ public final class World extends Domain {
             columnProperty(LOOKUP_CITY_NAME, Types.VARCHAR, "Name"),
             columnProperty(LOOKUP_CITY_DISTRICT, Types.VARCHAR, "District"),
             columnProperty(LOOKUP_CITY_POPULATION, Types.INTEGER, "City population")
-                    .useNumberFormatGrouping(true)
-    ).orderBy(orderBy().ascending(LOOKUP_COUNTRY_NAME).descending(LOOKUP_CITY_POPULATION))
+                    .useNumberFormatGrouping(true))
+            .orderBy(orderBy().ascending(LOOKUP_COUNTRY_NAME).descending(LOOKUP_CITY_POPULATION))
             .readOnly(true)
             .caption("Lookup");
+  }
+
+  void continent() {
+    define(T_CONTINENT,
+            primaryKeyProperty(CONTINENT_NAME, Types.VARCHAR, "Name")
+                    .groupingColumn(true),
+            columnProperty(CONTINENT_SURFACE_AREA, Types.INTEGER, "Surface area")
+                    .aggregateColumn(true)
+                    .useNumberFormatGrouping(true),
+            columnProperty(CONTINENT_POPULATION, Types.BIGINT, "Population")
+                    .aggregateColumn(true)
+                    .useNumberFormatGrouping(true),
+            columnProperty(CONTINENT_MIN_LIFE_EXPECTANCY, Types.DOUBLE, "Min. life expectancy")
+                    .aggregateColumn(true),
+            columnProperty(CONTINENT_MAX_LIFE_EXPECTANCY, Types.DOUBLE, "Max. life expectancy")
+                    .aggregateColumn(true),
+            columnProperty(CONTINENT_MIN_INDEPENDENCE_YEAR, Types.INTEGER, "Min. ind. year")
+                    .aggregateColumn(true),
+            columnProperty(CONTINENT_MAX_INDEPENDENCE_YEAR, Types.INTEGER, "Max. ind. year")
+                    .aggregateColumn(true),
+            columnProperty(CONTINENT_GNP, Types.DOUBLE, "GNP")
+                    .aggregateColumn(true)
+                    .useNumberFormatGrouping(true))
+            .selectQuery(CONTINENT_QUERY, true)
+            .readOnly(true)
+            .caption("Continent");
   }
 
   // tag::colorProvider[]

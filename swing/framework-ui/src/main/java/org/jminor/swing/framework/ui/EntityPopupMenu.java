@@ -24,7 +24,9 @@ import javax.swing.JPopupMenu;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -44,7 +46,7 @@ final class EntityPopupMenu extends JPopupMenu {
    */
   EntityPopupMenu(final Entity entity, final EntityConnectionProvider connectionProvider) {
     requireNonNull(entity);
-    populateEntityMenu(this, entity, connectionProvider);
+    populateEntityMenu(this, entity, connectionProvider, new HashSet<>());
   }
 
   /**
@@ -52,13 +54,14 @@ final class EntityPopupMenu extends JPopupMenu {
    * @param rootMenu the menu to populate
    * @param entity the entity
    * @param connectionProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
+   * @param visitedEntities used to prevent cyclical dependencies wreaking havoc
    */
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
-                                         final EntityConnectionProvider connectionProvider) {
+                                         final EntityConnectionProvider connectionProvider, final Set<Entity> visitedEntities) {
     final Domain domain = connectionProvider.getDomain();
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(domain.getDefinition(entity.getEntityId()).getPrimaryKeyProperties()));
     populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(domain.getDefinition(entity.getEntityId())
-            .getForeignKeyProperties()));
+            .getForeignKeyProperties()), visitedEntities);
     populateValueMenu(rootMenu, entity, new ArrayList<>(domain.getDefinition(entity.getEntityId()).getProperties()), domain);
   }
 
@@ -79,47 +82,51 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity,
                                              final EntityConnectionProvider connectionProvider,
-                                             final List<ForeignKeyProperty> fkProperties) {
+                                             final List<ForeignKeyProperty> fkProperties,
+                                             final Set<Entity> visitedEntities) {
     try {
-      Text.collate(fkProperties);
-      final EntityDefinition definition = connectionProvider.getDomain().getDefinition(entity.getEntityId());
-      final Validator validator = definition.getValidator();
-      for (final ForeignKeyProperty property : fkProperties) {
-        final boolean fkValueNull = entity.isForeignKeyNull(property);
-        final boolean isLoaded = entity.isLoaded(property.getPropertyId());
-        final boolean valid = isValid(validator, entity, definition, property);
-        final boolean modified = entity.isModified(property);
-        final String toolTipText = getForeignKeyColumnNames(property);
-        if (!fkValueNull) {
-          final Entity referencedEntity;
-          if (isLoaded) {
-            referencedEntity = entity.getForeignKey(property.getPropertyId());
+      if (!visitedEntities.contains(entity)) {
+        visitedEntities.add(entity);
+        Text.collate(fkProperties);
+        final EntityDefinition definition = connectionProvider.getDomain().getDefinition(entity.getEntityId());
+        final Validator validator = definition.getValidator();
+        for (final ForeignKeyProperty property : fkProperties) {
+          final boolean fkValueNull = entity.isForeignKeyNull(property);
+          final boolean isLoaded = entity.isLoaded(property.getPropertyId());
+          final boolean valid = isValid(validator, entity, definition, property);
+          final boolean modified = entity.isModified(property);
+          final String toolTipText = getForeignKeyColumnNames(property);
+          if (!fkValueNull) {
+            final Entity referencedEntity;
+            if (isLoaded) {
+              referencedEntity = entity.getForeignKey(property.getPropertyId());
+            }
+            else {
+              referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedKey(property));
+              entity.remove(property);
+              entity.put(property, referencedEntity);
+            }
+            final StringBuilder builder = new StringBuilder("[FK").append(isLoaded ? "] " : "+] ")
+                    .append(property.getCaption()).append(": ").append(referencedEntity.toString());
+            if (modified) {
+              builder.append(getOriginalValue(entity, property));
+            }
+            final JMenu foreignKeyMenu = new JMenu(builder.toString());
+            setInvalidModified(foreignKeyMenu, valid, modified);
+            foreignKeyMenu.setToolTipText(toolTipText);
+            populateEntityMenu(foreignKeyMenu, referencedEntity, connectionProvider, visitedEntities);
+            rootMenu.add(foreignKeyMenu);
           }
           else {
-            referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedKey(property));
-            entity.remove(property);
-            entity.put(property, referencedEntity);
+            final StringBuilder builder = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
+            if (modified) {
+              builder.append(getOriginalValue(entity, property));
+            }
+            final JMenuItem menuItem = new JMenuItem(builder.toString());
+            setInvalidModified(menuItem, valid, modified);
+            menuItem.setToolTipText(toolTipText);
+            rootMenu.add(menuItem);
           }
-          final StringBuilder builder = new StringBuilder("[FK").append(isLoaded ? "] " : "+] ")
-                  .append(property.getCaption()).append(": ").append(referencedEntity.toString());
-          if (modified) {
-            builder.append(getOriginalValue(entity, property));
-          }
-          final JMenu foreignKeyMenu = new JMenu(builder.toString());
-          setInvalidModified(foreignKeyMenu, valid, modified);
-          foreignKeyMenu.setToolTipText(toolTipText);
-          populateEntityMenu(foreignKeyMenu, entity.getForeignKey(property.getPropertyId()), connectionProvider);
-          rootMenu.add(foreignKeyMenu);
-        }
-        else {
-          final StringBuilder builder = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
-          if (modified) {
-            builder.append(getOriginalValue(entity, property));
-          }
-          final JMenuItem menuItem = new JMenuItem(builder.toString());
-          setInvalidModified(menuItem, valid, modified);
-          menuItem.setToolTipText(toolTipText);
-          rootMenu.add(menuItem);
         }
       }
     }

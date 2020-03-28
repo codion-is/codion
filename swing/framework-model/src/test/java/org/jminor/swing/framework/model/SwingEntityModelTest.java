@@ -72,7 +72,7 @@ public final class SwingEntityModelTest
     employeeEditModel.<Entity>value(TestDomain.EMP_MGR_FK).link(
             SelectedValues.selectedValue(new JComboBox<>(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK))));
     employeeTableModel.refresh();
-    for (final Entity employee : employeeTableModel.getAllItems()) {
+    for (final Entity employee : employeeTableModel.getItems()) {
       employeeTableModel.getSelectionModel().setSelectedItem(employee);
       assertFalse(employeeEditModel.isModified());
     }
@@ -114,7 +114,7 @@ public final class SwingEntityModelTest
       departmentModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, "NewName");
       departmentModel.getEditModel().update();
 
-      for (final Entity employee : employeeModel.getTableModel().getAllItems()) {
+      for (final Entity employee : employeeModel.getTableModel().getItems()) {
         final Entity dept = employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
         assertEquals("NewName", dept.get(TestDomain.DEPARTMENT_NAME));
       }

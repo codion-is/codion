@@ -135,7 +135,7 @@ public final class SwingEntityComboBoxModelTest {
       assertEquals(item.getForeignKey(TestDomain.EMP_DEPARTMENT_FK), accounting);
       assertEquals(item.getForeignKey(TestDomain.EMP_MGR_FK), blake);
     }
-    for (final Entity employee : comboBoxModel.getAllItems()) {
+    for (final Entity employee : comboBoxModel.getItems()) {
       if (employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK).equals(accounting)) {
         comboBoxModel.setSelectedItem(employee);
         break;

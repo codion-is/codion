@@ -5801,3 +5801,11 @@
   EntityPanelProvider, caption no longer final, removed from constructor, setter added
   Parameter reordering in Validator and KeyGenerator
   swing-common-tools-ui jfreechart dependency removed, transitive via swing-common-tools
+  EntityPopupMenu bug fixed, cyclical dependency OOM exception prevented
+  Layouts, removed create prefix from method names
+  EntityPanelProvider now accepts EntityPanel constructors with model subclass types
+  EntityPanelProvider renamed to EntityPanelBuilder
+  EntityModelProvider renamed to EntityModelBuilder
+  EntityApplicationPanel.initializeEntityModel() added
+  EntityTableModel.add/removeRefreshListener() added
+  FilteredModel.getAllItems() renamed to getItems()

@@ -333,7 +333,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return the items in this table model, visible and filtered
    */
   @Override
-  List<Entity> getAllItems();
+  List<Entity> getItems();
 
   /**
    * @return the number of visible rows in this table model
@@ -349,6 +349,16 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param listener notified when the selection changes in the underlying selection model
    */
   void addSelectionChangedListener(EventListener listener);
+
+  /**
+   * @param listener notified each time this model is refreshed.
+   */
+  void addRefreshListener(EventListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeRefreshListener(EventListener listener);
 
   /**
    * @param refreshOnForeignKeyConditionValuesSet true if this table model should automatically refresh when foreign key condition values are set

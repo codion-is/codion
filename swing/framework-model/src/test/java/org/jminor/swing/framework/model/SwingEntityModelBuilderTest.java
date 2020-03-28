@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class SwingEntityModelProviderTest {
+public final class SwingEntityModelBuilderTest {
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -23,18 +23,18 @@ public final class SwingEntityModelProviderTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void testDetailModelProvider() {
-    final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(TestDomain.T_DEPARTMENT)
+  public void testDetailModelBuilder() {
+    final SwingEntityModelBuilder departmentModelBuilder = new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
             .setEditModelClass(DepartmentEditModel.class)
             .setTableModelClass(DepartmentTableModel.class);
-    final SwingEntityModelProvider employeeModelProvider = new SwingEntityModelProvider(TestDomain.T_EMP);
+    final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);
 
-    departmentModelProvider.addDetailModelProvider(employeeModelProvider);
+    departmentModelBuilder.addDetailModelBuilder(employeeModelBuilder);
 
-    assertEquals(DepartmentEditModel.class, departmentModelProvider.getEditModelClass());
-    assertEquals(DepartmentTableModel.class, departmentModelProvider.getTableModelClass());
+    assertEquals(DepartmentEditModel.class, departmentModelBuilder.getEditModelClass());
+    assertEquals(DepartmentTableModel.class, departmentModelBuilder.getTableModelClass());
 
-    final SwingEntityModel departmentModel = departmentModelProvider.createModel(CONNECTION_PROVIDER);
+    final SwingEntityModel departmentModel = departmentModelBuilder.createModel(CONNECTION_PROVIDER);
     assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));

@@ -15,10 +15,10 @@ import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -188,7 +188,7 @@ public class EmpDeptMinimalApp {
 
   /**
    * And finally we extend the EntityApplicationPanel class, which is our
-   * main application panel. We implement setupEntityPanelProviders, in which
+   * main application panel. We implement setupEntityPanelBuilders, in which
    * we assemble the application from the parts we have defined, and we also
    * implement the initializeApplicationModel function by returning an instance
    * of the application model class we defined above.
@@ -196,18 +196,18 @@ public class EmpDeptMinimalApp {
   private static final class EmpDeptApplicationPanel extends EntityApplicationPanel<EmpDeptApplicationModel> {
 
     @Override
-    protected void setupEntityPanelProviders() {
+    protected void setupEntityPanelBuilders() {
       //now, let's assemble our application
-      final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept")
+      final EntityPanelBuilder departmentProvider = new EntityPanelBuilder("scott.dept")
               .setEditPanelClass(DepartmentEditPanel.class);
-      final SwingEntityModelProvider employeeModelProvider = new SwingEntityModelProvider("scott.emp")
+      final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder("scott.emp")
               .setEditModelClass(EmployeeEditModel.class);
-      final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider)
+      final EntityPanelBuilder employeeProvider = new EntityPanelBuilder(employeeModelBuilder)
               .setEditPanelClass(EmployeeEditPanel.class);
-      departmentProvider.addDetailPanelProvider(employeeProvider);
+      departmentProvider.addDetailPanelBuilder(employeeProvider);
 
       //the department panel is the main (or root) application panel
-      addEntityPanelProvider(departmentProvider);
+      addEntityPanelBuilder(departmentProvider);
     }
 
     @Override

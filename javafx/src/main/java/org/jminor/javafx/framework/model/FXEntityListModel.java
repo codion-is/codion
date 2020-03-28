@@ -223,7 +223,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
             getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
-    for (final Entity entity : getAllItems()) {
+    for (final Entity entity : getItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
           final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getPropertyId());
@@ -379,7 +379,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
-    return getAllItems().stream().filter(entity -> keys.stream()
+    return getItems().stream().filter(entity -> keys.stream()
             .anyMatch(key -> entity.getKey().equals(key))).collect(Collectors.toList());
   }
 

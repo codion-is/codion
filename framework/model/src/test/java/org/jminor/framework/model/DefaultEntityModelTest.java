@@ -233,13 +233,17 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public String getTableDataAsDelimitedString(final char delimiter) {return null;}
     @Override
-    public List<Entity> getAllItems() {return null;}
+    public List<Entity> getItems() {return null;}
     @Override
     public int getRowCount() {return 0;}
     @Override
     public SelectionModel<Entity> getSelectionModel() {return null;}
     @Override
     public void addSelectionChangedListener(final EventListener listener) {}
+    @Override
+    public void addRefreshListener(final EventListener listener) {}
+    @Override
+    public void removeRefreshListener(final EventListener listener) {}
     @Override
     public void addFilteringListener(final EventListener listener) {}
     @Override

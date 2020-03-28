@@ -19,10 +19,10 @@ public final class Layouts {
 
   /**
    * Specifies the default horizontal and vertical component gap, used by the layout factory methods, by default this is 5
-   * @see #createBorderLayout()
-   * @see #createFlowLayout(int)
-   * @see #createGridLayout(int, int)
-   * @see #createFlexibleGridLayout(int, int, boolean, boolean)
+   * @see #borderLayout()
+   * @see #flowLayout(int)
+   * @see #gridLayout(int, int)
+   * @see #flexibleGridLayout(int, int, boolean, boolean)
    */
   public static final Value<Integer> HORIZONTAL_VERTICAL_GAP =
           Configuration.integerValue("jminor.swing.ui.horizontalVerticalGap", DEFAULT_HOR_VERT_GAP);
@@ -34,7 +34,7 @@ public final class Layouts {
    * @return a BorderLayout
    * @see #HORIZONTAL_VERTICAL_GAP
    */
-  public static BorderLayout createBorderLayout() {
+  public static BorderLayout borderLayout() {
     return new BorderLayout(HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get());
   }
 
@@ -44,7 +44,7 @@ public final class Layouts {
    * @return a FlowLayout
    * @see #HORIZONTAL_VERTICAL_GAP
    */
-  public static FlowLayout createFlowLayout(final int alignment) {
+  public static FlowLayout flowLayout(final int alignment) {
     return new FlowLayout(alignment, HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get());
   }
 
@@ -55,7 +55,7 @@ public final class Layouts {
    * @return a GridLayout
    * @see #HORIZONTAL_VERTICAL_GAP
    */
-  public static GridLayout createGridLayout(final int rows, final int columns) {
+  public static GridLayout gridLayout(final int rows, final int columns) {
     return new GridLayout(rows, columns, HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get());
   }
 
@@ -68,8 +68,8 @@ public final class Layouts {
    * @return a FlexibleGridLayout
    * @see #HORIZONTAL_VERTICAL_GAP
    */
-  public static FlexibleGridLayout createFlexibleGridLayout(final int rows, final int columns,
-                                                            final boolean fixRowHeights, final boolean fixColumnWidths) {
+  public static FlexibleGridLayout flexibleGridLayout(final int rows, final int columns,
+                                                      final boolean fixRowHeights, final boolean fixColumnWidths) {
     return new FlexibleGridLayout(rows, columns, HORIZONTAL_VERTICAL_GAP.get(),
             HORIZONTAL_VERTICAL_GAP.get(), fixRowHeights, fixColumnWidths);
   }

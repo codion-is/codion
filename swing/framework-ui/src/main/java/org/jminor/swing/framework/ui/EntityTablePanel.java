@@ -909,8 +909,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
-    final JPanel centerPanel = new JPanel(Layouts.createBorderLayout());
-    final JPanel searchFieldPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
+    final JPanel centerPanel = new JPanel(Layouts.borderLayout());
+    final JPanel searchFieldPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     searchFieldPanel.add(table.getSearchField());
     centerPanel.add(statusMessageLabel, BorderLayout.CENTER);
     centerPanel.add(searchFieldPanel, BorderLayout.WEST);
@@ -1204,7 +1204,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     JPanel southPanel = null;
     if (includeSouthPanel) {
-      southPanel = new JPanel(Layouts.createBorderLayout());
+      southPanel = new JPanel(Layouts.borderLayout());
       final JPanel southPanelCenter = initializeSouthPanel();
       if (southPanelCenter != null) {
         final JToolBar southToolBar = initializeSouthToolBar();

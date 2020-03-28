@@ -217,7 +217,7 @@ public final class Components {
    * @return a panel displaying the given components in the NORTH an CENTER positions in a BorderLayout
    */
   public static JPanel createNorthCenterPanel(final JComponent north, final JComponent center) {
-    final JPanel panel = new JPanel(Layouts.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(north, BorderLayout.NORTH);
     panel.add(center, BorderLayout.CENTER);
 
@@ -231,7 +231,7 @@ public final class Components {
    * @return a panel displaying the given components in the WEST an CENTER positions in a BorderLayout
    */
   public static JPanel createWestCenterPanel(final JComponent west, final JComponent center) {
-    final JPanel panel = new JPanel(Layouts.createBorderLayout());
+    final JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(west, BorderLayout.WEST);
     panel.add(center, BorderLayout.CENTER);
 

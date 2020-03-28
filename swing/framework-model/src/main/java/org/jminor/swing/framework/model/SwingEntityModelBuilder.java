@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.model.EntityModelProvider;
+import org.jminor.framework.model.EntityModelBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,40 +15,30 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default Swing based {@link EntityModelProvider} implementation.
+ * A default Swing based {@link EntityModelBuilder} implementation.
  */
-public class SwingEntityModelProvider
-        implements EntityModelProvider<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
+public class SwingEntityModelBuilder
+        implements EntityModelBuilder<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(SwingEntityModelProvider.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(SwingEntityModelBuilder.class);
 
   private static final String CONNECTION_PROVIDER_PARAMETER = "connectionProvider";
 
   private final String entityId;
 
-  private final List<EntityModelProvider<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel>>
-          detailModelProviders = new ArrayList<>();
+  private final List<EntityModelBuilder<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel>>
+          detailModelBuilders = new ArrayList<>();
 
   private Class<? extends SwingEntityModel> modelClass = SwingEntityModel.class;
   private Class<? extends SwingEntityEditModel> editModelClass = SwingEntityEditModel.class;
   private Class<? extends SwingEntityTableModel> tableModelClass = SwingEntityTableModel.class;
 
   /**
-   * Instantiates a new SwingeEntityModelProvider based on the given entity ID
+   * Instantiates a new SwingeEntityModelBuilder based on the given entity ID
    * @param entityId the entity ID
    */
-  public SwingEntityModelProvider(final String entityId) {
+  public SwingEntityModelBuilder(final String entityId) {
     this.entityId = requireNonNull(entityId, "entityId");
-  }
-
-  /**
-   * Instantiates a new SwingEntityModelProvider based on the given entity ID
-   * @param entityId the entity ID
-   * @param entityModelClass the entity model class
-   */
-  public SwingEntityModelProvider(final String entityId, final Class<? extends SwingEntityModel> entityModelClass) {
-    this.entityId = requireNonNull(entityId, "entityId");
-    this.modelClass = requireNonNull(entityModelClass, "entityModelClass");
   }
 
   /** {@inheritDoc} */
@@ -59,21 +49,21 @@ public class SwingEntityModelProvider
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityModelProvider setModelClass(final Class<? extends SwingEntityModel> modelClass) {
+  public final SwingEntityModelBuilder setModelClass(final Class<? extends SwingEntityModel> modelClass) {
     this.modelClass = requireNonNull(modelClass, "modelClass");
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityModelProvider setEditModelClass(final Class<? extends SwingEntityEditModel> editModelClass) {
+  public final SwingEntityModelBuilder setEditModelClass(final Class<? extends SwingEntityEditModel> editModelClass) {
     this.editModelClass = requireNonNull(editModelClass, "editModelClass");
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityModelProvider setTableModelClass(final Class<? extends SwingEntityTableModel> tableModelClass) {
+  public final SwingEntityModelBuilder setTableModelClass(final Class<? extends SwingEntityTableModel> tableModelClass) {
     this.tableModelClass = requireNonNull(tableModelClass, "tableModelClass");
     return this;
   }
@@ -98,11 +88,11 @@ public class SwingEntityModelProvider
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityModelProvider addDetailModelProvider(final EntityModelProvider<SwingEntityModel,
-          SwingEntityEditModel, SwingEntityTableModel> detailModelProvider) {
-    requireNonNull(detailModelProvider, "detailModelProvider");
-    if (!detailModelProviders.contains(detailModelProvider)) {
-      detailModelProviders.add(detailModelProvider);
+  public final SwingEntityModelBuilder addDetailModelBuilder(final EntityModelBuilder<SwingEntityModel,
+            SwingEntityEditModel, SwingEntityTableModel> detailModelBuilder) {
+    requireNonNull(detailModelBuilder, "detailModelBuilder");
+    if (!detailModelBuilders.contains(detailModelBuilder)) {
+      detailModelBuilders.add(detailModelBuilder);
     }
 
     return this;
@@ -110,15 +100,15 @@ public class SwingEntityModelProvider
 
   /** {@inheritDoc} */
   @Override
-  public final boolean containsDetailModelProvider(final EntityModelProvider<SwingEntityModel, SwingEntityEditModel,
-          SwingEntityTableModel> detailModelProvider) {
-    return detailModelProviders.contains(detailModelProvider);
+  public final boolean containsDetailModelBuilder(final EntityModelBuilder<SwingEntityModel, SwingEntityEditModel,
+            SwingEntityTableModel> detailModelBuilder) {
+    return detailModelBuilders.contains(detailModelBuilder);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
-    return obj instanceof EntityModelProvider && ((EntityModelProvider) obj).getEntityId().equals(getEntityId());
+    return obj instanceof EntityModelBuilder && ((EntityModelBuilder) obj).getEntityId().equals(getEntityId());
   }
 
   /** {@inheritDoc} */
@@ -141,7 +131,7 @@ public class SwingEntityModelProvider
         LOG.debug("{} initializing a custom entity model: {}", this, modelClass);
         model = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
-      for (final EntityModelProvider<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> detailProvider : detailModelProviders) {
+      for (final EntityModelBuilder<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> detailProvider : detailModelBuilders) {
         model.addDetailModel(detailProvider.createModel(connectionProvider));
       }
       configureModel(model);

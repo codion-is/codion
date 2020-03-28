@@ -40,7 +40,7 @@ public final class TrackTableModelTest {
     trackTableModel.getSelectionModel().selectAll();
     trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
 
-    trackTableModel.getAllItems().forEach(track ->
+    trackTableModel.getItems().forEach(track ->
             assertEquals(BigDecimal.valueOf(1.99), track.getBigDecimal(Chinook.TRACK_UNITPRICE)));
   }
 

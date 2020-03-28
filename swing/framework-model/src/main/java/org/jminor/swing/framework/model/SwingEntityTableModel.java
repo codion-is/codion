@@ -5,7 +5,9 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.Text;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
+import org.jminor.common.event.Events;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SortingDirective;
@@ -98,6 +100,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * The condition model
    */
   private final EntityTableConditionModel conditionModel;
+
+  /**
+   * Fired each time this model is refreshed
+   */
+  private final Event refreshEvent = Events.event();
 
   /**
    * If true then querying should be disabled if no condition is specified
@@ -482,7 +489,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     final List<ForeignKeyProperty> foreignKeyProperties =
             getEntityDefinition().getForeignKeyReferences(requireNonNull(foreignKeyEntityId, "foreignKeyEntityId"));
     boolean changed = false;
-    for (final Entity entity : getAllItems()) {
+    for (final Entity entity : getItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
           final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getPropertyId());
@@ -522,7 +529,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
     requireNonNull(keys, "keys");
-    return getAllItems().stream().filter(entity -> keys.contains(entity.getKey())).collect(Collectors.toList());
+    return getItems().stream().filter(entity -> keys.contains(entity.getKey())).collect(Collectors.toList());
   }
 
   /** {@inheritDoc} */
@@ -603,6 +610,18 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
+  public final void addRefreshListener(final EventListener listener) {
+    refreshEvent.addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeRefreshListener(final EventListener listener) {
+    refreshEvent.removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   protected final ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final Property property) {
     return new DefaultColumnValueProvider(property, this, property.getFormat());
   }
@@ -616,6 +635,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       clear();
       addItems(queryResult, true, true);
       conditionModel.rememberCurrentConditionState();
+      refreshEvent.onEvent();
     }
     finally {
       LOG.debug("{} refreshing done", this);
@@ -768,7 +788,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param entitiesByKey the entities to replace mapped to the corresponding primary key found in this table model
    */
   private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entitiesByKey) {
-    for (final Entity entity : getAllItems()) {
+    for (final Entity entity : getItems()) {
       final Iterator<Map.Entry<Entity.Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
       while (mapIterator.hasNext()) {
         final Map.Entry<Entity.Key, Entity> entry = mapIterator.next();

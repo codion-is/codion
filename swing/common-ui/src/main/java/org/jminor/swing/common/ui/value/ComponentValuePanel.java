@@ -123,12 +123,12 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
   }
 
   private void initializeUI(final String caption) {
-    setLayout(Layouts.createBorderLayout());
+    setLayout(Layouts.borderLayout());
     if (caption != null) {
       setBorder(BorderFactory.createTitledBorder(caption));
     }
     add(componentValue.getComponent(), BorderLayout.CENTER);
-    final JPanel panel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
+    final JPanel panel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     panel.add(createButtonPanel());
     add(panel, BorderLayout.SOUTH);
   }

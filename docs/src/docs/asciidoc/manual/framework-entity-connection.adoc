@@ -103,7 +103,9 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 For inserting rows.
 
-{url-entity-connection}#insert-java.util.List-[insert(List<Entity> entities)]
+** {url-entity-connection}#insert-org.jminor.framework.domain.entity.Entity-[insert(Entity entity)]
+
+** {url-entity-connection}#insert-java.util.List-[insert(List<Entity> entities)]
 
 [source,java,indent=0]
 ----
@@ -113,6 +115,8 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 === update
 
 For updating existing rows.
+
+** {url-entity-connection}#update-org.jminor.framework.domain.entity.Entity-[update(Entity entity)]
 
 ** {url-entity-connection}#update-java.util.List-[update(List<Entity> entities)]
 
@@ -138,6 +142,8 @@ For deleting existing rows.
 ----
 include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
 ----
+
+** {url-entity-connection}#delete-org.jminor.framework.domain.entity.Entity.Key-[delete(Entity.Key key)]
 
 ** {url-entity-connection}#delete-java.util.List-[delete(List<Entity.Key> keys)]
 

@@ -32,7 +32,7 @@ import static javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 import static org.jminor.swing.common.ui.Windows.getParentWindow;
 import static org.jminor.swing.common.ui.control.Controls.control;
-import static org.jminor.swing.common.ui.layout.Layouts.createFlowLayout;
+import static org.jminor.swing.common.ui.layout.Layouts.flowLayout;
 
 /**
  * A dialog for searching for and selecting one or more entities from a table model.
@@ -71,7 +71,7 @@ public final class EntitySelectionDialog extends JDialog {
     this.entityTablePanel = initializeTablePanel(tableModel, preferredSize);
     KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
     setLayout(new BorderLayout());
-    final JPanel buttonPanel = new JPanel(createFlowLayout(FlowLayout.RIGHT));
+    final JPanel buttonPanel = new JPanel(flowLayout(FlowLayout.RIGHT));
     final JButton okButton = new JButton(okControl);
     buttonPanel.add(okButton);
     buttonPanel.add(new JButton(cancelControl));

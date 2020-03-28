@@ -14,7 +14,7 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import java.util.Collections;
@@ -46,8 +46,8 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
   }
 
   @Override
-  protected void setupEntityPanelProviders() {
-    addSupportPanelProvider(new EntityPanelProvider(Store.T_ADDRESS)
+  protected void setupEntityPanelBuilders() {
+    addSupportPanelBuilder(new EntityPanelBuilder(Store.T_ADDRESS)
             .setEditPanelClass(AddressEditPanel.class));
   }
 

@@ -180,7 +180,7 @@ public class SwingFilteredComboBoxModelTest {
     assertEquals(1, testModel.getVisibleItems().size());
     assertEquals(4, testModel.getFilteredItemCount());
     assertEquals(2, testModel.getVisibleItemCount());
-    assertEquals(5, testModel.getAllItems().size());
+    assertEquals(5, testModel.getItems().size());
 
     testModel.addItem(BJORN);//already contained
     assertEquals(4, testModel.getFilteredItemCount());

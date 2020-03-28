@@ -12,11 +12,11 @@ import org.jminor.framework.demos.petclinic.model.VetSpecialtyEditModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import java.util.List;
@@ -54,30 +54,30 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
   }
 
   @Override
-  protected void setupEntityPanelProviders() {
-    EntityPanelProvider petTypePanelProvider =
-            new EntityPanelProvider(T_PET_TYPE)
+  protected void setupEntityPanelBuilders() {
+    EntityPanelBuilder petTypePanelBuilder =
+            new EntityPanelBuilder(T_PET_TYPE)
                     .setEditPanelClass(PetTypeEditPanel.class)
                     .setCaption("Pet types");
-    EntityPanelProvider specialtiesPanelProvider =
-            new EntityPanelProvider(T_SPECIALTY)
+    EntityPanelBuilder specialtiesPanelBuilder =
+            new EntityPanelBuilder(T_SPECIALTY)
                     .setEditPanelClass(SpecialtyEditPanel.class)
                     .setCaption("Specialties");
 
-    EntityPanelProvider vetsPanelProvider =
-            new EntityPanelProvider(T_VET)
+    EntityPanelBuilder vetsPanelBuilder =
+            new EntityPanelBuilder(T_VET)
                     .setEditPanelClass(VetEditPanel.class)
                     .setCaption("Vets");
-    SwingEntityModelProvider vetSpecialtyModelProvider =
-            new SwingEntityModelProvider(T_VET_SPECIALTY)
+    SwingEntityModelBuilder vetSpecialtyModelBuilder =
+            new SwingEntityModelBuilder(T_VET_SPECIALTY)
                     .setEditModelClass(VetSpecialtyEditModel.class);
-    EntityPanelProvider vetSpecialtiesPanelProvider =
-            new EntityPanelProvider(vetSpecialtyModelProvider)
+    EntityPanelBuilder vetSpecialtiesPanelBuilder =
+            new EntityPanelBuilder(vetSpecialtyModelBuilder)
                     .setEditPanelClass(VetSpecialtyEditPanel.class)
                     .setCaption("Specialties");
-    vetsPanelProvider.addDetailPanelProvider(vetSpecialtiesPanelProvider);
+    vetsPanelBuilder.addDetailPanelBuilder(vetSpecialtiesPanelBuilder);
 
-    addSupportPanelProviders(petTypePanelProvider, specialtiesPanelProvider, vetsPanelProvider);
+    addSupportPanelBuilders(petTypePanelBuilder, specialtiesPanelBuilder, vetsPanelBuilder);
   }
 
   public static void main(final String[] args) throws CancelException {

@@ -7,7 +7,7 @@ import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.Action;
 import javax.swing.JPanel;
@@ -31,7 +31,7 @@ public final class PetEditPanel extends EntityEditPanel {
     final EntityComboBox petTypeBox = createForeignKeyComboBox(PET_PET_TYPE_FK);
 
     final Action newPetTypeAction = EntityEditPanel.createEditPanelAction(petTypeBox,
-            new EntityPanelProvider(T_PET_TYPE)
+            new EntityPanelBuilder(T_PET_TYPE)
                     .setEditPanelClass(PetTypeEditPanel.class));
     final JPanel petTypePanel = Components.createEastButtonPanel(petTypeBox, newPetTypeAction, false);
 

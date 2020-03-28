@@ -267,7 +267,7 @@ public final class Dialogs {
     if (closeObserver != null) {
       closeObserver.addListener(() -> closeIfConfirmed(confirmCloseListener, dialog));
     }
-    dialog.setLayout(Layouts.createBorderLayout());
+    dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
     dialog.pack();
     dialog.setLocationRelativeTo(owner);
@@ -385,7 +385,7 @@ public final class Dialogs {
       });
     }
 
-    dialog.setLayout(Layouts.createBorderLayout());
+    dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
     dialog.pack();
     dialog.setLocationRelativeTo(owner);
@@ -478,9 +478,9 @@ public final class Dialogs {
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, cancelAction);
     KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, false, okAction);
-    dialog.setLayout(Layouts.createBorderLayout());
+    dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
-    final JPanel buttonBasePanel = new JPanel(Layouts.createFlowLayout(FlowLayout.CENTER));
+    final JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     buttonBasePanel.add(Components.createOkCancelButtonPanel(okAction, cancelAction));
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();

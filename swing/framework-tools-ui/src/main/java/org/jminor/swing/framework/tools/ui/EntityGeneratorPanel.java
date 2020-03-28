@@ -62,7 +62,7 @@ public class EntityGeneratorPanel extends JPanel {
 
     splitPane.setResizeWeight(RESIZE_WEIGHT);
 
-    setLayout(Layouts.createBorderLayout());
+    setLayout(Layouts.borderLayout());
     add(splitPane, BorderLayout.CENTER);
 
     bindEvents();

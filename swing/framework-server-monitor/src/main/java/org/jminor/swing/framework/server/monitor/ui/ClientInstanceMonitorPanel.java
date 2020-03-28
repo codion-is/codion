@@ -98,16 +98,16 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    setLayout(Layouts.createBorderLayout());
+    setLayout(Layouts.borderLayout());
     creationDateField.setEditable(false);
-    final JPanel infoPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
+    final JPanel infoPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     infoPanel.add(new JLabel("Creation date"));
     infoPanel.add(creationDateField);
-    final JPanel infoBase = new JPanel(Layouts.createBorderLayout());
+    final JPanel infoBase = new JPanel(Layouts.borderLayout());
     infoBase.setBorder(BorderFactory.createTitledBorder("Connection info"));
     infoBase.add(infoPanel, BorderLayout.CENTER);
     loggingEnabledCheckBox = new JCheckBox("Logging enabled");
-    final JPanel settingsPanel = new JPanel(Layouts.createFlowLayout(FlowLayout.LEFT));
+    final JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     settingsPanel.add(loggingEnabledCheckBox);
     settingsPanel.add(new JButton(Controls.control(this::updateView, "Refresh log")));
     infoBase.add(settingsPanel, BorderLayout.EAST);

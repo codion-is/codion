@@ -4,43 +4,52 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.world.domain.World;
+import org.jminor.framework.demos.world.model.CountryCustomModel;
+import org.jminor.framework.demos.world.model.CountryModel;
 import org.jminor.framework.demos.world.model.WorldAppModel;
 import org.jminor.swing.common.ui.Windows;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import java.util.Locale;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
-  // tag::setupEntityPanelProviders[]
+  // tag::setupEntityPanelBuilders[]
   @Override
-  protected void setupEntityPanelProviders() {
-    EntityPanelProvider countryPanelProvider = new EntityPanelProvider(World.T_COUNTRY);
-    countryPanelProvider.setEditPanelClass(CountryEditPanel.class);
-    countryPanelProvider.setTablePanelClass(CountryTablePanel.class);
+  protected void setupEntityPanelBuilders() {
+    final SwingEntityModelBuilder countryModelBuilder = new SwingEntityModelBuilder(World.T_COUNTRY);
+    countryModelBuilder.setModelClass(CountryModel.class);
+    EntityPanelBuilder countryPanelBuilder = new EntityPanelBuilder(countryModelBuilder);
+    countryPanelBuilder.setEditPanelClass(CountryEditPanel.class);
+    countryPanelBuilder.setTablePanelClass(CountryTablePanel.class);
 
-    EntityPanelProvider customCountryPanelProvider = new EntityPanelProvider(World.T_COUNTRY)
-            .setPanelClass(CustomCountryPanel.class)
+    final SwingEntityModelBuilder countryCustomModelBuilder = new SwingEntityModelBuilder(World.T_COUNTRY);
+    countryCustomModelBuilder.setModelClass(CountryCustomModel.class);
+    EntityPanelBuilder customCountryPanelBuilder = new EntityPanelBuilder(countryCustomModelBuilder)
+            .setPanelClass(CountryCustomPanel.class)
             .setCaption("Custom Country");
 
-    EntityPanelProvider cityPanelProvider = new EntityPanelProvider(World.T_CITY);
-    cityPanelProvider.setEditPanelClass(CityEditPanel.class);
+    EntityPanelBuilder cityPanelBuilder = new EntityPanelBuilder(World.T_CITY);
+    cityPanelBuilder.setEditPanelClass(CityEditPanel.class);
 
-    EntityPanelProvider countryLanguagePanelProvider = new EntityPanelProvider(World.T_COUNTRYLANGUAGE);
-    countryLanguagePanelProvider.setEditPanelClass(CountryLanguageEditPanel.class);
+    EntityPanelBuilder countryLanguagePanelBuilder = new EntityPanelBuilder(World.T_COUNTRYLANGUAGE);
+    countryLanguagePanelBuilder.setEditPanelClass(CountryLanguageEditPanel.class);
 
-    countryPanelProvider.addDetailPanelProvider(cityPanelProvider);
-    countryPanelProvider.addDetailPanelProvider(countryLanguagePanelProvider);
+    countryPanelBuilder.addDetailPanelBuilder(cityPanelBuilder);
+    countryPanelBuilder.addDetailPanelBuilder(countryLanguagePanelBuilder);
 
-    EntityPanelProvider lookupPanelProvider = new EntityPanelProvider(World.T_LOOKUP)
+    EntityPanelBuilder continentPanelBuilder = new EntityPanelBuilder(World.T_CONTINENT)
+            .setPanelClass(ContinentPanel.class);
+    EntityPanelBuilder lookupPanelBuilder = new EntityPanelBuilder(World.T_LOOKUP)
             .setTablePanelClass(LookupTablePanel.class)
             .setRefreshOnInit(false);
 
-    addEntityPanelProviders(countryPanelProvider, customCountryPanelProvider, lookupPanelProvider);
+    addEntityPanelBuilders(countryPanelBuilder, customCountryPanelBuilder, continentPanelBuilder, lookupPanelBuilder);
   }
-  // end::setupEntityPanelProviders[]
+  // end::setupEntityPanelBuilders[]
 
   @Override
   protected WorldAppModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
