@@ -9,7 +9,6 @@ import org.jminor.swing.framework.ui.EntityTablePanel;
 import org.jfree.chart.ChartPanel;
 
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
@@ -19,18 +18,14 @@ import static org.jfree.chart.ChartFactory.createPieChart;
 public final class ContinentPanel extends EntityPanel {
 
   public ContinentPanel(ContinentModel entityModel) {
-    super(entityModel);
-    getTablePanel().getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+    super(entityModel, new ContinentTablePanel(entityModel.getTableModel()));
   }
 
   @Override
   protected void initializeUI() {
     ContinentModel model = (ContinentModel) getModel();
-    setLayout(Layouts.borderLayout());
 
     EntityTablePanel tablePanel = getTablePanel();
-    tablePanel.setIncludeSouthPanel(false);
-    tablePanel.setIncludePopupMenu(false);
     tablePanel.initializePanel();
     Components.setPreferredHeight(tablePanel, 200);
 
@@ -55,9 +50,12 @@ public final class ContinentPanel extends EntityPanel {
     southChartPanel.add(surfaceAreaChartPanel);
     southChartPanel.add(gnpAreaChartPanel);
 
+    setLayout(Layouts.borderLayout());
+
     add(centerPanel, BorderLayout.CENTER);
     add(southChartPanel, BorderLayout.SOUTH);
 
+    initializeKeyboardActions();
     initializeNavigation();
   }
 }

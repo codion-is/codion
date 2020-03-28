@@ -168,7 +168,7 @@ public final class World extends Domain {
                     .useNumberFormatGrouping(true)
                     .maximumFractionDigits(2),
             columnProperty(COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year")
-                    .minimumValue(-200).maximumValue(2500),
+                    .minimumValue(-2000).maximumValue(2500),
             columnProperty(COUNTRY_POPULATION, Types.INTEGER, "Population")
                     .nullable(false)
                     .useNumberFormatGrouping(true),
