@@ -15,7 +15,7 @@ import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
@@ -200,9 +200,9 @@ public class EmpDeptMinimalApp {
       //now, let's assemble our application
       final EntityPanelBuilder departmentProvider = new EntityPanelBuilder("scott.dept")
               .setEditPanelClass(DepartmentEditPanel.class);
-      final SwingEntityModelProvider employeeModelProvider = new SwingEntityModelProvider("scott.emp")
+      final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder("scott.emp")
               .setEditModelClass(EmployeeEditModel.class);
-      final EntityPanelBuilder employeeProvider = new EntityPanelBuilder(employeeModelProvider)
+      final EntityPanelBuilder employeeProvider = new EntityPanelBuilder(employeeModelBuilder)
               .setEditPanelClass(EmployeeEditPanel.class);
       departmentProvider.addDetailPanelBuilder(employeeProvider);
 

@@ -11,7 +11,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
  * @param <E> the type of {@link EntityEditModel} provided
  * @param <T> the type of {@link EntityTableModel} provided
  */
-public interface EntityModelProvider<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+public interface EntityModelBuilder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
   /**
    * @return the entityId of the models provided by this model provider
@@ -42,38 +42,38 @@ public interface EntityModelProvider<M extends EntityModel<M, E, T>, E extends E
   /**
    * Sets the model class
    * @param modelClass the class of the model provided
-   * @return this EntityModelProvider instance
+   * @return this EntityModelBuilder instance
    * @throws java.lang.IllegalArgumentException in case modelClass is null
    */
-  EntityModelProvider<M, E, T> setModelClass(Class<? extends M> modelClass);
+  EntityModelBuilder<M, E, T> setModelClass(Class<? extends M> modelClass);
 
   /**
    * Sets the edit model class
    * @param editModelClass the class of the edit model provided
-   * @return this EntityModelProvider instance
+   * @return this EntityModelBuilder instance
    * @throws java.lang.IllegalArgumentException in case editModelClass is null
    */
-  EntityModelProvider<M, E, T> setEditModelClass(Class<? extends E> editModelClass);
+  EntityModelBuilder<M, E, T> setEditModelClass(Class<? extends E> editModelClass);
 
   /**
    * Sets the table model class
    * @param tableModelClass the class of the table model provided
-   * @return this EntityModelProvider instance
+   * @return this EntityModelBuilder instance
    * @throws java.lang.IllegalArgumentException in case tableModelClass is null
    */
-  EntityModelProvider<M, E, T> setTableModelClass(Class<? extends T> tableModelClass);
+  EntityModelBuilder<M, E, T> setTableModelClass(Class<? extends T> tableModelClass);
 
   /**
-   * @param detailModelProvider an EntityModelProvider providing a detail model
-   * @return this EntityModelProvider instance
+   * @param detailModelBuilder an EntityModelBuilder providing a detail model
+   * @return this EntityModelBuilder instance
    */
-  EntityModelProvider<M, E, T> addDetailModelProvider(EntityModelProvider<M, E, T> detailModelProvider);
+  EntityModelBuilder<M, E, T> addDetailModelBuilder(EntityModelBuilder<M, E, T> detailModelBuilder);
 
   /**
-   * @param detailModelProvider the detail model provider
-   * @return true if this model provider contains the given detail model provider
+   * @param detailModelBuilder the detail model provider
+   * @return true if this model builder contains the given detail model builder
    */
-  boolean containsDetailModelProvider(EntityModelProvider<M, E, T> detailModelProvider);
+  boolean containsDetailModelBuilder(EntityModelBuilder<M, E, T> detailModelBuilder);
 
   /**
    * @return the class of the {@link EntityModel}s provided

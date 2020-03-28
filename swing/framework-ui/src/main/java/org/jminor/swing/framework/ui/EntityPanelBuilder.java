@@ -6,7 +6,7 @@ package org.jminor.swing.framework.ui;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import java.lang.reflect.Constructor;
@@ -33,7 +33,7 @@ public class EntityPanelBuilder {
   private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;
   private Class<? extends EntityEditPanel> editPanelClass;
 
-  private final SwingEntityModelProvider modelProvider;
+  private final SwingEntityModelBuilder modelBuilder;
 
   private final List<EntityPanelBuilder> detailPanelBuilders = new ArrayList<>();
 
@@ -53,30 +53,30 @@ public class EntityPanelBuilder {
    */
   public EntityPanelBuilder(final String entityId, final Class<? extends SwingEntityModel> entityModelClass,
                             final Class<? extends EntityPanel> entityPanelClass) {
-    this(new SwingEntityModelProvider(entityId, entityModelClass));
+    this(new SwingEntityModelBuilder(entityId, entityModelClass));
     setPanelClass(entityPanelClass);
   }
 
   /**
    * Instantiates a new EntityPanelBuilder
-   * @param modelProvider the EntityModelProvider to base this panel provider on
+   * @param modelBuilder the EntityModelBuilder to base this panel provider on
    */
-  public EntityPanelBuilder(final SwingEntityModelProvider modelProvider) {
-    this.modelProvider = requireNonNull(modelProvider, "modelProvider");
+  public EntityPanelBuilder(final SwingEntityModelBuilder modelBuilder) {
+    this.modelBuilder = requireNonNull(modelBuilder, "modelBuilder");
   }
 
   /**
    * @return the entity ID
    */
   public final String getEntityId() {
-    return modelProvider.getEntityId();
+    return modelBuilder.getEntityId();
   }
 
   /**
-   * @return the EntityModelProvider this panel provider is based on
+   * @return the EntityModelBuilder this panel provider is based on
    */
-  public final SwingEntityModelProvider getModelProvider() {
-    return modelProvider;
+  public final SwingEntityModelBuilder getModelBuilder() {
+    return modelBuilder;
   }
 
   /**
@@ -103,8 +103,8 @@ public class EntityPanelBuilder {
   public final EntityPanelBuilder addDetailPanelBuilder(final EntityPanelBuilder panelBuilder) {
     if (!detailPanelBuilders.contains(panelBuilder)) {
       detailPanelBuilders.add(panelBuilder);
-      if (!modelProvider.containsDetailModelProvider(panelBuilder.getModelProvider())) {
-        modelProvider.addDetailModelProvider(panelBuilder.getModelProvider());//todo not very clean
+      if (!modelBuilder.containsDetailModelBuilder(panelBuilder.getModelBuilder())) {
+        modelBuilder.addDetailModelBuilder(panelBuilder.getModelBuilder());//todo not very clean
       }
     }
 
@@ -239,14 +239,14 @@ public class EntityPanelBuilder {
   @Override
   public final boolean equals(final Object obj) {
     return obj instanceof EntityPanelBuilder &&
-            ((EntityPanelBuilder) obj).modelProvider.getEntityId().equals(modelProvider.getEntityId()) &&
-            ((EntityPanelBuilder) obj).modelProvider.getModelClass().equals(modelProvider.getModelClass());
+            ((EntityPanelBuilder) obj).modelBuilder.getEntityId().equals(modelBuilder.getEntityId()) &&
+            ((EntityPanelBuilder) obj).modelBuilder.getModelClass().equals(modelBuilder.getModelClass());
   }
 
   /** {@inheritDoc} */
   @Override
   public final int hashCode() {
-    return modelProvider.getEntityId().hashCode() + modelProvider.getModelClass().hashCode();
+    return modelBuilder.getEntityId().hashCode() + modelBuilder.getModelClass().hashCode();
   }
 
   /**
@@ -257,7 +257,7 @@ public class EntityPanelBuilder {
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, "connectionProvider");
     try {
-      final SwingEntityModel entityModel = modelProvider.createModel(connectionProvider);
+      final SwingEntityModel entityModel = modelBuilder.createModel(connectionProvider);
 
       return createPanel(entityModel);
     }
@@ -311,7 +311,7 @@ public class EntityPanelBuilder {
    * @return an EntityEditPanel based on this provider
    */
   public final EntityEditPanel createEditPanel(final EntityConnectionProvider connectionProvider) {
-    return initializeEditPanel(modelProvider.createEditModel(connectionProvider));
+    return initializeEditPanel(modelBuilder.createEditModel(connectionProvider));
   }
 
   /**
@@ -320,7 +320,7 @@ public class EntityPanelBuilder {
    * @return an EntityTablePanel based on this provider
    */
   public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider) {
-    return initializeTablePanel(modelProvider.createTableModel(connectionProvider));
+    return initializeTablePanel(modelBuilder.createTableModel(connectionProvider));
   }
 
   /**

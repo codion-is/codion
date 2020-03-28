@@ -147,7 +147,7 @@ include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmployeeEditPanel.ja
 
 == Main application panel
 
-We create a main application panel by extending {url-javadoc}/org/jminor/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *setupEntityPanelBuilders()* we configure two sets of *SwingEntityModelProvider* and *EntityPanelBuilder* objects, which allow lazy initialization of UI components. We'll define the *EmployeePanelBuilder* class later. We call *addEntityPanelBuilder()* making the department panel the main application panel.
+We create a main application panel by extending {url-javadoc}/org/jminor/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *setupEntityPanelBuilders()* we configure two sets of *SwingEntityModelBuilder* and *EntityPanelBuilder* objects, which allow lazy initialization of UI components. We'll define the *EmployeePanelBuilder* class later. We call *addEntityPanelBuilder()* making the department panel the main application panel.
 
 [source,java]
 ----
@@ -189,11 +189,11 @@ We then define the *EmpDeptApplicationModel* class by extending *SwingEntityAppl
 include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=applicationModel]
 ----
 
-Then we define a *EmployeeModelProvider* by extending *SwingEntityModelProvider*, in order to configure the table model after initialization.
+Then we define a *EmployeeModelBuilder* by extending *SwingEntityModelBuilder*, in order to configure the table model after initialization.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=employeeModelProvider]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=employeeModelBuilder]
 ----
 
 We create a *EmployeePanelBuilder* by extending *EntityPanelBuilder*, in order to configure the table panel after initialization.

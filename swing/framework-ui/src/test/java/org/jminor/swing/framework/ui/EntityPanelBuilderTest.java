@@ -9,7 +9,7 @@ import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,12 +25,12 @@ public class EntityPanelBuilderTest {
 
   @Test
   public void testDetailPanelBuilder() {
-    final SwingEntityModelProvider customerModelProvider = new SwingEntityModelProvider(TestDomain.T_DEPARTMENT);
-    final SwingEntityModelProvider invoiceModelProvider = new SwingEntityModelProvider(TestDomain.T_EMP);
+    final SwingEntityModelBuilder customerModelBuilder = new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT);
+    final SwingEntityModelBuilder invoiceModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);
 
-    customerModelProvider.addDetailModelProvider(invoiceModelProvider);
+    customerModelBuilder.addDetailModelBuilder(invoiceModelBuilder);
 
-    final SwingEntityModel customerModel = customerModelProvider.createModel(CONNECTION_PROVIDER);
+    final SwingEntityModel customerModel = customerModelBuilder.createModel(CONNECTION_PROVIDER);
 
     final String customerCaption = "A department caption";
     final EntityPanelBuilder customerPanelBuilder = new EntityPanelBuilder(TestDomain.T_DEPARTMENT)

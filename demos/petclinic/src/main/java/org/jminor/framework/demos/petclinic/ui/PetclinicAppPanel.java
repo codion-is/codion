@@ -12,7 +12,7 @@ import org.jminor.framework.demos.petclinic.model.VetSpecialtyEditModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
@@ -68,11 +68,11 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
             new EntityPanelBuilder(T_VET)
                     .setEditPanelClass(VetEditPanel.class)
                     .setCaption("Vets");
-    SwingEntityModelProvider vetSpecialtyModelProvider =
-            new SwingEntityModelProvider(T_VET_SPECIALTY)
+    SwingEntityModelBuilder vetSpecialtyModelBuilder =
+            new SwingEntityModelBuilder(T_VET_SPECIALTY)
                     .setEditModelClass(VetSpecialtyEditModel.class);
     EntityPanelBuilder vetSpecialtiesPanelBuilder =
-            new EntityPanelBuilder(vetSpecialtyModelProvider)
+            new EntityPanelBuilder(vetSpecialtyModelBuilder)
                     .setEditPanelClass(VetSpecialtyEditPanel.class)
                     .setCaption("Specialties");
     vetsPanelBuilder.addDetailPanelBuilder(vetSpecialtiesPanelBuilder);

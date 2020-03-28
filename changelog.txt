@@ -5781,3 +5781,4 @@
   Layouts, removed create prefix from method names
   EntityPanelProvider now accepts EntityPanel constructors with model subclass types
   EntityPanelProvider renamed to EntityPanelBuilder
+  EntityModelProvider renamed to EntityModelBuilder
