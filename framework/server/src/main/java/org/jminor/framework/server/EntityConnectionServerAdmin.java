@@ -136,16 +136,16 @@ public interface EntityConnectionServerAdmin extends Remote {
   void disconnect(UUID clientId) throws RemoteException;
 
   /**
-   * @return the server logging level
+   * @return the server log level
    * @throws RemoteException in case of a communication error
    */
-  Object getLoggingLevel() throws RemoteException;
+  Object getLogLevel() throws RemoteException;
 
   /**
-   * @param level the logging level
+   * @param level the log level
    * @throws RemoteException in case of a communication error
    */
-  void setLoggingLevel(Object level) throws RemoteException;
+  void setLogLevel(Object level) throws RemoteException;
 
   /**
    * @return the users currently connected to the server
