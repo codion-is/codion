@@ -29,9 +29,9 @@ public class SwingEntityModelBuilder
   private final List<EntityModelBuilder<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel>>
           detailModelBuilders = new ArrayList<>();
 
-  private Class<? extends SwingEntityModel> modelClass = SwingEntityModel.class;
-  private Class<? extends SwingEntityEditModel> editModelClass = SwingEntityEditModel.class;
-  private Class<? extends SwingEntityTableModel> tableModelClass = SwingEntityTableModel.class;
+  private Class<? extends SwingEntityModel> modelClass;
+  private Class<? extends SwingEntityEditModel> editModelClass;
+  private Class<? extends SwingEntityTableModel> tableModelClass;
 
   /**
    * Instantiates a new SwingeEntityModelBuilder based on the given entity ID
@@ -50,6 +50,9 @@ public class SwingEntityModelBuilder
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelBuilder setModelClass(final Class<? extends SwingEntityModel> modelClass) {
+    if (editModelClass != null || tableModelClass != null) {
+      throw new IllegalStateException("Edit or table model class has been set");
+    }
     this.modelClass = requireNonNull(modelClass, "modelClass");
     return this;
   }
@@ -57,6 +60,9 @@ public class SwingEntityModelBuilder
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelBuilder setEditModelClass(final Class<? extends SwingEntityEditModel> editModelClass) {
+    if (modelClass != null) {
+      throw new IllegalStateException("Model class has been set");
+    }
     this.editModelClass = requireNonNull(editModelClass, "editModelClass");
     return this;
   }
@@ -64,6 +70,9 @@ public class SwingEntityModelBuilder
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelBuilder setTableModelClass(final Class<? extends SwingEntityTableModel> tableModelClass) {
+    if (modelClass != null) {
+      throw new IllegalStateException("Model class has been set");
+    }
     this.tableModelClass = requireNonNull(tableModelClass, "tableModelClass");
     return this;
   }
@@ -71,19 +80,19 @@ public class SwingEntityModelBuilder
   /** {@inheritDoc} */
   @Override
   public final Class<? extends SwingEntityModel> getModelClass() {
-    return modelClass;
+    return modelClass == null ? SwingEntityModel.class : modelClass;
   }
 
   /** {@inheritDoc} */
   @Override
   public final Class<? extends SwingEntityEditModel> getEditModelClass() {
-    return editModelClass;
+    return editModelClass ==  null ? SwingEntityEditModel.class : editModelClass;
   }
 
   /** {@inheritDoc} */
   @Override
   public final Class<? extends SwingEntityTableModel> getTableModelClass() {
-    return tableModelClass;
+    return tableModelClass == null ? SwingEntityTableModel.class : tableModelClass;
   }
 
   /** {@inheritDoc} */
@@ -123,13 +132,13 @@ public class SwingEntityModelBuilder
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
       final SwingEntityModel model;
-      if (modelClass.equals(SwingEntityModel.class)) {
+      if (getModelClass().equals(SwingEntityModel.class)) {
         LOG.debug("{} initializing a default entity model", this);
         model = initializeDefaultModel(connectionProvider);
       }
       else {
-        LOG.debug("{} initializing a custom entity model: {}", this, modelClass);
-        model = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
+        LOG.debug("{} initializing a custom entity model: {}", this, getModelClass());
+        model = getModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       for (final EntityModelBuilder<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> detailProvider : detailModelBuilders) {
         model.addDetailModel(detailProvider.createModel(connectionProvider));
@@ -152,13 +161,13 @@ public class SwingEntityModelBuilder
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
       final SwingEntityEditModel editModel;
-      if (editModelClass.equals(SwingEntityEditModel.class)) {
+      if (getEditModelClass().equals(SwingEntityEditModel.class)) {
         LOG.debug("{} initializing a default model", this);
         editModel = initializeDefaultEditModel(connectionProvider);
       }
       else {
-        LOG.debug("{} initializing a custom edit model: {}", this, editModelClass);
-        editModel = editModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
+        LOG.debug("{} initializing a custom edit model: {}", this, getEditModelClass());
+        editModel = getEditModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       configureEditModel(editModel);
 
@@ -178,13 +187,13 @@ public class SwingEntityModelBuilder
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
       final SwingEntityTableModel tableModel;
-      if (tableModelClass.equals(SwingEntityTableModel.class)) {
+      if (getTableModelClass().equals(SwingEntityTableModel.class)) {
         LOG.debug("{} initializing a default table model", this);
         tableModel = initializeDefaultTableModel(connectionProvider);
       }
       else {
-        LOG.debug("{} initializing a custom table model: {}", this, tableModelClass);
-        tableModel = tableModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
+        LOG.debug("{} initializing a custom table model: {}", this, getTableModelClass());
+        tableModel = getTableModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       configureTableModel(tableModel);
 

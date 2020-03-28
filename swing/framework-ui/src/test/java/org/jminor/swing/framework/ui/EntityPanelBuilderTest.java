@@ -13,8 +13,7 @@ import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityPanelBuilderTest {
 
@@ -22,6 +21,19 @@ public class EntityPanelBuilderTest {
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
+
+  @Test
+  public void setPanelClass() {
+    assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
+            .setEditPanelClass(EntityEditPanel.class).setPanelClass(EntityPanel.class));
+    assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
+            .setTablePanelClass(EntityTablePanel.class).setPanelClass(EntityPanel.class));
+
+    assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
+            .setPanelClass(EntityPanel.class).setEditPanelClass(EntityEditPanel.class));
+    assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
+            .setPanelClass(EntityPanel.class).setTablePanelClass(EntityTablePanel.class));
+  }
 
   @Test
   public void testDetailPanelBuilder() {
