@@ -67,7 +67,7 @@ public final class World extends Domain {
   // end::entityAndPropertyIds[]
 
   public static final String T_CONTINENT = "continent";
-  public static final String CONTINENT_NAME = "continent";
+  public static final String CONTINENT_CONTINENT = "continent";
   public static final String CONTINENT_SURFACE_AREA = "sum(surfacearea)";
   public static final String CONTINENT_POPULATION = "sum(population)";
   public static final String CONTINENT_MIN_LIFE_EXPECTANCY = "min(lifeexpectancy)";
@@ -75,9 +75,6 @@ public final class World extends Domain {
   public static final String CONTINENT_MIN_INDEPENDENCE_YEAR = "min(indepyear)";
   public static final String CONTINENT_MAX_INDEPENDENCE_YEAR = "max(indepyear)";
   public static final String CONTINENT_GNP = "sum(gnp)";
-  private static final String CONTINENT_QUERY = "select continent, sum(surfacearea), sum(population), " +
-          "min(lifeexpectancy), max(lifeexpectancy), min(indepyear), max(indepyear), " +
-          "sum(gnp) from world.country where continent <> 'Antarctica'";
 
   public static final String T_LOOKUP = "world.country_city_v";
   public static final String LOOKUP_COUNTRY_CODE = "countrycode";
@@ -249,7 +246,7 @@ public final class World extends Domain {
 
   void lookup() {
     define(T_LOOKUP,
-            columnProperty(LOOKUP_COUNTRY_CODE, Types.VARCHAR, "Country code").primaryKeyIndex(0),
+            columnProperty(LOOKUP_COUNTRY_CODE, Types.VARCHAR, "Country code"),
             columnProperty(LOOKUP_COUNTRY_NAME, Types.VARCHAR, "Country name"),
             columnProperty(LOOKUP_COUNTRY_CONTINENT, Types.VARCHAR, "Continent"),
             columnProperty(LOOKUP_COUNTRY_REGION, Types.VARCHAR, "Region"),
@@ -268,7 +265,7 @@ public final class World extends Domain {
             columnProperty(LOOKUP_COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state"),
             blobProperty(LOOKUP_COUNTRY_FLAG, "Flag"),
             columnProperty(LOOKUP_COUNTRY_CODE2, Types.VARCHAR, "Code2"),
-            columnProperty(LOOKUP_CITY_ID).primaryKeyIndex(1),
+            columnProperty(LOOKUP_CITY_ID),
             columnProperty(LOOKUP_CITY_NAME, Types.VARCHAR, "Name"),
             columnProperty(LOOKUP_CITY_DISTRICT, Types.VARCHAR, "District"),
             columnProperty(LOOKUP_CITY_POPULATION, Types.INTEGER, "City population")
@@ -279,8 +276,8 @@ public final class World extends Domain {
   }
 
   void continent() {
-    define(T_CONTINENT,
-            primaryKeyProperty(CONTINENT_NAME, Types.VARCHAR, "Name")
+    define(T_CONTINENT, "world.country",
+            columnProperty(CONTINENT_CONTINENT, Types.VARCHAR, "Continent")
                     .groupingColumn(true),
             columnProperty(CONTINENT_SURFACE_AREA, Types.INTEGER, "Surface area")
                     .aggregateColumn(true)
@@ -299,7 +296,6 @@ public final class World extends Domain {
             columnProperty(CONTINENT_GNP, Types.DOUBLE, "GNP")
                     .aggregateColumn(true)
                     .useNumberFormatGrouping(true))
-            .selectQuery(CONTINENT_QUERY, true)
             .readOnly(true)
             .caption("Continent");
   }

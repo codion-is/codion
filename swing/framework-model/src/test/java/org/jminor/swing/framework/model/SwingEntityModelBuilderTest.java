@@ -12,8 +12,7 @@ import org.jminor.framework.model.TestDomain;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityModelBuilderTest {
 
@@ -21,6 +20,19 @@ public final class SwingEntityModelBuilderTest {
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
+
+  @Test
+  public void setModelClass() {
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+            .setEditModelClass(DepartmentEditModel.class).setModelClass(SwingEntityModel.class));
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+            .setTableModelClass(DepartmentTableModel.class).setModelClass(SwingEntityModel.class));
+
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+            .setModelClass(SwingEntityModel.class).setEditModelClass(DepartmentEditModel.class));
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+            .setModelClass(SwingEntityModel.class).setTableModelClass(DepartmentTableModel.class));
+  }
 
   @Test
   public void testDetailModelBuilder() {

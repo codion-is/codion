@@ -29,8 +29,8 @@ public class EntityPanelBuilder {
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
   private boolean tableConditionPanelVisible = EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.get();
 
-  private Class<? extends EntityPanel> panelClass = EntityPanel.class;
-  private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;
+  private Class<? extends EntityPanel> panelClass;
+  private Class<? extends EntityTablePanel> tablePanelClass;
   private Class<? extends EntityEditPanel> editPanelClass;
 
   private final SwingEntityModelBuilder modelBuilder;
@@ -42,19 +42,7 @@ public class EntityPanelBuilder {
    * @param entityId the entity ID
    */
   public EntityPanelBuilder(final String entityId) {
-    this(entityId, SwingEntityModel.class, EntityPanel.class);
-  }
-
-  /**
-   * Instantiates a new EntityPanelBuilder
-   * @param entityId the entityId
-   * @param entityModelClass the Class of the EntityModel
-   * @param entityPanelClass the Class of the EntityPanel
-   */
-  public EntityPanelBuilder(final String entityId, final Class<? extends SwingEntityModel> entityModelClass,
-                            final Class<? extends EntityPanel> entityPanelClass) {
-    this(new SwingEntityModelBuilder(entityId).setModelClass(entityModelClass));
-    setPanelClass(entityPanelClass);
+    this(new SwingEntityModelBuilder(entityId));
   }
 
   /**
@@ -191,8 +179,10 @@ public class EntityPanelBuilder {
    * @return this EntityPanelBuilder instance
    */
   public final EntityPanelBuilder setPanelClass(final Class<? extends EntityPanel> panelClass) {
-    requireNonNull(panelClass, "panelClass");
-    this.panelClass = panelClass;
+    if (editPanelClass != null || tablePanelClass != null) {
+      throw new IllegalStateException("Edit or table panel class has been set");
+    }
+    this.panelClass = requireNonNull(panelClass, "panelClass");
     return this;
   }
 
@@ -201,7 +191,10 @@ public class EntityPanelBuilder {
    * @return this EntityPanelBuilder instance
    */
   public final EntityPanelBuilder setEditPanelClass(final Class<? extends EntityEditPanel> editPanelClass) {
-    this.editPanelClass = editPanelClass;
+    if (panelClass != null) {
+      throw new IllegalStateException("Panel class has been set");
+    }
+    this.editPanelClass = requireNonNull(editPanelClass, "editPanelClass");
     return this;
   }
 
@@ -210,7 +203,10 @@ public class EntityPanelBuilder {
    * @return this EntityPanelBuilder instance
    */
   public final EntityPanelBuilder setTablePanelClass(final Class<? extends EntityTablePanel> tablePanelClass) {
-    this.tablePanelClass = tablePanelClass;
+    if (panelClass != null) {
+      throw new IllegalStateException("Panel class has been set");
+    }
+    this.tablePanelClass = requireNonNull(tablePanelClass, "tablePanelClass");
     return this;
   }
 
@@ -218,7 +214,7 @@ public class EntityPanelBuilder {
    * @return the EntityPanel class to use
    */
   public final Class<? extends EntityPanel> getPanelClass() {
-    return panelClass;
+    return panelClass == null ? EntityPanel.class : panelClass;
   }
 
   /**
@@ -232,7 +228,7 @@ public class EntityPanelBuilder {
    * @return the EntityTablePanel class to use
    */
   public final Class<? extends EntityTablePanel> getTablePanelClass() {
-    return tablePanelClass;
+    return tablePanelClass == null ? EntityTablePanel.class : tablePanelClass;
   }
 
   /** {@inheritDoc} */
@@ -257,9 +253,7 @@ public class EntityPanelBuilder {
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, "connectionProvider");
     try {
-      final SwingEntityModel entityModel = modelBuilder.createModel(connectionProvider);
-
-      return createPanel(entityModel);
+      return createPanel(modelBuilder.createModel(connectionProvider));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -344,14 +338,14 @@ public class EntityPanelBuilder {
   private EntityPanel initializePanel(final SwingEntityModel entityModel) {
     try {
       final EntityPanel entityPanel;
-      if (panelClass.equals(EntityPanel.class)) {
+      if (getPanelClass().equals(EntityPanel.class)) {
         final EntityTablePanel tablePanel = entityModel.containsTableModel() ? initializeTablePanel(entityModel.getTableModel()) : null;
-        final EntityEditPanel editPanel = editPanelClass == null ? null : initializeEditPanel(entityModel.getEditModel());
-        entityPanel = panelClass.getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
+        final EntityEditPanel editPanel = getEditPanelClass() == null ? null : initializeEditPanel(entityModel.getEditModel());
+        entityPanel = getPanelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
                 .newInstance(entityModel, editPanel, tablePanel);
       }
       else {
-        entityPanel = findModelConstructor(panelClass).newInstance(entityModel);
+        entityPanel = findModelConstructor(getPanelClass()).newInstance(entityModel);
       }
       entityPanel.setCaption(caption == null ? entityModel.getConnectionProvider()
               .getDomain().getDefinition(entityModel.getEntityId()).getCaption() : caption);
@@ -392,7 +386,7 @@ public class EntityPanelBuilder {
       if (!tableModel.getEntityId().equals(getEntityId())) {
         throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityId() + ", required: " + getEntityId());
       }
-      final EntityTablePanel tablePanel = findTableModelConstructor(tablePanelClass).newInstance(tableModel);
+      final EntityTablePanel tablePanel = findTableModelConstructor(getTablePanelClass()).newInstance(tableModel);
       configureTablePanel(tablePanel);
 
       return tablePanel;

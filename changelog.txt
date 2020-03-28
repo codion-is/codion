@@ -5809,3 +5809,4 @@
   EntityApplicationPanel.initializeEntityModel() added
   EntityTableModel.add/removeRefreshListener() added
   FilteredModel.getAllItems() renamed to getItems()
+  SwingEntityModelBuilder, EntityPanelBuilder, added validation, unit test added
