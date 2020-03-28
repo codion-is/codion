@@ -53,7 +53,7 @@ public class EntityPanelBuilder {
    */
   public EntityPanelBuilder(final String entityId, final Class<? extends SwingEntityModel> entityModelClass,
                             final Class<? extends EntityPanel> entityPanelClass) {
-    this(new SwingEntityModelBuilder(entityId, entityModelClass));
+    this(new SwingEntityModelBuilder(entityId).setModelClass(entityModelClass));
     setPanelClass(entityPanelClass);
   }
 

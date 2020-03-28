@@ -41,16 +41,6 @@ public class SwingEntityModelBuilder
     this.entityId = requireNonNull(entityId, "entityId");
   }
 
-  /**
-   * Instantiates a new SwingEntityModelBuilder based on the given entity ID
-   * @param entityId the entity ID
-   * @param entityModelClass the entity model class
-   */
-  public SwingEntityModelBuilder(final String entityId, final Class<? extends SwingEntityModel> entityModelClass) {
-    this.entityId = requireNonNull(entityId, "entityId");
-    this.modelClass = requireNonNull(entityModelClass, "entityModelClass");
-  }
-
   /** {@inheritDoc} */
   @Override
   public final String getEntityId() {
