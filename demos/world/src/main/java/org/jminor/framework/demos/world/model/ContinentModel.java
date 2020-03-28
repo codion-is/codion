@@ -29,7 +29,7 @@ public final class ContinentModel extends SwingEntityModel {
     return surfaceAreaDataset;
   }
 
-  public PieDataset getGNPDataset() {
+  public PieDataset getGnpDataset() {
     return gnpDataset;
   }
 
