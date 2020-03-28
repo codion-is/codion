@@ -635,6 +635,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       clear();
       addItems(queryResult, true, true);
       conditionModel.rememberCurrentConditionState();
+      refreshEvent.onEvent();
     }
     finally {
       LOG.debug("{} refreshing done", this);
