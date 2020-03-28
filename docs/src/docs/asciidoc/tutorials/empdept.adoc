@@ -147,11 +147,11 @@ include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmployeeEditPanel.ja
 
 == Main application panel
 
-We create a main application panel by extending {url-javadoc}/org/jminor/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *setupEntityPanelProviders()* we configure two sets of *SwingEntityModelProvider* and *EntityPanelProvider* objects, which allow lazy initialization of UI components. We'll define the *EmployeePanelProvider* class later. We call *addEntityPanelProvider()* making the department panel the main application panel.
+We create a main application panel by extending {url-javadoc}/org/jminor/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *setupEntityPanelBuilders()* we configure two sets of *SwingEntityModelProvider* and *EntityPanelBuilder* objects, which allow lazy initialization of UI components. We'll define the *EmployeePanelBuilder* class later. We call *addEntityPanelBuilder()* making the department panel the main application panel.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=setupEntityPanelProviders]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=setupEntityPanelBuilders]
 ----
 
 Next we add a method for importing a JSON text file, which we'll call via an action initialized in the next section.
@@ -196,11 +196,11 @@ Then we define a *EmployeeModelProvider* by extending *SwingEntityModelProvider*
 include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=employeeModelProvider]
 ----
 
-We create a *EmployeePanelProvider* by extending *EntityPanelProvider*, in order to configure the table panel after initialization.
+We create a *EmployeePanelBuilder* by extending *EntityPanelBuilder*, in order to configure the table panel after initialization.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=employeePanelProvider]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=employeePanelBuilder]
 ----
 
 == Application load test

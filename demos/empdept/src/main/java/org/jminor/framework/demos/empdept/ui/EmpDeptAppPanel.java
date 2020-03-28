@@ -28,15 +28,15 @@ import org.jminor.swing.framework.ui.EntityTablePanel;
 import java.io.File;
 import java.nio.charset.Charset;
 
-// tag::setupEntityPanelProviders[]
+// tag::setupEntityPanelBuilders[]
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   @Override
   protected void setupEntityPanelBuilders() {
     final EmployeeModelProvider employeeModelProvider = new EmployeeModelProvider();
-    final EmployeePanelBuilder employeePanelProvider =
+    final EmployeePanelBuilder employeePanelBuilder =
             new EmployeePanelBuilder(employeeModelProvider);
-    employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
+    employeePanelBuilder.setEditPanelClass(EmployeeEditPanel.class);
 
     final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(EmpDept.T_DEPARTMENT) {
       @Override
@@ -47,15 +47,15 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     //This relies on the foreign key association between employee and department
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);
 
-    final EntityPanelBuilder departmentPanelProvider =
+    final EntityPanelBuilder departmentPanelBuilder =
             new EntityPanelBuilder(departmentModelProvider);
-    departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
-    departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
-    departmentPanelProvider.addDetailPanelBuilder(employeePanelProvider);
+    departmentPanelBuilder.setEditPanelClass(DepartmentEditPanel.class);
+    departmentPanelBuilder.setTablePanelClass(DepartmentTablePanel.class);
+    departmentPanelBuilder.addDetailPanelBuilder(employeePanelBuilder);
 
-    addEntityPanelBuilder(departmentPanelProvider);
+    addEntityPanelBuilder(departmentPanelBuilder);
   }
-// end::setupEntityPanelProviders[]
+// end::setupEntityPanelBuilders[]
 
 // tag::importJSON[]
   public void importJSON() throws Exception {
@@ -117,7 +117,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
 // end::employeeModelProvider[]
 
-// tag::employeePanelProvider[]
+// tag::employeePanelBuilder[]
   private static final class EmployeePanelBuilder extends EntityPanelBuilder {
     private EmployeePanelBuilder(final EmployeeModelProvider modelProvider) {
       super(modelProvider);
@@ -129,4 +129,4 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     }
   }
 }
-// end::employeePanelProvider[]
+// end::employeePanelBuilder[]

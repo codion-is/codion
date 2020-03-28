@@ -64,7 +64,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     add(createPropertyPanel(World.COUNTRY_CAPITAL_FK, capitalPanel));
   }
 
-  /** A EntityPanelProvider for adding a new city */
+  /** A EntityPanelBuilder for adding a new city */
   private final class CityPanelBuilder extends EntityPanelBuilder {
 
     public CityPanelBuilder() {

@@ -55,29 +55,29 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
   @Override
   protected void setupEntityPanelBuilders() {
-    EntityPanelBuilder petTypePanelProvider =
+    EntityPanelBuilder petTypePanelBuilder =
             new EntityPanelBuilder(T_PET_TYPE)
                     .setEditPanelClass(PetTypeEditPanel.class)
                     .setCaption("Pet types");
-    EntityPanelBuilder specialtiesPanelProvider =
+    EntityPanelBuilder specialtiesPanelBuilder =
             new EntityPanelBuilder(T_SPECIALTY)
                     .setEditPanelClass(SpecialtyEditPanel.class)
                     .setCaption("Specialties");
 
-    EntityPanelBuilder vetsPanelProvider =
+    EntityPanelBuilder vetsPanelBuilder =
             new EntityPanelBuilder(T_VET)
                     .setEditPanelClass(VetEditPanel.class)
                     .setCaption("Vets");
     SwingEntityModelProvider vetSpecialtyModelProvider =
             new SwingEntityModelProvider(T_VET_SPECIALTY)
                     .setEditModelClass(VetSpecialtyEditModel.class);
-    EntityPanelBuilder vetSpecialtiesPanelProvider =
+    EntityPanelBuilder vetSpecialtiesPanelBuilder =
             new EntityPanelBuilder(vetSpecialtyModelProvider)
                     .setEditPanelClass(VetSpecialtyEditPanel.class)
                     .setCaption("Specialties");
-    vetsPanelProvider.addDetailPanelBuilder(vetSpecialtiesPanelProvider);
+    vetsPanelBuilder.addDetailPanelBuilder(vetSpecialtiesPanelBuilder);
 
-    addSupportPanelBuilders(petTypePanelProvider, specialtiesPanelProvider, vetsPanelProvider);
+    addSupportPanelBuilders(petTypePanelBuilder, specialtiesPanelBuilder, vetsPanelBuilder);
   }
 
   public static void main(final String[] args) throws CancelException {

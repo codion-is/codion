@@ -599,7 +599,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * Creates a new Action which shows the edit panel provided by {@code panelProvider} and if an insert is performed
    * selects the new entity in the {@code lookupField}.
    * @param comboBox the combo box in which to select the new entity, if created
-   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
+   * @param panelProvider the EntityPanelBuilder for providing the EntityEditPanel to use for creating the new entity
    * @return the Action
    */
   public static Action createEditPanelAction(final EntityComboBox comboBox, final EntityPanelBuilder panelProvider) {
@@ -610,7 +610,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * Creates a new Action which shows the edit panel provided by {@code panelProvider} and if an insert is performed
    * selects the new entity in the {@code lookupField}.
    * @param lookupField the lookup field in which to select the new entity, if created
-   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
+   * @param panelProvider the EntityPanelBuilder for providing the EntityEditPanel to use for creating the new entity
    * @return the Action
    */
   public static Action createEditPanelAction(final EntityLookupField lookupField, final EntityPanelBuilder panelProvider) {
@@ -621,7 +621,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * Creates a new Action which shows the edit panel provided by {@code panelProvider} and if an insert is performed
    * {@code insertListener} is notified.
    * @param component this component used as dialog parent, receives the focus after insert
-   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
+   * @param panelProvider the EntityPanelBuilder for providing the EntityEditPanel to use for creating the new entity
    * @param connectionProvider the connection provider
    * @param insertListener the listener notified when insert has been performed
    * @return the Action

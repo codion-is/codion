@@ -188,7 +188,7 @@ public class EmpDeptMinimalApp {
 
   /**
    * And finally we extend the EntityApplicationPanel class, which is our
-   * main application panel. We implement setupEntityPanelProviders, in which
+   * main application panel. We implement setupEntityPanelBuilders, in which
    * we assemble the application from the parts we have defined, and we also
    * implement the initializeApplicationModel function by returning an instance
    * of the application model class we defined above.
