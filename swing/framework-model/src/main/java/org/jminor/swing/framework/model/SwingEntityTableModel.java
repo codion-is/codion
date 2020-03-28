@@ -5,7 +5,9 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.Text;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
+import org.jminor.common.event.Events;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SortingDirective;
@@ -98,6 +100,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * The condition model
    */
   private final EntityTableConditionModel conditionModel;
+
+  /**
+   * Fired each time this model is refreshed
+   */
+  private final Event refreshEvent = Events.event();
 
   /**
    * If true then querying should be disabled if no condition is specified
@@ -599,6 +606,18 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final void addSelectionChangedListener(final EventListener listener) {
     getSelectionModel().addSelectionChangedListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addRefreshListener(final EventListener listener) {
+    refreshEvent.addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeRefreshListener(final EventListener listener) {
+    refreshEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */

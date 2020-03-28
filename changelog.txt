@@ -5783,3 +5783,4 @@
   EntityPanelProvider renamed to EntityPanelBuilder
   EntityModelProvider renamed to EntityModelBuilder
   EntityApplicationPanel.initializeEntityModel() added
+  EntityTableModel.add/removeRefreshListener() added

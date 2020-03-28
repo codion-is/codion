@@ -241,6 +241,10 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void addSelectionChangedListener(final EventListener listener) {}
     @Override
+    public void addRefreshListener(final EventListener listener) {}
+    @Override
+    public void removeRefreshListener(final EventListener listener) {}
+    @Override
     public void addFilteringListener(final EventListener listener) {}
     @Override
     public void removeFilteringListener(final EventListener listener) {}

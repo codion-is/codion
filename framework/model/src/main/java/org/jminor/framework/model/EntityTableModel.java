@@ -351,6 +351,16 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void addSelectionChangedListener(EventListener listener);
 
   /**
+   * @param listener notified each time this model is refreshed.
+   */
+  void addRefreshListener(EventListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeRefreshListener(EventListener listener);
+
+  /**
    * @param refreshOnForeignKeyConditionValuesSet true if this table model should automatically refresh when foreign key condition values are set
    * @see #setForeignKeyConditionValues(ForeignKeyProperty, Collection)
    * @return this {@link EntityTableModel} instance

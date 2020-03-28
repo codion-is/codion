@@ -126,10 +126,17 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   }
 
   /**
-   * @param listener a listener notified each time this model is refreshed
+   * @param listener notified when the selection changes in the underlying selection model
    */
   public final void addRefreshListener(final EventListener listener) {
     refreshEvent.addListener(listener);
+  }
+
+  /**
+   * @param listener notified each time this model is refreshed.
+   */
+  public final void removeRefreshListener(final EventListener listener) {
+    refreshEvent.removeListener(listener);
   }
 
   /**
@@ -168,7 +175,9 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     return selectionModel.getMultipleSelectionObserver();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @param listener notified each time the selection changes.
+   */
   public final void addSelectionChangedListener(final EventListener listener) {
     selectionChangedEvent.addListener(listener);
   }
