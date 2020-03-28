@@ -31,6 +31,21 @@ include::{dir-source}/org/jminor/framework/demos/world/model/CountryTableModel.j
 
 [source,java]
 ----
+include::{dir-source}/org/jminor/framework/demos/world/model/CountryModel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/model/CountryCustomModel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/model/ContinentModel.java[tag=**]
+----
+
+[source,java]
+----
 include::{dir-source}/org/jminor/framework/demos/world/model/LookupTableModel.java[tag=**]
 ----
 
@@ -63,12 +78,22 @@ include::{dir-source}/org/jminor/framework/demos/world/ui/CountryLanguageEditPan
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/ui/LookupTablePanel.java[tag=**]
+include::{dir-source}/org/jminor/framework/demos/world/ui/CountryCustomPanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/ui/CustomCountryPanel.java[tag=**]
+include::{dir-source}/org/jminor/framework/demos/world/ui/ContinentPanel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/ui/ContinentTablePanel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/ui/LookupTablePanel.java[tag=**]
 ----
 
 [source,java]
