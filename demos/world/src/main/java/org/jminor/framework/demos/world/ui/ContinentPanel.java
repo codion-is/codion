@@ -1,6 +1,7 @@
 package org.jminor.framework.demos.world.ui;
 
 import org.jminor.framework.demos.world.model.ContinentModel;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityTablePanel;
@@ -17,7 +18,7 @@ import static org.jfree.chart.ChartFactory.createPieChart;
 
 public final class ContinentPanel extends EntityPanel {
 
-  public ContinentPanel(final ContinentModel entityModel) {
+  public ContinentPanel(ContinentModel entityModel) {
     super(entityModel);
     getTablePanel().getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
   }
@@ -31,6 +32,7 @@ public final class ContinentPanel extends EntityPanel {
     tablePanel.setIncludeSouthPanel(false);
     tablePanel.setIncludePopupMenu(false);
     tablePanel.initializePanel();
+    Components.setPreferredHeight(tablePanel, 200);
 
     ChartPanel populationChartPanel = new ChartPanel(createPieChart("Population",
             model.getPopulationChartDataset()));
@@ -44,9 +46,9 @@ public final class ContinentPanel extends EntityPanel {
     ChartPanel lifeExpectancyChartPanel = new ChartPanel(createBarChart("Life expectancy",
             "Continent", "Years", model.getLifeExpectancyDataset()));
 
-    JPanel centerPanel = new JPanel(Layouts.gridLayout(1, 2));
-    centerPanel.add(tablePanel);
-    centerPanel.add(lifeExpectancyChartPanel);
+    JPanel centerPanel = new JPanel(Layouts.borderLayout());
+    centerPanel.add(tablePanel, BorderLayout.NORTH);
+    centerPanel.add(lifeExpectancyChartPanel, BorderLayout.CENTER);
 
     JPanel southChartPanel = new JPanel(Layouts.gridLayout(1, 3));
     southChartPanel.add(populationChartPanel);

@@ -4,8 +4,11 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.world.domain.World;
+import org.jminor.framework.demos.world.model.CountryCustomModel;
+import org.jminor.framework.demos.world.model.CountryModel;
 import org.jminor.framework.demos.world.model.WorldAppModel;
 import org.jminor.swing.common.ui.Windows;
+import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
@@ -17,12 +20,16 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   // tag::setupEntityPanelBuilders[]
   @Override
   protected void setupEntityPanelBuilders() {
-    EntityPanelBuilder countryPanelBuilder = new EntityPanelBuilder(World.T_COUNTRY);
+    final SwingEntityModelBuilder countryModelBuilder = new SwingEntityModelBuilder(World.T_COUNTRY);
+    countryModelBuilder.setModelClass(CountryModel.class);
+    EntityPanelBuilder countryPanelBuilder = new EntityPanelBuilder(countryModelBuilder);
     countryPanelBuilder.setEditPanelClass(CountryEditPanel.class);
     countryPanelBuilder.setTablePanelClass(CountryTablePanel.class);
 
-    EntityPanelBuilder customCountryPanelBuilder = new EntityPanelBuilder(World.T_COUNTRY)
-            .setPanelClass(CustomCountryPanel.class)
+    final SwingEntityModelBuilder countryCustomModelBuilder = new SwingEntityModelBuilder(World.T_COUNTRY);
+    countryCustomModelBuilder.setModelClass(CountryCustomModel.class);
+    EntityPanelBuilder customCountryPanelBuilder = new EntityPanelBuilder(countryCustomModelBuilder)
+            .setPanelClass(CountryCustomPanel.class)
             .setCaption("Custom Country");
 
     EntityPanelBuilder cityPanelBuilder = new EntityPanelBuilder(World.T_CITY);
