@@ -21,15 +21,15 @@ public final class ContinentModel extends SwingEntityModel {
     getTableModel().addRefreshListener(this::refreshChartDatasets);
   }
 
-  public PieDataset getPopulationChartDataset() {
+  public PieDataset getPopulationDataset() {
     return populationDataset;
   }
 
-  public PieDataset getSurfaceAreaChartDataset() {
+  public PieDataset getSurfaceAreaDataset() {
     return surfaceAreaDataset;
   }
 
-  public PieDataset getGNPChartDataset() {
+  public PieDataset getGNPDataset() {
     return gnpDataset;
   }
 

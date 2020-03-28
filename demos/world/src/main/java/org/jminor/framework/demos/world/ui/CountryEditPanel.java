@@ -9,10 +9,10 @@ import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import java.awt.GridLayout;
 
 import static org.jminor.swing.common.ui.Components.createEastButtonPanel;
 import static org.jminor.swing.common.ui.Components.setPreferredWidth;
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 import static org.jminor.swing.common.ui.textfield.TextFields.makeUpperCase;
 
 public final class CountryEditPanel extends EntityEditPanel {
@@ -45,7 +45,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
             createEditPanelAction(capitalComboBox, new CityPanelBuilder()), false);
 
-    setLayout(new GridLayout(4, 5, 5, 5));
+    setLayout(gridLayout(4, 5));
 
     addPropertyPanel(World.COUNTRY_CODE);
     addPropertyPanel(World.COUNTRY_CODE2);

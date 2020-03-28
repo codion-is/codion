@@ -4,9 +4,8 @@ import org.jminor.framework.demos.world.domain.World;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
-import java.awt.GridLayout;
-
 import static org.jminor.swing.common.ui.Components.setPreferredWidth;
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class CountryLanguageEditPanel extends EntityEditPanel {
 
@@ -23,7 +22,7 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
     createCheckBox(World.COUNTRYLANGUAGE_ISOFFICIAL, null, false);
     createTextField(World.COUNTRYLANGUAGE_PERCENTAGE);
 
-    setLayout(new GridLayout(2, 4, 5, 5));
+    setLayout(gridLayout(2, 4));
 
     addPropertyPanel(World.COUNTRYLANGUAGE_COUNTRY_FK);
     addPropertyPanel(World.COUNTRYLANGUAGE_LANGUAGE);

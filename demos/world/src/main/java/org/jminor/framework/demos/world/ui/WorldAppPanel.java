@@ -28,7 +28,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
     final SwingEntityModelBuilder countryCustomModelBuilder = new SwingEntityModelBuilder(World.T_COUNTRY);
     countryCustomModelBuilder.setModelClass(CountryCustomModel.class);
-    EntityPanelBuilder customCountryPanelBuilder = new EntityPanelBuilder(countryCustomModelBuilder)
+    EntityPanelBuilder countryCustomPanelBuilder = new EntityPanelBuilder(countryCustomModelBuilder)
             .setPanelClass(CountryCustomPanel.class)
             .setCaption("Custom Country");
 
@@ -47,7 +47,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
             .setTablePanelClass(LookupTablePanel.class)
             .setRefreshOnInit(false);
 
-    addEntityPanelBuilders(countryPanelBuilder, customCountryPanelBuilder, continentPanelBuilder, lookupPanelBuilder);
+    addEntityPanelBuilders(countryPanelBuilder, countryCustomPanelBuilder, continentPanelBuilder, lookupPanelBuilder);
   }
   // end::setupEntityPanelBuilders[]
 

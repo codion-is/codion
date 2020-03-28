@@ -6,9 +6,7 @@ import org.jminor.framework.demos.world.model.CountryCustomModel;
 import org.jminor.framework.demos.world.model.CountryEditModel;
 import org.jminor.framework.demos.world.model.CountryTableModel;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.dialog.Modal;
-import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityPanel;
 
@@ -20,6 +18,10 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+
+import static org.jminor.swing.common.ui.dialog.Dialogs.displayInDialog;
+import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class CountryCustomPanel extends EntityPanel {
 
@@ -67,11 +69,11 @@ public final class CountryCustomPanel extends EntityPanel {
     ChartPanel languageChartPanel = countryTablePanel.getLanguageChartPanel();
     languageChartPanel.setPreferredSize(new Dimension(300, 300));
 
-    JPanel southTablePanel = new JPanel(Layouts.gridLayout(1, 2));
+    JPanel southTablePanel = new JPanel(gridLayout(1, 2));
     southTablePanel.add(cityPanel);
     southTablePanel.add(languagePanel);
 
-    JPanel southChartPanel = new JPanel(Layouts.gridLayout(1, 2));
+    JPanel southChartPanel = new JPanel(gridLayout(1, 2));
     southChartPanel.add(cityChartPanel);
     southChartPanel.add(languageChartPanel);
 
@@ -81,7 +83,7 @@ public final class CountryCustomPanel extends EntityPanel {
     southTabbedPane.setMnemonicAt(0, 'T');
     southTabbedPane.setMnemonicAt(1, 'C');
 
-    setLayout(Layouts.borderLayout());
+    setLayout(borderLayout());
 
     add(countryTablePanel, BorderLayout.CENTER);
     add(southTabbedPane, BorderLayout.SOUTH);
@@ -94,7 +96,7 @@ public final class CountryCustomPanel extends EntityPanel {
   private void displayEditPanel() {
     final JPanel editPanel = getEditControlPanel();
     if (!editPanel.isShowing()) {
-      Dialogs.displayInDialog(this, editPanel, Modal.NO);
+      displayInDialog(this, editPanel, Modal.NO);
     }
     getEditPanel().requestInitialFocus();
   }

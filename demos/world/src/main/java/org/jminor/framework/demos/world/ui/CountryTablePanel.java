@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.framework.demos.world.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
@@ -24,9 +21,9 @@ public final class CountryTablePanel extends EntityTablePanel {
 
   public CountryTablePanel(CountryTableModel tableModel) {
     super(tableModel);
-    cityChartPanel = new ChartPanel(createPieChart("Cities", tableModel.getCityChartDataset()));
+    cityChartPanel = new ChartPanel(createPieChart("Cities", tableModel.getCitiesDataset()));
     cityChartPanel.getChart().removeLegend();
-    languageChartPanel = new ChartPanel(createPieChart("Languages", tableModel.getLanguagePieDataset()));
+    languageChartPanel = new ChartPanel(createPieChart("Languages", tableModel.getLanguagesDataset()));
     languageChartPanel.getChart().removeLegend();
     pieChartPane.addTab("Cities", cityChartPanel);
     pieChartPane.addTab("Languages", languageChartPanel);
