@@ -699,7 +699,7 @@ public final class AbstractFilteredTableModelTest {
 
     assertTrue(tableModel.getVisibleItems().size() > 0);
     assertTrue(tableModel.getFilteredItems().size() > 0);
-    assertTrue(tableModel.getAllItems().size() > 0);
+    assertTrue(tableModel.getItems().size() > 0);
 
     tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
     assertEquals(3, done.get());

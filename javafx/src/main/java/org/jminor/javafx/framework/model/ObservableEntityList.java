@@ -23,11 +23,11 @@ import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.SelectionMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 
@@ -206,8 +206,8 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   /** {@inheritDoc} */
   @Override
-  public final List<Entity> getAllItems() {
-    return this;
+  public final List<Entity> getItems() {
+    return unmodifiableList(this);
   }
 
   /** {@inheritDoc} */
@@ -217,7 +217,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
       final List<Entity> result = new ArrayList<>(this);
       result.removeAll(filteredList);
 
-      return result;
+      return unmodifiableList(result);
     }
 
     return emptyList();
@@ -226,7 +226,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   /** {@inheritDoc} */
   @Override
   public final List<Entity> getVisibleItems() {
-    return Collections.unmodifiableList(this);
+    return unmodifiableList(this);
   }
 
   /** {@inheritDoc} */

@@ -170,7 +170,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   /** {@inheritDoc} */
   @Override
-  public final List<T> getAllItems() {
+  public final List<T> getItems() {
     final List<T> entities = new ArrayList<>(getVisibleItems());
     entities.addAll(filteredItems);
 

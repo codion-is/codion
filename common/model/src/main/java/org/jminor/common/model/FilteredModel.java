@@ -47,6 +47,13 @@ public interface FilteredModel<T> {
   void setIncludeCondition(Predicate<T> includeCondition);
 
   /**
+   * @return an unmodifiable view of all visible and filtered items in this table model, in no particular order
+   * @see #getVisibleItems()
+   * @see #getFilteredItems()
+   */
+  List<T> getItems();
+
+  /**
    * @return an unmodifiable view of the visible items
    */
   List<T> getVisibleItems();
@@ -55,11 +62,6 @@ public interface FilteredModel<T> {
    * @return an unmodifiable view of the filtered items
    */
   List<T> getFilteredItems();
-
-  /**
-   * @return all visible and filtered items in this table model
-   */
-  List<T> getAllItems();
 
   /**
    * @return the number of currently visible items

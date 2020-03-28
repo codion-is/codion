@@ -233,7 +233,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public String getTableDataAsDelimitedString(final char delimiter) {return null;}
     @Override
-    public List<Entity> getAllItems() {return null;}
+    public List<Entity> getItems() {return null;}
     @Override
     public int getRowCount() {return 0;}
     @Override

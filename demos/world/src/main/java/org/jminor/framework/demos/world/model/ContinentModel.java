@@ -42,7 +42,7 @@ public final class ContinentModel extends SwingEntityModel {
     surfaceAreaDataset.clear();
     gnpDataset.clear();
     lifeExpectancyDataset.clear();
-    getTableModel().getAllItems().forEach(continent -> {
+    getTableModel().getItems().forEach(continent -> {
       populationDataset.setValue(
             continent.getString(World.CONTINENT_NAME),
             continent.getLong(World.CONTINENT_POPULATION));

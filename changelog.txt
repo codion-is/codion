@@ -5784,3 +5784,4 @@
   EntityModelProvider renamed to EntityModelBuilder
   EntityApplicationPanel.initializeEntityModel() added
   EntityTableModel.add/removeRefreshListener() added
+  FilteredModel.getAllItems() renamed to getItems()

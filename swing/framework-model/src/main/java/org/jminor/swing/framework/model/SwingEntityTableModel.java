@@ -489,7 +489,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     final List<ForeignKeyProperty> foreignKeyProperties =
             getEntityDefinition().getForeignKeyReferences(requireNonNull(foreignKeyEntityId, "foreignKeyEntityId"));
     boolean changed = false;
-    for (final Entity entity : getAllItems()) {
+    for (final Entity entity : getItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
           final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getPropertyId());
@@ -529,7 +529,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
     requireNonNull(keys, "keys");
-    return getAllItems().stream().filter(entity -> keys.contains(entity.getKey())).collect(Collectors.toList());
+    return getItems().stream().filter(entity -> keys.contains(entity.getKey())).collect(Collectors.toList());
   }
 
   /** {@inheritDoc} */
@@ -788,7 +788,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param entitiesByKey the entities to replace mapped to the corresponding primary key found in this table model
    */
   private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entitiesByKey) {
-    for (final Entity entity : getAllItems()) {
+    for (final Entity entity : getItems()) {
       final Iterator<Map.Entry<Entity.Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
       while (mapIterator.hasNext()) {
         final Map.Entry<Entity.Key, Entity> entry = mapIterator.next();

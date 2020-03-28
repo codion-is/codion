@@ -49,7 +49,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
                 final SwingEntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
                 selectRandomRows(invoiceModel.getTableModel(), RANDOM.nextInt(6) + 2);
                 final SwingEntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(T_INVOICELINE).getTableModel();
-                final List<Entity> invoiceLines = invoiceLineTableModel.getAllItems();
+                final List<Entity> invoiceLines = invoiceLineTableModel.getItems();
                 Entities.put(INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
 
                 invoiceLineTableModel.update(invoiceLines);

@@ -20,7 +20,6 @@ import javax.swing.table.TableColumn;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +31,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -124,14 +124,23 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
+  public final List<R> getItems() {
+    final List<R> items = new ArrayList<>(visibleItems);
+    items.addAll(filteredItems);
+
+    return unmodifiableList(items);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final List<R> getVisibleItems() {
-    return Collections.unmodifiableList(visibleItems);
+    return unmodifiableList(visibleItems);
   }
 
   /** {@inheritDoc} */
   @Override
   public final List<R> getFilteredItems() {
-    return Collections.unmodifiableList(filteredItems);
+    return unmodifiableList(filteredItems);
   }
 
   /** {@inheritDoc} */
@@ -349,15 +358,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   public final void setIncludeCondition(final Predicate<R> includeCondition) {
     this.includeCondition = includeCondition;
     filterContents();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<R> getAllItems() {
-    final List<R> items = new ArrayList<>(visibleItems);
-    items.addAll(filteredItems);
-
-    return items;
   }
 
   /** {@inheritDoc} */
