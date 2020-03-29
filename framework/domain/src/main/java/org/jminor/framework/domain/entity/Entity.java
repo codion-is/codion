@@ -194,6 +194,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   String getAsString(String propertyId);
 
   /**
+   * Retrieves a string representation of the value mapped to the given property, an empty string is returned
+   * in case of null values.
+   * @param property the property
+   * @return the value mapped to the given property as a string, an empty string if null
+   */
+  String getAsString(Property property);
+
+  /**
    * Returns the Entity instance referenced by the given foreign key property.
    * If the underlying reference property contains a value, that is,
    * a foreign key value exists but the actual referenced entity has not

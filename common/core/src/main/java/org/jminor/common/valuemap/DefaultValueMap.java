@@ -90,17 +90,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     return values.get(requireNonNull(key, KEY));
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public String getAsString(final K key) {
-    final V value = values.get(requireNonNull(key, KEY));
-    if (value == null) {
-      return "";
-    }
-
-    return value.toString();
-  }
-
   /**
    * Two DefaultValueMap objects are equal if their current values represent the same mappings.
    * @see Map#equals(Object)
