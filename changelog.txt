@@ -5789,3 +5789,4 @@
   DefaultLocalEntityConnection.select(entityId, propertyId, Object...) now accepts collection as values parameter
   DefaultDatabaseConnection now caches Users from connection meta data based on username
   DefaultEntityKey, array index out of bounds exception prevented in constructor, minor refactoring
+  DefaultValueMap, null key checks improved

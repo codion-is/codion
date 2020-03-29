@@ -207,7 +207,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public boolean isNull(final Property property) {
-    requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
       return isForeignKeyNull((ForeignKeyProperty) property);
     }
