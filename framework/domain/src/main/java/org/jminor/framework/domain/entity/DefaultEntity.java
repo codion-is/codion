@@ -706,11 +706,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
             new DefaultEntityKey(definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId()), value));
   }
 
-  private Key cacheReferencedKey(final String fkPropertyId, final Key referencedPrimaryKey) {
+  private Key cacheReferencedKey(final String foreignKeyPropertyId, final Key referencedPrimaryKey) {
     if (referencedKeyCache == null) {
       referencedKeyCache = new HashMap<>();
     }
-    referencedKeyCache.put(fkPropertyId, referencedPrimaryKey);
+    referencedKeyCache.put(foreignKeyPropertyId, referencedPrimaryKey);
 
     return referencedPrimaryKey;
   }
