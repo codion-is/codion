@@ -536,6 +536,10 @@ public class DefaultEntityTest {
     employee.put(TestDomain.EMP_NAME, "ename");
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
     assertEquals("ename - dname", employee.getString(TestDomain.EMP_NAME_DEPARTMENT));
+
+    final Entity detail = DOMAIN.entity(TestDomain.T_DETAIL);
+    detail.put(TestDomain.DETAIL_INT, 42);
+    assertEquals("420", detail.getAsString(TestDomain.DETAIL_INT_DERIVED));
   }
 
   @Test

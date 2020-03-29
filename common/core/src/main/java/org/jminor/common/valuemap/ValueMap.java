@@ -42,14 +42,6 @@ public interface ValueMap<K, V> {
   V remove(K key);
 
   /**
-   * Retrieves a string representation of the value mapped to the given key, an empty string is returned
-   * in case of null values or if key is not found.
-   * @param key the key
-   * @return the value mapped to the given key as a string, an empty string if no such mapping exists
-   */
-  String getAsString(K key);
-
-  /**
    * After a call to this method this ValueMap contains the same values and original values as the source map.
    * A null argument to this method clears the destination map of all values and original values.
    * Value change events for affected keys are fired after all values have been set, in no particular order.

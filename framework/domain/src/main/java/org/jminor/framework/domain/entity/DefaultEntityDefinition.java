@@ -789,7 +789,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     @Override
     public Builder conditionProvider(final String conditionId, final ConditionProvider conditionProvider) {
-      rejectNullOrEmpty(conditionId, "contitionId");
+      rejectNullOrEmpty(conditionId, "conditionId");
       requireNonNull(conditionProvider, "conditionProvider");
       if (definition.conditionProviders == null) {
         definition.conditionProviders = new HashMap<>();

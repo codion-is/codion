@@ -23,6 +23,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
+  private static final String KEY = "key";
+
   /**
    * Holds the values contained in this value map.
    */
@@ -66,7 +68,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public final V put(final K key, final V value) {
-    requireNonNull(key, "key");
+    requireNonNull(key, KEY);
     final V newValue = validateAndPrepareForPut(key, value);
     final boolean initialization = !values.containsKey(key);
     final V previousValue = values.put(key, newValue);
@@ -85,18 +87,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public V get(final K key) {
-    return values.get(key);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getAsString(final K key) {
-    final V value = values.get(key);
-    if (value == null) {
-      return "";
-    }
-
-    return value.toString();
+    return values.get(requireNonNull(key, KEY));
   }
 
   /**
@@ -123,13 +114,13 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public final boolean containsKey(final K key) {
-    return values.containsKey(key);
+    return values.containsKey(requireNonNull(key, KEY));
   }
 
   /** {@inheritDoc} */
   @Override
   public final V remove(final K key) {
-    if (values.containsKey(key)) {
+    if (values.containsKey(requireNonNull(key, KEY))) {
       final V value = values.remove(key);
       removeOriginalValue(key);
       onValueChanged(key, null, value, false);
@@ -213,6 +204,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public final boolean isModified(final K key) {
+    requireNonNull(key, KEY);
     return originalValues != null && originalValues.containsKey(key);
   }
 
@@ -235,6 +227,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public final void save(final K key) {
+    requireNonNull(key, KEY);
     removeOriginalValue(key);
   }
 

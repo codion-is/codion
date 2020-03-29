@@ -29,7 +29,6 @@ public class DefaultValueMapTest {
     assertTrue(map.containsKey(attr1));
     assertTrue(map.isNull(attr1));
     assertFalse(map.isNotNull(attr1));
-    assertEquals("", map.getAsString(attr1));
     map.put(attr1, attr1);
     assertFalse(map.isNull(attr1));
     assertTrue(map.isNotNull(attr1));
