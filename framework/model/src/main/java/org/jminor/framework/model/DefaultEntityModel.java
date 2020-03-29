@@ -17,15 +17,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -219,7 +217,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final Collection<M> getDetailModels() {
-    return Collections.unmodifiableCollection(detailModels);
+    return unmodifiableCollection(detailModels);
   }
 
   /** {@inheritDoc} */
@@ -247,7 +245,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final Collection<M> getLinkedDetailModels() {
-    return Collections.unmodifiableCollection(linkedDetailModels);
+    return unmodifiableCollection(linkedDetailModels);
   }
 
   /** {@inheritDoc} */
@@ -498,19 +496,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private List<Entity> getActiveEntities() {
-    final List<Entity> activeEntities;
-    if (containsTableModel() && tableModel.getSelectionModel().getSelectionNotEmptyObserver().get()) {
-      activeEntities = tableModel.getSelectionModel().getSelectedItems();
+    if (tableModel != null && !tableModel.getSelectionModel().isSelectionEmpty()) {
+      return tableModel.getSelectionModel().getSelectedItems();
     }
-    else {
-      if (editModel.isEntityNew()) {
-        activeEntities = emptyList();
-      }
-      else {
-        activeEntities = singletonList(editModel.getEntityCopy());
-      }
+    else if (editModel.isEntityNew()) {
+      return emptyList();
     }
-    return activeEntities;
+
+    return singletonList(editModel.getEntityCopy());
   }
 
   private void setTableEditModel(final E editModel, final EntityTableModel<E> tableModel) {
