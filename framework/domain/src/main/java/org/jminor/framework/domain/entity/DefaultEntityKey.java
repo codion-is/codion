@@ -30,7 +30,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   /**
    * true if this key consists of multiple properties
    */
-  private boolean compositeKey;
+  private boolean compositeKey = false;
 
   /**
    * Caching the hash code
@@ -68,13 +68,9 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
    * @throws IllegalArgumentException in case this key is a composite key or if the entity has no primary key
    */
   DefaultEntityKey(final EntityDefinition definition, final Object value) {
-    this(definition, createSingleValueMap(definition.getPrimaryKeyProperties().get(0), value));
-    if (!definition.hasPrimaryKey()) {
-      throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
-    }
-    if (compositeKey) {
-      throw new IllegalArgumentException(definition.getEntityId() + " has a composite primary key");
-    }
+    super(createSingleValueMap(definition, value), null);
+    this.definition = definition;
+    this.singleIntegerKey = definition.getPrimaryKeyProperties().get(0).isInteger();
   }
 
   /**
@@ -84,11 +80,11 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
    */
   DefaultEntityKey(final EntityDefinition definition, final Map<ColumnProperty, Object> values) {
     super(values, null);
-    if (!definition.hasPrimaryKey()) {
+    final List<ColumnProperty> properties = definition.getPrimaryKeyProperties();
+    if (properties.isEmpty()) {
       throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
     }
     this.definition = definition;
-    final List<ColumnProperty> properties = definition.getPrimaryKeyProperties();
     this.compositeKey = properties.size() > 1;
     this.singleIntegerKey = !compositeKey && properties.get(0).isInteger();
   }
@@ -317,7 +313,15 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
     }
   }
 
-  private static Map<ColumnProperty, Object> createSingleValueMap(final ColumnProperty keyProperty, final Object value) {
+  private static Map<ColumnProperty, Object> createSingleValueMap(final EntityDefinition definition, final Object value) {
+    final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+    if (primaryKeyProperties.isEmpty()) {
+      throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
+    }
+    if (primaryKeyProperties.size() > 1) {
+      throw new IllegalArgumentException(definition.getEntityId() + " has a composite primary key");
+    }
+    final ColumnProperty keyProperty = primaryKeyProperties.get(0);
     final Map<ColumnProperty, Object> values = new HashMap<>(1);
     values.put(keyProperty, keyProperty.validateType(value));
 
