@@ -1,8 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui.reporting;
+package org.jminor.swing.framework.ui;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
@@ -11,7 +12,6 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.reports.ReportUIWrapper;
-import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -22,14 +22,14 @@ import java.util.ResourceBundle;
 /**
  * A static utility class for displaying reports.
  */
-public final class EntityReportUiUtil {
+public final class EntityReports {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityReportUiUtil.class.getName());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityReports.class.getName());
 
   private static final Dimension MINIMUM_REPORT_WINDOW_SIZE = new Dimension(800, 600);
   private static final double SCREEN_SIZE_RATIO = 0.8;
 
-  private EntityReportUiUtil() {}
+  private EntityReports() {}
 
   /**
    * Shows a report viewer for report printing
@@ -44,9 +44,9 @@ public final class EntityReportUiUtil {
                                     final EntityConnectionProvider connectionProvider) {
     try {
       Components.showWaitCursor(component);
-      viewReport(EntityReportUtil.fillReport(reportWrapper, connectionProvider), uiWrapper, reportTitle);
+      viewReport(connectionProvider.getConnection().fillReport(reportWrapper), uiWrapper, reportTitle);
     }
-    catch (final ReportException e) {
+    catch (final ReportException | DatabaseException e) {
       throw new RuntimeException(e);
     }
     finally {
@@ -67,7 +67,7 @@ public final class EntityReportUiUtil {
                                 final String reportTitle) {
     try {
       Components.showWaitCursor(component);
-      viewReport(EntityReportUtil.fillReport(reportWrapper, dataSource), uiWrapper, reportTitle);
+      viewReport(reportWrapper.fillReport(dataSource), uiWrapper, reportTitle);
     }
     catch (final ReportException e) {
       throw new RuntimeException(e);

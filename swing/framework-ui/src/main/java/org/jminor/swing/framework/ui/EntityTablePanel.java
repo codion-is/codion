@@ -1235,7 +1235,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
     final Control refresh = control(tableModel::refresh, null,
-            tableModel.getConditionModel().getConditionStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
+            tableModel.getConditionModel().getConditionChangedObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -1289,7 +1289,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.addFilteringListener(statusListener);
     tableModel.addTableDataChangedListener(statusListener);
 
-    tableModel.getConditionModel().addConditionStateListener(() -> {
+    tableModel.getConditionModel().addConditionChangedListener(() -> {
       table.getTableHeader().repaint();
       table.repaint();
     });

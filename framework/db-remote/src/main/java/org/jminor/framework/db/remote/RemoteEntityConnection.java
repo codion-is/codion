@@ -283,13 +283,15 @@ public interface RemoteEntityConnection extends Remote {
   /**
    * Takes a ReportWrapper object using a JDBC datasource and returns an initialized ReportResult object
    * @param reportWrapper the wrapper containing the report to fill
+   * @param <R> the type of the actual report object being wrapped
+   * @param <D> the type of the data source used to fill the report
    * @return an initialized ReportResult object
    * @throws DatabaseException in case of a db exception
    * @throws org.jminor.common.db.reports.ReportException in case of a report exception
    * @throws RemoteException in case of a remote exception
    * @see org.jminor.common.db.reports.ReportWrapper#fillReport(java.sql.Connection)
    */
-  ReportResult fillReport(ReportWrapper reportWrapper) throws RemoteException, DatabaseException, ReportException;
+  <R, D> ReportResult<R> fillReport(ReportWrapper<R, D> reportWrapper) throws RemoteException, DatabaseException, ReportException;
 
   /**
    * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyId}

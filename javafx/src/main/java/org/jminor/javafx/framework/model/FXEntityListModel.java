@@ -635,7 +635,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private void bindEvents() {
-    addRefreshListener(conditionModel::rememberCurrentConditionState);
+    addRefreshListener(conditionModel::rememberCondition);
   }
 
   /**

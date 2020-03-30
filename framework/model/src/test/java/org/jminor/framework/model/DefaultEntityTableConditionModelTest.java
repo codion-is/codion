@@ -127,33 +127,33 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void searchStateListener() {
+  public void conditionChangedListener() {
     final AtomicInteger counter = new AtomicInteger();
-    final EventListener listener = counter::incrementAndGet;
-    conditionModel.addConditionStateListener(listener);
+    final EventListener conditionChangedListener = counter::incrementAndGet;
+    conditionModel.addConditionChangedListener(conditionChangedListener);
     conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setEnabled(true);
     assertEquals(1, counter.get());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setEnabled(false);
     assertEquals(2, counter.get());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setUpperBound(1200d);
     //automatically set enabled when upper bound is set
-    assertEquals(4, counter.get());
+    assertEquals(3, counter.get());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setConditionType(ConditionType.GREATER_THAN);
-    assertEquals(5, counter.get());
-    conditionModel.removeConditionStateListener(listener);
+    assertEquals(3, counter.get());
+    conditionModel.removeConditionChangedListener(conditionChangedListener);
   }
 
   @Test
   public void testSearchState() {
-    assertFalse(conditionModel.hasConditionStateChanged());
+    assertFalse(conditionModel.hasConditionChanged());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_JOB).setLikeValue("job");
-    assertTrue(conditionModel.hasConditionStateChanged());
+    assertTrue(conditionModel.hasConditionChanged());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_JOB).setEnabled(false);
-    assertFalse(conditionModel.hasConditionStateChanged());
+    assertFalse(conditionModel.hasConditionChanged());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_JOB).setEnabled(true);
-    assertTrue(conditionModel.hasConditionStateChanged());
-    conditionModel.rememberCurrentConditionState();
-    assertFalse(conditionModel.hasConditionStateChanged());
+    assertTrue(conditionModel.hasConditionChanged());
+    conditionModel.rememberCondition();
+    assertFalse(conditionModel.hasConditionChanged());
   }
 
   @Test

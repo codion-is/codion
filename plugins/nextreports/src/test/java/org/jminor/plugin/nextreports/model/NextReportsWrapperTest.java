@@ -3,6 +3,7 @@
  */
 package org.jminor.plugin.nextreports.model;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.user.User;
@@ -11,7 +12,6 @@ import org.jminor.dbms.h2database.H2Database;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
 import org.junit.jupiter.api.Test;
 import ro.nextreports.engine.ReportRunner;
@@ -29,13 +29,13 @@ public class NextReportsWrapperTest {
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   @Test
-  public void fillReport() throws ReportException, IOException {
+  public void fillReport() throws ReportException, IOException, DatabaseException {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             new H2Database("h2db", System.getProperty("jminor.db.initScript")))
             .setDomainClassName(Domain.class.getName()).setUser(UNIT_TEST_USER);
-    final ReportResult<NextReportsResult> result = EntityReportUtil.fillReport(
+    final ReportResult<NextReportsResult> result = connectionProvider.getConnection().fillReport(
             new NextReportsWrapper("src/test/reports/test-report.report",
-                    Collections.emptyMap(), ReportRunner.CSV_FORMAT), connectionProvider);
+                    Collections.emptyMap(), ReportRunner.CSV_FORMAT));
     File file = null;
     try {
       final String tmpDir = System.getProperty("java.io.tmpdir");

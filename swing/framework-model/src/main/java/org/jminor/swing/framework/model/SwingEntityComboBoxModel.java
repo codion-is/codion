@@ -467,7 +467,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
     /**
      * Selects the first entity found in the underlying combo box model, which
-     * has the the given value associated with the underlying property.
+     * has the given value associated with the underlying property.
      * @param value the value
      */
     @Override

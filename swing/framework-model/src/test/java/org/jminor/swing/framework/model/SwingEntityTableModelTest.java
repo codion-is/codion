@@ -112,7 +112,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
             new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
     assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, getConnectionProvider(),
-            new SwingEntityTableModel.DefaultEntityTableSortModel(getConnectionProvider().getDomain(), TestDomain.T_EMP), conditionModel));
+            new SwingEntityTableSortModel(getConnectionProvider().getDomain(), TestDomain.T_EMP), conditionModel));
   }
 
   @Test
@@ -181,7 +181,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   public void testSortComparator() {
     final Property masterFKProperty = getConnectionProvider().getDomain().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_MASTER_FK);
-    final Comparator comparator = ((SwingEntityTableModel.DefaultEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
+    final Comparator comparator = ((SwingEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
     //make sure we get the comparator from the entity referenced by the foreign key
     assertEquals(comparator, getConnectionProvider().getDomain().getDefinition(TestDomain.T_MASTER).getComparator());
   }

@@ -457,7 +457,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public ReportResult fillReport(final ReportWrapper reportWrapper) throws DatabaseException, ReportException {
+  public <R, D> ReportResult<R> fillReport(final ReportWrapper<R, D> reportWrapper) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportWrapper, "reportWrapper");
     try {
       return onResponse(execute(createHttpPost("report", reportWrapper)));

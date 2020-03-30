@@ -86,19 +86,20 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * Remembers the current condition model state, any subsequent changes to condition
-   * parameters or operators are notified via the conditionStateChanged observer.
+   * parameters or operators are notified via the conditionChanged observer.
    * A data model using this condition model should call this method each time the
    * model is refreshed according to the condition provided by this condition model.
-   * @see #getConditionStateObserver
+   * @see #hasConditionChanged()
+   * @see #getConditionChangedObserver
    */
-  void rememberCurrentConditionState();
+  void rememberCondition();
 
   /**
    * @return true if the condition model state (or configuration) has changed
    * since the last time the condition model state was remembered
-   * @see #rememberCurrentConditionState()
+   * @see #rememberCondition()
    */
-  boolean hasConditionStateChanged();
+  boolean hasConditionChanged();
 
   /**
    * @return the conjunction to be used when multiple column condition are active,
@@ -183,9 +184,9 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * @return a StateObserver indicating if the search state has changed since it was last remembered
-   * @see #rememberCurrentConditionState()
+   * @see #rememberCondition()
    */
-  StateObserver getConditionStateObserver();
+  StateObserver getConditionChangedObserver();
 
   /**
    * @return an EventObserver notified each time the simple search text changes
@@ -195,12 +196,12 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @param listener a listener notified each time the search state changes
    */
-  void addConditionStateListener(EventListener listener);
+  void addConditionChangedListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionStateListener(EventListener listener);
+  void removeConditionChangedListener(EventListener listener);
 
   /**
    * @param listener a listener notified each time a simple search is performed

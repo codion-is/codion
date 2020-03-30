@@ -578,9 +578,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private void bindEventsInternal() {
     addTableModelListener(e -> tableDataChangedEvent.onEvent());
     for (final ColumnConditionModel conditionModel : columnModel.getColumnFilterModels()) {
-      conditionModel.addConditionStateListener(this::filterContents);
+      conditionModel.addConditionChangedListener(this::filterContents);
     }
-    sortModel.addSortingStateChangedListener(this::sort);
+    sortModel.addSortingChangedListener(this::sort);
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
         rowsDeletedEvent.onEvent(asList(e.getFirstRow(), e.getLastRow()));

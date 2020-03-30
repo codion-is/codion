@@ -31,7 +31,6 @@ import org.jminor.framework.model.EntityModel;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
-import org.jminor.swing.common.model.table.AbstractTableSortModel;
 import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 
 import org.slf4j.Logger;
@@ -43,7 +42,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -149,7 +147,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param connectionProvider the db provider
    */
   public SwingEntityTableModel(final String entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, new DefaultEntityTableSortModel(connectionProvider.getDomain(), entityId),
+    this(entityId, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getDomain(), entityId),
             new DefaultEntityTableConditionModel(entityId, connectionProvider,
                     new DefaultPropertyFilterModelProvider(), new SwingPropertyConditionModelProvider()));
   }
@@ -634,7 +632,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       final List<Entity> queryResult = performQuery();
       clear();
       addItems(queryResult, true, true);
-      conditionModel.rememberCurrentConditionState();
+      conditionModel.rememberCondition();
       refreshEvent.onEvent();
     }
     finally {
@@ -741,18 +739,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDeleteInternal);
     editModel.addAfterRefreshListener(this::refresh);
-    editModel.addEntitySetListener(data -> {
-      if (data == null && !getSelectionModel().isSelectionEmpty()) {
+    editModel.addEntitySetListener(entity -> {
+      if (entity == null && !getSelectionModel().isSelectionEmpty()) {
         getSelectionModel().clearSelection();
       }
     });
-    getSelectionModel().addSelectedIndexListener(selected -> {
-      final Entity itemToSelect = getSelectionModel().isSelectionEmpty() ? null : getSelectionModel().getSelectedItem();
-      editModel.setEntity(itemToSelect);
-    });
-
+    getSelectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(e -> {
-      //if the selected record is being updated via the table model refresh the one in the edit model
+      //if the selected record is updated via the table model, refresh the one in the edit model
       if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectionModel().getSelectedIndex()) {
         editModel.setEntity(getSelectionModel().getSelectedItem());
       }
@@ -875,61 +869,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
           LOG.info("Property preferences not found: " + property, e);
         }
       }
-    }
-  }
-
-  /**
-   * A default sort model implementation based on Entity
-   */
-  public static class DefaultEntityTableSortModel extends AbstractTableSortModel<Entity, Property> {
-
-    private final EntityDefinition.Provider definitionProvider;
-
-    /**
-     * Instantiates a new DefaultEntityTableSortModel
-     * @param definitionProvider the domain entity definition provider
-     * @param entityId the entity ID
-     */
-    public DefaultEntityTableSortModel(final EntityDefinition.Provider definitionProvider, final String entityId) {
-      super(initializeColumns(definitionProvider.getDefinition(entityId).getVisibleProperties()));
-      this.definitionProvider = definitionProvider;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final Class getColumnClass(final Property property) {
-      return property.getTypeClass();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected Comparator initializeColumnComparator(final Property property) {
-      if (property instanceof ForeignKeyProperty) {
-        return definitionProvider.getDefinition(((ForeignKeyProperty) property).getForeignEntityId()).getComparator();
-      }
-
-      return super.initializeColumnComparator(property);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected final Comparable getComparable(final Entity row, final Property property) {
-      return (Comparable) row.get(property);
-    }
-
-    private static List<TableColumn> initializeColumns(final List<Property> visibleProperties) {
-      final List<TableColumn> columns = new ArrayList<>(visibleProperties.size());
-      for (final Property property : visibleProperties) {
-        final TableColumn column = new TableColumn(columns.size());
-        column.setIdentifier(property);
-        column.setHeaderValue(property.getCaption());
-        if (property.getPreferredColumnWidth() > 0) {
-          column.setPreferredWidth(property.getPreferredColumnWidth());
-        }
-        columns.add(column);
-      }
-
-      return columns;
     }
   }
 }
