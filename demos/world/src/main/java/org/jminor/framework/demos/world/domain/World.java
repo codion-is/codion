@@ -303,6 +303,8 @@ public final class World extends Domain {
   // tag::colorProvider[]
   private static final class CityColorProvider implements ColorProvider {
 
+    private static final long serialVersionUID = 1;
+
     @Override
     public Object getColor(Entity city, Property property) {
       if (property.is(CITY_POPULATION) &&
@@ -325,6 +327,8 @@ public final class World extends Domain {
   // tag::derivedPropertyProvider[]
   private static final class NoOfSpeakersProvider implements DerivedProperty.Provider {
 
+    private static final long serialVersionUID = 1;
+
     @Override
     public Object getValue(Map<String, Object> sourceValues) {
       Double percentage = (Double) sourceValues.get(COUNTRYLANGUAGE_PERCENTAGE);
@@ -340,6 +344,8 @@ public final class World extends Domain {
 
   // tag::validator[]
   private static final class CityValidator extends DefaultEntityValidator {
+
+    private static final long serialVersionUID = 1;
 
     @Override
     public void validate(Entity city, EntityDefinition cityDefinition) throws ValidationException {
