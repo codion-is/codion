@@ -3,13 +3,13 @@
  */
 package org.jminor.plugin.jasperreports.model;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -31,20 +31,17 @@ public class JasperReportsWrapperTest {
   private static final String REPORT_PATH = "build/classes/reports/test/empdept_employees.jasper";
 
   @Test
-  public void fillJdbcReport() throws ReportException {
+  public void fillJdbcReport() throws ReportException, DatabaseException {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             new H2Database("JasperReportsWrapperTest.fillJdbcReport",
                     System.getProperty("jminor.db.initScript")))
             .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    final JasperPrint print = EntityReportUtil.fillReport(
-            new JasperReportsWrapper(REPORT_PATH, reportParameters),
-            connectionProvider).getResult();
+    final JasperPrint print = connectionProvider.getConnection().fillReport(
+            new JasperReportsWrapper(REPORT_PATH, reportParameters)).getResult();
     assertNotNull(print);
-    EntityReportUtil.fillReport(
-            new JasperReportsWrapper(REPORT_PATH),
-            connectionProvider).getResult();
+    connectionProvider.getConnection().fillReport(new JasperReportsWrapper(REPORT_PATH)).getResult();
   }
 
   @Test
@@ -75,7 +72,7 @@ public class JasperReportsWrapperTest {
             new H2Database("JasperReportsWrapperTest.fillJdbcReportInvalidReport",
                     System.getProperty("jminor.db.initScript")))
             .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
-    assertThrows(ReportException.class, () -> EntityReportUtil.fillReport(new JasperReportsWrapper("build/classes/reports/test/non_existing.jasper",
-            new HashMap<>()), connectionProvider).getResult());
+    assertThrows(ReportException.class, () -> connectionProvider.getConnection().fillReport(
+            new JasperReportsWrapper("build/classes/reports/test/non_existing.jasper", new HashMap<>())).getResult());
   }
 }

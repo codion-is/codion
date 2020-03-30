@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.framework.ui.reporting;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
@@ -11,7 +12,6 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.reports.ReportUIWrapper;
-import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -44,9 +44,9 @@ public final class EntityReportUiUtil {
                                     final EntityConnectionProvider connectionProvider) {
     try {
       Components.showWaitCursor(component);
-      viewReport(EntityReportUtil.fillReport(reportWrapper, connectionProvider), uiWrapper, reportTitle);
+      viewReport(connectionProvider.getConnection().fillReport(reportWrapper), uiWrapper, reportTitle);
     }
-    catch (final ReportException e) {
+    catch (final ReportException | DatabaseException e) {
       throw new RuntimeException(e);
     }
     finally {
@@ -67,7 +67,7 @@ public final class EntityReportUiUtil {
                                 final String reportTitle) {
     try {
       Components.showWaitCursor(component);
-      viewReport(EntityReportUtil.fillReport(reportWrapper, dataSource), uiWrapper, reportTitle);
+      viewReport(reportWrapper.fillReport(dataSource), uiWrapper, reportTitle);
     }
     catch (final ReportException e) {
       throw new RuntimeException(e);
