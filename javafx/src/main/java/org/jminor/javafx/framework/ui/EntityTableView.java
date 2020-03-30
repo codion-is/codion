@@ -158,7 +158,7 @@ public class EntityTableView extends TableView<Entity> {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
     button.setOnAction(event -> listModel.refresh());
     FXUiUtil.link(button.disableProperty(),
-            listModel.getConditionModel().getConditionStateObserver().getReversedObserver());
+            listModel.getConditionModel().getConditionChangedObserver().getReversedObserver());
 
     return button;
   }

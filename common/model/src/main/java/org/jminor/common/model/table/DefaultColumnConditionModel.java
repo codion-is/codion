@@ -32,7 +32,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   private final Value<Object> upperBoundValue = Values.value();
   private final Value<Object> lowerBoundValue = Values.value();
   private final Value<ConditionType> conditionTypeValue = Values.value(ConditionType.LIKE);
-  private final Event conditionStateChangedEvent = Events.event();
+  private final Event conditionChangedEvent = Events.event();
   private final Event conditionModelClearedEvent = Events.event();
 
   private final State enabledState = States.state();
@@ -348,14 +348,14 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
 
   /** {@inheritDoc} */
   @Override
-  public final void addConditionStateListener(final EventListener listener) {
-    conditionStateChangedEvent.addListener(listener);
+  public final void addConditionChangedListener(final EventListener listener) {
+    conditionChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeConditionStateListener(final EventListener listener) {
-    conditionStateChangedEvent.removeListener(listener);
+  public final void removeConditionChangedListener(final EventListener listener) {
+    conditionChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -578,10 +578,10 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     };
     upperBoundValue.addListener(autoEnableListener);
     lowerBoundValue.addListener(autoEnableListener);
-    upperBoundValue.addListener(conditionStateChangedEvent);
-    lowerBoundValue.addListener(conditionStateChangedEvent);
-    conditionTypeValue.addListener(conditionStateChangedEvent);
-    enabledState.addListener(conditionStateChangedEvent);
+    upperBoundValue.addListener(conditionChangedEvent);
+    lowerBoundValue.addListener(conditionChangedEvent);
+    conditionTypeValue.addListener(conditionChangedEvent);
+    enabledState.addListener(conditionChangedEvent);
     conditionTypeValue.addListener(() ->
             lowerBoundRequiredState.set(getConditionType().getValues().equals(ConditionType.Values.TWO)));
   }

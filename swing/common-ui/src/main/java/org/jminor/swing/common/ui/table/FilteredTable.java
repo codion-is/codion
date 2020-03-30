@@ -474,7 +474,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private void bindFilterIndicatorEvents(final TableColumn column) {
     final ColumnConditionModel<R, C> model = getModel().getColumnModel().getColumnFilterModel((C) column.getIdentifier());
     if (model != null) {
-      model.addConditionStateListener(() -> SwingUtilities.invokeLater(() -> {
+      model.addConditionChangedListener(() -> SwingUtilities.invokeLater(() -> {
         if (model.isEnabled()) {
           addFilterIndicator(column);
         }

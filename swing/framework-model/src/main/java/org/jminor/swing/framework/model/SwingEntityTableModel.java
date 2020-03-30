@@ -632,7 +632,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       final List<Entity> queryResult = performQuery();
       clear();
       addItems(queryResult, true, true);
-      conditionModel.rememberCurrentConditionState();
+      conditionModel.rememberCondition();
       refreshEvent.onEvent();
     }
     finally {
@@ -739,18 +739,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDeleteInternal);
     editModel.addAfterRefreshListener(this::refresh);
-    editModel.addEntitySetListener(data -> {
-      if (data == null && !getSelectionModel().isSelectionEmpty()) {
+    editModel.addEntitySetListener(entity -> {
+      if (entity == null && !getSelectionModel().isSelectionEmpty()) {
         getSelectionModel().clearSelection();
       }
     });
-    getSelectionModel().addSelectedIndexListener(selected -> {
-      final Entity itemToSelect = getSelectionModel().isSelectionEmpty() ? null : getSelectionModel().getSelectedItem();
-      editModel.setEntity(itemToSelect);
-    });
-
+    getSelectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(e -> {
-      //if the selected record is being updated via the table model refresh the one in the edit model
+      //if the selected record is updated via the table model, refresh the one in the edit model
       if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectionModel().getSelectedIndex()) {
         editModel.setEntity(getSelectionModel().getSelectedItem());
       }

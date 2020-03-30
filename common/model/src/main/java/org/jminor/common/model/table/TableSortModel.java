@@ -67,7 +67,7 @@ public interface TableSortModel<R, C, T> {
   /**
    * @param listener a listener notified each time the sorting state changes
    */
-  void addSortingStateChangedListener(EventListener listener);
+  void addSortingChangedListener(EventListener listener);
 
   /**
    * Specifies a sorting state for a column.

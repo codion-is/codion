@@ -284,10 +284,10 @@ public interface ColumnConditionModel<R, C> {
   /**
    * @param listener a listener to be notified each time the condition state changes
    */
-  void addConditionStateListener(EventListener listener);
+  void addConditionChangedListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionStateListener(EventListener listener);
+  void removeConditionChangedListener(EventListener listener);
 }

@@ -130,7 +130,7 @@ public class DefaultEntityTableConditionModelTest {
   public void searchStateListener() {
     final AtomicInteger counter = new AtomicInteger();
     final EventListener listener = counter::incrementAndGet;
-    conditionModel.addConditionStateListener(listener);
+    conditionModel.addConditionChangedListener(listener);
     conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setEnabled(true);
     assertEquals(1, counter.get());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setEnabled(false);
@@ -140,20 +140,20 @@ public class DefaultEntityTableConditionModelTest {
     assertEquals(4, counter.get());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setConditionType(ConditionType.GREATER_THAN);
     assertEquals(5, counter.get());
-    conditionModel.removeConditionStateListener(listener);
+    conditionModel.removeConditionChangedListener(listener);
   }
 
   @Test
   public void testSearchState() {
-    assertFalse(conditionModel.hasConditionStateChanged());
+    assertFalse(conditionModel.hasConditionChanged());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_JOB).setLikeValue("job");
-    assertTrue(conditionModel.hasConditionStateChanged());
+    assertTrue(conditionModel.hasConditionChanged());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_JOB).setEnabled(false);
-    assertFalse(conditionModel.hasConditionStateChanged());
+    assertFalse(conditionModel.hasConditionChanged());
     conditionModel.getPropertyConditionModel(TestDomain.EMP_JOB).setEnabled(true);
-    assertTrue(conditionModel.hasConditionStateChanged());
-    conditionModel.rememberCurrentConditionState();
-    assertFalse(conditionModel.hasConditionStateChanged());
+    assertTrue(conditionModel.hasConditionChanged());
+    conditionModel.rememberCondition();
+    assertFalse(conditionModel.hasConditionChanged());
   }
 
   @Test

@@ -39,8 +39,8 @@ import static org.jminor.framework.db.condition.Conditions.propertyCondition;
  */
 public final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
 
-  private final State conditionStateChangedState = States.state();
-  private final Event conditionStateChangedEvent = Events.event();
+  private final State conditionChangedState = States.state();
+  private final Event conditionChangedEvent = Events.event();
   private final Event<String> simpleConditionStringChangedEvent = Events.event();
   private final Event simpleSearchPerformedEvent = Events.event();
 
@@ -50,7 +50,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private final Map<String, ColumnConditionModel<Entity, ? extends Property>> propertyConditionModels = new HashMap<>();
   private Condition.Provider additionalConditionProvider;
   private Conjunction conjunction = Conjunction.AND;
-  private String rememberedConditionState = "";
+  private String rememberedCondition = "";
   private String simpleConditionString = "";
 
   /**
@@ -71,7 +71,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     initializeFilterModels(entityId, filterModelProvider);
     initializeColumnPropertyConditionModels(entityId, conditionModelProvider);
     initializeForeignKeyPropertyConditionModels(entityId, connectionProvider, conditionModelProvider);
-    rememberCurrentConditionState();
+    rememberCondition();
     bindEvents();
   }
 
@@ -83,15 +83,15 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   /** {@inheritDoc} */
   @Override
-  public void rememberCurrentConditionState() {
-    rememberedConditionState = getConditionModelState();
-    conditionStateChangedState.set(false);
+  public void rememberCondition() {
+    rememberedCondition = getConditionsString();
+    conditionChangedState.set(false);
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean hasConditionStateChanged() {
-    return conditionStateChangedState.get();
+  public boolean hasConditionChanged() {
+    return conditionChangedState.get();
   }
 
   /** {@inheritDoc} */
@@ -183,14 +183,14 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   /** {@inheritDoc} */
   @Override
   public boolean setConditionValues(final String propertyId, final Collection values) {
-    final String conditionModelState = getConditionModelState();
+    final String conditionsString = getConditionsString();
     if (containsPropertyConditionModel(propertyId)) {
       final ColumnConditionModel conditionModel = getPropertyConditionModel(propertyId);
       conditionModel.setEnabled(!Util.nullOrEmpty(values));
       conditionModel.setUpperBound(null);//because the upperBound could be a reference to the active entity which changes accordingly
       conditionModel.setUpperBound(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
     }
-    return !conditionModelState.equals(getConditionModelState());
+    return !conditionsString.equals(getConditionsString());
   }
 
   /** {@inheritDoc} */
@@ -297,20 +297,20 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   /** {@inheritDoc} */
   @Override
-  public StateObserver getConditionStateObserver() {
-    return conditionStateChangedState.getObserver();
+  public StateObserver getConditionChangedObserver() {
+    return conditionChangedState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void addConditionStateListener(final EventListener listener) {
-    conditionStateChangedEvent.addListener(listener);
+  public void addConditionChangedListener(final EventListener listener) {
+    conditionChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeConditionStateListener(final EventListener listener) {
-    conditionStateChangedEvent.removeListener(listener);
+  public void removeConditionChangedListener(final EventListener listener) {
+    conditionChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -327,9 +327,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   private void bindEvents() {
     for (final ColumnConditionModel conditionModel : propertyConditionModels.values()) {
-      conditionModel.addConditionStateListener(() -> {
-        conditionStateChangedState.set(!rememberedConditionState.equals(getConditionModelState()));
-        conditionStateChangedEvent.onEvent();
+      conditionModel.addConditionChangedListener(() -> {
+        conditionChangedState.set(!rememberedCondition.equals(getConditionsString()));
+        conditionChangedEvent.onEvent();
       });
     }
   }
@@ -350,7 +350,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   /**
    * @return a String representing the current state of the condition models
    */
-  private String getConditionModelState() {
+  private String getConditionsString() {
     return propertyConditionModels.values().stream().map(DefaultEntityTableConditionModel::toString).collect(joining());
   }
 

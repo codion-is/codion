@@ -16,16 +16,17 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultColumnConditionModelTest {
+
   final AtomicInteger upperBoundCounter = new AtomicInteger();
   final AtomicInteger lowerBoundCounter = new AtomicInteger();
-  final AtomicInteger conditionStateCounter = new AtomicInteger();
+  final AtomicInteger conditionChangedCounter = new AtomicInteger();
   final AtomicInteger conditionTypeCounter = new AtomicInteger();
   final AtomicInteger enabledCounter = new AtomicInteger();
   final AtomicInteger clearCounter = new AtomicInteger();
 
   final EventListener upperBoundListener = upperBoundCounter::incrementAndGet;
   final EventListener lowerBoundListener = lowerBoundCounter::incrementAndGet;
-  final EventListener conditionStateListener = conditionStateCounter::incrementAndGet;
+  final EventListener conditionChangedListener = conditionChangedCounter::incrementAndGet;
   final EventDataListener<ConditionType> conditionTypeListener = data -> conditionTypeCounter.incrementAndGet();
   final EventListener enabledListener = enabledCounter::incrementAndGet;
   final EventListener clearListener = clearCounter::incrementAndGet;
@@ -37,16 +38,16 @@ public class DefaultColumnConditionModelTest {
     assertFalse(model.isAutoEnable());
     model.addUpperBoundListener(upperBoundListener);
     model.addLowerBoundListener(lowerBoundListener);
-    model.addConditionStateListener(conditionStateListener);
+    model.addConditionChangedListener(conditionChangedListener);
     model.addClearedListener(clearListener);
 
     model.setUpperBound("hello");
-    assertEquals(1, conditionStateCounter.get());
+    assertEquals(1, conditionChangedCounter.get());
     assertFalse(model.isEnabled());
     assertEquals(1, upperBoundCounter.get());
     assertEquals("hello", model.getUpperBound());
     model.setLowerBound("hello");
-    assertEquals(2, conditionStateCounter.get());
+    assertEquals(2, conditionChangedCounter.get());
     assertEquals(1, lowerBoundCounter.get());
     assertEquals("hello", model.getLowerBound());
 
@@ -64,7 +65,7 @@ public class DefaultColumnConditionModelTest {
 
     model.removeUpperBoundListener(upperBoundListener);
     model.removeLowerBoundListener(lowerBoundListener);
-    model.removeConditionStateListener(conditionStateListener);
+    model.removeConditionChangedListener(conditionChangedListener);
     model.removeClearedListener(clearListener);
   }
 

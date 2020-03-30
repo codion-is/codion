@@ -5793,3 +5793,4 @@
   ValueMap.getAsString() moved to Entity
 0.14.2
   SwingEntityTableModel.DefaultEntityTableSelectionModel moved to class level, renamed SwingEntityTableSelectionModel
+  EntityTableConditionModel, ColumnConditionModel, TableSortModel, some method renaming
