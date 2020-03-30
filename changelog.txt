@@ -5794,3 +5794,4 @@
 0.14.2
   SwingEntityTableModel.DefaultEntityTableSelectionModel moved to class level, renamed SwingEntityTableSelectionModel
   EntityTableConditionModel, ColumnConditionModel, TableSortModel, some method renaming
+  DefaultEntityTableConditionModel, conditionChangedEvent removed, conditionChangedState used instead

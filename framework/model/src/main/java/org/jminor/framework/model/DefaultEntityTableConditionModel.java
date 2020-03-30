@@ -40,7 +40,6 @@ import static org.jminor.framework.db.condition.Conditions.propertyCondition;
 public final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
 
   private final State conditionChangedState = States.state();
-  private final Event conditionChangedEvent = Events.event();
   private final Event<String> simpleConditionStringChangedEvent = Events.event();
   private final Event simpleSearchPerformedEvent = Events.event();
 
@@ -304,13 +303,13 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   /** {@inheritDoc} */
   @Override
   public void addConditionChangedListener(final EventListener listener) {
-    conditionChangedEvent.addListener(listener);
+    conditionChangedState.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public void removeConditionChangedListener(final EventListener listener) {
-    conditionChangedEvent.removeListener(listener);
+    conditionChangedState.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -327,10 +326,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   private void bindEvents() {
     for (final ColumnConditionModel conditionModel : propertyConditionModels.values()) {
-      conditionModel.addConditionChangedListener(() -> {
-        conditionChangedState.set(!rememberedCondition.equals(getConditionsString()));
-        conditionChangedEvent.onEvent();
-      });
+      conditionModel.addConditionChangedListener(() ->
+              conditionChangedState.set(!rememberedCondition.equals(getConditionsString())));
     }
   }
 
