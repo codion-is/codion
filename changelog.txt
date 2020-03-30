@@ -5815,3 +5815,4 @@
   DefaultEntityKey, array index out of bounds exception prevented in constructor, minor refactoring
   DefaultValueMap, null key checks improved
   ValueMap.getAsString() moved to Entity
+0.14.2
