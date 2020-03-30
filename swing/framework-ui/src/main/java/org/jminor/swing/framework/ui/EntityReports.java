@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui.reporting;
+package org.jminor.swing.framework.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportDataWrapper;
@@ -22,14 +22,14 @@ import java.util.ResourceBundle;
 /**
  * A static utility class for displaying reports.
  */
-public final class EntityReportUiUtil {
+public final class EntityReports {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityReportUiUtil.class.getName());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityReports.class.getName());
 
   private static final Dimension MINIMUM_REPORT_WINDOW_SIZE = new Dimension(800, 600);
   private static final double SCREEN_SIZE_RATIO = 0.8;
 
-  private EntityReportUiUtil() {}
+  private EntityReports() {}
 
   /**
    * Shows a report viewer for report printing

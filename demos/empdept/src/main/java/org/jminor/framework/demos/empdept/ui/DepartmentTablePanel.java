@@ -12,8 +12,8 @@ import org.jminor.plugin.jasperreports.ui.JasperReportsUIWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
+import org.jminor.swing.framework.ui.EntityReports;
 import org.jminor.swing.framework.ui.EntityTablePanel;
-import org.jminor.swing.framework.ui.reporting.EntityReportUiUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
                     getTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
-    EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this,
+    EntityReports.viewJdbcReport(DepartmentTablePanel.this,
             new JasperReportsWrapper(reportPath, reportParameters),
             new JasperReportsUIWrapper(), "Employee Report", getTableModel().getConnectionProvider());
   }

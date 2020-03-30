@@ -5797,3 +5797,4 @@
   DefaultEntityTableConditionModel, conditionChangedEvent removed, conditionChangedState used instead
   EntityConnection.fillReports() generified
   EntityReportUtil removed
+  EntityReportUiUtil renamed to EntityReports, moved up to org.jminor.swing.framework.ui
