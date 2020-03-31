@@ -5799,3 +5799,4 @@
   EntityReportUtil removed
   EntityReportUiUtil renamed to EntityReports, moved up to org.jminor.swing.framework.ui
   ReportUIWrapper renamed ReportUiWrapper, for consistency
+  UiUtil removed, methods dumped into Components

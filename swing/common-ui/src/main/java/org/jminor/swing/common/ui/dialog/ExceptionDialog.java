@@ -10,7 +10,6 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -186,7 +185,7 @@ final class ExceptionDialog extends JDialog {
             MESSAGES.getString("save"));
     saveControl.setDescription(MESSAGES.getString("save_error_log"));
     saveControl.setMnemonic(MESSAGES.getString("save_mnemonic").charAt(0));
-    final Control copyControl = Controls.control(() -> UiUtil.setClipboard(detailsArea.getText()), Messages.get(Messages.COPY));
+    final Control copyControl = Controls.control(() -> Components.setClipboard(detailsArea.getText()), Messages.get(Messages.COPY));
     copyControl.setDescription(MESSAGES.getString("copy_to_clipboard"));
     copyControl.setMnemonic(MESSAGES.getString("copy_mnemonic").charAt(0));
 

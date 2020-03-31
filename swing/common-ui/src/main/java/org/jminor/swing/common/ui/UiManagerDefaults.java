@@ -9,7 +9,7 @@ import javax.swing.UIManager;
 import java.awt.Insets;
 
 /**
- * A utility class for initializing default UIManager values.
+ * A utility class for initializing default UIManager values, default ok, cancel button captions and such.
  */
 public final class UiManagerDefaults {
 

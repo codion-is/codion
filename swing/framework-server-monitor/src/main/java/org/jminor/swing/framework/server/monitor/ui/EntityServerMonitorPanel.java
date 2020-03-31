@@ -9,7 +9,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.Servers;
-import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -201,7 +201,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
     southPanel.setBorder(BorderFactory.createEtchedBorder());
     southPanel.add(new JLabel("Memory usage:"));
-    southPanel.add(UiUtil.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));
+    southPanel.add(Components.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));
 
     return southPanel;
   }
@@ -210,7 +210,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     Servers.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
     SwingUtilities.invokeLater(() -> {
       try {
-        UIManager.setLookAndFeel(UiUtil.getDefaultLookAndFeelClassName());
+        UIManager.setLookAndFeel(Components.getDefaultLookAndFeelClassName());
         new EntityServerMonitorPanel().showFrame();
       }
       catch (final Exception e) {
