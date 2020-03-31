@@ -5801,3 +5801,4 @@
   ReportUIWrapper renamed ReportUiWrapper, for consistency
   UiUtil removed, methods dumped into Components
   ClientLog now interface
+  DefaultEntityEditModel.bindEventsInternal(), states updated before value change is notified

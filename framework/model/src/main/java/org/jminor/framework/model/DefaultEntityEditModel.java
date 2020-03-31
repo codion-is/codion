@@ -1089,12 +1089,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     entity.addValueListener(valueChange -> {
       entityModifiedState.set(entity.isModified());
       validState.set(validator.isValid(entity, getEntityDefinition()));
+      primaryKeyNullState.set(entity.getKey().isNull());
+      entityNewState.set(isEntityNew());
       final Event<ValueChange> valueChangeEvent = valueChangeEventMap.get(valueChange.getProperty().getPropertyId());
       if (valueChangeEvent != null) {
         valueChangeEvent.onEvent(valueChange);
       }
-      primaryKeyNullState.set(entity.getKey().isNull());
-      entityNewState.set(isEntityNew());
     });
   }
 
