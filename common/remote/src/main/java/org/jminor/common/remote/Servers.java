@@ -80,10 +80,11 @@ public final class Servers {
    * @param clientId the ID of the client this log represents
    * @param connectionCreationDate the date and time this client connection was created
    * @param entries the log entries
+   * @return a new ClientLog instance
    */
-  public static ClientLog clientLog(final UUID clientId, final LocalDateTime connectionCreateDate,
+  public static ClientLog clientLog(final UUID clientId, final LocalDateTime connectionCreationDate,
                                     final List<MethodLogger.Entry> entries) {
-    return new DefaultClientLog(clientId, connectionCreateDate, entries);
+    return new DefaultClientLog(clientId, connectionCreationDate, entries);
   }
 
   /**
