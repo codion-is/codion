@@ -30,6 +30,4 @@ JMinor provides a few classes with miscellanous utility functions.
 
 {url-javadoc}/org/jminor/swing/common/ui/textfield/TextFields.html[TextFields]
 
-{url-javadoc}/org/jminor/swing/common/ui/UiUtil.html[UiUtil]
-
 {url-javadoc}/org/jminor/swing/common/ui/Windows.html[Windows]

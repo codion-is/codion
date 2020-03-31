@@ -11,7 +11,7 @@ import javax.swing.JComponent;
  * A simple wrapper for a report presentation UI
  * @param <R> the type of the report result being wrapped.
  */
-public interface ReportUIWrapper<R> {
+public interface ReportUiWrapper<R> {
 
   /**
    * Returns a JComponent showing a report based on the given report result.

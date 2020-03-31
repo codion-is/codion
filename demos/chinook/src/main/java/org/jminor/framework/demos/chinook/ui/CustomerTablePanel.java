@@ -6,7 +6,7 @@ package org.jminor.framework.demos.chinook.ui;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
-import org.jminor.plugin.jasperreports.ui.JasperReportsUIWrapper;
+import org.jminor.plugin.jasperreports.ui.JasperReportsUiWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
@@ -42,6 +42,6 @@ public class CustomerTablePanel extends EntityTablePanel {
     reportParameters.put("CUSTOMER_IDS", customerIDs);
 
     EntityReports.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
-            new JasperReportsUIWrapper(), null, getTableModel().getConnectionProvider());
+            new JasperReportsUiWrapper(), null, getTableModel().getConnectionProvider());
   }
 }

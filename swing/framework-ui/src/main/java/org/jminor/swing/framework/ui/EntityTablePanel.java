@@ -28,7 +28,6 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -1170,11 +1169,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void copySelectedCell() {
     final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
-    UiUtil.setClipboard(value == null ? "" : value.toString());
+    Components.setClipboard(value == null ? "" : value.toString());
   }
 
   private void copyTableAsDelimitedString() {
-    UiUtil.setClipboard(tableModel.getTableDataAsDelimitedString('\t'));
+    Components.setClipboard(tableModel.getTableDataAsDelimitedString('\t'));
   }
 
   private boolean includeUpdateSelectedControls() {

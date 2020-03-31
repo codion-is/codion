@@ -35,7 +35,6 @@ import org.jminor.swing.common.ui.HierarchyPanel;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiManagerDefaults;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -1109,10 +1108,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * @return the look and feel class name to use
-   * @see UiUtil#getDefaultLookAndFeelClassName()
+   * @see Components#getDefaultLookAndFeelClassName()
    */
   protected String getDefaultLookAndFeelClassName() {
-    return PreferencesUtil.getUserPreference(applicationLookAndFeelProperty, UiUtil.getDefaultLookAndFeelClassName());
+    return PreferencesUtil.getUserPreference(applicationLookAndFeelProperty, Components.getDefaultLookAndFeelClassName());
   }
 
   /**
@@ -1366,7 +1365,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
     final Integer fontSize = getDefaultFontSize();
     if (!fontSize.equals(100)) {
-      UiUtil.setFontSize(fontSize / 100f);
+      Components.setFontSize(fontSize / 100f);
     }
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;

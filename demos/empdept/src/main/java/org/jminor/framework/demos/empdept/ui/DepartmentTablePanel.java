@@ -8,7 +8,7 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
-import org.jminor.plugin.jasperreports.ui.JasperReportsUIWrapper;
+import org.jminor.plugin.jasperreports.ui.JasperReportsUiWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
@@ -36,7 +36,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
     reportParameters.put("DEPTNO", departmentNumbers);
     EntityReports.viewJdbcReport(DepartmentTablePanel.this,
             new JasperReportsWrapper(reportPath, reportParameters),
-            new JasperReportsUIWrapper(), "Employee Report", getTableModel().getConnectionProvider());
+            new JasperReportsUiWrapper(), "Employee Report", getTableModel().getConnectionProvider());
   }
 // end::viewEmployeeReport[]
 

@@ -75,7 +75,7 @@ public final class ClientUI {
     artistPanel.add(nameField);
 
     //uncomment the below line to display the panel
-//    UiUtil.displayInDialog(null, artistPanel, "Artist");
+//    Dialogs.displayInDialog(null, artistPanel, "Artist");
   }
 
   static void albumPanel(final EntityConnectionProvider connectionProvider) {
@@ -141,7 +141,7 @@ public final class ClientUI {
     albumPanel.add(titleField);
 
     //uncomment the below line to display the panel
-//    UiUtil.displayInDialog(null, albumPanel, "Album");
+//    Dialogs.displayInDialog(null, albumPanel, "Album");
   }
 
   public static void main(final String[] args) {
