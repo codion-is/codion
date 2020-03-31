@@ -4,7 +4,7 @@
 package org.jminor.plugin.jasperreports.ui;
 
 import org.jminor.common.db.reports.ReportResult;
-import org.jminor.swing.common.ui.reports.ReportUIWrapper;
+import org.jminor.swing.common.ui.reports.ReportUiWrapper;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A class responsible for displaying a JasperReport
  */
-public final class JasperReportsUIWrapper implements ReportUIWrapper<JasperPrint> {
+public final class JasperReportsUiWrapper implements ReportUiWrapper<JasperPrint> {
 
   /**
    * @param result the result to display

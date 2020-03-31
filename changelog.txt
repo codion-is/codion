@@ -5798,3 +5798,4 @@
   EntityConnection.fillReports() generified
   EntityReportUtil removed
   EntityReportUiUtil renamed to EntityReports, moved up to org.jminor.swing.framework.ui
+  ReportUIWrapper renamed ReportUiWrapper, for consistency

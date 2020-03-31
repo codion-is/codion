@@ -7,7 +7,7 @@ import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
-import org.jminor.plugin.jasperreports.ui.JasperReportsUIWrapper;
+import org.jminor.plugin.jasperreports.ui.JasperReportsUiWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
@@ -50,7 +50,7 @@ public class CustomerTablePanel extends EntityTablePanel {
 
     EntityReports.viewJdbcReport(this,
             new JasperReportsWrapper(reportPath, reportParameters),
-            new JasperReportsUIWrapper(),  "Customer Report",
+            new JasperReportsUiWrapper(),  "Customer Report",
             getTableModel().getConnectionProvider());
   }
 }

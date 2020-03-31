@@ -33,7 +33,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   private static final ResultPacker<Long> LONG_RESULT_PACKER = resultSet -> resultSet.getLong(1);
 
   /**
-   * The default timoeout in seconds when checking if this connection is valid
+   * The default timeout in seconds when checking if this connection is valid
    */
   private static final int DEFAULT_VALIDITY_CHECK_TIMEOUT = 2;
 
@@ -63,7 +63,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * Constructs a new DefaultDatabaseConnection instance, initialized and ready for use
    * @param database the database
    * @param user the user to base this database connection on
-   * @param validityCheckTimeout the timoeout in seconds when checking if this connection is valid
+   * @param validityCheckTimeout the timeout in seconds when checking if this connection is valid
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */

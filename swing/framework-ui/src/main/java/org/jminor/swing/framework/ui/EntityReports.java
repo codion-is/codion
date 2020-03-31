@@ -11,7 +11,7 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.reports.ReportUIWrapper;
+import org.jminor.swing.common.ui.reports.ReportUiWrapper;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -40,7 +40,7 @@ public final class EntityReports {
    * @param connectionProvider the db provider
    */
   public static void viewJdbcReport(final JComponent component, final ReportWrapper reportWrapper,
-                                    final ReportUIWrapper uiWrapper, final String reportTitle,
+                                    final ReportUiWrapper uiWrapper, final String reportTitle,
                                     final EntityConnectionProvider connectionProvider) {
     try {
       Components.showWaitCursor(component);
@@ -63,7 +63,7 @@ public final class EntityReports {
    * @param reportTitle the title to display on the frame
    */
   public static void viewReport(final JComponent component, final ReportWrapper reportWrapper,
-                                final ReportUIWrapper uiWrapper, final ReportDataWrapper dataSource,
+                                final ReportUiWrapper uiWrapper, final ReportDataWrapper dataSource,
                                 final String reportTitle) {
     try {
       Components.showWaitCursor(component);
@@ -83,7 +83,7 @@ public final class EntityReports {
    * @param uiWrapper the UI wrapper
    * @param frameTitle the title to display on the frame
    */
-  public static void viewReport(final ReportResult reportResult, final ReportUIWrapper uiWrapper, final String frameTitle) {
+  public static void viewReport(final ReportResult reportResult, final ReportUiWrapper uiWrapper, final String frameTitle) {
     SwingUtilities.invokeLater(() -> {
       final JFrame frame = new JFrame(frameTitle == null ? MESSAGES.getString("report_printer") : frameTitle);
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

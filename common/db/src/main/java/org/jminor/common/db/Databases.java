@@ -142,8 +142,7 @@ public final class Databases {
                                         final Exception exception, final MethodLogger.Entry entry) {
     final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");
     if (entry == null) {
-      logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ")
-              .append(values);
+      logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(values);
     }
     else {
       entry.append(logMessage);
