@@ -165,7 +165,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Establishes a connection to this Server
    * @param connectionRequest the information required for establishing a connection
    * @return a remote connection instance
-   * @throws RemoteException in case of a communitation error
+   * @throws RemoteException in case of a communication error
    * @throws ConnectionNotAvailableException in case the server isn't accepting more connections
    * @throws LoginException in case the login fails
    * @throws ConnectionValidationException in case connection validation fails
@@ -174,10 +174,10 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
           ConnectionNotAvailableException, LoginException, ConnectionValidationException;
 
   /**
-   * Returns the admin intarface used to administer this server
+   * Returns the admin interface used to administer this server
    * @param user the admin user credentials
    * @return the admin interface
-   * @throws RemoteException in case of a communitation error
+   * @throws RemoteException in case of a communication error
    * @throws ServerAuthenticationException in case authentication fails
    */
   A getServerAdmin(User user) throws RemoteException, ServerAuthenticationException;
@@ -222,7 +222,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
     UUID getServerId();
 
     /**
-     * @return the server Version
+     * @return the server framework Version
      */
     Version getServerVersion();
 
