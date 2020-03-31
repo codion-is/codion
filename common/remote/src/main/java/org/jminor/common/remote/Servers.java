@@ -3,6 +3,7 @@
  */
 package org.jminor.common.remote;
 
+import org.jminor.common.MethodLogger;
 import org.jminor.common.Util;
 import org.jminor.common.user.User;
 import org.jminor.common.version.Version;
@@ -21,6 +22,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -225,6 +227,17 @@ public final class Servers {
     return null;
   }
 
+  /**
+   * Instantiates a new ClientLog instance.
+   * @param clientId the ID of the client this log represents
+   * @param connectionCreationDate the date and time this client connection was created
+   * @param entries the log entries
+   */
+  public static ClientLog clientLog(final UUID clientId, final LocalDateTime connectionCreateDate,
+                                    final List<MethodLogger.Entry> entries) {
+    return new DefaultClientLog(clientId, connectionCreateDate, entries);
+  }
+
   private static final class ServerComparator<T extends Remote, A extends Remote> implements Comparator<Server<T, A>>, Serializable {
     private static final long serialVersionUID = 1;
     @Override
@@ -340,6 +353,47 @@ public final class Servers {
               .append("] - ").append(connectionRequest.getClientId().toString());
 
       return builder.toString();
+    }
+  }
+
+  private static final class DefaultClientLog implements ClientLog {
+
+    private static final long serialVersionUID = 1;
+
+    private final UUID clientId;
+    private final LocalDateTime connectionCreationDate;
+    private final List<MethodLogger.Entry> entries;
+
+    private DefaultClientLog(final UUID clientId, final LocalDateTime connectionCreationDate, final List<MethodLogger.Entry> entries) {
+      this.clientId = clientId;
+      this.connectionCreationDate = connectionCreationDate;
+      this.entries = entries;
+    }
+
+    @Override
+    public List<MethodLogger.Entry> getEntries() {
+      return entries;
+    }
+
+    @Override
+    public UUID getClientId() {
+      return clientId;
+    }
+
+    @Override
+    public LocalDateTime getConnectionCreationDate() {
+      return connectionCreationDate;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+      return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
+              && clientId.equals(((ClientLog) obj).getClientId());
+    }
+
+    @Override
+    public int hashCode() {
+      return clientId.hashCode();
     }
   }
 }

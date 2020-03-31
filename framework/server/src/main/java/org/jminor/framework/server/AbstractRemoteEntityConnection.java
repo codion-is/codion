@@ -14,6 +14,7 @@ import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.remote.Servers;
 import org.jminor.common.user.User;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnection;
@@ -424,8 +425,9 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
     private ClientLog getClientLog() {
       synchronized (methodLogger) {
-        return new ClientLog(remoteClient.getClientId(),
-                Instant.ofEpochMilli(creationDate).atZone(ZoneId.systemDefault()).toLocalDateTime(), methodLogger.getEntries());
+        return Servers.clientLog(remoteClient.getClientId(),
+                Instant.ofEpochMilli(creationDate).atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                methodLogger.getEntries());
       }
     }
   }
