@@ -297,11 +297,11 @@ public final class Components {
    * requests have been retracted. Best used in try/finally block combinations.
    * <pre>
    try {
-     UiUtil.showWaitCursor(dialogParent);
+     Components.showWaitCursor(component);
      doSomething();
    }
    finally {
-     UiUtil.hideWaitCursor(dialogParent);
+     Components.hideWaitCursor(component);
    }
    * </pre>
    * @param component the component
@@ -317,11 +317,11 @@ public final class Components {
    * requests have been retracted. Best used in try/finally block combinations.
    * <pre>
    try {
-     UiUtil.showWaitCursor(dialogParent);
+     Components.showWaitCursor(component);
      doSomething();
    }
    finally {
-     UiUtil.hideWaitCursor(dialogParent);
+     Components.hideWaitCursor(component);
    }
    * </pre>
    * @param component the component
@@ -331,22 +331,6 @@ public final class Components {
     setWaitCursor(false, component);
   }
 
-  /**
-   * Adds or subtracts a wait cursor request for the parent root pane of the given component,
-   * the wait cursor is activated once a request is made, but only deactivated once all such
-   * requests have been retracted. Best used in try/finally block combinations.
-   * <pre>
-   try {
-     UiUtil.showWaitCursor(dialogParent);
-     doSomething();
-   }
-   finally {
-     UiUtil.hideWaitCursor(dialogParent);
-   }
-   * </pre>
-   * @param on if on, then the wait cursor is activated, otherwise it is deactivated
-   * @param component the component
-   */
   private static void setWaitCursor(final boolean on, final JComponent component) {
     RootPaneContainer root = getParentOfType(component, JDialog.class);
     if (root == null) {
