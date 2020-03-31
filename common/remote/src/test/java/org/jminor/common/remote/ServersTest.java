@@ -14,7 +14,10 @@ import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServersTest {
@@ -59,5 +62,17 @@ public class ServersTest {
   @Test
   public void getServerWrongPort() throws RemoteException, NotBoundException {
     assertThrows(NotBoundException.class, () -> Servers.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, 42));
+  }
+
+  @Test
+  public void clientLog() {
+    final UUID uuid = UUID.randomUUID();
+    final LocalDateTime currentTime = LocalDateTime.now();
+    final ClientLog log = Servers.clientLog(uuid, currentTime, emptyList());
+    assertEquals(uuid, log.getClientId());
+    assertEquals(currentTime, log.getConnectionCreationDate());
+    assertEquals(log, Servers.clientLog(uuid, currentTime, emptyList()));
+    assertEquals(uuid.hashCode(), log.hashCode());
+    assertTrue(log.getEntries().isEmpty());
   }
 }

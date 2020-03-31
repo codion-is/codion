@@ -11,7 +11,7 @@ import org.jminor.common.user.User;
 public interface RemoteClient extends ConnectionRequest {
 
   /**
-   * @return the connection request
+   * @return the initial connection request this client is based on
    */
   ConnectionRequest getConnectionRequest();
 
