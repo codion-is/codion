@@ -76,6 +76,17 @@ public final class Servers {
   }
 
   /**
+   * Instantiates a new ClientLog instance.
+   * @param clientId the ID of the client this log represents
+   * @param connectionCreationDate the date and time this client connection was created
+   * @param entries the log entries
+   */
+  public static ClientLog clientLog(final UUID clientId, final LocalDateTime connectionCreateDate,
+                                    final List<MethodLogger.Entry> entries) {
+    return new DefaultClientLog(clientId, connectionCreateDate, entries);
+  }
+
+  /**
    * Initializes a Registry if one is not running
    * @param port the port on which to look for (or create) a registry
    * @return the Registry
@@ -225,17 +236,6 @@ public final class Servers {
     LOG.error("No connections available in server \"{}\"", serverInfo.getServerName());
 
     return null;
-  }
-
-  /**
-   * Instantiates a new ClientLog instance.
-   * @param clientId the ID of the client this log represents
-   * @param connectionCreationDate the date and time this client connection was created
-   * @param entries the log entries
-   */
-  public static ClientLog clientLog(final UUID clientId, final LocalDateTime connectionCreateDate,
-                                    final List<MethodLogger.Entry> entries) {
-    return new DefaultClientLog(clientId, connectionCreateDate, entries);
   }
 
   private static final class ServerComparator<T extends Remote, A extends Remote> implements Comparator<Server<T, A>>, Serializable {
