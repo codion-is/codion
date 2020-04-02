@@ -46,7 +46,7 @@ import java.util.concurrent.ThreadFactory;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A Http based {@link EntityConnection} implementation based on EntityService
@@ -344,13 +344,13 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(entitySelectCondition(entityId, propertyId, ConditionType.LIKE, value));
+    return selectSingle(selectCondition(entityId, propertyId, ConditionType.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return selectSingle(entitySelectCondition(key));
+    return selectSingle(selectCondition(key));
   }
 
   /** {@inheritDoc} */
@@ -403,7 +403,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   @Override
   public List<Entity> select(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return select(entitySelectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
+    return select(selectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
   }
 
   /** {@inheritDoc} */
