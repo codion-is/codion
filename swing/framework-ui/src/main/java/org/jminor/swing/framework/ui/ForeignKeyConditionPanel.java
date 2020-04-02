@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -26,7 +26,7 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
    * @param model the model to base this panel on
    */
   public ForeignKeyConditionPanel(final ForeignKeyConditionModel model) {
-    super(model, false, new ForeignKeyInputFieldProvider(model), ConditionType.LIKE, ConditionType.NOT_LIKE);
+    super(model, false, new ForeignKeyInputFieldProvider(model), Operator.LIKE, Operator.NOT_LIKE);
   }
 
   private static final class ForeignKeyInputFieldProvider implements InputFieldProvider {

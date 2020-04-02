@@ -21,7 +21,7 @@ import org.jminor.framework.domain.Domain;
 
 import static java.lang.String.valueOf;
 import static org.jminor.common.Conjunction.AND;
-import static org.jminor.common.db.ConditionType.LIKE;
+import static org.jminor.common.db.Operator.LIKE;
 import static org.jminor.common.remote.Servers.remoteClient;
 import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;

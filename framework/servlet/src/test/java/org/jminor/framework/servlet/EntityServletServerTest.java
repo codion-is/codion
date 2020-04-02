@@ -4,7 +4,7 @@
 package org.jminor.framework.servlet;
 
 import org.jminor.common.Serializer;
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
@@ -266,7 +266,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(selectCondition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "New name"))));
+            TestDomain.DEPARTMENT_NAME, Operator.LIKE, "New name"))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -289,7 +289,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(selectCondition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_ID, ConditionType.LIKE, -42))));
+            TestDomain.DEPARTMENT_ID, Operator.LIKE, -42))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();

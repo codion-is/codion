@@ -29,8 +29,8 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.jminor.common.Conjunction.AND;
-import static org.jminor.common.db.ConditionType.LIKE;
-import static org.jminor.common.db.ConditionType.NOT_LIKE;
+import static org.jminor.common.db.Operator.LIKE;
+import static org.jminor.common.db.Operator.NOT_LIKE;
 import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 

@@ -5,7 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.Util;
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
@@ -339,7 +339,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       conditionModel.setCaseSensitive(false);
       conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
       conditionModel.setUpperBound(searchString);
-      conditionModel.setConditionType(ConditionType.LIKE);
+      conditionModel.setOperator(Operator.LIKE);
       conditionModel.setEnabled(true);
     }
   }
@@ -388,17 +388,17 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   private static Condition getCondition(final ColumnConditionModel<Entity, ? extends Property> conditionModel) {
-    final Object conditionValue = conditionModel.getConditionType().getValues().equals(ConditionType.Values.TWO) ?
+    final Object conditionValue = conditionModel.getOperator().getValues().equals(Operator.Values.TWO) ?
             asList(conditionModel.getLowerBound(), conditionModel.getUpperBound()) : conditionModel.getUpperBound();
 
-    return propertyCondition(conditionModel.getColumnIdentifier().getPropertyId(), conditionModel.getConditionType(), conditionValue)
+    return propertyCondition(conditionModel.getColumnIdentifier().getPropertyId(), conditionModel.getOperator(), conditionValue)
             .setCaseSensitive(conditionModel.isCaseSensitive());
   }
 
   private static String toString(final ColumnConditionModel<Entity, ? extends Property> conditionModel) {
     final StringBuilder stringBuilder = new StringBuilder(conditionModel.getColumnIdentifier().getPropertyId());
     if (conditionModel.isEnabled()) {
-      stringBuilder.append(conditionModel.getConditionType());
+      stringBuilder.append(conditionModel.getOperator());
       stringBuilder.append(boundToString(conditionModel.getUpperBound()));
       stringBuilder.append(boundToString(conditionModel.getLowerBound()));
     }

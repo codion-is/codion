@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.framework.db.TestDomain;
 import org.jminor.framework.domain.property.ColumnProperty;
 
@@ -23,14 +23,14 @@ public final class DefaultPropertyConditionTest {
 
     final List<Integer> ids = new ArrayList<>();
     IntStream.range(0, 95).forEach(ids::add);
-    DefaultPropertyCondition condition = new DefaultPropertyCondition(TestDomain.EMP_ID, ConditionType.LIKE, ids);
+    DefaultPropertyCondition condition = new DefaultPropertyCondition(TestDomain.EMP_ID, Operator.LIKE, ids);
     String conditionString = condition.getConditionString(empIdProperty);
     assertTrue(conditionString.startsWith("empno in (?"));
     assertTrue(conditionString.endsWith("?, ?)"));
 
     ids.clear();
     IntStream.range(0, 105).forEach(ids::add);
-    condition = new DefaultPropertyCondition(TestDomain.EMP_ID, ConditionType.LIKE, ids);
+    condition = new DefaultPropertyCondition(TestDomain.EMP_ID, Operator.LIKE, ids);
     conditionString = condition.getConditionString(empIdProperty);
     assertTrue(conditionString.startsWith("(empno in (?"));
     assertTrue(conditionString.endsWith("?, ?))"));

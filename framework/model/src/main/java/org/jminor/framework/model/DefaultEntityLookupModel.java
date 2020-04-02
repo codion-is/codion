@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
@@ -310,7 +310,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       for (final String rawLookupText : lookupTexts) {
         final String lookupText = prepareLookupText(rawLookupText, lookupSettings);
         final PropertyCondition condition = propertyCondition(lookupProperty.getPropertyId(),
-                ConditionType.LIKE, lookupText).setCaseSensitive(lookupSettings.getCaseSensitiveValue().get());
+                Operator.LIKE, lookupText).setCaseSensitive(lookupSettings.getCaseSensitiveValue().get());
         baseCondition.add(condition);
       }
     }

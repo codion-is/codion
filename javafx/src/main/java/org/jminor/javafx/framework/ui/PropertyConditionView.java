@@ -3,7 +3,7 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.item.Item;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.State;
@@ -36,7 +36,7 @@ import static org.jminor.common.item.Items.item;
 public final class PropertyConditionView extends BorderPane {
 
   private final ColumnConditionModel<Entity, ? extends Property> model;
-  private final Pane conditionTypePane;
+  private final Pane operatorPane;
   private final Pane topPane;
   private final Label header;
   private final CheckBox enabledBox;
@@ -57,7 +57,7 @@ public final class PropertyConditionView extends BorderPane {
     this.upperBoundControl = createUpperBoundControl();
     this.lowerBoundControl = createLowerBoundControl();
     this.topPane = createTopPane();
-    this.conditionTypePane = createConditionTypePane();
+    this.operatorPane = createOperatorPane();
     setTop(topPane);
     initializeUI();
     bindEvents();
@@ -79,8 +79,8 @@ public final class PropertyConditionView extends BorderPane {
     return pane;
   }
 
-  private BorderPane createConditionTypePane() {
-    final BorderPane pane = new BorderPane(createConditionTypeComboBox());
+  private BorderPane createOperatorPane() {
+    final BorderPane pane = new BorderPane(createOperatorComboBox());
     final Label filler = new Label();
     pane.setRight(filler);
 
@@ -94,11 +94,11 @@ public final class PropertyConditionView extends BorderPane {
     return pane;
   }
 
-  private ComboBox<Item<ConditionType>> createConditionTypeComboBox() {
-    final ComboBox<Item<ConditionType>> comboBox = new ComboBox<>(
-            FXCollections.observableArrayList(getConditionTypes(model.getColumnIdentifier())));
-    comboBox.getSelectionModel().select(item(model.getConditionType()));
-    comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setConditionType(newValue.getValue()));
+  private ComboBox<Item<Operator>> createOperatorComboBox() {
+    final ComboBox<Item<Operator>> comboBox = new ComboBox<>(
+            FXCollections.observableArrayList(getOperators(model.getColumnIdentifier())));
+    comboBox.getSelectionModel().select(item(model.getOperator()));
+    comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setOperator(newValue.getValue()));
     comboBox.maxWidthProperty().set(Double.MAX_VALUE);
     comboBox.minWidthProperty().set(0);
     FXUiUtil.link(comboBox.disableProperty(), model.getLockedObserver());
@@ -177,7 +177,7 @@ public final class PropertyConditionView extends BorderPane {
 
   private Pane createAdvancedView() {
     final BorderPane borderPane = new BorderPane();
-    borderPane.setTop(conditionTypePane);
+    borderPane.setTop(operatorPane);
     if (model.isLowerBoundRequired()) {
       final GridPane gridPane = new GridPane();
       gridPane.addColumn(0, lowerBoundControl);
@@ -191,18 +191,18 @@ public final class PropertyConditionView extends BorderPane {
     return borderPane;
   }
 
-  private static Collection<Item<ConditionType>> getConditionTypes(final Property property) {
-    final Collection<Item<ConditionType>> types = new ArrayList<>();
+  private static Collection<Item<Operator>> getOperators(final Property property) {
+    final Collection<Item<Operator>> types = new ArrayList<>();
     if (property instanceof ForeignKeyProperty) {
-      types.add(item(ConditionType.LIKE, ConditionType.LIKE.getCaption()));
-      types.add(item(ConditionType.NOT_LIKE, ConditionType.NOT_LIKE.getCaption()));
+      types.add(item(Operator.LIKE, Operator.LIKE.getCaption()));
+      types.add(item(Operator.NOT_LIKE, Operator.NOT_LIKE.getCaption()));
     }
     else if (property.isBoolean()) {
-      types.add(item(ConditionType.LIKE, ConditionType.LIKE.getCaption()));
+      types.add(item(Operator.LIKE, Operator.LIKE.getCaption()));
     }
     else {
-      for (final ConditionType conditionType : ConditionType.values()) {
-        types.add(item(conditionType, conditionType.getCaption()));
+      for (final Operator operator : Operator.values()) {
+        types.add(item(operator, operator.getCaption()));
       }
     }
 

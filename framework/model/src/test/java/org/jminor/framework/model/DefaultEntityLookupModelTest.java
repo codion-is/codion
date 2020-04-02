@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.Operator;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -192,7 +192,7 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(true);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(true);
     lookupModel.setAdditionalConditionProvider(() ->
-            Conditions.propertyCondition(TestDomain.EMP_JOB, ConditionType.NOT_LIKE, "MANAGER"));
+            Conditions.propertyCondition(TestDomain.EMP_JOB, Operator.NOT_LIKE, "MANAGER"));
     result = lookupModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));

@@ -4,7 +4,7 @@
 package org.jminor.common.model.table;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
@@ -95,7 +95,7 @@ public interface ColumnConditionModel<R, C> {
   /**
    * Sets the automatic wildcard type.
    * Note that this is only applicable to string based condition models and only used for
-   * condition types {@link ConditionType#LIKE} and {@link ConditionType#NOT_LIKE}
+   * operators {@link Operator#LIKE} and {@link Operator#NOT_LIKE}
    * @param automaticWildcard the automatic wildcard type to use
    */
   void setAutomaticWildcard(AutomaticWildcard automaticWildcard);
@@ -132,7 +132,7 @@ public interface ColumnConditionModel<R, C> {
   void setUpperBound(Object upper);
 
   /**
-   * A shortcut method for setting the upper bound value, conditionType to LIKE
+   * A shortcut method for setting the upper bound value, operator to LIKE
    * and enabling this model in case of a non-null value.
    * @param value the value to use as condition
    */
@@ -154,17 +154,17 @@ public interface ColumnConditionModel<R, C> {
   Object getLowerBound();
 
   /**
-   * @return the search type
+   * @return the search operator
    */
-  ConditionType getConditionType();
+  Operator getOperator();
 
   /**
-   * @param conditionType the search type
+   * @param operator the search operator
    */
-  void setConditionType(ConditionType conditionType);
+  void setOperator(Operator operator);
 
   /**
-   * @return true if the current search type requires a lower bound value to be specified,
+   * @return true if the current operator requires a lower bound value to be specified,
    * such as within and outside range.
    */
   boolean isLowerBoundRequired();
@@ -192,7 +192,7 @@ public interface ColumnConditionModel<R, C> {
 
   /**
    * Disables and clears this condition model, that is, sets the upper and lower bounds to null
-   * and the condition type to the default value {@link ConditionType#LIKE}
+   * and the operator to the default value {@link Operator#LIKE}
    */
   void clearCondition();
 
@@ -217,9 +217,9 @@ public interface ColumnConditionModel<R, C> {
   EventObserver<Boolean> getEnabledObserver();
 
   /**
-   * @return an observer notified each time the condition type changes
+   * @return an observer notified each time the operator changes
    */
-  EventObserver<ConditionType> getConditionTypeObserver();
+  EventObserver<Operator> getOperatorObserver();
 
   /**
    * @param listener a listener to be notified each time the enabled state changes
@@ -232,14 +232,14 @@ public interface ColumnConditionModel<R, C> {
   void removeEnabledListener(EventListener listener);
 
   /**
-   * @param listener a listener to be notified each time the condition type changes
+   * @param listener a listener to be notified each time the operator changes
    */
-  void addConditionTypeListener(EventDataListener<ConditionType> listener);
+  void addOperatorListener(EventDataListener<Operator> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionTypeListener(EventDataListener<ConditionType> listener);
+  void removeOperatorListener(EventDataListener<Operator> listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound changes

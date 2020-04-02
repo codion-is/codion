@@ -4,7 +4,7 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.framework.db.TestDomain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -26,16 +26,16 @@ public final class WhereConditionTest {
   public void test() {
     final Condition.Set set1 = Conditions.conditionSet(
             Conjunction.AND,
-            Conditions.propertyCondition(TestDomain.DETAIL_STRING, ConditionType.LIKE, "value"),
-            Conditions.propertyCondition(TestDomain.DETAIL_INT, ConditionType.LIKE, 666)
+            Conditions.propertyCondition(TestDomain.DETAIL_STRING, Operator.LIKE, "value"),
+            Conditions.propertyCondition(TestDomain.DETAIL_INT, Operator.LIKE, 666)
     );
     final EntityDefinition detailDefinition = DOMAIN.getDefinition(TestDomain.T_DETAIL);
     final WhereCondition condition = whereCondition(condition(TestDomain.T_DETAIL, set1), detailDefinition);
     assertEquals("(string = ? and int = ?)", condition.getWhereClause());
     final Condition.Set set2 = Conditions.conditionSet(
             Conjunction.AND,
-            Conditions.propertyCondition(TestDomain.DETAIL_DOUBLE, ConditionType.LIKE, 666.666),
-            Conditions.propertyCondition(TestDomain.DETAIL_STRING, ConditionType.LIKE, "valu%e2").setCaseSensitive(false)
+            Conditions.propertyCondition(TestDomain.DETAIL_DOUBLE, Operator.LIKE, 666.666),
+            Conditions.propertyCondition(TestDomain.DETAIL_STRING, Operator.LIKE, "valu%e2").setCaseSensitive(false)
     );
     final Condition.Set set3 = Conditions.conditionSet(Conjunction.OR, set1, set2);
     assertEquals("((string = ? and int = ?) or (double = ? and upper(string) like upper(?)))",
@@ -45,7 +45,7 @@ public final class WhereConditionTest {
   @Test
   public void propertyConditionTest() {
     final WhereCondition critOne = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            Conditions.propertyCondition(TestDomain.DEPARTMENT_LOCATION, ConditionType.LIKE, "New York")), DOMAIN.getDefinition(TestDomain.T_DEPARTMENT));
+            Conditions.propertyCondition(TestDomain.DEPARTMENT_LOCATION, Operator.LIKE, "New York")), DOMAIN.getDefinition(TestDomain.T_DEPARTMENT));
     assertEquals("loc = ?", critOne.getWhereClause());
     assertNotNull(critOne);
   }
@@ -54,7 +54,7 @@ public final class WhereConditionTest {
   public void foreignKeyConditionNull() {
     final EntityDefinition definition = DOMAIN.getDefinition(TestDomain.T_EMP);
     final WhereCondition condition = whereCondition(condition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, null), definition);
+            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, null), definition);
     assertEquals("deptno is null", condition.getWhereClause());
   }
 
@@ -64,17 +64,17 @@ public final class WhereConditionTest {
     department.put(TestDomain.DEPARTMENT_ID, 10);
     final EntityDefinition empDefinition = DOMAIN.getDefinition(TestDomain.T_EMP);
     WhereCondition condition = whereCondition(condition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department), empDefinition);
+            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, department), empDefinition);
     assertEquals("deptno = ?", condition.getWhereClause());
 
     final Entity department2 = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     department2.put(TestDomain.DEPARTMENT_ID, 11);
     condition = whereCondition(condition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, asList(department, department2)), empDefinition);
+            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, asList(department, department2)), empDefinition);
     assertEquals("deptno in (?, ?)", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.NOT_LIKE, asList(department, department2)), empDefinition);
+            TestDomain.EMP_DEPARTMENT_FK, Operator.NOT_LIKE, asList(department, department2)), empDefinition);
     assertEquals("deptno not in (?, ?)", condition.getWhereClause());
   }
 
@@ -84,7 +84,7 @@ public final class WhereConditionTest {
     department.put(TestDomain.DEPARTMENT_ID, 10);
     final EntityDefinition empDefinition = DOMAIN.getDefinition(TestDomain.T_EMP);
     final WhereCondition condition = whereCondition(condition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department.getKey()), empDefinition);
+            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, department.getKey()), empDefinition);
     assertEquals("deptno = ?", condition.getWhereClause());
   }
 
@@ -99,16 +99,16 @@ public final class WhereConditionTest {
     master2.put(TestDomain.MASTER_ID_2, 4);
 
     final EntityDefinition detailDefinition = DOMAIN.getDefinition(TestDomain.T_DETAIL);
-    WhereCondition condition = whereCondition(condition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, ConditionType.LIKE, master1), detailDefinition);
+    WhereCondition condition = whereCondition(condition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1), detailDefinition);
     assertEquals("(master_id = ? and master_id_2 = ?)", condition.getWhereClause());
 
-    condition = whereCondition(condition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, ConditionType.NOT_LIKE, master1), detailDefinition);
+    condition = whereCondition(condition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, Operator.NOT_LIKE, master1), detailDefinition);
     assertEquals("(master_id <> ? and master_id_2 <> ?)", condition.getWhereClause());
 
-    condition = whereCondition(condition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, ConditionType.LIKE, asList(master1, master2)), detailDefinition);
+    condition = whereCondition(condition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, Operator.LIKE, asList(master1, master2)), detailDefinition);
     assertEquals("((master_id = ? and master_id_2 = ?) or (master_id = ? and master_id_2 = ?))", condition.getWhereClause());
 
-    condition = whereCondition(condition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, ConditionType.NOT_LIKE, asList(master1, master2)), detailDefinition);
+    condition = whereCondition(condition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, Operator.NOT_LIKE, asList(master1, master2)), detailDefinition);
     assertEquals("((master_id <> ? and master_id_2 <> ?) or (master_id <> ? and master_id_2 <> ?))", condition.getWhereClause());
   }
 
@@ -134,11 +134,11 @@ public final class WhereConditionTest {
   public void keyNullCondition() {
     final EntityDefinition empDefinition = DOMAIN.getDefinition(TestDomain.T_EMP);
     WhereCondition condition = whereCondition(selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, singletonList(null)), empDefinition);
+            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, singletonList(null)), empDefinition);
     assertEquals("deptno is null", condition.getWhereClause());
 
     condition = whereCondition(selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, null), empDefinition);
+            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, null), empDefinition);
     assertEquals("deptno is null", condition.getWhereClause());
 
     final Entity.Key master1 = DOMAIN.key(TestDomain.T_MASTER);
@@ -147,20 +147,20 @@ public final class WhereConditionTest {
 
     final EntityDefinition detailDefinition = DOMAIN.getDefinition(TestDomain.T_DETAIL);
     condition = whereCondition(selectCondition(TestDomain.T_DETAIL,
-            TestDomain.DETAIL_MASTER_FK, ConditionType.LIKE, master1), detailDefinition);
+            TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1), detailDefinition);
     assertEquals("(master_id is null and master_id_2 is null)",
             condition.getWhereClause());
 
     master1.put(TestDomain.MASTER_ID_2, 1);
     condition = whereCondition(selectCondition(TestDomain.T_DETAIL,
-            TestDomain.DETAIL_MASTER_FK, ConditionType.LIKE, master1), detailDefinition);
+            TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1), detailDefinition);
     assertEquals("(master_id is null and master_id_2 = ?)",
             condition.getWhereClause());
 
     final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT, 42);
 
     condition = whereCondition(selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, deptKey), empDefinition);
+            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, deptKey), empDefinition);
     assertEquals("deptno = ?", condition.getWhereClause());
   }
 
@@ -177,7 +177,7 @@ public final class WhereConditionTest {
     condition = whereCondition(condition(singletonList(entity.getKey())), deptDefinition);
     assertKeyCondition(condition);
 
-    condition = whereCondition(condition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, ConditionType.NOT_LIKE, "DEPT"), deptDefinition);
+    condition = whereCondition(condition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Operator.NOT_LIKE, "DEPT"), deptDefinition);
     assertCondition(condition);
   }
 
@@ -194,7 +194,7 @@ public final class WhereConditionTest {
     condition = whereCondition(Conditions.selectCondition(singletonList(entity.getKey())), deptDefinition);
     assertKeyCondition(condition);
 
-    condition = whereCondition(Conditions.selectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, ConditionType.NOT_LIKE, "DEPT"), deptDefinition);
+    condition = whereCondition(Conditions.selectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Operator.NOT_LIKE, "DEPT"), deptDefinition);
     assertCondition(condition);
   }
 
@@ -231,7 +231,7 @@ public final class WhereConditionTest {
   public void propertyConditionWithNonColumnProperty() {
     final EntityDefinition definition = DOMAIN.getDefinition(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> whereCondition(condition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_LOCATION, ConditionType.LIKE, null), definition)
+            TestDomain.EMP_DEPARTMENT_LOCATION, Operator.LIKE, null), definition)
             .getWhereClause());
   }
 
@@ -239,7 +239,7 @@ public final class WhereConditionTest {
   public void selectConditionInvalidType() {
     final EntityDefinition definition = DOMAIN.getDefinition(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> whereCondition(selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_COMMISSION, ConditionType.LIKE, "test"), definition)
+            TestDomain.EMP_COMMISSION, Operator.LIKE, "test"), definition)
             .getWhereClause());
   }
 
@@ -248,33 +248,33 @@ public final class WhereConditionTest {
     final EntityDefinition departmentDefinition = DOMAIN.getDefinition(TestDomain.T_DEPARTMENT);
     final ColumnProperty property = (ColumnProperty) departmentDefinition.getProperty(TestDomain.DEPARTMENT_NAME);
     WhereCondition condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            propertyCondition(TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "upper%")), departmentDefinition);
+            propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.LIKE, "upper%")), departmentDefinition);
     assertEquals(property.getPropertyId() + " like ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            propertyCondition(TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "upper")), departmentDefinition);
+            propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.LIKE, "upper")), departmentDefinition);
     assertEquals(property.getPropertyId() + " = ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            propertyCondition(TestDomain.DEPARTMENT_NAME, ConditionType.NOT_LIKE, "upper%")), departmentDefinition);
+            propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.NOT_LIKE, "upper%")), departmentDefinition);
     assertEquals(property.getPropertyId() + " not like ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            propertyCondition(TestDomain.DEPARTMENT_NAME, ConditionType.NOT_LIKE, "upper")), departmentDefinition);
+            propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.NOT_LIKE, "upper")), departmentDefinition);
     assertEquals(property.getPropertyId() + " <> ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            propertyCondition(TestDomain.DEPARTMENT_NAME, ConditionType.GREATER_THAN, "upper")), departmentDefinition);
+            propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.GREATER_THAN, "upper")), departmentDefinition);
     assertEquals(property.getPropertyId() + " >= ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            propertyCondition(TestDomain.DEPARTMENT_NAME, ConditionType.LESS_THAN, "upper")), departmentDefinition);
+            propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.LESS_THAN, "upper")), departmentDefinition);
     assertEquals(property.getPropertyId() + " <= ?", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            propertyCondition(TestDomain.DEPARTMENT_NAME, ConditionType.WITHIN_RANGE, asList("upper", "lower"))), departmentDefinition);
+            propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.WITHIN_RANGE, asList("upper", "lower"))), departmentDefinition);
     assertEquals("(" + property.getPropertyId() + " >= ? and " + property.getPropertyId() + " <= ?)", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            propertyCondition(TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "%upper%")), departmentDefinition);
+            propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.LIKE, "%upper%")), departmentDefinition);
     assertEquals(property.getPropertyId() + " like ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            propertyCondition(TestDomain.DEPARTMENT_NAME, ConditionType.NOT_LIKE, "%upper%")), departmentDefinition);
+            propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.NOT_LIKE, "%upper%")), departmentDefinition);
     assertEquals(property.getPropertyId() + " not like ?", condition.getWhereClause());
   }
 

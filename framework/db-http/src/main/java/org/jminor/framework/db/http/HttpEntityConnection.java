@@ -5,7 +5,7 @@ package org.jminor.framework.db.http;
 
 import org.jminor.common.Serializer;
 import org.jminor.common.Util;
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.MultipleRecordsFoundException;
 import org.jminor.common.db.exception.RecordNotFoundException;
@@ -361,7 +361,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(selectCondition(entityId, propertyId, ConditionType.LIKE, value));
+    return selectSingle(selectCondition(entityId, propertyId, Operator.LIKE, value));
   }
 
   /** {@inheritDoc} */
@@ -420,7 +420,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public List<Entity> select(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return select(selectCondition(entityId, propertyId, ConditionType.LIKE, asList(values)));
+    return select(selectCondition(entityId, propertyId, Operator.LIKE, asList(values)));
   }
 
   /** {@inheritDoc} */

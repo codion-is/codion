@@ -4,7 +4,7 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.DateFormats;
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
@@ -84,9 +84,9 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   private final ColumnConditionModel<R, C> conditionModel;
 
   /**
-   * The search types allowed in this model
+   * The operators allowed in this model
    */
-  private final Collection<ConditionType> conditionTypes;
+  private final Collection<Operator> operators;
 
   /**
    * A JToggleButton for enabling/disabling the filter
@@ -97,7 +97,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    * A JToggleButton for toggling advanced/simple search
    */
   private final JToggleButton toggleAdvancedButton;
-  private final JComboBox conditionTypeCombo;
+  private final JComboBox operatorCombo;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
@@ -113,11 +113,11 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    * Instantiates a new ColumnConditionPanel, with a default input field provider.
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton if true an advanced toggle button is included
-   * @param conditionTypes the search types available to this condition panel
+   * @param operators the operators available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final boolean toggleAdvancedButton,
-                              final ConditionType... conditionTypes) {
-    this(conditionModel, toggleAdvancedButton, new DefaultInputFieldProvider(conditionModel), conditionTypes);
+                              final Operator... operators) {
+    this(conditionModel, toggleAdvancedButton, new DefaultInputFieldProvider(conditionModel), operators);
   }
 
   /**
@@ -125,13 +125,13 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton if true an advanced toggle button is included
    * @param inputFieldProvider the input field provider
-   * @param conditionTypes the search types available to this condition panel
+   * @param operators the search operators available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final boolean toggleAdvancedButton,
-                              final InputFieldProvider inputFieldProvider, final ConditionType... conditionTypes) {
+                              final InputFieldProvider inputFieldProvider, final Operator... operators) {
     this(conditionModel, toggleAdvancedButton,
             inputFieldProvider.initializeInputField(true),
-            inputFieldProvider.initializeInputField(false), conditionTypes);
+            inputFieldProvider.initializeInputField(false), operators);
   }
 
   /**
@@ -140,15 +140,15 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    * @param toggleAdvancedButton if true an advanced toggle button is included
    * @param upperBoundField the upper bound input field
    * @param lowerBoundField the lower bound input field
-   * @param conditionTypes the search types available to this condition panel
+   * @param operators the search operators available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel,
                               final boolean toggleAdvancedButton, final JComponent upperBoundField,
-                              final JComponent lowerBoundField, final ConditionType... conditionTypes) {
+                              final JComponent lowerBoundField, final Operator... operators) {
     requireNonNull(conditionModel, "conditionModel");
     this.conditionModel = conditionModel;
-    this.conditionTypes = conditionTypes == null ? asList(ConditionType.values()) : asList(conditionTypes);
-    this.conditionTypeCombo = initializeConditionTypeComboBox();
+    this.operators = operators == null ? asList(Operator.values()) : asList(operators);
+    this.operatorCombo = initializeOperatorComboBox();
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
     this.toggleEnabledButton = ControlProvider.createToggleButton(
@@ -441,7 +441,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
     advancedConditionState.addListener(this::initializePanel);
     conditionModel.addLowerBoundRequiredListener(() -> {
       initializePanel();
-      conditionTypeCombo.requestFocusInWindow();
+      operatorCombo.requestFocusInWindow();
     });
     final FocusAdapter focusGainedListener = new FocusAdapter() {
       @Override
@@ -451,7 +451,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
         }
       }
     };
-    conditionTypeCombo.addFocusListener(focusGainedListener);
+    operatorCombo.addFocusListener(focusGainedListener);
     upperBoundField.addFocusListener(focusGainedListener);
     if (lowerBoundField != null) {
       lowerBoundField.addFocusListener(focusGainedListener);
@@ -475,22 +475,22 @@ public class ColumnConditionPanel<R, C> extends JPanel {
     revalidate();
   }
 
-  private JComboBox initializeConditionTypeComboBox() {
-    final ItemComboBoxModel<ConditionType> comboBoxModel = new ItemComboBoxModel<>();
-    for (final ConditionType type : ConditionType.values()) {
-      if (conditionTypes.contains(type)) {
+  private JComboBox initializeOperatorComboBox() {
+    final ItemComboBoxModel<Operator> comboBoxModel = new ItemComboBoxModel<>();
+    for (final Operator type : Operator.values()) {
+      if (operators.contains(type)) {
         comboBoxModel.addItem(Items.item(type, type.getCaption()));
       }
     }
-    final JComboBox<ConditionType> comboBox = new SteppedComboBox(comboBoxModel);
-    Values.propertyValue(conditionModel, "conditionType", ConditionType.class, conditionModel.getConditionTypeObserver())
+    final JComboBox<Operator> comboBox = new SteppedComboBox(comboBoxModel);
+    Values.propertyValue(conditionModel, "operator", Operator.class, conditionModel.getOperatorObserver())
             .link(SelectedValues.selectedValue(comboBox));
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,
                                                     final boolean isSelected, final boolean cellHasFocus) {
         final JComponent component = (JComponent) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        component.setToolTipText(((Item<ConditionType>) value).getValue().getDescription());
+        component.setToolTipText(((Item<Operator>) value).getValue().getDescription());
 
         return component;
       }
@@ -549,7 +549,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
 
   private JPanel initializeControlPanel() {
     final JPanel controlPanel = new JPanel(new BorderLayout());
-    controlPanel.add(conditionTypeCombo, BorderLayout.CENTER);
+    controlPanel.add(operatorCombo, BorderLayout.CENTER);
     if (toggleEnabledButton != null) {
       controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
     }
@@ -562,7 +562,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
 
   private void linkComponentsToLockedState() {
     Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
-            conditionTypeCombo, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
+            operatorCombo, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
   }
 
   private void initializeConditionDialog(final Container parent) {

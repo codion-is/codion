@@ -4,8 +4,8 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.Operator;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.table.ColumnConditionModel;
@@ -84,7 +84,7 @@ public class DefaultEntityTableConditionModelTest {
     final ColumnConditionModel<Entity, Property> propertyConditionModel = conditionModel.getPropertyFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
-    assertEquals(ConditionType.LIKE, propertyConditionModel.getConditionType());
+    assertEquals(Operator.LIKE, propertyConditionModel.getOperator());
     assertEquals(1400d, propertyConditionModel.getUpperBound());
   }
 
@@ -138,7 +138,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setUpperBound(1200d);
     //automatically set enabled when upper bound is set
     assertEquals(3, counter.get());
-    conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setConditionType(ConditionType.GREATER_THAN);
+    conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION).setOperator(Operator.GREATER_THAN);
     assertEquals(3, counter.get());
     conditionModel.removeConditionChangedListener(conditionChangedListener);
   }

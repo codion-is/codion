@@ -5,9 +5,9 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.DateFormats;
-import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.Operator;
 import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.MultipleRecordsFoundException;
@@ -105,8 +105,8 @@ public class DefaultLocalEntityConnectionTest {
       connection.beginTransaction();
       //scott, james, adams
       assertEquals(3, connection.delete(condition(T_EMP, conditionSet(Conjunction.AND,
-              propertyCondition(EMP_NAME, ConditionType.LIKE, "%S%"),
-              propertyCondition(EMP_JOB, ConditionType.LIKE, "CLERK")))));
+              propertyCondition(EMP_NAME, Operator.LIKE, "%S%"),
+              propertyCondition(EMP_JOB, Operator.LIKE, "CLERK")))));
     }
     finally {
       connection.rollbackTransaction();
@@ -172,7 +172,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void deleteByConditionWithForeignKeys() throws DatabaseException {
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(condition(T_DEPARTMENT,
-            Conditions.propertyCondition(DEPARTMENT_NAME, ConditionType.LIKE, "ACCOUNTING"))));
+            Conditions.propertyCondition(DEPARTMENT_NAME, Operator.LIKE, "ACCOUNTING"))));
   }
 
   @Test
@@ -343,13 +343,13 @@ public class DefaultLocalEntityConnectionTest {
   public void selectRowCount() throws Exception {
     int rowCount = connection.selectRowCount(condition(T_DEPARTMENT));
     assertEquals(4, rowCount);
-    Condition deptNoCondition = Conditions.propertyCondition(DEPARTMENT_ID, ConditionType.GREATER_THAN, 30);
+    Condition deptNoCondition = Conditions.propertyCondition(DEPARTMENT_ID, Operator.GREATER_THAN, 30);
     rowCount = connection.selectRowCount(condition(T_DEPARTMENT, deptNoCondition));
     assertEquals(2, rowCount);
 
     rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_ID));
     assertEquals(16, rowCount);
-    deptNoCondition = Conditions.propertyCondition("d.deptno", ConditionType.GREATER_THAN, 30);
+    deptNoCondition = Conditions.propertyCondition("d.deptno", Operator.GREATER_THAN, 30);
     rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_ID, deptNoCondition));
     assertEquals(4, rowCount);
 
@@ -531,12 +531,12 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void updateWithCondition() throws DatabaseException {
     final EntitySelectCondition selectCondition = Conditions.selectCondition(T_EMP,
-            EMP_COMMISSION, ConditionType.LIKE, null);
+            EMP_COMMISSION, Operator.LIKE, null);
 
     final List<Entity> entities = connection.select(selectCondition);
 
     final EntityUpdateCondition updateCondition = Conditions.updateCondition(T_EMP,
-            EMP_COMMISSION, ConditionType.LIKE, null)
+            EMP_COMMISSION, Operator.LIKE, null)
             .set(EMP_COMMISSION, 500d)
             .set(EMP_SALARY, 4200d);
     try {
@@ -557,7 +557,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void updateWithConditionNoRows() throws DatabaseException {
     final EntityUpdateCondition updateCondition = Conditions.updateCondition(T_EMP,
-            EMP_ID, ConditionType.LIKE, null)
+            EMP_ID, Operator.LIKE, null)
             .set(EMP_SALARY, 4200d);
     try {
       connection.beginTransaction();
@@ -571,7 +571,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void updateWithConditionWrongType() {
     final EntityUpdateCondition updateCondition = Conditions.updateCondition(T_EMP,
-            EMP_ID, ConditionType.LIKE, null)
+            EMP_ID, Operator.LIKE, null)
             .set(EMP_SALARY, "abcd");
     assertThrows(IllegalArgumentException.class, () -> connection.update(updateCondition));
   }
@@ -590,7 +590,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals("SALES", result.get(3));
 
     result = connection.selectValues(DEPARTMENT_NAME, condition(T_DEPARTMENT,
-            Conditions.propertyCondition(DEPARTMENT_ID, ConditionType.LIKE, 10)));
+            Conditions.propertyCondition(DEPARTMENT_ID, Operator.LIKE, 10)));
     assertTrue(result.contains("ACCOUNTING"));
     assertFalse(result.contains("SALES"));
   }
@@ -601,7 +601,7 @@ public class DefaultLocalEntityConnectionTest {
     final DefaultLocalEntityConnection connection2 = initializeConnection();
     final String originalLocation;
     try {
-      final EntitySelectCondition condition = selectCondition(T_DEPARTMENT, DEPARTMENT_NAME, ConditionType.LIKE, "SALES");
+      final EntitySelectCondition condition = selectCondition(T_DEPARTMENT, DEPARTMENT_NAME, Operator.LIKE, "SALES");
       condition.setForUpdate(true);
 
       Entity sales = connection.selectSingle(condition);
@@ -640,7 +640,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.setOptimisticLockingEnabled(true);
     final Entity allen;
     try {
-      final EntitySelectCondition condition = selectCondition(T_EMP, EMP_NAME, ConditionType.LIKE, "ALLEN");
+      final EntitySelectCondition condition = selectCondition(T_EMP, EMP_NAME, Operator.LIKE, "ALLEN");
 
       allen = connection.selectSingle(condition);
 
@@ -744,7 +744,7 @@ public class DefaultLocalEntityConnectionTest {
     final ResultIterator<Entity> deptIterator = connection.iterator(selectCondition(T_DEPARTMENT));
     while (deptIterator.hasNext()) {
       final ResultIterator<Entity> empIterator = connection.iterator(selectCondition(T_EMP,
-              EMP_DEPARTMENT_FK, ConditionType.LIKE, deptIterator.next()));
+              EMP_DEPARTMENT_FK, Operator.LIKE, deptIterator.next()));
       while (empIterator.hasNext()) {
         empIterator.next();
       }
@@ -891,8 +891,8 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(6, entities.size());
     entities = connection.select(selectCondition(T_NO_PK,
             conditionSet(Conjunction.OR,
-                    propertyCondition(NO_PK_COL1, ConditionType.LIKE, 2),
-                    propertyCondition(NO_PK_COL3, ConditionType.LIKE, "5"))));
+                    propertyCondition(NO_PK_COL1, Operator.LIKE, 2),
+                    propertyCondition(NO_PK_COL3, Operator.LIKE, "5"))));
     assertEquals(4, entities.size());
   }
 

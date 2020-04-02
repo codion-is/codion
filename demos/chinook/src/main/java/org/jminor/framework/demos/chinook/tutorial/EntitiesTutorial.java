@@ -20,7 +20,7 @@ import java.sql.Types;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.db.ConditionType.LIKE;
+import static org.jminor.common.db.Operator.LIKE;
 import static org.jminor.framework.db.condition.Conditions.selectCondition;
 import static org.jminor.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
 import static org.jminor.framework.domain.entity.Entities.getKeys;

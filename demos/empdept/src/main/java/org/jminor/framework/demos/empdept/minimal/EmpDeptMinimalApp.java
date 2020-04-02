@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.minimal;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.remote.Server;
 import org.jminor.common.user.Users;
@@ -107,7 +107,7 @@ public class EmpDeptMinimalApp {
       final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
         comboBoxModel.setSelectConditionProvider(() -> Conditions.propertyCondition(
-                "job", ConditionType.LIKE, asList("MANAGER", "PRESIDENT")));
+                "job", Operator.LIKE, asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }
 

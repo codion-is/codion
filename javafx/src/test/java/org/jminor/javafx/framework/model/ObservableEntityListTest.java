@@ -3,8 +3,8 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.Operator;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.user.User;
@@ -45,7 +45,7 @@ public final class ObservableEntityListTest {
     list.refresh();
     assertEquals(4, list.size());
     list.setSelectCondition(Conditions.propertyCondition(TestDomain.DEPARTMENT_NAME,
-            ConditionType.NOT_LIKE, asList("SALES", "OPERATIONS")));
+            Operator.NOT_LIKE, asList("SALES", "OPERATIONS")));
     list.refresh();
     assertEquals(2, list.size());
   }

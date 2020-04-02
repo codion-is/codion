@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.framework.db.TestDomain;
 
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ public final class ConditionsTest {
 
   @Test
   public void test() {
-    final Condition critOne = Conditions.propertyCondition(TestDomain.DEPARTMENT_LOCATION, ConditionType.LIKE, "New York");
+    final Condition critOne = Conditions.propertyCondition(TestDomain.DEPARTMENT_LOCATION, Operator.LIKE, "New York");
 
     EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_DEPARTMENT, critOne).setOrderBy(
             orderBy().ascending(TestDomain.DEPARTMENT_NAME));

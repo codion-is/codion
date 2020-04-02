@@ -3,7 +3,7 @@
  */
 package org.jminor.plugin.jackson.json.db;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.PropertyCondition;
 import org.jminor.framework.domain.entity.Entity;
@@ -47,6 +47,6 @@ final class PropertyConditionDeserializer implements Serializable {
     final boolean nullCondition = values.isEmpty();
 
     return Conditions.propertyCondition(conditionNode.get("propertyId").asText(),
-            ConditionType.valueOf(conditionNode.get("conditionType").asText()), nullCondition ? null : values);
+            Operator.valueOf(conditionNode.get("operator").asText()), nullCondition ? null : values);
   }
 }

@@ -6,9 +6,9 @@ package org.jminor.common.db;
 import java.util.ResourceBundle;
 
 /**
- * Enumerating all the available condition types.
+ * Enumerating all the available operator types.
  */
-public enum ConditionType {
+public enum Operator {
 
   LIKE("  = ", "like", Values.MANY),
   NOT_LIKE("  \u2260 ", "not_like", Values.MANY),
@@ -19,13 +19,13 @@ public enum ConditionType {
   WITHIN_RANGE("\u2265 \u2264", "within_range", Values.TWO),
   OUTSIDE_RANGE("\u2264 \u2265", "outside_range", Values.TWO);
 
-  private final ResourceBundle messages = ResourceBundle.getBundle(ConditionType.class.getName());
+  private final ResourceBundle messages = ResourceBundle.getBundle(Operator.class.getName());
 
   private final String caption;
   private final String description;
   private final Values values;
 
-  ConditionType(final String caption, final String descriptionKey, final Values values) {
+  Operator(final String caption, final String descriptionKey, final Values values) {
     this.caption = caption;
     this.description = messages.getString(descriptionKey);
     this.values = values;
@@ -44,7 +44,7 @@ public enum ConditionType {
   }
 
   /**
-   * The number of values expected for a ConditionType
+   * The number of values expected for a operator
    */
   public enum Values {
     ONE, TWO, MANY

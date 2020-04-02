@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -23,15 +23,15 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, C
    * @param model the model to base this panel on
    */
   public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty> model) {
-    super(model, false, new PropertyInputFieldProvider(model), getConditionTypes(model));
+    super(model, false, new PropertyInputFieldProvider(model), getOperators(model));
   }
 
-  private static ConditionType[] getConditionTypes(final ColumnConditionModel<Entity, ColumnProperty> model) {
+  private static Operator[] getOperators(final ColumnConditionModel<Entity, ColumnProperty> model) {
     if (model.getColumnIdentifier().isBoolean()) {
-      return new ConditionType[] {ConditionType.LIKE};
+      return new Operator[] {Operator.LIKE};
     }
 
-    return ConditionType.values();
+    return Operator.values();
   }
 
   private static final class PropertyInputFieldProvider implements InputFieldProvider {
