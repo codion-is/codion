@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.chinook.tutorial;
 
-import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
@@ -21,6 +20,7 @@ import java.sql.Types;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.jminor.common.db.ConditionType.LIKE;
 import static org.jminor.framework.db.condition.Conditions.selectCondition;
 import static org.jminor.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
 import static org.jminor.framework.domain.entity.Entities.getKeys;
@@ -108,8 +108,7 @@ public final class EntitiesTutorial {
     //Metallica Entity as condition value, basically asking for the
     //records where the given foreign key references that specific Entity
     //select() returns an empty list if none are found
-    List<Entity> albums =
-            connection.select(T_ALBUM, ALBUM_ARTIST_FK, metallica);
+    List<Entity> albums = connection.select(T_ALBUM, ALBUM_ARTIST_FK, metallica);
 
     albums.forEach(System.out::println);
 
@@ -119,8 +118,7 @@ public final class EntitiesTutorial {
     //we're selecting, the id of the property we're searching by, the type
     //of condition and the value.
     EntitySelectCondition artistsCondition =
-            selectCondition(T_ARTIST,
-                    ARTIST_NAME, ConditionType.LIKE, "An%");
+            selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "An%");
     //and we set the order by clause
     artistsCondition.setOrderBy(orderBy().ascending(ARTIST_NAME));
 
@@ -131,12 +129,10 @@ public final class EntitiesTutorial {
 
     //create a select condition
     EntitySelectCondition albumsCondition =
-            selectCondition(T_ALBUM,
-                    ALBUM_ARTIST_FK, ConditionType.LIKE, artistsStartingWithAn);
+            selectCondition(T_ALBUM, ALBUM_ARTIST_FK, LIKE, artistsStartingWithAn);
     albumsCondition.setOrderBy(orderBy().ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));
 
-    List<Entity> albumsByArtistsStartingWithAn =
-            connection.select(albumsCondition);
+    List<Entity> albumsByArtistsStartingWithAn = connection.select(albumsCondition);
 
     albumsByArtistsStartingWithAn.forEach(System.out::println);
   }
@@ -161,11 +157,11 @@ public final class EntitiesTutorial {
 
     //we insert the Entity, the insert() method returns the primary key
     //of the inserted record, but we don't need it right now so we ignore it.
-    //Note that the primary key of the entity instance is populated
-    //during insert, that's because we're running with a local connection,
-    //with a remote connections you have to select the entity
-    //after insert to get an instance containing the generated key value
-    //or use the key received via the return value
+    //Note that because we're running with a local connection in a single VM
+    //the primary key of the entity instance is populated during insert,
+    //with a remote connection the insert happens in another VM, so you have
+    //to select the entity after insert to get an instance containing
+    //the generated key value or use the key received via the return value
     connection.insert(myBand);
 
     //now for our first album
