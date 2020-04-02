@@ -5830,3 +5830,4 @@
   DefaultLocalEntityConnection.selectRowCount() bug fixed, Database.subqueryRequiresAlias() added, default false, overridden in PostgreSQLDatabase and SQLServerDatabase
   Conditions, entity prefix removed from methods returning EntityCondition and it's descendants
   ConditionType renamed to Operator
+  EntityGeneratorModel updated to reflect recent changes

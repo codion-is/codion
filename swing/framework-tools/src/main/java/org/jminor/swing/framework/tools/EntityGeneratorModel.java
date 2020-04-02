@@ -255,7 +255,7 @@ public final class EntityGeneratorModel {
     builder.append("        ").append(columnPropertyDefinition).append(")");
 
     if (column.getNullable() == DatabaseMetaData.columnNoNulls) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
+      builder.append(Util.LINE_SEPARATOR).append("                .nullable(false)");
     }
 
     return builder.toString();
@@ -265,19 +265,19 @@ public final class EntityGeneratorModel {
     final StringBuilder builder = new StringBuilder();
     addPropertyDefinition(builder, table, column, foreignKeyColumn);
     if (column.getForeignKeyColumn() == null && column.hasDefaultValue()) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setColumnHasDefaultValue(true)");
+      builder.append(Util.LINE_SEPARATOR).append("                .columnHasDefaultValue(true)");
     }
     if (column.getNullable() == DatabaseMetaData.columnNoNulls && column.getKeySeq() == -1 && column.getForeignKeyColumn() == null) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
+      builder.append(Util.LINE_SEPARATOR).append("                .nullable(false)");
     }
     if ("Types.VARCHAR".equals(column.getColumnTypeName())) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setMaxLength(").append(column.getColumnSize()).append(")");
+      builder.append(Util.LINE_SEPARATOR).append("                .maximumLength(").append(column.getColumnSize()).append(")");
     }
     if ("Types.DOUBLE".equals(column.getColumnTypeName()) && column.getDecimalDigits() >= 1) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.getDecimalDigits()).append(")");
+      builder.append(Util.LINE_SEPARATOR).append("                .maximumFractionDigits(").append(column.getDecimalDigits()).append(")");
     }
     if (!nullOrEmpty(column.getComment())) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setDescription(").append(column.getComment()).append(")");
+      builder.append(Util.LINE_SEPARATOR).append("                .description(").append(column.getComment()).append(")");
     }
 
     return builder.toString();
@@ -300,7 +300,7 @@ public final class EntityGeneratorModel {
         if (foreignKeyColumn) {
           builder.append("        ");
         }
-        builder.append("                .setPrimaryKeyIndex(").append(column.getKeySeq() - 1).append(")");
+        builder.append("                .primaryKeyIndex(").append(column.getKeySeq() - 1).append(")");
       }
     }
     else {
