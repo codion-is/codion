@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.selectCondition;
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
 
@@ -68,7 +68,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().select(entitySelectCondition(EmpDept.T_DEPARTMENT));
+        final List<Entity> departments = client.getConnection().select(selectCondition(EmpDept.T_DEPARTMENT));
         final Entity entity = departments.get(new Random().nextInt(departments.size()));
         entity.put(EmpDept.DEPARTMENT_LOCATION, Text.createRandomString(10, 13));
         client.getConnection().update(entity);
@@ -107,7 +107,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().select(entitySelectCondition(EmpDept.T_DEPARTMENT));
+        final List<Entity> departments = client.getConnection().select(selectCondition(EmpDept.T_DEPARTMENT));
 
         client.getConnection().select(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT,
                 departments.get(new Random().nextInt(departments.size())).getAsString(EmpDept.DEPARTMENT_ID));
@@ -154,7 +154,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().select(entitySelectCondition(EmpDept.T_DEPARTMENT));
+        final List<Entity> departments = client.getConnection().select(selectCondition(EmpDept.T_DEPARTMENT));
         final Entity department = departments.get(random.nextInt(departments.size()));
         final Entity employee = client.getDomain().entity(EmpDept.T_EMPLOYEE);
         employee.put(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);

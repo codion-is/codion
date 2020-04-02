@@ -23,8 +23,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static org.jminor.framework.db.condition.Conditions.entityCondition;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.condition;
+import static org.jminor.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -44,8 +44,8 @@ public class EntityConnectionsTest {
       final H2Database destinationDatabase = new H2Database("TempDB", "src/test/sql/create_h2_db.sql");
       DESTINATION_CONNECTION = LocalEntityConnections.createConnection(DOMAIN, destinationDatabase, Users.user("sa", null));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
-      DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_EMP));
-      DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_DEPARTMENT));
+      DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));
+      DESTINATION_CONNECTION.delete(condition(TestDomain.T_DEPARTMENT));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -62,30 +62,30 @@ public class EntityConnectionsTest {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
     EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_DEPARTMENT);
 
-    assertEquals(sourceConnection.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)),
-            DESTINATION_CONNECTION.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)));
+    assertEquals(sourceConnection.selectRowCount(condition(TestDomain.T_DEPARTMENT)),
+            DESTINATION_CONNECTION.selectRowCount(condition(TestDomain.T_DEPARTMENT)));
 
     EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_EMP);
-    DESTINATION_CONNECTION.select(entitySelectCondition(TestDomain.T_EMP));
+    DESTINATION_CONNECTION.select(selectCondition(TestDomain.T_EMP));
 
-    DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_EMP));
-    DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_DEPARTMENT));
+    DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));
+    DESTINATION_CONNECTION.delete(condition(TestDomain.T_DEPARTMENT));
   }
 
   @Test
   public void batchInsert() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
 
-    final List<Entity> source = sourceConnection.select(entitySelectCondition(TestDomain.T_DEPARTMENT));
+    final List<Entity> source = sourceConnection.select(selectCondition(TestDomain.T_DEPARTMENT));
 
     final EventDataListener<Integer> progressReporter = currentProgress -> {};
     final List<Entity.Key> dest = EntityConnections.batchInsert(DESTINATION_CONNECTION, source, 2, progressReporter);
-    assertEquals(sourceConnection.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)),
-            DESTINATION_CONNECTION.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)));
+    assertEquals(sourceConnection.selectRowCount(condition(TestDomain.T_DEPARTMENT)),
+            DESTINATION_CONNECTION.selectRowCount(condition(TestDomain.T_DEPARTMENT)));
     assertEquals(4, dest.size());
 
     EntityConnections.batchInsert(DESTINATION_CONNECTION, emptyList(), 10, null);
-    DESTINATION_CONNECTION.delete(entityCondition(TestDomain.T_DEPARTMENT));
+    DESTINATION_CONNECTION.delete(condition(TestDomain.T_DEPARTMENT));
   }
 
   @Test

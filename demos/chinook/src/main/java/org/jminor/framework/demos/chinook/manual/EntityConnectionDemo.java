@@ -40,14 +40,14 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
  */
 public final class EntityConnectionDemo {
 
-  static void selectCondition(EntityConnection connection) throws DatabaseException {
+  static void selectConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::selectCondition[]
     EntitySelectCondition condition =
-            entitySelectCondition(T_ARTIST, ARTIST_NAME, LIKE, "The %");
+            selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "The %");
 
     List<Entity> artists = connection.select(condition);
 
-    condition = entitySelectCondition(T_ALBUM, conditionSet(AND,
+    condition = selectCondition(T_ALBUM, conditionSet(AND,
             propertyCondition(ALBUM_ARTIST_FK, LIKE, artists),
             propertyCondition(ALBUM_TITLE, NOT_LIKE, "%live%")
                     .setCaseSensitive(false)));
@@ -77,10 +77,10 @@ public final class EntityConnectionDemo {
   static void selectSingleCondition(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleCondition[]
     Entity ironMaiden = connection.selectSingle(
-            entitySelectCondition(T_ARTIST, ARTIST_NAME, LIKE, "Iron Maiden"));
+            selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "Iron Maiden"));
 
     Entity liveAlbum = connection.selectSingle(
-            entitySelectCondition(T_ALBUM, conditionSet(AND,
+            selectCondition(T_ALBUM, conditionSet(AND,
                     propertyCondition(ALBUM_ARTIST_FK, LIKE, ironMaiden),
                     propertyCondition(ALBUM_TITLE, LIKE, "%live after%")
                             .setCaseSensitive(false))));
@@ -108,13 +108,13 @@ public final class EntityConnectionDemo {
   static void selectValues(EntityConnection connection) throws DatabaseException {
     // tag::selectValues[]
     List<String> customerUsStates = connection.selectValues(CUSTOMER_STATE,
-            entityCondition(T_CUSTOMER, CUSTOMER_COUNTRY, LIKE, "USA"));
+            condition(T_CUSTOMER, CUSTOMER_COUNTRY, LIKE, "USA"));
     // end::selectValues[]
   }
 
   static void selectDependencies(EntityConnection connection) throws DatabaseException {
     // tag::selectDependencies[]
-    List<Entity> employees = connection.select(entitySelectCondition(T_EMPLOYEE));
+    List<Entity> employees = connection.select(selectCondition(T_EMPLOYEE));
 
     Map<String, Collection<Entity>> dependencies = connection.selectDependencies(employees);
 
@@ -125,7 +125,7 @@ public final class EntityConnectionDemo {
   static void selectRowCount(EntityConnection connection) throws DatabaseException {
     // tag::selectRowCount[]
     int numberOfItStaff = connection.selectRowCount(
-            entityCondition(T_EMPLOYEE, EMPLOYEE_TITLE, LIKE, "IT Staff"));
+            condition(T_EMPLOYEE, EMPLOYEE_TITLE, LIKE, "IT Staff"));
     // end::selectRowCount[]
   }
 
@@ -156,10 +156,10 @@ public final class EntityConnectionDemo {
     // end::update[]
   }
 
-  static void updateCondition(EntityConnection connection) throws DatabaseException {
+  static void updateConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::updateCondition[]
     EntityUpdateCondition updateCondition =
-            entityUpdateCondition(T_ARTIST, ARTIST_NAME, LIKE, "Azymuth");
+            updateCondition(T_ARTIST, ARTIST_NAME, LIKE, "Azymuth");
 
     updateCondition.set(ARTIST_NAME, "Another Name");
 
@@ -171,7 +171,7 @@ public final class EntityConnectionDemo {
     // tag::deleteCondition[]
     Entity myBand = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Proper Name");
 
-    int deleteCount = connection.delete(entityCondition(T_ALBUM, ALBUM_ARTIST_FK, LIKE, myBand));
+    int deleteCount = connection.delete(condition(T_ALBUM, ALBUM_ARTIST_FK, LIKE, myBand));
     // end::deleteCondition[]
   }
 
@@ -240,7 +240,7 @@ public final class EntityConnectionDemo {
                     .setUser(Users.parseUser("scott:tiger"));
 
     EntityConnection connection = connectionProvider.getConnection();
-    selectCondition(connection);
+    selectConditionDemo(connection);
     selectKeys(connection);
     selectValue(connection);
     selectSingleCondition(connection);
@@ -251,7 +251,7 @@ public final class EntityConnectionDemo {
     selectRowCount(connection);
     insert(connection);
     update(connection);
-    updateCondition(connection);
+    updateConditionDemo(connection);
     deleteCondition(connection);
     deleteKey(connection);
     procedure(connection);

@@ -38,6 +38,6 @@ final class EntityConditionDeserializer extends StdDeserializer<EntityCondition>
     final Condition condition = conditionDeserializer.deserialize(
             definitionProvider.getDefinition(entityId), conditionNode);
 
-    return Conditions.entityCondition(entityId, condition);
+    return Conditions.condition(entityId, condition);
   }
 }

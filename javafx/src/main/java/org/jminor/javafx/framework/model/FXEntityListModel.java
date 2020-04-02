@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A JavaFX implementation of {@link EntityTableModel}.
@@ -473,7 +473,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
 
     try {
-      return getConnectionProvider().getConnection().select(entitySelectCondition(
+      return getConnectionProvider().getConnection().select(selectCondition(
               getEntityId(), conditionModel.getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {

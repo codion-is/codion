@@ -14,7 +14,6 @@ import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.entity.Entities;
@@ -45,7 +44,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.entityCondition;
+import static org.jminor.framework.db.condition.Conditions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class HttpEntityConnectionTest {
@@ -135,12 +134,12 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void updateByCondition() throws DatabaseException {
-    final EntitySelectCondition selectCondition = Conditions.entitySelectCondition(TestDomain.T_EMP,
+    final EntitySelectCondition selectCondition = selectCondition(TestDomain.T_EMP,
             TestDomain.EMP_COMMISSION, ConditionType.LIKE, null);
 
     final List<Entity> entities = connection.select(selectCondition);
 
-    final EntityUpdateCondition updateCondition = Conditions.entityUpdateCondition(TestDomain.T_EMP,
+    final EntityUpdateCondition updateCondition = updateCondition(TestDomain.T_EMP,
             TestDomain.EMP_COMMISSION, ConditionType.LIKE, null)
             .set(TestDomain.EMP_COMMISSION, 500d)
             .set(TestDomain.EMP_SALARY, 4200d);
@@ -200,12 +199,12 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectRowCount() throws IOException, DatabaseException {
-    assertEquals(4, connection.selectRowCount(entityCondition(TestDomain.T_DEPARTMENT)));
+    assertEquals(4, connection.selectRowCount(condition(TestDomain.T_DEPARTMENT)));
   }
 
   @Test
   public void selectValues() throws IOException, DatabaseException {
-    final List<String> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, entityCondition(TestDomain.T_DEPARTMENT));
+    final List<String> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, condition(TestDomain.T_DEPARTMENT));
     assertEquals(4, values.size());
   }
 
@@ -242,7 +241,7 @@ public final class HttpEntityConnectionTest {
   public void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(entityCondition(department.getKey())));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(condition(department.getKey())));
   }
 
   @Test

@@ -24,7 +24,7 @@ import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -195,7 +195,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = connection.select(entitySelectCondition(TestDomain.T_EMP,
+    final List<Entity> salesEmployees = connection.select(selectCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department));
     assertFalse(salesEmployees.isEmpty());
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);

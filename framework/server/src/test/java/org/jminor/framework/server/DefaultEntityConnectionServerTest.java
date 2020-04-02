@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -84,7 +83,7 @@ public class DefaultEntityConnectionServerTest {
     final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_ID,
             singletonList(TestDomain.EMP_MGR), singletonList(4));
 
-    connection.select(entitySelectCondition(TestDomain.T_EMP, condition));
+    connection.select(Conditions.selectCondition(TestDomain.T_EMP, condition));
 
     connection.disconnect();
   }
@@ -184,7 +183,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    final EntitySelectCondition selectCondition = entitySelectCondition(TestDomain.T_EMP)
+    final EntitySelectCondition selectCondition = Conditions.selectCondition(TestDomain.T_EMP)
             .setOrderBy(orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.select(selectCondition);
 

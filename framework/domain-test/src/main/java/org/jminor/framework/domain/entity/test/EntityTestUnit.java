@@ -45,7 +45,7 @@ import java.util.function.Function;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -344,7 +344,7 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
     }
     else {
-      connection.select(entitySelectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
+      connection.select(selectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
     }
   }
 

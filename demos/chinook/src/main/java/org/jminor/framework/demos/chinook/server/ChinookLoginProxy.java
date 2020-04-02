@@ -89,7 +89,7 @@ public final class ChinookLoginProxy implements LoginProxy {
     final EntityConnection connection = getConnectionFromPool();
     try {
       final int rows = connection.selectRowCount(
-              entityCondition(T_USER, conditionSet(AND,
+              condition(T_USER, conditionSet(AND,
                       propertyCondition(USER_USERNAME,
                               LIKE, user.getUsername()).setCaseSensitive(false),
                       propertyCondition(USER_PASSWORD_HASH,
