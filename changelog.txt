@@ -5831,3 +5831,4 @@
   Conditions, entity prefix removed from methods returning EntityCondition and it's descendants
   ConditionType renamed to Operator
   EntityGeneratorModel updated to reflect recent changes
+  DefaultEntityConnection.commitQuietly() removed, exceptions during commit no longer swallowed, checkReadOnly() renamed to checkIfReadOnly()

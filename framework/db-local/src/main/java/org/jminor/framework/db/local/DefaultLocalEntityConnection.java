@@ -214,7 +214,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entities.isEmpty()) {
       return emptyList();
     }
-    checkReadOnly(entities);
+    checkIfReadOnly(entities);
 
     final List<Entity.Key> insertedKeys = new ArrayList<>(entities.size());
     final List<Object> statementValues = new ArrayList<>();
@@ -276,9 +276,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       return emptyList();
     }
     final Map<String, List<Entity>> entitiesByEntityId = mapToEntityId(entities);
-    for (final String entityId : entitiesByEntityId.keySet()) {
-      checkReadOnly(entityId);
-    }
+    checkIfReadOnly(entitiesByEntityId.keySet());
 
     final List<Object> statementValues = new ArrayList<>();
     PreparedStatement statement = null;
@@ -324,7 +322,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           }
           updatedEntities.addAll(selected);
         }
-
         commitIfTransactionIsNotOpen();
 
         return updatedEntities;
@@ -357,11 +354,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (updateCondition.getPropertyValues().isEmpty()) {
       throw new IllegalArgumentException("No property values provided for update");
     }
-    checkReadOnly(updateCondition.getEntityId());
+    checkIfReadOnly(updateCondition.getEntityId());
 
+    final List<Object> statementValues = new ArrayList<>();
     PreparedStatement statement = null;
     String updateQuery = null;
-    final List<Object> statementValues = new ArrayList<>();
     synchronized (connection) {
       try {
         final List<ColumnProperty> statementProperties = new ArrayList<>();
@@ -380,7 +377,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         statementProperties.addAll(whereCondition.getColumnProperties());
         statementValues.addAll(whereCondition.getValues());
         final int updatedRows = executeStatement(statement, updateQuery, statementProperties, statementValues);
-
         commitIfTransactionIsNotOpen();
 
         return updatedRows;
@@ -400,7 +396,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public int delete(final EntityCondition deleteCondition) throws DatabaseException {
     requireNonNull(deleteCondition, "deleteCondition");
-    checkReadOnly(deleteCondition.getEntityId());
+    checkIfReadOnly(deleteCondition.getEntityId());
 
     final EntityDefinition entityDefinition = getEntityDefinition(deleteCondition.getEntityId());
     final WhereCondition whereCondition = whereCondition(deleteCondition, entityDefinition);
@@ -441,7 +437,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       return 0;
     }
     final Map<String, List<Entity.Key>> keysByEntityId = mapKeysToEntityId(keys);
-    checkReadOnly(keysByEntityId.keySet());
+    checkIfReadOnly(keysByEntityId.keySet());
 
     PreparedStatement statement = null;
     WhereCondition whereCondition = null;
@@ -514,9 +510,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         for (final List<Entity.Key> entityIdKeys : mapKeysToEntityId(keys).values()) {
           result.addAll(doSelect(selectCondition(entityIdKeys)));
         }
-        if (!isTransactionOpen()) {
-          commitQuietly();
-        }
+        commitIfTransactionIsNotOpen();
 
         return result;
       }
@@ -540,8 +534,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         final List<Entity> result = doSelect(selectCondition);
-        if (!isTransactionOpen() && !selectCondition.isForUpdate()) {
-          commitQuietly();
+        if (!selectCondition.isForUpdate()) {
+          commitIfTransactionIsNotOpen();
         }
 
         return result;
@@ -704,16 +698,20 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public <R, D> ReportResult<R> fillReport(final ReportWrapper<R, D> reportWrapper) throws ReportException {
     requireNonNull(reportWrapper, "reportWrapper");
-    ReportException exception = null;
+    Exception exception = null;
     synchronized (connection) {
       try {
         logAccess("fillReport", new Object[] {reportWrapper.getReportName()});
-        final ReportResult result = reportWrapper.fillReport(connection.getConnection());
-        if (!isTransactionOpen()) {
-          commitQuietly();
-        }
+        final ReportResult<R> result = reportWrapper.fillReport(connection.getConnection());
+        commitIfTransactionIsNotOpen();
 
         return result;
+      }
+      catch (final SQLException e) {
+        exception = e;
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), e, null), e);
+        throw new ReportException(e);
       }
       catch (final ReportException e) {
         exception = e;
@@ -735,7 +733,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException {
     requireNonNull(blobData, "blobData");
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
-    checkReadOnly(entityDefinition.getEntityId());
+    checkIfReadOnly(entityDefinition.getEntityId());
     final ColumnProperty blobProperty = entityDefinition.getColumnProperty(blobPropertyId);
     if (blobProperty.getColumnType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + blobProperty.getPropertyId() + " in entity " +
@@ -1191,15 +1189,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return new DatabaseException(exception, database.getErrorMessage(exception));
   }
 
-  private void commitQuietly() {
-    try {
-      connection.commit();
-    }
-    catch (final SQLException e) {
-      LOG.error("Exception while performing a quiet commit", e);
-    }
-  }
-
   private void rollbackQuietly() {
     try {
       connection.rollback();
@@ -1314,19 +1303,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return builder.toString();
   }
 
-  private void checkReadOnly(final List<Entity> entities) throws DatabaseException {
+  private void checkIfReadOnly(final List<Entity> entities) throws DatabaseException {
     for (int i = 0; i < entities.size(); i++) {
-      checkReadOnly(entities.get(i).getEntityId());
+      checkIfReadOnly(entities.get(i).getEntityId());
     }
   }
 
-  private void checkReadOnly(final Collection<String> entityIds) throws DatabaseException {
+  private void checkIfReadOnly(final Collection<String> entityIds) throws DatabaseException {
     for (final String entityId : entityIds) {
-      checkReadOnly(entityId);
+      checkIfReadOnly(entityId);
     }
   }
 
-  private void checkReadOnly(final String entityId) throws DatabaseException {
+  private void checkIfReadOnly(final String entityId) throws DatabaseException {
     if (getEntityDefinition(entityId).isReadOnly()) {
       throw new DatabaseException("Entities of type: " + entityId + " are read only");
     }
