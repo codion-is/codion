@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
@@ -31,7 +31,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
 
   private final Value<Object> upperBoundValue = Values.value();
   private final Value<Object> lowerBoundValue = Values.value();
-  private final Value<ConditionType> conditionTypeValue = Values.value(ConditionType.LIKE);
+  private final Value<Operator> operatorValue = Values.value(Operator.LIKE);
   private final Event conditionChangedEvent = Events.event();
   private final Event conditionModelClearedEvent = Events.event();
 
@@ -144,7 +144,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   /** {@inheritDoc} */
   @Override
   public final void setLikeValue(final Object value) {
-    setConditionType(ConditionType.LIKE);
+    setOperator(Operator.LIKE);
     setUpperBound(value);
     final boolean enableSearch = value != null;
     if (enabledState.get() != enableSearch) {
@@ -182,15 +182,15 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
 
   /** {@inheritDoc} */
   @Override
-  public final ConditionType getConditionType() {
-    return conditionTypeValue.get();
+  public final Operator getOperator() {
+    return operatorValue.get();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setConditionType(final ConditionType conditionType) {
+  public final void setOperator(final Operator operator) {
     checkLock();
-    conditionTypeValue.set(requireNonNull(conditionType, "conditionType"));
+    operatorValue.set(requireNonNull(operator, "operator"));
   }
 
   /** {@inheritDoc} */
@@ -258,7 +258,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     setEnabled(false);
     setUpperBound(null);
     setLowerBound(null);
-    setConditionType(ConditionType.LIKE);
+    setOperator(Operator.LIKE);
     conditionModelClearedEvent.onEvent();
   }
 
@@ -360,20 +360,20 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
 
   /** {@inheritDoc} */
   @Override
-  public final void addConditionTypeListener(final EventDataListener<ConditionType> listener) {
-    conditionTypeValue.addDataListener(listener);
+  public final void addOperatorListener(final EventDataListener<Operator> listener) {
+    operatorValue.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeConditionTypeListener(final EventDataListener<ConditionType> listener) {
-    conditionTypeValue.removeDataListener(listener);
+  public final void removeOperatorListener(final EventDataListener<Operator> listener) {
+    operatorValue.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ConditionType> getConditionTypeObserver() {
-    return conditionTypeValue;
+  public final EventObserver<Operator> getOperatorObserver() {
+    return operatorValue;
   }
 
   /** {@inheritDoc} */
@@ -389,7 +389,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
       return true;
     }
 
-    switch (conditionTypeValue.get()) {
+    switch (operatorValue.get()) {
       case LIKE:
         return includeLike(comparable);
       case NOT_LIKE:
@@ -403,7 +403,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
       case OUTSIDE_RANGE:
         return includeOutsideRange(comparable);
       default:
-        throw new IllegalArgumentException("Undefined search type: " + conditionTypeValue.get());
+        throw new IllegalArgumentException("Undefined operator: " + operatorValue.get());
     }
   }
 
@@ -547,7 +547,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
 
   private String addWildcard(final String value) {
     //only use wildcard for LIKE and NOT_LIKE
-    if (conditionTypeValue.get().equals(ConditionType.LIKE) || conditionTypeValue.get().equals(ConditionType.NOT_LIKE)) {
+    if (operatorValue.get().equals(Operator.LIKE) || operatorValue.get().equals(Operator.NOT_LIKE)) {
       switch (automaticWildcard) {
         case PREFIX_AND_POSTFIX:
           return wildcard + value + wildcard;
@@ -568,7 +568,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
       if (autoEnable) {
         final boolean upperBoundNull = upperBoundValue.get() == null;
         final boolean lowerBoundNull = lowerBoundValue.get() == null;
-        if (conditionTypeValue.get().getValues().equals(ConditionType.Values.TWO)) {
+        if (operatorValue.get().getValues().equals(Operator.Values.TWO)) {
           setEnabled(!lowerBoundNull && !upperBoundNull);
         }
         else {
@@ -580,10 +580,10 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     lowerBoundValue.addListener(autoEnableListener);
     upperBoundValue.addListener(conditionChangedEvent);
     lowerBoundValue.addListener(conditionChangedEvent);
-    conditionTypeValue.addListener(conditionChangedEvent);
+    operatorValue.addListener(conditionChangedEvent);
     enabledState.addListener(conditionChangedEvent);
-    conditionTypeValue.addListener(() ->
-            lowerBoundRequiredState.set(getConditionType().getValues().equals(ConditionType.Values.TWO)));
+    operatorValue.addListener(() ->
+            lowerBoundRequiredState.set(getOperator().getValues().equals(Operator.Values.TWO)));
   }
 
   private void checkLock() {

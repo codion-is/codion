@@ -4,7 +4,7 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.framework.domain.entity.ConditionProvider;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -25,7 +25,7 @@ import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Conjunction.AND;
 import static org.jminor.common.Conjunction.OR;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.common.db.ConditionType.LIKE;
+import static org.jminor.common.db.Operator.LIKE;
 import static org.jminor.framework.domain.entity.Entities.getValues;
 
 /**
@@ -77,17 +77,17 @@ public final class Conditions {
   /**
    * Creates a {@link EntityCondition} instance for specifying entities of the type identified by {@code entityId}
    * with a where condition based on the property identified by {@code propertyId}, the operators based on
-   * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
+   * {@code operator} and {@code value}. Note that {@code value} may be a single value, a Collection
    * of values or null.
    * @param entityId the entity ID
    * @param propertyId the property ID
-   * @param conditionType the search type
+   * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a condition based on the given value
    */
   public static EntityCondition condition(final String entityId, final String propertyId,
-                                          final ConditionType conditionType, final Object value) {
-    return new DefaultEntityCondition(entityId, propertyCondition(propertyId, conditionType, value));
+                                          final Operator operator, final Object value) {
+    return new DefaultEntityCondition(entityId, propertyCondition(propertyId, operator, value));
   }
 
   /**
@@ -133,17 +133,17 @@ public final class Conditions {
   /**
    * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId}
    * with a where condition based on the property identified by {@code propertyId}, the operators based on
-   * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
+   * {@code operator} and {@code value}. Note that {@code value} may be a single value, a Collection
    * of values or null.
    * @param entityId the entity ID
    * @param propertyId the property ID
-   * @param conditionType the condition type
+   * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a select condition based on the given value
    */
   public static EntitySelectCondition selectCondition(final String entityId, final String propertyId,
-                                                      final ConditionType conditionType, final Object value) {
-    return selectCondition(entityId, propertyCondition(propertyId, conditionType, value));
+                                                      final Operator operator, final Object value) {
+    return selectCondition(entityId, propertyCondition(propertyId, operator, value));
   }
 
   /**
@@ -158,17 +158,17 @@ public final class Conditions {
   /**
    * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityId}
    * with a where condition based on the property identified by {@code propertyId}, the operators based on
-   * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
+   * {@code operator} and {@code value}. Note that {@code value} may be a single value, a Collection
    * of values or null.
    * @param entityId the entity ID
    * @param propertyId the property ID
-   * @param conditionType the condition type
+   * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return an update condition based on the given value
    */
   public static EntityUpdateCondition updateCondition(final String entityId, final String propertyId,
-                                                      final ConditionType conditionType, final Object value) {
-    return updateCondition(entityId, propertyCondition(propertyId, conditionType, value));
+                                                      final Operator operator, final Object value) {
+    return updateCondition(entityId, propertyCondition(propertyId, operator, value));
   }
 
   /**
@@ -236,16 +236,16 @@ public final class Conditions {
   }
 
   /**
-   * Creates a {@link Condition} for the given property, with the operator specified by the {@code conditionType}
+   * Creates a {@link Condition} for the given property, with the operator specified by the {@code operator}
    * and {@code value}. Note that {@code value} may be a single value, a Collection of values or null.
    * @param propertyId the property
-   * @param conditionType the search type
+   * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a property condition based on the given value
    */
-  public static PropertyCondition propertyCondition(final String propertyId, final ConditionType conditionType,
+  public static PropertyCondition propertyCondition(final String propertyId, final Operator operator,
                                                     final Object value) {
-    return new DefaultPropertyCondition(propertyId, conditionType, value);
+    return new DefaultPropertyCondition(propertyId, operator, value);
   }
 
   /**
@@ -279,7 +279,7 @@ public final class Conditions {
       final PropertyCondition propertyCondition = (PropertyCondition) condition;
       final Property property = definition.getProperty(propertyCondition.getPropertyId());
       if (property instanceof ForeignKeyProperty) {
-        return foreignKeyCondition((ForeignKeyProperty) property, propertyCondition.getConditionType(),
+        return foreignKeyCondition((ForeignKeyProperty) property, propertyCondition.getOperator(),
                 propertyCondition.getValues());
       }
     }
@@ -291,16 +291,16 @@ public final class Conditions {
    * Creates a composite condition from the given keys, referencing the given properties
    * @param keys the keys
    * @param properties the key properties
-   * @param conditionType the condition type
+   * @param operator the condition operator
    * @return a Condition referencing the given keys
    */
   public static Condition createCompositeKeyCondition(final List<Entity.Key> keys, final List<ColumnProperty> properties,
-                                                      final ConditionType conditionType) {
+                                                      final Operator operator) {
     if (keys.size() == 1) {
-      return createSingleCompositeCondition(properties, conditionType, keys.get(0));
+      return createSingleCompositeCondition(properties, operator, keys.get(0));
     }
 
-    return createMultipleCompositeCondition(properties, conditionType, keys);
+    return createMultipleCompositeCondition(properties, operator, keys);
   }
 
   /** Assumes {@code keys} is not empty. */
@@ -315,22 +315,22 @@ public final class Conditions {
 
   /** Assumes {@code keys} is not empty. */
   private static Condition createMultipleCompositeCondition(final List<ColumnProperty> properties,
-                                                            final ConditionType conditionType,
+                                                            final Operator operator,
                                                             final List<Entity.Key> keys) {
     final Condition.Set conditionSet = conditionSet(OR);
     for (int i = 0; i < keys.size(); i++) {
-      conditionSet.add(createSingleCompositeCondition(properties, conditionType, keys.get(i)));
+      conditionSet.add(createSingleCompositeCondition(properties, operator, keys.get(i)));
     }
 
     return conditionSet;
   }
 
   private static Condition createSingleCompositeCondition(final List<ColumnProperty> properties,
-                                                          final ConditionType conditionType,
+                                                          final Operator operator,
                                                           final Entity.Key entityKey) {
     final Condition.Set conditionSet = conditionSet(AND);
     for (int i = 0; i < properties.size(); i++) {
-      conditionSet.add(propertyCondition(properties.get(i).getPropertyId(), conditionType,
+      conditionSet.add(propertyCondition(properties.get(i).getPropertyId(), operator,
               entityKey == null ? null : entityKey.get(entityKey.getProperties().get(i))));
     }
 
@@ -346,20 +346,20 @@ public final class Conditions {
   }
 
   private static Condition foreignKeyCondition(final ForeignKeyProperty foreignKeyProperty,
-                                               final ConditionType conditionType, final Collection values) {
+                                               final Operator operator, final Collection values) {
     final List<Entity.Key> keys = getKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
-      return createCompositeKeyCondition(keys, foreignKeyProperty.getColumnProperties(), conditionType);
+      return createCompositeKeyCondition(keys, foreignKeyProperty.getColumnProperties(), operator);
     }
 
     if (keys.size() == 1) {
       final Entity.Key entityKey = keys.get(0);
 
-      return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getPropertyId(), conditionType,
+      return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getPropertyId(), operator,
               entityKey == null ? null : entityKey.getFirstValue());
     }
 
-    return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getPropertyId(), conditionType,
+    return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getPropertyId(), operator,
             getValues(keys));
   }
 

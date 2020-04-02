@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.http;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.reports.ReportDataWrapper;
@@ -135,12 +135,12 @@ public final class HttpEntityConnectionTest {
   @Test
   public void updateByCondition() throws DatabaseException {
     final EntitySelectCondition selectCondition = selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_COMMISSION, ConditionType.LIKE, null);
+            TestDomain.EMP_COMMISSION, Operator.LIKE, null);
 
     final List<Entity> entities = connection.select(selectCondition);
 
     final EntityUpdateCondition updateCondition = updateCondition(TestDomain.T_EMP,
-            TestDomain.EMP_COMMISSION, ConditionType.LIKE, null)
+            TestDomain.EMP_COMMISSION, Operator.LIKE, null)
             .set(TestDomain.EMP_COMMISSION, 500d)
             .set(TestDomain.EMP_SALARY, 4200d);
     try {

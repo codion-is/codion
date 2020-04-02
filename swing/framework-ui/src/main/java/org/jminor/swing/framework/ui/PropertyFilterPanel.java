@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.Property;
@@ -19,14 +19,14 @@ public final class PropertyFilterPanel extends ColumnConditionPanel<Entity, Prop
    * @param model the model to base this panel on
    */
   public PropertyFilterPanel(final ColumnConditionModel<Entity, Property> model) {
-    super(model, true, getConditionTypes(model));
+    super(model, true, getOperators(model));
   }
 
-  private static ConditionType[] getConditionTypes(final ColumnConditionModel<Entity, Property> model) {
+  private static Operator[] getOperators(final ColumnConditionModel<Entity, Property> model) {
     if (model.getColumnIdentifier().isBoolean()) {
-      return new ConditionType[] {ConditionType.LIKE};
+      return new Operator[] {Operator.LIKE};
     }
 
-    return ConditionType.values();
+    return Operator.values();
   }
 }

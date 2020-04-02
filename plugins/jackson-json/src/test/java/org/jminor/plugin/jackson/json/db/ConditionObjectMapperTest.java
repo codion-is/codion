@@ -4,7 +4,7 @@
 package org.jminor.plugin.jackson.json.db;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.CustomCondition;
@@ -39,13 +39,13 @@ public final class ConditionObjectMapperTest {
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
             Conditions.conditionSet(Conjunction.AND,
                     Conditions.propertyCondition(TestDomain.EMP_DEPARTMENT_FK,
-                            ConditionType.NOT_LIKE, asList(dept1, dept2)),
+                            Operator.NOT_LIKE, asList(dept1, dept2)),
                     Conditions.propertyCondition(TestDomain.EMP_NAME,
-                            ConditionType.LIKE, "Loc"),
+                            Operator.LIKE, "Loc"),
                     Conditions.propertyCondition(TestDomain.EMP_ID,
-                            ConditionType.WITHIN_RANGE, asList(10, 40)),
+                            Operator.WITHIN_RANGE, asList(10, 40)),
                     Conditions.propertyCondition(TestDomain.EMP_COMMISSION,
-                            ConditionType.NOT_LIKE, null)));
+                            Operator.NOT_LIKE, null)));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);
@@ -64,7 +64,7 @@ public final class ConditionObjectMapperTest {
   public void nullCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(domain));
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
-            Conditions.propertyCondition(TestDomain.EMP_COMMISSION, ConditionType.NOT_LIKE, null));
+            Conditions.propertyCondition(TestDomain.EMP_COMMISSION, Operator.NOT_LIKE, null));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);

@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.model.Refreshable;
@@ -137,7 +137,7 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * Clears the search state of all PropertyConditionModels, disables them and
-   * resets the search type to {@link ConditionType#LIKE}
+   * resets the operator to {@link Operator#LIKE}
    */
   void clearPropertyConditionModels();
 

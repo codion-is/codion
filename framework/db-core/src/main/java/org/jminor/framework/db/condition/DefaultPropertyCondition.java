@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.SubqueryProperty;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.db.ConditionType.LIKE;
+import static org.jminor.common.db.Operator.LIKE;
 
 /**
  * Encapsulates a query condition based on a single property with one or more values.
@@ -44,9 +44,9 @@ final class DefaultPropertyCondition implements PropertyCondition {
   private final boolean nullCondition;
 
   /**
-   * The search type used in this condition
+   * The operator used in this condition
    */
-  private final ConditionType conditionType;
+  private final Operator operator;
 
   /**
    * True if this condition should be case sensitive, only applies to condition based on string properties
@@ -56,14 +56,14 @@ final class DefaultPropertyCondition implements PropertyCondition {
   /**
    * Instantiates a new PropertyCondition instance
    * @param propertyId the id of the property
-   * @param conditionType the condition type
+   * @param operator the condition operator
    * @param value the value, can be a Collection
    */
-  DefaultPropertyCondition(final String propertyId, final ConditionType conditionType, final Object value) {
+  DefaultPropertyCondition(final String propertyId, final Operator operator, final Object value) {
     requireNonNull(propertyId, "propertyId");
-    requireNonNull(conditionType, "conditionType");
+    requireNonNull(operator, "operator");
     this.propertyId = propertyId;
-    this.conditionType = conditionType;
+    this.operator = operator;
     this.nullCondition = value == null;
     this.values = initializeValues(value);
     if (this.values.isEmpty()) {
@@ -99,14 +99,14 @@ final class DefaultPropertyCondition implements PropertyCondition {
 
   /** {@inheritDoc} */
   @Override
-  public ConditionType getConditionType() {
-    return conditionType;
+  public Operator getOperator() {
+    return operator;
   }
 
   /** {@inheritDoc} */
   @Override
   public String getConditionString(final ColumnProperty property) {
-    return createColumnPropertyConditionString(property, conditionType, getValues(), nullCondition, caseSensitive);
+    return createColumnPropertyConditionString(property, operator, getValues(), nullCondition, caseSensitive);
   }
 
   /** {@inheritDoc} */
@@ -139,14 +139,14 @@ final class DefaultPropertyCondition implements PropertyCondition {
   }
 
   private static String createColumnPropertyConditionString(final ColumnProperty property,
-                                                            final ConditionType conditionType, final List values,
+                                                            final Operator operator, final List values,
                                                             final boolean isNullCondition, final boolean isCaseSensitive) {
     for (int i = 0; i < values.size(); i++) {
       property.validateType(values.get(i));
     }
     final String columnIdentifier = initializeColumnIdentifier(property, isNullCondition, isCaseSensitive);
     if (isNullCondition) {
-      return columnIdentifier + (conditionType == LIKE ? " is null" : " is not null");
+      return columnIdentifier + (operator == LIKE ? " is null" : " is not null");
     }
 
     final int valueCount = values.size();
@@ -154,7 +154,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
     final String firstValuePlaceholder = getValuePlaceholder(property, isCaseSensitive);
     final String secondValuePlaceholder = valueCount == 2 ? getValuePlaceholder(property, isCaseSensitive) : null;
 
-    switch (conditionType) {
+    switch (operator) {
       case LIKE:
         return getLikeCondition(property, columnIdentifier, firstValuePlaceholder, false, values, valueCount);
       case NOT_LIKE:
@@ -168,7 +168,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
       case OUTSIDE_RANGE:
         return "(" + columnIdentifier + " <= " + firstValuePlaceholder + " or " + columnIdentifier + " >= " + secondValuePlaceholder + ")";
       default:
-        throw new IllegalArgumentException("Unknown condition type" + conditionType);
+        throw new IllegalArgumentException("Unknown operator" + operator);
     }
   }
 

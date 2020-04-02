@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.condition;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -18,9 +18,9 @@ public interface PropertyCondition extends Condition {
   String getPropertyId();
 
   /**
-   * @return the condition type
+   * @return the condition operator
    */
-  ConditionType getConditionType();
+  Operator getOperator();
 
   /**
    * Returns the condition string represented by this condition

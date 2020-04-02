@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.ConditionType;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.Operator;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
@@ -196,7 +196,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     final List<Entity> salesEmployees = connection.select(selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department));
+            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, department));
     assertFalse(salesEmployees.isEmpty());
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =

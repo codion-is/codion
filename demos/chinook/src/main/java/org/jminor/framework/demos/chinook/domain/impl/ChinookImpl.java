@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.domain.impl;
 
-import org.jminor.common.db.ConditionType;
+import org.jminor.common.db.Operator;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.operation.AbstractDatabaseFunction;
 import org.jminor.common.db.operation.AbstractDatabaseProcedure;
@@ -390,7 +390,7 @@ public final class ChinookImpl extends Domain implements Chinook {
         entityConnection.beginTransaction();
 
         final EntitySelectCondition selectCondition = selectCondition(T_TRACK,
-                TRACK_TRACKID, ConditionType.LIKE, trackIds);
+                TRACK_TRACKID, Operator.LIKE, trackIds);
         selectCondition.setForUpdate(true);
 
         final List<Entity> tracks = entityConnection.select(selectCondition);
