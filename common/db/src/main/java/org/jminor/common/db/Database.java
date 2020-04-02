@@ -194,6 +194,12 @@ public interface Database {
   boolean supportsNowait();
 
   /**
+   * Returns true if this database requires that subqueries by aliased.
+   * @return true if subqueries require an alias
+   */
+  boolean subqueryRequiresAlias();
+
+  /**
    * Returns a query to use when checking if the connection is valid,
    * this is used in cases where the dbms does not support the isValid() call.
    * Returning null is safe if isValid() is supported.

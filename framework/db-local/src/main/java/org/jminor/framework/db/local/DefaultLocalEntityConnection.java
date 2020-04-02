@@ -598,9 +598,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(condition, CONDITION_PARAM_NAME);
     final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
-    final String subQuery = selectQuery(Queries.columnsClause(entityDefinition.getPrimaryKeyProperties()),
-            condition, whereCondition, entityDefinition, connection.getDatabase());
-    final String selectQuery = selectQuery("(" + subQuery + ")", "count(*)");
+    final Database database = connection.getDatabase();
+    final String subquery = selectQuery(Queries.columnsClause(entityDefinition.getPrimaryKeyProperties()),
+            condition, whereCondition, entityDefinition, database);
+    final String subqueryAlias = database.subqueryRequiresAlias() ? " as row_count" : "";
+    final String selectQuery = selectQuery("(" + subquery + ")" + subqueryAlias, "count(*)");
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     QUERY_COUNTER.count(selectQuery);
@@ -619,7 +621,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(getUser(), selectQuery, whereCondition.getValues(), e, null), e);
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw new DatabaseException(e, database.getErrorMessage(e));
       }
       finally {
         closeSilently(resultSet);
