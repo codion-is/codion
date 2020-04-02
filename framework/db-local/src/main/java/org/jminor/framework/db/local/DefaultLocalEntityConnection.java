@@ -303,7 +303,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
             }
 
-            final WhereCondition updateCondition = whereCondition(entityCondition(entity.getOriginalKey()), entityDefinition);
+            final WhereCondition updateCondition = whereCondition(condition(entity.getOriginalKey()), entityDefinition);
             updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, updateCondition.getWhereClause());
             statement = prepareStatement(updateQuery);
             statementProperties.addAll(updateCondition.getColumnProperties());
@@ -317,7 +317,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          final List<Entity> selected = doSelect(entitySelectCondition(getKeys(entitiesToUpdate)));
+          final List<Entity> selected = doSelect(selectCondition(getKeys(entitiesToUpdate)));
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityId: " + entityIdEntities.getKey());
@@ -451,7 +451,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         int deleteCount = 0;
         for (final Map.Entry<String, List<Entity.Key>> entityIdKeys : keysByEntityId.entrySet()) {
           final EntityDefinition entityDefinition = getEntityDefinition(entityIdKeys.getKey());
-          whereCondition = whereCondition(entityCondition(entityIdKeys.getValue()), entityDefinition);
+          whereCondition = whereCondition(condition(entityIdKeys.getValue()), entityDefinition);
           deleteQuery = deleteQuery(entityDefinition.getTableName(), whereCondition.getWhereClause());
           statement = prepareStatement(deleteQuery);
           deleteCount += executeStatement(statement, deleteQuery,
@@ -477,13 +477,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(entitySelectCondition(entityId, propertyId, LIKE, value));
+    return selectSingle(selectCondition(entityId, propertyId, LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return selectSingle(entitySelectCondition(key));
+    return selectSingle(selectCondition(key));
   }
 
   /** {@inheritDoc} */
@@ -512,7 +512,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         final List<Entity> result = new ArrayList<>();
         for (final List<Entity.Key> entityIdKeys : mapKeysToEntityId(keys).values()) {
-          result.addAll(doSelect(entitySelectCondition(entityIdKeys)));
+          result.addAll(doSelect(selectCondition(entityIdKeys)));
         }
         if (!isTransactionOpen()) {
           commitQuietly();
@@ -530,7 +530,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> select(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
-    return select(entitySelectCondition(entityId, propertyId, LIKE, createValueList(values)));
+    return select(selectCondition(entityId, propertyId, LIKE, createValueList(values)));
   }
 
   /** {@inheritDoc} */
@@ -561,7 +561,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entityDefinition.getSelectQuery() != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
-    final WhereCondition combinedCondition = whereCondition(entityCondition(condition.getEntityId(), conditionSet(Conjunction.AND,
+    final WhereCondition combinedCondition = whereCondition(condition(condition.getEntityId(), conditionSet(Conjunction.AND,
             expand(condition.getCondition(), entityDefinition),
             Conditions.propertyCondition(propertyId, NOT_LIKE, null))), entityDefinition);
     final ColumnProperty propertyToSelect = entityDefinition.getColumnProperty(propertyId);
@@ -598,9 +598,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(condition, CONDITION_PARAM_NAME);
     final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
-    final String subQuery = selectQuery(Queries.columnsClause(entityDefinition.getPrimaryKeyProperties()),
-            condition, whereCondition, entityDefinition, connection.getDatabase());
-    final String selectQuery = selectQuery("(" + subQuery + ")", "count(*)");
+    final Database database = connection.getDatabase();
+    final String subquery = selectQuery(Queries.columnsClause(entityDefinition.getPrimaryKeyProperties()),
+            condition, whereCondition, entityDefinition, database);
+    final String subqueryAlias = database.subqueryRequiresAlias() ? " as row_count" : "";
+    final String selectQuery = selectQuery("(" + subquery + ")" + subqueryAlias, "count(*)");
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     QUERY_COUNTER.count(selectQuery);
@@ -619,7 +621,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(getUser(), selectQuery, whereCondition.getValues(), e, null), e);
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw new DatabaseException(e, database.getErrorMessage(e));
       }
       finally {
         closeSilently(resultSet);
@@ -641,7 +643,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entities.iterator().next().getEntityId());
     for (final ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
-        final List<Entity> dependencies = select(entitySelectCondition(foreignKeyReference.getEntityId(),
+        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getEntityId(),
                 foreignKeyReference.getPropertyId(), LIKE, entities));
         if (!dependencies.isEmpty()) {
           dependencyMap.put(foreignKeyReference.getEntityId(), dependencies);
@@ -739,7 +741,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw new IllegalArgumentException("Property " + blobProperty.getPropertyId() + " in entity " +
               primaryKey.getEntityId() + " does not have column type BLOB");
     }
-    final WhereCondition whereCondition = whereCondition(entityCondition(primaryKey), entityDefinition);
+    final WhereCondition whereCondition = whereCondition(condition(primaryKey), entityDefinition);
     final String updateQuery = "update " + entityDefinition.getTableName() + " set " + blobProperty.getColumnName() + " = ?" +
             WHERE_SPACE_PREFIX_POSTFIX + whereCondition.getWhereClause();
     final List<Object> statementValues = new ArrayList<>();
@@ -790,7 +792,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     PreparedStatement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
-    final WhereCondition whereCondition = whereCondition(entityCondition(primaryKey), entityDefinition);
+    final WhereCondition whereCondition = whereCondition(condition(primaryKey), entityDefinition);
     final String selectQuery = "select " + blobProperty.getColumnName() + " from " +
             entityDefinition.getTableName() + WHERE_SPACE_PREFIX_POSTFIX + whereCondition.getWhereClause();
     QUERY_COUNTER.count(selectQuery);
@@ -886,7 +888,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void performOptimisticLocking(final Map<String, List<Entity>> entitiesByEntityId) throws SQLException, RecordModifiedException {
     for (final Map.Entry<String, List<Entity>> entitiesByEntityIdEntry : entitiesByEntityId.entrySet()) {
       final List<Entity.Key> originalKeys = getOriginalKeys(entitiesByEntityIdEntry.getValue());
-      final EntitySelectCondition selectForUpdateCondition = entitySelectCondition(originalKeys);
+      final EntitySelectCondition selectForUpdateCondition = selectCondition(originalKeys);
       selectForUpdateCondition.setSelectPropertyIds(getPrimaryKeyAndWritableColumnPropertyIds(entitiesByEntityIdEntry.getKey()));
       selectForUpdateCondition.setForUpdate(true);
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
@@ -958,7 +960,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             }
           }
           else {
-            final EntitySelectCondition referencedEntitiesCondition = entitySelectCondition(referencedKeys);
+            final EntitySelectCondition referencedEntitiesCondition = selectCondition(referencedKeys);
             referencedEntitiesCondition.setForeignKeyFetchDepthLimit(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);

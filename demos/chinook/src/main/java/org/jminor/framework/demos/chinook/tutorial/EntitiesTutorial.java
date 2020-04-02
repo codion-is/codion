@@ -21,7 +21,7 @@ import java.sql.Types;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.selectCondition;
 import static org.jminor.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
 import static org.jminor.framework.domain.entity.Entities.getKeys;
 import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
@@ -119,7 +119,7 @@ public final class EntitiesTutorial {
     //we're selecting, the id of the property we're searching by, the type
     //of condition and the value.
     EntitySelectCondition artistsCondition =
-            entitySelectCondition(T_ARTIST,
+            selectCondition(T_ARTIST,
                     ARTIST_NAME, ConditionType.LIKE, "An%");
     //and we set the order by clause
     artistsCondition.setOrderBy(orderBy().ascending(ARTIST_NAME));
@@ -131,7 +131,7 @@ public final class EntitiesTutorial {
 
     //create a select condition
     EntitySelectCondition albumsCondition =
-            entitySelectCondition(T_ALBUM,
+            selectCondition(T_ALBUM,
                     ALBUM_ARTIST_FK, ConditionType.LIKE, artistsStartingWithAn);
     albumsCondition.setOrderBy(orderBy().ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));
 

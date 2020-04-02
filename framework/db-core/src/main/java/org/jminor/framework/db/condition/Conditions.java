@@ -29,7 +29,7 @@ import static org.jminor.common.db.ConditionType.LIKE;
 import static org.jminor.framework.domain.entity.Entities.getValues;
 
 /**
- * A factory class for {@link Condition}, {@link EntityCondition} and {@link EntitySelectCondition} instances
+ * A factory class for {@link Condition} and it's descendants.
  */
 public final class Conditions {
 
@@ -40,8 +40,8 @@ public final class Conditions {
    * @param key the primary key
    * @return a condition specifying the entity with the given primary key
    */
-  public static EntityCondition entityCondition(final Entity.Key key) {
-    return entityCondition(singletonList(requireNonNull(key, "key")));
+  public static EntityCondition condition(final Entity.Key key) {
+    return condition(singletonList(requireNonNull(key, "key")));
   }
 
   /**
@@ -51,7 +51,7 @@ public final class Conditions {
    * @param condition the column condition
    * @return a condition based on the given column condition
    */
-  public static EntityCondition entityCondition(final String entityId, final Condition condition) {
+  public static EntityCondition condition(final String entityId, final Condition condition) {
     return new DefaultEntityCondition(entityId, condition);
   }
 
@@ -60,7 +60,7 @@ public final class Conditions {
    * @param keys the primary keys
    * @return a condition specifying the entities having the given primary keys
    */
-  public static EntityCondition entityCondition(final List<Entity.Key> keys) {
+  public static EntityCondition condition(final List<Entity.Key> keys) {
     final List<Entity.Key> keyList = checkKeysParameter(keys);
     return new DefaultEntityCondition(keyList.get(0).getEntityId(), createKeyCondition(keyList));
   }
@@ -70,7 +70,7 @@ public final class Conditions {
    * @param entityId the entity ID
    * @return a condition specifying all entities of the given type
    */
-  public static EntityCondition entityCondition(final String entityId) {
+  public static EntityCondition condition(final String entityId) {
     return new DefaultEntityCondition(entityId);
   }
 
@@ -85,8 +85,8 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return a condition based on the given value
    */
-  public static EntityCondition entityCondition(final String entityId, final String propertyId,
-                                                final ConditionType conditionType, final Object value) {
+  public static EntityCondition condition(final String entityId, final String propertyId,
+                                          final ConditionType conditionType, final Object value) {
     return new DefaultEntityCondition(entityId, propertyCondition(propertyId, conditionType, value));
   }
 
@@ -95,8 +95,8 @@ public final class Conditions {
    * @param key the key
    * @return a select condition based on the given key
    */
-  public static EntitySelectCondition entitySelectCondition(final Entity.Key key) {
-    return entitySelectCondition(singletonList(requireNonNull(key, "key")));
+  public static EntitySelectCondition selectCondition(final Entity.Key key) {
+    return selectCondition(singletonList(requireNonNull(key, "key")));
   }
 
   /**
@@ -105,7 +105,7 @@ public final class Conditions {
    * @param keys the keys
    * @return a select condition based on the given keys
    */
-  public static EntitySelectCondition entitySelectCondition(final List<Entity.Key> keys) {
+  public static EntitySelectCondition selectCondition(final List<Entity.Key> keys) {
     final List<Entity.Key> keyList = checkKeysParameter(keys);
     return new DefaultEntitySelectCondition(keyList.get(0).getEntityId(), createKeyCondition(keyList));
   }
@@ -115,7 +115,7 @@ public final class Conditions {
    * @param entityId the entity ID
    * @return a select condition encompassing all entities of the given type
    */
-  public static EntitySelectCondition entitySelectCondition(final String entityId) {
+  public static EntitySelectCondition selectCondition(final String entityId) {
     return new DefaultEntitySelectCondition(entityId);
   }
 
@@ -126,7 +126,7 @@ public final class Conditions {
    * @param condition the column condition
    * @return a select condition based on the given column condition
    */
-  public static EntitySelectCondition entitySelectCondition(final String entityId, final Condition condition) {
+  public static EntitySelectCondition selectCondition(final String entityId, final Condition condition) {
     return new DefaultEntitySelectCondition(entityId, condition);
   }
 
@@ -141,9 +141,9 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return a select condition based on the given value
    */
-  public static EntitySelectCondition entitySelectCondition(final String entityId, final String propertyId,
-                                                            final ConditionType conditionType, final Object value) {
-    return entitySelectCondition(entityId, propertyCondition(propertyId, conditionType, value));
+  public static EntitySelectCondition selectCondition(final String entityId, final String propertyId,
+                                                      final ConditionType conditionType, final Object value) {
+    return selectCondition(entityId, propertyCondition(propertyId, conditionType, value));
   }
 
   /**
@@ -151,7 +151,7 @@ public final class Conditions {
    * @param entityId the entity ID
    * @return an update condition encompassing all entities of the given type
    */
-  public static EntityUpdateCondition entityUpdateCondition(final String entityId) {
+  public static EntityUpdateCondition updateCondition(final String entityId) {
     return new DefaultEntityUpdateCondition(entityId);
   }
 
@@ -166,9 +166,9 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return an update condition based on the given value
    */
-  public static EntityUpdateCondition entityUpdateCondition(final String entityId, final String propertyId,
-                                                            final ConditionType conditionType, final Object value) {
-    return entityUpdateCondition(entityId, propertyCondition(propertyId, conditionType, value));
+  public static EntityUpdateCondition updateCondition(final String entityId, final String propertyId,
+                                                      final ConditionType conditionType, final Object value) {
+    return updateCondition(entityId, propertyCondition(propertyId, conditionType, value));
   }
 
   /**
@@ -178,7 +178,7 @@ public final class Conditions {
    * @param condition the column condition
    * @return an update condition based on the given column condition
    */
-  public static EntityUpdateCondition entityUpdateCondition(final String entityId, final Condition condition) {
+  public static EntityUpdateCondition updateCondition(final String entityId, final Condition condition) {
     return new DefaultEntityUpdateCondition(entityId, condition);
   }
 

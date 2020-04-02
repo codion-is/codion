@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.jminor.framework.db.condition.Conditions.entityCondition;
+import static org.jminor.framework.db.condition.Conditions.condition;
 
 /**
  * A combo box model based on a single entity property.
@@ -33,8 +33,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
                                     final ColumnProperty property, final T nullValue) {
     this(() -> {
       try {
-        return connectionProvider.getConnection().selectValues(property.getPropertyId(),
-                entityCondition(entityId));
+        return connectionProvider.getConnection().selectValues(property.getPropertyId(), condition(entityId));
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);

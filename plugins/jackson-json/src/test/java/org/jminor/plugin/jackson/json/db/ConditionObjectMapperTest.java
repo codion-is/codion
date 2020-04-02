@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static java.util.Arrays.asList;
+import static org.jminor.framework.db.condition.Conditions.condition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class ConditionObjectMapperTest {
@@ -35,7 +36,7 @@ public final class ConditionObjectMapperTest {
     final Entity dept2 = domain.entity(TestDomain.T_DEPARTMENT);
     dept2.put(TestDomain.DEPARTMENT_ID, 2);
 
-    final EntityCondition entityCondition = Conditions.entityCondition(TestDomain.T_EMP,
+    final EntityCondition entityCondition = condition(TestDomain.T_EMP,
             Conditions.conditionSet(Conjunction.AND,
                     Conditions.propertyCondition(TestDomain.EMP_DEPARTMENT_FK,
                             ConditionType.NOT_LIKE, asList(dept1, dept2)),
@@ -62,7 +63,7 @@ public final class ConditionObjectMapperTest {
   @Test
   public void nullCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(domain));
-    final EntityCondition entityCondition = Conditions.entityCondition(TestDomain.T_EMP,
+    final EntityCondition entityCondition = condition(TestDomain.T_EMP,
             Conditions.propertyCondition(TestDomain.EMP_COMMISSION, ConditionType.NOT_LIKE, null));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
@@ -84,7 +85,7 @@ public final class ConditionObjectMapperTest {
             asList(TestDomain.ENTITY_DECIMAL, TestDomain.ENTITY_DATE_TIME),
             asList(BigDecimal.valueOf(123.4), LocalDateTime.now()));
 
-    final EntityCondition entityCondition = Conditions.entityCondition(TestDomain.T_ENTITY, condition);
+    final EntityCondition entityCondition = condition(TestDomain.T_ENTITY, condition);
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);

@@ -19,7 +19,7 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.List;
 
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.selectCondition;
 
 public final class EmployeeServer extends DefaultEntityConnectionServer {
 
@@ -53,7 +53,7 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
     @Override
     public List<Entity> getEmployees() throws DatabaseException {
       synchronized (connectionProxy) {
-        return connectionProxy.select(entitySelectCondition(EmpDept.T_EMPLOYEE));
+        return connectionProxy.select(selectCondition(EmpDept.T_EMPLOYEE));
       }
     }
   }

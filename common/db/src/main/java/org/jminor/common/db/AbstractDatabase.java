@@ -194,6 +194,12 @@ public abstract class AbstractDatabase implements Database {
 
   /** {@inheritDoc} */
   @Override
+  public boolean subqueryRequiresAlias() {
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public String getCheckConnectionQuery() {
     throw new IllegalStateException("No check connection query specified");
   }

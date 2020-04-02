@@ -364,6 +364,7 @@ public final class ControlProvider {
 
     final JCheckBox checkBox = new JCheckBox(toggleControl);
     checkBox.setModel(buttonModel);
+    checkBox.setMnemonic(toggleControl.getMnemonic());
 
     return checkBox;
   }
@@ -378,6 +379,7 @@ public final class ControlProvider {
     final JToggleButton toggleButton = new JToggleButton(toggleControl);
     toggleButton.setModel(createButtonModel(toggleControl));
     toggleButton.setText(toggleControl.getName());
+    toggleButton.setMnemonic(toggleControl.getMnemonic());
 
     return toggleButton;
   }

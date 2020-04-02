@@ -11,6 +11,7 @@ import org.jminor.common.remote.Servers;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.domain.Domain;
@@ -26,7 +27,6 @@ import java.util.Collection;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,7 +53,7 @@ public class DefaultRemoteEntityConnectionTest {
   public void rollbackOnDisconnect() throws Exception {
     final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238);
-    final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP);
+    final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.select(condition).isEmpty());
@@ -91,7 +91,7 @@ public class DefaultRemoteEntityConnectionTest {
                 }
               });
 
-      final EntitySelectCondition condition = entitySelectCondition(TestDomain.T_EMP);
+      final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
       proxy.beginTransaction();
       proxy.select(condition);
       proxy.delete(condition);

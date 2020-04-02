@@ -85,6 +85,14 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
     return false;
   }
 
+  /**
+   * @return true
+   */
+  @Override
+  public boolean subqueryRequiresAlias() {
+    return true;
+  }
+
   /** {@inheritDoc} */
   @Override
   public String getCheckConnectionQuery() {

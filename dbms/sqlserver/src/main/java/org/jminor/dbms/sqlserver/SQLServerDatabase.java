@@ -55,6 +55,14 @@ public final class SQLServerDatabase extends AbstractDatabase {
     return false;
   }
 
+  /**
+   * @return true
+   */
+  @Override
+  public boolean subqueryRequiresAlias() {
+    return true;
+  }
+
   /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {

@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.jminor.framework.db.condition.Conditions.entitySelectCondition;
+import static org.jminor.framework.db.condition.Conditions.selectCondition;
 import static org.jminor.framework.domain.entity.Entities.getModifiedEntities;
 import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
 import static org.jminor.framework.domain.entity.OrderBy.orderBy;
@@ -355,7 +355,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                         final Object... arguments) throws DatabaseException {
       try {
         entityConnection.beginTransaction();
-        final EntitySelectCondition selectCondition = entitySelectCondition(T_INVOICE);
+        final EntitySelectCondition selectCondition = selectCondition(T_INVOICE);
         selectCondition.setForUpdate(true);
         selectCondition.setForeignKeyFetchDepthLimit(0);
         final List<Entity> invoices = entityConnection.select(selectCondition);
@@ -389,7 +389,7 @@ public final class ChinookImpl extends Domain implements Chinook {
       try {
         entityConnection.beginTransaction();
 
-        final EntitySelectCondition selectCondition = entitySelectCondition(T_TRACK,
+        final EntitySelectCondition selectCondition = selectCondition(T_TRACK,
                 TRACK_TRACKID, ConditionType.LIKE, trackIds);
         selectCondition.setForUpdate(true);
 

@@ -315,7 +315,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       }
     }
 
-    return entitySelectCondition(entityId, additionalConditionProvider == null ? baseCondition :
+    return selectCondition(entityId, additionalConditionProvider == null ? baseCondition :
             conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
             .setOrderBy(connectionProvider.getDomain().getDefinition(entityId).getOrderBy());
   }
