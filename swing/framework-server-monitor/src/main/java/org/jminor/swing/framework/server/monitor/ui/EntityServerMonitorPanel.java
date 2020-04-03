@@ -10,6 +10,7 @@ import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.Servers;
 import org.jminor.swing.common.ui.Components;
+import org.jminor.swing.common.ui.UiManagerDefaults;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -207,6 +208,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   public static void main(final String[] arguments) {
+    UiManagerDefaults.initialize();
     Servers.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
     SwingUtilities.invokeLater(() -> {
       try {
