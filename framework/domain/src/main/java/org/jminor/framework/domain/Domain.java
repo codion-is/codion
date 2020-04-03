@@ -683,11 +683,9 @@ public class Domain implements EntityDefinition.Provider, Serializable {
       for (final EntityDefinition definition : entityDefinitions.values()) {
         for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
           final String foreignKeyPropertyId = foreignKeyProperty.getPropertyId();
-          if (!definition.hasForeignDefinition(foreignKeyPropertyId)) {
-            final EntityDefinition foreignDefinition = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
-            if (foreignDefinition != null) {
-              definition.setForeignDefinition(foreignKeyPropertyId, foreignDefinition);
-            }
+          final EntityDefinition foreignDefinition = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
+          if (foreignDefinition != null && !definition.hasForeignDefinition(foreignKeyPropertyId)) {
+            definition.setForeignDefinition(foreignKeyPropertyId, foreignDefinition);
           }
         }
       }
