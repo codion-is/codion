@@ -5836,3 +5836,4 @@
   EntityDefinition.Provider.getEntityDefinitions() added, some minor refactoring
   EntityDefinition.Provider.getEntityDefinitions() renamed to getDefinitions()
   EntityDefinition.getDefinitionProvider() added
+  EntityDefinition.getForeignDefinition() added, EntityDefinition.getDefinitionProvider() removed, related refactoring

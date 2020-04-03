@@ -45,11 +45,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private final String entityId;
 
   /**
-   * The definition provider for this domain model
-   */
-  private final Provider definitionProvider;
-
-  /**
    * The domainId
    */
   private String domainId;
@@ -170,6 +165,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private final List<ForeignKeyProperty> foreignKeyProperties;
   private final Map<String, ForeignKeyProperty> foreignKeyPropertyMap;
   private final Map<String, List<ForeignKeyProperty>> columnPropertyForeignKeyProperties;
+  private final Map<String, EntityDefinition> foreignEntityDefinitions = new HashMap<>();
   private final Map<String, Set<DerivedProperty>> derivedProperties;
   private final List<TransientProperty> transientProperties;
   private final Map<String, List<DenormalizedProperty>> denormalizedProperties;
@@ -178,9 +174,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * Defines a new entity type with the entityId serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final EntityDefinition.Provider definitionProvider, final String entityId,
-                          final String tableName, final Property.Builder... propertyBuilders) {
-    this.definitionProvider = requireNonNull(definitionProvider, "definitionProvider");
+  DefaultEntityDefinition(final String entityId, final String tableName, final Property.Builder... propertyBuilders) {
     this.entityId = rejectNullOrEmpty(entityId, "entityId");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.caption = entityId;
@@ -207,12 +201,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
   @Override
   public String getEntityId() {
     return entityId;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Provider getDefinitionProvider() {
-    return definitionProvider;
   }
 
   /** {@inheritDoc} */
@@ -560,6 +548,40 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /** {@inheritDoc} */
   @Override
+  public EntityDefinition getForeignDefinition(final String foreignKeyPropertyId) {
+    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
+    final EntityDefinition definition = foreignEntityDefinitions.get(foreignKeyPropertyId);
+    if (definition == null) {
+      throw new IllegalArgumentException("Referenced entity not found for foreign key property: " + foreignKeyPropertyId);
+    }
+
+    return definition;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean hasForeignDefinition(final String foreignKeyPropertyId) {
+    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
+    return foreignEntityDefinitions.containsKey(foreignKeyPropertyId);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setForeignDefinition(final String foreignKeyPropertyId, final EntityDefinition definition) {
+    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
+    requireNonNull(definition, "definition");
+    final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKeyPropertyId);
+    if (foreignEntityDefinitions.containsKey(foreignKeyPropertyId)) {
+      throw new IllegalStateException("Foreign definition has already been set for " + foreignKeyPropertyId);
+    }
+    if (!foreignKeyProperty.getForeignEntityId().equals(definition.getEntityId())) {
+      throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getForeignEntityId() + " expected for " + foreignKeyPropertyId);
+    }
+    foreignEntityDefinitions.put(foreignKeyPropertyId, definition);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public boolean hasDenormalizedProperties() {
     return hasDenormalizedProperties;
   }
@@ -603,13 +625,13 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /** {@inheritDoc} */
   @Override
   public Entity entity(final Entity.Key key) {
-    return new DefaultEntity(definitionProvider, key);
+    return new DefaultEntity(this, key);
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity entity(final Map<Property, Object> values, final Map<Property, Object> originalValues) {
-    return new DefaultEntity(definitionProvider, this, values, originalValues);
+    return new DefaultEntity(this, values, originalValues);
   }
 
   /** {@inheritDoc} */

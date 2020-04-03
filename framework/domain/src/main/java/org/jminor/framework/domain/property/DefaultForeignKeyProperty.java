@@ -43,8 +43,6 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
    * @param caption the property caption
    * @param foreignEntityId the ID of the entity referenced by this foreign key
    * @param columnPropertyBuilders the underlying column properties comprising this foreign key
-   * @param foreignProperties the properties referenced, in the same order as the column properties,
-   * if null then the primary key properties of the referenced entity are used when required
    */
   DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
                             final List<ColumnProperty.Builder> columnPropertyBuilders) {

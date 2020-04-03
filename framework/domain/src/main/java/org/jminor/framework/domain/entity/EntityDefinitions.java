@@ -14,14 +14,13 @@ public final class EntityDefinitions {
 
   /**
    * Instantiates a {@link EntityDefinition} instance and returns a {@link EntityDefinition.Builder} for configuring it.
-   * @param definitionProvider the domain entity definition provider
    * @param entityId the entity id
    * @param tableName the underlying table name
    * @param propertyBuilders the builders for the properties
    * @return a {@link EntityDefinition.Builder} instance
    */
-  public static EntityDefinition.Builder definition(final EntityDefinition.Provider definitionProvider, final String entityId,
-                                                    final String tableName, final Property.Builder... propertyBuilders) {
-    return new DefaultEntityDefinition(definitionProvider, entityId, tableName, propertyBuilders).builder();
+  public static EntityDefinition.Builder definition(final String entityId, final String tableName,
+                                                    final Property.Builder... propertyBuilders) {
+    return new DefaultEntityDefinition(entityId, tableName, propertyBuilders).builder();
   }
 }

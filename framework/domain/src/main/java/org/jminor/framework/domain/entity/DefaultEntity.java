@@ -58,11 +58,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private Map<String, Key> referencedKeyCache;
 
   /**
-   * Provides access to domain entity definitions
-   */
-  private EntityDefinition.Provider definitionProvider;
-
-  /**
    * Keep a reference to this frequently referenced object
    */
   private EntityDefinition definition;
@@ -79,38 +74,23 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /**
    * Instantiates a new DefaultEntity
-   * @param definitionProvider the domain
+   * @param definition the entity definition
    * @param key the primary key
    */
-  DefaultEntity(final EntityDefinition.Provider definitionProvider, final Key key) {
-    this(definitionProvider, requireNonNull(key, "key").getEntityId(), createValueMap(key), null);
+  DefaultEntity(final EntityDefinition definition, final Key key) {
+    this(definition, createValueMap(key), null);
     this.key = key;
   }
 
   /**
    * Instantiates a new DefaultEntity based on the given values.
-   * @param definitionProvider the domain model
+   * @param definition the entity definition
    * @param values the initial values, may be null
    * @param originalValues the original values, may be null
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
-  DefaultEntity(final EntityDefinition.Provider definitionProvider, final String entityId,
-                final Map<Property, Object> values, final Map<Property, Object> originalValues) {
-    this(requireNonNull(definitionProvider, "definitionProvider"),
-            definitionProvider.getDefinition(entityId), values, originalValues);
-  }
-
-  /**
-   * Instantiates a new DefaultEntity based on the given values.
-   * @param definitionProvider the domain model
-   * @param values the initial values, may be null
-   * @param originalValues the original values, may be null
-   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
-   */
-  DefaultEntity(final EntityDefinition.Provider definitionProvider, final EntityDefinition definition,
-                final Map<Property, Object> values, final Map<Property, Object> originalValues) {
+  DefaultEntity(final EntityDefinition definition, final Map<Property, Object> values, final Map<Property, Object> originalValues) {
     super(validateProperties(definition, values), validateProperties(definition, originalValues));
-    this.definitionProvider = requireNonNull(definitionProvider, "definitionProvider");
     this.definition = definition;
   }
 
@@ -233,7 +213,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (value == null) {//possibly not loaded
       final Entity.Key referencedKey = getReferencedKey(foreignKeyProperty);
       if (referencedKey != null) {
-        return new DefaultEntity(definitionProvider, referencedKey);
+        return new DefaultEntity(definition.getForeignDefinition(foreignKeyProperty.getPropertyId()), referencedKey);
       }
     }
 
@@ -494,7 +474,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       return isNull(properties.get(0));
     }
     final List<ColumnProperty> foreignProperties =
-            definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId()).getPrimaryKeyProperties();
+            definition.getForeignDefinition(foreignKeyProperty.getPropertyId()).getPrimaryKeyProperties();
     for (int i = 0; i < properties.size(); i++) {
       if (!foreignProperties.get(i).isNullable() && isNull(properties.get(i))) {
         return true;
@@ -613,13 +593,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * the corresponding reference values are set to null.
    * @param foreignKeyProperty the entity reference property
    * @param referencedEntity the referenced entity
-   * @param entityDefinitions a global entity definition map
    */
   private void setForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     removeCachedReferencedKey(foreignKeyProperty.getPropertyId());
     final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
     final List<ColumnProperty> foreignProperties =
-            definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId()).getPrimaryKeyProperties();
+            definition.getForeignDefinition(foreignKeyProperty.getPropertyId()).getPrimaryKeyProperties();
     if (properties.size() > 1) {
       setCompositeForeignKeyValues(referencedEntity, properties, foreignProperties);
     }
@@ -675,7 +654,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   private Key initializeAndCacheCompositeReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
-    final EntityDefinition foreignEntityDefinition = definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId());
+    final EntityDefinition foreignEntityDefinition = definition.getForeignDefinition(foreignKeyProperty.getPropertyId());
     if (!foreignEntityDefinition.hasPrimaryKey()) {
       throw new IllegalArgumentException("Entity '" + foreignEntityDefinition.getEntityId() + "' has no primary key defined");
     }
@@ -702,7 +681,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     return cacheReferencedKey(foreignKeyProperty.getPropertyId(),
-            new DefaultEntityKey(definitionProvider.getDefinition(foreignKeyProperty.getForeignEntityId()), value));
+            new DefaultEntityKey(definition.getForeignDefinition(foreignKeyProperty.getPropertyId()), value));
   }
 
   private Key cacheReferencedKey(final String foreignKeyPropertyId, final Key referencedPrimaryKey) {
@@ -832,8 +811,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     final String domainId = (String) stream.readObject();
     final String entityId = (String) stream.readObject();
     final boolean isModified = stream.readBoolean();
-    definitionProvider = Domain.getDomain(domainId);
-    definition = definitionProvider.getDefinition(entityId);
+    definition = Domain.getDomain(domainId).getDefinition(entityId);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
     }
