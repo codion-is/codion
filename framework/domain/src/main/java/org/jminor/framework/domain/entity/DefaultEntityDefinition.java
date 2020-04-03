@@ -45,6 +45,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private final String entityId;
 
   /**
+   * The definition provider for this domain model
+   */
+  private final Provider definitionProvider;
+
+  /**
    * The domainId
    */
   private String domainId;
@@ -173,7 +178,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * Defines a new entity type with the entityId serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final String entityId, final String tableName, final Property.Builder... propertyBuilders) {
+  DefaultEntityDefinition(final EntityDefinition.Provider definitionProvider, final String entityId,
+                          final String tableName, final Property.Builder... propertyBuilders) {
+    this.definitionProvider = requireNonNull(definitionProvider, "definitionProvider");
     this.entityId = rejectNullOrEmpty(entityId, "entityId");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.caption = entityId;
@@ -200,6 +207,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
   @Override
   public String getEntityId() {
     return entityId;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Provider getDefinitionProvider() {
+    return definitionProvider;
   }
 
   /** {@inheritDoc} */
@@ -583,20 +596,19 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity entity(final Provider definitionProvider) {
-    return entity(definitionProvider, null, null);
+  public Entity entity() {
+    return entity(null, null);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entity entity(final Provider definitionProvider, final Entity.Key key) {
+  public Entity entity(final Entity.Key key) {
     return new DefaultEntity(definitionProvider, key);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entity entity(final Provider definitionProvider, final Map<Property, Object> values,
-                       final Map<Property, Object> originalValues) {
+  public Entity entity(final Map<Property, Object> values, final Map<Property, Object> originalValues) {
     return new DefaultEntity(definitionProvider, this, values, originalValues);
   }
 

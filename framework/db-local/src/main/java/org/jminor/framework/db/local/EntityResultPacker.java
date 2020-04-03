@@ -4,7 +4,6 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.db.ResultPacker;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -23,18 +22,15 @@ import java.util.Map;
  */
 final class EntityResultPacker implements ResultPacker<Entity> {
 
-  private final Domain domain;
   private final EntityDefinition definition;
   private final List<ColumnProperty> columnProperties;
 
   /**
-   * @param domain the Domain model
+   * @param definitionProvider the Domain model
    * @param definition the entity definition
    * @param columnProperties the column properties in the same order as they appear in the ResultSet
    */
-  EntityResultPacker(final Domain domain, final EntityDefinition definition,
-                     final List<ColumnProperty> columnProperties) {
-    this.domain = domain;
+  EntityResultPacker(final EntityDefinition definition, final List<ColumnProperty> columnProperties) {
     this.definition = definition;
     this.columnProperties = columnProperties;
   }
@@ -46,7 +42,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     addTransientNullValues(values);
     addLazyLoadedBlobNullValues(values);
 
-    return definition.entity(domain, values, null);
+    return definition.entity(values, null);
   }
 
   private void addResultSetValues(final ResultSet resultSet, final Map<Property, Object> values) throws SQLException {

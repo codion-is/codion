@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -108,7 +109,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return a new {@link Entity} instance
    */
   public final Entity entity(final String entityId) {
-    return getDefinition(entityId).entity(this);
+    return getDefinition(entityId).entity();
   }
 
   /**
@@ -117,7 +118,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return a new {@link Entity} instance
    */
   public final Entity entity(final Entity.Key key) {
-    return getDefinition(key.getEntityId()).entity(this, key);
+    return getDefinition(key.getEntityId()).entity(key);
   }
 
   /**
@@ -134,7 +135,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    */
   public final Entity defaultEntity(final String entityId, final Function<Property, Object> valueProvider) {
     final EntityDefinition entityDefinition = getDefinition(entityId);
-    final Entity entity = entityDefinition.entity(this);
+    final Entity entity = entityDefinition.entity();
     final Collection<ColumnProperty> columnProperties = entityDefinition.getColumnProperties();
     for (final ColumnProperty property : columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
@@ -386,7 +387,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   /**
    * @return all {@link EntityDefinition}s found in this domain model
    */
-  public final Collection<EntityDefinition> getEntityDefinitions() {
+  public final Collection<EntityDefinition> getDefinitions() {
     return Collections.unmodifiableCollection(definitionProvider.entityDefinitions.values());
   }
 
@@ -518,7 +519,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    */
   protected final EntityDefinition.Builder define(final String entityId, final String tableName,
                                                   final Property.Builder... propertyBuilders) {
-    return addDefinition(EntityDefinitions.definition(entityId, tableName, propertyBuilders));
+    return addDefinition(EntityDefinitions.definition(this, entityId, tableName, propertyBuilders));
   }
 
   /**
@@ -555,7 +556,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
       beanEntities = new HashMap<>();
     }
     if (!beanEntities.containsKey(beanClass)) {
-      final Optional<EntityDefinition> optionalDefinition = getEntityDefinitions().stream()
+      final Optional<EntityDefinition> optionalDefinition = getDefinitions().stream()
               .filter(def -> Objects.equals(beanClass, def.getBeanClass())).findFirst();
       if (!optionalDefinition.isPresent()) {
         throw new IllegalArgumentException("No entity associated with bean class: " + beanClass);
@@ -637,6 +638,11 @@ public class Domain implements EntityDefinition.Provider, Serializable {
       }
 
       return definition;
+    }
+
+    @Override
+    public Collection<EntityDefinition> getDefinitions() {
+      return unmodifiableCollection(entityDefinitions.values());
     }
 
     private void addDefinition(final EntityDefinition definition) {
