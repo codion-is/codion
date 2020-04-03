@@ -122,6 +122,65 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   }
 
   /**
+   * Creates a new {@link Entity.Key} instance with the given entityId
+   * @param entityId the entity id
+   * @return a new {@link Entity.Key} instance
+   */
+  public final Entity.Key key(final String entityId) {
+    return getDefinition(entityId).key();
+  }
+
+  /**
+   * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
+   * @param entityId the entity id
+   * @param value the key value, assumes a single integer key
+   * @return a new {@link Entity.Key} instance
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or value is null
+   */
+  public final Entity.Key key(final String entityId, final Integer value) {
+    return getDefinition(entityId).key(value);
+  }
+
+  /**
+   * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
+   * @param entityId the entity id
+   * @param value the key value, assumes a single long key
+   * @return a new {@link Entity.Key} instance
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or value is null
+   */
+  public final Entity.Key key(final String entityId, final Long value) {
+    return getDefinition(entityId).key(value);
+  }
+
+  /**
+   * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
+   * @param entityId the entity id
+   * @param values the key values, assumes a single integer key
+   * @return new {@link Entity.Key} instances
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or values is null
+   */
+  public final List<Entity.Key> keys(final String entityId, final Integer... values) {
+    requireNonNull(values, "values");
+    return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
+  }
+
+  /**
+   * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
+   * @param entityId the entity id
+   * @param values the key values, assumes a single integer key
+   * @return new {@link Entity.Key} instances
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or values is null
+   */
+  public final List<Entity.Key> keys(final String entityId, final Long... values) {
+    requireNonNull(values, "values");
+    return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
+  }
+
+  /**
    * Instantiates a new {@link Entity} of the given type using the values provided by {@code valueProvider}.
    * Values are fetched for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty}
    * and {@link TransientProperty} (excluding its descendants).
@@ -261,65 +320,6 @@ public class Domain implements EntityDefinition.Provider, Serializable {
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * Creates a new {@link Entity.Key} instance with the given entityId
-   * @param entityId the entity id
-   * @return a new {@link Entity.Key} instance
-   */
-  public final Entity.Key key(final String entityId) {
-    return getDefinition(entityId).key();
-  }
-
-  /**
-   * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
-   * @param entityId the entity id
-   * @param value the key value, assumes a single integer key
-   * @return a new {@link Entity.Key} instance
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or value is null
-   */
-  public final Entity.Key key(final String entityId, final Integer value) {
-    return getDefinition(entityId).key(value);
-  }
-
-  /**
-   * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
-   * @param entityId the entity id
-   * @param value the key value, assumes a single long key
-   * @return a new {@link Entity.Key} instance
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or value is null
-   */
-  public final Entity.Key key(final String entityId, final Long value) {
-    return getDefinition(entityId).key(value);
-  }
-
-  /**
-   * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
-   * @param entityId the entity id
-   * @param values the key values, assumes a single integer key
-   * @return new {@link Entity.Key} instances
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or values is null
-   */
-  public final List<Entity.Key> keys(final String entityId, final Integer... values) {
-    requireNonNull(values, "values");
-    return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
-  }
-
-  /**
-   * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
-   * @param entityId the entity id
-   * @param values the key values, assumes a single integer key
-   * @return new {@link Entity.Key} instances
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or values is null
-   */
-  public final List<Entity.Key> keys(final String entityId, final Long... values) {
-    requireNonNull(values, "values");
-    return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
   }
 
   /**
