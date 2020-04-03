@@ -22,7 +22,6 @@ import java.util.Map;
  */
 final class EntityResultPacker implements ResultPacker<Entity> {
 
-  private final EntityDefinition.Provider definitionProvider;
   private final EntityDefinition definition;
   private final List<ColumnProperty> columnProperties;
 
@@ -31,9 +30,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
    * @param definition the entity definition
    * @param columnProperties the column properties in the same order as they appear in the ResultSet
    */
-  EntityResultPacker(final EntityDefinition.Provider definitionProvider, final EntityDefinition definition,
-                     final List<ColumnProperty> columnProperties) {
-    this.definitionProvider = definitionProvider;
+  EntityResultPacker(final EntityDefinition definition, final List<ColumnProperty> columnProperties) {
     this.definition = definition;
     this.columnProperties = columnProperties;
   }
@@ -45,7 +42,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     addTransientNullValues(values);
     addLazyLoadedBlobNullValues(values);
 
-    return definition.entity(definitionProvider, values, null);
+    return definition.entity(values, null);
   }
 
   private void addResultSetValues(final ResultSet resultSet, final Map<Property, Object> values) throws SQLException {

@@ -627,7 +627,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public final TreeModel getDependencyTreeModel() {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
     final Domain domain = applicationModel.getDomain();
-    for (final EntityDefinition definition : domain.getEntityDefinitions()) {
+    for (final EntityDefinition definition : domain.getDefinitions()) {
       if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(applicationModel.getDomain(), definition.getEntityId())) {
         root.add(new EntityDependencyTreeNode(definition.getEntityId(), domain));
       }
@@ -1549,7 +1549,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private List<EntityDependencyTreeNode> initializeChildren() {
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
-      for (final EntityDefinition definition : domain.getEntityDefinitions()) {
+      for (final EntityDefinition definition : domain.getDefinitions()) {
         for (final ForeignKeyProperty fkProperty : definition.getForeignKeyProperties()) {
           if (fkProperty.getForeignEntityId().equals(getEntityId()) && !fkProperty.isSoftReference()
                   && !foreignKeyCycle(fkProperty.getForeignEntityId())) {

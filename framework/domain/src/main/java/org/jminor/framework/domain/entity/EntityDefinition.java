@@ -40,6 +40,11 @@ public interface EntityDefinition extends Serializable {
   String getEntityId();
 
   /**
+   * @return the domain model {@link Provider}
+   */
+  Provider getDefinitionProvider();
+
+  /**
    * @return the name of the underlying table, with schema prefix if applicable
    */
   String getTableName();
@@ -354,28 +359,25 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * Creates a new {@link Entity} instance based on this definition
-   * @param definitionProvider the definition provider
    * @return a new {@link Entity} instance
    */
-  Entity entity(EntityDefinition.Provider definitionProvider);
+  Entity entity();
 
   /**
    * Creates a new {@link Entity} instance based on this definition
-   * @param definitionProvider the definition provider
    * @param key the primary key
    * @return a new {@link Entity} instance
    */
-  Entity entity(EntityDefinition.Provider definitionProvider, Entity.Key key);
+  Entity entity(Entity.Key key);
 
   /**
    * Creates a new {@link Entity} instance based on this definition
-   * @param definitionProvider the definition provider
    * @param values the values
    * @param originalValues the original values
    * @return a new {@link Entity} instance
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
-  Entity entity(EntityDefinition.Provider definitionProvider, Map<Property, Object> values, Map<Property, Object> originalValues);
+  Entity entity(Map<Property, Object> values, Map<Property, Object> originalValues);
 
   /**
    * Creates a new {@link Entity.Key} instance based on this definition
@@ -418,7 +420,7 @@ public interface EntityDefinition extends Serializable {
      * Returns all {@link EntityDefinition}s available in this provider
      * @return all entity definitions
      */
-    Collection<EntityDefinition> getEntityDefinitions();
+    Collection<EntityDefinition> getDefinitions();
   }
 
   /**

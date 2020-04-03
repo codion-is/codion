@@ -1009,7 +1009,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       resultSet = executeStatement(statement, selectQuery, whereCondition);
 
       return new EntityResultIterator(statement, resultSet, new EntityResultPacker(
-              domain, entityDefinition, propertiesToSelect), selectCondition.getFetchCount());
+              entityDefinition, propertiesToSelect), selectCondition.getFetchCount());
     }
     catch (final SQLException e) {
       closeSilently(resultSet);
@@ -1101,7 +1101,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private Collection<ForeignKeyProperty> getForeignKeyReferences(final String entityId) {
     return foreignKeyReferenceCache.computeIfAbsent(entityId, e -> {
       final List<ForeignKeyProperty> foreignKeyReferences = new ArrayList<>();
-      for (final EntityDefinition entityDefinition : domain.getEntityDefinitions()) {
+      for (final EntityDefinition entityDefinition : domain.getDefinitions()) {
         for (final ForeignKeyProperty foreignKeyProperty : entityDefinition.getForeignKeyProperties()) {
           if (foreignKeyProperty.getForeignEntityId().equals(entityId)) {
             foreignKeyReferences.add(foreignKeyProperty);

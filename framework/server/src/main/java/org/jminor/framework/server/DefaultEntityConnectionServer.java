@@ -405,7 +405,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   final Map<String, String> getEntityDefinitions() {
     final Map<String, String> definitions = new HashMap<>();
     for (final Domain domain : Domain.getRegisteredDomains()) {
-      for (final EntityDefinition definition : domain.getEntityDefinitions()) {
+      for (final EntityDefinition definition : domain.getDefinitions()) {
         definitions.put(definition.getEntityId(), definition.getTableName());
       }
     }
