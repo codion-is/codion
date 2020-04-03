@@ -50,29 +50,29 @@ public class DefaultEntityTest {
     values.put(detailDefinition.getProperty(TestDomain.DETAIL_BOOLEAN), false);
     values.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), 1);
 
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, values, null));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, values, null));
 
     final Map<Property, Object> originalValues = new HashMap<>();
     originalValues.put(detailDefinition.getProperty(TestDomain.DETAIL_BOOLEAN), false);
     originalValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), 1);
 
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, null, originalValues));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, originalValues));
 
     final Map<Property, Object> invalidTypeValues = new HashMap<>();
     invalidTypeValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), false);
 
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, invalidTypeValues, null));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidTypeValues, null));
 
     final Map<Property, Object> invalidTypeOriginalValues = new HashMap<>();
     invalidTypeOriginalValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), false);
 
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, null, invalidTypeOriginalValues));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
     final Property invalid = Properties.columnProperty("invalid", Types.INTEGER).entityId(TestDomain.T_MASTER).get();
     final Map<Property, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
 
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(DOMAIN, TestDomain.T_MASTER, invalidPropertyValues, null));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidPropertyValues, null));
   }
 
   @Test

@@ -519,7 +519,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    */
   protected final EntityDefinition.Builder define(final String entityId, final String tableName,
                                                   final Property.Builder... propertyBuilders) {
-    return addDefinition(EntityDefinitions.definition(this, entityId, tableName, propertyBuilders));
+    return addDefinition(EntityDefinitions.definition(entityId, tableName, propertyBuilders));
   }
 
   /**
@@ -651,8 +651,8 @@ public class Domain implements EntityDefinition.Provider, Serializable {
                 definition.getEntityId() + ", for table: " + definition.getTableName());
       }
       validateForeignKeyProperties(definition);
-
       entityDefinitions.put(definition.getEntityId(), definition);
+      populateForeignDefinitions();
     }
 
     private void validateForeignKeyProperties(final EntityDefinition definition) {
@@ -674,6 +674,20 @@ public class Domain implements EntityDefinition.Provider, Serializable {
                     entityId + "." + foreignKeyProperty.getPropertyId() +
                     "' does not match the number of foreign properties in the referenced entity '" +
                     foreignKeyProperty.getForeignEntityId() + "'");
+          }
+        }
+      }
+    }
+
+    private void populateForeignDefinitions() {
+      for (final EntityDefinition definition : entityDefinitions.values()) {
+        for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
+          final String foreignKeyPropertyId = foreignKeyProperty.getPropertyId();
+          if (!definition.hasForeignDefinition(foreignKeyPropertyId)) {
+            final EntityDefinition foreignDefinition = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
+            if (foreignDefinition != null) {
+              definition.setForeignDefinition(foreignKeyPropertyId, foreignDefinition);
+            }
           }
         }
       }
