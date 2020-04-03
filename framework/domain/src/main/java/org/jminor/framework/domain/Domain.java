@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -637,6 +638,11 @@ public class Domain implements EntityDefinition.Provider, Serializable {
       }
 
       return definition;
+    }
+
+    @Override
+    public Collection<EntityDefinition> getEntityDefinitions() {
+      return unmodifiableCollection(entityDefinitions.values());
     }
 
     private void addDefinition(final EntityDefinition definition) {

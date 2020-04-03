@@ -321,11 +321,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
                                                                   final RMIClientSocketFactory clientSocketFactory,
                                                                   final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
-    final String domainId = (String) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID);
-    if (domainId == null) {
-      throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID + "' parameter not specified");
-    }
-    final Domain domainModel = Domain.getDomain(domainId);
+    final Domain domainModel = getClientDomainModel(remoteClient);
     if (connectionPool != null) {
       return new DefaultRemoteEntityConnection(domainModel, connectionPool, remoteClient, port,
               clientSocketFactory, serverSocketFactory);
@@ -669,6 +665,15 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
 
     return connection.hasBeenInactive(timeout);
+  }
+
+  private static Domain getClientDomainModel(final RemoteClient remoteClient) {
+    final String domainId = (String) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID);
+    if (domainId == null) {
+      throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID + "' parameter not specified");
+    }
+
+    return Domain.getDomain(domainId);
   }
 
   private static void loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
