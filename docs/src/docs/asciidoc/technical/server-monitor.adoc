@@ -1,5 +1,33 @@
 = Server Monitor
+:basedir: ..
+:imagesdir: ../images
 
-== Monitoring
+The JMinor Server Monitor provides a way to monitor the JMinor remote server.
 
-The JMinor Server Monitor provides a way to introspect the server.
+Below are screenshots of the different server monitor tabs, after ~20 minutes of running the <<{basedir}/tutorials/chinook.adoc#_load_test, Chinook load test>> and the <<{basedir}/tutorials/empdept.adoc#_load_test, EmpDept load test>>, with ~10 minutes of ramping up.
+
+== Server performance
+
+image::technical/server_monitor/server_performance.png[Server performance]
+
+== Connection pools
+
+image::technical/server_monitor/connection_pool.png[Connection pool]
+
+== Database performance
+
+image::technical/server_monitor/database_performance.png[Database performance]
+
+== Clients & users
+
+image::technical/server_monitor/clients_users.png[Clients users]
+
+== Environment
+
+=== System
+
+image::technical/server_monitor/environment_system.png[System]
+
+=== Domain
+
+image::technical/server_monitor/environment_domain.png[Domain]
