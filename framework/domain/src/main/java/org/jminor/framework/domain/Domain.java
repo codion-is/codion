@@ -9,7 +9,6 @@ import org.jminor.common.db.operation.DatabaseFunction;
 import org.jminor.common.db.operation.DatabaseOperation;
 import org.jminor.common.db.operation.DatabaseProcedure;
 import org.jminor.common.value.PropertyValue;
-import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.EntityDefinitions;
@@ -109,7 +108,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return a new {@link Entity} instance
    */
   public final Entity entity(final String entityId) {
-    return entity(getDefinition(entityId), null, null);
+    return getDefinition(entityId).entity(this);
   }
 
   /**
@@ -118,33 +117,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return a new {@link Entity} instance
    */
   public final Entity entity(final Entity.Key key) {
-    return Entities.entity(this, key);
-  }
-
-  /**
-   * Instantiates a new {@link Entity} instance with the given values and original values.
-   * @param entityId the entity id
-   * @param values the values
-   * @param originalValues the original values
-   * @return a new {@link Entity} instance
-   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
-   */
-  public final Entity entity(final String entityId, final Map<Property, Object> values,
-                             final Map<Property, Object> originalValues) {
-    return entity(getDefinition(entityId), values, originalValues);
-  }
-
-  /**
-   * Instantiates a new {@link Entity} instance with the given values and original values.
-   * @param entityDefinition the entity definition
-   * @param values the values
-   * @param originalValues the original values
-   * @return a new {@link Entity} instance
-   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
-   */
-  public final Entity entity(final EntityDefinition entityDefinition, final Map<Property, Object> values,
-                             final Map<Property, Object> originalValues) {
-    return Entities.entity(this, entityDefinition, values, originalValues);
+    return getDefinition(key.getEntityId()).entity(this, key);
   }
 
   /**
@@ -160,8 +133,8 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @see ColumnProperty.Builder#defaultValue(Object)
    */
   public final Entity defaultEntity(final String entityId, final Function<Property, Object> valueProvider) {
-    final Entity entity = entity(entityId);
     final EntityDefinition entityDefinition = getDefinition(entityId);
+    final Entity entity = entityDefinition.entity(this);
     final Collection<ColumnProperty> columnProperties = entityDefinition.getColumnProperties();
     for (final ColumnProperty property : columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
@@ -295,7 +268,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @return a new {@link Entity.Key} instance
    */
   public final Entity.Key key(final String entityId) {
-    return Entities.key(getDefinition(entityId));
+    return getDefinition(entityId).key();
   }
 
   /**
@@ -307,7 +280,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @throws NullPointerException in case entityId or value is null
    */
   public final Entity.Key key(final String entityId, final Integer value) {
-    return Entities.key(getDefinition(entityId), value);
+    return getDefinition(entityId).key(value);
   }
 
   /**
@@ -319,7 +292,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
    * @throws NullPointerException in case entityId or value is null
    */
   public final Entity.Key key(final String entityId, final Long value) {
-    return Entities.key(getDefinition(entityId), value);
+    return getDefinition(entityId).key(value);
   }
 
   /**

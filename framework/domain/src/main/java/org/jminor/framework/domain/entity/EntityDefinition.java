@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -352,7 +353,56 @@ public interface EntityDefinition extends Serializable {
   ColorProvider getColorProvider();
 
   /**
-   * Provides {@link EntityDefinition}s
+   * Creates a new {@link Entity} instance based on this definition
+   * @param definitionProvider the definition provider
+   * @return a new {@link Entity} instance
+   */
+  Entity entity(EntityDefinition.Provider definitionProvider);
+
+  /**
+   * Creates a new {@link Entity} instance based on this definition
+   * @param definitionProvider the definition provider
+   * @param key the primary key
+   * @return a new {@link Entity} instance
+   */
+  Entity entity(EntityDefinition.Provider definitionProvider, Entity.Key key);
+
+  /**
+   * Creates a new {@link Entity} instance based on this definition
+   * @param definitionProvider the definition provider
+   * @param values the values
+   * @param originalValues the original values
+   * @return a new {@link Entity} instance
+   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
+   */
+  Entity entity(EntityDefinition.Provider definitionProvider, Map<Property, Object> values, Map<Property, Object> originalValues);
+
+  /**
+   * Creates a new {@link Entity.Key} instance based on this definition
+   * @return a new {@link Entity.Key} instance
+   */
+  Entity.Key key();
+
+  /**
+   * Creates a new {@link Entity.Key} instance based on this definition, initialised with the given value
+   * @param value the key value, assumes a single integer key
+   * @return a new {@link Entity.Key} instance
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or value is null
+   */
+  Entity.Key key(Integer value);
+
+  /**
+   * Creates a new {@link Entity.Key} instance based on this definition, initialised with the given value
+   * @param value the key value, assumes a single long key
+   * @return a new {@link Entity.Key} instance
+   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws NullPointerException in case entityId or value is null
+   */
+  Entity.Key key(Long value);
+
+  /**
+   * Provides {@link EntityDefinition}s for a domain model.
    */
   interface Provider {
 
@@ -360,6 +410,7 @@ public interface EntityDefinition extends Serializable {
      * Returns the {@link EntityDefinition} for the given entityId
      * @param entityId the entityId
      * @return the entity definition
+     * @throws IllegalArgumentException in case a definition is not found
      */
     EntityDefinition getDefinition(String entityId);
   }
