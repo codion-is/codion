@@ -38,67 +38,6 @@ public final class Entities {
   private Entities() {}
 
   /**
-   * Creates a new {@link Entity} instance with the given primary key
-   * @param definitionProvider the domain definition provider
-   * @param key the primary key
-   * @return a new {@link Entity} instance
-   */
-  public static Entity entity(final EntityDefinition.Provider definitionProvider, final Entity.Key key) {
-    return new DefaultEntity(definitionProvider, key);
-  }
-
-  /**
-   * Instantiates a new {@link Entity} instance with the given values and original values.
-   * @param definitionProvider the domain definition provider
-   * @param entityDefinition the entity definition
-   * @param values the values
-   * @param originalValues the original values
-   * @return a new {@link Entity} instance
-   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
-   */
-  public static Entity entity(final EntityDefinition.Provider definitionProvider, final EntityDefinition entityDefinition,
-                              final Map<Property, Object> values, final Map<Property, Object> originalValues) {
-    return new DefaultEntity(definitionProvider, entityDefinition, values, originalValues);
-  }
-
-  /**
-   * Creates a new {@link Entity.Key} instance with the given entityId
-   * @param definition the entity definition
-   * @return a new {@link Entity.Key} instance
-   */
-  public static Entity.Key key(final EntityDefinition definition) {
-    if (definition.hasPrimaryKey()) {
-      return new DefaultEntityKey(definition, null);
-    }
-
-    return new DefaultEntityKey(definition);
-  }
-
-  /**
-   * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
-   * @param definition the entity definition
-   * @param value the key value, assumes a single integer key
-   * @return a new {@link Entity.Key} instance
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or value is null
-   */
-  public static Entity.Key key(final EntityDefinition definition, final Integer value) {
-    return new DefaultEntityKey(definition, value);
-  }
-
-  /**
-   * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
-   * @param definition the entity definition
-   * @param value the key value, assumes a single long key
-   * @return a new {@link Entity.Key} instance
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or value is null
-   */
-  public static Entity.Key key(final EntityDefinition definition, final Long value) {
-    return new DefaultEntityKey(definition, value);
-  }
-
-  /**
    * Returns true if the entity has a null primary key or a null original primary key,
    * which is the best guess about an entity being new, as in, not existing in a database.
    * @param entity the entity

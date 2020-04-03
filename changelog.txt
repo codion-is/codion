@@ -5808,3 +5808,4 @@
   ConditionType renamed to Operator
   EntityGeneratorModel updated to reflect recent changes
   DefaultEntityConnection.commitQuietly() removed, exceptions during commit no longer swallowed, checkReadOnly() renamed to checkIfReadOnly()
+  Entities, factory methods for Entity and Entity.Key moved to EntityDefinition, no longer static

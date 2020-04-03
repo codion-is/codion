@@ -581,6 +581,47 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return colorProvider;
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public Entity entity(final Provider definitionProvider) {
+    return entity(definitionProvider, null, null);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity entity(final Provider definitionProvider, final Entity.Key key) {
+    return new DefaultEntity(definitionProvider, key);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity entity(final Provider definitionProvider, final Map<Property, Object> values,
+                       final Map<Property, Object> originalValues) {
+    return new DefaultEntity(definitionProvider, this, values, originalValues);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.Key key() {
+    if (hasPrimaryKey()) {
+      return new DefaultEntityKey(this, null);
+    }
+
+    return new DefaultEntityKey(this);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.Key key(final Integer value) {
+    return new DefaultEntityKey(this, value);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.Key key(final Long value) {
+    return new DefaultEntityKey(this, value);
+  }
+
   /**
    * @return a {@link EntityDefinition.Builder} for this definition instance
    */

@@ -392,7 +392,7 @@ public final class EntityJSONParser {
   private Entity parseEntity(final JSONObject entityObject) {
     final String entityId = entityObject.getString(ENTITY_ID);
 
-    return domain.entity(entityId, parseValues(entityObject, entityId, VALUES),
+    return domain.getDefinition(entityId).entity(domain, parseValues(entityObject, entityId, VALUES),
             entityObject.isNull(ORIGINAL_VALUES) ? null : parseValues(entityObject, entityId, ORIGINAL_VALUES));
   }
 
