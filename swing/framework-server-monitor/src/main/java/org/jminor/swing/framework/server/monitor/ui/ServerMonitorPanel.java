@@ -3,11 +3,13 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.common.TaskScheduler;
 import org.jminor.common.value.Values;
+import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
+import org.jminor.swing.common.ui.value.ComponentValue;
 import org.jminor.swing.common.ui.value.Nullable;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
@@ -23,6 +25,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -32,11 +35,15 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
+
+import static org.jminor.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
 /**
  * A ServerMonitorPanel
@@ -105,13 +112,37 @@ public final class ServerMonitorPanel extends JPanel {
     }
   }
 
+  private void setUpdateInterval() {
+    final ComponentValue<Integer, IntegerField> componentValue = NumericalValues.integerValue(5);
+    final IntegerField field = componentValue.getComponent();
+    field.setColumns(6);
+    field.setHorizontalAlignment(SwingConstants.CENTER);
+    field.selectAll();
+    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    panel.add(field);
+    final JDialog dialog = new JDialog(Windows.getParentWindow(this), "Update interval (s)");
+    Dialogs.prepareOkCancelDialog(dialog, this, panel, Controls.control(() -> {
+      setUpdateInterval(componentValue.get());
+      dialog.dispose();
+    }), Controls.control(dialog::dispose));
+    dialog.setVisible(true);
+  }
+
+  private void setUpdateInterval(final Integer interval) {
+    getModel().getUpdateIntervalValue().set(interval);
+    getModel().getDatabaseMonitor().getUpdateIntervalValue().set(interval);
+    getModel().getDatabaseMonitor().getConnectionPoolMonitor().getConnectionPoolInstanceMonitors()
+            .forEach(poolMonitor -> poolMonitor.getUpdateIntervalValue().set(interval));
+    getModel().getClientMonitor().getUpdateIntervalValue().set(interval);
+  }
+
   private void initializeUI() throws RemoteException {
     final JPanel infoPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     infoPanel.add(new JLabel("Connections", JLabel.RIGHT));
     infoPanel.add(initializeConnectionCountField());
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
     final JSpinner connectionLimitSpinner = new JSpinner(
-            NumericalValues.integerValueSpinnerModel(model, "connectionLimit", model.getConnectionLimitObserver()));
+            integerValueSpinnerModel(model, "connectionLimit", model.getConnectionLimitObserver()));
     ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     infoPanel.add(connectionLimitSpinner);
     infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
@@ -119,6 +150,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
     infoPanel.add(initializeLogLevelField());
     infoPanel.add(new JButton(Controls.control(this::shutdownServer, "Shutdown")));
+    infoPanel.add(new JButton(Controls.control(this::setUpdateInterval, "Update interval")));
 
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
@@ -134,8 +166,8 @@ public final class ServerMonitorPanel extends JPanel {
   private JPanel initializePerformancePanel() {
     final JPanel controlPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
 
-    final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model.getUpdateScheduler(),
-            TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
+    final JSpinner updateIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getUpdateIntervalValue()));
+    ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);

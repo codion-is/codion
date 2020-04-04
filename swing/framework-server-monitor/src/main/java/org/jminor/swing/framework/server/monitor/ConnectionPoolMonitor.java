@@ -11,6 +11,7 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.user.User;
+import org.jminor.common.value.Value;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -52,6 +53,7 @@ public final class ConnectionPoolMonitor {
 
   private final TaskScheduler updateScheduler = new TaskScheduler(this::updateStatistics,
           EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
+  private final Value<Integer> updateIntervalValue = new IntervalValue(updateScheduler);
 
   private long lastStatisticsUpdateTime = 0;
 
@@ -280,10 +282,10 @@ public final class ConnectionPoolMonitor {
   }
 
   /**
-   * @return the stat update scheduler
+   * @return the value controlling the update interval
    */
-  public TaskScheduler getUpdateScheduler() {
-    return updateScheduler;
+  public Value<Integer> getUpdateIntervalValue() {
+    return updateIntervalValue;
   }
 
   /**

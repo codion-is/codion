@@ -10,6 +10,7 @@ import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.user.User;
+import org.jminor.common.value.Value;
 import org.jminor.common.version.Version;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
@@ -68,6 +69,7 @@ public final class ClientUserMonitor {
       LOG.error("Error while refreshing user history table model", e);
     }
   }, EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
+  private final Value<Integer> updateIntervalValue = new IntervalValue(updateScheduler);
 
   /**
    * Instantiates a new {@link ClientUserMonitor}
@@ -190,10 +192,10 @@ public final class ClientUserMonitor {
   }
 
   /**
-   * @return the data update scheduler
+   * @return the value controlling the update interval
    */
-  public TaskScheduler getUpdateScheduler() {
-    return updateScheduler;
+  public Value<Integer> getUpdateIntervalValue() {
+    return updateIntervalValue;
   }
 
   private List<String> getSortedClientTypes() throws RemoteException {
