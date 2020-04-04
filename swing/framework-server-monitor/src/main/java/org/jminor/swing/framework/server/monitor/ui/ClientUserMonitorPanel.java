@@ -3,14 +3,12 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.common.TaskScheduler;
 import org.jminor.common.i18n.Messages;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.FilteredTable;
-import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.framework.server.monitor.ClientMonitor;
 import org.jminor.swing.framework.server.monitor.ClientUserMonitor;
 
@@ -27,9 +25,12 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
+
+import static org.jminor.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
 /**
  * A ClientUserMonitorPanel
@@ -96,7 +97,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     actionBase.add(new JLabel("Connection timeout (s)"));
     final JSpinner connectionTimeoutSpinner = new JSpinner(
-            NumericalValues.integerValueSpinnerModel(model, "connectionTimeout", model.getConnectionTimeoutObserver()));
+            integerValueSpinnerModel(model, "connectionTimeout", model.getConnectionTimeoutObserver()));
     ((JSpinner.DefaultEditor) connectionTimeoutSpinner.getEditor()).getTextField().setColumns(7);
     actionBase.add(connectionTimeoutSpinner);
 
@@ -124,8 +125,8 @@ public final class ClientUserMonitorPanel extends JPanel {
 
   private JPanel createConnectionHistoryPanel() {
     final JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    final JSpinner updateIntervalSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(model.getUpdateScheduler(),
-            TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
+    final JSpinner updateIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getUpdateIntervalValue()));
+    ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);

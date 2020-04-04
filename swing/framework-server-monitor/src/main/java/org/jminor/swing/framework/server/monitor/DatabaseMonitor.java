@@ -5,6 +5,7 @@ package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.Database;
+import org.jminor.common.value.Value;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
@@ -34,6 +35,7 @@ public final class DatabaseMonitor {
     }
     catch (final RemoteException ignored) {/*ignored*/}
   }, EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
+  private final Value<Integer> updateIntervalValue = new IntervalValue(updateScheduler);
 
   /**
    * Instantiates a new {@link DatabaseMonitor} for the given server
@@ -98,9 +100,9 @@ public final class DatabaseMonitor {
   }
 
   /**
-   * @return the stat update scheduler
+   * @return the value controlling the update interval
    */
-  public TaskScheduler getUpdateScheduler() {
-    return updateScheduler;
+  public Value<Integer> getUpdateIntervalValue() {
+    return updateIntervalValue;
   }
 }

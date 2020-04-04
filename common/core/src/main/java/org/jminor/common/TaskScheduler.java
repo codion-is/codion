@@ -4,7 +4,7 @@
 package org.jminor.common;
 
 import org.jminor.common.event.Event;
-import org.jminor.common.event.EventObserver;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
 
 import java.util.concurrent.Executors;
@@ -33,8 +33,6 @@ import static java.util.Objects.requireNonNull;
  * </pre>
  */
 public final class TaskScheduler {
-
-  public static final String INTERVAL_PROPERTY = "interval";
 
   private final Object lock = new Object();
   private final Runnable task;
@@ -116,13 +114,6 @@ public final class TaskScheduler {
   }
 
   /**
-   * @return an EventObserver notified each time the interval is set
-   */
-  public EventObserver<Integer> getIntervalObserver() {
-    return intervalChangedEvent.getObserver();
-  }
-
-  /**
    * Starts this TaskScheduler, if it is running it is restarted, using the initial delay specified during construction.
    * @return this TaskScheduler instance
    */
@@ -155,6 +146,13 @@ public final class TaskScheduler {
     synchronized (lock) {
       return executorService != null && !executorService.isShutdown();
     }
+  }
+
+  /**
+   * @param listener a listener notified each time the interval is set
+   */
+  public void addIntervalListener(final EventDataListener<Integer> listener) {
+    intervalChangedEvent.addDataListener(listener);
   }
 
   private static final class DaemonThreadFactory implements ThreadFactory {

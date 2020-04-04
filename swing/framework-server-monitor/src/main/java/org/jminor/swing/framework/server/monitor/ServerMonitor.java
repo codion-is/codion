@@ -13,6 +13,7 @@ import org.jminor.common.event.Events;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
+import org.jminor.common.value.Value;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
@@ -60,6 +61,7 @@ public final class ServerMonitor {
 
   private final TaskScheduler updateScheduler = new TaskScheduler(this::updateStatistics,
           EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
+  private final Value<Integer> updateIntervalValue = new IntervalValue(updateScheduler);
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
@@ -356,10 +358,10 @@ public final class ServerMonitor {
   }
 
   /**
-   * @return the stat update scheduler
+   * @return the value controlling the update interval
    */
-  public TaskScheduler getUpdateScheduler() {
-    return updateScheduler;
+  public Value<Integer> getUpdateIntervalValue() {
+    return updateIntervalValue;
   }
 
   /**
