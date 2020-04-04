@@ -7,12 +7,12 @@ import org.jminor.framework.demos.world.domain.World;
 import org.jminor.framework.demos.world.model.CountryCustomModel;
 import org.jminor.framework.demos.world.model.CountryModel;
 import org.jminor.framework.demos.world.model.WorldAppModel;
-import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
+import java.awt.Dimension;
 import java.util.Locale;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
@@ -61,6 +61,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.world.domain.World");
     new WorldAppPanel().startApplication("World", null, false,
-            Windows.getScreenSizeRatio(0.8), Users.parseUser("scott:tiger"));
+            new Dimension(1024, 720), Users.parseUser("scott:tiger"));
   }
 }

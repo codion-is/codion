@@ -20,7 +20,6 @@ import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.user.User;
-import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
@@ -557,7 +556,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     final WhereCondition combinedCondition = whereCondition(condition(condition.getEntityId(), conditionSet(Conjunction.AND,
             expand(condition.getCondition(), entityDefinition),
-            Conditions.propertyCondition(propertyId, NOT_LIKE, null))), entityDefinition);
+            propertyCondition(propertyId, NOT_LIKE, null))), entityDefinition);
     final ColumnProperty propertyToSelect = entityDefinition.getColumnProperty(propertyId);
     final String columnName = propertyToSelect.getColumnName();
     final String selectQuery = selectQuery(entityDefinition.getSelectTableName(),
