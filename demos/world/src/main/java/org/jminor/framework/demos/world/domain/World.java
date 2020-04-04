@@ -266,7 +266,7 @@ public final class World extends Domain {
             blobProperty(LOOKUP_COUNTRY_FLAG, "Flag"),
             columnProperty(LOOKUP_COUNTRY_CODE2, Types.VARCHAR, "Code2"),
             columnProperty(LOOKUP_CITY_ID),
-            columnProperty(LOOKUP_CITY_NAME, Types.VARCHAR, "Name"),
+            columnProperty(LOOKUP_CITY_NAME, Types.VARCHAR, "City"),
             columnProperty(LOOKUP_CITY_DISTRICT, Types.VARCHAR, "District"),
             columnProperty(LOOKUP_CITY_POPULATION, Types.INTEGER, "City population")
                     .useNumberFormatGrouping(true))

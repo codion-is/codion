@@ -1,7 +1,28 @@
 = Chinook Tutorial
 :docinfo: shared-head
+:imagesdir: ../images
 :dir-source: ../../../../../demos/chinook/src/main/java
 :dir-test-source: ../../../../../demos/chinook/src/test/java
+
+== Screenshots
+
+.Artists
+[%collapsible]
+====
+image::tutorials/chinook/artists.png[]
+====
+
+.Playlists
+[%collapsible]
+====
+image::tutorials/chinook/playlists.png[]
+====
+
+.Customers
+[%collapsible]
+====
+image::tutorials/chinook/customers.png[]
+====
 
 == Domain
 

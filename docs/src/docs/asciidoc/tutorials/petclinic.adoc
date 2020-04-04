@@ -1,7 +1,16 @@
 = Petclinic Tutorial
 :docinfo: shared-head
+:imagesdir: ../images
 :dir-source: ../../../../../demos/petclinic/src/main/java
 :dir-test-source: ../../../../../demos/petclinic/src/test/java
+
+== Screenshots
+
+.Owners
+[%collapsible]
+====
+image::tutorials/petclinic/owners.png[]
+====
 
 == Domain
 
