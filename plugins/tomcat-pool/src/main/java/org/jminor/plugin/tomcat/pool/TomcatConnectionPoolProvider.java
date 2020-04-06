@@ -43,6 +43,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     pp.setTestOnBorrow(true);
     pp.setValidator(new ConnectionValidator(database));
     pp.setMaxActive(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
+    pp.setInitialSize(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
     pp.setMaxIdle(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
     pp.setMinIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());
     pp.setSuspectTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get() / 1000);
@@ -84,14 +85,6 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     }
 
     @Override
-    public int getMaximumRetryWaitPeriod() {
-      return 0;
-    }
-
-    @Override
-    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {/*Not implemented*/}
-
-    @Override
     public int getMinimumPoolSize() {
       return getPool().getMinIdle();
     }
@@ -121,14 +114,6 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     public void setMaximumCheckOutTime(final int value) {
       getPool().setMaxWait(value);
     }
-
-    @Override
-    public int getNewConnectionThreshold() {
-      return 0;
-    }
-
-    @Override
-    public void setNewConnectionThreshold(final int value) {}
 
     @Override
     protected Connection fetchConnection() throws SQLException {

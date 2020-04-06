@@ -44,7 +44,6 @@ public final class ConnectionPoolMonitor {
   private final XYSeries inUseSeries = new XYSeries("In use");
   private final XYSeriesCollection fineGrainedStatisticsCollection = new XYSeriesCollection();
   private final XYSeriesCollection statisticsCollection = new XYSeriesCollection();
-  private final XYSeries delayedRequestsPerSecond = new XYSeries("Delayed");
   private final XYSeries failedRequestsPerSecond = new XYSeries("Failed");
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -70,7 +69,6 @@ public final class ConnectionPoolMonitor {
     this.statisticsCollection.addSeries(minimumPoolSizeSeries);
     this.statisticsCollection.addSeries(maximumPoolSizeSeries);
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
-    this.connectionRequestsPerSecondCollection.addSeries(delayedRequestsPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(failedRequestsPerSecond);
     this.checkOutTimeCollection.addSeries(averageCheckOutTime);
     updateStatistics();
@@ -147,20 +145,6 @@ public final class ConnectionPoolMonitor {
   }
 
   /**
-   * @return the maximum period to wait before retrying to get a connection
-   */
-  public int getMaximumRetryWaitPeriod() {
-    return connectionPool.getMaximumRetryWaitPeriod();
-  }
-
-  /**
-   * @param value the maximum period to wait before retrying to get a connection
-   */
-  public void setMaximumRetryWaitPeriod(final int value) {
-    connectionPool.setMaximumRetryWaitPeriod(value);
-  }
-
-  /**
    * @return the maximum wait time for a connection
    */
   public int getMaximumCheckOutTime() {
@@ -172,20 +156,6 @@ public final class ConnectionPoolMonitor {
    */
   public void setMaximumCheckOutTime(final int value) {
     connectionPool.setMaximumCheckOutTime(value);
-  }
-
-  /**
-   * @return the wait threshold before creating a new connection (if pool size allows)
-   */
-  public int getNewConnectionThreshold() {
-    return connectionPool.getNewConnectionThreshold();
-  }
-
-  /**
-   * @param value the wait threshold before creating a new connection
-   */
-  public void setNewConnectionThreshold(final int value) {
-    connectionPool.setNewConnectionThreshold(value);
   }
 
   /**
@@ -244,7 +214,6 @@ public final class ConnectionPoolMonitor {
     inPoolSeries.clear();
     inUseSeries.clear();
     connectionRequestsPerSecond.clear();
-    delayedRequestsPerSecond.clear();
     failedRequestsPerSecond.clear();
     poolSizeSeries.clear();
     minimumPoolSizeSeries.clear();
@@ -304,7 +273,6 @@ public final class ConnectionPoolMonitor {
     inPoolSeries.add(poolStatistics.getTimestamp(), poolStatistics.getAvailable());
     inUseSeries.add(poolStatistics.getTimestamp(), poolStatistics.getInUse());
     connectionRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getRequestsPerSecond());
-    delayedRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getDelayedRequestsPerSecond());
     failedRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getFailedRequestsPerSecond());
     averageCheckOutTime.add(poolStatistics.getTimestamp(), poolStatistics.getAverageGetTime(),
             poolStatistics.getMinimumCheckOutTime(), poolStatistics.getMaximumCheckOutTime());

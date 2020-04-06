@@ -119,16 +119,6 @@ public interface ConnectionPool {
   void setConnectionTimeout(int timeout);
 
   /**
-   * @return the maximum number of milliseconds the pool waits between checkout retries
-   */
-  int getMaximumRetryWaitPeriod();
-
-  /**
-   * @param maximumRetryWaitPeriod the maximum number of milliseconds the pool waits between checkout retries
-   */
-  void setMaximumRetryWaitPeriod(int maximumRetryWaitPeriod);
-
-  /**
    * @return the minimum number of connections to keep in the pool
    */
   int getMinimumPoolSize();
@@ -165,52 +155,4 @@ public interface ConnectionPool {
    * @throws IllegalArgumentException if value is less than 0
    */
   void setMaximumCheckOutTime(int value);
-
-  /**
-   * @return the time to wait before a new connection is created
-   */
-  int getNewConnectionThreshold();
-
-  /**
-   * @param value the time to wait before creating a new connection in ms
-   * @throws IllegalArgumentException in case value is negative or larger than {@code maximumCheckOutTime}
-   */
-  void setNewConnectionThreshold(int value);
-
-  /**
-   * Facilitates the counting of connection pool events
-   */
-  interface Counter {
-
-    /**
-     * Increments the number of the requests made counter
-     */
-    void incrementRequestCounter();
-
-    /**
-     * Increments the number of requests made that failed counter
-     */
-    void incrementFailedRequestCounter();
-
-    /**
-     * Increments the number of the connections created counter
-     */
-    void incrementConnectionsCreatedCounter();
-
-    /**
-     * Increments the number of the connections destroyed counter
-     */
-    void incrementConnectionsDestroyedCounter();
-
-    /**
-     * Increments the number of requests made that had to wait for a connection counter
-     */
-    void incrementDelayedRequestCounter();
-
-    /**
-     * Adds a connection check out time
-     * @param milliseconds the check out time in milliseconds
-     */
-    void addCheckOutTime(long milliseconds);
-  }
 }

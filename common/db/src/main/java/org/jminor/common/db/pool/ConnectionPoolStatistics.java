@@ -75,16 +75,6 @@ public interface ConnectionPoolStatistics {
   int getRequestsPerSecond();
 
   /**
-   * @return the number of delayed connection requests since last reset
-   */
-  int getDelayedRequests();
-
-  /**
-   * @return the number of delayed connection requests per second
-   */
-  int getDelayedRequestsPerSecond();
-
-  /**
    * @return the number of failed connection requests since last reset
    */
   int getFailedRequests();

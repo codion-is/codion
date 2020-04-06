@@ -79,14 +79,6 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     }
 
     @Override
-    public int getMaximumRetryWaitPeriod() {
-      return 0;
-    }
-
-    @Override
-    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {/*not implemented*/}
-
-    @Override
     public int getMinimumPoolSize() {
       return config.getMinimumIdle();
     }
@@ -122,6 +114,11 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     }
 
     @Override
+    public void setMaximumCheckOutTime(final int value) {
+      config.setConnectionTimeout(value);
+    }
+
+    @Override
     protected Connection fetchConnection() throws SQLException {
       return getPool().getConnection();
     }
@@ -130,18 +127,5 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     protected int getWaiting() {
       return getPool().getThreadsAwaitingConnection();
     }
-
-    @Override
-    public void setMaximumCheckOutTime(final int value) {
-      config.setConnectionTimeout(value);
-    }
-
-    @Override
-    public int getNewConnectionThreshold() {
-      return 0;
-    }
-
-    @Override
-    public void setNewConnectionThreshold(final int value) {/*Not implemented*/}
   }
 }

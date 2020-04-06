@@ -5817,3 +5817,4 @@
   ServerMonitorPanel, added button to set the update interval
 0.14.3
   AbstractConnectionPool refactored, getConnection() now implemented and final, fetchConnection() added for subclasses
+  ConnectionPool and AbstractConnectionPool refactored further, ConnectionPool.Counter removed

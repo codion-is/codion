@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
@@ -13,9 +12,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 
@@ -25,9 +21,6 @@ import static java.lang.reflect.Proxy.newProxyInstance;
  */
 public abstract class AbstractConnectionPool<T> implements ConnectionPool {
 
-  private static final int FINE_GRAINED_STATS_SIZE = 1000;
-  private static final int FINE_GRAINED_COLLECTION_INTERVAL = 10;
-
   /**
    * The actual connection pool object
    */
@@ -35,13 +28,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   private final Database database;
   private final User user;
   private final DataSource poolDataSource;
-
-  private final LinkedList<DefaultConnectionPoolState> fineGrainedCStatistics = new LinkedList<>();
-  private boolean collectFineGrainedStatistics = false;
-  private final TaskScheduler fineGrainedStatisticsCollector = new TaskScheduler(new StatisticsCollector(),
-          FINE_GRAINED_COLLECTION_INTERVAL, TimeUnit.MILLISECONDS);
-
-  private final DefaultConnectionPoolCounter counter = new DefaultConnectionPoolCounter();
+  private final DefaultConnectionPoolCounter counter;
 
   /**
    * @param database the underlying database
@@ -53,6 +40,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     this.user = user;
     this.poolDataSource = (DataSource) newProxyInstance(DataSource.class.getClassLoader(),
             new Class[] {DataSource.class}, new DataSourceInvocationHandler(poolDataSource));
+    this.counter = new DefaultConnectionPoolCounter(this);
   }
 
   /** {@inheritDoc} */
@@ -100,55 +88,19 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   /** {@inheritDoc} */
   @Override
   public final boolean isCollectFineGrainedStatistics() {
-    return collectFineGrainedStatistics;
+    return counter.isCollectFineGrainedStatistics();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setCollectFineGrainedStatistics(final boolean collectFineGrainedStatistics) {
-    if (collectFineGrainedStatistics) {
-      initializePoolStatistics();
-      fineGrainedStatisticsCollector.start();
-    }
-    else {
-      fineGrainedStatisticsCollector.stop();
-      fineGrainedCStatistics.clear();
-    }
-    this.collectFineGrainedStatistics = collectFineGrainedStatistics;
+    counter.setCollectFineGrainedStatics(collectFineGrainedStatistics);
   }
 
   /** {@inheritDoc} */
   @Override
   public final ConnectionPoolStatistics getStatistics(final long since) {
-    final DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(getUser());
-    counter.updateStatistics();
-    synchronized (pool) {
-      final int inPool = getSize();
-      final int inUseCount = getInUse();
-      statistics.setAvailableInPool(inPool);
-      statistics.setConnectionsInUse(inUseCount);
-      statistics.setPoolSize(inPool + inUseCount);
-      statistics.setConnectionsCreated(counter.getConnectionsCreated());
-      statistics.setConnectionsDestroyed(counter.getConnectionsDestroyed());
-      statistics.setCreationDate(counter.getCreationDate());
-      statistics.setConnectionRequests(counter.getConnectionRequests());
-      statistics.setConnectionRequestsDelayed(counter.getConnectionRequestsDelayed());
-      statistics.setRequestsDelayedPerSecond(counter.getRequestsDelayedPerSecond());
-      statistics.setConnectionRequestsFailed(counter.getConnectionRequestsFailed());
-      statistics.setRequestsFailedPerSecond(counter.getRequestsFailedPerSecond());
-      statistics.setRequestsPerSecond(counter.getRequestsPerSecond());
-      statistics.setAverageCheckOutTime(counter.getAverageCheckOutTime());
-      statistics.setMinimumCheckOutTime(counter.getMinimumCheckOutTime());
-      statistics.setMaximumCheckOutTime(counter.getMaximumCheckOutTime());
-      statistics.setResetDate(counter.getResetDate());
-      statistics.setTimestamp(System.currentTimeMillis());
-      if (collectFineGrainedStatistics && since >= 0) {
-        statistics.setFineGrainedStatistics(fineGrainedCStatistics.stream()
-                .filter(state -> state.getTimestamp() >= since).collect(Collectors.toList()));
-      }
-    }
-
-    return statistics;
+    return counter.getStatistics(since);
   }
 
   /**
@@ -187,10 +139,15 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
    */
   protected abstract int getWaiting();
 
-  private void initializePoolStatistics() {
-    for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {
-      fineGrainedCStatistics.add(new DefaultConnectionPoolState());
-    }
+  /**
+   * Updates the given state instance with the current pool state.
+   * @param state the state to update
+   * @return the updated state
+   */
+  final ConnectionPoolState updateState(final ConnectionPoolState state) {
+    state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
+
+    return state;
   }
 
   private final class DataSourceInvocationHandler implements InvocationHandler {
@@ -231,21 +188,6 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
       }
 
       return connectionMethod.invoke(connection, connectionArgs);
-    }
-  }
-
-  private final class StatisticsCollector implements Runnable {
-
-    /**
-     * Adds the current state of the pool to the fine grained connection pool log
-     */
-    @Override
-    public void run() {
-      synchronized (pool) {
-        final DefaultConnectionPoolState state = fineGrainedCStatistics.removeFirst();
-        state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
-        fineGrainedCStatistics.addLast(state);
-      }
     }
   }
 }

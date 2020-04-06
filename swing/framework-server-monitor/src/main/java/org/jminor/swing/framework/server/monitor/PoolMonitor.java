@@ -101,16 +101,6 @@ public final class PoolMonitor {
     }
 
     @Override
-    public int getMaximumRetryWaitPeriod() {
-      try {
-        return server.getMaximumPoolRetryWaitPeriod(user);
-      }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
     public int getConnectionTimeout() {
       try {
         return server.getPooledConnectionTimeout(user);
@@ -151,16 +141,6 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {
-      try {
-        server.setMaximumPoolRetryWaitPeriod(user, maximumRetryWaitPeriod);
-      }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
     public int getMaximumCheckOutTime() {
       try {
         return server.getMaximumPoolCheckOutTime(user);
@@ -174,26 +154,6 @@ public final class PoolMonitor {
     public void setMaximumCheckOutTime(final int value) {
       try {
         server.setMaximumPoolCheckOutTime(user, value);
-      }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
-    public int getNewConnectionThreshold() {
-      try {
-        return server.getPoolConnectionThreshold(user);
-      }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
-    public void setNewConnectionThreshold(final int value) {
-      try {
-        server.setPoolConnectionThreshold(user, value);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
