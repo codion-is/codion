@@ -9,13 +9,15 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 
 import javax.sql.DataSource;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static java.lang.reflect.Proxy.newProxyInstance;
 
 /**
  * A default base implementation of the ConnectionPool wrapper, handling the collection of statistics
@@ -32,6 +34,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   private T pool;
   private final Database database;
   private final User user;
+  private final DataSource poolDataSource;
 
   private final LinkedList<DefaultConnectionPoolState> fineGrainedCStatistics = new LinkedList<>();
   private boolean collectFineGrainedStatistics = false;
@@ -43,10 +46,13 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   /**
    * @param database the underlying database
    * @param user the connection pool user
+   * @param poolDataSource the DataSource
    */
-  public AbstractConnectionPool(final Database database, final User user) {
+  public AbstractConnectionPool(final Database database, final User user, final DataSource poolDataSource) {
     this.database = database;
     this.user = user;
+    this.poolDataSource = (DataSource) newProxyInstance(DataSource.class.getClassLoader(),
+            new Class[] {DataSource.class}, new DataSourceInvocationHandler(poolDataSource));
   }
 
   /** {@inheritDoc} */
@@ -59,6 +65,30 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   @Override
   public final User getUser() {
     return user;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final DataSource getPoolDataSource() {
+    return poolDataSource;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Connection getConnection() throws DatabaseException {
+    final long nanoTime = System.nanoTime();
+    try {
+      counter.incrementRequestCounter();
+
+      return fetchConnection();
+    }
+    catch (final SQLException e) {
+      counter.incrementFailedRequestCounter();
+      throw new DatabaseException(e, e.getMessage());
+    }
+    finally {
+      counter.addCheckOutTime((System.nanoTime() - nanoTime) / 1000000);
+    }
   }
 
   /** {@inheritDoc} */
@@ -122,6 +152,13 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   }
 
   /**
+   * Fetches a connection from the underlying pool.
+   * @return a connection from the underlying pool
+   * @throws SQLException in case of an exception.
+   */
+  protected abstract Connection fetchConnection() throws SQLException;
+
+  /**
    * @param pool the underlying connection pool
    */
   protected void setPool(final T pool) {
@@ -150,47 +187,50 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
    */
   protected abstract int getWaiting();
 
-  /**
-   * @return the counter
-   */
-  protected final ConnectionPool.Counter getCounter() {
-    return counter;
-  }
-
-  /**
-   * Handles a method invocation for this pool, counting created and destroyed connections.
-   * @param database the database
-   * @param user the user
-   * @param dataSource the data source
-   * @param dataSourceMethod the data source method being called
-   * @param dataSourceArgs the data source method arguments
-   * @return the method return value
-   * @throws DatabaseException in case of a an exception
-   * @throws IllegalAccessException in case of illegal access
-   * @throws InvocationTargetException in case of invocation exception
-   */
-  protected final Object onInvocation(final Database database, final User user, final DataSource dataSource,
-                                      final Method dataSourceMethod, final Object[] dataSourceArgs)
-          throws DatabaseException, IllegalAccessException, InvocationTargetException {
-    if ("getConnection".equals(dataSourceMethod.getName())) {
-      final Connection connection = database.createConnection(user);
-      counter.incrementConnectionsCreatedCounter();
-
-      return Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class}, (connectionProxy, connectionMethod, connectionArgs) -> {
-        if ("close".equals(connectionMethod.getName())) {
-          counter.incrementConnectionsDestroyedCounter();
-        }
-
-        return connectionMethod.invoke(connection, connectionArgs);
-      });
-    }
-
-    return dataSourceMethod.invoke(dataSource, dataSourceArgs);
-  }
-
   private void initializePoolStatistics() {
     for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {
       fineGrainedCStatistics.add(new DefaultConnectionPoolState());
+    }
+  }
+
+  private final class DataSourceInvocationHandler implements InvocationHandler {
+
+    private final DataSource dataSource;
+
+    private DataSourceInvocationHandler(final DataSource dataSource) {
+      this.dataSource = dataSource;
+    }
+
+    @Override
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      if ("getConnection".equals(method.getName())) {
+        final Connection connection = database.createConnection(user);
+        counter.incrementConnectionsCreatedCounter();
+
+        return newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class},
+                new ConnectionInvocationHandler(connection));
+      }
+
+      return method.invoke(dataSource, args);
+    }
+  }
+
+  private final class ConnectionInvocationHandler implements InvocationHandler {
+
+    private final Connection connection;
+
+    private ConnectionInvocationHandler(final Connection connection) {
+      this.connection = connection;
+    }
+
+    @Override
+    public Object invoke(final Object connectionProxy, final Method connectionMethod,
+                         final Object[] connectionArgs) throws Throwable {
+      if ("close".equals(connectionMethod.getName())) {
+        counter.incrementConnectionsDestroyedCounter();
+      }
+
+      return connectionMethod.invoke(connection, connectionArgs);
     }
   }
 

@@ -9,6 +9,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 import org.jminor.common.value.PropertyValue;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 
 /**
@@ -57,6 +58,11 @@ public interface ConnectionPool {
    * @return the user this connection pool is based on.
    */
   User getUser();
+
+  /**
+   * @return the DataSource used by this connection pool
+   */
+  DataSource getPoolDataSource();
 
   /**
    * Closes this connection pool, connections subsequently checked in are disconnected

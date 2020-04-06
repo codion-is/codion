@@ -9,6 +9,7 @@ import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.user.User;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -260,7 +261,14 @@ public final class PoolMonitor {
     }
 
     @Override
-    public Connection getConnection() {return null;}
+    public Connection getConnection() {
+      return null;
+    }
+
+    @Override
+    public DataSource getPoolDataSource() {
+      return null;
+    }
 
     @Override
     public void close() {/*Not required*/}
