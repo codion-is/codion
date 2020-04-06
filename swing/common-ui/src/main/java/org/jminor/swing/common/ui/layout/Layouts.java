@@ -60,6 +60,18 @@ public final class Layouts {
   }
 
   /**
+   * Creates a FlexibleGridLayout using the default vertical and horizontal gap value,
+   * with neither row heights nor column widths fixed.
+   * @param rows the number of rows
+   * @param columns the number of columns
+   * @return a FlexibleGridLayout
+   * @see #HORIZONTAL_VERTICAL_GAP
+   */
+  public static FlexibleGridLayout flexibleGridLayout(final int rows, final int columns) {
+    return flexibleGridLayout(rows, columns, false, false);
+  }
+
+  /**
    * Creates a FlexibleGridLayout using the default vertical and horizontal gap value
    * @param rows the number of rows
    * @param columns the number of columns

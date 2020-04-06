@@ -9,6 +9,7 @@ import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.user.User;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -100,16 +101,6 @@ public final class PoolMonitor {
     }
 
     @Override
-    public int getMaximumRetryWaitPeriod() {
-      try {
-        return server.getMaximumPoolRetryWaitPeriod(user);
-      }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
     public int getConnectionTimeout() {
       try {
         return server.getPooledConnectionTimeout(user);
@@ -150,16 +141,6 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {
-      try {
-        server.setMaximumPoolRetryWaitPeriod(user, maximumRetryWaitPeriod);
-      }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
     public int getMaximumCheckOutTime() {
       try {
         return server.getMaximumPoolCheckOutTime(user);
@@ -173,26 +154,6 @@ public final class PoolMonitor {
     public void setMaximumCheckOutTime(final int value) {
       try {
         server.setMaximumPoolCheckOutTime(user, value);
-      }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
-    public int getNewConnectionThreshold() {
-      try {
-        return server.getPoolConnectionThreshold(user);
-      }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
-    public void setNewConnectionThreshold(final int value) {
-      try {
-        server.setPoolConnectionThreshold(user, value);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -260,7 +221,14 @@ public final class PoolMonitor {
     }
 
     @Override
-    public Connection getConnection() {return null;}
+    public Connection getConnection() {
+      return null;
+    }
+
+    @Override
+    public DataSource getPoolDataSource() {
+      return null;
+    }
 
     @Override
     public void close() {/*Not required*/}

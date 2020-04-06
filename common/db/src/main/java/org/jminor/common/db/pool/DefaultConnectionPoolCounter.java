@@ -3,24 +3,35 @@
  */
 package org.jminor.common.db.pool;
 
+import org.jminor.common.TaskScheduler;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
- * A default ConnectionPool.Counter implementation
+ * A connection pool statistics collector.
  */
-final class DefaultConnectionPoolCounter implements ConnectionPool.Counter {
+final class DefaultConnectionPoolCounter {
 
   private static final double THOUSAND = 1000d;
+  private static final int FINE_GRAINED_STATS_SIZE = 1000;
+  private static final int FINE_GRAINED_COLLECTION_INTERVAL = 10;
 
+  private final AbstractConnectionPool connectionPool;
   private final long creationDate = System.currentTimeMillis();
+  private final LinkedList<ConnectionPoolState> fineGrainedStatistics = new LinkedList<>();
+  private boolean collectFineGrainedStatistics = false;
+  private final TaskScheduler fineGrainedStatisticsCollector = new TaskScheduler(new StatisticsCollector(),
+          FINE_GRAINED_COLLECTION_INTERVAL, TimeUnit.MILLISECONDS);
+
   private long resetDate = creationDate;
   private int connectionsCreated = 0;
   private int connectionsDestroyed = 0;
   private int connectionRequests = 0;
-  private int connectionRequestsDelayed = 0;
-  private int requestsDelayedPerSecond = 0;
-  private int requestsDelayedPerSecondCounter = 0;
   private int requestsPerSecond = 0;
   private int requestsPerSecondCounter = 0;
   private int connectionRequestsFailed = 0;
@@ -32,41 +43,44 @@ final class DefaultConnectionPoolCounter implements ConnectionPool.Counter {
   private final List<Long> checkOutTimes = new ArrayList<>();
   private long requestsPerSecondTime = creationDate;
 
-  /** {@inheritDoc} */
-  @Override
-  public synchronized void addCheckOutTime(final long time) {
+  DefaultConnectionPoolCounter(final AbstractConnectionPool connectionPool) {
+    this.connectionPool = connectionPool;
+  }
+
+  synchronized boolean isCollectFineGrainedStatistics() {
+    return collectFineGrainedStatistics;
+  }
+
+  synchronized void setCollectFineGrainedStatics(final boolean collectFineGrainedStatistics) {
+    if (collectFineGrainedStatistics) {
+      IntStream.range(0, FINE_GRAINED_STATS_SIZE).forEach(i -> fineGrainedStatistics.add(new DefaultConnectionPoolState()));
+      fineGrainedStatisticsCollector.start();
+    }
+    else {
+      fineGrainedStatisticsCollector.stop();
+      fineGrainedStatistics.clear();
+    }
+    this.collectFineGrainedStatistics = collectFineGrainedStatistics;
+  }
+
+  synchronized void addCheckOutTime(final long time) {
     checkOutTimes.add(time);
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public synchronized void incrementConnectionsDestroyedCounter() {
+  synchronized void incrementConnectionsDestroyedCounter() {
     connectionsDestroyed++;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public synchronized void incrementConnectionsCreatedCounter() {
+  synchronized void incrementConnectionsCreatedCounter() {
     connectionsCreated++;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public synchronized void incrementDelayedRequestCounter() {
-    connectionRequestsDelayed++;
-    requestsDelayedPerSecondCounter++;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public synchronized void incrementFailedRequestCounter() {
+  synchronized void incrementFailedRequestCounter() {
     connectionRequestsFailed++;
     requestsFailedPerSecondCounter++;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public synchronized void incrementRequestCounter() {
+  synchronized void incrementRequestCounter() {
     connectionRequests++;
     requestsPerSecondCounter++;
   }
@@ -75,19 +89,44 @@ final class DefaultConnectionPoolCounter implements ConnectionPool.Counter {
     connectionsCreated = 0;
     connectionsDestroyed = 0;
     connectionRequests = 0;
-    connectionRequestsDelayed = 0;
     connectionRequestsFailed = 0;
     checkOutTimes.clear();
     resetDate = System.currentTimeMillis();
   }
 
-  synchronized void updateStatistics() {
+  synchronized ConnectionPoolStatistics getStatistics(final long since) {
+    final DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.getUser());
+    updateStatistics();
+    final int inPool = connectionPool.getSize();
+    final int inUseCount = connectionPool.getInUse();
+    statistics.setAvailableInPool(inPool);
+    statistics.setConnectionsInUse(inUseCount);
+    statistics.setPoolSize(inPool + inUseCount);
+    statistics.setConnectionsCreated(connectionsCreated);
+    statistics.setConnectionsDestroyed(connectionsDestroyed);
+    statistics.setCreationDate(creationDate);
+    statistics.setConnectionRequests(connectionRequests);
+    statistics.setConnectionRequestsFailed(connectionRequestsFailed);
+    statistics.setRequestsFailedPerSecond(requestsFailedPerSecond);
+    statistics.setRequestsPerSecond(requestsPerSecond);
+    statistics.setAverageCheckOutTime(averageCheckOutTime);
+    statistics.setMinimumCheckOutTime(minimumCheckOutTime);
+    statistics.setMaximumCheckOutTime(maximumCheckOutTime);
+    statistics.setResetDate(resetDate);
+    statistics.setTimestamp(System.currentTimeMillis());
+    if (collectFineGrainedStatistics && since >= 0) {
+      statistics.setFineGrainedStatistics(fineGrainedStatistics.stream()
+              .filter(state -> state.getTimestamp() >= since).collect(Collectors.toList()));
+    }
+
+    return statistics;
+  }
+
+  private void updateStatistics() {
     final long current = System.currentTimeMillis();
     final double seconds = (current - requestsPerSecondTime) / THOUSAND;
     requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
     requestsPerSecondCounter = 0;
-    requestsDelayedPerSecond = (int) ((double) requestsDelayedPerSecondCounter / seconds);
-    requestsDelayedPerSecondCounter = 0;
     requestsFailedPerSecond = (int) ((double) requestsFailedPerSecondCounter / seconds);
     requestsFailedPerSecondCounter = 0;
     requestsPerSecondTime = current;
@@ -117,55 +156,16 @@ final class DefaultConnectionPoolCounter implements ConnectionPool.Counter {
     }
   }
 
-  synchronized long getCreationDate() {
-    return creationDate;
-  }
+  private final class StatisticsCollector implements Runnable {
 
-  synchronized long getResetDate() {
-    return resetDate;
-  }
-
-  synchronized int getConnectionRequests() {
-    return connectionRequests;
-  }
-
-  synchronized int getConnectionRequestsDelayed() {
-    return connectionRequestsDelayed;
-  }
-
-  synchronized int getConnectionRequestsFailed() {
-    return connectionRequestsFailed;
-  }
-
-  synchronized int getConnectionsCreated() {
-    return connectionsCreated;
-  }
-
-  synchronized int getConnectionsDestroyed() {
-    return connectionsDestroyed;
-  }
-
-  synchronized int getRequestsDelayedPerSecond() {
-    return requestsDelayedPerSecond;
-  }
-
-  synchronized int getRequestsFailedPerSecond() {
-    return requestsFailedPerSecond;
-  }
-
-  synchronized int getRequestsPerSecond() {
-    return requestsPerSecond;
-  }
-
-  synchronized long getAverageCheckOutTime() {
-    return averageCheckOutTime;
-  }
-
-  synchronized long getMinimumCheckOutTime() {
-    return minimumCheckOutTime;
-  }
-
-  synchronized long getMaximumCheckOutTime() {
-    return maximumCheckOutTime;
+    /**
+     * Adds the current state of the pool to the fine grained connection pool log
+     */
+    @Override
+    public void run() {
+      synchronized (connectionPool) {
+        fineGrainedStatistics.addLast(connectionPool.updateState(fineGrainedStatistics.removeFirst()));
+      }
+    }
   }
 }

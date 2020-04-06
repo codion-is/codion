@@ -17,15 +17,8 @@ public final class DefaultConnectionPoolState implements ConnectionPoolState, Se
   private int connectionsInUse = -1;
   private int connectionsWaiting = -1;
 
-  public DefaultConnectionPoolState() {/*For serialization*/}
-
-  /**
-   * Sets this state
-   * @param time the time
-   * @param connectionCount the number of connections managed by the pool
-   * @param connectionsInUse the numer of connections in use
-   * @param connectionsWaiting the number pending requests for connections
-   */
+  /** {@inheritDoc} */
+  @Override
   public void set(final long time, final int connectionCount, final int connectionsInUse, final int connectionsWaiting) {
     this.time = time;
     this.connectionCount = connectionCount;

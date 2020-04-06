@@ -6,7 +6,6 @@ package org.jminor.plugin.tomcat.pool;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.AbstractConnectionPool;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
@@ -16,7 +15,6 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.apache.tomcat.jdbc.pool.Validator;
 
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -45,6 +43,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     pp.setTestOnBorrow(true);
     pp.setValidator(new ConnectionValidator(database));
     pp.setMaxActive(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
+    pp.setInitialSize(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
     pp.setMaxIdle(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
     pp.setMinIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());
     pp.setSuspectTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get() / 1000);
@@ -55,28 +54,9 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
   private static final class DataSourceWrapper extends AbstractConnectionPool<DataSource> {
 
     private DataSourceWrapper(final Database database, final User user, final DataSource dataSource) {
-      super(database, user);
-      dataSource.setDataSource(Proxy.newProxyInstance(javax.sql.DataSource.class.getClassLoader(),
-              new Class[] {javax.sql.DataSource.class}, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
-                      onInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
+      super(database, user, dataSource);
+      dataSource.setDataSource(getPoolDataSource());
       setPool(dataSource);
-    }
-
-    @Override
-    public Connection getConnection() throws DatabaseException {
-      final long nanoTime = System.nanoTime();
-      try {
-        getCounter().incrementRequestCounter();
-
-        return getPool().getConnection();
-      }
-      catch (final SQLException e) {
-        getCounter().incrementFailedRequestCounter();
-        throw new DatabaseException(e, e.getMessage());
-      }
-      finally {
-        getCounter().addCheckOutTime((System.nanoTime() - nanoTime) / 1000000);
-      }
     }
 
     @Override
@@ -103,14 +83,6 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     public void setConnectionTimeout(final int timeout) {
       getPool().setSuspectTimeout(timeout / 1000);
     }
-
-    @Override
-    public int getMaximumRetryWaitPeriod() {
-      return 0;
-    }
-
-    @Override
-    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {/*Not implemented*/}
 
     @Override
     public int getMinimumPoolSize() {
@@ -144,12 +116,9 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     }
 
     @Override
-    public int getNewConnectionThreshold() {
-      return 0;
+    protected Connection fetchConnection() throws SQLException {
+      return getPool().getConnection();
     }
-
-    @Override
-    public void setNewConnectionThreshold(final int value) {}
 
     @Override
     protected int getSize() {

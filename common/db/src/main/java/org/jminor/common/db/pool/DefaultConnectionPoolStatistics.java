@@ -30,8 +30,6 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
   private long resetDate;
   private int connectionRequests;
   private int requestsPerSecond;
-  private int connectionRequestsDelayed;
-  private int requestsDelayedPerSecond;
   private int connectionRequestsFailed;
   private int requestsFailedPerSecond;
   private int poolSize;
@@ -96,20 +94,8 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
 
   /** {@inheritDoc} */
   @Override
-  public int getDelayedRequests() {
-    return connectionRequestsDelayed;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public int getRequests() {
     return connectionRequests;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public int getDelayedRequestsPerSecond() {
-    return requestsDelayedPerSecond;
   }
 
   /** {@inheritDoc} */
@@ -188,16 +174,8 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
     this.connectionsDestroyed = connectionsDestroyed;
   }
 
-  public void setConnectionRequestsDelayed(final int connectionRequestsDelayed) {
-    this.connectionRequestsDelayed = connectionRequestsDelayed;
-  }
-
   public void setConnectionRequests(final int connectionRequests) {
     this.connectionRequests = connectionRequests;
-  }
-
-  public void setRequestsDelayedPerSecond(final int requestsDelayedPerSecond) {
-    this.requestsDelayedPerSecond = requestsDelayedPerSecond;
   }
 
   public void setRequestsPerSecond(final int requestsPerSecond) {

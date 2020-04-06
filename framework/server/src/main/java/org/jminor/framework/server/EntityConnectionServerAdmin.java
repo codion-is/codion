@@ -308,20 +308,6 @@ public interface EntityConnectionServerAdmin extends Remote {
 
   /**
    * @param user the pool user
-   * @return the maximum time to wait between check out retries in ms
-   * @throws RemoteException in case of an exception
-   */
-  int getMaximumPoolRetryWaitPeriod(User user) throws RemoteException;
-
-  /**
-   * @param user the pool user
-   * @param value the maximum time to wait between check out retries in ms
-   * @throws RemoteException in case of an exception
-   */
-  void setMaximumPoolRetryWaitPeriod(User user, int value) throws RemoteException;
-
-  /**
-   * @param user the pool user
    * @return the maximum time in ms to retry checking out a connection before throwing an exception
    * @throws RemoteException in case of an exception
    */
@@ -361,20 +347,6 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @throws RemoteException in case of an exception
    */
   void setMinimumConnectionPoolSize(User user, int value) throws RemoteException;
-
-  /**
-   * @param user the pool user
-   * @return the number of milliseconds to wait before trying to create a new connection
-   * @throws RemoteException in case of an exception
-   */
-  int getPoolConnectionThreshold(User user) throws RemoteException;
-
-  /**
-   * @param user the pool user
-   * @param value the number of milliseconds to wait before trying to create a new connection
-   * @throws RemoteException in case of an exception
-   */
-  void setPoolConnectionThreshold(User user, int value) throws RemoteException;
 
   /**
    * Thread statistics

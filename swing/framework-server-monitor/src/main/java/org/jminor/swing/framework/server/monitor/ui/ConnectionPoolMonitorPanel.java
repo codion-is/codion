@@ -36,7 +36,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+import static javax.swing.SwingConstants.CENTER;
+import static javax.swing.SwingConstants.RIGHT;
 import static org.jminor.swing.common.ui.Components.createNorthCenterPanel;
+import static org.jminor.swing.common.ui.Components.createWestCenterPanel;
 import static org.jminor.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
 /**
@@ -69,7 +72,6 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private final JTextField createdField = new JTextField();
   private final JTextField destroyedField = new JTextField();
   private final JTextField requestedField = new JTextField();
-  private final JTextField delayedField = new JTextField();
   private final JTextField failedField = new JTextField();
 
   /**
@@ -92,12 +94,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     resetTimeField.setText(DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP)
             .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
     requestedField.setText(format.format(statistics.getRequests()));
-    double prc = (double) statistics.getDelayedRequests() / (double) statistics.getRequests() * HUNDRED;
-    delayedField.setText(format.format(statistics.getDelayedRequests())
-            + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
-    prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
-    failedField.setText(format.format(statistics.getFailedRequests())
-            + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
+    double prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
+    failedField.setText(format.format(statistics.getFailedRequests()) + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
     if (model.datasetContainsData()) {
       inPoolFineGrainedChart.getXYPlot().setDataset(model.getFineGrainedInPoolDataset());
     }
@@ -105,11 +103,15 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void initializeUI() {
     initializeCharts(model);
-    setLayout(Layouts.flexibleGridLayout(1, MAIN_LAYOUT_COLUMNS, true, false));
+    setLayout(Layouts.borderLayout());
 
-    add(getChartPanel());
-    add(getStatisticsPanel());
-    add(getConfigurationPanel());
+    final JPanel centerPanel = new JPanel(Layouts.flexibleGridLayout(1, MAIN_LAYOUT_COLUMNS, true, false));
+
+    centerPanel.add(getChartPanel());
+    centerPanel.add(getStatisticsPanel());
+
+    add(getConfigurationPanel(), BorderLayout.NORTH);
+    add(centerPanel, BorderLayout.CENTER);
   }
 
   private void initializeCharts(final ConnectionPoolMonitor model) {
@@ -148,7 +150,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getConfigurationPanel() {
-    final JPanel configBase = new JPanel(Layouts.gridLayout(0, 1));
+    final JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
 
     final JSpinner timeoutSpinner = new JSpinner(integerValueSpinnerModel(model, "pooledConnectionTimeout",
             model.getStatisticsObserver()));
@@ -158,60 +160,58 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             model.getStatisticsObserver()));
     final JSpinner minimumSizeSpinner = new JSpinner(integerValueSpinnerModel(model, "minimumPoolSize",
             model.getStatisticsObserver()));
-    final JSpinner maximumRetryWaitSpinner = new JSpinner(integerValueSpinnerModel(model, "maximumRetryWaitPeriod",
-            model.getStatisticsObserver()));
     final JSpinner maximumCheckOutTimeSpinner = new JSpinner(integerValueSpinnerModel(model, "maximumCheckOutTime",
-            model.getStatisticsObserver()));
-    final JSpinner newConnectionThresholdSpinner = new JSpinner(integerValueSpinnerModel(model, "newConnectionThreshold",
             model.getStatisticsObserver()));
 
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setColumns(3);
     ((JSpinner.DefaultEditor) cleanupIntervalSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) cleanupIntervalSpinner.getEditor()).getTextField().setColumns(3);
     ((JSpinner.DefaultEditor) minimumSizeSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) minimumSizeSpinner.getEditor()).getTextField().setColumns(3);
     ((JSpinner.DefaultEditor) maximumSizeSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) maximumSizeSpinner.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) maximumCheckOutTimeSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) maximumCheckOutTimeSpinner.getEditor()).getTextField().setColumns(6);
 
-    configBase.add(createNorthCenterPanel(new JLabel("Min size"), minimumSizeSpinner));
-    configBase.add(createNorthCenterPanel(new JLabel("Max size"), maximumSizeSpinner));
-    configBase.add(createNorthCenterPanel(new JLabel("Max retry wait (ms)"), maximumRetryWaitSpinner));
-    configBase.add(createNorthCenterPanel(new JLabel("Max check out time (ms)"), maximumCheckOutTimeSpinner));
-    configBase.add(createNorthCenterPanel(new JLabel("New conn. threshold (ms)"), newConnectionThresholdSpinner));
-    configBase.add(createNorthCenterPanel(new JLabel("Idle timeout (s)"), timeoutSpinner));
-    configBase.add(createNorthCenterPanel(new JLabel("Cleanup interval (s)"), cleanupIntervalSpinner));
+    configBase.add(createWestCenterPanel(new JLabel("Mininum size"), minimumSizeSpinner));
+    configBase.add(createWestCenterPanel(new JLabel("Maximum size"), maximumSizeSpinner));
+    configBase.add(createWestCenterPanel(new JLabel("Checkout timeout (ms)"), maximumCheckOutTimeSpinner));
+    configBase.add(createWestCenterPanel(new JLabel("Idle timeout (s)"), timeoutSpinner));
+    configBase.add(createWestCenterPanel(new JLabel("Cleanup interval (s)"), cleanupIntervalSpinner));
 
-    final JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.setBorder(BorderFactory.createTitledBorder("Configuration"));
-    panel.add(configBase, BorderLayout.NORTH);
+    configBase.setBorder(BorderFactory.createTitledBorder("Configuration"));
 
-    return panel;
+    final JPanel configPanel = new JPanel(Layouts.flowLayout(RIGHT));
+    configPanel.add(configBase);
+
+    return configPanel;
   }
 
   private JPanel getStatisticsPanel() {
     final JPanel statisticsBase = new JPanel(Layouts.gridLayout(0, 1));
     poolSizeField.setEditable(false);
-    poolSizeField.setHorizontalAlignment(JLabel.CENTER);
+    poolSizeField.setHorizontalAlignment(CENTER);
     createdField.setEditable(false);
-    createdField.setHorizontalAlignment(JLabel.CENTER);
+    createdField.setHorizontalAlignment(CENTER);
     destroyedField.setEditable(false);
-    destroyedField.setHorizontalAlignment(JLabel.CENTER);
+    destroyedField.setHorizontalAlignment(CENTER);
     requestedField.setEditable(false);
-    requestedField.setHorizontalAlignment(JLabel.CENTER);
-    delayedField.setEditable(false);
-    delayedField.setHorizontalAlignment(JLabel.CENTER);
+    requestedField.setHorizontalAlignment(CENTER);
     failedField.setEditable(false);
-    failedField.setHorizontalAlignment(JLabel.CENTER);
+    failedField.setHorizontalAlignment(CENTER);
     resetTimeField.setEditable(false);
-    resetTimeField.setHorizontalAlignment(JLabel.CENTER);
+    resetTimeField.setHorizontalAlignment(CENTER);
 
     final JButton resetButton = new JButton(Controls.control(model::resetStatistics, "Reset"));
     resetButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
 
-    statisticsBase.add(createNorthCenterPanel(new JLabel("Pool size"), poolSizeField));
-    statisticsBase.add(createNorthCenterPanel(new JLabel("Connections requested"), requestedField));
-    statisticsBase.add(createNorthCenterPanel(new JLabel("Delayed requests"), delayedField));
-    statisticsBase.add(createNorthCenterPanel(new JLabel("Failed requests"), failedField));
-    statisticsBase.add(createNorthCenterPanel(new JLabel("Connections created"), createdField));
-    statisticsBase.add(createNorthCenterPanel(new JLabel("Connections destroyed"), destroyedField));
-    statisticsBase.add(createNorthCenterPanel(new JLabel("since"), resetTimeField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Connections", CENTER), poolSizeField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Requested", CENTER), requestedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Failed", CENTER), failedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Created", CENTER), createdField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Destroyed", CENTER), destroyedField));
+    statisticsBase.add(createNorthCenterPanel(new JLabel("Since", CENTER), resetTimeField));
 
     final JPanel panel = new JPanel(Layouts.borderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Statistics"));

@@ -298,19 +298,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public int getPoolConnectionThreshold(final User user) {
-    return getConnectionPool(user).getNewConnectionThreshold();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setPoolConnectionThreshold(final User user, final int value) {
-    LOG.info("setPoolConnectionThreshold({}, {})", user, value);
-    getConnectionPool(user).setNewConnectionThreshold(value);
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public int getPooledConnectionTimeout(final User user) {
     return getConnectionPool(user).getConnectionTimeout();
   }
@@ -320,19 +307,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   public void setPooledConnectionTimeout(final User user, final int timeout) {
     LOG.info("setPooledConnectionTimeout({}, {})", user, timeout);
     getConnectionPool(user).setConnectionTimeout(timeout);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public int getMaximumPoolRetryWaitPeriod(final User user) {
-    return getConnectionPool(user).getMaximumRetryWaitPeriod();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setMaximumPoolRetryWaitPeriod(final User user, final int value) {
-    LOG.info("setMaximumPoolRetryWaitPeriod({}, {})", user, value);
-    getConnectionPool(user).setMaximumRetryWaitPeriod(value);
   }
 
   /** {@inheritDoc} */

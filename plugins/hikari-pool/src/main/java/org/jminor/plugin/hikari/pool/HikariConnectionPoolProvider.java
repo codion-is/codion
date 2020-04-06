@@ -4,7 +4,6 @@
 package org.jminor.plugin.hikari.pool;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.AbstractConnectionPool;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
@@ -14,8 +13,6 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.pool.HikariPool;
 import com.zaxxer.hikari.util.DriverDataSource;
 
-import javax.sql.DataSource;
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -39,39 +36,18 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
   private static final class HikariConnectionPool extends AbstractConnectionPool<HikariPool> {
 
     private final HikariConfig config = new HikariConfig();
-    private final DriverDataSource dataSource;
 
     public HikariConnectionPool(final Database database, final User user) {
-      super(database, user);
-      dataSource = new DriverDataSource(database.getURL(null), database.getDriverClassName(),
-              new Properties(), user.getUsername(), String.valueOf(user.getPassword()));
+      super(database, user, new DriverDataSource(database.getURL(null), database.getDriverClassName(),
+              new Properties(), user.getUsername(), String.valueOf(user.getPassword())));
       config.setJdbcUrl(database.getURL(null));
       config.setUsername(user.getUsername());
       config.setMaximumPoolSize(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
       config.setMinimumIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());
       config.setIdleTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get());
       config.setJdbcUrl(database.getURL(null));
-      config.setDataSource((DataSource) Proxy.newProxyInstance(DataSource.class.getClassLoader(),
-              new Class[] {DataSource.class}, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
-                      onInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
+      config.setDataSource(getPoolDataSource());
       setPool(new HikariPool(config));
-    }
-
-    @Override
-    public Connection getConnection() throws DatabaseException {
-      final long nanoTime = System.nanoTime();
-      try {
-        getCounter().incrementRequestCounter();
-
-        return getPool().getConnection();
-      }
-      catch (final SQLException e) {
-        getCounter().incrementFailedRequestCounter();
-        throw new DatabaseException(e, e.getMessage());
-      }
-      finally {
-        getCounter().addCheckOutTime((System.nanoTime() - nanoTime) / 1000000);
-      }
     }
 
     @Override
@@ -101,14 +77,6 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     public void setConnectionTimeout(final int timeout) {
       config.setIdleTimeout(timeout);
     }
-
-    @Override
-    public int getMaximumRetryWaitPeriod() {
-      return 0;
-    }
-
-    @Override
-    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {/*not implemented*/}
 
     @Override
     public int getMinimumPoolSize() {
@@ -146,21 +114,18 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     }
 
     @Override
-    protected int getWaiting() {
-      return getPool().getThreadsAwaitingConnection();
-    }
-
-    @Override
     public void setMaximumCheckOutTime(final int value) {
       config.setConnectionTimeout(value);
     }
 
     @Override
-    public int getNewConnectionThreshold() {
-      return 0;
+    protected Connection fetchConnection() throws SQLException {
+      return getPool().getConnection();
     }
 
     @Override
-    public void setNewConnectionThreshold(final int value) {/*Not implemented*/}
+    protected int getWaiting() {
+      return getPool().getThreadsAwaitingConnection();
+    }
   }
 }
