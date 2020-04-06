@@ -5815,3 +5815,4 @@
   EntityDefinition.getForeignDefinition() added, EntityDefinition.getDefinitionProvider() removed, related refactoring
   TaskScheduler.getIntervalObserver() removed, addIntervalListener() added
   ServerMonitorPanel, added button to set the update interval
+0.14.3
