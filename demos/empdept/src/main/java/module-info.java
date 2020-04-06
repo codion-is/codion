@@ -15,6 +15,8 @@ module org.jminor.framework.demos.empdept {
           to org.jminor.framework.db.local;
   exports org.jminor.framework.demos.empdept.model
           to org.jminor.swing.framework.model;
+  exports org.jminor.framework.demos.empdept.ui
+          to org.jminor.swing.framework.ui;
   exports org.jminor.framework.demos.empdept.javafx
           to javafx.graphics;
   exports org.jminor.framework.demos.empdept.server
