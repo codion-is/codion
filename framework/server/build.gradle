@@ -103,14 +103,14 @@ distributions {
     }
 }
 applicationDefaultJvmArgs = [
-        '-Xmx256m', '--add-modules', 'org.jminor.framework.servlet,java.xml.bind',
+        '-Xmx256m', '--add-modules', 'org.jminor.framework.servlet',
         "-Djminor.configurationFile=../config/h2_embedded.config",
         "-Dlogback.configurationFile=../config/logback.xml",
         "-Djava.security.policy=../config/jminor_server.policy"
 ]
 
 def applicationGenerateSecurityPolicyJvmArgs = [
-        '-Xmx256m', '--add-modules', 'org.jminor.framework.servlet,java.xml.bind',
+        '-Xmx256m', '--add-modules', 'org.jminor.framework.servlet',
         "-Djminor.configurationFile=../config/h2_embedded.config",
         "-Dlogback.configurationFile=../config/logback.xml",
         "-Djava.security.manager=net.sourceforge.prograde.sm.PolicyFileGeneratorJSM",
