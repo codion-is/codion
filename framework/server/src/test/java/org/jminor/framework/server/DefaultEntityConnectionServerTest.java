@@ -347,7 +347,10 @@ public class DefaultEntityConnectionServerTest {
 
   public static final class TestWebServer implements Server.AuxiliaryServer {
 
-    public TestWebServer(final Server connectionServer) {}
+    public TestWebServer() {}
+
+    @Override
+    public void setServer(final Server server) {}
 
     @Override
     public void startServer() throws Exception {}

@@ -249,9 +249,15 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
 
   /**
    * Auxiliary servers to be run in conjunction with a Server must implement this interface,
-   * as well as provide a constructor with the following signature: (Server) for the associated server
+   * as well as provide a parameterless constructor.
    */
   interface AuxiliaryServer {
+
+    /**
+     * Sets the {@link Server} instance to run alongside.
+     * @param server the server.
+     */
+    void setServer(Server server);
 
     /**
      * Starts the server, returns when the server has completed the startup
@@ -260,7 +266,8 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
     void startServer() throws Exception;
 
     /**
-     * Stops the server, returns when the server has completed shutdown
+     * Stops the server, returns when the server has completed shutdown.
+     * Finally calls {@link #setServer(Server)} with a null parameter.
      * @throws Exception in case of an exception
      */
     void stopServer() throws Exception;
