@@ -41,7 +41,7 @@ public interface ConnectionPoolProvider {
       }
     }
 
-    throw new IllegalArgumentException("No connection pool provider of type: " + classname + " available");
+    throw new IllegalStateException("No connection pool provider of type: " + classname + " available");
   }
 
   /**

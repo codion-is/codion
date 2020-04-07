@@ -18,7 +18,10 @@ import java.rmi.registry.Registry;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Locale;
+import java.util.ServiceLoader;
 import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A server for serving remote interfaces
@@ -248,7 +251,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
   }
 
   /**
-   * Auxiliary servers to be run in conjunction with a Server must implement this interface,
+   * Auxiliary servers to be run in conjunction with a {@link Server} must implement this interface,
    * as well as provide a parameterless constructor.
    */
   interface AuxiliaryServer {
@@ -271,5 +274,23 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
      * @throws Exception in case of an exception
      */
     void stopServer() throws Exception;
+
+    /**
+     * Returns the {@link AuxiliaryServer} implementation found by the {@link ServiceLoader} of the given type.
+     * @param classname the classname of the required auxiliary server
+     * @return a {@link AuxiliaryServer} implementation of the given type from the {@link ServiceLoader}.
+     * @throws IllegalStateException in case no such {@link AuxiliaryServer} implementation is available.
+     */
+    static AuxiliaryServer getAuxiliaryServer(final String classname) {
+      requireNonNull(classname, "classname");
+      final ServiceLoader<AuxiliaryServer> loader = ServiceLoader.load(AuxiliaryServer.class);
+      for (final AuxiliaryServer server : loader) {
+        if (server.getClass().getName().equals(classname)) {
+          return server;
+        }
+      }
+
+      throw new IllegalStateException("No auxiliary server of type: " + classname + " available");
+    }
   }
 }

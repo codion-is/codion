@@ -5820,3 +5820,4 @@
   ConnectionPool and AbstractConnectionPool refactored further, ConnectionPool.Counter removed
   DefaultConnectionPoolCounter bug fixed, did not synchronize correctly when adding fine grained statistics
   HttpServer no longer implements AuxiliaryServer, EntityServletServer implements AuxiliaryServer and is now service based
+  AuxiliaryServer service discovery moved to AuxiliaryServer

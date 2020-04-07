@@ -55,7 +55,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadFactory;
@@ -557,13 +556,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private void startAuxiliaryServers(final Collection<String> auxiliaryServerClassNames) {
     if (!Util.nullOrEmpty(auxiliaryServerClassNames)) {
       try {
-        final ServiceLoader<AuxiliaryServer> loader = ServiceLoader.load(AuxiliaryServer.class);
-        for (final AuxiliaryServer auxiliaryServer : loader) {
-          if (auxiliaryServerClassNames.contains(auxiliaryServer.getClass().getName())) {
-            auxiliaryServer.setServer(this);
-            newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
-                    startAuxiliaryServer(auxiliaryServer)).get();
-          }
+        for (final String auxiliaryServerClassName : auxiliaryServerClassNames) {
+          final AuxiliaryServer auxiliaryServer = AuxiliaryServer.getAuxiliaryServer(auxiliaryServerClassName);
+          auxiliaryServer.setServer(this);
+          newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
+                  startAuxiliaryServer(auxiliaryServer)).get();
         }
       }
       catch (final Exception e) {
