@@ -4,7 +4,9 @@
 package org.jminor.common.remote.http;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.remote.Server;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.Events;
 import org.jminor.common.value.PropertyValue;
 
 import org.eclipse.jetty.server.Connector;
@@ -26,7 +28,7 @@ import static org.jminor.common.Util.nullOrEmpty;
 /**
  * A simple Jetty based http file server
  */
-public class HttpServer extends org.eclipse.jetty.server.Server implements Server.AuxiliaryServer {
+public class HttpServer extends org.eclipse.jetty.server.Server {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
@@ -66,34 +68,32 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
    */
   public static final PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("jminor.server.http.documentRoot", null);
 
-  private final Server connectionServer;
+  private final Event serverStartedEvent = Events.event();
+  private final Event serverStoppedEvent = Events.event();
+
   private final HandlerList handlers;
   private final int port;
 
   /**
    * Instantiates a new HttpServer on the given port.
-   * @param connectionServer the Server serving the connection requests
    */
-  public HttpServer(final Server connectionServer) {
-    this(connectionServer, DOCUMENT_ROOT.get(), HTTP_SERVER_PORT.get(), HTTP_SERVER_SECURE.get());
+  public HttpServer() {
+    this(DOCUMENT_ROOT.get(), HTTP_SERVER_PORT.get(), HTTP_SERVER_SECURE.get());
   }
 
   /**
    * Instantiates a new HttpServer on the given port.
-   * @param connectionServer the Server serving the connection requests
    * @param documentRoot the document root, null to disable file serving
    * @param port the port on which to serve
    * @param useHttps true if https should be used
    */
-  public HttpServer(final Server connectionServer, final String documentRoot, final Integer port,
-                    final Boolean useHttps) {
+  public HttpServer(final String documentRoot, final Integer port, final Boolean useHttps) {
     super(requireNonNull(port, "port"));
     this.port = port;
     if (requireNonNull(useHttps, "useHttps")) {
       setupSecureConnector();
     }
     LOG.info(getClass().getSimpleName() + " created on port: " + port);
-    this.connectionServer = connectionServer;
     this.handlers = new HandlerList();
     setHandler(handlers);
     if (!nullOrEmpty(documentRoot)) {
@@ -104,19 +104,39 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
+  /**
+   * Starts this server.
+   * @throws Exception in case of an exception
+   */
   public final void startServer() throws Exception {
     start();
+    serverStartedEvent.onEvent();
     LOG.info(getClass().getSimpleName() + " started");
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void stopServer() throws Exception {
+  /**
+   * Stops this server.
+   * @throws Exception in case of an exception
+   */
+  public final void stopServer() throws Exception {
     stop();
     join();
+    serverStoppedEvent.onEvent();
     LOG.info(getClass().getSimpleName() + " stopped");
+  }
+
+  /**
+   * @param listener a listener notified when this server is started.
+   */
+  public final void addServerStartedListener(final EventListener listener) {
+    serverStartedEvent.addListener(listener);
+  }
+
+  /**
+   * @param listener a listener notified when this server is stopped.
+   */
+  public final void addServerStoppedListener(final EventListener listener) {
+    serverStoppedEvent.addListener(listener);
   }
 
   /**
@@ -126,13 +146,6 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
   protected final void addHandler(final Handler handler) {
     LOG.info(getClass().getSimpleName() + " adding handler: " + handler);
     handlers.addHandler(handler);
-  }
-
-  /**
-   * @return the {@link Server} this http server is running alongside
-   */
-  protected final Server getConnectionServer() {
-    return connectionServer;
   }
 
   private void setupSecureConnector() {

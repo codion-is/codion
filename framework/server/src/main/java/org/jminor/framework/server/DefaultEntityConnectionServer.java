@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadFactory;
@@ -554,19 +555,19 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   private void startAuxiliaryServers(final Collection<String> auxiliaryServerClassNames) {
-    if (auxiliaryServerClassNames != null) {
+    if (!Util.nullOrEmpty(auxiliaryServerClassNames)) {
       try {
-        for (final String className : auxiliaryServerClassNames) {
-          final Class<AuxiliaryServer> serverClass = (Class<AuxiliaryServer>) Class.forName(className);
-          final AuxiliaryServer server = serverClass.getDeclaredConstructor(Server.class).newInstance(this);
-          auxiliaryServers.add(server);
-          LOG.info("Server starting auxiliary server: " + serverClass);
-          newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
-                  startAuxiliaryServer(server)).get();
+        final ServiceLoader<AuxiliaryServer> loader = ServiceLoader.load(AuxiliaryServer.class);
+        for (final AuxiliaryServer auxiliaryServer : loader) {
+          if (auxiliaryServerClassNames.contains(auxiliaryServer.getClass().getName())) {
+            auxiliaryServer.setServer(this);
+            newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
+                    startAuxiliaryServer(auxiliaryServer)).get();
+          }
         }
       }
       catch (final Exception e) {
-        LOG.error("Instantiating auxiliary server", e);
+        LOG.error("Starting auxiliary server", e);
         throw new RuntimeException(e);
       }
     }
