@@ -103,15 +103,13 @@ distributions {
     }
 }
 applicationDefaultJvmArgs = [
-        '-Xmx256m', '--add-modules', 'org.jminor.framework.servlet',
-        "-Djminor.configurationFile=../config/h2_embedded.config",
+        '-Xmx256m', "-Djminor.configurationFile=../config/h2_embedded.config",
         "-Dlogback.configurationFile=../config/logback.xml",
         "-Djava.security.policy=../config/jminor_server.policy"
 ]
 
 def applicationGenerateSecurityPolicyJvmArgs = [
-        '-Xmx256m', '--add-modules', 'org.jminor.framework.servlet',
-        "-Djminor.configurationFile=../config/h2_embedded.config",
+        '-Xmx256m', "-Djminor.configurationFile=../config/h2_embedded.config",
         "-Dlogback.configurationFile=../config/logback.xml",
         "-Djava.security.manager=net.sourceforge.prograde.sm.PolicyFileGeneratorJSM",
         "-Djava.security.policy=../config/default.policy",
@@ -123,7 +121,7 @@ task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
     classpath = configurations.serverRuntime
     main = mainClassName
     maxHeapSize = '256m'
-    jvmArgs = ['--add-modules', 'org.jminor.framework.servlet,org.jminor.plugin.jasperreports,java.xml.bind']
+    jvmArgs = ['--add-modules', 'org.jminor.plugin.jasperreports']
     systemProperties = [
             'jminor.db.type'                            : 'h2',
             'jminor.db.host'                            : 'h2db',
