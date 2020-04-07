@@ -344,18 +344,4 @@ public class DefaultEntityConnectionServerTest {
   }
 
   public static class EmptyDomain extends Domain {}
-
-  public static final class TestWebServer implements Server.AuxiliaryServer {
-
-    public TestWebServer() {}
-
-    @Override
-    public void setServer(final Server server) {}
-
-    @Override
-    public void startServer() throws Exception {}
-
-    @Override
-    public void stopServer() throws Exception {}
-  }
 }
