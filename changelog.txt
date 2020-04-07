@@ -5818,3 +5818,4 @@
 0.14.3
   AbstractConnectionPool refactored, getConnection() now implemented and final, fetchConnection() added for subclasses
   ConnectionPool and AbstractConnectionPool refactored further, ConnectionPool.Counter removed
+  DefaultConnectionPoolCounter bug fixed, did not synchronize correctly when adding fine grained statistics

@@ -122,6 +122,10 @@ final class DefaultConnectionPoolCounter {
     return statistics;
   }
 
+  private synchronized void addFineGrainedStatistics() {
+    fineGrainedStatistics.addLast(connectionPool.updateState(fineGrainedStatistics.removeFirst()));
+  }
+
   private void updateStatistics() {
     final long current = System.currentTimeMillis();
     final double seconds = (current - requestsPerSecondTime) / THOUSAND;
@@ -163,9 +167,7 @@ final class DefaultConnectionPoolCounter {
      */
     @Override
     public void run() {
-      synchronized (connectionPool) {
-        fineGrainedStatistics.addLast(connectionPool.updateState(fineGrainedStatistics.removeFirst()));
-      }
+      addFineGrainedStatistics();
     }
   }
 }
