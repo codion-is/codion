@@ -23,6 +23,8 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Window;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * A JPanel for retrieving login information.
@@ -116,6 +118,8 @@ public final class LoginPanel extends JPanel {
     passwordField.setText(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()));
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(passwordField);
+    KeyEvents.addKeyEvent(passwordField, KeyEvent.VK_BACK_SPACE, InputEvent.CTRL_DOWN_MASK,
+            Controls.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())));
 
     final JPanel basePanel = new JPanel(Layouts.flexibleGridLayout(GRID_SIZE, GRID_SIZE, true, false));
     basePanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));

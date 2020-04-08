@@ -5822,3 +5822,4 @@
   HttpServer no longer implements AuxiliaryServer, EntityServletServer implements AuxiliaryServer and is now service based
   AuxiliaryServer service discovery moved to AuxiliaryServer
   DefaultEntityConnectionServerTest, removed TestWebServer auxiliary server, problematic with modules
+  LoginPanel, ctrl-backspace functionality added to password field
