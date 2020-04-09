@@ -1,5 +1,6 @@
 module org.jminor.framework.demos.manual {
   requires java.desktop;
+  requires jasperreports;
   requires org.jminor.common.core;
   requires org.jminor.framework.db.local;
   requires org.jminor.framework.db.remote;
