@@ -3,7 +3,6 @@
  */
 package org.jminor.plugin.jasperreports.ui;
 
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.swing.common.ui.reports.ReportUiWrapper;
 
 import net.sf.jasperreports.engine.JasperPrint;
@@ -23,8 +22,8 @@ public final class JasperReportsUiWrapper implements ReportUiWrapper<JasperPrint
    * @return the component containing the report
    */
   @Override
-  public JComponent createReportComponent(final ReportResult<JasperPrint> result) {
+  public JComponent createReportComponent(final JasperPrint result) {
     requireNonNull(result, "result");
-    return new JRViewer(result.getResult());
+    return new JRViewer(result);
   }
 }

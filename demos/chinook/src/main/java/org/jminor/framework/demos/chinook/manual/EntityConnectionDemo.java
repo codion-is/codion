@@ -16,7 +16,6 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.plugin.jasperreports.model.JasperReportsResult;
 import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
 
 import net.sf.jasperreports.engine.JasperPrint;
@@ -206,10 +205,7 @@ public final class EntityConnectionDemo {
     JasperReportsWrapper reportsWrapper = new JasperReportsWrapper(
             "build/classes/reports/customer_report.jasper", reportParameters);
 
-    JasperReportsResult reportResult =
-            (JasperReportsResult) connection.fillReport(reportsWrapper);
-
-    JasperPrint jasperPrint = reportResult.getResult();
+    JasperPrint jasperPrint = connection.fillReport(reportsWrapper);
     //end::report[]
   }
 

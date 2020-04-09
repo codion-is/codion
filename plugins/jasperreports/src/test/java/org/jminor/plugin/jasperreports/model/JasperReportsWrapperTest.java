@@ -39,15 +39,15 @@ public class JasperReportsWrapperTest {
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
     final JasperPrint print = connectionProvider.getConnection().fillReport(
-            new JasperReportsWrapper(REPORT_PATH, reportParameters)).getResult();
+            new JasperReportsWrapper(REPORT_PATH, reportParameters));
     assertNotNull(print);
-    connectionProvider.getConnection().fillReport(new JasperReportsWrapper(REPORT_PATH)).getResult();
+    connectionProvider.getConnection().fillReport(new JasperReportsWrapper(REPORT_PATH));
   }
 
   @Test
   public void fillDataSourceReport() throws ReportException {
     final JasperReportsWrapper wrapper = new JasperReportsWrapper(REPORT_PATH);
-    final JasperReportsDataWrapper dataWrapper = new JasperReportsDataWrapper(new JRDataSource() {
+    wrapper.fillReport(new JRDataSource() {
       boolean done = false;
       @Override
       public boolean next() throws JRException {
@@ -63,7 +63,6 @@ public class JasperReportsWrapperTest {
         return null;
       }
     });
-    wrapper.fillReport(dataWrapper);
   }
 
   @Test
@@ -73,6 +72,6 @@ public class JasperReportsWrapperTest {
                     System.getProperty("jminor.db.initScript")))
             .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
     assertThrows(ReportException.class, () -> connectionProvider.getConnection().fillReport(
-            new JasperReportsWrapper("build/classes/reports/test/non_existing.jasper", new HashMap<>())).getResult());
+            new JasperReportsWrapper("build/classes/reports/test/non_existing.jasper", new HashMap<>())));
   }
 }

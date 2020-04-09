@@ -4,9 +4,7 @@
 package org.jminor.plugin.jasperreports.model;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.value.PropertyValue;
 
@@ -73,10 +71,10 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
 
   /** {@inheritDoc} */
   @Override
-  public ReportResult<JasperPrint> fillReport(final Connection connection) throws ReportException {
+  public JasperPrint fillReport(final Connection connection) throws ReportException {
     requireNonNull(connection, "connection");
     try {
-      return new JasperReportsResult(JasperFillManager.fillReport(loadJasperReport(reportPath), reportParameters, connection));
+      return JasperFillManager.fillReport(loadJasperReport(reportPath), reportParameters, connection);
     }
     catch (final JRException | MalformedURLException e) {
       throw new ReportException(e);
@@ -85,10 +83,10 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
 
   /** {@inheritDoc} */
   @Override
-  public ReportResult<JasperPrint> fillReport(final ReportDataWrapper<JRDataSource> dataWrapper) throws ReportException {
-    requireNonNull(dataWrapper, "dataWrapper");
+  public JasperPrint fillReport(final JRDataSource dataSource) throws ReportException {
+    requireNonNull(dataSource, "dataWrapper");
     try {
-      return new JasperReportsResult(JasperFillManager.fillReport(loadJasperReport(reportPath), reportParameters, dataWrapper.getDataSource()));
+      return JasperFillManager.fillReport(loadJasperReport(reportPath), reportParameters, dataSource);
     }
     catch (final JRException | MalformedURLException e) {
       throw new ReportException(e);

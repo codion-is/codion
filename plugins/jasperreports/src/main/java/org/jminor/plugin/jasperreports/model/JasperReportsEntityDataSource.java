@@ -3,7 +3,6 @@
  */
 package org.jminor.plugin.jasperreports.model;
 
-import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.framework.domain.entity.Entity;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -17,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default JRDataSource implementation which iterates through the iterator received via the constructor.
  */
-public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWrapper<JRDataSource> {
+public class JasperReportsEntityDataSource implements JRDataSource {
 
   private final Iterator<Entity> reportIterator;
   private Entity currentEntity = null;
@@ -39,12 +38,6 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
     }
 
     return hasNext;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final JRDataSource getDataSource() {
-    return this;
   }
 
   /**

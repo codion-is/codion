@@ -4,9 +4,7 @@
 package org.jminor.plugin.nextreports.model;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 
 import ro.nextreports.engine.FluentReportRunner;
@@ -56,7 +54,7 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
   }
 
   @Override
-  public ReportResult<NextReportsResult> fillReport(final Connection connection) throws ReportException {
+  public NextReportsResult fillReport(final Connection connection) throws ReportException {
     File file = null;
     try (final OutputStream output = new FileOutputStream(file = File.createTempFile("NextReportsWrapper", null, null))) {
       FluentReportRunner.report(loadReport(reportPath))
@@ -69,7 +67,7 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
 
       final byte[] bytes = Files.readAllBytes(file.toPath());
 
-      return new NextReportsResultWrapper(new NextReportsResult(bytes, format));
+      return new NextReportsResult(bytes, format);
     }
     catch (final Exception e) {
       throw new ReportException(e);
@@ -87,7 +85,7 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
   }
 
   @Override
-  public ReportResult<NextReportsResult> fillReport(final ReportDataWrapper<Void> dataWrapper) throws ReportException {
+  public NextReportsResult fillReport(final Void dataWrapper) throws ReportException {
     throw new UnsupportedOperationException();
   }
 

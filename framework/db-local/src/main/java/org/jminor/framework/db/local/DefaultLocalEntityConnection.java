@@ -17,7 +17,6 @@ import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.exception.UniqueConstraintException;
 import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.user.User;
 import org.jminor.framework.db.condition.EntityCondition;
@@ -695,13 +694,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public <R, D> ReportResult<R> fillReport(final ReportWrapper<R, D> reportWrapper) throws ReportException {
+  public <R, D> R fillReport(final ReportWrapper<R, D> reportWrapper) throws ReportException {
     requireNonNull(reportWrapper, "reportWrapper");
     Exception exception = null;
     synchronized (connection) {
       try {
         logAccess("fillReport", new Object[] {reportWrapper.getReportName()});
-        final ReportResult<R> result = reportWrapper.fillReport(connection.getConnection());
+        final R result = reportWrapper.fillReport(connection.getConnection());
         commitIfTransactionIsNotOpen();
 
         return result;

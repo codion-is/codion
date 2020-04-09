@@ -4,7 +4,6 @@
 package org.jminor.plugin.nextreports.model;
 
 import org.jminor.common.Util;
-import org.jminor.common.db.reports.ReportResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,9 +13,9 @@ import java.nio.file.Files;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A {@link ReportResult} implementation based on NextReports
+ * A report result based on NextReports
  */
-public final class NextReportsResult implements ReportResult<byte[]>, Serializable {
+public final class NextReportsResult implements Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -33,8 +32,9 @@ public final class NextReportsResult implements ReportResult<byte[]>, Serializab
     this.format = requireNonNull(format, "format");
   }
 
-  /** {@inheritDoc} */
-  @Override
+  /**
+   * @return the result as a byte array
+   */
   public byte[] getResult() {
     return bytes;
   }
@@ -64,7 +64,7 @@ public final class NextReportsResult implements ReportResult<byte[]>, Serializab
    * @throws IOException in case of an exception
    */
   public File writeResultToFile(final File file) throws IOException {
-    Files.write(file.toPath(), getResult());
+    Files.write(file.toPath(), bytes);
 
     return file;
   }

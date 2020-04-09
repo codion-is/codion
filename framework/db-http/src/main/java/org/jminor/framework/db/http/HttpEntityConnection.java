@@ -10,7 +10,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.MultipleRecordsFoundException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.user.User;
 import org.jminor.framework.db.EntityConnection;
@@ -457,7 +456,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public <R, D> ReportResult<R> fillReport(final ReportWrapper<R, D> reportWrapper) throws DatabaseException, ReportException {
+  public <R, D> R fillReport(final ReportWrapper<R, D> reportWrapper) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportWrapper, "reportWrapper");
     try {
       return onResponse(execute(createHttpPost("report", reportWrapper)));
