@@ -7,7 +7,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.db.condition.EntityCondition;
@@ -97,7 +96,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public <R, D> ReportResult<R> fillReport(final ReportWrapper<R, D> reportWrapper) throws ReportException, DatabaseException {
+  public <R, D> R fillReport(final ReportWrapper<R, D> reportWrapper) throws ReportException, DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.fillReport(reportWrapper);
     }

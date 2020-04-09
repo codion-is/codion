@@ -5,7 +5,6 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.user.User;
 import org.jminor.framework.db.condition.EntityCondition;
@@ -266,14 +265,14 @@ public interface EntityConnection {
   /**
    * Takes a ReportWrapper object using a JDBC datasource and returns an initialized ReportResult object
    * @param reportWrapper the wrapper containing the report to fill
-   * @param <R> the type of the actual report object being wrapped
+   * @param <R> the report result type
    * @param <D> the type of the data source used to fill the report
-   * @return an initialized ReportResult object
+   * @return the filled result object
    * @throws DatabaseException in case of a database exception
    * @throws org.jminor.common.db.reports.ReportException in case of a report exception
    * @see org.jminor.common.db.reports.ReportWrapper#fillReport(java.sql.Connection)
    */
-  <R, D> ReportResult<R> fillReport(ReportWrapper<R, D> reportWrapper) throws DatabaseException, ReportException;
+  <R, D> R fillReport(ReportWrapper<R, D> reportWrapper) throws DatabaseException, ReportException;
 
   /**
    * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyId}

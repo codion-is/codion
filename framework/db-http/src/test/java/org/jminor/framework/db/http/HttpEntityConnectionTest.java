@@ -6,9 +6,7 @@ package org.jminor.framework.db.http;
 import org.jminor.common.db.Operator;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
-import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
@@ -86,7 +84,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void fillReport() throws ReportException, DatabaseException, IOException {
-    final TestReportResult result = (TestReportResult) connection.fillReport(new TestReportWrapper());
+    final String result = connection.fillReport(new TestReportWrapper());
     assertNotNull(result);
   }
 
@@ -287,7 +285,7 @@ public final class HttpEntityConnectionTest {
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
   }
 
-  private static class TestReportWrapper implements ReportWrapper, Serializable {
+  private static class TestReportWrapper implements ReportWrapper<String, Object>, Serializable {
 
     @Override
     public String getReportName() {
@@ -295,21 +293,13 @@ public final class HttpEntityConnectionTest {
     }
 
     @Override
-    public ReportResult fillReport(final Connection connection) throws ReportException {
-      return new TestReportResult();
+    public String fillReport(final Connection connection) throws ReportException {
+      return "";
     }
 
     @Override
-    public ReportResult fillReport(final ReportDataWrapper reportDataWrapper) throws ReportException {
-      return new TestReportResult();
-    }
-  }
-
-  private static class TestReportResult implements ReportResult, Serializable {
-
-    @Override
-    public Object getResult() {
-      return "ReportResult";
+    public String fillReport(final Object reportDataWrapper) throws ReportException {
+      return "";
     }
   }
 

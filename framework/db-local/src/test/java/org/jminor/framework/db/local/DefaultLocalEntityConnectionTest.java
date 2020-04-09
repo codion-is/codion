@@ -16,9 +16,7 @@ import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.exception.UniqueConstraintException;
 import org.jminor.common.db.exception.UpdateException;
-import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
@@ -179,21 +177,21 @@ public class DefaultLocalEntityConnectionTest {
   public void fillReport() throws Exception {
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    final ReportResult reportResult = () -> "result";
-    connection.fillReport(new ReportWrapper() {
+    final String reportResult = "result";
+    connection.fillReport(new ReportWrapper<String, String>() {
       @Override
       public String getReportName() {
         return "TestName";
       }
 
       @Override
-      public ReportResult fillReport(final Connection connection) throws ReportException {
+      public String fillReport(final Connection connection) throws ReportException {
         return reportResult;
       }
 
       @Override
-      public ReportResult fillReport(final ReportDataWrapper dataWrapper) throws ReportException {
-        return reportResult;
+      public String fillReport(final String dataWrapper) throws ReportException {
+        return dataWrapper;
       }
     });
   }

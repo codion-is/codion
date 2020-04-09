@@ -3,9 +3,8 @@
  */
 package org.jminor.framework.demos.chinook.ui;
 
-import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.domain.entity.Entities;
-import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
+import org.jminor.plugin.jasperreports.model.JasperReports;
 import org.jminor.plugin.jasperreports.ui.JasperReportsUiWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
@@ -35,13 +34,14 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   private void viewCustomerReport() throws Exception {
-    final String reportPath = ReportWrapper.getReportPath() + "/customer_report.jasper";
+    final String reportPath = "customer_report.jasper";
     final Collection<Integer> customerIDs = Entities.getDistinctValues(CUSTOMER_CUSTOMERID,
             getTableModel().getSelectionModel().getSelectedItems());
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
 
-    EntityReports.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
+    EntityReports.viewJdbcReport(CustomerTablePanel.this,
+            JasperReports.jasperReportsWrapper(reportPath, reportParameters),
             new JasperReportsUiWrapper(), null, getTableModel().getConnectionProvider());
   }
 }

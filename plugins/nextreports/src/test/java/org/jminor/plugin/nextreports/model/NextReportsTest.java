@@ -5,7 +5,6 @@ package org.jminor.plugin.nextreports.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;
@@ -23,7 +22,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class NextReportsWrapperTest {
+public class NextReportsTest {
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -33,18 +32,18 @@ public class NextReportsWrapperTest {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             new H2Database("h2db", System.getProperty("jminor.db.initScript")))
             .setDomainClassName(Domain.class.getName()).setUser(UNIT_TEST_USER);
-    final ReportResult<NextReportsResult> result = connectionProvider.getConnection().fillReport(
-            new NextReportsWrapper("src/test/reports/test-report.report",
+    final NextReportsResult result = connectionProvider.getConnection().fillReport(
+            NextReports.NextReportsWrapper("src/test/reports/test-report.report",
                     Collections.emptyMap(), ReportRunner.CSV_FORMAT));
     File file = null;
     try {
       final String tmpDir = System.getProperty("java.io.tmpdir");
       final String filename = "NextReportsWrapperTest" + System.currentTimeMillis();
-      file = result.getResult().writeResultToFile(tmpDir, filename);
+      file = result.writeResultToFile(tmpDir, filename);
       file.deleteOnExit();
-      assertEquals(file.length(), result.getResult().getResult().length);
+      assertEquals(file.length(), result.getResult().length);
       //throws IllegalArgumentException
-      result.getResult().writeResultToFile(tmpDir, filename);
+      result.writeResultToFile(tmpDir, filename);
       fail("Should not overwrite file");
     }
     catch (final IllegalArgumentException e) {/*expected*/}

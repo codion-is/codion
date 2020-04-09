@@ -12,7 +12,7 @@ import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A simple wrapper for a report
- * @param <R> the type of the report being wrapped.
+ * @param <R> the report result type
  * @param <D> the type of the report datasource
  */
 public interface ReportWrapper<R, D> {
@@ -29,20 +29,20 @@ public interface ReportWrapper<R, D> {
   String getReportName();
 
   /**
-   * Fills the report using the given database connection
+   * Loads and fills the report using the given database connection
    * @param connection the connection to use for the report generation
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  ReportResult<R> fillReport(Connection connection) throws ReportException;
+  R fillReport(Connection connection) throws ReportException;
 
   /**
    * Fills the report using the data source wrapped by the given data wrapper
-   * @param dataWrapper the data provider to use for the report generation
+   * @param dataSource the data provider to use for the report generation
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  ReportResult<R> fillReport(ReportDataWrapper<D> dataWrapper) throws ReportException;
+  R fillReport(D dataSource) throws ReportException;
 
   /**
    * @return the value associated with {@link ReportWrapper#REPORT_PATH}

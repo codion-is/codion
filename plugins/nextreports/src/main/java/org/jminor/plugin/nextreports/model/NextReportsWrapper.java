@@ -4,9 +4,7 @@
 package org.jminor.plugin.nextreports.model;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 
 import ro.nextreports.engine.FluentReportRunner;
@@ -26,10 +24,12 @@ import java.nio.file.Files;
 import java.sql.Connection;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A NextReports {@link ReportWrapper} implementation
  */
-public final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>, Serializable {
+final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -41,20 +41,14 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
   private final Map<String, Object> reportParameters;
   private final String format;
 
-  /**
-   * Instantiates a new {@link NextReportsWrapper}.
-   * @param reportPath the path to the report
-   * @param reportParameters the report parameters
-   * @param format the format
-   */
-  public NextReportsWrapper(final String reportPath, final Map<String, Object> reportParameters, final String format) {
-    this.reportParameters = reportParameters;
-    this.reportPath = reportPath;
+  NextReportsWrapper(final String reportPath, final Map<String, Object> reportParameters, final String format) {
+    this.reportPath = requireNonNull(reportPath, "reportPath");
+    this.reportParameters = requireNonNull(reportParameters, "reportParameters");
     this.format = format;
   }
 
   @Override
-  public ReportResult<NextReportsResult> fillReport(final Connection connection) throws ReportException {
+  public NextReportsResult fillReport(final Connection connection) throws ReportException {
     File file = null;
     try (final OutputStream output = new FileOutputStream(file = File.createTempFile("NextReportsWrapper", null, null))) {
       FluentReportRunner.report(loadReport(reportPath))
@@ -67,7 +61,7 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
 
       final byte[] bytes = Files.readAllBytes(file.toPath());
 
-      return new NextReportsResultWrapper(new NextReportsResult(bytes, format));
+      return new NextReportsResult(bytes, format);
     }
     catch (final Exception e) {
       throw new ReportException(e);
@@ -85,7 +79,7 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
   }
 
   @Override
-  public ReportResult<NextReportsResult> fillReport(final ReportDataWrapper<Void> dataWrapper) throws ReportException {
+  public NextReportsResult fillReport(final Void dataWrapper) throws ReportException {
     throw new UnsupportedOperationException();
   }
 

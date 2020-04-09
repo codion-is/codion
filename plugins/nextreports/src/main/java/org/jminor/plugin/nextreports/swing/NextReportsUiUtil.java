@@ -3,7 +3,6 @@
  */
 package org.jminor.plugin.nextreports.swing;
 
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.plugin.nextreports.model.NextReportsResult;
 
 import java.awt.Desktop;
@@ -23,7 +22,7 @@ public final class NextReportsUiUtil {
    * @param file the file
    * @throws IOException if writing the file fails
    */
-  public static void openReport(final ReportResult<NextReportsResult> reportsResult, final File file) throws IOException {
-    Desktop.getDesktop().open(reportsResult.getResult().writeResultToFile(file));
+  public static void openReport(final NextReportsResult reportsResult, final File file) throws IOException {
+    Desktop.getDesktop().open(reportsResult.writeResultToFile(file));
   }
 }

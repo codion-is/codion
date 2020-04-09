@@ -4,9 +4,7 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.common.ui.Components;
@@ -38,10 +36,11 @@ public final class EntityReports {
    * @param uiWrapper the ui wrapper
    * @param reportTitle the title to display on the frame
    * @param connectionProvider the db provider
+   * @param <R> the report result type
    */
-  public static void viewJdbcReport(final JComponent component, final ReportWrapper reportWrapper,
-                                    final ReportUiWrapper uiWrapper, final String reportTitle,
-                                    final EntityConnectionProvider connectionProvider) {
+  public static <R> void viewJdbcReport(final JComponent component, final ReportWrapper<R, ?> reportWrapper,
+                                        final ReportUiWrapper<R> uiWrapper, final String reportTitle,
+                                        final EntityConnectionProvider connectionProvider) {
     try {
       Components.showWaitCursor(component);
       viewReport(connectionProvider.getConnection().fillReport(reportWrapper), uiWrapper, reportTitle);
@@ -61,10 +60,12 @@ public final class EntityReports {
    * @param uiWrapper the ui wrapper
    * @param dataSource the datasource used to provide the report data
    * @param reportTitle the title to display on the frame
+   * @param <R> the report result type
+   * @param <D> the type of the data source used to fill the report
    */
-  public static void viewReport(final JComponent component, final ReportWrapper reportWrapper,
-                                final ReportUiWrapper uiWrapper, final ReportDataWrapper dataSource,
-                                final String reportTitle) {
+  public static <R, D> void viewReport(final JComponent component, final ReportWrapper<R, D> reportWrapper,
+                                       final ReportUiWrapper<R> uiWrapper, final D dataSource,
+                                       final String reportTitle) {
     try {
       Components.showWaitCursor(component);
       viewReport(reportWrapper.fillReport(dataSource), uiWrapper, reportTitle);
@@ -82,8 +83,9 @@ public final class EntityReports {
    * @param reportResult the report result
    * @param uiWrapper the UI wrapper
    * @param frameTitle the title to display on the frame
+   * @param <R> the report result type
    */
-  public static void viewReport(final ReportResult reportResult, final ReportUiWrapper uiWrapper, final String frameTitle) {
+  public static <R> void viewReport(final R reportResult, final ReportUiWrapper<R> uiWrapper, final String frameTitle) {
     SwingUtilities.invokeLater(() -> {
       final JFrame frame = new JFrame(frameTitle == null ? MESSAGES.getString("report_printer") : frameTitle);
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

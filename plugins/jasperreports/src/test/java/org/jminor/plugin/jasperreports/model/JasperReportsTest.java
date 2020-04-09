@@ -5,6 +5,7 @@ package org.jminor.plugin.jasperreports.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;
@@ -15,23 +16,26 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import org.junit.jupiter.api.Test;
 
+import java.net.MalformedURLException;
 import java.util.HashMap;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JasperReportsWrapperTest {
+public class JasperReportsTest {
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static final String REPORT_PATH = "build/classes/reports/test/empdept_employees.jasper";
+  private static final String REPORT_PATH = "build/classes/reports/test";
 
   @Test
   public void fillJdbcReport() throws ReportException, DatabaseException {
+    ReportWrapper.REPORT_PATH.set(REPORT_PATH);
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             new H2Database("JasperReportsWrapperTest.fillJdbcReport",
                     System.getProperty("jminor.db.initScript")))
@@ -39,15 +43,16 @@ public class JasperReportsWrapperTest {
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
     final JasperPrint print = connectionProvider.getConnection().fillReport(
-            new JasperReportsWrapper(REPORT_PATH, reportParameters)).getResult();
+            JasperReports.jasperReportsWrapper("empdept_employees.jasper", reportParameters));
     assertNotNull(print);
-    connectionProvider.getConnection().fillReport(new JasperReportsWrapper(REPORT_PATH)).getResult();
+    connectionProvider.getConnection().fillReport(new JasperReportsWrapper("empdept_employees.jasper"));
   }
 
   @Test
-  public void fillDataSourceReport() throws ReportException {
-    final JasperReportsWrapper wrapper = new JasperReportsWrapper(REPORT_PATH);
-    final JasperReportsDataWrapper dataWrapper = new JasperReportsDataWrapper(new JRDataSource() {
+  public void fillDataSourceReport() throws ReportException, MalformedURLException, JRException {
+    final JasperReport report = JasperReports.loadJasperReport(REPORT_PATH + "/" + "empdept_employees.jasper");
+    final JasperReportsWrapper wrapper = new JasperReportsWrapper(report);
+    final JRDataSource dataSource = new JRDataSource() {
       boolean done = false;
       @Override
       public boolean next() throws JRException {
@@ -62,17 +67,18 @@ public class JasperReportsWrapperTest {
       public Object getFieldValue(final JRField jrField) throws JRException {
         return null;
       }
-    });
-    wrapper.fillReport(dataWrapper);
+    };
+    wrapper.fillReport(dataSource);
   }
 
   @Test
   public void fillJdbcReportInvalidReport() throws Exception {
+    ReportWrapper.REPORT_PATH.set(REPORT_PATH);
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             new H2Database("JasperReportsWrapperTest.fillJdbcReportInvalidReport",
                     System.getProperty("jminor.db.initScript")))
             .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
     assertThrows(ReportException.class, () -> connectionProvider.getConnection().fillReport(
-            new JasperReportsWrapper("build/classes/reports/test/non_existing.jasper", new HashMap<>())).getResult());
+            JasperReports.jasperReportsWrapper("non_existing.jasper", new HashMap<>())));
   }
 }

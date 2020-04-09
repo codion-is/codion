@@ -3,8 +3,6 @@
  */
 package org.jminor.swing.common.ui.reports;
 
-import org.jminor.common.db.reports.ReportResult;
-
 import javax.swing.JComponent;
 
 /**
@@ -18,5 +16,5 @@ public interface ReportUiWrapper<R> {
    * @param result the report result to base the report on.
    * @return a JComponent showing a report.
    */
-  JComponent createReportComponent(ReportResult<R> result);
+  JComponent createReportComponent(R result);
 }
