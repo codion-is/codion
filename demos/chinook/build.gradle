@@ -38,6 +38,7 @@ dependencies {
 
 ext.mainClass = 'org.jminor.framework.demos.chinook.ui.ChinookAppPanel'
 ext.loadTestMainClass = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
+ext.serverReportPath = '../../demos/chinook/build/classes/reports'
 
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
@@ -89,16 +90,20 @@ runClientLocal {
 
 runClientRMI {
     main = mainClass
+    systemProperties['jminor.report.path'] = serverReportPath
 }
 
 runClientHttp {
     main = mainClass
+    systemProperties['jminor.report.path'] = serverReportPath
 }
 
 runLoadTestRMI {
     main = loadTestMainClass
+    systemProperties['jminor.report.path'] = serverReportPath
 }
 
 runLoadTestHttp {
     main = loadTestMainClass
+    systemProperties['jminor.report.path'] = serverReportPath
 }

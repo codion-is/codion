@@ -39,6 +39,7 @@ dependencies {
 
 ext.mainClass = 'org.jminor.framework.demos.empdept.ui.EmpDeptAppPanel'
 ext.loadTestMainClass = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+ext.serverReportPath = '../../demos/empdept/build/classes/reports'
 
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
@@ -105,16 +106,20 @@ task runClientLocalFX(type: JavaExec) {
 
 runClientRMI {
     main = mainClass
+    systemProperties['jminor.report.path'] = serverReportPath
 }
 
 runClientHttp {
     main = mainClass
+    systemProperties['jminor.report.path'] = serverReportPath
 }
 
 runLoadTestRMI {
     main = loadTestMainClass
+    systemProperties['jminor.report.path'] = serverReportPath
 }
 
 runLoadTestHttp {
     main = loadTestMainClass
+    systemProperties['jminor.report.path'] = serverReportPath
 }

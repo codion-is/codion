@@ -26,6 +26,8 @@ import java.nio.file.Files;
 import java.sql.Connection;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A NextReports {@link ReportWrapper} implementation
  */
@@ -48,8 +50,8 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
    * @param format the format
    */
   public NextReportsWrapper(final String reportPath, final Map<String, Object> reportParameters, final String format) {
-    this.reportParameters = reportParameters;
-    this.reportPath = reportPath;
+    this.reportPath = requireNonNull(reportPath, "reportPath");
+    this.reportParameters = requireNonNull(reportParameters, "reportParameters");
     this.format = format;
   }
 

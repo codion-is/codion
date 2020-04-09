@@ -29,7 +29,7 @@ public interface ReportWrapper<R, D> {
   String getReportName();
 
   /**
-   * Fills the report using the given database connection
+   * Loads and fills the report using the given database connection
    * @param connection the connection to use for the report generation
    * @return a filled report ready for display
    * @throws ReportException in case of an exception

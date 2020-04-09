@@ -5824,3 +5824,4 @@
   DefaultEntityConnectionServerTest, removed TestWebServer auxiliary server, problematic with modules
   LoginPanel, ctrl-backspace functionality added to password field
   DefaultEntityKey.equals() now handles empty keys
+  JasperReportsWrapper no longer loads report on construction, report loaded when filled, getReportName() now returns reportPath, so now report loading happens server side
