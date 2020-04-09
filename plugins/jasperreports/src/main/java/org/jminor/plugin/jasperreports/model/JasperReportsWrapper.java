@@ -29,44 +29,64 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Jasper Reports wrapper.
  */
-public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JRDataSource>, Serializable {
+final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JRDataSource>, Serializable {
 
   private static final long serialVersionUID = 1;
 
   /**
-   * Specifies whether or not reports are cached when loaded from disk/network,<br>
-   * this prevents "hot deploy" of reports.<br>
+   * Specifies whether to cache reports when loaded from disk/network, this prevents "hot deploy" of reports.<br>
    * Value type: Boolean<br>
    * Default value: true
    */
   public static final PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("jminor.report.cacheReports", true);
 
+  private final JasperReport jasperReport;
   private final String reportPath;
   private final Map<String, Object> reportParameters;
   private static final Map<String, JasperReport> REPORT_CACHE = Collections.synchronizedMap(new HashMap<>());
 
   /**
-   * @param reportPath the report path
+   * @param jasperReport the report object
    * @throws ReportException in case of an exception while loading the report
    */
-  public JasperReportsWrapper(final String reportPath) throws ReportException {
+  JasperReportsWrapper(final JasperReport jasperReport) throws ReportException {
+    this(jasperReport, new HashMap<>());
+  }
+
+  /**
+   * @param jasperReport the report object
+   * @param reportParameters the report parameters
+   * @throws ReportException in case of an exception while loading the report
+   */
+  JasperReportsWrapper(final JasperReport jasperReport, final Map<String, Object> reportParameters) throws ReportException {
+    this.jasperReport = requireNonNull(jasperReport, "jasperReport");
+    this.reportParameters = requireNonNull(reportParameters, "reportParameters");
+    this.reportPath = null;
+  }
+
+  /**
+   * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
+   * @throws ReportException in case of an exception while loading the report
+   */
+  JasperReportsWrapper(final String reportPath) throws ReportException {
     this(reportPath, new HashMap<>());
   }
 
   /**
-   * @param reportPath the report path
+   * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
    * @param reportParameters the report parameters
    * @throws ReportException in case of an exception while loading the report
    */
-  public JasperReportsWrapper(final String reportPath, final Map<String, Object> reportParameters) throws ReportException {
+  JasperReportsWrapper(final String reportPath, final Map<String, Object> reportParameters) throws ReportException {
     this.reportPath = requireNonNull(reportPath, "reportPath");
     this.reportParameters = requireNonNull(reportParameters, "reportParameters");
+    this.jasperReport = null;
   }
 
   /** {@inheritDoc} */
   @Override
   public String getReportName() {
-    return reportPath;
+    return jasperReport == null ? reportPath : jasperReport.getName();
   }
 
   /** {@inheritDoc} */
@@ -74,7 +94,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   public JasperPrint fillReport(final Connection connection) throws ReportException {
     requireNonNull(connection, "connection");
     try {
-      return JasperFillManager.fillReport(loadJasperReport(reportPath), reportParameters, connection);
+      return JasperFillManager.fillReport(getJasperReport(), reportParameters, connection);
     }
     catch (final JRException | MalformedURLException e) {
       throw new ReportException(e);
@@ -84,9 +104,9 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   /** {@inheritDoc} */
   @Override
   public JasperPrint fillReport(final JRDataSource dataSource) throws ReportException {
-    requireNonNull(dataSource, "dataWrapper");
+    requireNonNull(dataSource, "dataSource");
     try {
-      return JasperFillManager.fillReport(loadJasperReport(reportPath), reportParameters, dataSource);
+      return JasperFillManager.fillReport(getJasperReport(), reportParameters, dataSource);
     }
     catch (final JRException | MalformedURLException e) {
       throw new ReportException(e);
@@ -105,14 +125,14 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   }
 
   /**
-   * Loads a JasperReport file from the path given, it can be a URL a file or classpath resource.
+   * Loads a JasperReport file from the path given, it can be a URL, a file path or classpath resource path.
    * @param reportPath the path to the report file to load
    * @return a loaded JasperReport file
    * @throws JRException in case loading the report fails
    * @throws MalformedURLException in case the report path is a malformed URL
    * @throws IllegalArgumentException in case the report path is not specified
    */
-  public static JasperReport loadJasperReport(final String reportPath) throws JRException, MalformedURLException {
+  static JasperReport loadJasperReport(final String reportPath) throws JRException, MalformedURLException {
     requireNonNull(reportPath, "reportPath");
     if (reportPath.isEmpty()) {
       throw new IllegalArgumentException("Empty report path");
@@ -143,5 +163,18 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
     }
 
     return report;
+  }
+
+  private JasperReport getJasperReport() throws JRException, MalformedURLException {
+    if (jasperReport != null) {
+      return jasperReport;
+    }
+
+    String reportDirectory = ReportWrapper.getReportPath();
+    if (!reportDirectory.endsWith("/") && !reportPath.startsWith("/")) {
+      reportDirectory = reportDirectory + "/";
+    }
+
+    return loadJasperReport(reportDirectory + reportPath);
   }
 }

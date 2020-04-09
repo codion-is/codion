@@ -7,6 +7,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -16,8 +17,9 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
+import org.jminor.plugin.jasperreports.model.JasperReports;
 
+import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import java.math.BigDecimal;
@@ -202,10 +204,13 @@ public final class EntityConnectionDemo {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
 
-    JasperReportsWrapper reportsWrapper = new JasperReportsWrapper(
-            "build/classes/reports/customer_report.jasper", reportParameters);
+    //the central report directory
+    ReportWrapper.REPORT_PATH.set("build/classes/reports");
 
-    JasperPrint jasperPrint = connection.fillReport(reportsWrapper);
+    ReportWrapper<JasperPrint, JRDataSource> reportWrapper =
+            JasperReports.jasperReportsWrapper("customer_report.jasper", reportParameters);
+
+    JasperPrint jasperPrint = connection.fillReport(reportWrapper);
     //end::report[]
   }
 

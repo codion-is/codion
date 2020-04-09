@@ -14,7 +14,7 @@ import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.plugin.jasperreports.model.JasperReportsWrapper;
+import org.jminor.plugin.jasperreports.model.JasperReports;
 import org.jminor.swing.common.tools.ui.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -98,7 +98,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
                         Entities.getDistinctValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
                 final HashMap<String, Object> reportParameters = new HashMap<>();
                 reportParameters.put("CUSTOMER_IDS", customerIDs);
-                customerModel.getConnectionProvider().getConnection().fillReport(new JasperReportsWrapper(reportPath, reportParameters));
+                customerModel.getConnectionProvider().getConnection().fillReport(JasperReports.jasperReportsWrapper(reportPath, reportParameters));
               }
               catch (final Exception e) {
                 throw new ScenarioException(e);
