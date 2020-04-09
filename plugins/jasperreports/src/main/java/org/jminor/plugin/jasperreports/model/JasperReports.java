@@ -22,6 +22,7 @@ public final class JasperReports {
 
   /**
    * @param jasperReport the report object
+   * @return a report wrapper
    * @throws ReportException in case of an exception while loading the report
    */
   public static ReportWrapper<JasperPrint, JRDataSource> jasperReportsWrapper(final JasperReport jasperReport) throws ReportException {
@@ -31,6 +32,7 @@ public final class JasperReports {
   /**
    * @param jasperReport the report object
    * @param reportParameters the report parameters
+   * @return a report wrapper
    * @throws ReportException in case of an exception while loading the report
    */
   public static ReportWrapper<JasperPrint, JRDataSource> jasperReportsWrapper(final JasperReport jasperReport, final Map<String, Object> reportParameters) throws ReportException {
@@ -39,6 +41,7 @@ public final class JasperReports {
 
   /**
    * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
+   * @return a report wrapper
    * @throws ReportException in case of an exception while loading the report
    */
   public static ReportWrapper<JasperPrint, JRDataSource> jasperReportsWrapper(final String reportPath) throws ReportException {
@@ -48,6 +51,7 @@ public final class JasperReports {
   /**
    * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
    * @param reportParameters the report parameters
+   * @return a report wrapper
    * @throws ReportException in case of an exception while loading the report
    */
   public static ReportWrapper<JasperPrint, JRDataSource> jasperReportsWrapper(final String reportPath, final Map<String, Object> reportParameters) throws ReportException {
