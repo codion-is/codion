@@ -5827,3 +5827,4 @@
   JasperReportsWrapper no longer loads report on construction, report loaded when filled, getReportName() now returns reportPath, so now report loading happens server side
   ReportResult and ReportDataWrapper removed
   JasperReports added, JasperReportsWrapper package private
+  NextReports added, NextReportsWrapper package private

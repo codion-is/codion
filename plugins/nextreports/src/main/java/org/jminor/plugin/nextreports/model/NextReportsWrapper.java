@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A NextReports {@link ReportWrapper} implementation
  */
-public final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>, Serializable {
+final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -41,13 +41,7 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
   private final Map<String, Object> reportParameters;
   private final String format;
 
-  /**
-   * Instantiates a new {@link NextReportsWrapper}.
-   * @param reportPath the path to the report
-   * @param reportParameters the report parameters
-   * @param format the format
-   */
-  public NextReportsWrapper(final String reportPath, final Map<String, Object> reportParameters, final String format) {
+  NextReportsWrapper(final String reportPath, final Map<String, Object> reportParameters, final String format) {
     this.reportPath = requireNonNull(reportPath, "reportPath");
     this.reportParameters = requireNonNull(reportParameters, "reportParameters");
     this.format = format;
