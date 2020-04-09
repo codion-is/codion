@@ -146,6 +146,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
 
   /**
    * Key objects are equal if the entityIds match as well as all property values.
+   * Empty keys are only equal to themselves.
    * @param obj the object to compare with
    * @return true if object is equal to this key
    */
@@ -153,6 +154,9 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   public boolean equals(final Object obj) {
     if (this == obj) {
       return true;
+    }
+    if (!definition.hasPrimaryKey()) {
+      return false;
     }
     if (obj instanceof Entity.Key) {
       final String entityId = definition.getEntityId();
