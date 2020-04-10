@@ -97,14 +97,14 @@ distributions {
     }
 }
 applicationDefaultJvmArgs = [
-        '-Xmx256m',
+        '-Xmx256m', '--add-modules', 'org.jminor.plugin.jasperreports',
         '-Djminor.configurationFile=../config/h2_embedded.config',
         '-Dlogback.configurationFile=../config/logback.xml',
         '-Djava.security.policy=../config/jminor_server.policy'
 ]
 
 def applicationGenerateSecurityPolicyJvmArgs = [
-        '-Xmx256m',
+        '-Xmx256m', '--add-modules', 'org.jminor.plugin.jasperreports',
         '-Djminor.configurationFile=../config/h2_embedded.config',
         '-Dlogback.configurationFile=../config/logback.xml',
         '-Djava.security.manager=net.sourceforge.prograde.sm.PolicyFileGeneratorJSM',
