@@ -67,6 +67,7 @@ net.sf.jasperreports.engine.type.RunDirectionEnum
 net.sf.jasperreports.engine.type.SectionTypeEnum
 net.sf.jasperreports.engine.type.SplitTypeEnum
 net.sf.jasperreports.engine.type.StretchTypeEnum
+net.sf.jasperreports.engine.type.TextAdjustEnum
 net.sf.jasperreports.engine.type.WhenResourceMissingTypeEnum
 org.jminor.common.Conjunction
 org.jminor.common.db.Operator
@@ -83,6 +84,8 @@ org.jminor.framework.domain.entity.DefaultEntity
 org.jminor.framework.domain.entity.DefaultEntityKey
 org.jminor.framework.domain.entity.DefaultOrderBy
 org.jminor.framework.domain.entity.DefaultOrderBy$DefaultOrderByProperty
+org.jminor.framework.demos.chinook.domain.Chinook
+org.jminor.framework.demos.empdept.domain.EmpDept
 org.jminor.plugin.jasperreports.model.AbstractReportWrapper
 org.jminor.plugin.jasperreports.model.ClassPathReportWrapper
 org.jminor.plugin.jasperreports.model.FileSystemReportWrapper
