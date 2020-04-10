@@ -285,7 +285,7 @@ public final class HttpEntityConnectionTest {
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
   }
 
-  private static class TestReportWrapper implements ReportWrapper<String, Object>, Serializable {
+  private static class TestReportWrapper implements ReportWrapper<Object, String>, Serializable {
 
     @Override
     public String getReportName() {
@@ -298,8 +298,8 @@ public final class HttpEntityConnectionTest {
     }
 
     @Override
-    public String fillReport(final Object reportDataWrapper) throws ReportException {
-      return "";
+    public Object loadReport() throws ReportException {
+      return null;
     }
   }
 

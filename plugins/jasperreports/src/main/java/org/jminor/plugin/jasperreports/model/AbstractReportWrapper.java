@@ -6,7 +6,6 @@ package org.jminor.plugin.jasperreports.model;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
 
-import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -18,7 +17,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractReportWrapper implements ReportWrapper<JasperPrint, JRDataSource> {
+abstract class AbstractReportWrapper implements ReportWrapper<JasperReport, JasperPrint> {
 
   private static final long serialVersionUID = 1;
 
@@ -46,25 +45,11 @@ abstract class AbstractReportWrapper implements ReportWrapper<JasperPrint, JRDat
 
   /** {@inheritDoc} */
   @Override
-  public final JasperPrint fillReport(final JRDataSource dataSource) throws ReportException {
-    requireNonNull(dataSource, "dataSource");
-    try {
-      return JasperFillManager.fillReport(loadReportInternal(), reportParameters, dataSource);
-    }
-    catch (final Exception e) {
-      throw new ReportException(e);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final String getReportName() {
     return reportPath;
   }
 
-  protected abstract JasperReport loadReport() throws Exception;
-
-  private JasperReport loadReportInternal() throws Exception {
+  private JasperReport loadReportInternal() throws ReportException {
     final Boolean cacheReports = CACHE_REPORTS.get();
     if (cacheReports && REPORT_CACHE.containsKey(this)) {
       return REPORT_CACHE.get(this);

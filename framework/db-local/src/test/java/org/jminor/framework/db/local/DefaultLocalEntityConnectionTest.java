@@ -190,8 +190,8 @@ public class DefaultLocalEntityConnectionTest {
       }
 
       @Override
-      public String fillReport(final String dataWrapper) throws ReportException {
-        return dataWrapper;
+      public String loadReport() throws ReportException {
+        return null;
       }
     });
   }

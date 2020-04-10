@@ -20,8 +20,8 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.plugin.jasperreports.model.JasperReports;
 
-import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -205,7 +205,7 @@ public final class EntityConnectionDemo {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
 
-    ReportWrapper<JasperPrint, JRDataSource> reportWrapper =
+    ReportWrapper<JasperReport, JasperPrint> reportWrapper =
             JasperReports.classPathReport(Chinook.class, "customer_report.jasper", reportParameters);
 
     JasperPrint jasperPrint = connection.fillReport(reportWrapper);

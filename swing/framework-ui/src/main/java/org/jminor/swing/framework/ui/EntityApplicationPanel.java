@@ -1409,6 +1409,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     catch (final Exception ex) {
       LOG.debug("Exception while disconnecting after a failed startup", ex);
     }
+    //todo EDT mess
     displayException(e, null);
     if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
             resourceBundle.getString("retry"), resourceBundle.getString("retry_title"),

@@ -694,7 +694,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public <R, D> R fillReport(final ReportWrapper<R, D> reportWrapper) throws ReportException {
+  public <T, R> R fillReport(final ReportWrapper<T, R> reportWrapper) throws ReportException {
     requireNonNull(reportWrapper, "reportWrapper");
     Exception exception = null;
     synchronized (connection) {
