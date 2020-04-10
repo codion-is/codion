@@ -2,6 +2,7 @@
 [Ljava.lang.Object;
 [Ljava.lang.StackTraceElement;
 [Ljava.lang.String;
+[Ljava.util.Map$Entry;
 [Lorg.jminor.common.item.Item;
 com.sun.proxy.$Proxy*
 java.io.IOException
@@ -90,5 +91,6 @@ org.jminor.framework.domain.property.DefaultTransientProperty
 org.jminor.framework.domain.property.DefaultValueListProperty
 org.jminor.framework.domain.property.Properties
 org.jminor.framework.domain.property.Properties$$Lambda$*
+org.jminor.framework.server.DefaultEntityConnectionServerAdmin$DefaultGcEvent
 org.jminor.framework.server.DefaultEntityConnectionServerAdmin$DefaultThreadStatistics
 org.jminor.framework.server.EntityConnectionServerAdmin
