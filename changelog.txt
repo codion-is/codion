@@ -5831,3 +5831,4 @@
   SerializationWhitelist bug fixed, never rejected anything when no wildcard whitelist items were specified :|
   JasperReports major refactoring, demos now use classPathReport()
   AbstractReportWrapper bug fixed, cach lookup used incorrect key
+  AbstractReportWrapper, toString() implemented in subclasses

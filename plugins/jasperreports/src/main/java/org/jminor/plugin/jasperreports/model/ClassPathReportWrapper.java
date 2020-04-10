@@ -34,6 +34,11 @@ final class ClassPathReportWrapper extends AbstractReportWrapper {
   }
 
   @Override
+  public String toString() {
+    return resourceClass.getName() + " " + reportPath;
+  }
+
+  @Override
   protected JasperReport loadReport() throws JRException {
     try {
       return (JasperReport) JRLoader.loadObject(resourceClass.getResource(reportPath));
