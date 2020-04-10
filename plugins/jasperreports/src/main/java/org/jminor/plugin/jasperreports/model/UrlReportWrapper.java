@@ -31,6 +31,11 @@ final class UrlReportWrapper extends AbstractReportWrapper {
   }
 
   @Override
+  public String toString() {
+    return reportPath;
+  }
+
+  @Override
   protected JasperReport loadReport() throws Exception {
     return (JasperReport) JRLoader.loadObject(new URL(reportPath));
   }

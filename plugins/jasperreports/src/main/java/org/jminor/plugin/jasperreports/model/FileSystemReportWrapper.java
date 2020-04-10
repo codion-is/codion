@@ -31,6 +31,11 @@ final class FileSystemReportWrapper extends AbstractReportWrapper {
   }
 
   @Override
+  public String toString() {
+    return getFullReportPath();
+  }
+
+  @Override
   protected JasperReport loadReport() throws JRException {
     final File reportFile = new File(getFullReportPath());
     if (reportFile.exists()) {
