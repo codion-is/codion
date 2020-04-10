@@ -81,7 +81,7 @@ test {
 task buildReports(dependsOn: 'compileJava') {
     group 'build'
     def jasperSourceDir = file('src/main/reports')
-    def jasperTargetDir = file('build/classes/reports')
+    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/org/jminor/framework/demos/empdept/domain')
     inputs.dir jasperSourceDir
     outputs.dir jasperTargetDir
     doLast {
@@ -107,7 +107,6 @@ task runClientLocal(type: ModularJavaExec) {
             'jminor.db.embedded'          : 'true',
             'jminor.db.embeddedInMemory'  : 'true',
             'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
-            'jminor.report.path'          : 'build/classes/reports',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
@@ -121,7 +120,6 @@ task runClientLocalFX(type: ModularJavaExec) {
             'jminor.db.host'              : 'h2db',
             'jminor.db.embeddedInMemory'  : 'true',
             'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
-            'jminor.report.path'          : 'build/classes/reports',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
@@ -132,7 +130,6 @@ task runClientRMI(type: ModularJavaExec) {
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
-            'jminor.report.path'              : 'build/classes/reports',
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
@@ -146,7 +143,6 @@ task runClientHttp(type: ModularJavaExec) {
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
             'jminor.client.http.hostname' : 'localhost',
-            'jminor.report.path'          : 'build/classes/reports',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
@@ -157,7 +153,6 @@ task runLoadTestRMI(type: ModularJavaExec) {
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
-            'jminor.report.path'              : 'build/classes/reports',
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
@@ -171,7 +166,6 @@ task runLoadTestHttp(type: ModularJavaExec) {
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
             'jminor.client.http.hostname' : 'localhost',
-            'jminor.report.path'          : 'build/classes/reports',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
@@ -186,7 +180,6 @@ task clientLocalScript(type: ModularCreateStartScripts) {
             '-Djminor.db.embedded=true',
             '-Djminor.db.embeddedInMemory=true',
             '-Djminor.db.initScript=../config/create_schema.sql',
-            '-Djminor.report.path=../reports',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -197,7 +190,6 @@ task clientRMIScript(type: ModularCreateStartScripts) {
     defaultJvmOpts = [
             '-Djminor.client.connectionType=remote',
             '-Djminor.server.hostname=localhost',
-            '-Djminor.report.path=../reports',
             '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
             '-Djavax.net.ssl.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
@@ -211,7 +203,6 @@ task clientHttpScript(type: ModularCreateStartScripts) {
             '-Djminor.client.connectionType=http',
             '-Djminor.client.http.secure=false',
             '-Djminor.client.http.hostname=localhost',
-            '-Djminor.report.path=../reports',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -222,7 +213,6 @@ task loadTestRMIScript(type: ModularCreateStartScripts) {
     defaultJvmOpts = [
             '-Djminor.client.connectionType=remote',
             '-Djminor.server.hostname=localhost',
-            '-Djminor.report.path=../reports',
             '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
             '-Djavax.net.ssl.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
@@ -236,7 +226,6 @@ task loadTestHttpScript(type: ModularCreateStartScripts) {
             '-Djminor.client.connectionType=http',
             '-Djminor.client.http.secure=false',
             '-Djminor.client.http.hostname=localhost',
-            '-Djminor.report.path=../reports',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -245,10 +234,6 @@ applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
     from(files('src/main/resources/logback.xml'))
     from(files('../../framework/server/src/main/security/jminor_truststore.jks'))
-}
-
-applicationDistribution.into('reports') {
-    from(fileTree(dir: 'build/classes/reports', include: '*.jasper'))
 }
 
 applicationDistribution.into('bin') {

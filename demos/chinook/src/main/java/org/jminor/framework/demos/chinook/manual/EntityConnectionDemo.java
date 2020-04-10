@@ -14,6 +14,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
+import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
@@ -204,11 +205,8 @@ public final class EntityConnectionDemo {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
 
-    //the central report directory
-    ReportWrapper.REPORT_PATH.set("build/classes/reports");
-
     ReportWrapper<JasperPrint, JRDataSource> reportWrapper =
-            JasperReports.jasperReportsWrapper("customer_report.jasper", reportParameters);
+            JasperReports.classPathReport(Chinook.class, "customer_report.jasper", reportParameters);
 
     JasperPrint jasperPrint = connection.fillReport(reportWrapper);
     //end::report[]
