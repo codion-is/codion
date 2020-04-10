@@ -86,6 +86,7 @@ org.jminor.framework.domain.entity.DefaultOrderBy
 org.jminor.framework.domain.entity.DefaultOrderBy$DefaultOrderByProperty
 org.jminor.framework.demos.chinook.domain.Chinook
 org.jminor.framework.demos.empdept.domain.EmpDept
+org.jminor.framework.servlet.EntityService
 org.jminor.plugin.jasperreports.model.AbstractReportWrapper
 org.jminor.plugin.jasperreports.model.ClassPathReportWrapper
 org.jminor.plugin.jasperreports.model.FileSystemReportWrapper
