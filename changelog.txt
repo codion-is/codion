@@ -5854,7 +5854,8 @@
   NextReports added, NextReportsWrapper package private
   SerializationWhitelist bug fixed, never rejected anything when no wildcard whitelist items were specified :|
   JasperReports major refactoring, demos now use classPathReport()
-  AbstractReportWrapper bug fixed, cach lookup used incorrect key
+  AbstractReportWrapper bug fixed, cache lookup used incorrect key
   AbstractReportWrapper, toString() implemented in subclasses
   ReportWrapper refactored, DataSource removed
   DefaultEntityConnectionServer bug fixed, did not add auxiliary server and couldn't shut down properly
+  ReportUiWrapper removed, ReportComponentProvider added, jasperreports plugin swing dependency removed
