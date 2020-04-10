@@ -18,6 +18,7 @@ java.lang.Integer
 java.lang.Long
 java.lang.Number
 java.sql.Date
+java.time.Ser
 java.util.ArrayList
 java.util.Arrays$ArrayList
 java.util.Collections$EmptyList
