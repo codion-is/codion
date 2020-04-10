@@ -21,4 +21,7 @@ module org.jminor.framework.demos.empdept {
           to javafx.graphics;
   exports org.jminor.framework.demos.empdept.server
           to java.rmi;
+  //for loading of reports from classpath
+  opens org.jminor.framework.demos.empdept.domain
+          to org.jminor.plugin.jasperreports;
 }

@@ -17,4 +17,7 @@ module org.jminor.framework.demos.chinook {
           to org.jminor.framework.db.local;
   exports org.jminor.framework.demos.chinook.tutorial
           to org.jminor.framework.db.local;
+  //for loading of reports from classpath
+  opens org.jminor.framework.demos.chinook.domain
+          to org.jminor.plugin.jasperreports;
 }
