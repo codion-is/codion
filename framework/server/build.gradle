@@ -97,17 +97,19 @@ distributions {
     }
 }
 applicationDefaultJvmArgs = [
-        '-Xmx256m', "-Djminor.configurationFile=../config/h2_embedded.config",
-        "-Dlogback.configurationFile=../config/logback.xml",
-        "-Djava.security.policy=../config/jminor_server.policy"
+        '-Xmx256m',
+        '-Djminor.configurationFile=../config/h2_embedded.config',
+        '-Dlogback.configurationFile=../config/logback.xml',
+        '-Djava.security.policy=../config/jminor_server.policy'
 ]
 
 def applicationGenerateSecurityPolicyJvmArgs = [
-        '-Xmx256m', "-Djminor.configurationFile=../config/h2_embedded.config",
-        "-Dlogback.configurationFile=../config/logback.xml",
-        "-Djava.security.manager=net.sourceforge.prograde.sm.PolicyFileGeneratorJSM",
-        "-Djava.security.policy=../config/default.policy",
-        "-Dprograde.generated.policy=../config/generated.policy"
+        '-Xmx256m',
+        '-Djminor.configurationFile=../config/h2_embedded.config',
+        '-Dlogback.configurationFile=../config/logback.xml',
+        '-Djava.security.manager=net.sourceforge.prograde.sm.PolicyFileGeneratorJSM',
+        '-Djava.security.policy=../config/default.policy',
+        '-Dprograde.generated.policy=../config/generated.policy'
 ]
 
 task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
