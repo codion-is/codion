@@ -1,8 +1,6 @@
 module org.jminor.plugin.jasperreports {
   requires jasperreports;
-  requires org.jminor.framework.db.core;
-  requires org.jminor.swing.common.ui;
+  requires org.jminor.framework.domain;
 
   exports org.jminor.plugin.jasperreports.model;
-  exports org.jminor.plugin.jasperreports.ui;
 }

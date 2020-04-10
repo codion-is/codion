@@ -1,4 +1,5 @@
 module org.jminor.framework.demos.empdept {
+  requires jasperreports;
   requires org.jminor.framework.db.http;
   requires org.jminor.framework.db.local;
   requires org.jminor.framework.db.remote;

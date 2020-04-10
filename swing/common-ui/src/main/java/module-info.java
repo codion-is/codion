@@ -9,7 +9,6 @@ module org.jminor.swing.common.ui {
   exports org.jminor.swing.common.ui.dialog;
   exports org.jminor.swing.common.ui.images;
   exports org.jminor.swing.common.ui.layout;
-  exports org.jminor.swing.common.ui.reports;
   exports org.jminor.swing.common.ui.table;
   exports org.jminor.swing.common.ui.textfield;
   exports org.jminor.swing.common.ui.time;
