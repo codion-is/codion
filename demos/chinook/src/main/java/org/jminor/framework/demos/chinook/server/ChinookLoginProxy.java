@@ -7,7 +7,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.remote.LoginProxy;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.exception.LoginException;
@@ -15,16 +14,20 @@ import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.local.LocalEntityConnections;
-import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Domain;
+
+import java.sql.Types;
 
 import static java.lang.String.valueOf;
 import static org.jminor.common.Conjunction.AND;
 import static org.jminor.common.db.Operator.LIKE;
+import static org.jminor.common.db.pool.ConnectionPoolProvider.getConnectionPoolProvider;
 import static org.jminor.common.remote.Servers.remoteClient;
 import static org.jminor.framework.db.condition.Conditions.*;
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static org.jminor.framework.db.local.LocalEntityConnections.createConnection;
+import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
+import static org.jminor.framework.domain.property.Properties.columnProperty;
+import static org.jminor.framework.domain.property.Properties.primaryKeyProperty;
 
 /**
  * A {@link org.jminor.common.LoggerProxy} implementation
@@ -33,8 +36,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 public final class ChinookLoginProxy implements LoginProxy {
 
   /**
-   * The actual user credentials to return for successfully
-   * authenticated users.
+   * The actual user credentials to return for successfully authenticated users.
    */
   private final User databaseUser = Users.parseUser("scott:tiger");
 
@@ -44,9 +46,9 @@ public final class ChinookLoginProxy implements LoginProxy {
   private final Database database = Databases.getInstance();
 
   /**
-   * The Domain on which to base the authentication connection.
+   * The Domain containing the authentication table.
    */
-  private final Domain domain = new ChinookImpl();
+  private final Domain domain = new Authentication();
 
   /**
    * The ConnectionPool used when authenticating users.
@@ -54,8 +56,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   private final ConnectionPool connectionPool;
 
   public ChinookLoginProxy() throws DatabaseException {
-    connectionPool = ConnectionPoolProvider.getConnectionPoolProvider()
-            .createConnectionPool(databaseUser, database);
+    connectionPool = getConnectionPoolProvider().createConnectionPool(databaseUser, database);
   }
 
   /**
@@ -67,8 +68,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   }
 
   @Override
-  public RemoteClient doLogin(final RemoteClient remoteClient)
-          throws LoginException {
+  public RemoteClient doLogin(final RemoteClient remoteClient) throws LoginException {
     authenticateUser(remoteClient.getUser());
 
     //Create a new RemoteClient based on the one received
@@ -89,10 +89,10 @@ public final class ChinookLoginProxy implements LoginProxy {
     final EntityConnection connection = getConnectionFromPool();
     try {
       final int rows = connection.selectRowCount(
-              condition(T_USER, conditionSet(AND,
-                      propertyCondition(USER_USERNAME,
+              condition(Authentication.T_USER, conditionSet(AND,
+                      propertyCondition(Authentication.USER_USERNAME,
                               LIKE, user.getUsername()).setCaseSensitive(false),
-                      propertyCondition(USER_PASSWORD_HASH,
+                      propertyCondition(Authentication.USER_PASSWORD_HASH,
                               LIKE, valueOf(user.getPassword()).hashCode()))));
       if (rows == 0) {
         throw new ServerAuthenticationException("Wrong username or password");
@@ -108,11 +108,28 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   private EntityConnection getConnectionFromPool() {
     try {
-      return LocalEntityConnections.createConnection(domain, database,
-              connectionPool.getConnection());
+      return createConnection(domain, database, connectionPool.getConnection());
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private static final class Authentication extends Domain {
+
+    private static final String T_USER = "chinook.user";
+    private static final String USER_USERID = "userid";
+    private static final String USER_USERNAME = "username";
+    private static final String USER_PASSWORD_HASH = "passwordhash";
+
+    private Authentication() {
+      define(T_USER,
+              primaryKeyProperty(USER_USERID),
+              columnProperty(USER_USERNAME, Types.VARCHAR)
+                      .nullable(false)
+                      .maximumLength(20),
+              columnProperty(USER_PASSWORD_HASH, Types.INTEGER))
+              .keyGenerator(automatic(T_USER));
     }
   }
 }
