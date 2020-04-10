@@ -84,8 +84,7 @@ public final class ChinookLoginProxy implements LoginProxy {
     connectionPool.close();
   }
 
-  private void authenticateUser(final User user)
-          throws LoginException {
+  private void authenticateUser(final User user) throws LoginException {
     final EntityConnection connection = getConnectionFromPool();
     try {
       final int rows = connection.selectRowCount(
