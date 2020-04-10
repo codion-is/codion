@@ -127,7 +127,8 @@ public final class ChinookLoginProxy implements LoginProxy {
               columnProperty(USER_USERNAME, Types.VARCHAR)
                       .nullable(false)
                       .maximumLength(20),
-              columnProperty(USER_PASSWORD_HASH, Types.INTEGER))
+              columnProperty(USER_PASSWORD_HASH, Types.INTEGER)
+                      .nullable(false))
               .keyGenerator(automatic(T_USER));
     }
   }
