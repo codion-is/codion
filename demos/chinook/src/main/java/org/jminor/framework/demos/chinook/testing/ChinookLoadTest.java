@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.demos.chinook.testing;
 
-import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProviders;
+import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.model.ChinookApplicationModel;
 import org.jminor.framework.demos.chinook.ui.ChinookAppPanel;
 import org.jminor.framework.domain.entity.Entities;
@@ -93,12 +93,12 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
                 customerModel.refresh();
                 selectRandomRow(customerModel);
 
-                final String reportPath = ReportWrapper.getReportPath() + "/customer_report.jasper";
                 final Collection<Long> customerIDs =
                         Entities.getDistinctValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
                 final HashMap<String, Object> reportParameters = new HashMap<>();
                 reportParameters.put("CUSTOMER_IDS", customerIDs);
-                customerModel.getConnectionProvider().getConnection().fillReport(JasperReports.jasperReportsWrapper(reportPath, reportParameters));
+                customerModel.getConnectionProvider().getConnection()
+                        .fillReport(JasperReports.classPathReport(Chinook.class, "customer_report.jasper", reportParameters));
               }
               catch (final Exception e) {
                 throw new ScenarioException(e);

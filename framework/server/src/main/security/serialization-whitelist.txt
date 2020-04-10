@@ -83,4 +83,7 @@ org.jminor.framework.domain.entity.DefaultEntity
 org.jminor.framework.domain.entity.DefaultEntityKey
 org.jminor.framework.domain.entity.DefaultOrderBy
 org.jminor.framework.domain.entity.DefaultOrderBy$DefaultOrderByProperty
-org.jminor.plugin.jasperreports.model.JasperReportsWrapper
+org.jminor.plugin.jasperreports.model.AbstractReportWrapper
+org.jminor.plugin.jasperreports.model.ClassPathReportWrapper
+org.jminor.plugin.jasperreports.model.FileSystemReportWrapper
+org.jminor.plugin.jasperreports.model.UrlReportWrapper

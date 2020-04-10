@@ -6,6 +6,7 @@ package org.jminor.common.db.reports;
 import org.jminor.common.Configuration;
 import org.jminor.common.value.PropertyValue;
 
+import java.io.Serializable;
 import java.sql.Connection;
 
 import static org.jminor.common.Util.nullOrEmpty;
@@ -15,13 +16,19 @@ import static org.jminor.common.Util.nullOrEmpty;
  * @param <R> the report result type
  * @param <D> the type of the report datasource
  */
-public interface ReportWrapper<R, D> {
+public interface ReportWrapper<R, D> extends Serializable {
 
   /**
-   * The report path used for the default report generation,
-   * either file or http based
+   * The report path used for file based report generation.
    */
   PropertyValue<String> REPORT_PATH = Configuration.stringValue("jminor.report.path", null);
+
+  /**
+   * Specifies whether to cache reports when loaded from disk/network, this prevents "hot deploy" of reports.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("jminor.report.cacheReports", true);
 
   /**
    * @return the name of the report

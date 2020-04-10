@@ -14,8 +14,6 @@ import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityReports;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
-import net.sf.jasperreports.engine.JasperReport;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -45,13 +43,12 @@ public class CustomerTablePanel extends EntityTablePanel {
       return;
     }
 
-    JasperReport report = JasperReports.loadJasperReport("http://test.io/customer_report.jasper");
     Collection<Integer> customerIds = Entities.getValues(Store.CUSTOMER_ID, selectedCustomers);
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIds);
 
     EntityReports.viewJdbcReport(this,
-            JasperReports.jasperReportsWrapper(report, reportParameters),
+            JasperReports.urlReport("http://test.io/customer_report.jasper", reportParameters),
             new JasperReportsUiWrapper(),  "Customer Report",
             getTableModel().getConnectionProvider());
   }

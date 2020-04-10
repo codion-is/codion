@@ -27,14 +27,13 @@ public class DepartmentTablePanel extends EntityTablePanel {
 
 // tag::viewEmployeeReport[]
   public void viewEmployeeReport() throws Exception {
-    final String reportPath = "empdept_employees.jasper";
     final Collection<Integer> departmentNumbers =
             Entities.getDistinctValues(EmpDept.DEPARTMENT_ID,
                     getTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
     EntityReports.viewJdbcReport(DepartmentTablePanel.this,
-            JasperReports.jasperReportsWrapper(reportPath, reportParameters),
+            JasperReports.classPathReport(EmpDept.class, "empdept_employees.jasper", reportParameters),
             new JasperReportsUiWrapper(), "Employee Report", getTableModel().getConnectionProvider());
   }
 // end::viewEmployeeReport[]

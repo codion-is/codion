@@ -7,11 +7,8 @@ import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
 
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,52 +18,68 @@ import java.util.Map;
 public final class JasperReports {
 
   /**
-   * @param jasperReport the report object
+   * Instantiates a ReportWrapper for a classpath based report.
+   * @param resourceClass the class owning the report resource
+   * @param reportPath the report classpath
    * @return a report wrapper
-   * @throws ReportException in case of an exception while loading the report
+   * @throws ReportException in case of an exception
    */
-  public static ReportWrapper<JasperPrint, JRDataSource> jasperReportsWrapper(final JasperReport jasperReport) throws ReportException {
-    return jasperReportsWrapper(jasperReport, new HashMap<>());
+  public static ReportWrapper<JasperPrint, JRDataSource> classPathReport(final Class resourceClass, final String reportPath) {
+    return classPathReport(resourceClass, reportPath, new HashMap<>());
   }
 
   /**
-   * @param jasperReport the report object
+   * Instantiates a ReportWrapper for a classpath based report.
+   * @param resourceClass the class owning the report resource
+   * @param reportPath the report classpath
    * @param reportParameters the report parameters
    * @return a report wrapper
-   * @throws ReportException in case of an exception while loading the report
+   * @throws ReportException in case of an exception
    */
-  public static ReportWrapper<JasperPrint, JRDataSource> jasperReportsWrapper(final JasperReport jasperReport, final Map<String, Object> reportParameters) throws ReportException {
-    return new JasperReportsWrapper(jasperReport, reportParameters);
+  public static ReportWrapper<JasperPrint, JRDataSource> classPathReport(final Class resourceClass, final String reportPath,
+                                                                         final Map<String, Object> reportParameters) {
+    return new ClassPathReportWrapper(resourceClass, reportPath, reportParameters);
   }
 
   /**
+   * Instantiates a ReportWrapper for a URL based report.
+   * @param reportUrl the report URL
+   * @return a report wrapper
+   * @throws ReportException in case of an exception
+   */
+  public static ReportWrapper<JasperPrint, JRDataSource> urlReport(final String reportUrl) {
+    return urlReport(reportUrl, new HashMap<>());
+  }
+
+  /**
+   * Instantiates a ReportWrapper for a URL based report.
+   * @param reportUrl the report URL
+   * @param reportParameters the report parameters
+   * @return a report wrapper
+   * @throws ReportException in case of an exception
+   */
+  public static ReportWrapper<JasperPrint, JRDataSource> urlReport(final String reportUrl, final Map<String, Object> reportParameters) {
+    return new UrlReportWrapper(reportUrl, reportParameters);
+  }
+
+  /**
+   * Instantiates a ReportWrapper for a filesystem based report.
    * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
    * @return a report wrapper
-   * @throws ReportException in case of an exception while loading the report
+   * @throws ReportException in case of an exception
    */
-  public static ReportWrapper<JasperPrint, JRDataSource> jasperReportsWrapper(final String reportPath) throws ReportException {
-    return jasperReportsWrapper(reportPath, new HashMap<>());
+  public static ReportWrapper<JasperPrint, JRDataSource> fileSystemReport(final String reportPath) {
+    return fileSystemReport(reportPath, new HashMap<>());
   }
 
   /**
+   * Instantiates a ReportWrapper for a filesystem based report.
    * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
    * @param reportParameters the report parameters
    * @return a report wrapper
-   * @throws ReportException in case of an exception while loading the report
+   * @throws ReportException in case of an exception
    */
-  public static ReportWrapper<JasperPrint, JRDataSource> jasperReportsWrapper(final String reportPath, final Map<String, Object> reportParameters) throws ReportException {
-    return new JasperReportsWrapper(reportPath, reportParameters);
-  }
-
-  /**
-   * Loads a JasperReport file from the path given, it can be a URL, a file path or classpath resource path.
-   * @param reportPath the path to the report file to load
-   * @return a loaded JasperReport file
-   * @throws JRException in case loading the report fails
-   * @throws MalformedURLException in case the report path is a malformed URL
-   * @throws IllegalArgumentException in case the report path is not specified
-   */
-  public static JasperReport loadJasperReport(final String reportPath) throws JRException, MalformedURLException {
-    return JasperReportsWrapper.loadJasperReport(reportPath);
+  public static ReportWrapper<JasperPrint, JRDataSource> fileSystemReport(final String reportPath, final Map<String, Object> reportParameters) {
+    return new FileSystemReportWrapper(reportPath, reportParameters);
   }
 }

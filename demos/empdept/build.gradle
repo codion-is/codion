@@ -39,7 +39,6 @@ dependencies {
 
 ext.mainClass = 'org.jminor.framework.demos.empdept.ui.EmpDeptAppPanel'
 ext.loadTestMainClass = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
-ext.serverReportPath = '../../demos/empdept/build/classes/reports'
 
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
@@ -49,7 +48,7 @@ test {
 task buildReports(dependsOn: 'compileJava') {
     group 'build'
     def jasperSourceDir = file('src/main/reports')
-    def jasperTargetDir = file('build/classes/reports')
+    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/org/jminor/framework/demos/empdept/domain')
     inputs.dir jasperSourceDir
     outputs.dir jasperTargetDir
     doLast {
@@ -99,27 +98,22 @@ task runClientLocalFX(type: JavaExec) {
             'jminor.db.host'              : 'h2db',
             'jminor.db.embeddedInMemory'  : 'true',
             'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
-            'jminor.report.path'          : 'build/classes/reports',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
 
 runClientRMI {
     main = mainClass
-    systemProperties['jminor.report.path'] = serverReportPath
 }
 
 runClientHttp {
     main = mainClass
-    systemProperties['jminor.report.path'] = serverReportPath
 }
 
 runLoadTestRMI {
     main = loadTestMainClass
-    systemProperties['jminor.report.path'] = serverReportPath
 }
 
 runLoadTestHttp {
     main = loadTestMainClass
-    systemProperties['jminor.report.path'] = serverReportPath
 }
