@@ -6,7 +6,6 @@ package org.jminor.plugin.jasperreports.model;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.StringProvider;
 
-import java.awt.Color;
 import java.sql.Types;
 
 import static java.util.Arrays.asList;
@@ -79,13 +78,6 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
             .searchPropertyIds(EMP_NAME, EMP_JOB)
-            .caption("Employee")
-            .colorProvider((entity, property) -> {
-              if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
-                return Color.CYAN;
-              }
-
-              return null;
-            });
+            .caption("Employee");
   }
 }
