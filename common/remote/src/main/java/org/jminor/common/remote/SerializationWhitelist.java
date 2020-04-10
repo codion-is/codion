@@ -141,7 +141,7 @@ public final class SerializationWhitelist {
       if (allowedClassnames.contains(classname) || allowWildcard(classname)) {
         return Status.ALLOWED;
       }
-      LOG.debug("Serialization rejected: " + classname);
+      LOG.error("Serialization rejected: " + classname);
 
       return Status.REJECTED;
     }
