@@ -4,12 +4,12 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.reports.ReportComponentProvider;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.reports.ReportUiWrapper;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -39,7 +39,7 @@ public final class EntityReports {
    * @param <R> the report result type
    */
   public static <R> void viewJdbcReport(final JComponent component, final ReportWrapper<?, R> reportWrapper,
-                                        final ReportUiWrapper<R> uiWrapper, final String reportTitle,
+                                        final ReportComponentProvider<R, JComponent> uiWrapper, final String reportTitle,
                                         final EntityConnectionProvider connectionProvider) {
     try {
       Components.showWaitCursor(component);
@@ -62,7 +62,7 @@ public final class EntityReports {
    * @param <R> the report result type
    */
   public static <R> void viewReport(final JComponent component, final R reportResult,
-                                       final ReportUiWrapper<R> uiWrapper, final String reportTitle) {
+                                    final ReportComponentProvider<R, JComponent> uiWrapper, final String reportTitle) {
     try {
       Components.showWaitCursor(component);
       viewReport(reportResult, uiWrapper, reportTitle);
@@ -79,7 +79,7 @@ public final class EntityReports {
    * @param frameTitle the title to display on the frame
    * @param <R> the report result type
    */
-  public static <R> void viewReport(final R reportResult, final ReportUiWrapper<R> uiWrapper, final String frameTitle) {
+  public static <R> void viewReport(final R reportResult, final ReportComponentProvider<R, JComponent> uiWrapper, final String frameTitle) {
     SwingUtilities.invokeLater(() -> {
       final JFrame frame = new JFrame(frameTitle == null ? MESSAGES.getString("report_printer") : frameTitle);
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
