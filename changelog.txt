@@ -5828,3 +5828,4 @@
   ReportResult and ReportDataWrapper removed
   JasperReports added, JasperReportsWrapper package private
   NextReports added, NextReportsWrapper package private
+  SerializationWhitelist bug fixed, never rejected anything when no wildcard whitelist items were specified :|

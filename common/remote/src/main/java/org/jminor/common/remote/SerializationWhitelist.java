@@ -158,7 +158,7 @@ public final class SerializationWhitelist {
 
     private boolean allowWildcard(final String classname) {
       if (allowedWildcardClassnames.isEmpty()) {
-        return true;
+        return false;
       }
 
       for (int i = 0; i < allowedWildcardClassnames.size(); i++) {
