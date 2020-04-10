@@ -14,6 +14,8 @@ import java.util.Map;
  */
 public final class NextReports {
 
+  private NextReports() {}
+
   /**
    * Instantiates a new {@link ReportWrapper} based on NextReports.
    * @param reportPath the path to the report

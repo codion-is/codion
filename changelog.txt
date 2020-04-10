@@ -5857,3 +5857,4 @@
   AbstractReportWrapper bug fixed, cach lookup used incorrect key
   AbstractReportWrapper, toString() implemented in subclasses
   ReportWrapper refactored, DataSource removed
+  DefaultEntityConnectionServer bug fixed, did not add auxiliary server and couldn't shut down properly

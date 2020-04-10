@@ -59,10 +59,9 @@ public final class EntityReports {
    * @param reportResult the report result
    * @param uiWrapper the ui wrapper
    * @param reportTitle the title to display on the frame
-   * @param <T> the report type
    * @param <R> the report result type
    */
-  public static <T, R> void viewReport(final JComponent component, final R reportResult,
+  public static <R> void viewReport(final JComponent component, final R reportResult,
                                        final ReportUiWrapper<R> uiWrapper, final String reportTitle) {
     try {
       Components.showWaitCursor(component);

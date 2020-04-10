@@ -21,6 +21,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JasperReports {
 
+  private JasperReports() {}
+
   /**
    * Instantiates a ReportWrapper for a classpath based report.
    * @param resourceClass the class owning the report resource

@@ -555,6 +555,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         for (final String auxiliaryServerClassName : auxiliaryServerClassNames) {
           final AuxiliaryServer auxiliaryServer = AuxiliaryServer.getAuxiliaryServer(auxiliaryServerClassName);
           auxiliaryServer.setServer(this);
+          auxiliaryServers.add(auxiliaryServer);
           newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
                   startAuxiliaryServer(auxiliaryServer)).get();
         }
