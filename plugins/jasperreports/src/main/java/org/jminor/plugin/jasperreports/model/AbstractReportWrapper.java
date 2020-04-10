@@ -67,7 +67,7 @@ abstract class AbstractReportWrapper implements ReportWrapper<JasperPrint, JRDat
   private JasperReport loadReportInternal() throws Exception {
     final Boolean cacheReports = CACHE_REPORTS.get();
     if (cacheReports && REPORT_CACHE.containsKey(this)) {
-      return REPORT_CACHE.get(reportPath);
+      return REPORT_CACHE.get(this);
     }
     final JasperReport report = loadReport();
     if (cacheReports) {
