@@ -33,7 +33,7 @@ public class NextReportsTest {
             new H2Database("h2db", System.getProperty("jminor.db.initScript")))
             .setDomainClassName(Domain.class.getName()).setUser(UNIT_TEST_USER);
     final NextReportsResult result = connectionProvider.getConnection().fillReport(
-            NextReports.NextReportsWrapper("src/test/reports/test-report.report",
+            NextReports.nextReportsWrapper("src/test/reports/test-report.report",
                     Collections.emptyMap(), ReportRunner.CSV_FORMAT));
     File file = null;
     try {

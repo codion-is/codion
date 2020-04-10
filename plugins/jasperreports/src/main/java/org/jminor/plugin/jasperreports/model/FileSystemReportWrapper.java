@@ -3,6 +3,7 @@
  */
 package org.jminor.plugin.jasperreports.model;
 
+import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
 
 import net.sf.jasperreports.engine.JRException;
@@ -36,13 +37,17 @@ final class FileSystemReportWrapper extends AbstractReportWrapper {
   }
 
   @Override
-  protected JasperReport loadReport() throws JRException {
+  public JasperReport loadReport() throws ReportException {
     final File reportFile = new File(getFullReportPath());
-    if (reportFile.exists()) {
+    if (!reportFile.exists()) {
+      throw new ReportException("Report '" + reportFile + "' not found in filesystem");
+    }
+    try {
       return (JasperReport) JRLoader.loadObject(reportFile);
     }
-
-    throw new JRException("Report '" + reportFile + "' not found in filesystem");
+    catch (final JRException e) {
+      throw new ReportException(e);
+    }
   }
 
   private String getFullReportPath() {

@@ -11,12 +11,10 @@ import ro.nextreports.engine.FluentReportRunner;
 import ro.nextreports.engine.Report;
 import ro.nextreports.engine.querybuilder.sql.dialect.DialectFactory;
 import ro.nextreports.engine.querybuilder.sql.dialect.OracleDialect;
-import ro.nextreports.engine.util.LoadReportException;
 import ro.nextreports.engine.util.ReportUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -29,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A NextReports {@link ReportWrapper} implementation
  */
-final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>, Serializable {
+final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResult>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -51,7 +49,7 @@ final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>
   public NextReportsResult fillReport(final Connection connection) throws ReportException {
     File file = null;
     try (final OutputStream output = new FileOutputStream(file = File.createTempFile("NextReportsWrapper", null, null))) {
-      FluentReportRunner.report(loadReport(reportPath))
+      FluentReportRunner.report(loadReport())
               .connectTo(connection)
               .withQueryTimeout(60)
               .withParameterValues(reportParameters)
@@ -79,11 +77,12 @@ final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>
   }
 
   @Override
-  public NextReportsResult fillReport(final Void dataWrapper) throws ReportException {
-    throw new UnsupportedOperationException();
-  }
-
-  private static Report loadReport(final String reportPath) throws FileNotFoundException, LoadReportException {
-    return ReportUtil.loadReport(new FileInputStream(reportPath));
+  public Report loadReport() throws ReportException {
+    try {
+      return ReportUtil.loadReport(new FileInputStream(reportPath));
+    }
+    catch (final Exception e) {
+      throw new ReportException(e);
+    }
   }
 }

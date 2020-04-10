@@ -1,6 +1,7 @@
 package org.jminor.plugin.jasperreports.model;
 
-import net.sf.jasperreports.engine.JRException;
+import org.jminor.common.db.reports.ReportException;
+
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
@@ -39,12 +40,12 @@ final class ClassPathReportWrapper extends AbstractReportWrapper {
   }
 
   @Override
-  protected JasperReport loadReport() throws JRException {
+  public JasperReport loadReport() throws ReportException {
     try {
       return (JasperReport) JRLoader.loadObject(resourceClass.getResource(reportPath));
     }
-    catch (final NullPointerException e) {
-      throw new JRException("Report '" + reportPath + "' not found on classpath");
+    catch (final Exception e) {
+      throw new ReportException("Report '" + reportPath + "' not found on classpath");
     }
   }
 }

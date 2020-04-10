@@ -13,10 +13,10 @@ import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A simple wrapper for a report
+ * @param <T> the report type
  * @param <R> the report result type
- * @param <D> the type of the report datasource
  */
-public interface ReportWrapper<R, D> extends Serializable {
+public interface ReportWrapper<T, R> extends Serializable {
 
   /**
    * The report path used for file based report generation.
@@ -44,12 +44,11 @@ public interface ReportWrapper<R, D> extends Serializable {
   R fillReport(Connection connection) throws ReportException;
 
   /**
-   * Fills the report using the data source wrapped by the given data wrapper
-   * @param dataSource the data provider to use for the report generation
-   * @return a filled report ready for display
+   * Loads the report this report wrapper is based on.
+   * @return a loaded report object
    * @throws ReportException in case of an exception
    */
-  R fillReport(D dataSource) throws ReportException;
+  T loadReport() throws ReportException;
 
   /**
    * @return the value associated with {@link ReportWrapper#REPORT_PATH}

@@ -38,7 +38,7 @@ public final class EntityReports {
    * @param connectionProvider the db provider
    * @param <R> the report result type
    */
-  public static <R> void viewJdbcReport(final JComponent component, final ReportWrapper<R, ?> reportWrapper,
+  public static <R> void viewJdbcReport(final JComponent component, final ReportWrapper<?, R> reportWrapper,
                                         final ReportUiWrapper<R> uiWrapper, final String reportTitle,
                                         final EntityConnectionProvider connectionProvider) {
     try {
@@ -56,22 +56,17 @@ public final class EntityReports {
   /**
    * Shows a report viewer for report printing
    * @param component the component for which to set the wait cursor while the report is being filled
-   * @param reportWrapper the report wrapper
+   * @param reportResult the report result
    * @param uiWrapper the ui wrapper
-   * @param dataSource the datasource used to provide the report data
    * @param reportTitle the title to display on the frame
+   * @param <T> the report type
    * @param <R> the report result type
-   * @param <D> the type of the data source used to fill the report
    */
-  public static <R, D> void viewReport(final JComponent component, final ReportWrapper<R, D> reportWrapper,
-                                       final ReportUiWrapper<R> uiWrapper, final D dataSource,
-                                       final String reportTitle) {
+  public static <T, R> void viewReport(final JComponent component, final R reportResult,
+                                       final ReportUiWrapper<R> uiWrapper, final String reportTitle) {
     try {
       Components.showWaitCursor(component);
-      viewReport(reportWrapper.fillReport(dataSource), uiWrapper, reportTitle);
-    }
-    catch (final ReportException e) {
-      throw new RuntimeException(e);
+      viewReport(reportResult, uiWrapper, reportTitle);
     }
     finally {
       Components.hideWaitCursor(component);

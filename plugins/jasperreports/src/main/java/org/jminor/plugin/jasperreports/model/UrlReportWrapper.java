@@ -3,6 +3,8 @@
  */
 package org.jminor.plugin.jasperreports.model;
 
+import org.jminor.common.db.reports.ReportException;
+
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
@@ -36,7 +38,12 @@ final class UrlReportWrapper extends AbstractReportWrapper {
   }
 
   @Override
-  protected JasperReport loadReport() throws Exception {
-    return (JasperReport) JRLoader.loadObject(new URL(reportPath));
+  public JasperReport loadReport() throws ReportException {
+    try {
+      return (JasperReport) JRLoader.loadObject(new URL(reportPath));
+    }
+    catch (final Exception e) {
+      throw new ReportException(e);
+    }
   }
 }

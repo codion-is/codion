@@ -5856,3 +5856,4 @@
   JasperReports major refactoring, demos now use classPathReport()
   AbstractReportWrapper bug fixed, cach lookup used incorrect key
   AbstractReportWrapper, toString() implemented in subclasses
+  ReportWrapper refactored, DataSource removed
