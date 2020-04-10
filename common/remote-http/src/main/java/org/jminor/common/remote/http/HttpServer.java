@@ -126,6 +126,7 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
   }
 
   /**
+   * Adds a startup listener.
    * @param listener a listener notified when this server is started.
    */
   public final void addServerStartedListener(final EventListener listener) {
@@ -133,6 +134,7 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
   }
 
   /**
+   * Adds a shutdown listener.
    * @param listener a listener notified when this server is stopped.
    */
   public final void addServerStoppedListener(final EventListener listener) {

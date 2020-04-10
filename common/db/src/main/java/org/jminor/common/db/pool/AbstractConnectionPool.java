@@ -31,6 +31,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   private final DefaultConnectionPoolCounter counter;
 
   /**
+   * Instantiates a new AbstractConnectionPool instance.
    * @param database the underlying database
    * @param user the connection pool user
    * @param poolDataSource the DataSource
