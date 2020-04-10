@@ -80,6 +80,7 @@ org.jminor.framework.db.condition.DefaultEntityCondition
 org.jminor.framework.db.condition.DefaultEntitySelectCondition
 org.jminor.framework.db.condition.DefaultPropertyCondition
 org.jminor.framework.db.condition.Condition$EmptyCondition
+org.jminor.framework.domain.Domain
 org.jminor.framework.domain.entity.DefaultEntity
 org.jminor.framework.domain.entity.DefaultEntityKey
 org.jminor.framework.domain.entity.DefaultOrderBy
