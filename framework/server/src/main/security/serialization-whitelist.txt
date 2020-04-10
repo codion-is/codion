@@ -18,6 +18,7 @@ java.lang.Integer
 java.lang.Long
 java.lang.Number
 java.math.BigDecimal
+java.math.BigInteger
 java.time.LocalDate
 java.time.LocalDateTime
 java.time.LocalTime
