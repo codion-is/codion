@@ -439,7 +439,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public <R, D> R fillReport(ReportWrapper<R, D> reportWrapper) throws DatabaseException, ReportException {
+  public <T, R> R fillReport(ReportWrapper<T, R> reportWrapper) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportWrapper, "reportWrapper");
     try {
       return handleResponse(execute(createRequest("report", reportWrapper)));
