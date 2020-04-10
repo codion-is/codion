@@ -35,7 +35,6 @@ import static org.jminor.framework.domain.property.Properties.*;
 public final class ChinookImpl extends Domain implements Chinook {
 
   public ChinookImpl() {
-    user();
     artist();
     album();
     employee();
@@ -48,20 +47,6 @@ public final class ChinookImpl extends Domain implements Chinook {
     playlist();
     playlistTrack();
     dbOperations();
-  }
-
-  void user() {
-    define(T_USER, "chinook.user",
-            primaryKeyProperty(USER_USERID),
-            columnProperty(USER_USERNAME, Types.VARCHAR, "Username")
-                    .nullable(false)
-                    .maximumLength(20),
-            columnProperty(USER_PASSWORD_HASH, Types.INTEGER, "Password hash"))
-            .keyGenerator(automatic("chinook.user"))
-            .orderBy(orderBy().ascending(USER_USERNAME))
-            .stringProvider(new StringProvider(USER_USERNAME))
-            .searchPropertyIds(USER_USERNAME)
-            .caption("Users");
   }
 
   void artist() {
