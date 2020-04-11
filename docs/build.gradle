@@ -43,6 +43,7 @@ task combinedJavadoc(type: Javadoc) {
     title "JMinor Framework API ${documentationVersion}"
     failOnError = false
     options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+    options.addBooleanOption "-no-module-directories", true
     destinationDir = file("${buildDir}/docs/javadoc")
     source frameworkModules.collect { it.sourceSets.main.allJava }
     exclude '**/module-info.java'//temporary fix for 'too many module declarations found' error
