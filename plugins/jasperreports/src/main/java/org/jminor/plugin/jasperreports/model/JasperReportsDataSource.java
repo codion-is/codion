@@ -23,11 +23,11 @@ public final class JasperReportsDataSource<T> implements JRDataSource {
   private T currentItem = null;
 
   /**
+   * Instantiates a new JasperReportsDataSource.
    * @param reportIterator the iterator providing the report data
    * @param valueProvider a Function returning the value for a given field from the given item
    */
-  public JasperReportsDataSource(final Iterator<T> reportIterator,
-                                 final BiFunction<T, JRField, Object> valueProvider) {
+  public JasperReportsDataSource(final Iterator<T> reportIterator, final BiFunction<T, JRField, Object> valueProvider) {
     this.reportIterator = requireNonNull(reportIterator, "reportIterator");
     this.valueProvider = requireNonNull(valueProvider, "valueProvider");
   }
