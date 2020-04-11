@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.demos.manual.store.ui;
 
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -65,6 +66,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.manual.store.domain.Store");
+    ReportWrapper.REPORT_PATH.set("http://test.io");
     new StoreAppPanel().startApplication("Store", null, false,
             Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }

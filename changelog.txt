@@ -5861,3 +5861,4 @@
   ReportUiWrapper removed, ReportComponentProvider added, jasperreports plugin swing dependency removed
   JasperReportsEntityDataSource refactored, renamed JasperReportsDataSource, jminor-framework-domain dependecy removed
   Chinook demo, user authentication refactored into it's own domain model
+  UrlReportWrapper merged into FileReportWrapper, tests added

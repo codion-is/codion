@@ -3,6 +3,7 @@ dependencies {
     implementation project(':jminor-common-db')
     implementation project(':jminor-common-model')
 
+    testImplementation project(':jminor-common-remote-http')
     testImplementation project(':jminor-framework-db-local')
 
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
@@ -41,7 +42,7 @@ test {
 task buildReports(dependsOn: 'compileJava') {
     group 'build'
     def jasperSourceDir = file('src/test/reports')
-    def jasperTargetDir = file('build/classes/reports/test')
+    def jasperTargetDir = file('build/resources/test')
     inputs.dir jasperSourceDir
     outputs.dir jasperTargetDir
     doLast {
