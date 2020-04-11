@@ -49,7 +49,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     reportParameters.put("CUSTOMER_IDS", customerIds);
 
     EntityReports.viewJdbcReport(this,
-            JasperReports.urlReport("http://test.io/customer_report.jasper", reportParameters),
+            JasperReports.fileReport("customer_report.jasper", reportParameters),
             JRViewer::new,  "Customer Report",
             getTableModel().getConnectionProvider());
   }

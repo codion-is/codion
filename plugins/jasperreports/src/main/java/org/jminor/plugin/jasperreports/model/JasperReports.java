@@ -46,41 +46,22 @@ public final class JasperReports {
   }
 
   /**
-   * Instantiates a ReportWrapper for a URL based report.
-   * @param reportUrl the report URL
-   * @return a report wrapper
-   */
-  public static ReportWrapper<JasperReport, JasperPrint> urlReport(final String reportUrl) {
-    return urlReport(reportUrl, new HashMap<>());
-  }
-
-  /**
-   * Instantiates a ReportWrapper for a URL based report.
-   * @param reportUrl the report URL
-   * @param reportParameters the report parameters
-   * @return a report wrapper
-   */
-  public static ReportWrapper<JasperReport, JasperPrint> urlReport(final String reportUrl, final Map<String, Object> reportParameters) {
-    return new UrlReportWrapper(reportUrl, reportParameters);
-  }
-
-  /**
-   * Instantiates a ReportWrapper for a filesystem based report.
+   * Instantiates a ReportWrapper for a file based report, either loaded from a URL or from the filesystem.
    * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
    * @return a report wrapper
    */
-  public static ReportWrapper<JasperReport, JasperPrint> fileSystemReport(final String reportPath) {
-    return fileSystemReport(reportPath, new HashMap<>());
+  public static ReportWrapper<JasperReport, JasperPrint> fileReport(final String reportPath) {
+    return fileReport(reportPath, new HashMap<>());
   }
 
   /**
-   * Instantiates a ReportWrapper for a filesystem based report.
+   * Instantiates a ReportWrapper for a file based report, either loaded from a URL or from the filesystem.
    * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
    * @param reportParameters the report parameters
    * @return a report wrapper
    */
-  public static ReportWrapper<JasperReport, JasperPrint> fileSystemReport(final String reportPath, final Map<String, Object> reportParameters) {
-    return new FileSystemReportWrapper(reportPath, reportParameters);
+  public static ReportWrapper<JasperReport, JasperPrint> fileReport(final String reportPath, final Map<String, Object> reportParameters) {
+    return new FileReportWrapper(reportPath, reportParameters);
   }
 
   /**
