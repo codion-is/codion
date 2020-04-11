@@ -6,6 +6,7 @@ package org.jminor.common.db.reports;
 /**
  * A report presentation UI provider.
  * @param <R> the type of the report result
+ * @param <C> the component type
  */
 public interface ReportComponentProvider<R, C> {
 
