@@ -19,27 +19,6 @@ final class ClassPathReportWrapper extends AbstractReportWrapper {
   }
 
   @Override
-  public int hashCode() {
-    return resourceClass.hashCode() + reportPath.hashCode();
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    if (obj instanceof ClassPathReportWrapper) {
-      final ClassPathReportWrapper wrapper = (ClassPathReportWrapper) obj;
-
-      return wrapper.resourceClass.equals(this.resourceClass) && wrapper.reportPath.equals(this.reportPath);
-    }
-
-    return false;
-  }
-
-  @Override
-  public String toString() {
-    return resourceClass.getName() + " " + reportPath;
-  }
-
-  @Override
   public JasperReport loadReport() throws ReportException {
     try {
       return (JasperReport) JRLoader.loadObject(resourceClass.getResource(reportPath));
@@ -47,5 +26,10 @@ final class ClassPathReportWrapper extends AbstractReportWrapper {
     catch (final Exception e) {
       throw new ReportException("Report '" + reportPath + "' not found on classpath");
     }
+  }
+
+  @Override
+  protected String getFullReportPath() {
+    return resourceClass.getName() + " " + reportPath;
   }
 }

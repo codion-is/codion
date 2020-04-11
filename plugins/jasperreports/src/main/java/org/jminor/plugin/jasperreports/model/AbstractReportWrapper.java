@@ -11,9 +11,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import java.sql.Connection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,7 +20,7 @@ abstract class AbstractReportWrapper implements ReportWrapper<JasperReport, Jasp
 
   private static final long serialVersionUID = 1;
 
-  private static final Map<AbstractReportWrapper, JasperReport> REPORT_CACHE = Collections.synchronizedMap(new HashMap<>());
+  private static final Map<String, JasperReport> REPORT_CACHE = new ConcurrentHashMap<>();
 
   private final Map<String, Object> reportParameters;
   protected final String reportPath;
@@ -43,22 +42,28 @@ abstract class AbstractReportWrapper implements ReportWrapper<JasperReport, Jasp
     }
   }
 
-  /** {@inheritDoc} */
   @Override
-  public final String getReportName() {
-    return reportPath;
+  public final String toString() {
+    return getFullReportPath();
   }
 
+  /**
+   * @return a unique path for this report
+   */
+  protected abstract String getFullReportPath();
+
   private JasperReport loadReportInternal() throws ReportException {
-    final Boolean cacheReports = CACHE_REPORTS.get();
-    if (cacheReports && REPORT_CACHE.containsKey(this)) {
-      return REPORT_CACHE.get(this);
-    }
-    final JasperReport report = loadReport();
-    if (cacheReports) {
-      REPORT_CACHE.put(this, report);
+    if (CACHE_REPORTS.get()) {
+      return REPORT_CACHE.computeIfAbsent(getFullReportPath(), fullPath -> {
+        try {
+          return loadReport();
+        }
+        catch (final ReportException e) {
+          throw new RuntimeException(e);
+        }
+      });
     }
 
-    return report;
+    return loadReport();
   }
 }
