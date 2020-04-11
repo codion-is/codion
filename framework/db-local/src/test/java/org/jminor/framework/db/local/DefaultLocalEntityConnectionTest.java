@@ -179,10 +179,6 @@ public class DefaultLocalEntityConnectionTest {
     reportParameters.put("DEPTNO", asList(10, 20));
     final String reportResult = "result";
     connection.fillReport(new ReportWrapper<String, String>() {
-      @Override
-      public String getReportName() {
-        return "TestName";
-      }
 
       @Override
       public String fillReport(final Connection connection) throws ReportException {

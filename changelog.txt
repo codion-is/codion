@@ -5862,3 +5862,4 @@
   JasperReportsEntityDataSource refactored, renamed JasperReportsDataSource, jminor-framework-domain dependecy removed
   Chinook demo, user authentication refactored into it's own domain model
   UrlReportWrapper merged into FileReportWrapper, tests added
+  AbstractReportWrapper and subclasses refactored, ReportWrapper.getReportName() removed

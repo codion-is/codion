@@ -31,11 +31,6 @@ public interface ReportWrapper<T, R> extends Serializable {
   PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("jminor.report.cacheReports", true);
 
   /**
-   * @return the name of the report
-   */
-  String getReportName();
-
-  /**
    * Loads and fills the report using the given database connection
    * @param connection the connection to use for the report generation
    * @return a filled report ready for display

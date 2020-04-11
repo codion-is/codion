@@ -699,7 +699,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Exception exception = null;
     synchronized (connection) {
       try {
-        logAccess("fillReport", new Object[] {reportWrapper.getReportName()});
+        logAccess("fillReport", new Object[] {reportWrapper});
         final R result = reportWrapper.fillReport(connection.getConnection());
         commitIfTransactionIsNotOpen();
 
@@ -708,19 +708,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), e, null), e);
+        LOG.error(createLogMessage(getUser(), null, singletonList(reportWrapper), e, null), e);
         throw new ReportException(e);
       }
       catch (final ReportException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), e, null), e);
+        LOG.error(createLogMessage(getUser(), null, singletonList(reportWrapper), e, null), e);
         throw e;
       }
       finally {
         final MethodLogger.Entry logEntry = logExit("fillReport", exception, null);
         if (LOG.isDebugEnabled()) {
-          LOG.debug(createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), exception, logEntry));
+          LOG.debug(createLogMessage(getUser(), null, singletonList(reportWrapper), exception, logEntry));
         }
       }
     }

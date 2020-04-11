@@ -288,11 +288,6 @@ public final class HttpEntityConnectionTest {
   private static class TestReportWrapper implements ReportWrapper<Object, String>, Serializable {
 
     @Override
-    public String getReportName() {
-      return "testReportName";
-    }
-
-    @Override
     public String fillReport(final Connection connection) throws ReportException {
       return "";
     }

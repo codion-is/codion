@@ -72,11 +72,6 @@ final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResul
   }
 
   @Override
-  public String getReportName() {
-    return reportPath;
-  }
-
-  @Override
   public Report loadReport() throws ReportException {
     try {
       return ReportUtil.loadReport(new FileInputStream(reportPath));

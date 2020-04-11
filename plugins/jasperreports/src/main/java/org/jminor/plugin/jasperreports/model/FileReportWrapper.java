@@ -24,21 +24,6 @@ final class FileReportWrapper extends AbstractReportWrapper {
   }
 
   @Override
-  public int hashCode() {
-    return getFullReportPath().hashCode();
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    return obj instanceof FileReportWrapper && ((FileReportWrapper) obj).getFullReportPath().equals(getFullReportPath());
-  }
-
-  @Override
-  public String toString() {
-    return getFullReportPath();
-  }
-
-  @Override
   public JasperReport loadReport() throws ReportException {
     final String fullReportPath = getFullReportPath();
     try {
@@ -57,10 +42,11 @@ final class FileReportWrapper extends AbstractReportWrapper {
     }
   }
 
-  private String getFullReportPath() {
-    final String reportDirectory = ReportWrapper.getReportPath();
-    final StringBuilder builder = new StringBuilder(reportDirectory);
-    if (!reportDirectory.endsWith(SLASH) && !reportPath.startsWith(SLASH)) {
+  @Override
+  protected String getFullReportPath() {
+    final String reportLocation = ReportWrapper.getReportPath();
+    final StringBuilder builder = new StringBuilder(reportLocation);
+    if (!reportLocation.endsWith(SLASH) && !reportPath.startsWith(SLASH)) {
       builder.append(SLASH);
     }
 
