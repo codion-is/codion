@@ -397,6 +397,8 @@ public final class ChinookImpl extends Domain implements Chinook {
 
   private static final class CoverArtImageProvider implements DerivedProperty.Provider {
 
+    private static final long serialVersionUID = 1;
+
     @Override
     public Object getValue(final Map<String, Object> sourceValues) {
       final byte[] bytes = (byte[]) sourceValues.get(ALBUM_COVER);
@@ -414,6 +416,8 @@ public final class ChinookImpl extends Domain implements Chinook {
   }
 
   private static final class CustomerStringProvider implements Function<Entity, String>, Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @Override
     public String apply(final Entity customer) {
