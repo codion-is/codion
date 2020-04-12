@@ -42,8 +42,7 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
     return new DefaultEmployeeService(database, remoteClient, port);
   }
 
-  static final class DefaultEmployeeService extends AbstractRemoteEntityConnection
-          implements EmployeeService {
+  static final class DefaultEmployeeService extends AbstractRemoteEntityConnection implements EmployeeService {
 
     private DefaultEmployeeService(final Database database, final RemoteClient remoteClient, final int port)
             throws DatabaseException, RemoteException {

@@ -49,7 +49,7 @@ import static org.jminor.common.db.pool.ConnectionPools.getConnectionPool;
 /**
  * Implements the EntityConnectionServerAdmin interface, providing admin access to a EntityConnectionServer instance.
  */
-public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject implements EntityConnectionServerAdmin {
+final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject implements EntityConnectionServerAdmin {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConnectionServerAdmin.class);
 
@@ -73,7 +73,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
    * @throws RemoteException in case of an exception
    * @throws NullPointerException in case {@code serverAdminPort} or {@code server} are not specified
    */
-  public DefaultEntityConnectionServerAdmin(final DefaultEntityConnectionServer server, final Integer serverAdminPort) throws RemoteException {
+  DefaultEntityConnectionServerAdmin(final DefaultEntityConnectionServer server, final Integer serverAdminPort) throws RemoteException {
     super(requireNonNull(serverAdminPort),
             requireNonNull(server).isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
@@ -410,12 +410,12 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   private void initializeGarbageCollectionListener() {
     for (final GarbageCollectorMXBean collectorMXBean : ManagementFactory.getGarbageCollectorMXBeans()) {
-      ((NotificationEmitter) collectorMXBean).addNotificationListener(new GCNotifactionListener(), (NotificationFilter) notification ->
+      ((NotificationEmitter) collectorMXBean).addNotificationListener(new GcNotificationListener(), (NotificationFilter) notification ->
               notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION), null);
     }
   }
 
-  private final class GCNotifactionListener implements NotificationListener {
+  private final class GcNotificationListener implements NotificationListener {
     @Override
     public void handleNotification(final Notification notification, final Object handback) {
       synchronized (gcEventList) {
