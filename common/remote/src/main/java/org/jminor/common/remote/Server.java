@@ -149,7 +149,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
   PropertyValue<Boolean> SERVER_CONNECTION_SSL_ENABLED = Configuration.booleanValue("jminor.server.connection.sslEnabled", true);
 
   /**
-   * Specifies a specific connection timeout for different client types
+   * Specifies the default client connection inactivity timeout in milliseconds.
    * Value type: Integer<br>
    * Default value: 120000ms (2 minutes)
    */

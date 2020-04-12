@@ -23,7 +23,7 @@ public class UsersTest {
     assertEquals("mess", String.valueOf(user.getPassword()));
     assertEquals("User: scott", user.toString());
     assertEquals("scott".hashCode(), user.hashCode());
-    assertEquals(Users.user("scott", null), user);
+    assertEquals(Users.user("scott"), user);
     user.setPassword("test".toCharArray());
     assertEquals("test", String.valueOf(user.getPassword()));
     user.clearPassword();

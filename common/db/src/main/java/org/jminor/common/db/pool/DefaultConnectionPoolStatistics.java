@@ -3,8 +3,6 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.user.User;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,7 +15,7 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
 
   private static final long serialVersionUID = 1;
 
-  private final User user;
+  private final String username;
   private long timestamp;
   private int connectionsInUse;
   private int availableInPool;
@@ -38,16 +36,16 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
   private long maximumCheckOutTime;
 
   /**
-   * @param user the database user the pool is based on
+   * @param username the database user the pool is based on
    */
-  public DefaultConnectionPoolStatistics(final User user) {
-    this.user = user;
+  public DefaultConnectionPoolStatistics(final String username) {
+    this.username = username;
   }
 
   /** {@inheritDoc} */
   @Override
-  public User getUser() {
-    return user;
+  public String getUsername() {
+    return username;
   }
 
   /** {@inheritDoc} */

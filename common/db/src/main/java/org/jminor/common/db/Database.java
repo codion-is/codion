@@ -261,7 +261,8 @@ public interface Database {
   String getDriverClassName();
 
   /**
-   * Counts this query.
+   * Counts this query, based on the first character.
+   * @param query the query to count
    * @see #getStatistics()
    */
   void countQuery(String query);

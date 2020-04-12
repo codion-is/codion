@@ -7,6 +7,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import javax.sql.DataSource;
@@ -39,8 +40,8 @@ public final class PoolMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refresh() throws RemoteException {
-    for (final User user : server.getConnectionPools()) {
-      connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPool(user, server)));
+    for (final String username : server.getConnectionPools()) {
+      connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPool(username, server)));
     }
   }
 
@@ -65,15 +66,15 @@ public final class PoolMonitor {
     private final EntityConnectionServerAdmin server;
     private final User user;
 
-    private MonitorPool(final User user, final EntityConnectionServerAdmin server) {
-      this.user = user;
+    private MonitorPool(final String username, final EntityConnectionServerAdmin server) {
+      this.user = Users.user(username);
       this.server = server;
     }
 
     @Override
     public int getMaximumPoolSize() {
       try {
-        return server.getMaximumConnectionPoolSize(user);
+        return server.getMaximumConnectionPoolSize(user.getUsername());
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -83,7 +84,7 @@ public final class PoolMonitor {
     @Override
     public int getMinimumPoolSize() {
       try {
-        return server.getMinimumConnectionPoolSize(user);
+        return server.getMinimumConnectionPoolSize(user.getUsername());
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -93,7 +94,7 @@ public final class PoolMonitor {
     @Override
     public int getCleanupInterval() {
       try {
-        return server.getConnectionPoolCleanupInterval(user);
+        return server.getConnectionPoolCleanupInterval(user.getUsername());
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -103,7 +104,7 @@ public final class PoolMonitor {
     @Override
     public int getConnectionTimeout() {
       try {
-        return server.getPooledConnectionTimeout(user);
+        return server.getPooledConnectionTimeout(user.getUsername());
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -113,7 +114,7 @@ public final class PoolMonitor {
     @Override
     public void setMaximumPoolSize(final int value) {
       try {
-        server.setMaximumConnectionPoolSize(user, value);
+        server.setMaximumConnectionPoolSize(user.getUsername(), value);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -123,7 +124,7 @@ public final class PoolMonitor {
     @Override
     public void setMinimumPoolSize(final int value) {
       try {
-        server.setMinimumConnectionPoolSize(user, value);
+        server.setMinimumConnectionPoolSize(user.getUsername(), value);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -133,7 +134,7 @@ public final class PoolMonitor {
     @Override
     public void setConnectionTimeout(final int timeout) {
       try {
-        server.setPooledConnectionTimeout(user, timeout);
+        server.setPooledConnectionTimeout(user.getUsername(), timeout);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -143,7 +144,7 @@ public final class PoolMonitor {
     @Override
     public int getMaximumCheckOutTime() {
       try {
-        return server.getMaximumPoolCheckOutTime(user);
+        return server.getMaximumPoolCheckOutTime(user.getUsername());
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -153,7 +154,7 @@ public final class PoolMonitor {
     @Override
     public void setMaximumCheckOutTime(final int value) {
       try {
-        server.setMaximumPoolCheckOutTime(user, value);
+        server.setMaximumPoolCheckOutTime(user.getUsername(), value);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -163,7 +164,7 @@ public final class PoolMonitor {
     @Override
     public void setCleanupInterval(final int poolCleanupInterval) {
       try {
-        server.setConnectionPoolCleanupInterval(user, poolCleanupInterval);
+        server.setConnectionPoolCleanupInterval(user.getUsername(), poolCleanupInterval);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -173,7 +174,7 @@ public final class PoolMonitor {
     @Override
     public ConnectionPoolStatistics getStatistics(final long since) {
       try {
-        return server.getConnectionPoolStatistics(user, since);
+        return server.getConnectionPoolStatistics(user.getUsername(), since);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -188,7 +189,7 @@ public final class PoolMonitor {
     @Override
     public boolean isCollectSnapshotStatistics() {
       try {
-        return server.isCollectPoolSnapshotStatistics(user);
+        return server.isCollectPoolSnapshotStatistics(user.getUsername());
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -198,7 +199,7 @@ public final class PoolMonitor {
     @Override
     public void resetStatistics() {
       try {
-        server.resetConnectionPoolStatistics(user);
+        server.resetConnectionPoolStatistics(user.getUsername());
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -208,7 +209,7 @@ public final class PoolMonitor {
     @Override
     public void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
       try {
-        server.setCollectPoolSnapshotStatistics(user, collectSnapshotStatistics);
+        server.setCollectPoolSnapshotStatistics(user.getUsername(), collectSnapshotStatistics);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);

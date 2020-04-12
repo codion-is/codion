@@ -266,7 +266,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient)
           throws RemoteException, LoginException, ConnectionNotAvailableException {
     try {
-      final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(remoteClient.getDatabaseUser());
+      final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(remoteClient.getDatabaseUser().getUsername());
       if (connectionPool != null) {
         checkConnectionPoolCredentials(connectionPool.getUser(), remoteClient.getDatabaseUser());
       }
@@ -433,9 +433,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * Returns the server log for the connection identified by the given key.
+   * Returns the client log for the connection identified by the given key.
    * @param clientId the UUID identifying the client
-   * @return the server log for the given connection
+   * @return the client log for the given connection
    */
   final ClientLog getClientLog(final UUID clientId) {
     final AbstractRemoteEntityConnection connection = getConnection(clientId);
@@ -478,7 +478,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * Validates and keeps alive local connections and disconnects clients that have exceeded the idle timeout
+   * Disconnects clients that have exceeded the idle timeout.
    * @throws RemoteException in case of an exception
    */
   final void maintainConnections() throws RemoteException {
@@ -486,10 +486,10 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     for (final RemoteClient client : clients) {
       final AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
       if (!connection.isActive()) {
-        final boolean valid = connection.isConnected();
+        final boolean connected = connection.isConnected();
         final boolean timedOut = hasConnectionTimedOut(client.getClientTypeId(), connection);
-        if (!valid || timedOut) {
-          LOG.debug("Removing connection {}, valid: {}, timeout: {}", new Object[] {client, valid, timedOut});
+        if (!connected || timedOut) {
+          LOG.debug("Removing connection {}, connected: {}, timeout: {}", new Object[] {client, connected, timedOut});
           disconnect(client.getClientId());
         }
       }
@@ -597,9 +597,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     if (connectionValidatorClassNames != null) {
       for (final String connectionValidatorClassName : connectionValidatorClassNames) {
         LOG.info("Server loading connection validation class '" + connectionValidatorClassName + FROM_CLASSPATH);
-        final Class clientValidatorClass = Class.forName(connectionValidatorClassName);
+        final Class connectionValidatorClass = Class.forName(connectionValidatorClassName);
         try {
-          final ConnectionValidator validator = (ConnectionValidator) clientValidatorClass.getConstructor().newInstance();
+          final ConnectionValidator validator = (ConnectionValidator) connectionValidatorClass.getConstructor().newInstance();
           setConnectionValidator(validator.getClientTypeId(), validator);
         }
         catch (final Exception ex) {

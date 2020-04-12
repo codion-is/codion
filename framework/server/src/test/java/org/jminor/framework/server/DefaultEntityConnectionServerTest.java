@@ -116,7 +116,7 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void getServerAdminNullPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test", null)));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test")));
   }
 
   @Test
@@ -142,10 +142,10 @@ public class DefaultEntityConnectionServerTest {
     final RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
     assertTrue(remoteConnectionOne.isConnected());
     assertEquals(1, admin.getConnectionCount());
-    admin.setPooledConnectionTimeout(UNIT_TEST_USER, 60005);
-    assertEquals(60005, admin.getPooledConnectionTimeout(UNIT_TEST_USER));
-    admin.setMaximumPoolCheckOutTime(UNIT_TEST_USER, 2005);
-    assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER));
+    admin.setPooledConnectionTimeout(UNIT_TEST_USER.getUsername(), 60005);
+    assertEquals(60005, admin.getPooledConnectionTimeout(UNIT_TEST_USER.getUsername()));
+    admin.setMaximumPoolCheckOutTime(UNIT_TEST_USER.getUsername(), 2005);
+    assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER.getUsername()));
 
     try {
       server.connect(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID"));
@@ -171,7 +171,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(2, admin.getConnectionCount());
     assertEquals(2, admin.getClients().size());
 
-    Collection<RemoteClient> clients = admin.getClients(Users.user(UNIT_TEST_USER.getUsername(), null));
+    Collection<RemoteClient> clients = admin.getClients(Users.user(UNIT_TEST_USER.getUsername()));
     assertEquals(2, clients.size());
     clients = admin.getClients("ClientTypeID");
     assertEquals(2, clients.size());

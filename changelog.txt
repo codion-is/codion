@@ -5868,3 +5868,6 @@
   Databases.QUERY_COUNTER removed, Database.countQuery() and getStatistics() added instead
   AbstractRemoteEntityConnection.RequestCounter now synchronized
   DefaultConnectionPoolCounter, checkOutTimes no longer grows unbounded
+  DefaultEntityConnectionServerAdmin no longer public
+  ConnectionPools, now maps connection pools to usernames instead of User instances, related changes
+  Users.user(username) added, used throughout

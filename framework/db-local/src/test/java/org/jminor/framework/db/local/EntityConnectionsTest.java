@@ -42,7 +42,7 @@ public class EntityConnectionsTest {
   public static void setUp() {
     try {
       final H2Database destinationDatabase = new H2Database("TempDB", "src/test/sql/create_h2_db.sql");
-      DESTINATION_CONNECTION = LocalEntityConnections.createConnection(DOMAIN, destinationDatabase, Users.user("sa", null));
+      DESTINATION_CONNECTION = LocalEntityConnections.createConnection(DOMAIN, destinationDatabase, Users.user("sa"));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
       DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));
       DESTINATION_CONNECTION.delete(condition(TestDomain.T_DEPARTMENT));

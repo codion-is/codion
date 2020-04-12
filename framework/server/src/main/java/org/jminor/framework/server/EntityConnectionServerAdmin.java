@@ -195,18 +195,18 @@ public interface EntityConnectionServerAdmin extends Remote {
   Collection<String> getClientTypes() throws RemoteException;
 
   /**
-   * @return a list containing users backed by a connection pool
+   * @return a list containing usernames backed by a connection pool
    * @throws RemoteException in case of an exception
    */
-  List<User> getConnectionPools() throws RemoteException;
+  List<String> getConnectionPools() throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @param since the time since from which to retrieve pool statistics
    * @return the pool statistics
    * @throws RemoteException in case of an exception
    */
-  ConnectionPoolStatistics getConnectionPoolStatistics(User user, long since) throws RemoteException;
+  ConnectionPoolStatistics getConnectionPoolStatistics(String username, long since) throws RemoteException;
 
   /**
    * Returns the statistics gathered via {@link Database#countQuery(String)}.
@@ -236,24 +236,24 @@ public interface EntityConnectionServerAdmin extends Remote {
 
   /**
    * Resets the statistics that have been collected so far
-   * @param user the pool user
+   * @param username the username
    * @throws RemoteException in case of an exception
    */
-  void resetConnectionPoolStatistics(User user) throws RemoteException;
+  void resetConnectionPoolStatistics(String username) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @return true if snapshot statistics should be collected for the given connection pool
    * @throws RemoteException in case of an exception
    */
-  boolean isCollectPoolSnapshotStatistics(User user) throws RemoteException;
+  boolean isCollectPoolSnapshotStatistics(String username) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @param value true if statistics should be collected for a snapshot of the given connection pool
    * @throws RemoteException in case of an exception
    */
-  void setCollectPoolSnapshotStatistics(User user, boolean value) throws RemoteException;
+  void setCollectPoolSnapshotStatistics(String username, boolean value) throws RemoteException;
 
   /**
    * @return the server system properties
@@ -281,74 +281,74 @@ public interface EntityConnectionServerAdmin extends Remote {
   Map<String, String> getEntityDefinitions() throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @return the pool cleanup interval in ms
    * @throws RemoteException in case of an exception
    */
-  int getConnectionPoolCleanupInterval(User user) throws RemoteException;
+  int getConnectionPoolCleanupInterval(String username) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @param poolCleanupInterval the pool cleanup interval in ms
    * @throws RemoteException in case of an exception
    */
-  void setConnectionPoolCleanupInterval(User user, int poolCleanupInterval) throws RemoteException;
+  void setConnectionPoolCleanupInterval(String username, int poolCleanupInterval) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @return the pooled connection timeout in ms
    * @throws RemoteException in case of an exception
    */
-  int getPooledConnectionTimeout(User user) throws RemoteException;
+  int getPooledConnectionTimeout(String username) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @param timeout the pooled connection timeout in ms
    * @throws RemoteException in case of an exception
    */
-  void setPooledConnectionTimeout(User user, int timeout) throws RemoteException;
+  void setPooledConnectionTimeout(String username, int timeout) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @return the maximum time in ms to retry checking out a connection before throwing an exception
    * @throws RemoteException in case of an exception
    */
-  int getMaximumPoolCheckOutTime(User user) throws RemoteException;
+  int getMaximumPoolCheckOutTime(String username) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @param value the maximum time in ms to retry checking out a connection before throwing an exception
    * @throws RemoteException in case of an exception
    */
-  void setMaximumPoolCheckOutTime(User user, int value) throws RemoteException;
+  void setMaximumPoolCheckOutTime(String username, int value) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @return the maximum connection pool size
    * @throws RemoteException in case of an exception
    */
-  int getMaximumConnectionPoolSize(User user) throws RemoteException;
+  int getMaximumConnectionPoolSize(String username) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @param value the maximum connection pool size
    * @throws RemoteException in case of an exception
    */
-  void setMaximumConnectionPoolSize(User user, int value) throws RemoteException;
+  void setMaximumConnectionPoolSize(String username, int value) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @return the minimum connection pool size
    * @throws RemoteException in case of an exception
    */
-  int getMinimumConnectionPoolSize(User user) throws RemoteException;
+  int getMinimumConnectionPoolSize(String username) throws RemoteException;
 
   /**
-   * @param user the pool user
+   * @param username the username
    * @param value the minimum connection pool size
    * @throws RemoteException in case of an exception
    */
-  void setMinimumConnectionPoolSize(User user, int value) throws RemoteException;
+  void setMinimumConnectionPoolSize(String username, int value) throws RemoteException;
 
   /**
    * Thread statistics
