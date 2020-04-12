@@ -22,8 +22,8 @@ public class TomcatConnectionPoolProviderTest {
     final TomcatConnectionPoolProvider provider = new TomcatConnectionPoolProvider();
     final ConnectionPool pool = provider.createConnectionPool(UNIT_TEST_USER,
             new H2Database("TomcatConnectionPoolProviderTest.test", System.getProperty("jminor.db.initScript")));
-    pool.setCollectFineGrainedStatistics(true);
-    assertTrue(pool.isCollectFineGrainedStatistics());
+    pool.setCollectSnapshotStatistics(true);
+    assertTrue(pool.isCollectSnapshotStatistics());
     pool.getConnection().close();
     pool.getConnection().close();
     pool.getConnection().close();

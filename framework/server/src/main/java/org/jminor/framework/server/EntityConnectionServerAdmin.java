@@ -241,17 +241,17 @@ public interface EntityConnectionServerAdmin extends Remote {
 
   /**
    * @param user the pool user
-   * @return true if fine grained statistics should be collected for the given connection pool
+   * @return true if snapshot statistics should be collected for the given connection pool
    * @throws RemoteException in case of an exception
    */
-  boolean isCollectFineGrainedPoolStatistics(User user) throws RemoteException;
+  boolean isCollectPoolSnapshotStatistics(User user) throws RemoteException;
 
   /**
    * @param user the pool user
-   * @param value true if fine grained statistics should be collected for the given connection pool
+   * @param value true if statistics should be collected for a snapshot of the given connection pool
    * @throws RemoteException in case of an exception
    */
-  void setCollectFineGrainedPoolStatistics(User user, boolean value) throws RemoteException;
+  void setCollectPoolSnapshotStatistics(User user, boolean value) throws RemoteException;
 
   /**
    * @return the server system properties

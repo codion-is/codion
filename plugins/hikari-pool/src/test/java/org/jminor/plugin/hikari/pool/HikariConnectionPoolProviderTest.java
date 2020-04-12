@@ -23,12 +23,12 @@ public class HikariConnectionPoolProviderTest {
     final HikariConnectionPoolProvider provider = new HikariConnectionPoolProvider();
     final ConnectionPool pool = provider.createConnectionPool(UNIT_TEST_USER,
             new H2Database("HikariConnectionPoolProviderTest.test", System.getProperty("jminor.db.initScript")));
-    pool.setCollectFineGrainedStatistics(true);
-    assertTrue(pool.isCollectFineGrainedStatistics());
+    pool.setCollectSnapshotStatistics(true);
+    assertTrue(pool.isCollectSnapshotStatistics());
     pool.getConnection().close();
     pool.getConnection().close();
     pool.getConnection().close();
-    pool.getStatistics(startTime).getFineGrainedStatistics();
+    pool.getStatistics(startTime).getSnapshot();
     pool.close();
   }
 }

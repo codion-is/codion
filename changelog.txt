@@ -5859,8 +5859,9 @@
   ReportWrapper refactored, DataSource removed
   DefaultEntityConnectionServer bug fixed, did not add auxiliary server and couldn't shut down properly
   ReportUiWrapper removed, ReportComponentProvider added, jasperreports plugin swing dependency removed
-  JasperReportsEntityDataSource refactored, renamed JasperReportsDataSource, jminor-framework-domain dependecy removed
+  JasperReportsEntityDataSource refactored, renamed JasperReportsDataSource, jminor-framework-domain dependency removed
   Chinook demo, user authentication refactored into it's own domain model
   UrlReportWrapper merged into FileReportWrapper, tests added
   AbstractReportWrapper and subclasses refactored, ReportWrapper.getReportName() removed
 0.14.4
+  ConnectionPool, fine grained statistics renamed snapshot statistics
