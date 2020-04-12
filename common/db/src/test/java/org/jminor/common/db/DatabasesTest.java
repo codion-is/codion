@@ -117,11 +117,6 @@ public class DatabasesTest {
   }
 
   @Test
-  public void getDatabaseStatistics() {
-    Databases.getDatabaseStatistics();
-  }
-
-  @Test
   public void validateWithQuery() throws DatabaseException, SQLException {
     final Database testDatabase = new TestDatabase();
     final Connection connection = testDatabase.createConnection(Users.parseUser("scott:tiger"));

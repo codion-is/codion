@@ -366,6 +366,15 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
+   * Returns the statistics gathered via {@link Database#countQuery(String)}.
+   * @return a {@link Database.Statistics} object containing query statistics collected since
+   * the last time this function was called.
+   */
+  final Database.Statistics getDatabaseStatistics() {
+    return database.getStatistics();
+  }
+
+  /**
    * @return info on all connected users
    */
   final Collection<User> getUsers() {

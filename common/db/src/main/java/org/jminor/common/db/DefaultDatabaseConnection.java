@@ -315,7 +315,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   private <T> List<T> query(final String sql, final ResultPacker<T> resultPacker, final int fetchCount) throws SQLException {
     requireNonNull(resultPacker, "resultPacker");
-    Databases.QUERY_COUNTER.count(requireNonNull(sql, "sql"));
+    database.countQuery(requireNonNull(sql, "sql"));
     Statement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;

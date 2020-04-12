@@ -54,7 +54,8 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.common.db.DatabaseConnections.createConnection;
-import static org.jminor.common.db.Databases.*;
+import static org.jminor.common.db.Databases.closeSilently;
+import static org.jminor.common.db.Databases.createLogMessage;
 import static org.jminor.common.db.Operator.LIKE;
 import static org.jminor.common.db.Operator.NOT_LIKE;
 import static org.jminor.framework.db.condition.Conditions.*;
@@ -562,7 +563,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             "distinct " + columnName, combinedCondition.getWhereClause(), columnName);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    QUERY_COUNTER.count(selectQuery);
     synchronized (connection) {
       try {
         statement = prepareStatement(selectQuery);
@@ -580,6 +580,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       finally {
         closeSilently(resultSet);
         closeSilently(statement);
+        countQuery(selectQuery);
       }
     }
   }
@@ -597,7 +598,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final String selectQuery = selectQuery("(" + subquery + ")" + subqueryAlias, "count(*)");
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    QUERY_COUNTER.count(selectQuery);
     synchronized (connection) {
       try {
         statement = prepareStatement(selectQuery);
@@ -618,6 +618,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       finally {
         closeSilently(resultSet);
         closeSilently(statement);
+        countQuery(selectQuery);
       }
     }
   }
@@ -746,7 +747,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final List<ColumnProperty> statementProperties = new ArrayList<>();
     statementProperties.add(blobProperty);
     statementProperties.addAll(whereCondition.getColumnProperties());
-    QUERY_COUNTER.count(updateQuery);
     synchronized (connection) {
       SQLException exception = null;
       PreparedStatement statement = null;
@@ -772,6 +772,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         if (LOG.isDebugEnabled()) {
           LOG.debug(createLogMessage(getUser(), updateQuery, statementValues, exception, logEntry));
         }
+        countQuery(updateQuery);
       }
     }
   }
@@ -791,7 +792,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final WhereCondition whereCondition = whereCondition(condition(primaryKey), entityDefinition);
     final String selectQuery = "select " + blobProperty.getColumnName() + " from " +
             entityDefinition.getTableName() + WHERE_SPACE_PREFIX_POSTFIX + whereCondition.getWhereClause();
-    QUERY_COUNTER.count(selectQuery);
     synchronized (connection) {
       try {
         logAccess("readBlob", new Object[] {selectQuery});
@@ -822,6 +822,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         if (LOG.isDebugEnabled()) {
           LOG.debug(createLogMessage(getUser(), selectQuery, whereCondition.getValues(), exception, logEntry));
         }
+        countQuery(selectQuery);
       }
     }
   }
@@ -1021,7 +1022,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                final List<ColumnProperty> statementProperties,
                                final List statementValues) throws SQLException {
     SQLException exception = null;
-    QUERY_COUNTER.count(query);
     try {
       logAccess("executeStatement", new Object[] {query, statementValues});
       setParameterValues(statement, statementProperties, statementValues);
@@ -1037,13 +1037,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), query, statementValues, exception, entry));
       }
+      countQuery(query);
     }
   }
 
   private ResultSet executeStatement(final PreparedStatement statement, final String query,
                                      final WhereCondition whereCondition) throws SQLException {
     SQLException exception = null;
-    QUERY_COUNTER.count(query);
     final List statementValues = whereCondition.getValues();
     try {
       logAccess("executeStatement", statementValues == null ?
@@ -1061,6 +1061,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), query, statementValues, exception, entry));
       }
+      countQuery(query);
     }
   }
 
@@ -1222,6 +1223,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.logAccess(method, arguments);
     }
+  }
+
+  private void countQuery(final String query) {
+    connection.getDatabase().countQuery(query);
   }
 
   private static List createValueList(final Object... values) {
