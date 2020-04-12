@@ -261,6 +261,19 @@ public interface Database {
   String getDriverClassName();
 
   /**
+   * Counts this query.
+   * @see #getStatistics()
+   */
+  void countQuery(String query);
+
+  /**
+   * Returns statistics collected via {@link #countQuery(String)}.
+   * Note that calling this method resets the counter.
+   * @return collected statistics.
+   */
+  Statistics getStatistics();
+
+  /**
    * Encapsulates basic database usage statistics.
    */
   interface Statistics {

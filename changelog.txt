@@ -5865,3 +5865,4 @@
   AbstractReportWrapper and subclasses refactored, ReportWrapper.getReportName() removed
 0.14.4
   ConnectionPool, fine grained statistics renamed snapshot statistics
+  Databases.QUERY_COUNTER removed, Database.countQuery() and getStatistics() added instead
