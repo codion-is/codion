@@ -66,7 +66,7 @@ public class H2DatabaseTest {
     final File file2 = File.createTempFile("h2db_test_2", ".sql");
     Files.write(file1.toPath(), singletonList("create schema scott; create table scott.test1 (id int);"));
     Files.write(file2.toPath(), singletonList("create schema scott; create table scott.test2 (id int);"));
-    final User user = Users.user("sa", null);
+    final User user = Users.user("sa");
     final H2Database db1 = new H2Database("test1", file1.getAbsolutePath(), true);
     final H2Database db2 = new H2Database("test2", file2.getAbsolutePath(), true);
     final Connection connection1 = db1.createConnection(user);

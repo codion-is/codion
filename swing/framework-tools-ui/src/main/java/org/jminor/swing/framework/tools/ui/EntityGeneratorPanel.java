@@ -92,7 +92,7 @@ public class EntityGeneratorPanel extends JPanel {
           return;
         }
 
-        final User user = new LoginPanel(Users.user(schemaName, null)).showLoginPanel(null);
+        final User user = new LoginPanel(Users.user(schemaName)).showLoginPanel(null);
         final EntityGeneratorModel generatorModel = new EntityGeneratorModel(user, schemaName);
         final EntityGeneratorPanel generatorPanel = new EntityGeneratorPanel(generatorModel);
         final ImageIcon icon = Images.loadImage("jminor_logo32.gif");

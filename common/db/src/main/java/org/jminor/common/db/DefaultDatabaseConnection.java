@@ -382,8 +382,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   private static User getUser(final Connection connection) throws DatabaseException {
     try {
-      return META_DATA_USER_CACHE.computeIfAbsent(connection.getMetaData().getUserName(),
-              userName -> Users.user(userName, null));
+      return META_DATA_USER_CACHE.computeIfAbsent(connection.getMetaData().getUserName(), Users::user);
     }
     catch (final SQLException e) {
       throw new DatabaseException(e, "Exception while trying to retrieve username from meta data");

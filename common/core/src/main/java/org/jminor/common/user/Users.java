@@ -13,6 +13,15 @@ public final class Users {
   private Users() {}
 
   /**
+   * Instantiates a new User with an empty password.
+   * @param username the username
+   * @return a new User
+   */
+  public static User user(final String username) {
+    return user(username, null);
+  }
+
+  /**
    * Instantiates a new User.
    * @param username the username
    * @param password the password

@@ -1270,7 +1270,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case a login dialog is cancelled
    */
   protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) {
-    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? Users.user(getDefaultUsername(), null) : defaultUser);
+    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? Users.user(getDefaultUsername()) : defaultUser);
     final String loginTitle = (!nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
     final User user = loginPanel.showLoginPanel(null, loginTitle, applicationIcon);
     if (nullOrEmpty(user.getUsername())) {
@@ -1370,7 +1370,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
-      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : Users.user("", null);
+      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : Users.user("");
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }

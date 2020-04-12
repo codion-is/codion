@@ -116,7 +116,7 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void getServerAdminNullPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test", null)));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test")));
   }
 
   @Test
@@ -171,7 +171,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(2, admin.getConnectionCount());
     assertEquals(2, admin.getClients().size());
 
-    Collection<RemoteClient> clients = admin.getClients(Users.user(UNIT_TEST_USER.getUsername(), null));
+    Collection<RemoteClient> clients = admin.getClients(Users.user(UNIT_TEST_USER.getUsername()));
     assertEquals(2, clients.size());
     clients = admin.getClients("ClientTypeID");
     assertEquals(2, clients.size());

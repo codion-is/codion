@@ -5846,3 +5846,4 @@
   DefaultConnectionPoolCounter, checkOutTimes no longer grows unbounded
   DefaultEntityConnectionServerAdmin no longer public
   ConnectionPools, now maps connection pools to usernames instead of User instances, related changes
+  Users.user(username) added, used throughout

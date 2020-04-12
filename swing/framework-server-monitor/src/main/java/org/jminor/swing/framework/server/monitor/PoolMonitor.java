@@ -67,7 +67,7 @@ public final class PoolMonitor {
     private final User user;
 
     private MonitorPool(final String username, final EntityConnectionServerAdmin server) {
-      this.user = Users.user(username, null);
+      this.user = Users.user(username);
       this.server = server;
     }
 
