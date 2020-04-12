@@ -5866,3 +5866,5 @@
 0.14.4
   ConnectionPool, fine grained statistics renamed snapshot statistics
   Databases.QUERY_COUNTER removed, Database.countQuery() and getStatistics() added instead
+  AbstractRemoteEntityConnection.RequestCounter now synchronized
+  DefaultConnectionPoolCounter, checkOutTimes no longer grows unbounded

@@ -5,9 +5,7 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.TaskScheduler;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -20,9 +18,11 @@ final class DefaultConnectionPoolCounter {
   private static final double THOUSAND = 1000d;
   private static final int SNAPSHOT_STATS_SIZE = 1000;
   private static final int SNAPSHOT_COLLECTION_INTERVAL_MS = 10;
+  private static final int CHECK_OUT_TIMES_MAX_SIZE = 10000;
 
   private final AbstractConnectionPool connectionPool;
   private final long creationDate = System.currentTimeMillis();
+  private final LinkedList<Long> checkOutTimes = new LinkedList<>();
   private final LinkedList<ConnectionPoolState> snapshotStatistics = new LinkedList<>();
   private boolean collectSnapshotStatistics = false;
   private final TaskScheduler snapshotStatisticsCollector = new TaskScheduler(new StatisticsCollector(),
@@ -40,7 +40,6 @@ final class DefaultConnectionPoolCounter {
   private long averageCheckOutTime = 0;
   private long minimumCheckOutTime = 0;
   private long maximumCheckOutTime = 0;
-  private final List<Long> checkOutTimes = new ArrayList<>();
   private long requestsPerSecondTime = creationDate;
 
   DefaultConnectionPoolCounter(final AbstractConnectionPool connectionPool) {
@@ -65,6 +64,9 @@ final class DefaultConnectionPoolCounter {
 
   synchronized void addCheckOutTime(final long time) {
     checkOutTimes.add(time);
+    if (checkOutTimes.size() > CHECK_OUT_TIMES_MAX_SIZE) {
+      checkOutTimes.removeFirst();
+    }
   }
 
   synchronized void incrementConnectionsDestroyedCounter() {
@@ -85,7 +87,7 @@ final class DefaultConnectionPoolCounter {
     requestsPerSecondCounter++;
   }
 
-  synchronized void resetPoolStatistics() {
+  synchronized void resetStatistics() {
     connectionsCreated = 0;
     connectionsDestroyed = 0;
     connectionRequests = 0;
@@ -137,8 +139,7 @@ final class DefaultConnectionPoolCounter {
       long total = 0;
       long min = -1;
       long max = -1;
-      for (int i = 0; i < checkOutTimes.size(); i++){
-        final Long time = checkOutTimes.get(i);
+      for (final Long time : checkOutTimes) {
         total += time;
         if (min == -1) {
           min = time;

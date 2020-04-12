@@ -83,7 +83,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   /** {@inheritDoc} */
   @Override
   public final void resetStatistics() {
-    counter.resetPoolStatistics();
+    counter.resetStatistics();
   }
 
   /** {@inheritDoc} */
