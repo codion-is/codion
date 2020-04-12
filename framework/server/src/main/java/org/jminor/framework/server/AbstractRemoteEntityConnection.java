@@ -449,7 +449,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
               DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
-    private void updateRequestsPerSecond() {
+    private synchronized void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
       final double seconds = (current - requestsPerSecondTime) / THOUSAND;
       if (seconds > 0) {
@@ -459,11 +459,11 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       }
     }
 
-    private void incrementRequestsPerSecondCounter() {
+    private synchronized void incrementRequestsPerSecondCounter() {
       requestsPerSecondCounter++;
     }
 
-    private int getRequestsPerSecond() {
+    private synchronized int getRequestsPerSecond() {
       return requestsPerSecond;
     }
   }
