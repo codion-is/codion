@@ -31,7 +31,7 @@ public final class ConnectionPoolMonitor {
   private static final int THOUSAND = 1000;
 
   private final Event statisticsUpdatedEvent = Events.event();
-  private final Event<Boolean> collectFineGrainedStatisticsChangedEvent = Events.event();
+  private final Event<Boolean> collectSnapshotStatisticsChangedEvent = Events.event();
 
   private final User user;
   private final ConnectionPool connectionPool;
@@ -42,7 +42,7 @@ public final class ConnectionPoolMonitor {
   private final XYSeries maximumPoolSizeSeries = new XYSeries("Max");
   private final XYSeries inPoolSeries = new XYSeries("In pool");
   private final XYSeries inUseSeries = new XYSeries("In use");
-  private final XYSeriesCollection fineGrainedStatisticsCollection = new XYSeriesCollection();
+  private final XYSeriesCollection snapshotStatisticsCollection = new XYSeriesCollection();
   private final XYSeriesCollection statisticsCollection = new XYSeriesCollection();
   private final XYSeries failedRequestsPerSecond = new XYSeries("Failed");
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests");
@@ -162,19 +162,19 @@ public final class ConnectionPoolMonitor {
    * @return true if the graph datasets contain data
    */
   public boolean datasetContainsData() {
-    return fineGrainedStatisticsCollection.getSeriesCount() > 0
-            && fineGrainedStatisticsCollection.getSeries(0).getItemCount() > 0
-            && fineGrainedStatisticsCollection.getSeries(1).getItemCount() > 0;
+    return snapshotStatisticsCollection.getSeriesCount() > 0
+            && snapshotStatisticsCollection.getSeries(0).getItemCount() > 0
+            && snapshotStatisticsCollection.getSeries(1).getItemCount() > 0;
   }
 
   /**
-   * @return the dataset for fine grained pool stats
+   * @return the dataset for snapshot pool stats
    */
-  public XYDataset getFineGrainedInPoolDataset() {
+  public XYDataset getSnapshotDataset() {
     final XYSeriesCollection poolDataset = new XYSeriesCollection();
-    poolDataset.addSeries(fineGrainedStatisticsCollection.getSeries(0));
-    poolDataset.addSeries(fineGrainedStatisticsCollection.getSeries(1));
-    poolDataset.addSeries(fineGrainedStatisticsCollection.getSeries(2));
+    poolDataset.addSeries(snapshotStatisticsCollection.getSeries(0));
+    poolDataset.addSeries(snapshotStatisticsCollection.getSeries(1));
+    poolDataset.addSeries(snapshotStatisticsCollection.getSeries(2));
 
     return poolDataset;
   }
@@ -222,25 +222,25 @@ public final class ConnectionPoolMonitor {
   }
 
   /**
-   * @param collectFineGrainedStatistics true if fine grained stats should be collected
+   * @param collectSnapshotStatistics true if snapshot stats should be collected
    */
-  public void setCollectFineGrainedStatistics(final boolean collectFineGrainedStatistics) {
-    connectionPool.setCollectFineGrainedStatistics(collectFineGrainedStatistics);
-    collectFineGrainedStatisticsChangedEvent.onEvent(collectFineGrainedStatistics);
+  public void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
+    connectionPool.setCollectSnapshotStatistics(collectSnapshotStatistics);
+    collectSnapshotStatisticsChangedEvent.onEvent(collectSnapshotStatistics);
   }
 
   /**
-   * @return true if fine grained stats are being collected
+   * @return true if snapshot stats are being collected
    */
-  public boolean isCollectFineGrainedStatistics() {
-    return connectionPool.isCollectFineGrainedStatistics();
+  public boolean isCollectSnapshotStatistics() {
+    return connectionPool.isCollectSnapshotStatistics();
   }
 
   /**
-   * @return EventObserver notified when fine grained stats collection status is changed
+   * @return EventObserver notified when snapshot stats collection status is changed
    */
-  public EventObserver<Boolean> getCollectFineGrainedStatisticsObserver() {
-    return collectFineGrainedStatisticsChangedEvent.getObserver();
+  public EventObserver<Boolean> getCollectSnapshotStatisticsObserver() {
+    return collectSnapshotStatisticsChangedEvent.getObserver();
   }
 
   /**
@@ -276,21 +276,21 @@ public final class ConnectionPoolMonitor {
     failedRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getFailedRequestsPerSecond());
     averageCheckOutTime.add(poolStatistics.getTimestamp(), poolStatistics.getAverageGetTime(),
             poolStatistics.getMinimumCheckOutTime(), poolStatistics.getMaximumCheckOutTime());
-    final List<ConnectionPoolState> stats = poolStatistics.getFineGrainedStatistics();
-    if (!stats.isEmpty()) {
-      final XYSeries fineGrainedInPoolSeries = new XYSeries("In pool");
-      final XYSeries fineGrainedInUseSeries = new XYSeries("In use");
-      final XYSeries fineGrainedWaitingSeries = new XYSeries("Waiting");
-      for (final ConnectionPoolState inPool : stats) {
-        fineGrainedInPoolSeries.add(inPool.getTimestamp(), inPool.getSize());
-        fineGrainedInUseSeries.add(inPool.getTimestamp(), inPool.getInUse());
-        fineGrainedWaitingSeries.add(inPool.getTimestamp(), inPool.getWaiting());
+    final List<ConnectionPoolState> snapshotStatistics = poolStatistics.getSnapshot();
+    if (!snapshotStatistics.isEmpty()) {
+      final XYSeries snapshotInPoolSeries = new XYSeries("In pool");
+      final XYSeries snapshotInUseSeries = new XYSeries("In use");
+      final XYSeries snapshotWaitingSeries = new XYSeries("Waiting");
+      for (final ConnectionPoolState inPool : snapshotStatistics) {
+        snapshotInPoolSeries.add(inPool.getTimestamp(), inPool.getSize());
+        snapshotInUseSeries.add(inPool.getTimestamp(), inPool.getInUse());
+        snapshotWaitingSeries.add(inPool.getTimestamp(), inPool.getWaiting());
       }
 
-      this.fineGrainedStatisticsCollection.removeAllSeries();
-      this.fineGrainedStatisticsCollection.addSeries(fineGrainedInPoolSeries);
-      this.fineGrainedStatisticsCollection.addSeries(fineGrainedInUseSeries);
-      this.fineGrainedStatisticsCollection.addSeries(fineGrainedWaitingSeries);
+      this.snapshotStatisticsCollection.removeAllSeries();
+      this.snapshotStatisticsCollection.addSeries(snapshotInPoolSeries);
+      this.snapshotStatisticsCollection.addSeries(snapshotInUseSeries);
+      this.snapshotStatisticsCollection.addSeries(snapshotWaitingSeries);
     }
     statisticsUpdatedEvent.onEvent();
   }

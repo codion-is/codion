@@ -186,9 +186,9 @@ public final class PoolMonitor {
     }
 
     @Override
-    public boolean isCollectFineGrainedStatistics() {
+    public boolean isCollectSnapshotStatistics() {
       try {
-        return server.isCollectFineGrainedPoolStatistics(user);
+        return server.isCollectPoolSnapshotStatistics(user);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -206,9 +206,9 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setCollectFineGrainedStatistics(final boolean collectFineGrainedStatistics) {
+    public void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
       try {
-        server.setCollectFineGrainedPoolStatistics(user, collectFineGrainedStatistics);
+        server.setCollectPoolSnapshotStatistics(user, collectSnapshotStatistics);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);

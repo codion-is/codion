@@ -26,7 +26,7 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
   private int connectionsDestroyed;
   private long creationDate;
 
-  private List<ConnectionPoolState> fineGrainedStatistics = emptyList();
+  private List<ConnectionPoolState> snapshot = emptyList();
   private long resetDate;
   private int connectionRequests;
   private int requestsPerSecond;
@@ -52,8 +52,8 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
 
   /** {@inheritDoc} */
   @Override
-  public List<ConnectionPoolState> getFineGrainedStatistics() {
-    return fineGrainedStatistics;
+  public List<ConnectionPoolState> getSnapshot() {
+    return snapshot;
   }
 
   /** {@inheritDoc} */
@@ -146,8 +146,8 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
     return resetDate;
   }
 
-  public void setFineGrainedStatistics(final List<ConnectionPoolState> statistics) {
-    this.fineGrainedStatistics = statistics;
+  public void setSnapshot(final List<ConnectionPoolState> snapshot) {
+    this.snapshot = snapshot;
   }
 
   public void setAvailableInPool(final int availableInPool) {

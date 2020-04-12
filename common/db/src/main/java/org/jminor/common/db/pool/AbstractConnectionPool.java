@@ -88,14 +88,14 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isCollectFineGrainedStatistics() {
-    return counter.isCollectFineGrainedStatistics();
+  public final boolean isCollectSnapshotStatistics() {
+    return counter.isCollectSnapshotStatistics();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setCollectFineGrainedStatistics(final boolean collectFineGrainedStatistics) {
-    counter.setCollectFineGrainedStatics(collectFineGrainedStatistics);
+  public final void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
+    counter.setCollectSnapshotStatistics(collectSnapshotStatistics);
   }
 
   /** {@inheritDoc} */

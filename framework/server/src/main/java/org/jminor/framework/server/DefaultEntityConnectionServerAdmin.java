@@ -222,15 +222,15 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public boolean isCollectFineGrainedPoolStatistics(final User user) {
-    return getConnectionPool(user).isCollectFineGrainedStatistics();
+  public boolean isCollectPoolSnapshotStatistics(final User user) {
+    return getConnectionPool(user).isCollectSnapshotStatistics();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setCollectFineGrainedPoolStatistics(final User user, final boolean value) {
-    LOG.info("setCollectFineGrainedPoolStatistics({}, {})", user, value);
-    getConnectionPool(user).setCollectFineGrainedStatistics(value);
+  public void setCollectPoolSnapshotStatistics(final User user, final boolean value) {
+    LOG.info("setCollectSnapshotPoolStatistics({}, {})", user, value);
+    getConnectionPool(user).setCollectSnapshotStatistics(value);
   }
 
   /** {@inheritDoc} */

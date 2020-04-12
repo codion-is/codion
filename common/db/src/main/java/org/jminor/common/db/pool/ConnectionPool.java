@@ -82,19 +82,19 @@ public interface ConnectionPool {
   void resetStatistics();
 
   /**
-   * @return true if fine grained pool usage statistics should be collected.
+   * @return true if pool usage statistics for a snapshot should be collected.
    * @see #getStatistics(long)
-   * @see ConnectionPoolStatistics#getFineGrainedStatistics()
+   * @see ConnectionPoolStatistics#getSnapshot()
    */
-  boolean isCollectFineGrainedStatistics();
+  boolean isCollectSnapshotStatistics();
 
   /**
-   * Specifies whether to collect fine grained usage statistics.
-   * @param collectFineGrainedStatistics the value
+   * Specifies whether to collect usage statistics for a snapshot.
+   * @param collectSnapshotStatistics the value
    * @see #getStatistics(long)
-   * @see ConnectionPoolStatistics#getFineGrainedStatistics()
+   * @see ConnectionPoolStatistics#getSnapshot()
    */
-  void setCollectFineGrainedStatistics(boolean collectFineGrainedStatistics);
+  void setCollectSnapshotStatistics(boolean collectSnapshotStatistics);
 
   /**
    * @return the pool cleanup interval in milliseconds

@@ -18,15 +18,15 @@ import java.util.stream.IntStream;
 final class DefaultConnectionPoolCounter {
 
   private static final double THOUSAND = 1000d;
-  private static final int FINE_GRAINED_STATS_SIZE = 1000;
-  private static final int FINE_GRAINED_COLLECTION_INTERVAL = 10;
+  private static final int SNAPSHOT_STATS_SIZE = 1000;
+  private static final int SNAPSHOT_COLLECTION_INTERVAL_MS = 10;
 
   private final AbstractConnectionPool connectionPool;
   private final long creationDate = System.currentTimeMillis();
-  private final LinkedList<ConnectionPoolState> fineGrainedStatistics = new LinkedList<>();
-  private boolean collectFineGrainedStatistics = false;
-  private final TaskScheduler fineGrainedStatisticsCollector = new TaskScheduler(new StatisticsCollector(),
-          FINE_GRAINED_COLLECTION_INTERVAL, TimeUnit.MILLISECONDS);
+  private final LinkedList<ConnectionPoolState> snapshotStatistics = new LinkedList<>();
+  private boolean collectSnapshotStatistics = false;
+  private final TaskScheduler snapshotStatisticsCollector = new TaskScheduler(new StatisticsCollector(),
+          SNAPSHOT_COLLECTION_INTERVAL_MS, TimeUnit.MILLISECONDS);
 
   private long resetDate = creationDate;
   private int connectionsCreated = 0;
@@ -47,20 +47,20 @@ final class DefaultConnectionPoolCounter {
     this.connectionPool = connectionPool;
   }
 
-  synchronized boolean isCollectFineGrainedStatistics() {
-    return collectFineGrainedStatistics;
+  synchronized boolean isCollectSnapshotStatistics() {
+    return collectSnapshotStatistics;
   }
 
-  synchronized void setCollectFineGrainedStatics(final boolean collectFineGrainedStatistics) {
-    if (collectFineGrainedStatistics) {
-      IntStream.range(0, FINE_GRAINED_STATS_SIZE).forEach(i -> fineGrainedStatistics.add(new DefaultConnectionPoolState()));
-      fineGrainedStatisticsCollector.start();
+  synchronized void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
+    if (collectSnapshotStatistics) {
+      IntStream.range(0, SNAPSHOT_STATS_SIZE).forEach(i -> snapshotStatistics.add(new DefaultConnectionPoolState()));
+      snapshotStatisticsCollector.start();
     }
     else {
-      fineGrainedStatisticsCollector.stop();
-      fineGrainedStatistics.clear();
+      snapshotStatisticsCollector.stop();
+      snapshotStatistics.clear();
     }
-    this.collectFineGrainedStatistics = collectFineGrainedStatistics;
+    this.collectSnapshotStatistics = collectSnapshotStatistics;
   }
 
   synchronized void addCheckOutTime(final long time) {
@@ -114,8 +114,8 @@ final class DefaultConnectionPoolCounter {
     statistics.setMaximumCheckOutTime(maximumCheckOutTime);
     statistics.setResetDate(resetDate);
     statistics.setTimestamp(System.currentTimeMillis());
-    if (collectFineGrainedStatistics && since >= 0) {
-      statistics.setFineGrainedStatistics(fineGrainedStatistics.stream()
+    if (collectSnapshotStatistics && since >= 0) {
+      statistics.setSnapshot(snapshotStatistics.stream()
               .filter(state -> state.getTimestamp() >= since).collect(Collectors.toList()));
     }
 
@@ -159,12 +159,12 @@ final class DefaultConnectionPoolCounter {
   private final class StatisticsCollector implements Runnable {
 
     /**
-     * Adds the current state of the pool to the fine grained connection pool log
+     * Adds the current state of the pool to the snapshot connection pool log
      */
     @Override
     public void run() {
       synchronized (DefaultConnectionPoolCounter.this) {
-        fineGrainedStatistics.addLast(connectionPool.updateState(fineGrainedStatistics.removeFirst()));
+        snapshotStatistics.addLast(connectionPool.updateState(snapshotStatistics.removeFirst()));
       }
     }
   }

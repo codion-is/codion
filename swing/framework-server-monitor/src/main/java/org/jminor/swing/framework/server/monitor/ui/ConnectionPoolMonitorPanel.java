@@ -55,13 +55,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private final ConnectionPoolMonitor model;
 
   private final NumberFormat format = NumberFormat.getInstance();
-  private final JFreeChart inPoolFineGrainedChart = ChartFactory.createXYStepChart(null,
+  private final JFreeChart inPoolSnapshotChart = ChartFactory.createXYStepChart(null,
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart inPoolChart = ChartFactory.createXYStepChart(null,
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart requestsPerSecondChart = ChartFactory.createXYStepChart(null,
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
-  private final ChartPanel inPoolFineGrainedChartPanel = new ChartPanel(inPoolFineGrainedChart);
+  private final ChartPanel inPoolSnapshotChartPanel = new ChartPanel(inPoolSnapshotChart);
   private final ChartPanel inPoolChartPanel = new ChartPanel(inPoolChart);
   private final ChartPanel requestsPerSecondChartPanel = new ChartPanel(requestsPerSecondChart);
 
@@ -94,10 +94,10 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     resetTimeField.setText(DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP)
             .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
     requestedField.setText(format.format(statistics.getRequests()));
-    double prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
+    final double prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
     failedField.setText(format.format(statistics.getFailedRequests()) + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
     if (model.datasetContainsData()) {
-      inPoolFineGrainedChart.getXYPlot().setDataset(model.getFineGrainedInPoolDataset());
+      inPoolSnapshotChart.getXYPlot().setDataset(model.getSnapshotDataset());
     }
   }
 
@@ -134,7 +134,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     renderer.setSeriesPaint(4, Color.MAGENTA);
     requestsPerSecondChart.getXYPlot().setDataset(model.getRequestsPerSecondDataset());
     checkOutTimeChart.getXYPlot().setDataset(model.getCheckOutTimeCollection());
-    setColors(inPoolFineGrainedChart);
+    setColors(inPoolSnapshotChart);
     setColors(inPoolChart);
     setColors(requestsPerSecondChart);
     setColors(checkOutTimeChart);
@@ -232,12 +232,12 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(updateIntervalSpinner);
 
-    final JCheckBox collectStatisticsCheckBox = new JCheckBox("Fine grained statistics");
-    Values.propertyValue(model, "collectFineGrainedStatistics", boolean.class, model.getCollectFineGrainedStatisticsObserver())
-            .link(BooleanValues.booleanButtonModelValue(collectStatisticsCheckBox.getModel()));
-    collectStatisticsCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
+    final JCheckBox collectSnapshotCheckBox = new JCheckBox("Snapshot statistics");
+    Values.propertyValue(model, "collectSnapshotStatistics", boolean.class, model.getCollectSnapshotStatisticsObserver())
+            .link(BooleanValues.booleanButtonModelValue(collectSnapshotCheckBox.getModel()));
+    collectSnapshotCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
 
-    chartConfig.add(collectStatisticsCheckBox);
+    chartConfig.add(collectSnapshotCheckBox);
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);
@@ -249,7 +249,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartBase.add(requestsPerSecondChartPanel);
     chartBase.add(inPoolChartPanel);
     chartBase.add(checkOutTimePanel);
-    chartBase.add(inPoolFineGrainedChartPanel);
+    chartBase.add(inPoolSnapshotChartPanel);
     chartBase.setBorder(BorderFactory.createEtchedBorder());
 
     final JPanel panel = new JPanel(Layouts.borderLayout());
