@@ -97,7 +97,7 @@ final class DefaultConnectionPoolCounter {
   }
 
   synchronized ConnectionPoolStatistics getStatistics(final long since) {
-    final DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.getUser());
+    final DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.getUser().getUsername());
     updateStatistics();
     final int inPool = connectionPool.getSize();
     final int inUseCount = connectionPool.getInUse();

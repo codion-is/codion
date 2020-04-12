@@ -10,7 +10,6 @@ import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
-import org.jminor.common.user.User;
 import org.jminor.common.value.Value;
 
 import org.jfree.data.xy.IntervalXYDataset;
@@ -33,7 +32,7 @@ public final class ConnectionPoolMonitor {
   private final Event statisticsUpdatedEvent = Events.event();
   private final Event<Boolean> collectSnapshotStatisticsChangedEvent = Events.event();
 
-  private final User user;
+  private final String username;
   private final ConnectionPool connectionPool;
   private ConnectionPoolStatistics poolStatistics;
 
@@ -61,7 +60,7 @@ public final class ConnectionPoolMonitor {
    * @param connectionPool the connection pool to monitor
    */
   public ConnectionPoolMonitor(final ConnectionPool connectionPool) {
-    this.user = connectionPool.getUser();
+    this.username = connectionPool.getUser().getUsername();
     this.connectionPool = connectionPool;
     this.statisticsCollection.addSeries(inPoolSeries);
     this.statisticsCollection.addSeries(inUseSeries);
@@ -77,8 +76,8 @@ public final class ConnectionPoolMonitor {
   /**
    * @return the user the connection pool is based on
    */
-  public User getUser() {
-    return user;
+  public String getUsername() {
+    return username;
   }
 
   /**

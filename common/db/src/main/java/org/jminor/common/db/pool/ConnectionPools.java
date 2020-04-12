@@ -21,9 +21,9 @@ import static java.util.Objects.requireNonNull;
 public final class ConnectionPools {
 
   /**
-   * The available connection pools
+   * The available connection pools mapped to their respective usernames.
    */
-  private static final Map<User, ConnectionPool> CONNECTION_POOLS = Collections.synchronizedMap(new HashMap<>());
+  private static final Map<String, ConnectionPool> CONNECTION_POOLS = Collections.synchronizedMap(new HashMap<>());
 
   private ConnectionPools() {}
 
@@ -40,7 +40,7 @@ public final class ConnectionPools {
     requireNonNull(database, "database");
     requireNonNull(users, "users");
     for (final User user : users) {
-      CONNECTION_POOLS.put(user, connectionPoolProvider.createConnectionPool(user, database));
+      CONNECTION_POOLS.put(user.getUsername(), connectionPoolProvider.createConnectionPool(user, database));
     }
   }
 
@@ -49,35 +49,35 @@ public final class ConnectionPools {
    */
   public static synchronized void closeConnectionPools() {
     for (final ConnectionPool pool : getConnectionPools()) {
-      removeConnectionPool(pool.getUser());
+      removeConnectionPool(pool.getUser().getUsername());
     }
   }
 
   /**
    * Closes and removes the pool associated with the given user
-   * @param user the user whos pool should be removed
+   * @param username the username of the pool that should be removed
    */
-  public static synchronized void removeConnectionPool(final User user) {
-    if (containsConnectionPool(user)) {
-      CONNECTION_POOLS.remove(user).close();
+  public static synchronized void removeConnectionPool(final String username) {
+    if (containsConnectionPool(username)) {
+      CONNECTION_POOLS.remove(username).close();
     }
   }
 
   /**
-   * @param user the user
+   * @param username the username
    * @return the connection pool for the given user, null if none exists
-   * @see #containsConnectionPool(User)
+   * @see #containsConnectionPool(String)
    */
-  public static synchronized ConnectionPool getConnectionPool(final User user) {
-    return CONNECTION_POOLS.get(user);
+  public static synchronized ConnectionPool getConnectionPool(final String username) {
+    return CONNECTION_POOLS.get(username);
   }
 
   /**
-   * @param user user
+   * @param username the username
    * @return true if a connection pool is available for the given user
    */
-  public static synchronized boolean containsConnectionPool(final User user) {
-    return CONNECTION_POOLS.containsKey(user);
+  public static synchronized boolean containsConnectionPool(final String username) {
+    return CONNECTION_POOLS.containsKey(username);
   }
 
   /**

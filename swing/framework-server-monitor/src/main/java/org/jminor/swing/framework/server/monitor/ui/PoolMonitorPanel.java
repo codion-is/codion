@@ -30,7 +30,7 @@ public final class PoolMonitorPanel extends JPanel {
     setLayout(new BorderLayout());
     final JTabbedPane connectionPoolPane = new JTabbedPane();
     for (final ConnectionPoolMonitor monitor : model.getConnectionPoolInstanceMonitors()) {
-      connectionPoolPane.addTab(monitor.getUser().getUsername(), new ConnectionPoolMonitorPanel(monitor));
+      connectionPoolPane.addTab(monitor.getUsername(), new ConnectionPoolMonitorPanel(monitor));
     }
     add(connectionPoolPane, BorderLayout.CENTER);
   }

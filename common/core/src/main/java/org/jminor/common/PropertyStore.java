@@ -60,11 +60,10 @@ public final class PropertyStore {
 
   private final Map<String, PropertyValue> propertyValues = new HashMap<>();
 
-  //trying to make the configuration file a bit easier to read by sorting the keys
   private final Properties properties = new Properties() {
-    //sort to make properties file easier for human consumption
     @Override
     public Enumeration<Object> keys() {
+      //sort to make properties file easier for human consumption
       final List<Object> keys = Collections.list(super.keys());
       keys.sort(Comparator.comparing(Object::toString));
 

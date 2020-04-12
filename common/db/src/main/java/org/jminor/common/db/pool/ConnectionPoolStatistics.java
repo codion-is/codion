@@ -3,8 +3,6 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.user.User;
-
 import java.util.List;
 
 /**
@@ -13,9 +11,9 @@ import java.util.List;
 public interface ConnectionPoolStatistics {
 
   /**
-   * @return the connection pool user
+   * @return the connection pool username
    */
-  User getUser();
+  String getUsername();
 
   /**
    * Returns a list containing a snapshot of connection pool states.
