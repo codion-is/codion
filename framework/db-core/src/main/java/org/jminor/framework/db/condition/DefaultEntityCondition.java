@@ -33,19 +33,16 @@ class DefaultEntityCondition implements EntityCondition {
     this.condition = condition == null ? EMPTY_CONDITION : condition;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getEntityId() {
     return entityId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Condition getCondition() {
     return condition;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getClass().getSimpleName() + " [" + entityId + "]";

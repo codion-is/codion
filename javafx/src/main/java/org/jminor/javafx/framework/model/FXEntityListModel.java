@@ -100,19 +100,16 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     bindEvents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Domain getDomain() {
     return getConnectionProvider().getDomain();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityDefinition getEntityDefinition() {
     return getDomain().getDefinition(getEntityId());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setEditModel(final FXEntityEditModel editModel) {
     requireNonNull(editModel, "editModel");
@@ -127,7 +124,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     onSetEditModel(editModel);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final FXEntityEditModel getEditModel() {
     if (editModel == null) {
@@ -168,31 +164,26 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     throw new IllegalArgumentException("Column for property with id: " + propertyId + " not found");
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityTableConditionModel getConditionModel() {
     return conditionModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final State getQueryConditionRequiredState() {
     return queryConditionRequiredState;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isEditable() {
     return editable;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setEditable(final boolean editable) {
     this.editable = editable;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
     if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), entities) && refreshOnForeignKeyConditionValuesSet) {
@@ -200,25 +191,21 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void deleteSelected() throws DatabaseException {
     getEditModel().delete(getSelectionModel().getSelectedItems());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getRowCount() {
     return size();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean hasEditModel() {
     return editModel != null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
@@ -235,7 +222,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addEntities(final List<Entity> entities, final boolean atTop, final boolean sortAfterAdding) {
     addAll(atTop ? 0 : getSize(), entities);
@@ -244,13 +230,11 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void replaceEntities(final Collection<Entity> entities) {
     replaceEntitiesByKey(Entities.mapToKey(entities));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void refreshEntities(final List<Entity.Key> keys) {
     try {
@@ -261,82 +245,69 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isDeleteEnabled() {
     return editModel != null && editModel.isDeleteEnabled();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isReadOnly() {
     return editModel == null || editModel.isReadOnly();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isUpdateEnabled() {
     return editModel != null && editModel.isUpdateEnabled();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isBatchUpdateEnabled() {
     return batchUpdateEnabled;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final FXEntityListModel setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
     this.batchUpdateEnabled = batchUpdateEnabled;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final FXEntityListModel setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
     this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isRefreshOnForeignKeyConditionValuesSet() {
     return refreshOnForeignKeyConditionValuesSet;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final ColumnSummaryModel getColumnSummaryModel(final String propertyId) {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Color getPropertyBackgroundColor(final int row, final Property property) {
     return (Color) get(row).getColor(property);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getPropertyColumnIndex(final String propertyId) {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getFetchCount() {
     return fetchCount;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final FXEntityListModel setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities);
@@ -349,26 +320,22 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     editModel.update(entities);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isRemoveEntitiesOnDelete() {
     return removeEntitiesOnDelete;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final FXEntityListModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
     this.removeEntitiesOnDelete = removeEntitiesOnDelete;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final InsertAction getInsertAction() {
     return insertAction;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final FXEntityListModel setInsertAction(final InsertAction insertAction) {
     requireNonNull(insertAction);
@@ -376,14 +343,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
     return getItems().stream().filter(entity -> keys.stream()
             .anyMatch(key -> entity.getKey().equals(key))).collect(Collectors.toList());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSelectedByKey(final Collection<Entity.Key> keys) {
     final List<Entity.Key> keyList = new ArrayList<>(keys);
@@ -395,25 +360,21 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     getSelectionModel().setSelectedItems(toSelect);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Entity getEntityByKey(final Entity.Key primaryKey) {
     return getFilteredList().stream().filter(entity -> entity.getKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Iterator<Entity> getSelectedEntitiesIterator() {
     return getSelectionModel().getSelectedItems().iterator();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int indexOf(final Entity.Key primaryKey) {
     return indexOf(getEntityByKey(primaryKey));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void savePreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
@@ -426,7 +387,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setColumns(final String... propertyIds) {
     final List<String> propertyIdList = asList(propertyIds);
@@ -443,7 +403,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     });
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getTableDataAsDelimitedString(final char delimiter) {
     final List<String> header = new ArrayList<>();
@@ -513,7 +472,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     return getClass().getSimpleName() + "-" + getEntityId();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final void bindSelectionModelEvents() {
     super.bindSelectionModelEvents();
@@ -657,7 +615,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       return property;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final String toString() {
       return property.getPropertyId();

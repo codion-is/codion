@@ -58,7 +58,6 @@ public class DefaultEntityValidator implements Validator {
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isValid(final Entity entity, final EntityDefinition definition) {
     try {
@@ -70,13 +69,11 @@ public class DefaultEntityValidator implements Validator {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isNullable(final Entity entity, final Property property) {
     return property.isNullable();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void validate(final Collection<Entity> entities, final EntityDefinition definition) throws ValidationException {
     for (final Entity entity : entities) {
@@ -84,7 +81,6 @@ public class DefaultEntityValidator implements Validator {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void validate(final Entity entity, final EntityDefinition definition) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
@@ -93,7 +89,6 @@ public class DefaultEntityValidator implements Validator {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void validate(final Entity entity, final EntityDefinition definition, final Property property) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
@@ -109,7 +104,6 @@ public class DefaultEntityValidator implements Validator {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
@@ -129,7 +123,6 @@ public class DefaultEntityValidator implements Validator {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void performNullValidation(final Entity entity, final EntityDefinition definition,
                                           final Property property) throws NullValidationException {
@@ -150,7 +143,6 @@ public class DefaultEntityValidator implements Validator {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
@@ -167,19 +159,16 @@ public class DefaultEntityValidator implements Validator {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void revalidate() {
     getRevalidateEvent().onEvent();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addRevalidationListener(final EventListener listener) {
     getRevalidateEvent().addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeRevalidationListener(final EventListener listener) {
     getRevalidateEvent().removeListener(listener);

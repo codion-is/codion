@@ -43,13 +43,11 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
     return listModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void refresh() {
     listModel.refresh();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void clear() {
     listModel.clear();

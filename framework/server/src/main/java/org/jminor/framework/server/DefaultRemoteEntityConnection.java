@@ -78,7 +78,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     super(domain, connectionPool, connectionPool.getDatabase(), remoteClient, port, clientSocketFactory, serverSocketFactory);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Domain getDomain() {
     synchronized (connectionProxy) {
@@ -86,7 +85,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -94,7 +92,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public <T, R> R fillReport(final ReportWrapper<T, R> reportWrapper) throws ReportException, DatabaseException {
     synchronized (connectionProxy) {
@@ -102,7 +99,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -110,7 +106,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public <T> T executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -118,7 +113,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void beginTransaction() {
     synchronized (connectionProxy) {
@@ -126,7 +120,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void commitTransaction() {
     synchronized (connectionProxy) {
@@ -134,7 +127,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void rollbackTransaction() {
     synchronized (connectionProxy) {
@@ -142,7 +134,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isTransactionOpen() {
     synchronized (connectionProxy) {
@@ -150,7 +141,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity.Key insert(final Entity entity) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
@@ -158,7 +148,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -166,7 +155,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity update(final Entity entity) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
@@ -174,7 +162,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -182,7 +169,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int update(final EntityUpdateCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -190,7 +176,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean delete(final Entity.Key entityKey) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
@@ -198,7 +183,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int delete(final List<Entity.Key> entityKeys) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -206,7 +190,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int delete(final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -214,7 +197,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -222,7 +204,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -230,7 +211,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -238,7 +218,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -246,7 +225,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> select(final List<Entity.Key> keys) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -254,7 +232,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> select(final EntitySelectCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -262,7 +239,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> select(final String entityId, final String propertyId,
                              final Object... values) throws DatabaseException {
@@ -271,7 +247,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -279,7 +254,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException {
     synchronized (connectionProxy) {
@@ -287,7 +261,6 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException {
     synchronized (connectionProxy) {

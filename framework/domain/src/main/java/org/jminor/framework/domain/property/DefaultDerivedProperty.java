@@ -25,13 +25,11 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
     this.sourcePropertyIds = asList(sourcePropertyIds);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Provider getValueProvider() {
     return valueProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<String> getSourcePropertyIds() {
     return sourcePropertyIds;

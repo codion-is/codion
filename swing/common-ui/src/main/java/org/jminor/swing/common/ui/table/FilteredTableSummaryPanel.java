@@ -28,7 +28,6 @@ public final class FilteredTableSummaryPanel extends AbstractTableColumnSyncPane
     setVerticalFillerWidth(Components.getPreferredScrollBarWidth());
   }
 
-  /** {@inheritDoc} */
   @Override
   protected JPanel initializeColumnPanel(final TableColumn column) {
     return initializeColumnSummaryPanel(tableModel.getColumnSummaryModel(column.getIdentifier()));

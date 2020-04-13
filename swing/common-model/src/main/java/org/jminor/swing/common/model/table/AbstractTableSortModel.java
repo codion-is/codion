@@ -61,19 +61,16 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     resetSortingStates();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void sort(final List<R> items) {
     items.sort(new RowComparator(getSortingStatesOrderedByPriority()));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<TableColumn> getColumns() {
     return columns;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SortingState getSortingState(final C columnIdentifier) {
     final SortingState state = sortingStates.get(columnIdentifier);
@@ -84,25 +81,21 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     return state;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSortingDirective(final C columnIdentifier, final SortingDirective directive) {
     setSortingDirective(columnIdentifier, directive, false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addSortingDirective(final C columnIdentifier, final SortingDirective directive) {
     setSortingDirective(columnIdentifier, directive, true);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isSortingEnabled() {
     return sortingStates.values().stream().anyMatch(state -> !state.equals(EMPTY_SORTING_STATE));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addSortingChangedListener(final EventListener listener) {
     sortingChangedEvent.addListener(listener);

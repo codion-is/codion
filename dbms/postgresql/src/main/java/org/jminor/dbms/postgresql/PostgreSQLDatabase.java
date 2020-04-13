@@ -41,37 +41,31 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
             requireNonNull(port, "port"), requireNonNull(database, "database"), false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
     return "select currval('" + requireNonNull(idSource, "idSource") + "')";
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getSequenceQuery(final String sequenceName) {
     return "select nextval('" + requireNonNull(sequenceName, "sequenceName") + "')";
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + getUrlAppend();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getSQLState().equals(INVALID_AUTHORIZATION_SPECIFICATION);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getSQLState().equals(INTEGRITY_CONSTRAINT_VIOLATION);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getSQLState().equals(UNIQUE_CONSTRAINT_ERROR);
@@ -93,7 +87,6 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
     return true;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getCheckConnectionQuery() {
     return CHECK_QUERY;

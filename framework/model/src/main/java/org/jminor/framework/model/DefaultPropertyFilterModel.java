@@ -20,7 +20,6 @@ public final class DefaultPropertyFilterModel extends DefaultColumnConditionMode
     super(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimeFormatPattern());
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Comparable getComparable(final Entity row) {
     if (row.isNull(getColumnIdentifier())) {

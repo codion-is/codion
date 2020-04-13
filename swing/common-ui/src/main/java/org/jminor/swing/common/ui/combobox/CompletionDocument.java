@@ -49,7 +49,6 @@ class CompletionDocument extends PlainDocument {
     highlightCompletedText(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void remove(final int offset, final int len) throws BadLocationException {
     int offs = offset;

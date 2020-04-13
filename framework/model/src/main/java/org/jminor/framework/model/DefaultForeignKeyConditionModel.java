@@ -46,13 +46,11 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityLookupModel getEntityLookupModel() {
     return entityLookupModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getConditionEntities() {
     final Object upperBound = getUpperBound();
@@ -63,11 +61,9 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     return upperBound == null ? emptyList() : (Collection<Entity>) upperBound;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void refresh() {/*Nothing to refresh in this default implementation*/}
 
-  /** {@inheritDoc} */
   @Override
   public void clear() {/*Nothing to clear in this default implementation*/}
 

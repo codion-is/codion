@@ -31,13 +31,11 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
     bindComboBoxEvents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void refresh() {
     entityComboBoxModel.refresh();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void clear() {
     entityComboBoxModel.clear();

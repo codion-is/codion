@@ -21,13 +21,11 @@ public abstract class AbstractDatabaseOperation implements DatabaseOperation {
     this.name = name;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getId() {
     return id;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getName() {
     return this.name;

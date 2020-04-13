@@ -25,7 +25,6 @@ final class DefaultConditionSet implements Condition.Set {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void add(final Condition condition) {
     if (condition != null && !(condition instanceof EmptyCondition)) {
@@ -33,19 +32,16 @@ final class DefaultConditionSet implements Condition.Set {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Condition> getConditions() {
     return conditions;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Conjunction getConjunction() {
     return conjunction;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List getValues() {
     final List values = new ArrayList<>();
@@ -56,7 +52,6 @@ final class DefaultConditionSet implements Condition.Set {
     return values;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<String> getPropertyIds() {
     final List<String> propertyIds = new ArrayList<>();

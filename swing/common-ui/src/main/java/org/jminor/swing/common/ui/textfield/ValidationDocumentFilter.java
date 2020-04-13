@@ -13,7 +13,6 @@ import javax.swing.text.DocumentFilter;
  */
 public abstract class ValidationDocumentFilter extends DocumentFilter {
 
-  /** {@inheritDoc} */
   @Override
   public final void insertString(final FilterBypass filterBypass, final int offset, final String string,
                                  final AttributeSet attributeSet) throws BadLocationException {
@@ -26,7 +25,6 @@ public abstract class ValidationDocumentFilter extends DocumentFilter {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void replace(final FilterBypass filterBypass, final int offset, final int length, final String text,
                             final AttributeSet attributeSet) throws BadLocationException {
@@ -39,7 +37,6 @@ public abstract class ValidationDocumentFilter extends DocumentFilter {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void remove(final FilterBypass filterBypass, final int offset, final int length) throws BadLocationException {
     final Document document = filterBypass.getDocument();

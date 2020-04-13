@@ -176,25 +176,21 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     applyPreferences();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Domain getDomain() {
     return connectionProvider.getDomain();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityDefinition getEntityDefinition() {
     return getDomain().getDefinition(entityId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + entityId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setEditModel(final SwingEntityEditModel editModel) {
     requireNonNull(editModel, "editModel");
@@ -209,38 +205,32 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     onSetEditModel(editModel);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean hasEditModel() {
     return this.editModel != null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getFetchCount() {
     return fetchCount;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityTableModel setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final State getQueryConditionRequiredState() {
     return queryConditionRequiredState;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final InsertAction getInsertAction() {
     return insertAction;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityTableModel setInsertAction(final InsertAction insertAction) {
     requireNonNull(insertAction, "insertAction");
@@ -248,32 +238,27 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isRemoveEntitiesOnDelete() {
     return removeEntitiesOnDelete;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityTableModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
     this.removeEntitiesOnDelete = removeEntitiesOnDelete;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getEntityId() {
     return entityId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityTableConditionModel getConditionModel() {
     return conditionModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityEditModel getEditModel() {
     if (editModel == null) {
@@ -282,69 +267,58 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     return editModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isEditable() {
     return editable;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setEditable(final boolean editable) {
     this.editable = editable;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isBatchUpdateEnabled() {
     return batchUpdateEnabled;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityTableModel setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
     this.batchUpdateEnabled = batchUpdateEnabled;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
     this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isRefreshOnForeignKeyConditionValuesSet() {
     return refreshOnForeignKeyConditionValuesSet;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isDeleteEnabled() {
     return editModel != null && editModel.isDeleteEnabled();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isUpdateEnabled() {
     return editModel != null && editModel.isUpdateEnabled();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isReadOnly() {
     return editModel == null || editModel.isReadOnly();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getPropertyColumnIndex(final String propertyId) {
     return getColumnModel().getColumnIndex(getEntityDefinition().getProperty(propertyId));
@@ -430,37 +404,31 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     return getSortModel().getSortingState(getEntityDefinition().getProperty(propertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public Color getPropertyBackgroundColor(final int row, final Property property) {
     return (Color) getItemAt(row).getColor(property);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Entity getEntityByKey(final Entity.Key primaryKey) {
     return getVisibleItems().stream().filter(entity -> entity.getKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int indexOf(final Entity.Key primaryKey) {
     return indexOf(getEntityByKey(primaryKey));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addEntities(final List<Entity> entities, final boolean atTop, final boolean sortAfterAdding) {
     addItems(entities, atTop, sortAfterAdding);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void replaceEntities(final Collection<Entity> entities) {
     replaceEntitiesByKey(Entities.mapToKey(entities));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void refreshEntities(final List<Entity.Key> keys) {
     try {
@@ -471,7 +439,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
@@ -480,7 +447,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyValues, "foreignKeyValues");
@@ -503,7 +469,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSelectedByKey(final Collection<Entity.Key> keys) {
     requireNonNull(keys, "keys");
@@ -523,14 +488,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     getSelectionModel().setSelectedIndexes(indexes);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
     requireNonNull(keys, "keys");
     return getItems().stream().filter(entity -> keys.contains(entity.getKey())).collect(Collectors.toList());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void deleteSelected() throws DatabaseException {
     if (!isDeleteEnabled()) {
@@ -539,7 +502,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     editModel.delete(getSelectionModel().getSelectedItems());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities, "entities");
@@ -552,25 +514,21 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     editModel.update(entities);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final ColumnSummaryModel getColumnSummaryModel(final String propertyId) {
     return getColumnSummaryModel(getEntityDefinition().getProperty(propertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Iterator<Entity> getSelectedEntitiesIterator() {
     return getSelectionModel().getSelectedItems().iterator();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setColumns(final String... propertyIds) {
     getColumnModel().setColumns(getEntityDefinition().getProperties(asList(propertyIds)).toArray(new Property[0]));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void savePreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
@@ -583,7 +541,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getTableDataAsDelimitedString(final char delimiter) {
     final List<String> header = new ArrayList<>();
@@ -600,31 +557,26 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
             String.valueOf(delimiter));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addSelectionChangedListener(final EventListener listener) {
     getSelectionModel().addSelectionChangedListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addRefreshListener(final EventListener listener) {
     refreshEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeRefreshListener(final EventListener listener) {
     refreshEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final Property property) {
     return new DefaultColumnValueProvider(property, this, property.getFormat());
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final void doRefresh() {
     try {
@@ -678,7 +630,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     return entity.get(property);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final String getSearchValueAt(final int rowIndex, final TableColumn column) {
     return getItemAt(rowIndex).getAsString((Property) column.getIdentifier());

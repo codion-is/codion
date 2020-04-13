@@ -25,7 +25,6 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
     this.subquery = subquery;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getSubQuery() {
     return subquery;

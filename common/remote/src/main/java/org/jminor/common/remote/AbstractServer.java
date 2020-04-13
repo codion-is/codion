@@ -130,19 +130,16 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     this.connectionLimit = connectionLimit;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final ServerInfo getServerInfo() {
     return serverInfo;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean connectionsAvailable() {
     return !maximumNumberOfConnectionsReached();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final T connect(final ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException,
           LoginException, ConnectionValidationException {
@@ -185,7 +182,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void disconnect(final UUID clientId) throws RemoteException {
     if (clientId == null) {

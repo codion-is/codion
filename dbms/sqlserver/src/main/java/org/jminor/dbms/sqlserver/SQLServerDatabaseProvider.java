@@ -11,13 +11,11 @@ import org.jminor.common.db.DatabaseProvider;
  */
 public final class SQLServerDatabaseProvider implements DatabaseProvider {
 
-  /** {@inheritDoc} */
   @Override
   public Database.Type getDatabaseType() {
     return Database.Type.SQLSERVER;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Database createDatabase() {
     return new SQLServerDatabase();

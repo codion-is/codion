@@ -78,19 +78,16 @@ public final class OracleDatabase extends AbstractDatabase {
             requireNonNull(port, "port"), requireNonNull(sid, "sid"));
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
     return "select " + requireNonNull(idSource, "idSource") + ".currval from dual";
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getSequenceQuery(final String sequenceName) {
     return "select " + requireNonNull(sequenceName, "sequenceName") + ".nextval from dual";
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
     return URL_PREFIX + getHost() + ":" + getPort() + (useLegacySid ? ":" : "/") + getSid() + getUrlAppend();
@@ -104,13 +101,11 @@ public final class OracleDatabase extends AbstractDatabase {
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getCheckConnectionQuery() {
     return CHECK_QUERY;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getErrorMessage(final SQLException exception) {
     if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALUE_ERROR_2) {
@@ -132,19 +127,16 @@ public final class OracleDatabase extends AbstractDatabase {
     return exception.getMessage();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getErrorCode() == LOGIN_CREDS_ERROR;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getErrorCode() == CHILD_RECORD_ERROR || exception.getErrorCode() == INTEGRITY_CONSTRAINT_ERROR;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_KEY_ERROR;

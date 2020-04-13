@@ -55,7 +55,6 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
     return weightBounds;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void incrementWeight(final T item) {
     synchronized (lock) {
@@ -70,7 +69,6 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
     fireWeightsChangedEvent();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void decrementWeight(final T item) {
     synchronized (lock) {
@@ -85,13 +83,11 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
     fireWeightsChangedEvent();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setWeight(final T item, final int weight) {
     throw new UnsupportedOperationException("setWeight is not implemented in " + getClass().getSimpleName());
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addItem(final T item, final int weight) {
     throw new UnsupportedOperationException("addItem is not implemented in " + getClass().getSimpleName());

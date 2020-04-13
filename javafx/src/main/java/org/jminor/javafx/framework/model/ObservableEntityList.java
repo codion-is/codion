@@ -80,7 +80,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     return connectionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void refresh() {
     List<Entity> selectedItems = null;
@@ -182,7 +181,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     selectionChangedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean contains(final Entity item, final boolean includeFiltered) {
     if (includeFiltered) {
@@ -192,25 +190,21 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     return contains(item);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isVisible(final Entity item) {
     return filteredList.contains(item);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isFiltered(final Entity item) {
     return contains(item) && !filteredList.contains(item);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<Entity> getItems() {
     return unmodifiableList(this);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<Entity> getFilteredItems() {
     if (size() != filteredList.size()) {
@@ -223,51 +217,43 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     return emptyList();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<Entity> getVisibleItems() {
     return unmodifiableList(this);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getVisibleItemCount() {
     return filteredList.size();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getFilteredItemCount() {
     return size() - filteredList.size();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Predicate<Entity> getIncludeCondition() {
     return includeCondition;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setIncludeCondition(final Predicate<Entity> includeCondition) {
     this.includeCondition = includeCondition;
     filterContents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void filterContents() {
     filteredList.setPredicate(entity -> includeCondition == null || includeCondition.test(entity));
     filteringDoneEvent.onEvent();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addFilteringListener(final EventListener listener) {
     filteringDoneEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeFilteringListener(final EventListener listener) {
     filteringDoneEvent.removeListener(listener);

@@ -71,7 +71,6 @@ final class DefaultPropertyCondition implements PropertyCondition {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List getValues() {
     if (nullCondition) {
@@ -81,7 +80,6 @@ final class DefaultPropertyCondition implements PropertyCondition {
     return values;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<String> getPropertyIds() {
     if (nullCondition) {
@@ -91,25 +89,21 @@ final class DefaultPropertyCondition implements PropertyCondition {
     return Collections.nCopies(values.size(), propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getPropertyId() {
     return propertyId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Operator getOperator() {
     return operator;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getConditionString(final ColumnProperty property) {
     return createColumnPropertyConditionString(property, operator, getValues(), nullCondition, caseSensitive);
   }
 
-  /** {@inheritDoc} */
   @Override
   public PropertyCondition setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;

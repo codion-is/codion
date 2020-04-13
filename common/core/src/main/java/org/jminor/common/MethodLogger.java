@@ -286,7 +286,6 @@ public final class MethodLogger {
       return exitTimeNano - accessTimeNano;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
       return toString(0);

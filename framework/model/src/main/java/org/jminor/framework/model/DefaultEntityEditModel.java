@@ -177,25 +177,21 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     bindEventsInternal();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Domain getDomain() {
     return connectionProvider.getDomain();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityDefinition getEntityDefinition() {
     return getDomain().getDefinition(entity.getEntityId());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getClass().toString() + ", " + entity.getEntityId();
   }
 
-  /** {@inheritDoc} */
   @Override
   public Object getDefaultValue(final Property property) {
     if (isPersistValue(property)) {
@@ -209,13 +205,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return property.getDefaultValue();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isReadOnly() {
     return readOnlyState.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityEditModel setReadOnly(final boolean readOnly) {
     insertEnabledState.set(!readOnly);
@@ -224,26 +218,22 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isWarnAboutUnsavedData() {
     return warnAboutUnsavedData;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityEditModel setWarnAboutUnsavedData(final boolean warnAboutUnsavedData) {
     this.warnAboutUnsavedData = warnAboutUnsavedData;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isLookupEnabled(final Property property) {
     return property instanceof ColumnProperty;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isPersistValue(final Property property) {
     if (persistentValues.containsKey(property.getPropertyId())) {
@@ -253,83 +243,70 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return property instanceof ForeignKeyProperty && EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityEditModel setPersistValue(final String propertyId, final boolean persistValue) {
     persistentValues.put(propertyId, persistValue);
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isInsertEnabled() {
     return insertEnabledState.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityEditModel setInsertEnabled(final boolean insertEnabled) {
     insertEnabledState.set(insertEnabled);
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final StateObserver getInsertEnabledObserver() {
     return insertEnabledState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isUpdateEnabled() {
     return updateEnabledState.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityEditModel setUpdateEnabled(final boolean updateEnabled) {
     updateEnabledState.set(updateEnabled);
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final StateObserver getUpdateEnabledObserver() {
     return updateEnabledState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isDeleteEnabled() {
     return deleteEnabledState.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityEditModel setDeleteEnabled(final boolean deleteEnabled) {
     deleteEnabledState.set(deleteEnabled);
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final StateObserver getDeleteEnabledObserver() {
     return deleteEnabledState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final StateObserver getEntityNewObserver() {
     return entityNewState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final StateObserver getPrimaryKeyNullObserver() {
     return primaryKeyNullState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setEntity(final Entity entity) {
     if (isSetEntityAllowed()) {
@@ -337,19 +314,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getEntityId() {
     return entity.getEntityId();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final Collection<Entity> values) {
     final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(values);
@@ -362,37 +336,31 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Entity getEntityCopy() {
     return getDomain().deepCopyEntity(getEntity());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Entity getForeignKey(final String foreignKeyPropertyId) {
     return (Entity) get(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getModifiedObserver() {
     return entityModifiedState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isModified() {
     return entity.isModified();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isEntityNew() {
     return Entities.isEntityNew(getEntity());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setForeignKeyValues(final Collection<Entity> values) {
     final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(values);
@@ -405,31 +373,26 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Object get(final String propertyId) {
     return entity.get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void put(final String propertyId, final Object value) {
     put(getEntityDefinition().getProperty(propertyId), value);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Object remove(final String propertyId) {
     return remove(getEntityDefinition().getProperty(propertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Object get(final Property property) {
     return entity.get(property);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void put(final Property property, final Object value) {
     requireNonNull(property, PROPERTY);
@@ -440,7 +403,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Object remove(final Property property) {
     requireNonNull(property, PROPERTY);
@@ -453,55 +415,46 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return value;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isNullable(final Property property) {
     return validator.isNullable(entity, property);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isNull(final String propertyId) {
     return entity.isNull(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isNotNull(final String propertyId) {
     return !entity.isNull(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final StateObserver getValidObserver() {
     return validState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isValid() {
     return validState.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void validate(final Property property) throws ValidationException {
     validator.validate(entity, getEntityDefinition(), property);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void validate() throws ValidationException {
     validate(entity);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void validate(final Entity entity) throws ValidationException {
     validate(singletonList(entity));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void validate(final Collection<Entity> entities) throws ValidationException {
     for (final Entity entityToValidate : entities) {
@@ -509,7 +462,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isValid(final Property property) {
     try {
@@ -521,13 +473,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Validator getValidator() {
     return validator;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Entity insert() throws DatabaseException, ValidationException {
     final Entity toInsert = getEntityCopy();
@@ -546,7 +496,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return insertedEntities.get(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
     requireNonNull(entities, ENTITIES);
@@ -560,7 +509,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return insertedEntities;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Entity update() throws DatabaseException, ValidationException {
     final List<Entity> updated = update(singletonList(getEntityCopy()));
@@ -571,7 +519,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return updated.get(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException {
     requireNonNull(entities, ENTITIES);
@@ -603,7 +550,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return updatedEntities;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Entity delete() throws DatabaseException {
     final Entity originalEntity = getEntityCopy();
@@ -612,7 +558,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return delete(singletonList(originalEntity)).get(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<Entity> delete(final List<Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES);
@@ -637,7 +582,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return deleted;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void refresh() {
     try {
@@ -649,7 +593,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void refreshEntity() {
     try {
@@ -662,13 +605,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsLookupModel(final String foreignKeyPropertyId) {
     return entityLookupModels.containsKey(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntityLookupModel createForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty) {
     final Collection<ColumnProperty> searchProperties = getDomain()
@@ -683,33 +624,28 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return lookupModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyId) {
     requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
     return getForeignKeyLookupModel(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     return entityLookupModels.computeIfAbsent(foreignKeyProperty, fk -> createForeignKeyLookupModel(foreignKeyProperty));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Entity getDefaultEntity() {
     return getDomain().defaultEntity(entity.getEntityId(), defaultValueProvider);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final <V> Value<V> value(final String propertyId) {
     return new EditModelValue<>(this, propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
@@ -731,20 +667,17 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return !getEntity().originalKeySet().isEmpty();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isPostEditEvents() {
     return postEditEvents;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityEditModel setPostEditEvents(final boolean postEditEvents) {
     this.postEditEvents = postEditEvents;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeValueEditListener(final String propertyId, final EventDataListener<ValueChange> listener) {
     if (valueEditEventMap.containsKey(propertyId)) {
@@ -752,13 +685,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addValueEditListener(final String propertyId, final EventDataListener<ValueChange> listener) {
     getValueEditEvent(propertyId).addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeValueListener(final String propertyId, final EventDataListener<ValueChange> listener) {
     if (valueChangeEventMap.containsKey(propertyId)) {
@@ -766,139 +697,116 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addValueListener(final String propertyId, final EventDataListener<ValueChange> listener) {
     getValueChangeEvent(propertyId).addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeEntitySetListener(final EventDataListener<Entity> listener) {
     entitySetEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addEntitySetListener(final EventDataListener<Entity> listener) {
     entitySetEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeBeforeInsertListener(final EventDataListener<List<Entity>> listener) {
     beforeInsertEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addBeforeInsertListener(final EventDataListener<List<Entity>> listener) {
     beforeInsertEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeAfterInsertListener(final EventDataListener<List<Entity>> listener) {
     afterInsertEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addAfterInsertListener(final EventDataListener<List<Entity>> listener) {
     afterInsertEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeBeforeUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
     beforeUpdateEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addBeforeUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
     beforeUpdateEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeAfterUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
     afterUpdateEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addAfterUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
     afterUpdateEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addBeforeDeleteListener(final EventDataListener<List<Entity>> listener) {
     beforeDeleteEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeBeforeDeleteListener(final EventDataListener<List<Entity>> listener) {
     beforeDeleteEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeAfterDeleteListener(final EventDataListener<List<Entity>> listener) {
     afterDeleteEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addAfterDeleteListener(final EventDataListener<List<Entity>> listener) {
     afterDeleteEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeEntitiesChangedListener(final EventListener listener) {
     entitiesChangedEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addEntitiesChangedListener(final EventListener listener) {
     entitiesChangedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addBeforeRefreshListener(final EventListener listener) {
     beforeRefreshEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeBeforeRefreshListener(final EventListener listener) {
     beforeRefreshEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addAfterRefreshListener(final EventListener listener) {
     afterRefreshEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeAfterRefreshListener(final EventListener listener) {
     afterRefreshEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addConfirmSetEntityObserver(final EventDataListener<State> listener) {
     confirmSetEntityEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeConfirmSetEntityObserver(final EventDataListener<State> listener) {
     confirmSetEntityEvent.removeDataListener(listener);

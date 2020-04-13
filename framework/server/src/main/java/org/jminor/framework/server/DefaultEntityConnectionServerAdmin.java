@@ -80,19 +80,16 @@ final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject imple
     initializeGarbageCollectionListener();
   }
 
-  /** {@inheritDoc} */
   @Override
   public Server.ServerInfo getServerInfo() {
     return server.getServerInfo();
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getSystemProperties() {
     return Util.getSystemProperties(propertyWriter);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<GcEvent> getGcEvents(final long since) {
     final List<GcEvent> gcEvents;
@@ -104,7 +101,6 @@ final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject imple
     return gcEvents;
   }
 
-  /** {@inheritDoc} */
   @Override
   public ThreadStatistics getThreadStatistics() throws RemoteException {
     final ThreadMXBean bean = ManagementFactory.getThreadMXBean();
@@ -116,13 +112,11 @@ final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject imple
     return new DefaultThreadStatistics(bean.getThreadCount(), bean.getDaemonThreadCount(), threadStateMap);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getDatabaseURL() {
     return server.getDatabase().getURL(null);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Object getLogLevel() {
     if (loggerProxy != null) {
@@ -132,7 +126,6 @@ final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject imple
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setLogLevel(final Object level) {
     LOG.info("setLogLevel({})", level);
@@ -141,267 +134,225 @@ final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject imple
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<User> getUsers() throws RemoteException {
     return server.getUsers();
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<RemoteClient> getClients(final User user) throws RemoteException {
     return server.getClients(user);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<RemoteClient> getClients(final String clientTypeId) {
     return server.getClients(clientTypeId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<RemoteClient> getClients() {
     return server.getClients();
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<String> getClientTypes() {
     return getClients().stream().map(ConnectionRequest::getClientTypeId).collect(toSet());
   }
 
-  /** {@inheritDoc} */
   @Override
   public void disconnect(final UUID clientId) throws RemoteException {
     LOG.info("disconnect({})", clientId);
     server.disconnect(clientId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void shutdown() throws RemoteException {
     server.shutdown();
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getMaintenanceInterval() {
     return server.getMaintenanceInterval();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setMaintenanceInterval(final int interval) {
     LOG.info("setMaintenanceInterval({})", interval);
     server.setMaintenanceInterval(interval);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void disconnectTimedOutClients() throws RemoteException {
     LOG.info("disconnectTimedOutClients()");
     server.disconnectClients(true);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void disconnectAllClients() throws RemoteException {
     LOG.info("disconnectAllClients()");
     server.disconnectClients(false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void resetConnectionPoolStatistics(final String username) {
     LOG.info("resetConnectionPoolStatistics({})", username);
     getConnectionPool(username).resetStatistics();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isCollectPoolSnapshotStatistics(final String username) {
     return getConnectionPool(username).isCollectSnapshotStatistics();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setCollectPoolSnapshotStatistics(final String username, final boolean value) {
     LOG.info("setCollectSnapshotPoolStatistics({}, {})", username, value);
     getConnectionPool(username).setCollectSnapshotStatistics(value);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getRequestsPerSecond() {
     return AbstractRemoteEntityConnection.getRequestsPerSecond();
   }
 
-  /** {@inheritDoc} */
   @Override
   public ConnectionPoolStatistics getConnectionPoolStatistics(final String username, final long since) {
     return getConnectionPool(username).getStatistics(since);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Database.Statistics getDatabaseStatistics() {
     return server.getDatabaseStatistics();
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<String> getConnectionPools() {
     return ConnectionPools.getConnectionPools().stream().map(pool -> pool.getUser().getUsername()).collect(toList());
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getConnectionPoolCleanupInterval(final String username) {
     return getConnectionPool(username).getCleanupInterval();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setConnectionPoolCleanupInterval(final String username, final int poolCleanupInterval) {
     LOG.info("setConnectionPoolCleanupInterval({}, {})", username, poolCleanupInterval);
     getConnectionPool(username).setCleanupInterval(poolCleanupInterval);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getMaximumConnectionPoolSize(final String username) {
     return getConnectionPool(username).getMaximumPoolSize();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setMaximumConnectionPoolSize(final String username, final int value) {
     LOG.info("setMaximumConnectionPoolSize({}, {})", username, value);
     getConnectionPool(username).setMaximumPoolSize(value);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getMinimumConnectionPoolSize(final String username) {
     return getConnectionPool(username).getMinimumPoolSize();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setMinimumConnectionPoolSize(final String username, final int value) {
     LOG.info("setMinimumConnectionPoolSize({}, {})", username, value);
     getConnectionPool(username).setMinimumPoolSize(value);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getPooledConnectionTimeout(final String username) {
     return getConnectionPool(username).getConnectionTimeout();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setPooledConnectionTimeout(final String username, final int timeout) {
     LOG.info("setPooledConnectionTimeout({}, {})", username, timeout);
     getConnectionPool(username).setConnectionTimeout(timeout);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getMaximumPoolCheckOutTime(final String username) {
     return getConnectionPool(username).getMaximumCheckOutTime();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setMaximumPoolCheckOutTime(final String username, final int value) {
     LOG.info("setMaximumPoolCheckOutTime({}, {})", username, value);
     getConnectionPool(username).setMaximumCheckOutTime(value);
   }
 
-  /** {@inheritDoc} */
   @Override
   public long getAllocatedMemory() {
     return Memory.getAllocatedMemory();
   }
 
-  /** {@inheritDoc} */
   @Override
   public long getUsedMemory() {
     return Memory.getUsedMemory();
   }
 
-  /** {@inheritDoc} */
   @Override
   public long getMaxMemory() {
     return Memory.getMaxMemory();
   }
 
-  /** {@inheritDoc} */
   @Override
   public double getSystemCpuLoad() throws RemoteException {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
   }
 
-  /** {@inheritDoc} */
   @Override
   public double getProcessCpuLoad() throws RemoteException {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getConnectionCount() {
     return server.getConnectionCount();
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getConnectionLimit() {
     return server.getConnectionLimit();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setConnectionLimit(final int value) {
     LOG.info("setConnectionLimit({})", value);
     server.setConnectionLimit(value);
   }
 
-  /** {@inheritDoc} */
   @Override
   public ClientLog getClientLog(final UUID clientId) {
     return server.getClientLog(clientId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isLoggingEnabled(final UUID clientId) {
     return server.isLoggingEnabled(clientId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setLoggingEnabled(final UUID clientId, final boolean loggingEnabled) {
     LOG.info("setLoggingEnabled({}, {})", clientId, loggingEnabled);
     server.setLoggingEnabled(clientId, loggingEnabled);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getConnectionTimeout() {
     return server.getConnectionTimeout();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setConnectionTimeout(final int timeout) {
     LOG.info("setConnectionTimeout({})", timeout);
     server.setConnectionTimeout(timeout);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Map<String, String> getEntityDefinitions() {
     return server.getEntityDefinitions();

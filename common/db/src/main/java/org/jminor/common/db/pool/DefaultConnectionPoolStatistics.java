@@ -41,103 +41,86 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
     this.username = username;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getUsername() {
     return username;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ConnectionPoolState> getSnapshot() {
     return snapshot;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getAvailable() {
     return availableInPool;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getInUse() {
     return connectionsInUse;
   }
 
-  /** {@inheritDoc} */
   @Override
   public long getTimestamp() {
     return timestamp;
   }
 
-  /** {@inheritDoc} */
   @Override
   public long getCreationDate() {
     return this.creationDate;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getCreated() {
     return connectionsCreated;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getDestroyed() {
     return connectionsDestroyed;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getRequests() {
     return connectionRequests;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getFailedRequests() {
     return connectionRequestsFailed;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getFailedRequestsPerSecond() {
     return requestsFailedPerSecond;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getRequestsPerSecond() {
     return requestsPerSecond;
   }
 
-  /** {@inheritDoc} */
   @Override
   public long getAverageGetTime() {
     return averageCheckOutTime;
   }
 
-  /** {@inheritDoc} */
   @Override
   public long getMinimumCheckOutTime() {
     return minimumCheckOutTime;
   }
 
-  /** {@inheritDoc} */
   @Override
   public long getMaximumCheckOutTime() {
     return maximumCheckOutTime;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getSize() {
     return connectionsInUse + availableInPool;
   }
 
-  /** {@inheritDoc} */
   @Override
   public long getResetTime() {
     return resetDate;

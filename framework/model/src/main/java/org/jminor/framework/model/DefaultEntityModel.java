@@ -124,25 +124,21 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     return getClass().getSimpleName() + ": " + getEntityId();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getEntityId() {
     return editModel.getEntityId();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final M getMasterModel() {
     return masterModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setMasterModel(final M entityModel) {
     if (this.masterModel != null) {
@@ -151,25 +147,21 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     this.masterModel = entityModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final E getEditModel() {
     return editModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final T getTableModel() {
     return tableModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsTableModel() {
     return tableModel != null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addDetailModels(final M... detailModels) {
     requireNonNull(detailModels, "detailModels");
@@ -178,7 +170,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final M addDetailModel(final M detailModel) {
     if (this.detailModels.contains(detailModel)) {
@@ -196,31 +187,26 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     return detailModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsDetailModel(final Class<? extends M> modelClass) {
     return detailModels.stream().anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsDetailModel(final String entityId) {
     return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityId().equals(entityId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsDetailModel(final M detailModel) {
     return detailModels.contains(detailModel);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Collection<M> getDetailModels() {
     return unmodifiableCollection(detailModels);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addLinkedDetailModel(final M detailModel) {
     if (!detailModels.contains(requireNonNull(detailModel))) {
@@ -231,7 +217,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeLinkedDetailModel(final M detailModel) {
     if (!detailModels.contains(requireNonNull(detailModel))) {
@@ -242,13 +227,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Collection<M> getLinkedDetailModels() {
     return unmodifiableCollection(linkedDetailModels);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final M getDetailModel(final Class<? extends M> modelClass) {
     requireNonNull(modelClass, "modelClass");
@@ -261,7 +244,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     throw new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found");
   }
 
-  /** {@inheritDoc} */
   @Override
   public final M getDetailModel(final String entityId) {
     for (final M detailModel : detailModels) {
@@ -273,7 +255,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     throw new IllegalArgumentException("No detail model for entity " + entityId + " found in model: " + this);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setDetailModelForeignKey(final M detailModel, final String foreignKeyPropertyId) {
     requireNonNull(detailModel, "detailModel");
@@ -290,13 +271,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final ForeignKeyProperty getDetailModelForeignKey(final M detailModel) {
     return detailModelForeignKeys.get(detailModel);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void refresh() {
     if (isRefreshing) {
@@ -318,7 +297,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void refreshDetailModels() {
     for (final M detailModel : detailModels) {
@@ -326,7 +304,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void clear() {
     if (containsTableModel()) {
@@ -336,7 +313,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     clearDetailModels();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void clearDetailModels() {
     for (final M detailModel : detailModels) {
@@ -344,7 +320,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void initialize(final String foreignKeyEntityId, final List<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
@@ -354,7 +329,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void initialize(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
     if (containsTableModel()) {
@@ -363,7 +337,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     onInitialization(foreignKeyProperty, foreignKeyValues);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void savePreferences() {
     if (containsTableModel()) {
@@ -372,61 +345,51 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     getDetailModels().forEach(EntityModel::savePreferences);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isSearchOnMasterInsert() {
     return searchOnMasterInsert;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSearchOnMasterInsert(final boolean searchOnMasterInsert) {
     this.searchOnMasterInsert = searchOnMasterInsert;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addLinkedDetailModelAddedListener(final EventDataListener<M> listener) {
     linkedDetailModelAddedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeLinkedDetailModelAddedListener(final EventDataListener<M> listener) {
     linkedDetailModelAddedEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addLinkedDetailModelRemovedListener(final EventDataListener<M> listener) {
     linkedDetailModelRemovedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeLinkedDetailModelRemovedListener(final EventDataListener<M> listener) {
     linkedDetailModelRemovedEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addBeforeRefreshListener(final EventListener listener) {
     refreshStartedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeBeforeRefreshListener(final EventListener listener) {
     refreshStartedEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addAfterRefreshListener(final EventListener listener) {
     refreshDoneEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeAfterRefreshListener(final EventListener listener) {
     refreshDoneEvent.removeListener(listener);

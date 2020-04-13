@@ -122,7 +122,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     bindEventsInternal();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<R> getItems() {
     final List<R> items = new ArrayList<>(visibleItems);
@@ -131,43 +130,36 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return unmodifiableList(items);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<R> getVisibleItems() {
     return unmodifiableList(visibleItems);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<R> getFilteredItems() {
     return unmodifiableList(filteredItems);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getVisibleItemCount() {
     return getRowCount();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getFilteredItemCount() {
     return filteredItems.size();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getColumnCount() {
     return columnModel.getColumnCount();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getRowCount() {
     return visibleItems.size();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean contains(final R item, final boolean includeFiltered) {
     final boolean visible = visibleItems.contains(item);
@@ -178,31 +170,26 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return visible;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isVisible(final R item) {
     return visibleItems.contains(item);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isFiltered(final R item) {
     return filteredItems.contains(item);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final RowColumn findNext(final int fromRowIndex, final String searchText) {
     return findNext(fromRowIndex, getSearchCondition(searchText));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final RowColumn findPrevious(final int fromRowIndex, final String searchText) {
     return findPrevious(fromRowIndex, getSearchCondition(searchText));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final RowColumn findNext(final int fromRowIndex, final Predicate<String> condition) {
     for (int row = fromRowIndex >= getVisibleItemCount() ? 0 : fromRowIndex; row < getVisibleItemCount(); row++) {
@@ -215,7 +202,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final RowColumn findPrevious(final int fromRowIndex, final Predicate<String> condition) {
     for (int row = fromRowIndex < 0 ? getVisibleItemCount() - 1 : fromRowIndex; row >= 0; row--) {
@@ -245,7 +231,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void clear() {
     filteredItems.clear();
@@ -257,13 +242,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     tableModelClearedEvent.onEvent();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingTableSelectionModel<R> getSelectionModel() {
     return selectionModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final TableSortModel<R, C, TableColumn> getSortModel() {
     return sortModel;
@@ -278,45 +261,38 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return columnSummaryModels.get(columnIdentifier);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Collection getValues(final C columnIdentifier) {
     return getColumnValues(IntStream.range(0, getVisibleItemCount()).boxed(),
             columnModel.getTableColumn(columnIdentifier).getModelIndex());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Collection getSelectedValues(final C columnIdentifier) {
     return getColumnValues(getSelectionModel().getSelectedIndexes().stream(),
             columnModel.getTableColumn(columnIdentifier).getModelIndex());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isRegularExpressionSearch() {
     return regularExpressionSearch;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setRegularExpressionSearch(final boolean regularExpressionSearch) {
     this.regularExpressionSearch = regularExpressionSearch;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final R getItemAt(final int index) {
     return visibleItems.get(index);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int indexOf(final R item) {
     return visibleItems.indexOf(item);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void sort() {
     final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
@@ -326,7 +302,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     sortEvent.onEvent();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void filterContents() {
     final List<R> selectedItems = selectionModel.getSelectedItems();
@@ -347,20 +322,17 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     filterEvent.onEvent();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Predicate<R> getIncludeCondition() {
     return includeCondition;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setIncludeCondition(final Predicate<R> includeCondition) {
     this.includeCondition = includeCondition;
     filterContents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeItem(final R item) {
     final int visibleItemIndex = visibleItems.indexOf(item);
@@ -376,7 +348,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeItems(final Collection<R> items) {
     for (final R item : items) {
@@ -384,7 +355,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeItems(final int fromIndex, final int toIndex) {
     visibleItems.subList(fromIndex, toIndex).clear();
@@ -400,97 +370,81 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return true;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addRowsDeletedListener(final EventDataListener<List<Integer>> listener) {
     rowsDeletedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeRowsDeletedListener(final EventDataListener<List<Integer>> listener) {
     rowsDeletedEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingFilteredTableColumnModel<R, C> getColumnModel() {
     return columnModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Class getColumnClass(final int columnIndex) {
     return sortModel.getColumnClass(getColumnModel().getColumnIdentifier(columnIndex));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addRefreshStartedListener(final EventListener listener) {
     refreshStartedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeRefreshStartedListener(final EventListener listener) {
     refreshStartedEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addRefreshDoneListener(final EventListener listener) {
     refreshDoneEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeRefreshDoneListener(final EventListener listener) {
     refreshDoneEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addFilteringListener(final EventListener listener) {
     filterEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeFilteringListener(final EventListener listener) {
     filterEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addSortListener(final EventListener listener) {
     sortEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeSortListener(final EventListener listener) {
     sortEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addTableDataChangedListener(final EventListener listener) {
     tableDataChangedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeTableDataChangedListener(final EventListener listener) {
     tableDataChangedEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addTableModelClearedListener(final EventListener listener) {
     tableModelClearedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeTableModelClearedListener(final EventListener listener) {
     tableModelClearedEvent.removeListener(listener);

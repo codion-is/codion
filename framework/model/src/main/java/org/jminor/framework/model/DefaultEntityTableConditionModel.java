@@ -74,26 +74,22 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     bindEvents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getEntityId() {
     return entityId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void rememberCondition() {
     rememberedCondition = getConditionsString();
     conditionChangedState.set(false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean hasConditionChanged() {
     return conditionChangedState.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public ColumnConditionModel<Entity, Property> getPropertyFilterModel(final String propertyId) {
     if (propertyFilterModels.containsKey(propertyId)) {
@@ -103,13 +99,11 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     throw new IllegalArgumentException("No property filter model found for property " + propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<ColumnConditionModel<Entity, Property>> getPropertyFilterModels() {
     return unmodifiableCollection(propertyFilterModels.values());
   }
 
-  /** {@inheritDoc} */
   @Override
   public void refresh() {
     for (final ColumnConditionModel model : propertyConditionModels.values()) {
@@ -119,7 +113,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void clear() {
     for (final ColumnConditionModel model : propertyConditionModels.values()) {
@@ -129,7 +122,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void clearPropertyConditionModels() {
     for (final ColumnConditionModel conditionModel : propertyConditionModels.values()) {
@@ -137,19 +129,16 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<ColumnConditionModel<Entity, ? extends Property>> getPropertyConditionModels() {
     return unmodifiableCollection(propertyConditionModels.values());
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean containsPropertyConditionModel(final String propertyId) {
     return propertyConditionModels.containsKey(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(final String propertyId) {
     if (propertyConditionModels.containsKey(propertyId)) {
@@ -159,19 +148,16 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     throw new IllegalArgumentException("Condition model not found for property: " + propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isEnabled() {
     return propertyConditionModels.values().stream().anyMatch(ColumnConditionModel::isEnabled);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isEnabled(final String propertyId) {
     return containsPropertyConditionModel(propertyId) && getPropertyConditionModel(propertyId).isEnabled();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isFilterEnabled(final String propertyId) {
     final ColumnConditionModel<Entity, Property> propertyFilterModel = getPropertyFilterModel(propertyId);
@@ -179,7 +165,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     return propertyFilterModel != null && propertyFilterModel.isEnabled();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean setConditionValues(final String propertyId, final Collection values) {
     final String conditionsString = getConditionsString();
@@ -192,7 +177,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     return !conditionsString.equals(getConditionsString());
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setFilterValue(final String propertyId, final Comparable value) {
     final ColumnConditionModel<Entity, Property> filterModel = getPropertyFilterModel(propertyId);
@@ -201,7 +185,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Condition getCondition() {
     final Condition.Set conditionSet = conditionSet(conjunction);
@@ -217,26 +200,22 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     return conditionSet.getConditions().isEmpty() ? null : conditionSet;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Condition.Provider getAdditionalConditionProvider() {
     return additionalConditionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider conditionProvider) {
     this.additionalConditionProvider = conditionProvider;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getSimpleConditionString() {
     return simpleConditionString;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSimpleConditionString(final String simpleConditionString) {
     this.simpleConditionString = simpleConditionString == null ? "" : simpleConditionString;
@@ -247,7 +226,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     simpleConditionStringChangedEvent.onEvent(this.simpleConditionString);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void performSimpleSearch() {
     final Conjunction previousConjunction = getConjunction();
@@ -260,19 +238,16 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Conjunction getConjunction() {
     return conjunction;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setConjunction(final Conjunction conjunction) {
     this.conjunction = conjunction;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void enable(final String propertyId) {
     if (containsPropertyConditionModel(propertyId)) {
@@ -280,7 +255,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void disable(final String propertyId) {
     if (containsPropertyConditionModel(propertyId)) {
@@ -288,37 +262,31 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public EventObserver<String> getSimpleConditionStringObserver() {
     return simpleConditionStringChangedEvent.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getConditionChangedObserver() {
     return conditionChangedState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addConditionChangedListener(final EventListener listener) {
     conditionChangedState.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeConditionChangedListener(final EventListener listener) {
     conditionChangedState.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSimpleConditionListener(final EventListener listener) {
     simpleSearchPerformedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSimpleConditionListener(final EventListener listener) {
     simpleSearchPerformedEvent.removeListener(listener);

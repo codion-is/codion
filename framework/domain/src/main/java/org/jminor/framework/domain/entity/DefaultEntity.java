@@ -94,13 +94,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     this.definition = definition;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getEntityId() {
     return definition.getEntityId();
   }
 
-  /** {@inheritDoc} */
   @Override
   public Key getKey() {
     if (key == null) {
@@ -110,13 +108,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return key;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Key getOriginalKey() {
     return initializeKey(true);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean is(final String entityId) {
     return definition.getEntityId().equals(entityId);
@@ -132,7 +128,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return isModifiedInternal(false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Object put(final String propertyId, final Object value) {
     return super.put(definition.getProperty(propertyId), value);
@@ -167,13 +162,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return super.get(property);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isNull(final String propertyId) {
     return isNull(definition.getProperty(propertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isNotNull(final String propertyId) {
     return !isNull(propertyId);
@@ -194,19 +187,16 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return super.isNull(property);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isModified(final String propertyId) {
     return isModified(definition.getProperty(propertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity getForeignKey(final String foreignKeyPropertyId) {
     return getForeignKey(definition.getForeignKeyProperty(foreignKeyPropertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity getForeignKey(final ForeignKeyProperty foreignKeyProperty) {
     final Entity value = (Entity) super.get(foreignKeyProperty);
@@ -220,79 +210,66 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return value;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isLoaded(final String foreignKeyPropertyId) {
     return super.get(definition.getForeignKeyProperty(foreignKeyPropertyId)) != null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public LocalTime getTime(final String propertyId) {
     return (LocalTime) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public LocalDate getDate(final String propertyId) {
     return (LocalDate) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public LocalDateTime getTimestamp(final String propertyId) {
     return (LocalDateTime) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getString(final String propertyId) {
     return (String) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Integer getInteger(final String propertyId) {
     return (Integer) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Long getLong(final String propertyId) {
     return (Long) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Boolean getBoolean(final String propertyId) {
     return (Boolean) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Character getCharacter(final String propertyId) {
     return (Character) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Double getDouble(final String propertyId) {
     return (Double) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public BigDecimal getBigDecimal(final String propertyId) {
     return (BigDecimal) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public byte[] getBlob(final String propertyId) {
     return (byte[]) get(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAsString(final Property property) {
     if (property instanceof ValueListProperty) {
@@ -313,13 +290,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return getFormatted(property, property.getFormat());
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getFormatted(final String propertyId, final Format format) {
     return getFormatted(definition.getProperty(propertyId), format);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getFormatted(final Property property, final Format format) {
     final Object value = get(property);
@@ -344,7 +319,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return getAsString(definition.getProperty(propertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void clearKeyValues() {
     final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
@@ -354,31 +328,26 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     this.key = null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Object getOriginal(final String propertyId) {
     return getOriginal(definition.getProperty(propertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void save(final String propertyId) {
     save(definition.getProperty(propertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void revert(final String propertyId) {
     revert(definition.getProperty(propertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public Object remove(final String propertyId) {
     return remove(definition.getProperty(propertyId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean valuesEqual(final Entity entity) {
     requireNonNull(entity, "entity");
@@ -433,13 +402,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return toString;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Object getColor(final Property property) {
     return definition.getColorProvider().getColor(this, property);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Key getReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
@@ -455,7 +422,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return initializeAndCacheReferencedKey(foreignKeyProperty);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean containsKey(final String propertyId) {
     return containsKey(definition.getProperty(propertyId));
@@ -484,13 +450,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addValueListener(final EventDataListener<ValueChange> valueListener) {
     getValueChangeEvent().addDataListener(valueListener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeValueListener(final EventDataListener<ValueChange> valueListener) {
     if (valueChangeEvent != null) {
@@ -498,7 +462,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void clear() {
     super.clear();
@@ -507,7 +470,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     toString = null;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Object validateAndPrepareForPut(final Property property, final Object value) {
     if (property instanceof DerivedProperty) {
@@ -520,7 +482,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return property.prepareValue(property.validateType(value));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void onValuePut(final Property property, final Object value, final Object previousValue) {
     if (property instanceof ColumnProperty) {

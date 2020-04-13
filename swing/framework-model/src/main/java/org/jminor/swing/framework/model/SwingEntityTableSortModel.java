@@ -31,13 +31,11 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
     this.definitionProvider = definitionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Class getColumnClass(final Property property) {
     return property.getTypeClass();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected Comparator initializeColumnComparator(final Property property) {
     if (property instanceof ForeignKeyProperty) {
@@ -47,7 +45,6 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
     return super.initializeColumnComparator(property);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final Comparable getComparable(final Entity row, final Property property) {
     return (Comparable) row.get(property);

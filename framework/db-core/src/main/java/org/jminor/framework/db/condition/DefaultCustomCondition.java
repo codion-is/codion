@@ -22,19 +22,16 @@ final class DefaultCustomCondition implements CustomCondition {
     this.values = new ArrayList(requireNonNull(values, "values"));
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getConditionId() {
     return conditionId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<String> getPropertyIds() {
     return propertyIds;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List getValues() {
     return values;

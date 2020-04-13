@@ -23,7 +23,6 @@ final class DefaultEntityUpdateCondition extends DefaultEntityCondition implemen
     super(entityId, condition);
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntityUpdateCondition set(final String propertyId, final Object value) {
     requireNonNull(propertyId, "propertyId");
@@ -35,7 +34,6 @@ final class DefaultEntityUpdateCondition extends DefaultEntityCondition implemen
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Map<String, Object> getPropertyValues() {
     return unmodifiableMap(propertyValues);

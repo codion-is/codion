@@ -68,7 +68,6 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
     EntityApplicationModel.SCHEDULE_CONNECTION_VALIDATION.set(false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getTitle() {
     return super.getTitle() + " " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
@@ -144,13 +143,11 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
     comboBoxModel.setSelectedItem(visibleItems.get(RANDOM.nextInt(visibleItems.size() - fromIndex) + fromIndex));
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final void disconnectApplication(final M application) {
     application.getConnectionProvider().disconnect();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected abstract M initializeApplication();
 

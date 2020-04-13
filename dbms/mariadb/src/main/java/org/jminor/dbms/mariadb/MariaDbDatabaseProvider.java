@@ -11,13 +11,11 @@ import org.jminor.common.db.DatabaseProvider;
  */
 public final class MariaDbDatabaseProvider implements DatabaseProvider {
 
-  /** {@inheritDoc} */
   @Override
   public Database.Type getDatabaseType() {
     return Database.Type.MARIADB;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Database createDatabase() {
     return new MariaDbDatabase();

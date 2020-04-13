@@ -27,43 +27,36 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
   private final Map<String, WeakObserver<Map<Entity.Key, Entity>>> updateEvents = new ConcurrentHashMap<>();
   private final Map<String, WeakObserver<List<Entity>>> deleteEvents = new ConcurrentHashMap<>();
 
-  /** {@inheritDoc} */
   @Override
   public void addInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     getInsertObserver(entityId).addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
     getUpdateObserver(entityId).addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     getDeleteObserver(entityId).addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     getInsertObserver(entityId).removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
     getUpdateObserver(entityId).removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     getDeleteObserver(entityId).removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void notifyInserted(final List<Entity> insertedEntities) {
     requireNonNull(insertedEntities);
@@ -75,7 +68,6 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
     });
   }
 
-  /** {@inheritDoc} */
   @Override
   public void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities) {
     requireNonNull(updatedEntities);
@@ -90,7 +82,6 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
     });
   }
 
-  /** {@inheritDoc} */
   @Override
   public void notifyDeleted(final List<Entity> deletedEntities) {
     requireNonNull(deletedEntities);

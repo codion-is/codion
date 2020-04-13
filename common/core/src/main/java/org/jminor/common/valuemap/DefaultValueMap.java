@@ -53,19 +53,16 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     this.originalValues = originalValues == null ? null : new HashMap<>(originalValues);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isNull(final K key) {
     return get(key) == null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isNotNull(final K key) {
     return !isNull(key);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final V put(final K key, final V value) {
     requireNonNull(key, KEY);
@@ -84,7 +81,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     return previousValue;
   }
 
-  /** {@inheritDoc} */
   @Override
   public V get(final K key) {
     return values.get(requireNonNull(key, KEY));
@@ -105,19 +101,16 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     return otherMap.values.equals(this.values);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return values.hashCode();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsKey(final K key) {
     return values.containsKey(requireNonNull(key, KEY));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final V remove(final K key) {
     if (values.containsKey(requireNonNull(key, KEY))) {
@@ -131,19 +124,16 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int size() {
     return values.size();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Set<K> keySet() {
     return unmodifiableSet(values.keySet());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Set<K> originalKeySet() {
     if (originalValues == null) {
@@ -153,13 +143,11 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     return unmodifiableSet(originalValues.keySet());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Collection<V> values() {
     return unmodifiableCollection(values.values());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final V getOriginal(final K key) {
     if (isModified(key)) {
@@ -169,13 +157,11 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     return get(key);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isModified() {
     return !Util.nullOrEmpty(originalValues);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setAs(final ValueMap<K, V> sourceMap) {
     if (sourceMap == this) {
@@ -201,14 +187,12 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isModified(final K key) {
     requireNonNull(key, KEY);
     return originalValues != null && originalValues.containsKey(key);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void revert(final K key) {
     if (isModified(key)) {
@@ -216,7 +200,6 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void revertAll() {
     for (final K key : keySet()) {
@@ -224,14 +207,12 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void save(final K key) {
     requireNonNull(key, KEY);
     removeOriginalValue(key);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void saveAll() {
     originalValues = null;

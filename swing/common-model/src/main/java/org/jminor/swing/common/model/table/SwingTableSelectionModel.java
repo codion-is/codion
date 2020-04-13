@@ -58,7 +58,6 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     bindEvents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectionMode(final int selectionMode) {
     if (getSelectionMode() != selectionMode) {
@@ -68,27 +67,23 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public State getSingleSelectionModeState() {
     return singleSelectionModeState;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedIndex(final int index) {
     checkIndex(index, tableModel.getRowCount());
     addSelectionInterval(index, index);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedIndex(final int index) {
     checkIndex(index, tableModel.getRowCount());
     removeSelectionInterval(index, index);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedIndexes(final Collection<Integer> indexes) {
     indexes.forEach(index -> {
@@ -97,14 +92,12 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     });
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedIndex(final int index) {
     checkIndex(index, tableModel.getRowCount());
     setSelectionInterval(index, index);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getSelectionCount() {
     if (isSelectionEmpty()) {
@@ -115,7 +108,6 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
             .filter(this::isSelectedIndex).count();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedIndexes(final Collection<Integer> indexes) {
     if (indexes.isEmpty()) {
@@ -129,7 +121,6 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     setValueIsAdjusting(false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedIndexes(final Collection<Integer> indexes) {
     checkIndexes(indexes);
@@ -137,7 +128,6 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     addSelectedIndexes(indexes);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Integer> getSelectedIndexes() {
     if (isSelectionEmpty()) {
@@ -148,19 +138,16 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
             .filter(this::isSelectedIndex).boxed().collect(toList());
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getSelectedIndex() {
     return selectedIndex;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void selectAll() {
     setSelectionInterval(0, tableModel.getRowCount() - 1);
   }
 
-  /** {@inheritDoc} */
   @Override
   public R getSelectedItem() {
     final int index = getSelectedIndex();
@@ -171,7 +158,6 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<R> getSelectedItems() {
     final Collection<Integer> selectedModelIndexes = getSelectedIndexes();
@@ -180,13 +166,11 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
             modelIndex).mapToObj(tableModel::getItemAt).collect(toList());
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedItem(final R item) {
     setSelectedItems(singletonList(item));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedItems(final Collection<R> items) {
     if (!isSelectionEmpty()) {
@@ -195,26 +179,22 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     addSelectedItems(items);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedItem(final R item) {
     addSelectedItems(singletonList(item));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedItems(final Collection<R> items) {
     addSelectedIndexes(items.stream().mapToInt(tableModel::indexOf)
             .filter(index -> index >= 0).boxed().collect(toList()));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedItem(final R item) {
     removeSelectedItems(singletonList(item));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedItems(final Collection<R> items) {
     items.forEach(item -> removeSelectedIndex(tableModel.indexOf(item)));
@@ -255,7 +235,6 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void moveSelectionUp() {
     if (tableModel.getRowCount() > 0) {
@@ -270,7 +249,6 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void moveSelectionDown() {
     if (tableModel.getRowCount() > 0) {
@@ -284,7 +262,6 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
     super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
@@ -303,73 +280,61 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedIndexListener(final EventDataListener<Integer> listener) {
     selectedIndexChangedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedIndexListener(final EventDataListener<Integer> listener) {
     selectedIndexChangedEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectionChangedListener(final EventListener listener) {
     selectionChangedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectionChangedListener(final EventListener listener) {
     selectionChangedEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedItemListener(final EventDataListener<R> listener) {
     selectedItemChangedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedItemListener(final EventDataListener<R> listener) {
     selectedItemChangedEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedItemsListener(final EventDataListener<List<R>> listener) {
     selectedItemsChangedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedItemsListener(final EventDataListener<List<R>> listener) {
     selectedItemsChangedEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getMultipleSelectionObserver() {
     return multipleSelectionState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getSingleSelectionObserver() {
     return singleSelectionState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getSelectionEmptyObserver() {
     return selectionEmptyState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getSelectionNotEmptyObserver() {
     return selectionEmptyState.getReversedObserver();

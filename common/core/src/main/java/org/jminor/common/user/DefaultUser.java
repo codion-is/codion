@@ -23,32 +23,27 @@ final class DefaultUser implements User {
     setPassword(password);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getUsername() {
     return username;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setPassword(final char[] password) {
     this.password = password == null ? new char[0] : password;
   }
 
-  /** {@inheritDoc} */
   @Override
   public char[] getPassword() {
     return password;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void clearPassword() {
     Arrays.fill(password, (char) 0);
     setPassword(null);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return "User: " + username;
@@ -60,7 +55,6 @@ final class DefaultUser implements User {
     return this == obj || obj instanceof User && ((User) obj).getUsername().equals(username);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return username.hashCode();

@@ -54,13 +54,11 @@ final class DefaultItem<T> implements Item<T> {
     return caption;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
     return this == obj || obj instanceof Item && Objects.equals(value, ((Item) obj).getValue());
   }
 
-  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return value == null ? 0 : value.hashCode();

@@ -37,7 +37,6 @@ public final class MaximumMatch extends CompletionDocument {
     new MaximumMatch(comboBox, normalize);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void insertString(final int offset, final String str, final AttributeSet a) throws BadLocationException {
     int offs = offset;

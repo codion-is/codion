@@ -17,13 +17,11 @@ import static java.util.Arrays.asList;
  */
 public final class JulProxy implements LoggerProxy {
 
-  /** {@inheritDoc} */
   @Override
   public Object getLogLevel() {
     return LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME).getLevel();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setLogLevel(final Object logLevel) {
     if (!(logLevel instanceof Level)) {
@@ -32,7 +30,6 @@ public final class JulProxy implements LoggerProxy {
     LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME).setLevel((Level) logLevel);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List getLogLevels() {
     return asList(Level.ALL, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.OFF);

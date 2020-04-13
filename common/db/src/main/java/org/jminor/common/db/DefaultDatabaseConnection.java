@@ -104,37 +104,31 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     this.user = getUser(connection);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void close() throws Exception {
     disconnect();
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return getClass().getSimpleName() + ": " + user.getUsername();
   }
 
-  /** {@inheritDoc} */
   @Override
   public User getUser() {
     return user;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setMethodLogger(final MethodLogger methodLogger) {
     this.methodLogger = methodLogger;
   }
 
-  /** {@inheritDoc} */
   @Override
   public MethodLogger getMethodLogger() {
     return methodLogger;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void disconnect() {
     try {
@@ -149,31 +143,26 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     connection = null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isConnected() {
     return connection != null && Databases.isValid(connection, database, validityCheckTimeout);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setConnection(final Connection connection) {
     this.connection = connection;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Connection getConnection() {
     return connection;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Database getDatabase() {
     return database;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int queryInteger(final String sql) throws SQLException {
     final List<Integer> integers = query(sql, INTEGER_RESULT_PACKER, -1);
@@ -184,7 +173,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     throw new SQLException("No records returned when querying for an integer", sql);
   }
 
-  /** {@inheritDoc} */
   @Override
   public long queryLong(final String sql) throws SQLException {
     final List<Long> longs = query(sql, LONG_RESULT_PACKER, -1);
@@ -195,7 +183,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     throw new SQLException("No records returned when querying for a long", sql);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void beginTransaction() {
     if (transactionOpen) {
@@ -208,7 +195,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     logExit("beginTransaction", null);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void rollbackTransaction() {
     SQLException exception = null;
@@ -230,7 +216,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void commitTransaction() {
     SQLException exception = null;
@@ -252,13 +237,11 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isTransactionOpen() {
     return transactionOpen;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void commit() throws SQLException {
     if (transactionOpen) {
@@ -281,7 +264,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void rollback() throws SQLException {
     if (transactionOpen) {

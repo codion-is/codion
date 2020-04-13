@@ -56,7 +56,6 @@ public class Control extends AbstractAction {
     super.setEnabled(this.enabledObserver.get());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getName();
@@ -72,7 +71,6 @@ public class Control extends AbstractAction {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void actionPerformed(final ActionEvent e) {/*Not required*/}
 

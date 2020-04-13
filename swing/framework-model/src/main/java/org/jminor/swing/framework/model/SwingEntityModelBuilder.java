@@ -41,13 +41,11 @@ public class SwingEntityModelBuilder
     this.entityId = requireNonNull(entityId, "entityId");
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getEntityId() {
     return entityId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityModelBuilder setModelClass(final Class<? extends SwingEntityModel> modelClass) {
     if (editModelClass != null || tableModelClass != null) {
@@ -57,7 +55,6 @@ public class SwingEntityModelBuilder
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityModelBuilder setEditModelClass(final Class<? extends SwingEntityEditModel> editModelClass) {
     if (modelClass != null) {
@@ -67,7 +64,6 @@ public class SwingEntityModelBuilder
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityModelBuilder setTableModelClass(final Class<? extends SwingEntityTableModel> tableModelClass) {
     if (modelClass != null) {
@@ -77,25 +73,21 @@ public class SwingEntityModelBuilder
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Class<? extends SwingEntityModel> getModelClass() {
     return modelClass == null ? SwingEntityModel.class : modelClass;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Class<? extends SwingEntityEditModel> getEditModelClass() {
     return editModelClass ==  null ? SwingEntityEditModel.class : editModelClass;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Class<? extends SwingEntityTableModel> getTableModelClass() {
     return tableModelClass == null ? SwingEntityTableModel.class : tableModelClass;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityModelBuilder addDetailModelBuilder(final EntityModelBuilder<SwingEntityModel,
             SwingEntityEditModel, SwingEntityTableModel> detailModelBuilder) {
@@ -107,26 +99,22 @@ public class SwingEntityModelBuilder
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsDetailModelBuilder(final EntityModelBuilder<SwingEntityModel, SwingEntityEditModel,
             SwingEntityTableModel> detailModelBuilder) {
     return detailModelBuilders.contains(detailModelBuilder);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
     return obj instanceof EntityModelBuilder && ((EntityModelBuilder) obj).getEntityId().equals(getEntityId());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int hashCode() {
     return getEntityId().hashCode();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityModel createModel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
@@ -155,7 +143,6 @@ public class SwingEntityModelBuilder
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityEditModel createEditModel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
@@ -181,7 +168,6 @@ public class SwingEntityModelBuilder
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityTableModel createTableModel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);

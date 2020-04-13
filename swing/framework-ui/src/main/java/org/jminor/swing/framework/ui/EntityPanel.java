@@ -564,7 +564,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return detailEntityPanels.stream().anyMatch(detailPanel -> detailPanel.entityModel.getEntityId().equals(entityId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + caption;
@@ -585,7 +584,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return caption;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void activatePanel() {
     if (getParentPanel() != null) {
@@ -595,7 +593,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     requestInitialFocus();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final HierarchyPanel getParentPanel() {
     HierarchyPanel parentPanel = masterPanel;
@@ -606,7 +603,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return parentPanel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityPanel getSelectedChildPanel() {
     final Collection<EntityPanel> linkedDetailPanels = getLinkedDetailPanels();
@@ -617,7 +613,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSelectedChildPanel(final HierarchyPanel childPanel) {
     if (detailPanelTabbedPane != null) {
@@ -629,7 +624,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final HierarchyPanel getPreviousSiblingPanel() {
     if (getParentPanel() == null) {//no parent, no siblings
@@ -648,7 +642,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final HierarchyPanel getNextSiblingPanel() {
     if (getParentPanel() == null) {//no parent, no siblings
@@ -667,7 +660,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<HierarchyPanel> getChildPanels() {
     return Collections.unmodifiableList(detailEntityPanels);

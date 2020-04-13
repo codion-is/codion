@@ -77,19 +77,16 @@ public final class FlexibleGridLayout extends GridLayout {
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Dimension preferredLayoutSize(final Container parent) {
     return layoutSize(parent, true);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Dimension minimumLayoutSize(final Container parent) {
     return layoutSize(parent, false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void layoutContainer(final Container parent) {
     synchronized (parent.getTreeLock()) {

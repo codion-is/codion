@@ -16,7 +16,6 @@ import org.jminor.framework.model.PropertyConditionModelProvider;
  */
 public class SwingPropertyConditionModelProvider extends DefaultPropertyConditionModelProvider {
 
-  /** {@inheritDoc} */
   @Override
   public ColumnConditionModel<Entity, ForeignKeyProperty> initializeForeignKeyConditionModel(
           final ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {

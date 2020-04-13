@@ -12,17 +12,14 @@ import javax.swing.event.DocumentListener;
  */
 public interface DocumentAdapter extends DocumentListener {
 
-  /** {@inheritDoc} */
   @Override
   default void changedUpdate(final DocumentEvent e) {}
 
-  /** {@inheritDoc} */
   @Override
   default void insertUpdate(final DocumentEvent e) {
     contentsChanged(e);
   }
 
-  /** {@inheritDoc} */
   @Override
   default void removeUpdate(final DocumentEvent e) {
     contentsChanged(e);

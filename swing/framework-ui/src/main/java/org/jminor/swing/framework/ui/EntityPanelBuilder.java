@@ -231,7 +231,6 @@ public class EntityPanelBuilder {
     return tablePanelClass == null ? EntityTablePanel.class : tablePanelClass;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
     return obj instanceof EntityPanelBuilder &&
@@ -239,7 +238,6 @@ public class EntityPanelBuilder {
             ((EntityPanelBuilder) obj).modelBuilder.getModelClass().equals(modelBuilder.getModelClass());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int hashCode() {
     return modelBuilder.getEntityId().hashCode() + modelBuilder.getModelClass().hashCode();

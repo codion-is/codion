@@ -39,19 +39,16 @@ public final class SQLiteDatabase extends AbstractDatabase {
     this.databaseFilePath = requireNonNull(databaseFilePath, "databaseFilePath");
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
     return URL_PREFIX_FILE + databaseFilePath + getUrlAppend();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean supportsNowait() {
     return false;

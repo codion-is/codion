@@ -111,53 +111,44 @@ public abstract class AbstractDatabase implements Database {
     this.embedded = embedded;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Type getType() {
     return databaseType;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getDriverClassName() {
     return driverClassName;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getHost() {
     return host;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Integer getPort() {
     return port;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getSid() {
     return sid;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isEmbedded() {
     return embedded;
   }
 
-  /** {@inheritDoc} */
   public final void setUrlAppend(final String urlAppend) {
     this.urlAppend = urlAppend;
   }
 
-  /** {@inheritDoc} */
   public final String getUrlAppend() {
     return urlAppend;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Connection createConnection(final User user) throws DatabaseException {
     if (nullOrEmpty(requireNonNull(user, "user").getUsername())) {
@@ -178,53 +169,44 @@ public abstract class AbstractDatabase implements Database {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void countQuery(final String query) {
     queryCounter.count(query);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Statistics getStatistics() {
     return queryCounter.getStatisticsAndResetCounter();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean supportsSelectForUpdate() {
     return true;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean supportsNowait() {
     return true;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean supportsIsValid() {
     return true;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean subqueryRequiresAlias() {
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getCheckConnectionQuery() {
     throw new IllegalStateException("No check connection query specified");
   }
 
-  /** {@inheritDoc} */
   @Override
   public void shutdownEmbedded(final Properties connectionProperties) {}
 
-  /** {@inheritDoc} */
   @Override
   public String getSequenceQuery(final String sequenceName) {
     throw new UnsupportedOperationException("Sequence support is not implemented for database type: " + databaseType);
@@ -257,7 +239,6 @@ public abstract class AbstractDatabase implements Database {
     return authenticationInfo;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getErrorMessage(final SQLException exception) {
     return exception.getMessage();
@@ -283,13 +264,11 @@ public abstract class AbstractDatabase implements Database {
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Properties addConnectionProperties(final Properties properties) {
     return properties;
