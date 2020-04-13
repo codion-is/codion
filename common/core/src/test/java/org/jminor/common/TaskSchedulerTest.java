@@ -59,7 +59,7 @@ public class TaskSchedulerTest {
     assertFalse(scheduler.isRunning());
     Thread.sleep(100);
     assertEquals(currentCount, counter.get());
-    final AtomicInteger intervalCounter = new AtomicInteger(0);
+    final AtomicInteger intervalCounter = new AtomicInteger();
     scheduler.addIntervalListener(interval -> intervalCounter.incrementAndGet());
     scheduler.setInterval(2);//implicit start
     assertEquals(1, intervalCounter.get());

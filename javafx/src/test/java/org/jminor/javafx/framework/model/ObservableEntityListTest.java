@@ -52,7 +52,7 @@ public final class ObservableEntityListTest {
 
   @Test
   public void includeCondition() throws DatabaseException {
-    final AtomicInteger counter = new AtomicInteger(0);
+    final AtomicInteger counter = new AtomicInteger();
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final EventListener listener = counter::incrementAndGet;
     list.addFilteringListener(listener);

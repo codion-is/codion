@@ -32,12 +32,12 @@ final class DefaultConnectionPoolCounter {
 
   private final AtomicLong resetDate = new AtomicLong(creationDate);
   private final AtomicLong requestsPerSecondTime = new AtomicLong(creationDate);
-  private final AtomicInteger connectionsCreated = new AtomicInteger(0);
-  private final AtomicInteger connectionsDestroyed = new AtomicInteger(0);
-  private final AtomicInteger connectionRequests = new AtomicInteger(0);
-  private final AtomicInteger requestsPerSecondCounter = new AtomicInteger(0);
-  private final AtomicInteger connectionRequestsFailed = new AtomicInteger(0);
-  private final AtomicInteger requestsFailedPerSecondCounter = new AtomicInteger(0);
+  private final AtomicInteger connectionsCreated = new AtomicInteger();
+  private final AtomicInteger connectionsDestroyed = new AtomicInteger();
+  private final AtomicInteger connectionRequests = new AtomicInteger();
+  private final AtomicInteger requestsPerSecondCounter = new AtomicInteger();
+  private final AtomicInteger connectionRequestsFailed = new AtomicInteger();
+  private final AtomicInteger requestsFailedPerSecondCounter = new AtomicInteger();
 
   DefaultConnectionPoolCounter(final AbstractConnectionPool connectionPool) {
     this.connectionPool = connectionPool;
