@@ -3,5 +3,6 @@ module org.jminor.swing.framework.tools {
   requires transitive org.jminor.swing.common.tools;
   requires transitive org.jminor.swing.common.model;
 
-  exports org.jminor.swing.framework.tools;
+  exports org.jminor.swing.framework.tools.generator;
+  exports org.jminor.swing.framework.tools.loadtest;
 }
