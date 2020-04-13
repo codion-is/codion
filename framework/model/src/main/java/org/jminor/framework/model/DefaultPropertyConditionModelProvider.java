@@ -16,14 +16,12 @@ import org.jminor.framework.domain.property.Property;
  */
 public class DefaultPropertyConditionModelProvider implements PropertyConditionModelProvider {
 
-  /** {@inheritDoc} */
   @Override
   public ColumnConditionModel<Entity, ColumnProperty> initializePropertyConditionModel(final ColumnProperty property) {
     return new DefaultColumnConditionModel<>(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(),
             property.getFormat(), property.getDateTimeFormatPattern());
   }
 
-  /** {@inheritDoc} */
   @Override
   public ColumnConditionModel<Entity, ForeignKeyProperty> initializeForeignKeyConditionModel(
           final ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {

@@ -40,7 +40,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private EntityConnection entityConnection;
   private Domain domain;
 
-  /** {@inheritDoc} */
   @Override
   public final Domain getDomain() {
     synchronized (lock) {
@@ -52,7 +51,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final User getUser() {
     synchronized (lock) {
@@ -60,7 +58,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider setUser(final User user) {
     synchronized (lock) {
@@ -71,7 +68,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getDomainClassName() {
     synchronized (lock) {
@@ -83,7 +79,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider setDomainClassName(final String domainClassName) {
     synchronized (lock) {
@@ -97,7 +92,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final UUID getClientId() {
     synchronized (lock) {
@@ -105,7 +99,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider setClientId(final UUID clientId) {
     synchronized (lock) {
@@ -119,7 +112,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getClientTypeId() {
     synchronized (lock) {
@@ -131,7 +123,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider setClientTypeId(final String clientTypeId) {
     synchronized (lock) {
@@ -149,7 +140,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider setClientVersion(final Version clientVersion) {
     synchronized (lock) {
@@ -160,7 +150,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isConnected() {
     synchronized (lock) {
@@ -168,7 +157,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isConnectionValid() {
     synchronized (lock) {
@@ -185,19 +173,16 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addOnConnectListener(final EventListener listener) {
     onConnectEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeOnConnectListener(final EventListener listener) {
     onConnectEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnection getConnection() {
     synchronized (lock) {
@@ -211,7 +196,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void disconnect() {
     synchronized (lock) {

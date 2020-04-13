@@ -52,7 +52,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void login(final User user) {
     requireNonNull(user, "user");
@@ -61,7 +60,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     onLogin();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void logout() {
     connectionProvider.setUser(null);
@@ -69,31 +67,26 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     onLogout();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final User getUser() {
     return connectionProvider.getConnection().getUser();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final StateObserver getConnectionValidObserver() {
     return connectionValidState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Domain getDomain() {
     return connectionProvider.getDomain();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addEntityModels(final M... entityModels) {
     requireNonNull(entityModels, "entityModels");
@@ -102,7 +95,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final M addEntityModel(final M detailModel) {
     this.entityModels.add(detailModel);
@@ -110,31 +102,26 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     return detailModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsEntityModel(final Class<? extends M> modelClass) {
     return entityModels.stream().anyMatch(entityModel -> entityModel.getClass().equals(modelClass));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsEntityModel(final String entityId) {
     return entityModels.stream().anyMatch(entityModel -> entityModel.getEntityId().equals(entityId));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsEntityModel(final M entityModel) {
     return entityModels.contains(entityModel);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<M> getEntityModels() {
     return Collections.unmodifiableList(entityModels);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void refresh() {
     for (final M entityModel : entityModels) {
@@ -142,7 +129,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void clear() {
     for (final M entityModel : entityModels) {
@@ -150,7 +136,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final M getEntityModel(final Class<? extends M> modelClass) {
     for (final M model : entityModels) {
@@ -162,7 +147,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     throw new IllegalArgumentException("EntityModel of type: " + modelClass + " not found");
   }
 
-  /** {@inheritDoc} */
   @Override
   public final M getEntityModel(final String entityId) {
     for (final M entityModel : entityModels) {
@@ -174,25 +158,21 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     throw new IllegalArgumentException("EntityModel for type " + entityId + " not  found in model: " + this);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isWarnAboutUnsavedData() {
     return warnAboutUnsavedData;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setWarnAboutUnsavedData(final boolean warnAboutUnsavedData) {
     this.warnAboutUnsavedData = warnAboutUnsavedData;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsUnsavedData() {
     return containsUnsavedData(entityModels);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void savePreferences() {
     getEntityModels().forEach(EntityModel::savePreferences);

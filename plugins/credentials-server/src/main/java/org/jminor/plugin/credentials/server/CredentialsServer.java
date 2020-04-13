@@ -79,7 +79,6 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public User getUser(final UUID authenticationToken) throws RemoteException {
     try {

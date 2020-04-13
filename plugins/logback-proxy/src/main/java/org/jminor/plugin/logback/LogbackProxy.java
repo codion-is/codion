@@ -18,13 +18,11 @@ import static java.util.Arrays.asList;
  */
 public final class LogbackProxy implements LoggerProxy {
 
-  /** {@inheritDoc} */
   @Override
   public Object getLogLevel() {
     return ((Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).getLevel();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setLogLevel(final Object logLevel) {
     if (!(logLevel instanceof Level)) {
@@ -33,7 +31,6 @@ public final class LogbackProxy implements LoggerProxy {
     ((Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel((Level) logLevel);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List getLogLevels() {
     return asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR);

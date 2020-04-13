@@ -55,7 +55,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     this.database = requireNonNull(database, "database");
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getConnectionType() {
     return CONNECTION_TYPE_LOCAL;
@@ -74,7 +73,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     return sid;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected LocalEntityConnection connect() {
     try {
@@ -86,7 +84,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void disconnect(final EntityConnection connection) {
     connection.disconnect();

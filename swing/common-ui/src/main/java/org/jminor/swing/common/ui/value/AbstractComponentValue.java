@@ -37,13 +37,11 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
     this.nullable = nullable == Nullable.YES;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final V get() {
     return getComponentValue(component);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void set(final V value) {
     if (SwingUtilities.isEventDispatchThread()) {
@@ -63,13 +61,11 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final C getComponent() {
     return component;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isNullable() {
     return nullable;

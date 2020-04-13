@@ -66,7 +66,6 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
     this.https = requireNonNull(https, "https");
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getConnectionType() {
     return CONNECTION_TYPE_HTTP;
@@ -95,7 +94,6 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
     return serverHostName;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected HttpEntityConnection connect() {
     try {
@@ -108,7 +106,6 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void disconnect(final EntityConnection connection) {
     connection.disconnect();

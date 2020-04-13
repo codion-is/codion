@@ -57,49 +57,41 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
             .map(ColumnProperty.Builder::get).collect(toList()));
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isInsertable() {
     return columnProperties.stream().allMatch(ColumnProperty::isInsertable);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isUpdatable() {
     return columnProperties.stream().allMatch(ColumnProperty::isUpdatable);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getForeignEntityId() {
     return foreignEntityId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getColumnProperties() {
     return columnProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isCompositeKey() {
     return compositeReference;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getFetchDepth() {
     return fetchDepth;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isSoftReference() {
     return softReference;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity validateType(final Object value) {
     super.validateType(value);

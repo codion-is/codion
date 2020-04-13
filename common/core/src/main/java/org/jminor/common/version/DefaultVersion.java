@@ -65,25 +65,21 @@ final class DefaultVersion implements Version {
     return metadata;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return major + "." + minor + "." + patch + (metadata == null ? "" : "-" + metadata);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
     return obj instanceof Version && compareTo((Version) obj) == 0 && Objects.equals(metadata, ((Version) obj).getMetadata());
   }
 
-  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return MAGIC_NUMBER * major + MAGIC_NUMBER * minor + MAGIC_NUMBER * patch;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int compareTo(final Version version) {
     int result = major - version.getMajor();

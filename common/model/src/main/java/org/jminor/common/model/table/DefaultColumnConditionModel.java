@@ -93,55 +93,46 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     bindEvents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final K getColumnIdentifier() {
     return columnIdentifier;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isCaseSensitive() {
     return caseSensitive;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Format getFormat() {
     return format;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getDateTimeFormatPattern() {
     return dateTimeFormatPattern;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setLocked(final boolean locked) {
     lockedState.set(locked);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isLocked() {
     return lockedState.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Class getTypeClass() {
     return typeClass;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setLikeValue(final Object value) {
     setOperator(Operator.LIKE);
@@ -152,7 +143,6 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setUpperBound(final Object value) {
     validateType(value);
@@ -160,13 +150,11 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     upperBoundValue.set(value);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Object getUpperBound() {
     return getBoundValue(upperBoundValue.get());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setLowerBound(final Object value) {
     validateType(value);
@@ -174,26 +162,22 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     lowerBoundValue.set(value);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Object getLowerBound() {
     return getBoundValue(lowerBoundValue.get());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Operator getOperator() {
     return operatorValue.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setOperator(final Operator operator) {
     checkLock();
     operatorValue.set(requireNonNull(operator, "operator"));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isLowerBoundRequired() {
     return lowerBoundRequiredState.get();
@@ -213,25 +197,21 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     this.wildcard = wildcard;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isAutoEnable() {
     return autoEnable;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setAutoEnable(final boolean autoEnable) {
     this.autoEnable = autoEnable;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isEnabled() {
     return enabledState.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setEnabled(final boolean enabled) {
     checkLock();
@@ -240,19 +220,16 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setAutomaticWildcard(final AutomaticWildcard automaticWildcard) {
     this.automaticWildcard = requireNonNull(automaticWildcard);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final AutomaticWildcard getAutomaticWildcard() {
     return automaticWildcard;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void clearCondition() {
     setEnabled(false);
@@ -262,127 +239,106 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     conditionModelClearedEvent.onEvent();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final StateObserver getLockedObserver() {
     return lockedState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public Value getLowerBoundValue() {
     return lowerBoundValue;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Value getUpperBoundValue() {
     return upperBoundValue;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EventObserver<Boolean> getEnabledObserver() {
     return enabledState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addEnabledListener(final EventListener listener) {
     enabledState.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeEnabledListener(final EventListener listener) {
     enabledState.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addUpperBoundListener(final EventListener listener) {
     upperBoundValue.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeUpperBoundListener(final EventListener listener) {
     upperBoundValue.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addLowerBoundListener(final EventListener listener) {
     lowerBoundValue.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeLowerBoundListener(final EventListener listener) {
     lowerBoundValue.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addLowerBoundRequiredListener(final EventListener listener) {
     lowerBoundRequiredState.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeLowerBoundRequiredListener(final EventListener listener) {
     lowerBoundRequiredState.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addClearedListener(final EventListener listener) {
     conditionModelClearedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeClearedListener(final EventListener listener) {
     conditionModelClearedEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addConditionChangedListener(final EventListener listener) {
     conditionChangedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeConditionChangedListener(final EventListener listener) {
     conditionChangedEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addOperatorListener(final EventDataListener<Operator> listener) {
     operatorValue.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeOperatorListener(final EventDataListener<Operator> listener) {
     operatorValue.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EventObserver<Operator> getOperatorObserver() {
     return operatorValue;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean include(final R row) {
     return !enabledState.get() || include(getComparable(row));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean include(final Comparable comparable) {
     if (!enabledState.get()) {

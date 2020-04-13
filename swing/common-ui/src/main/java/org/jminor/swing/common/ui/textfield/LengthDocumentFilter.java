@@ -22,7 +22,6 @@ public final class LengthDocumentFilter extends DocumentFilter {
     this.maxLength = maxLength;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void insertString(final FilterBypass fb, final int offs, final String str, final AttributeSet a) throws BadLocationException {
     if ((fb.getDocument().getLength() + str.length()) <= maxLength) {
@@ -33,7 +32,6 @@ public final class LengthDocumentFilter extends DocumentFilter {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void replace(final FilterBypass fb, final int offs, final int length, final String str, final AttributeSet a) throws BadLocationException {
     if ((fb.getDocument().getLength() + str.length() - length) <= maxLength) {

@@ -11,13 +11,11 @@ import org.jminor.common.db.DatabaseProvider;
  */
 public final class MySQLDatabaseProvider implements DatabaseProvider {
 
-  /** {@inheritDoc} */
   @Override
   public Database.Type getDatabaseType() {
     return Database.Type.MYSQL;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Database createDatabase() {
     return new MySQLDatabase();

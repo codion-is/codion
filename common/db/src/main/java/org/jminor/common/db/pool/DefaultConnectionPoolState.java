@@ -17,7 +17,6 @@ public final class DefaultConnectionPoolState implements ConnectionPoolState, Se
   private int connectionsInUse = -1;
   private int connectionsWaiting = -1;
 
-  /** {@inheritDoc} */
   @Override
   public void set(final long time, final int connectionCount, final int connectionsInUse, final int connectionsWaiting) {
     this.time = time;
@@ -26,25 +25,21 @@ public final class DefaultConnectionPoolState implements ConnectionPoolState, Se
     this.connectionsWaiting = connectionsWaiting;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getSize() {
     return connectionCount;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getInUse() {
     return connectionsInUse;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getWaiting() {
     return connectionsWaiting;
   }
 
-  /** {@inheritDoc} */
   @Override
   public long getTimestamp() {
     return time;

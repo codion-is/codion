@@ -46,19 +46,16 @@ public final class HSQLDatabase extends AbstractDatabase {
             requireNonNull(sid, "sid"), false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getSequenceQuery(final String sequenceName) {
     return SEQUENCE_VALUE_QUERY + requireNonNull(sequenceName, "sequenceName");
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);

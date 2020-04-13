@@ -83,26 +83,22 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     this.sortComparator = sortComparator;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void refresh() {
     setContents(initializeContents());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void clear() {
     setSelectedItem(null);
     setContents(null);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isCleared() {
     return cleared;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setContents(final Collection<T> contents) {
     filteredItems.clear();
@@ -117,7 +113,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     cleared = contents == null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void filterContents() {
     try {
@@ -149,7 +144,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<T> getVisibleItems() {
     if (visibleItems.isEmpty()) {
@@ -162,13 +156,11 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     return unmodifiableList(visibleItems.subList(1, getSize()));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<T> getFilteredItems() {
     return unmodifiableList(filteredItems);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<T> getItems() {
     final List<T> entities = new ArrayList<>(getVisibleItems());
@@ -177,32 +169,27 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     return entities;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setIncludeCondition(final Predicate<T> includeCondition) {
     this.includeCondition = includeCondition;
     filterContents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Predicate<T> getIncludeCondition() {
     return includeCondition;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getFilteredItemCount() {
     return filteredItems.size();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getVisibleItemCount() {
     return visibleItems.size();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isVisible(final T item) {
     if (item == null) {
@@ -212,13 +199,11 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     return visibleItems.contains(item);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isFiltered(final T item) {
     return filteredItems.contains(item);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addItem(final T item) {
     if (includeCondition == null || includeCondition.test(item)) {
@@ -232,7 +217,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeItem(final T item) {
     visibleItems.remove(item);
@@ -240,7 +224,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     fireContentsChanged();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void replaceItem(final T item, final T replacement) {
     removeItem(item);
@@ -251,7 +234,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean contains(final T item, final boolean includeFiltered) {
     final boolean visible = visibleItems.contains(item);
@@ -262,26 +244,22 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     return visible;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Comparator<T> getSortComparator() {
     return sortComparator;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSortComparator(final Comparator<T> sortComparator) {
     this.sortComparator = sortComparator;
     sortVisibleItems();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final T getNullValue() {
     return nullValue;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setNullValue(final T nullValue) {
     this.nullValue = nullValue;
@@ -290,19 +268,16 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isNullValueSelected() {
     return selectedItem == null && nullValue != null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isSelectionEmpty() {
     return getSelectedValue() == null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final T getSelectedValue() {
     if (isNullValueSelected()) {
@@ -325,7 +300,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     return selectedItem;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSelectedItem(final Object anItem) {
     T toSelect = translateSelectionItem(anItem);
@@ -339,33 +313,28 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setFilterSelectedItem(final boolean filterSelectedItem) {
     this.filterSelectedItem = filterSelectedItem;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isFilterSelectedItem() {
     return filterSelectedItem;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addListDataListener(final ListDataListener listener) {
     requireNonNull(listener, "listener");
     listDataListeners.add(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeListDataListener(final ListDataListener listener) {
     requireNonNull(listener, "listener");
     listDataListeners.remove(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final T getElementAt(final int index) {
     final T element = visibleItems.get(index);
@@ -376,31 +345,26 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     return element;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getSize() {
     return visibleItems.size();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addFilteringListener(final EventListener listener) {
     filteringDoneEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeFilteringListener(final EventListener listener) {
     filteringDoneEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addSelectionListener(final EventDataListener<T> listener) {
     selectionChangedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeSelectionListener(final EventDataListener<T> listener) {
     selectionChangedEvent.removeDataListener(listener);

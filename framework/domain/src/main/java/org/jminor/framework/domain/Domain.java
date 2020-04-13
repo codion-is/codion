@@ -378,7 +378,6 @@ public class Domain implements EntityDefinition.Provider, Serializable {
     return copy;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityDefinition getDefinition(final String entityId) {
     return definitionProvider.getDefinition(entityId);

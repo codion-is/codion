@@ -51,7 +51,6 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     super(entityId, connectionProvider, validator);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void clear() {
     clearComboBoxModels();
@@ -172,7 +171,6 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     return model;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addForeignKeyValues(final List<Entity> values) {
     final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
@@ -189,7 +187,6 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeForeignKeyValues(final List<Entity> values) {
     final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
@@ -216,13 +213,11 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void refreshDataModels() {
     refreshComboBoxModels();
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void replaceForeignKey(final ForeignKeyProperty foreignKeyProperty, final List<Entity> values) {
     super.replaceForeignKey(foreignKeyProperty, values);

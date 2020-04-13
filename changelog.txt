@@ -5851,3 +5851,4 @@
   HikariConnectionPoolProvider disables auto commit on connections
   TomcatConnectionPoolProvider disables auto commit on connections
   Tools modules reorganized
+  Unnecessary @inheritDoc annotations removed

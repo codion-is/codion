@@ -39,7 +39,6 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
     setComponentPopupMenu(initializePopupMenu());
   }
 
-  /** {@inheritDoc} */
   @Override
   public SwingEntityComboBoxModel getModel() {
     return (SwingEntityComboBoxModel) super.getModel();

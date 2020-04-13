@@ -60,7 +60,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     this.registryPort = registryPort;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getConnectionType() {
     return CONNECTION_TYPE_REMOTE;
@@ -96,7 +95,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     return serverInfo;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected EntityConnection connect() {
     if (!truststoreResolved) {
@@ -116,7 +114,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void disconnect(final EntityConnection connection) {
     try {

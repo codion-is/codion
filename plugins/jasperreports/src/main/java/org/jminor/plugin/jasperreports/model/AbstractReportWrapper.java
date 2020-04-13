@@ -30,7 +30,6 @@ abstract class AbstractReportWrapper implements ReportWrapper<JasperReport, Jasp
     this.reportParameters = requireNonNull(reportParameters, "reportParameters");
   }
 
-  /** {@inheritDoc} */
   @Override
   public final JasperPrint fillReport(final Connection connection) throws ReportException {
     requireNonNull(connection, "connection");

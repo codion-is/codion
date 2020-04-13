@@ -31,7 +31,6 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
     return INSTANCE;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void displayException(final Throwable exception, final Window dialogParent) {
     final Throwable rootCause = unwrapExceptions(exception, asList(RemoteException.class, RuntimeException.class,

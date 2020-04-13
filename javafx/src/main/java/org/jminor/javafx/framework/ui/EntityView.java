@@ -126,13 +126,11 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     this.parentView = parentView;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final ViewTreeNode<EntityView> getParentView() {
     return parentView;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityView getPreviousSiblingView() {
     if (getParentView() == null) {
@@ -152,7 +150,6 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityView getNextSiblingView() {
     if (getParentView() == null) {//no parent, no siblings
@@ -171,7 +168,6 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<EntityView> getChildViews() {
     return detailViews;

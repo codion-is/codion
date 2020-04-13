@@ -119,25 +119,21 @@ final class HttpEntityConnection implements EntityConnection {
     this.domain = initializeDomain();
   }
 
-  /** {@inheritDoc} */
   @Override
   public Domain getDomain() {
     return domain;
   }
 
-  /** {@inheritDoc} */
   @Override
   public User getUser() {
     return user;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isConnected() {
     return !closed;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void disconnect() {
     try {
@@ -152,7 +148,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isTransactionOpen() {
     try {
@@ -164,7 +159,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void beginTransaction() {
     try {
@@ -179,7 +173,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void rollbackTransaction() {
     try {
@@ -194,7 +187,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void commitTransaction() {
     try {
@@ -209,7 +201,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public <T> T executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
     Objects.requireNonNull(functionId);
@@ -225,7 +216,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
     Objects.requireNonNull(procedureId);
@@ -241,13 +231,11 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity.Key insert(final Entity entity) throws DatabaseException {
     return insert(singletonList(entity)).get(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
@@ -263,13 +251,11 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity update(final Entity entity) throws DatabaseException {
     return update(singletonList(entity)).get(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
@@ -285,7 +271,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int update(final EntityUpdateCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
@@ -301,13 +286,11 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean delete(final Entity.Key entityKey) throws DatabaseException {
     return delete(singletonList(entityKey)) == 1;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int delete(final List<Entity.Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
@@ -323,7 +306,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int delete(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
@@ -339,7 +321,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(propertyId);
@@ -357,19 +338,16 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
     return selectSingle(selectCondition(entityId, propertyId, Operator.LIKE, value));
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
     return selectSingle(selectCondition(key));
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
     final List<Entity> selected = select(condition);
@@ -383,7 +361,6 @@ final class HttpEntityConnection implements EntityConnection {
     return selected.get(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> select(final List<Entity.Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
@@ -399,7 +376,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> select(final EntitySelectCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
@@ -415,14 +391,12 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> select(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
     return select(selectCondition(entityId, propertyId, Operator.LIKE, asList(values)));
   }
 
-  /** {@inheritDoc} */
   @Override
   public Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
@@ -438,7 +412,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
@@ -454,7 +427,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public <T, R> R fillReport(final ReportWrapper<T, R> reportWrapper) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportWrapper, "reportWrapper");
@@ -470,7 +442,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData)
           throws DatabaseException {
@@ -489,7 +460,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");

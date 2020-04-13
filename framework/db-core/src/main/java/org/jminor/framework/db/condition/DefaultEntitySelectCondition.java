@@ -47,59 +47,50 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
     super(entityId, condition);
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getFetchCount() {
     return fetchCount;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntitySelectCondition setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public OrderBy getOrderBy() {
     return orderBy;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntitySelectCondition setOrderBy(final OrderBy orderBy) {
     this.orderBy = orderBy;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getLimit() {
     return limit;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntitySelectCondition setLimit(final int limit) {
     this.limit = limit;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getOffset() {
     return offset;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntitySelectCondition setOffset(final int offset) {
     this.offset = offset;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntitySelectCondition setForeignKeyFetchDepthLimit(final String foreignKeyPropertyId, final int fetchDepthLimit) {
     if (foreignKeyFetchDepthLimits == null) {
@@ -109,7 +100,6 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Integer getForeignKeyFetchDepthLimit(final String foreignKeyPropertyId) {
     if (foreignKeyFetchDepthLimits != null && foreignKeyFetchDepthLimits.containsKey(foreignKeyPropertyId)) {
@@ -119,33 +109,28 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
     return foreignKeyFetchDepthLimit;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntitySelectCondition setForeignKeyFetchDepthLimit(final int fetchDepthLimit) {
     this.foreignKeyFetchDepthLimit = fetchDepthLimit;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntitySelectCondition setSelectPropertyIds(final String... propertyIds) {
     this.selectPropertyIds = new ArrayList<>(asList(propertyIds));
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<String> getSelectPropertyIds() {
     return selectPropertyIds;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isForUpdate() {
     return forUpdate;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntitySelectCondition setForUpdate(final boolean forUpdate) {
     this.forUpdate = forUpdate;

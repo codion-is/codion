@@ -35,7 +35,6 @@ public final class AutoCompletion extends CompletionDocument {
     new AutoCompletion(comboBox, normalize);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void insertString(final int offset, final String str, final AttributeSet a) throws BadLocationException {
     int offs = offset;

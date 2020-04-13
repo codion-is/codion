@@ -470,7 +470,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.referentialIntegrityErrorHandling = referentialIntegrityErrorHandling;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + tableModel.getEntityId();
@@ -698,7 +697,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     displayException(exception, getParentWindow(this));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void displayException(final Throwable throwable, final Window dialogParent) {
     DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);

@@ -122,7 +122,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     this.connection = createConnection(database, connection, validityCheckTimeout);
   }
 
-  /** {@inheritDoc} */
   @Override
   public LocalEntityConnection setMethodLogger(final MethodLogger methodLogger) {
     synchronized (connection) {
@@ -132,7 +131,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public MethodLogger getMethodLogger() {
     synchronized (connection) {
@@ -140,19 +138,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Domain getDomain() {
     return domain;
   }
 
-  /** {@inheritDoc} */
   @Override
   public User getUser() {
     return connection.getUser();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isConnected() {
     synchronized (connection) {
@@ -160,7 +155,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void disconnect() {
     synchronized (connection) {
@@ -168,7 +162,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void beginTransaction() {
     synchronized (connection) {
@@ -176,7 +169,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isTransactionOpen() {
     synchronized (connection) {
@@ -184,7 +176,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void rollbackTransaction() {
     synchronized (connection) {
@@ -192,7 +183,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void commitTransaction() {
     synchronized (connection) {
@@ -200,13 +190,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity.Key insert(final Entity entity) throws DatabaseException {
     return insert(singletonList(requireNonNull(entity, "entity"))).get(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES_PARAM_NAME);
@@ -261,13 +249,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity update(final Entity entity) throws DatabaseException {
     return update(singletonList(requireNonNull(entity, "entity"))).get(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES_PARAM_NAME);
@@ -346,7 +332,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int update(final EntityUpdateCondition updateCondition) throws DatabaseException {
     requireNonNull(updateCondition, "updateCondition");
@@ -391,7 +376,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int delete(final EntityCondition deleteCondition) throws DatabaseException {
     requireNonNull(deleteCondition, "deleteCondition");
@@ -422,13 +406,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean delete(final Entity.Key key) throws DatabaseException {
     return delete(singletonList(requireNonNull(key, "key"))) == 1;
   }
 
-  /** {@inheritDoc} */
   @Override
   public int delete(final List<Entity.Key> keys) throws DatabaseException {
     requireNonNull(keys, "keys");
@@ -469,19 +451,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
     return selectSingle(selectCondition(entityId, propertyId, LIKE, value));
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
     return selectSingle(selectCondition(key));
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
     final List<Entity> entities = select(condition);
@@ -495,7 +474,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return entities.get(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> select(final List<Entity.Key> keys) throws DatabaseException {
     requireNonNull(keys, "keys");
@@ -520,13 +498,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> select(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
     return select(selectCondition(entityId, propertyId, LIKE, createValueList(values)));
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> select(final EntitySelectCondition selectCondition) throws DatabaseException {
     requireNonNull(selectCondition, "selectCondition");
@@ -546,7 +522,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
@@ -585,7 +560,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
@@ -623,7 +597,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES_PARAM_NAME);
@@ -647,7 +620,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return dependencyMap;
   }
 
-  /** {@inheritDoc} */
   @Override
   public <T> T executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
@@ -670,7 +642,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
@@ -693,7 +664,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public <T, R> R fillReport(final ReportWrapper<T, R> reportWrapper) throws ReportException {
     requireNonNull(reportWrapper, "reportWrapper");
@@ -727,7 +697,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException {
     requireNonNull(blobData, "blobData");
@@ -777,7 +746,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException {
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
@@ -827,13 +795,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public DatabaseConnection getDatabaseConnection() {
     return connection;
   }
 
-  /** {@inheritDoc} */
   @Override
   public ResultIterator<Entity> iterator(final EntitySelectCondition condition) throws DatabaseException {
     synchronized (connection) {
@@ -846,26 +812,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isOptimisticLockingEnabled() {
     return optimisticLockingEnabled;
   }
 
-  /** {@inheritDoc} */
   @Override
   public LocalEntityConnection setOptimisticLockingEnabled(final boolean optimisticLockingEnabled) {
     this.optimisticLockingEnabled = optimisticLockingEnabled;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isLimitForeignKeyFetchDepth() {
     return limitForeignKeyFetchDepth;
   }
 
-  /** {@inheritDoc} */
   @Override
   public LocalEntityConnection setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;

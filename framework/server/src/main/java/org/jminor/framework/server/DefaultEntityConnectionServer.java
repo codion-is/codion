@@ -252,7 +252,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     return serverAdmin;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getServerLoad() {
     return AbstractRemoteEntityConnection.getRequestsPerSecond();
@@ -265,7 +264,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     return clientLoggingEnabled;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient)
           throws RemoteException, LoginException, ConnectionNotAvailableException {
@@ -297,7 +295,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final void doDisconnect(final AbstractRemoteEntityConnection connection) throws RemoteException {
     connection.disconnect();
@@ -521,7 +518,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final void onShutdown() throws RemoteException {
     super.onShutdown();

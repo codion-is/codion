@@ -114,50 +114,42 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     bindEventsInternal();
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getEntityId() {
     return entityId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<ColumnProperty> getLookupProperties() {
     return unmodifiableCollection(lookupProperties);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setResultSorter(final Comparator<Entity> resultSorter) {
     requireNonNull(resultSorter, "resultSorter");
     this.resultSorter = resultSorter;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getDescription() {
     return description;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setDescription(final String description) {
     this.description = description;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedEntity(final Entity entity) {
     setSelectedEntities(entity != null ? singletonList(entity) : null);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedEntities(final List<Entity> entities) {
     if (nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
@@ -175,7 +167,6 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     selectedEntitiesChangedEvent.onEvent(unmodifiableList(selectedEntities));
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> getSelectedEntities() {
     return unmodifiableList(selectedEntities);
@@ -186,60 +177,51 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     return propertyLookupSettings;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getWildcard() {
     return wildcard;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntityLookupModel setWildcard(final String wildcard) {
     this.wildcard = wildcard;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntityLookupModel setAdditionalConditionProvider(final Condition.Provider additionalConditionProvider) {
     this.additionalConditionProvider = additionalConditionProvider;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Function<Entity, String> getToStringProvider() {
     return toStringProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntityLookupModel setToStringProvider(final Function<Entity, String> toStringProvider) {
     this.toStringProvider = toStringProvider == null ? DEFAULT_TO_STRING : toStringProvider;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void refreshSearchText() {
     setSearchString(selectedEntities.isEmpty() ? "" : toString(getSelectedEntities()));
     searchStringRepresentsSelectedState.set(searchStringRepresentsSelected());
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSearchString(final String searchString) {
     this.searchStringValue.set(searchString == null ? "" : searchString);
     searchStringRepresentsSelectedState.set(searchStringRepresentsSelected());
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getSearchString() {
     return this.searchStringValue.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean searchStringRepresentsSelected() {
     final String selectedAsString = toString(getSelectedEntities());
@@ -247,7 +229,6 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
             || !selectedEntities.isEmpty() && selectedAsString.equals(searchStringValue.get());
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> performQuery() {
     try {
@@ -263,31 +244,26 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public Value<String> getSearchStringValue() {
     return searchStringValue;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Value<String> getMultipleItemSeparatorValue() {
     return multipleItemSeparatorValue;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Value<Boolean> getMultipleSelectionEnabledValue() {
     return multipleSelectionEnabledValue;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedEntitiesListener(final EventDataListener<List<Entity>> listener) {
     selectedEntitiesChangedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getSearchStringRepresentsSelectedObserver() {
     return searchStringRepresentsSelectedState.getObserver();

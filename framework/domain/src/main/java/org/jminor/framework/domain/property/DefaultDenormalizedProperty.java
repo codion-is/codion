@@ -27,19 +27,16 @@ final class DefaultDenormalizedProperty extends DefaultColumnProperty implements
     this.denormalizedProperty = denormalizedProperty;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getForeignKeyPropertyId() {
     return foreignKeyPropertyId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Property getDenormalizedProperty() {
     return denormalizedProperty;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isDenormalized() {
     return true;

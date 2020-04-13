@@ -109,19 +109,16 @@ public final class H2Database extends AbstractDatabase {
     initializeDatabase(initScript == null ? null : singletonList(initScript));
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getSequenceQuery(final String sequenceName) {
     return SEQUENCE_VALUE_QUERY + requireNonNull(sequenceName, "sequenceName");
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
@@ -138,20 +135,17 @@ public final class H2Database extends AbstractDatabase {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getErrorCode() == AUTHENTICATION_ERROR;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS ||
             exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR;

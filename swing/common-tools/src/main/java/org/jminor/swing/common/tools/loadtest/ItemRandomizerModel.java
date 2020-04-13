@@ -57,13 +57,11 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addItem(final T item, final int weight) {
     items.add(new DefaultRandomItem<>(item, weight));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void incrementWeight(final T item) {
     final RandomItem randomItem = getRandomItem(item);
@@ -71,7 +69,6 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     weightsChangedEvent.onEvent(randomItem.getWeight());
   }
 
-  /** {@inheritDoc} */
   @Override
   public void decrementWeight(final T item) {
     final RandomItem randomItem = getRandomItem(item);
@@ -79,57 +76,48 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     weightsChangedEvent.onEvent(randomItem.getWeight());
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setWeight(final T item, final int weight) {
     getRandomItem(item).setWeight(weight);
     weightsChangedEvent.onEvent(weight);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isItemEnabled(final T item) {
     return getRandomItem(item).isEnabled();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setItemEnabled(final T item, final boolean enabled) {
     getRandomItem(item).setEnabled(enabled);
     enabledChangedEvent.onEvent(enabled);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addItem(final T item) {
     addItem(item, 0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<ItemRandomizer.RandomItem<T>> getItems() {
     return items;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getItemCount() {
     return items.size();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EventObserver<Integer> getWeightsObserver() {
     return weightsChangedEvent.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EventObserver<Boolean> getEnabledObserver() {
     return enabledChangedEvent.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final T getRandomItem() {
     final int totalWeights = getTotalWeights();
@@ -149,7 +137,6 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     throw new IllegalArgumentException("getRandomItem did not find an item");
   }
 
-  /** {@inheritDoc} */
   @Override
   public final double getWeightRatio(final T item) {
     final int totalWeights = getTotalWeights();
@@ -160,7 +147,6 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     return getWeight(item) / (double) totalWeights;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final int getWeight(final T item) {
     return getRandomItem(item).getWeight();

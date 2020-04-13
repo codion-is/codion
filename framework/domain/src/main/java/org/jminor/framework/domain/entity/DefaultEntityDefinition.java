@@ -197,19 +197,16 @@ final class DefaultEntityDefinition implements EntityDefinition {
     this.hasDenormalizedProperties = !denormalizedProperties.isEmpty();
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getEntityId() {
     return entityId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getTableName() {
     return tableName;
   }
 
-  /** {@inheritDoc} */
   @Override
   public ConditionProvider getConditionProvider(final String conditionId) {
     requireNonNull(conditionId);
@@ -223,103 +220,86 @@ final class DefaultEntityDefinition implements EntityDefinition {
     throw new IllegalArgumentException("ConditionProvider with id " + conditionId + " not found");
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getDomainId() {
     return domainId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getCaption() {
     return caption;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Class getBeanClass() {
     return beanClass;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isSmallDataset() {
     return smallDataset;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isStaticData() {
     return staticData;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isReadOnly() {
     return readOnly;
   }
 
-  /** {@inheritDoc} */
   @Override
   public KeyGenerator getKeyGenerator() {
     return keyGenerator;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isKeyGenerated() {
     return keyGenerated;
   }
 
-  /** {@inheritDoc} */
   @Override
   public OrderBy getOrderBy() {
     return orderBy;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getGroupByClause() {
     return groupByClause;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getHavingClause() {
     return havingClause;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getSelectTableName() {
     return selectTableName == null ? tableName : selectTableName;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getSelectQuery() {
     return selectQuery;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean selectQueryContainsWhereClause() {
     return selectQueryContainsWhereClause;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Function<Entity, String> getStringProvider() {
     return stringProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Comparator<Entity> getComparator() {
     return comparator;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<String> getSearchPropertyIds() {
     if (searchPropertyIds == null) {
@@ -328,13 +308,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return unmodifiableCollection(searchPropertyIds);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<ColumnProperty> getSearchProperties() {
     return getSearchPropertyIds().stream().map(this::getColumnProperty).collect(toList());
   }
 
-  /** {@inheritDoc} */
   @Override
   public ColumnProperty getColumnProperty(final String propertyId) {
     final Property property = getProperty(propertyId);
@@ -345,7 +323,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return (ColumnProperty) property;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Property getProperty(final String propertyId) {
     requireNonNull(propertyId, "propertyId");
@@ -367,7 +344,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return property;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Property> getProperties(final Collection<String> propertyIds) {
     requireNonNull(propertyIds, "propertyIds");
@@ -375,7 +351,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return propertyIds.stream().map(this::getProperty).collect(toList());
   }
 
-  /** {@inheritDoc} */
   @Override
   public ColumnProperty getSelectableColumnProperty(final String propertyId) {
     final ColumnProperty property = getColumnProperty(propertyId);
@@ -386,7 +361,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return property;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getColumnProperties(final List<String> propertyIds) {
     requireNonNull(propertyIds, "propertyIds");
@@ -398,13 +372,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return theProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean hasSingleIntegerPrimaryKey() {
     return primaryKeyProperties.size() == 1 && primaryKeyProperties.get(0).isInteger();
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getWritableColumnProperties(final boolean includePrimaryKeyProperties,
                                                           final boolean includeNonUpdatable) {
@@ -415,7 +387,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
             .collect(toList());
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Property> getUpdatableProperties() {
     final List<ColumnProperty> writableColumnProperties = getWritableColumnProperties(
@@ -431,7 +402,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return updatable;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getSelectableColumnProperties(final List<String> propertyIds) {
     final List<ColumnProperty> theProperties = new ArrayList<>(propertyIds.size());
@@ -442,14 +412,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return theProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ForeignKeyProperty> getForeignKeyReferences(final String foreignEntityId) {
     return getForeignKeyProperties().stream().filter(foreignKeyProperty ->
             foreignKeyProperty.getForeignEntityId().equals(foreignEntityId)).collect(toList());
   }
 
-  /** {@inheritDoc} */
   @Override
   public ForeignKeyProperty getForeignKeyProperty(final String propertyId) {
     final ForeignKeyProperty property = foreignKeyPropertyMap.get(propertyId);
@@ -460,43 +428,36 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return property;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ForeignKeyProperty> getForeignKeyProperties(final String columnPropertyId) {
     return columnPropertyForeignKeyProperties.computeIfAbsent(columnPropertyId, propertyId -> Collections.emptyList());
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Property> getProperties() {
     return properties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Set<Property> getPropertySet() {
     return propertySet;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean hasPrimaryKey() {
     return !primaryKeyProperties.isEmpty();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean hasDerivedProperties() {
     return !derivedProperties.isEmpty();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean hasDerivedProperties(final String propertyId) {
     return derivedProperties.containsKey(propertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Collection<DerivedProperty> getDerivedProperties(final String property) {
     final Collection<DerivedProperty> derived = derivedProperties.get(property);
@@ -504,49 +465,41 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return derived == null ? emptyList() : derived;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getPrimaryKeyProperties() {
     return primaryKeyProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Property> getVisibleProperties() {
     return visibleProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getColumnProperties() {
     return columnProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getSelectableColumnProperties() {
     return selectableColumnProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ColumnProperty> getLazyLoadedBlobProperties() {
     return lazyLoadedBlobProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<TransientProperty> getTransientProperties() {
     return transientProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<ForeignKeyProperty> getForeignKeyProperties() {
     return foreignKeyProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntityDefinition getForeignDefinition(final String foreignKeyPropertyId) {
     requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
@@ -558,14 +511,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return definition;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean hasForeignDefinition(final String foreignKeyPropertyId) {
     requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
     return foreignEntityDefinitions.containsKey(foreignKeyPropertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setForeignDefinition(final String foreignKeyPropertyId, final EntityDefinition definition) {
     requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
@@ -580,61 +531,51 @@ final class DefaultEntityDefinition implements EntityDefinition {
     foreignEntityDefinitions.put(foreignKeyPropertyId, definition);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean hasDenormalizedProperties() {
     return hasDenormalizedProperties;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean hasDenormalizedProperties(final String foreignKeyPropertyId) {
     return hasDenormalizedProperties && denormalizedProperties.containsKey(foreignKeyPropertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyId) {
     return denormalizedProperties.get(foreignKeyPropertyId);
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return entityId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Validator getValidator() {
     return validator;
   }
 
-  /** {@inheritDoc} */
   @Override
   public ColorProvider getColorProvider() {
     return colorProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity entity() {
     return entity(null, null);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity entity(final Entity.Key key) {
     return new DefaultEntity(this, key);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity entity(final Map<Property, Object> values, final Map<Property, Object> originalValues) {
     return new DefaultEntity(this, values, originalValues);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity.Key key() {
     if (hasPrimaryKey()) {
@@ -644,13 +585,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return new DefaultEntityKey(this);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity.Key key(final Integer value) {
     return new DefaultEntityKey(this, value);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity.Key key(final Long value) {
     return new DefaultEntityKey(this, value);

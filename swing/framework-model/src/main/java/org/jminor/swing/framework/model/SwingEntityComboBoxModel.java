@@ -116,25 +116,21 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     addEditEventListeners();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getClass().getSimpleName() + " [entityId: " + entityId + "]";
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getEntityId() {
     return entityId;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void forceRefresh() {
     try {
@@ -146,26 +142,22 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isStaticData() {
     return staticData;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityComboBoxModel setStaticData(final boolean staticData) {
     this.staticData = staticData;
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isListenToEditEvents() {
     return listenToEditEvents;
   }
 
-  /** {@inheritDoc} */
   @Override
   public EntityComboBoxModel setListenToEditEvents(final boolean listenToEditEvents) {
     this.listenToEditEvents = listenToEditEvents;
@@ -178,13 +170,11 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     return this;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Entity getEntity(final Entity.Key primaryKey) {
     return getItems().stream().filter(entity -> entity != null && entity.getKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSelectedEntityByKey(final Entity.Key key) {
     requireNonNull(key, "key");
@@ -200,25 +190,21 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSelectConditionProvider(final Condition.Provider selectConditionProvider) {
     this.selectConditionProvider = selectConditionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Condition.Provider getSelectConditionProvider() {
     return this.selectConditionProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Predicate<Entity> getForeignKeyIncludeCondition() {
     return foreignKeyIncludeCondition;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setForeignKeyFilterEntities(final String foreignKeyPropertyId, final Collection<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
@@ -230,7 +216,6 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     setIncludeCondition(foreignKeyIncludeCondition);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyId) {
     final Collection<Entity> filterEntities = new ArrayList<>();
@@ -241,19 +226,16 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     return filterEntities;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setStrictForeignKeyFiltering(final boolean strictForeignKeyFiltering) {
     this.strictForeignKeyFiltering = strictForeignKeyFiltering;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isStrictForeignKeyFiltering() {
     return strictForeignKeyFiltering;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final SwingEntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyId) {
     final ForeignKeyProperty foreignKeyProperty = domain.getDefinition(entityId).getForeignKeyProperty(foreignKeyPropertyId);
@@ -266,7 +248,6 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     return foreignKeyModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void linkForeignKeyComboBoxModel(final String foreignKeyPropertyId, final EntityComboBoxModel foreignKeyModel) {
     final ForeignKeyProperty foreignKeyProperty = domain.getDefinition(entityId).getForeignKeyProperty(foreignKeyPropertyId);
@@ -298,7 +279,6 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     addRefreshListener(new ForeignKeyModelRefreshListener(foreignKeyModel));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Value<Integer> integerValueSelector(final String propertyId) {
     return integerValueSelector(propertyId, (entities, thePropertyId, value) ->
@@ -306,25 +286,21 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
                     Objects.equals(value, entity.get(propertyId))).findFirst().orElse(null));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Value<Integer> integerValueSelector(final String propertyId, final Finder<Integer> finder) {
     return new SelectorValue<>(propertyId, finder);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addRefreshListener(final EventListener listener) {
     refreshDoneEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeRefreshListener(final EventListener listener) {
     refreshDoneEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final Entity translateSelectionItem(final Object item) {
     if (item == null) {
@@ -346,7 +322,6 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
             visibleItem != null && itemToString.equals(visibleItem.toString())).findFirst().orElse(null);
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final List<Entity> initializeContents() {
     try {

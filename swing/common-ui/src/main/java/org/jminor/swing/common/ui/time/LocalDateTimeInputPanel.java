@@ -72,7 +72,6 @@ public final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateT
     return button;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setEditable(final boolean editable) {
     super.setEditable(editable);

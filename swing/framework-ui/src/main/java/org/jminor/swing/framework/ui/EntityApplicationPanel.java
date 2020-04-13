@@ -200,7 +200,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     setUncaughtExceptionHandler();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void displayException(final Throwable exception, final Window dialogParent) {
     LOG.error(exception.getMessage(), exception);
@@ -473,13 +472,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final HierarchyPanel getParentPanel() {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final EntityPanel getSelectedChildPanel() {
     if (applicationTabPane != null) {//initializeUI() may have been overridden
@@ -489,7 +486,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return entityPanels.isEmpty() ? null : entityPanels.get(0);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSelectedChildPanel(final HierarchyPanel childPanel) {
     if (applicationTabPane != null) {//initializeUI() may have been overridden
@@ -497,25 +493,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final HierarchyPanel getPreviousSiblingPanel() {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final HierarchyPanel getNextSiblingPanel() {
     return null;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<HierarchyPanel> getChildPanels() {
     return Collections.unmodifiableList(entityPanels);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void activatePanel() {}
 

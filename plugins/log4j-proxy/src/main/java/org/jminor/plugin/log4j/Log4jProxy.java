@@ -19,7 +19,6 @@ import static java.util.Arrays.asList;
  */
 public final class Log4jProxy implements LoggerProxy {
 
-  /** {@inheritDoc} */
   @Override
   public Object getLogLevel() {
     final LoggerContext context = (LoggerContext) LogManager.getContext(false);
@@ -28,7 +27,6 @@ public final class Log4jProxy implements LoggerProxy {
     return loggerConfig.getLevel();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setLogLevel(final Object logLevel) {
     if (!(logLevel instanceof Level)) {
@@ -40,7 +38,6 @@ public final class Log4jProxy implements LoggerProxy {
     context.updateLoggers();
   }
 
-  /** {@inheritDoc} */
   @Override
   public List getLogLevels() {
     return asList(Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL);

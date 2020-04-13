@@ -172,31 +172,26 @@ public final class EntityTableCellRenderers {
       setHorizontalAlignment(horizontalAlignment);
     }
 
-    /** {@inheritDoc} */
     @Override
     public final boolean isIndicateCondition() {
       return indicateCondition;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final void setIndicateCondition(final boolean indicateCondition) {
       this.indicateCondition = indicateCondition;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final boolean isTooltipData() {
       return tooltipData;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final void setTooltipData(final boolean tooltipData) {
       this.tooltipData = tooltipData;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {

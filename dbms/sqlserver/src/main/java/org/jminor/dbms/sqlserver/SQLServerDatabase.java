@@ -43,13 +43,11 @@ public final class SQLServerDatabase extends AbstractDatabase {
             requireNonNull(port, "port"), requireNonNull(databaseName, "databaseName"), false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean supportsSelectForUpdate() {
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean supportsNowait() {
     return false;
@@ -63,32 +61,27 @@ public final class SQLServerDatabase extends AbstractDatabase {
     return true;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
     final String sid = getSid();
     return URL_PREFIX + getHost() + ":" + getPort() + (!nullOrEmpty(sid) ? ";databaseName=" + sid : "") + getUrlAppend();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getErrorCode() == AUTHENTICATION_ERROR;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;

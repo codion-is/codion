@@ -158,7 +158,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     bindEventsInternal();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return getEditModel().toString();
@@ -365,7 +364,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     displayException(exception, Windows.getParentWindow(this));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void displayException(final Throwable throwable, final Window dialogParent) {
     DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);

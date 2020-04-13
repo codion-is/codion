@@ -82,13 +82,11 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
     bindEvents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<TableColumn> getAllColumns() {
     return columns;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void showColumn(final C columnIdentifier) {
     final TableColumn column = hiddenColumns.get(columnIdentifier);
@@ -100,7 +98,6 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void hideColumn(final C columnIdentifier) {
     if (!hiddenColumns.containsKey(columnIdentifier)) {
@@ -111,13 +108,11 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isColumnVisible(final C columnIdentifier) {
     return !hiddenColumns.containsKey(columnIdentifier);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setColumns(final C... columnIdentifiers) {
     if (columnIdentifiers != null) {
@@ -135,13 +130,11 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<TableColumn> getHiddenColumns() {
     return new ArrayList<>(hiddenColumns.values());
   }
 
-  /** {@inheritDoc} */
   @Override
   public final TableColumn getTableColumn(final C columnIdentifier) {
     requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
@@ -154,7 +147,6 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
     throw new IllegalArgumentException("Column not found: " + columnIdentifier);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean containsColumn(final C columnIdentifier) {
     requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
@@ -162,7 +154,6 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
     return columns.stream().anyMatch(column -> columnIdentifier.equals(column.getIdentifier()));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final ColumnConditionModel<R, C> getColumnFilterModel(final C columnIdentifier) {
     requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
@@ -170,37 +161,31 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
     return columnFilterModels.get(columnIdentifier);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Collection<ColumnConditionModel<R, C>> getColumnFilterModels() {
     return columnFilterModels.values();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final C getColumnIdentifier(final int columnModelIndex) {
     return (C) getColumn(convertColumnIndexToView(columnModelIndex)).getIdentifier();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addColumnHiddenListener(final EventDataListener<C> listener) {
     columnHiddenEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeColumnHiddenListener(final EventDataListener<C> listener) {
     columnHiddenEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addColumnShownListener(final EventDataListener<C> listener) {
     columnShownEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeColumnShownListener(final EventDataListener<C> listener) {
     columnShownEvent.removeDataListener(listener);

@@ -44,25 +44,21 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     this.counter = new DefaultConnectionPoolCounter(this);
   }
 
-  /** {@inheritDoc} */
   @Override
   public Database getDatabase() {
     return database;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final User getUser() {
     return user;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final DataSource getPoolDataSource() {
     return poolDataSource;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Connection getConnection() throws DatabaseException {
     final long nanoTime = System.nanoTime();
@@ -80,25 +76,21 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void resetStatistics() {
     counter.resetStatistics();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isCollectSnapshotStatistics() {
     return counter.isCollectSnapshotStatistics();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
     counter.setCollectSnapshotStatistics(collectSnapshotStatistics);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final ConnectionPoolStatistics getStatistics(final long since) {
     return counter.getStatistics(since);

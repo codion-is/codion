@@ -80,7 +80,6 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 //    }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void clear() {
     foreignKeyListModels.values().forEach(FXEntityListModel::clear);
@@ -133,7 +132,6 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   protected void refreshDataModels() {
     foreignKeyListModels.values().forEach(FXEntityListModel::refresh);

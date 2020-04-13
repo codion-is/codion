@@ -157,7 +157,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     bindEvents();
   }
 
-  /** {@inheritDoc} */
   @Override
   public T getModel() {
     return (T) super.getModel();
@@ -215,7 +214,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     this.scrollToSelectedItem = scrollToSelectedItem;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectionMode(final int selectionMode) {
     tableModel.getSelectionModel().setSelectionMode(selectionMode);

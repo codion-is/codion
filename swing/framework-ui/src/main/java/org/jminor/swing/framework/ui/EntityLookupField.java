@@ -493,7 +493,6 @@ public final class EntityLookupField extends JTextField {
       basePanel.add(scrollPane, BorderLayout.CENTER);
     }
 
-    /** {@inheritDoc} */
     @Override
     public JComponent getSelectionComponent(final List<Entity> entities) {
       list.setListData(entities.toArray(new Entity[0]));
@@ -508,7 +507,6 @@ public final class EntityLookupField extends JTextField {
       basePanel.setPreferredSize(preferredSize);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Control getSelectControl() {
       return selectControl;
@@ -563,7 +561,6 @@ public final class EntityLookupField extends JTextField {
       return table;
     }
 
-    /** {@inheritDoc} */
     @Override
     public JComponent getSelectionComponent(final List<Entity> entities) {
       table.getModel().clear();
@@ -578,7 +575,6 @@ public final class EntityLookupField extends JTextField {
       basePanel.setPreferredSize(preferredSize);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Control getSelectControl() {
       return selectControl;

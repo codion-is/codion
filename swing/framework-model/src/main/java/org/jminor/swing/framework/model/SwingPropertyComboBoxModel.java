@@ -50,7 +50,6 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
     this.valueProvider = valueProvider;
   }
 
-  /** {@inheritDoc} */
   @Override
   protected final List<T> initializeContents() {
     return new ArrayList<>(valueProvider.get());

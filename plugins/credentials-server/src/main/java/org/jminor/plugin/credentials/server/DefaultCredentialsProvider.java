@@ -26,7 +26,6 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultCredentialsProvider.class);
 
-  /** {@inheritDoc} */
   @Override
   public User getCredentials(final UUID authenticationToken) {
     LOG.debug("DefaultCredentialsProvider.getCredentials(" + authenticationToken + ")");

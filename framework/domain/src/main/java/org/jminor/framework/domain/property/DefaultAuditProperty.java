@@ -16,7 +16,6 @@ class DefaultAuditProperty extends DefaultColumnProperty implements AuditPropert
     super.setUpdatable(false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final AuditAction getAuditAction() {
     return auditAction;

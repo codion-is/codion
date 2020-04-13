@@ -11,13 +11,11 @@ import org.jminor.common.db.DatabaseProvider;
  */
 public final class OracleDatabaseProvider implements DatabaseProvider {
 
-  /** {@inheritDoc} */
   @Override
   public Database.Type getDatabaseType() {
     return Database.Type.ORACLE;
   }
 
-  /** {@inheritDoc} */
   @Override
   public Database createDatabase() {
     return new OracleDatabase();

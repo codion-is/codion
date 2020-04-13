@@ -59,19 +59,16 @@ public final class DerbyDatabase extends AbstractDatabase {
             requireNonNull(sid, "sid"), false);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean supportsNowait() {
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY + requireNonNull(idSource, "idSource");
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
@@ -83,7 +80,6 @@ public final class DerbyDatabase extends AbstractDatabase {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void shutdownEmbedded(final Properties connectionProperties) {
     try {

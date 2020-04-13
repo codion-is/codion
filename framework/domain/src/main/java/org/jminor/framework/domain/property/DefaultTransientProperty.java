@@ -19,7 +19,6 @@ class DefaultTransientProperty extends DefaultProperty implements TransientPrope
     super(propertyId, type, caption, getTypeClass(type));
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isModifiesEntity() {
     return modifiesEntity;

@@ -33,7 +33,6 @@ class EntityTableCellEditor extends AbstractCellEditor implements TableCellEdito
     this.property = requireNonNull(property, "property");
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
                                                      final int row, final int column) {
@@ -45,13 +44,11 @@ class EntityTableCellEditor extends AbstractCellEditor implements TableCellEdito
     return component;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Object getCellEditorValue() {
     return cellValue.get();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final boolean isCellEditable(final EventObject event) {
     if (event instanceof MouseEvent) {

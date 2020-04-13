@@ -37,19 +37,16 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
     this.summaryChangedEvent.addListener(summaryValueChangedEvent);
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isLocked() {
     return locked;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setLocked(final boolean locked) {
     this.locked = locked;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void setSummary(final Summary summary) {
     if (isLocked()) {
@@ -62,13 +59,11 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public final Summary getSummary() {
     return summary;
   }
 
-  /** {@inheritDoc} */
   @Override
   public final List<Summary> getAvailableSummaries() {
     if (valueProvider.isNumerical()) {
@@ -79,31 +74,26 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
     return emptyList();
   }
 
-  /** {@inheritDoc} */
   @Override
   public final String getSummaryText() {
     return summary.getSummary(valueProvider);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addSummaryValueListener(final EventListener listener) {
     summaryValueChangedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeSummaryValueListener(final EventListener listener) {
     summaryValueChangedEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void addSummaryListener(final EventDataListener<Summary> listener) {
     summaryChangedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public final void removeSummaryListener(final EventDataListener<Summary> listener) {
     summaryChangedEvent.removeDataListener(listener);

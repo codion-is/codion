@@ -67,109 +67,91 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     return selectionModel;
   }
 
-  /** {@inheritDoc} */
   @Override
   public State getSingleSelectionModeState() {
     return singleSelectionModeState;
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getSelectionEmptyObserver() {
     return selectionEmptyState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getSelectionNotEmptyObserver() {
     return selectionEmptyState.getReversedObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getMultipleSelectionObserver() {
     return multipleSelectionState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public StateObserver getSingleSelectionObserver() {
     return singleSelectionState.getObserver();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectionChangedListener(final EventListener listener) {
     selectionChangedEvent.addListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectionChangedListener(final EventListener listener) {
     selectionChangedEvent.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedIndexListener(final EventDataListener<Integer> listener) {
     selectedIndexChangedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedIndexListener(final EventDataListener<Integer> listener) {
     selectedIndexChangedEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedItemListener(final EventDataListener<Entity> listener) {
     selectedItemChangedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedItemListener(final EventDataListener<Entity> listener) {
     selectedItemChangedEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedItemsListener(final EventDataListener<List<Entity>> listener) {
     selectedItemsChangedEvent.addDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedItemsListener(final EventDataListener<List<Entity>> listener) {
     selectedItemsChangedEvent.removeDataListener(listener);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void moveSelectionDown() {
     throw new UnsupportedOperationException("Not implemented");
   }
 
-  /** {@inheritDoc} */
   @Override
   public void moveSelectionUp() {
     throw new UnsupportedOperationException("Not implemented");
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getSelectedIndex() {
     return selectedIndex;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedIndex(final int index) {
     selectionModel.selectedIndexProperty().add(index);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedIndex(final int index) {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -182,7 +164,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedIndexes(final Collection<Integer> indexes) {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -193,13 +174,11 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedItem(final Entity item) {
     removeSelectedItems(singletonList(item));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void removeSelectedItems(final Collection<Entity> items) {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -210,13 +189,11 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedIndex(final int index) {
     selectionModel.selectedIndexProperty().add(index);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedIndexes(final Collection<Integer> indexes) {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -228,7 +205,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Integer> getSelectedIndexes() {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -241,7 +217,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     return singletonList(selectionModel.selectedIndexProperty().get());
   }
 
-  /** {@inheritDoc} */
   @Override
   public void selectAll() {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -252,7 +227,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedIndexes(final Collection<Integer> indexes) {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -263,7 +237,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getSelectionCount() {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -273,7 +246,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     return selectionModel.getSelectedIndex() == -1 ? 0 : 1;
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedItems(final Collection<Entity> items) {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -288,7 +260,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public List<Entity> getSelectedItems() {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -301,7 +272,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     return singletonList(selectionModel.getSelectedItem());
   }
 
-  /** {@inheritDoc} */
   @Override
   public Entity getSelectedItem() {
     if (selectionModel.isEmpty()) {
@@ -314,7 +284,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     return selectionModel.getSelectedItem();
   }
 
-  /** {@inheritDoc} */
   @Override
   public void setSelectedItem(final Entity item) {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -323,7 +292,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     selectionModel.select(item);
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedItem(final Entity item) {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -334,7 +302,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void addSelectedItems(final Collection<Entity> items) {
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -345,13 +312,11 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public void clearSelection() {
     selectionModel.clearSelection();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isSelectionEmpty() {
     return selectionModel.isEmpty();

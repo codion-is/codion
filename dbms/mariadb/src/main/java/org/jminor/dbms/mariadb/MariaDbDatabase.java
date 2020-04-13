@@ -40,31 +40,26 @@ public final class MariaDbDatabase extends AbstractDatabase {
             requireNonNull(port, "port"), requireNonNull(dbname, "dbname"));
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + getUrlAppend();
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean supportsNowait() {
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getErrorCode() == REFERENTIAL_CONSTRAINT_ERROR;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;

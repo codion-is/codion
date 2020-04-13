@@ -32,7 +32,6 @@ public final class JasperReportsDataSource<T> implements JRDataSource {
     this.valueProvider = requireNonNull(valueProvider, "valueProvider");
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean next() {
     final boolean hasNext = reportIterator.hasNext();
