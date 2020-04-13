@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.tools;
+package org.jminor.swing.framework.tools.loadtest;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
@@ -142,7 +142,7 @@ public class EntityLoadTestModelTest {
     DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.set(UNIT_TEST_USER.getUsername()
             + ":" + String.valueOf(UNIT_TEST_USER.getPassword()));
     DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.swing.framework.tools.TestDomain");
+    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.swing.framework.tools.loadtest.TestDomain");
     Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
     Server.RMI_SERVER_HOSTNAME.set("localhost");
   }

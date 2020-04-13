@@ -5874,3 +5874,4 @@
   DefaultConnectionPoolCounter, AbstractRemoteEntityConnection.RequestCounter and AbstractDatabase.QueryCounter now use AtomicInteger and AtomicLong instead of synchronizing internally
   HikariConnectionPoolProvider disables auto commit on connections
   TomcatConnectionPoolProvider disables auto commit on connections
+  Tools modules reorganized
