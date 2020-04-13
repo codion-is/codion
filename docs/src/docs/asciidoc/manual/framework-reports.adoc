@@ -1,3 +1,4 @@
+[#_reporting_with_jasperreports]
 = Reporting with JasperReports
 :dir-source: ../../../../../demos/manual/src/main/java
 :dir-tutorials: ../tutorials

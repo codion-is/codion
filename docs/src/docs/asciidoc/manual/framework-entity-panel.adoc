@@ -1,3 +1,4 @@
+[#_entitypanel]
 = EntityPanel
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api

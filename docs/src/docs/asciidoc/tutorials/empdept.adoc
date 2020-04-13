@@ -1,3 +1,4 @@
+[#_empdept_tutorial]
 = EmpDept Tutorial
 :docinfo: shared-head
 :imagesdir: ../images
@@ -68,7 +69,7 @@ Here are the parameters required for running the EmpDept test on the default H2 
 
 -Djminor.db.host=h2db/h2
 
-For further information on parameters required for running JMinor applications see <<{basedir}/technical/client.adoc#_configuration, client configuration>> and <<{basedir}/technical/server.adoc#_configuration, server configuration>>.
+For further information on parameters required for running JMinor applications see <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> and <<{basedir}/technical/server.adoc#_server_configuration, server configuration>>.
 
 == Model
 
@@ -154,6 +155,7 @@ All we have to do is override *initializeUI*.
 include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmployeeEditPanel.java[tags=initializeUI]
 ----
 
+[#_main_application_panel]
 === Main application panel
 
 We create a main application panel by extending {url-javadoc}/org/jminor/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *setupEntityPanelBuilders()* we configure two sets of *SwingEntityModelBuilder* and *EntityPanelBuilder* objects, which allow lazy initialization of UI components. We'll define the *EmployeePanelBuilder* class later. We call *addEntityPanelBuilder()* making the department panel the main application panel.
@@ -184,7 +186,7 @@ We implement *initializeApplicationModel()* by returning an instance of the *Emp
 include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=initializeApplicationModel]
 ----
 
-We create a *main()* method for configuring and running the application. See <<{basedir}/technical/client-configuration.adoc#_configuration, client configuration>> for what configuration is required for running the client.
+We create a *main()* method for configuring and running the application. See <<{basedir}/technical/client-configuration.adoc#_client_configuration, client configuration>> for what configuration is required for running the client.
 
 [source,java]
 ----
@@ -212,6 +214,7 @@ We create a *EmployeePanelBuilder* by extending *EntityPanelBuilder*, in order t
 include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=employeePanelBuilder]
 ----
 
+[#_load_test]
 == Load test
 
 [source,java]

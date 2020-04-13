@@ -87,6 +87,7 @@ include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[t
 include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[tags=blobProperty]
 ----
 
+[#_foreignkeyproperty]
 === ForeignKeyProperty
 
 {url-javadoc}/org/jminor/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to represent a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
@@ -238,6 +239,7 @@ include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[t
 * <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>>
 * <<{dir-tutorials}/petstore.adoc#_domain, Petstore domain model>>
 
+[#_keygenerator]
 == KeyGenerator
 
 The framework provides implementations for most commonly used primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/org/jminor/framework/domain/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/org/jminor/framework/domain/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.

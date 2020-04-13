@@ -1,3 +1,4 @@
+[#_petclinic_tutorial]
 = Petclinic Tutorial
 :docinfo: shared-head
 :imagesdir: ../images

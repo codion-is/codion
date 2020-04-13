@@ -3,12 +3,12 @@
 :basedir: ..
 
 * Basics
-** <<{basedir}/tutorials/chinook-entities.adoc#, Entities>>.
-** <<{basedir}/tutorials/chinook-ui.adoc#, UI>>.
+** <<{basedir}/tutorials/chinook-entities.adoc#_entity_basics, Entities>>.
+** <<{basedir}/tutorials/chinook-ui.adoc#_ui_basics, UI>>.
 * Clients
-** <<{basedir}/tutorials/empdept.adoc#, EmpDept Tutorial>>.
-** <<{basedir}/tutorials/world.adoc#, World Tutorial>>.
-** <<{basedir}/tutorials/chinook-minimal.adoc#, Chinook Minimal>>.
-** <<{basedir}/tutorials/chinook.adoc#, Chinook Tutorial Full (just code)>>.
-** <<{basedir}/tutorials/petclinic.adoc#, Petclinic Tutorial (just code)>>.
-** <<{basedir}/tutorials/petstore.adoc#, Petstore Tutorial (just code)>>.
+** <<{basedir}/tutorials/empdept.adoc#_empdept_tutorial, EmpDept Tutorial>>.
+** <<{basedir}/tutorials/world.adoc#_world_tutorial, World Tutorial>>.
+** <<{basedir}/tutorials/chinook-minimal.adoc#_chinook_minimal_tutorial, Chinook Minimal>>.
+** <<{basedir}/tutorials/chinook.adoc#_chinook_tutorial, Chinook Tutorial Full (just code)>>.
+** <<{basedir}/tutorials/petclinic.adoc#_petclinic_tutorial, Petclinic Tutorial (just code)>>.
+** <<{basedir}/tutorials/petstore.adoc#_pet_store_tutorial, Petstore Tutorial (just code)>>.

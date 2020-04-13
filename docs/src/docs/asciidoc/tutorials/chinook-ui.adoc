@@ -1,3 +1,4 @@
+[#_ui_basics]
 = Ui Basics
 :docinfo: shared-head
 :dir-source: ../../../../../demos/chinook/src/main/java

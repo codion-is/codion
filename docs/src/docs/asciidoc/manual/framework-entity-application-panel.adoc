@@ -1,3 +1,4 @@
+[#_entityapplicationpanel]
 = EntityApplicationPanel
 :dir-source: ../../../../../demos/manual/src/main/java
 :dir-tutorials: ../tutorials

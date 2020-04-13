@@ -1,3 +1,4 @@
+[#_server_monitor]
 = Server Monitor
 :basedir: ..
 :imagesdir: ../images

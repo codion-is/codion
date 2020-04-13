@@ -1,3 +1,4 @@
+[#_entitymodel]
 = EntityModel
 :dir-source: ../../../../../demos/manual/src/main/java
 :dir-tutorials: ../tutorials
@@ -38,6 +39,7 @@ Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] can 
 include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
 ----
 
+[#_detail_models]
 == Detail models
 
 Detail models can be added to a model, this relies on a foreign key reference between the entities involved.
@@ -47,6 +49,7 @@ Detail models can be added to a model, this relies on a foreign key reference be
 include::{dir-source}/org/jminor/framework/demos/manual/store/model/StoreAppModel.java[tags=storeAppModel]
 ----
 
+[#_event_binding]
 == Event binding
 
 The EntityModel, EntityEditModel and EntityTableModel classes expose a number of *addListener* methods.

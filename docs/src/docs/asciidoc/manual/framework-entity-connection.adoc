@@ -1,3 +1,4 @@
+[#_entityconnection]
 = EntityConnection
 :dir-tutorials: ../tutorials
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
@@ -183,6 +184,7 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
 ----
 
+[#_full_example]
 == Full example
 
 .Show code

@@ -1,3 +1,4 @@
+[#_world_tutorial]
 = World Tutorial
 :docinfo: shared-head
 :imagesdir: ../images
@@ -36,6 +37,7 @@ image::tutorials/world/continent.png[]
 image::tutorials/world/lookup.png[]
 ====
 
+[#_domain]
 == Domain
 
 [source,java]
