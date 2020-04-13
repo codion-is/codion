@@ -41,7 +41,7 @@ create table chinook.album
     title varchar(160) not null,
     artistid integer not null,
     cover blob,
-    constraint pk_productitem primary key (albumid),
+    constraint pk_album primary key (albumid),
     constraint fk_artist_album foreign key (artistid) references chinook.artist(artistid)
 );
 
@@ -125,7 +125,7 @@ create table chinook.invoiceline
     unitprice double not null,
     quantity integer not null,
     constraint pk_invoiceline primary key (invoicelineid),
-    constraint fk_productitem_invoiceline foreign key (trackid) references chinook.track(trackid),
+    constraint fk_track_invoiceline foreign key (trackid) references chinook.track(trackid),
     constraint fk_invoice_invoiceline foreign key (invoiceid) references chinook.invoice(invoiceid)
 );
 
