@@ -1,3 +1,4 @@
+[#_chinook_minimal_tutorial]
 = Chinook Minimal Tutorial
 :docinfo: shared-head
 :dir-source: ../../../../../demos/chinook/src/main/java

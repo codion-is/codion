@@ -1,3 +1,4 @@
+[#_entity_basics]
 = Entity Basics
 :docinfo: shared-head
 :dir-source: ../../../../../demos/chinook/src/main/java

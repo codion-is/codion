@@ -1,8 +1,10 @@
+[#_pet_store_tutorial]
 = Pet Store Tutorial
 :docinfo: shared-head
 :dir-source: ../../../../../demos/petstore/src/main/java
 :dir-test-source: ../../../../../demos/petstore/src/test/java
 
+[#_domain]
 == Domain
 
 [source,java]
@@ -10,6 +12,7 @@
 include::{dir-source}/org/jminor/framework/demos/petstore/domain/Petstore.java[lines=4..-1]
 ----
 
+[#_domain_unit_test]
 === Domain unit test
 
 [source,java]
@@ -63,6 +66,7 @@ include::{dir-source}/org/jminor/framework/demos/petstore/ui/TagItemEditPanel.ja
 include::{dir-source}/org/jminor/framework/demos/petstore/ui/TagEditPanel.java[lines=4..-1]
 ----
 
+[#_main_application_panel]
 == Main application panel
 
 [source,java]
@@ -70,6 +74,7 @@ include::{dir-source}/org/jminor/framework/demos/petstore/ui/TagEditPanel.java[l
 include::{dir-source}/org/jminor/framework/demos/petstore/ui/PetstoreAppPanel.java[lines=4..-1]
 ----
 
+[#_load_test]
 == Load test
 
 [source,java]

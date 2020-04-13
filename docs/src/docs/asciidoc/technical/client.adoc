@@ -111,6 +111,7 @@ include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/ClientArchitec
 ----
 ====
 
+[#_client_configuration]
 == Configuration
 :dir-source: ../../../../../demos
 

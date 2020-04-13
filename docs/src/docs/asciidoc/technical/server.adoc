@@ -94,6 +94,7 @@ include::{dir-source}/src/main/security/jminor_server.policy[]
 ----
 ====
 
+[#_server_configuration]
 == Configuration
 
 === Example configuration file
