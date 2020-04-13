@@ -180,13 +180,8 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public boolean supportsSelectForUpdate() {
-    return true;
-  }
-
-  @Override
-  public boolean supportsNowait() {
-    return true;
+  public SelectForUpdateSupport getSelectForUpdateSupport() {
+    return SelectForUpdateSupport.FOR_UPDATE_NOWAIT;
   }
 
   @Override

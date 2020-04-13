@@ -25,6 +25,24 @@ public interface Database {
   }
 
   /**
+   * The possible select for update support values.
+   */
+  enum SelectForUpdateSupport {
+    /**
+     * No support for select for update.
+     */
+    NONE,
+    /**
+     * Supports basic for update.
+     */
+    FOR_UPDATE,
+    /**
+     * Supports for update with the 'nowait' option.
+     */
+    FOR_UPDATE_NOWAIT
+  }
+
+  /**
    * Specifies the database type by name, this property is case insensitive
    * @see Type#DERBY
    * @see Type#HSQL
@@ -176,22 +194,16 @@ public interface Database {
   void shutdownEmbedded(Properties connectionProperties);
 
   /**
+   * Returns the select for update support of the underlying database.
+   * @return the select for update support.
+   */
+  SelectForUpdateSupport getSelectForUpdateSupport();
+
+  /**
    * Returns true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}.
    * @return true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}
    */
   boolean supportsIsValid();
-
-  /**
-   * Returns true if this database supports the 'select for update' syntax
-   * @return true if this database supports the 'select for update' syntax
-   */
-  boolean supportsSelectForUpdate();
-
-  /**
-   * Returns true if this database supports the select for update NOWAIT option
-   * @return true if NOWAIT is supported for select for update
-   */
-  boolean supportsNowait();
 
   /**
    * Returns true if this database requires that subqueries by aliased.

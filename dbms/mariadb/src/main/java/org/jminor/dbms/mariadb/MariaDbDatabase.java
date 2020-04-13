@@ -51,8 +51,8 @@ public final class MariaDbDatabase extends AbstractDatabase {
   }
 
   @Override
-  public boolean supportsNowait() {
-    return false;
+  public SelectForUpdateSupport getSelectForUpdateSupport() {
+    return SelectForUpdateSupport.FOR_UPDATE;
   }
 
   @Override

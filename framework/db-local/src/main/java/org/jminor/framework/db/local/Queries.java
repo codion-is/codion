@@ -171,9 +171,10 @@ final class Queries {
   }
 
   private static void addForUpdate(final StringBuilder queryBuilder, final Database database) {
-    if (database.supportsSelectForUpdate()) {
+    final Database.SelectForUpdateSupport selectForUpdateSupport = database.getSelectForUpdateSupport();
+    if (!selectForUpdateSupport.equals(Database.SelectForUpdateSupport.NONE)) {
       queryBuilder.append(" for update");
-      if (database.supportsNowait()) {
+      if (selectForUpdateSupport.equals(Database.SelectForUpdateSupport.FOR_UPDATE_NOWAIT)) {
         queryBuilder.append(" nowait");
       }
     }

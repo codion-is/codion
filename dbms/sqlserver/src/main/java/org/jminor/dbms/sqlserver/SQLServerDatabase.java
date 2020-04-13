@@ -44,13 +44,8 @@ public final class SQLServerDatabase extends AbstractDatabase {
   }
 
   @Override
-  public boolean supportsSelectForUpdate() {
-    return false;
-  }
-
-  @Override
-  public boolean supportsNowait() {
-    return false;
+  public SelectForUpdateSupport getSelectForUpdateSupport() {
+    return SelectForUpdateSupport.NONE;
   }
 
   /**
