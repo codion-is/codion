@@ -76,7 +76,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
       throw new DatabaseException(e, e.getMessage());
     }
     finally {
-      counter.addCheckOutTime((System.nanoTime() - nanoTime) / 1000000);
+      counter.addCheckOutTime((int) (System.nanoTime() - nanoTime) / 1000000);
     }
   }
 
