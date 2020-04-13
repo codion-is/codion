@@ -5876,3 +5876,4 @@
   TomcatConnectionPoolProvider disables auto commit on connections
   Tools modules reorganized
   Unnecessary @inheritDoc annotations removed
+  Database.supportsSelectForUpdate() and supportsNowait() replaced with getSelectForUpdateSupport() with enum SelectForUpdateSupport

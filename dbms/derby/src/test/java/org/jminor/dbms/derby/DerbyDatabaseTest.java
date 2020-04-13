@@ -27,7 +27,7 @@ public class DerbyDatabaseTest {
   @Test
   public void supportsNoWait() {
     final DerbyDatabase db = new DerbyDatabase("host", 1234, "sid");
-    assertFalse(db.supportsNowait());
+    assertEquals(Database.SelectForUpdateSupport.FOR_UPDATE, db.getSelectForUpdateSupport());
   }
 
   @Test

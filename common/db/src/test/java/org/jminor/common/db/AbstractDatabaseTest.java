@@ -31,8 +31,8 @@ public final class AbstractDatabaseTest {
     assertEquals(1234, database.getPort());
     assertEquals("sid", database.getSid());
     assertFalse(database.isEmbedded());
+    assertEquals(Database.SelectForUpdateSupport.FOR_UPDATE_NOWAIT, database.getSelectForUpdateSupport());
     assertTrue(database.supportsIsValid());
-    assertTrue(database.supportsNowait());
     assertEquals(DRIVER_CLASS, database.getDriverClassName());
     database.shutdownEmbedded(null);
     database.getErrorMessage(new SQLException());
