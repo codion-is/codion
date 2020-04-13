@@ -148,7 +148,7 @@ public final class MethodLogger {
   }
 
   /**
-   * Provides String represenations of method arguments.
+   * Provides String representations of method arguments.
    */
   public static class ArgumentToString implements Function<Object, String> {
 

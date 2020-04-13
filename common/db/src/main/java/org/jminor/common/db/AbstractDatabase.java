@@ -321,12 +321,12 @@ public abstract class AbstractDatabase implements Database {
     private static final double THOUSAND = 1000d;
 
     private final AtomicLong queriesPerSecondTime = new AtomicLong(System.currentTimeMillis());
-    private final AtomicInteger queriesPerSecondCounter = new AtomicInteger(0);
-    private final AtomicInteger selectsPerSecondCounter = new AtomicInteger(0);
-    private final AtomicInteger insertsPerSecondCounter = new AtomicInteger(0);
-    private final AtomicInteger updatesPerSecondCounter = new AtomicInteger(0);
-    private final AtomicInteger deletesPerSecondCounter = new AtomicInteger(0);
-    private final AtomicInteger undefinedPerSecondCounter = new AtomicInteger(0);
+    private final AtomicInteger queriesPerSecondCounter = new AtomicInteger();
+    private final AtomicInteger selectsPerSecondCounter = new AtomicInteger();
+    private final AtomicInteger insertsPerSecondCounter = new AtomicInteger();
+    private final AtomicInteger updatesPerSecondCounter = new AtomicInteger();
+    private final AtomicInteger deletesPerSecondCounter = new AtomicInteger();
+    private final AtomicInteger undefinedPerSecondCounter = new AtomicInteger();
 
     /**
      * Counts the given query, based on its first character

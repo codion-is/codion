@@ -443,8 +443,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     private final ScheduledExecutorService executorService =
             Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory());
     private final AtomicLong requestsPerSecondTime = new AtomicLong(System.currentTimeMillis());
-    private final AtomicInteger requestsPerSecond = new AtomicInteger(0);
-    private final AtomicInteger requestsPerSecondCounter = new AtomicInteger(0);
+    private final AtomicInteger requestsPerSecond = new AtomicInteger();
+    private final AtomicInteger requestsPerSecondCounter = new AtomicInteger();
 
     private RequestCounter() {
       executorService.scheduleWithFixedDelay(this::updateRequestsPerSecond, 0,
