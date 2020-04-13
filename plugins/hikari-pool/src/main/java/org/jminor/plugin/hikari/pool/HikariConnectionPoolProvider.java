@@ -41,6 +41,7 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
       super(database, user, new DriverDataSource(database.getURL(null), database.getDriverClassName(),
               new Properties(), user.getUsername(), String.valueOf(user.getPassword())));
       config.setJdbcUrl(database.getURL(null));
+      config.setAutoCommit(false);
       config.setUsername(user.getUsername());
       config.setMaximumPoolSize(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
       config.setMinimumIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());

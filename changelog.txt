@@ -5872,3 +5872,4 @@
   ConnectionPools, now maps connection pools to usernames instead of User instances, related changes
   Users.user(username) added, used throughout
   DefaultConnectionPoolCounter, AbstractRemoteEntityConnection.RequestCounter and AbstractDatabase.QueryCounter now use AtomicInteger and AtomicLong instead of synchronizing internally
+  HikariConnectionPoolProvider disables auto commit on connections
