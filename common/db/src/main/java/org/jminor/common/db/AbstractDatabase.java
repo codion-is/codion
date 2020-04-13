@@ -15,6 +15,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
@@ -318,65 +320,63 @@ public abstract class AbstractDatabase implements Database {
 
     private static final double THOUSAND = 1000d;
 
-    private long queriesPerSecondTime = System.currentTimeMillis();
-    private int queriesPerSecond = 0;
-    private int queriesPerSecondCounter = 0;
-    private int selectsPerSecond = 0;
-    private int selectsPerSecondCounter = 0;
-    private int insertsPerSecond = 0;
-    private int insertsPerSecondCounter = 0;
-    private int updatesPerSecond = 0;
-    private int updatesPerSecondCounter = 0;
-    private int deletesPerSecond = 0;
-    private int deletesPerSecondCounter = 0;
-    private int undefinedPerSecond = 0;
-    private int undefinedPerSecondCounter = 0;
+    private final AtomicLong queriesPerSecondTime = new AtomicLong(System.currentTimeMillis());
+    private final AtomicInteger queriesPerSecondCounter = new AtomicInteger(0);
+    private final AtomicInteger selectsPerSecondCounter = new AtomicInteger(0);
+    private final AtomicInteger insertsPerSecondCounter = new AtomicInteger(0);
+    private final AtomicInteger updatesPerSecondCounter = new AtomicInteger(0);
+    private final AtomicInteger deletesPerSecondCounter = new AtomicInteger(0);
+    private final AtomicInteger undefinedPerSecondCounter = new AtomicInteger(0);
 
     /**
      * Counts the given query, based on its first character
      * @param query the sql query
      */
-    public synchronized void count(final String query) {
+    private void count(final String query) {
       requireNonNull(query);
-      queriesPerSecondCounter++;
+      queriesPerSecondCounter.incrementAndGet();
       switch (Character.toLowerCase(query.charAt(0))) {
         case 's':
-          selectsPerSecondCounter++;
+          selectsPerSecondCounter.incrementAndGet();
           break;
         case 'i':
-          insertsPerSecondCounter++;
+          insertsPerSecondCounter.incrementAndGet();
           break;
         case 'u':
-          updatesPerSecondCounter++;
+          updatesPerSecondCounter.incrementAndGet();
           break;
         case 'd':
-          deletesPerSecondCounter++;
+          deletesPerSecondCounter.incrementAndGet();
           break;
         default:
-          undefinedPerSecondCounter++;
+          undefinedPerSecondCounter.incrementAndGet();
       }
     }
 
-    public synchronized Database.Statistics getStatisticsAndResetCounter() {
+    private Database.Statistics getStatisticsAndResetCounter() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - queriesPerSecondTime) / THOUSAND;
+      final double seconds = (current - queriesPerSecondTime.get()) / THOUSAND;
+      int queriesPerSecond = 0;
+      int selectsPerSecond = 0;
+      int insertsPerSecond = 0;
+      int updatesPerSecond = 0;
+      int deletesPerSecond = 0;
       if (seconds > 0) {
-        queriesPerSecond = (int) (queriesPerSecondCounter / seconds);
-        selectsPerSecond = (int) (selectsPerSecondCounter / seconds);
-        insertsPerSecond = (int) (insertsPerSecondCounter / seconds);
-        deletesPerSecond = (int) (deletesPerSecondCounter / seconds);
-        updatesPerSecond = (int) (updatesPerSecondCounter / seconds);
-        undefinedPerSecond = (int) (undefinedPerSecondCounter / seconds);
-        queriesPerSecondCounter = 0;
-        selectsPerSecondCounter = 0;
-        insertsPerSecondCounter = 0;
-        deletesPerSecondCounter = 0;
-        updatesPerSecondCounter = 0;
-        undefinedPerSecondCounter = 0;
-        queriesPerSecondTime = current;
+        queriesPerSecond = (int) (queriesPerSecondCounter.get() / seconds);
+        selectsPerSecond = (int) (selectsPerSecondCounter.get() / seconds);
+        insertsPerSecond = (int) (insertsPerSecondCounter.get() / seconds);
+        deletesPerSecond = (int) (deletesPerSecondCounter.get() / seconds);
+        updatesPerSecond = (int) (updatesPerSecondCounter.get() / seconds);
+        queriesPerSecondCounter.set(0);
+        selectsPerSecondCounter.set(0);
+        insertsPerSecondCounter.set(0);
+        deletesPerSecondCounter.set(0);
+        updatesPerSecondCounter.set(0);
+        undefinedPerSecondCounter.set(0);
+        queriesPerSecondTime.set(current);
       }
 
-      return new DefaultDatabaseStatistics(queriesPerSecond, selectsPerSecond, insertsPerSecond, deletesPerSecond, updatesPerSecond);
+      return new DefaultDatabaseStatistics(current, queriesPerSecond, selectsPerSecond, insertsPerSecond, deletesPerSecond, updatesPerSecond);
     }
   }
 
@@ -387,7 +387,7 @@ public abstract class AbstractDatabase implements Database {
 
     private static final long serialVersionUID = 1;
 
-    private final long timestamp = System.currentTimeMillis();
+    private final long timestamp;
     private final int queriesPerSecond;
     private final int selectsPerSecond;
     private final int insertsPerSecond;
@@ -396,14 +396,16 @@ public abstract class AbstractDatabase implements Database {
 
     /**
      * Instantiates a new DatabaseStatistics object
+     * @param timestamp the timestamp
      * @param queriesPerSecond the number of queries being run per second
      * @param selectsPerSecond the number of select queries being run per second
      * @param insertsPerSecond the number of insert queries being run per second
      * @param deletesPerSecond the number of delete queries being run per second
      * @param updatesPerSecond the number of update queries being run per second
      */
-    private DefaultDatabaseStatistics(final int queriesPerSecond, final int selectsPerSecond, final int insertsPerSecond,
-                                      final int deletesPerSecond, final int updatesPerSecond) {
+    private DefaultDatabaseStatistics(final long timestamp, final int queriesPerSecond, final int selectsPerSecond,
+                                      final int insertsPerSecond, final int deletesPerSecond, final int updatesPerSecond) {
+      this.timestamp = timestamp;
       this.queriesPerSecond = queriesPerSecond;
       this.selectsPerSecond = selectsPerSecond;
       this.insertsPerSecond = insertsPerSecond;

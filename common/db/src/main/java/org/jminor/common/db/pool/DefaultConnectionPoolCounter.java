@@ -7,6 +7,8 @@ import org.jminor.common.TaskScheduler;
 
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -22,124 +24,118 @@ final class DefaultConnectionPoolCounter {
 
   private final AbstractConnectionPool connectionPool;
   private final long creationDate = System.currentTimeMillis();
-  private final LinkedList<Long> checkOutTimes = new LinkedList<>();
+  private final LinkedList<Integer> checkOutTimes = new LinkedList<>();
   private final LinkedList<ConnectionPoolState> snapshotStatistics = new LinkedList<>();
   private boolean collectSnapshotStatistics = false;
   private final TaskScheduler snapshotStatisticsCollector = new TaskScheduler(new StatisticsCollector(),
           SNAPSHOT_COLLECTION_INTERVAL_MS, TimeUnit.MILLISECONDS);
 
-  private long resetDate = creationDate;
-  private int connectionsCreated = 0;
-  private int connectionsDestroyed = 0;
-  private int connectionRequests = 0;
-  private int requestsPerSecond = 0;
-  private int requestsPerSecondCounter = 0;
-  private int connectionRequestsFailed = 0;
-  private int requestsFailedPerSecondCounter = 0;
-  private int requestsFailedPerSecond = 0;
-  private long averageCheckOutTime = 0;
-  private long minimumCheckOutTime = 0;
-  private long maximumCheckOutTime = 0;
-  private long requestsPerSecondTime = creationDate;
+  private final AtomicLong resetDate = new AtomicLong(creationDate);
+  private final AtomicLong requestsPerSecondTime = new AtomicLong(creationDate);
+  private final AtomicInteger connectionsCreated = new AtomicInteger(0);
+  private final AtomicInteger connectionsDestroyed = new AtomicInteger(0);
+  private final AtomicInteger connectionRequests = new AtomicInteger(0);
+  private final AtomicInteger requestsPerSecondCounter = new AtomicInteger(0);
+  private final AtomicInteger connectionRequestsFailed = new AtomicInteger(0);
+  private final AtomicInteger requestsFailedPerSecondCounter = new AtomicInteger(0);
 
   DefaultConnectionPoolCounter(final AbstractConnectionPool connectionPool) {
     this.connectionPool = connectionPool;
   }
 
-  synchronized boolean isCollectSnapshotStatistics() {
+  boolean isCollectSnapshotStatistics() {
     return collectSnapshotStatistics;
   }
 
-  synchronized void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
-    if (collectSnapshotStatistics) {
-      IntStream.range(0, SNAPSHOT_STATS_SIZE).forEach(i -> snapshotStatistics.add(new DefaultConnectionPoolState()));
-      snapshotStatisticsCollector.start();
-    }
-    else {
-      snapshotStatisticsCollector.stop();
-      snapshotStatistics.clear();
-    }
-    this.collectSnapshotStatistics = collectSnapshotStatistics;
-  }
-
-  synchronized void addCheckOutTime(final long time) {
-    checkOutTimes.add(time);
-    if (checkOutTimes.size() > CHECK_OUT_TIMES_MAX_SIZE) {
-      checkOutTimes.removeFirst();
+  void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
+    synchronized (snapshotStatistics) {
+      if (collectSnapshotStatistics) {
+        IntStream.range(0, SNAPSHOT_STATS_SIZE).forEach(i -> snapshotStatistics.add(new DefaultConnectionPoolState()));
+        snapshotStatisticsCollector.start();
+      }
+      else {
+        snapshotStatisticsCollector.stop();
+        snapshotStatistics.clear();
+      }
+      this.collectSnapshotStatistics = collectSnapshotStatistics;
     }
   }
 
-  synchronized void incrementConnectionsDestroyedCounter() {
-    connectionsDestroyed++;
+  void addCheckOutTime(final int time) {
+    synchronized (checkOutTimes) {
+      checkOutTimes.add(time);
+      if (checkOutTimes.size() > CHECK_OUT_TIMES_MAX_SIZE) {
+        checkOutTimes.removeFirst();
+      }
+    }
   }
 
-  synchronized void incrementConnectionsCreatedCounter() {
-    connectionsCreated++;
+  void incrementConnectionsDestroyedCounter() {
+    connectionsDestroyed.incrementAndGet();
   }
 
-  synchronized void incrementFailedRequestCounter() {
-    connectionRequestsFailed++;
-    requestsFailedPerSecondCounter++;
+  void incrementConnectionsCreatedCounter() {
+    connectionsCreated.incrementAndGet();
   }
 
-  synchronized void incrementRequestCounter() {
-    connectionRequests++;
-    requestsPerSecondCounter++;
+  void incrementFailedRequestCounter() {
+    connectionRequestsFailed.incrementAndGet();
+    requestsFailedPerSecondCounter.incrementAndGet();
   }
 
-  synchronized void resetStatistics() {
-    connectionsCreated = 0;
-    connectionsDestroyed = 0;
-    connectionRequests = 0;
-    connectionRequestsFailed = 0;
-    checkOutTimes.clear();
-    resetDate = System.currentTimeMillis();
+  void incrementRequestCounter() {
+    connectionRequests.incrementAndGet();
+    requestsPerSecondCounter.incrementAndGet();
   }
 
-  synchronized ConnectionPoolStatistics getStatistics(final long since) {
+  void resetStatistics() {
+    connectionsCreated.set(0);
+    connectionsDestroyed.set(0);
+    connectionRequests.set(0);
+    connectionRequestsFailed.set(0);
+    synchronized (checkOutTimes) {
+      checkOutTimes.clear();
+    }
+    resetDate.set(System.currentTimeMillis());
+  }
+
+  ConnectionPoolStatistics getStatistics(final long since) {
     final DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.getUser().getUsername());
-    updateStatistics();
-    final int inPool = connectionPool.getSize();
-    final int inUseCount = connectionPool.getInUse();
-    statistics.setAvailableInPool(inPool);
-    statistics.setConnectionsInUse(inUseCount);
-    statistics.setPoolSize(inPool + inUseCount);
-    statistics.setConnectionsCreated(connectionsCreated);
-    statistics.setConnectionsDestroyed(connectionsDestroyed);
+    final long current = System.currentTimeMillis();
+    statistics.setTimestamp(current);
+    statistics.setResetDate(resetDate.get());
+    statistics.setAvailableInPool(connectionPool.getSize());
+    statistics.setConnectionsInUse(connectionPool.getInUse());
+    statistics.setConnectionsCreated(connectionsCreated.get());
+    statistics.setConnectionsDestroyed(connectionsDestroyed.get());
     statistics.setCreationDate(creationDate);
-    statistics.setConnectionRequests(connectionRequests);
-    statistics.setConnectionRequestsFailed(connectionRequestsFailed);
-    statistics.setRequestsFailedPerSecond(requestsFailedPerSecond);
-    statistics.setRequestsPerSecond(requestsPerSecond);
-    statistics.setAverageCheckOutTime(averageCheckOutTime);
-    statistics.setMinimumCheckOutTime(minimumCheckOutTime);
-    statistics.setMaximumCheckOutTime(maximumCheckOutTime);
-    statistics.setResetDate(resetDate);
-    statistics.setTimestamp(System.currentTimeMillis());
+    statistics.setConnectionRequests(connectionRequests.get());
+    statistics.setConnectionRequestsFailed(connectionRequestsFailed.get());
+    final double seconds = (current - requestsPerSecondTime.get()) / THOUSAND;
+    requestsPerSecondTime.set(current);
+    statistics.setRequestsPerSecond((int) ((double) requestsPerSecondCounter.get() / seconds));
+    requestsPerSecondCounter.set(0);
+    statistics.setRequestsFailedPerSecond((int) ((double) requestsFailedPerSecondCounter.get() / seconds));
+    requestsFailedPerSecondCounter.set(0);
+    if (!checkOutTimes.isEmpty()) {
+      populateCheckOutTime(statistics);
+    }
     if (collectSnapshotStatistics && since >= 0) {
-      statistics.setSnapshot(snapshotStatistics.stream()
-              .filter(state -> state.getTimestamp() >= since).collect(Collectors.toList()));
+      synchronized (snapshotStatistics) {
+        statistics.setSnapshot(snapshotStatistics.stream()
+                .filter(state -> state.getTimestamp() >= since).collect(Collectors.toList()));
+      }
     }
 
     return statistics;
   }
 
-  private void updateStatistics() {
-    final long current = System.currentTimeMillis();
-    final double seconds = (current - requestsPerSecondTime) / THOUSAND;
-    requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
-    requestsPerSecondCounter = 0;
-    requestsFailedPerSecond = (int) ((double) requestsFailedPerSecondCounter / seconds);
-    requestsFailedPerSecondCounter = 0;
-    requestsPerSecondTime = current;
-    averageCheckOutTime = 0;
-    minimumCheckOutTime = 0;
-    maximumCheckOutTime = 0;
-    if (!checkOutTimes.isEmpty()) {
-      long total = 0;
-      long min = -1;
-      long max = -1;
-      for (final Long time : checkOutTimes) {
+  private void populateCheckOutTime(final DefaultConnectionPoolStatistics statistics) {
+    int total = 0;
+    int min = -1;
+    int max = -1;
+    synchronized (checkOutTimes) {
+      for (final Integer time : checkOutTimes) {
         total += time;
         if (min == -1) {
           min = time;
@@ -150,9 +146,9 @@ final class DefaultConnectionPoolCounter {
           max = Math.max(max, time);
         }
       }
-      averageCheckOutTime = total / checkOutTimes.size();
-      minimumCheckOutTime = min;
-      maximumCheckOutTime = max;
+      statistics.setAverageCheckOutTime(total / checkOutTimes.size());
+      statistics.setMinimumCheckOutTime(min);
+      statistics.setMaximumCheckOutTime(max);
       checkOutTimes.clear();
     }
   }
@@ -164,7 +160,7 @@ final class DefaultConnectionPoolCounter {
      */
     @Override
     public void run() {
-      synchronized (DefaultConnectionPoolCounter.this) {
+      synchronized (snapshotStatistics) {
         snapshotStatistics.addLast(connectionPool.updateState(snapshotStatistics.removeFirst()));
       }
     }

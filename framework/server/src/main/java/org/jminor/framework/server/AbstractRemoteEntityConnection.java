@@ -46,6 +46,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A base class for remote connections served by a {@link DefaultEntityConnectionServer}.
@@ -440,31 +442,31 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
     private final ScheduledExecutorService executorService =
             Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory());
-    private long requestsPerSecondTime = System.currentTimeMillis();
-    private int requestsPerSecond = 0;
-    private int requestsPerSecondCounter = 0;
+    private final AtomicLong requestsPerSecondTime = new AtomicLong(System.currentTimeMillis());
+    private final AtomicInteger requestsPerSecond = new AtomicInteger(0);
+    private final AtomicInteger requestsPerSecondCounter = new AtomicInteger(0);
 
     private RequestCounter() {
       executorService.scheduleWithFixedDelay(this::updateRequestsPerSecond, 0,
               DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
-    private synchronized void updateRequestsPerSecond() {
+    private void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - requestsPerSecondTime) / THOUSAND;
+      final double seconds = (current - requestsPerSecondTime.get()) / THOUSAND;
       if (seconds > 0) {
-        requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
-        requestsPerSecondCounter = 0;
-        requestsPerSecondTime = current;
+        requestsPerSecond.set((int) ((double) requestsPerSecondCounter.get() / seconds));
+        requestsPerSecondCounter.set(0);
+        requestsPerSecondTime.set(current);
       }
     }
 
-    private synchronized void incrementRequestsPerSecondCounter() {
-      requestsPerSecondCounter++;
+    private void incrementRequestsPerSecondCounter() {
+      requestsPerSecondCounter.incrementAndGet();
     }
 
-    private synchronized int getRequestsPerSecond() {
-      return requestsPerSecond;
+    private int getRequestsPerSecond() {
+      return requestsPerSecond.get();
     }
   }
 
