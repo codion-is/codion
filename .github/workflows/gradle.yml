@@ -8,6 +8,7 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v1
     - name: Set up JDK 11
@@ -18,6 +19,7 @@ jobs:
       run: xvfb-run ./gradlew build
   build-windows:
     runs-on: windows-latest
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v1
     - name: Set up JDK 11
@@ -28,6 +30,7 @@ jobs:
       run: ./gradlew build
   build-mac:
     runs-on: macOS-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK 11
