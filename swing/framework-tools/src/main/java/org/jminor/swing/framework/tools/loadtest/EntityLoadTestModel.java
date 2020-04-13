@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.tools;
+package org.jminor.swing.framework.tools.loadtest;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.user.User;
@@ -11,7 +11,7 @@ import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityTableModel;
-import org.jminor.swing.common.tools.LoadTestModel;
+import org.jminor.swing.common.tools.loadtest.LoadTestModel;
 
 import java.util.ArrayList;
 import java.util.Collection;

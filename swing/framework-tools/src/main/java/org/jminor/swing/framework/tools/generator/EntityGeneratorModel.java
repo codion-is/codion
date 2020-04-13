@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.tools;
+package org.jminor.swing.framework.tools.generator;
 
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;

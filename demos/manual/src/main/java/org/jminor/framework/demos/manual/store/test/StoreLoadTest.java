@@ -9,7 +9,7 @@ import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.framework.demos.manual.store.model.StoreAppModel;
 import org.jminor.framework.model.EntityModel;
-import org.jminor.swing.framework.tools.EntityLoadTestModel;
+import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import java.util.Collections;
 import java.util.UUID;

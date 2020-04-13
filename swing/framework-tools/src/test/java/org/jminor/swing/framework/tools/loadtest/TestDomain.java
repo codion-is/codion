@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.tools;
+package org.jminor.swing.framework.tools.loadtest;
 
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.StringProvider;

@@ -11,8 +11,8 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.http.HttpEntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.swing.common.tools.LoadTestModel;
-import org.jminor.swing.common.tools.ui.LoadTestPanel;
+import org.jminor.swing.common.tools.loadtest.LoadTestModel;
+import org.jminor.swing.common.tools.loadtest.ui.LoadTestPanel;
 
 import javax.swing.UIManager;
 import java.math.BigDecimal;

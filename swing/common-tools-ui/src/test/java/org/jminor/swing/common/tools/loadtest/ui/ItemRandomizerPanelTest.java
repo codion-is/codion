@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.ui;
+package org.jminor.swing.common.tools.loadtest.ui;
 
-import org.jminor.swing.common.tools.ItemRandomizer;
-import org.jminor.swing.common.tools.ItemRandomizerModel;
+import org.jminor.swing.common.tools.loadtest.ItemRandomizer;
+import org.jminor.swing.common.tools.loadtest.ItemRandomizerModel;
 
 import org.junit.jupiter.api.Test;
 

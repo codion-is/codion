@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.tools.ui;
+package org.jminor.swing.framework.tools.generator.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
-import org.jminor.swing.framework.tools.EntityGeneratorModel;
+import org.jminor.swing.framework.tools.generator.EntityGeneratorModel;
 
 import org.junit.jupiter.api.Test;
 

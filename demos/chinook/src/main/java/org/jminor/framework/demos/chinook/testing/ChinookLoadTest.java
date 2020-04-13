@@ -15,11 +15,11 @@ import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.plugin.jasperreports.model.JasperReports;
-import org.jminor.swing.common.tools.ui.LoadTestPanel;
+import org.jminor.swing.common.tools.loadtest.ui.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
-import org.jminor.swing.framework.tools.EntityLoadTestModel;
+import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

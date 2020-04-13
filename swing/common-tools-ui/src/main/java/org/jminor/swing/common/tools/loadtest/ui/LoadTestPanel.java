@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.ui;
+package org.jminor.swing.common.tools.loadtest.ui;
 
 import org.jminor.common.Util;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.Values;
-import org.jminor.swing.common.tools.ItemRandomizer;
-import org.jminor.swing.common.tools.LoadTest;
-import org.jminor.swing.common.tools.LoadTestModel;
+import org.jminor.swing.common.tools.loadtest.ItemRandomizer;
+import org.jminor.swing.common.tools.loadtest.LoadTest;
+import org.jminor.swing.common.tools.loadtest.LoadTestModel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -58,7 +58,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default UI component for the LoadTestModel class.
- * @see org.jminor.swing.common.tools.LoadTestModel
+ * @see LoadTestModel
  */
 public final class LoadTestPanel extends JPanel {
 
