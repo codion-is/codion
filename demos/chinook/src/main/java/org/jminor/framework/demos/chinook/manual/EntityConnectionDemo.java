@@ -7,7 +7,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -18,10 +17,10 @@ import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
+import org.jminor.plugin.jasperreports.model.JasperReportWrapper;
 import org.jminor.plugin.jasperreports.model.JasperReports;
 
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -205,7 +204,7 @@ public final class EntityConnectionDemo {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
 
-    ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> reportWrapper =
+    JasperReportWrapper reportWrapper =
             JasperReports.classPathReport(Chinook.class, "customer_report.jasper");
 
     JasperPrint jasperPrint = connection.fillReport(reportWrapper, reportParameters);
