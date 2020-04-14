@@ -11,7 +11,6 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Map;
 
 final class FileReportWrapper extends AbstractReportWrapper {
 
@@ -19,8 +18,8 @@ final class FileReportWrapper extends AbstractReportWrapper {
 
   private static final String SLASH = "/";
 
-  FileReportWrapper(final String reportPath, final Map<String, Object> reportParameters) {
-    super(reportPath, reportParameters);
+  FileReportWrapper(final String reportPath) {
+    super(reportPath);
   }
 
   @Override

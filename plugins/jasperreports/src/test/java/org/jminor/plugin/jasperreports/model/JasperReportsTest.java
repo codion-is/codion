@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -51,7 +52,7 @@ public class JasperReportsTest {
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
     final JasperPrint print = CONNECTION_PROVIDER.getConnection().fillReport(
-            JasperReports.fileReport("empdept_employees.jasper", reportParameters));
+            JasperReports.fileReport("empdept_employees.jasper"), reportParameters);
     assertNotNull(print);
   }
 
@@ -59,7 +60,7 @@ public class JasperReportsTest {
   public void fillDataSourceReport() throws ReportException, MalformedURLException, JRException {
     ReportWrapper.CACHE_REPORTS.set(false);
     ReportWrapper.REPORT_PATH.set(REPORT_PATH);
-    final ReportWrapper<JasperReport, JasperPrint> wrapper = JasperReports.fileReport("empdept_employees.jasper");
+    final ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> wrapper = JasperReports.fileReport("empdept_employees.jasper");
     final JRDataSource dataSource = new JRDataSource() {
       boolean done = false;
       @Override
@@ -84,7 +85,7 @@ public class JasperReportsTest {
     ReportWrapper.CACHE_REPORTS.set(false);
     ReportWrapper.REPORT_PATH.set(REPORT_PATH);
     assertThrows(ReportException.class, () -> CONNECTION_PROVIDER.getConnection().fillReport(
-            JasperReports.fileReport("non_existing.jasper", new HashMap<>())));
+            JasperReports.fileReport("non_existing.jasper"), new HashMap<>()));
   }
 
   @Test
@@ -96,9 +97,9 @@ public class JasperReportsTest {
       server.startServer();
       final HashMap<String, Object> reportParameters = new HashMap<>();
       reportParameters.put("DEPTNO", asList(10, 20));
-      final ReportWrapper<JasperReport, JasperPrint> report = JasperReports.fileReport(
-              "empdept_employees.jasper", reportParameters);
-      CONNECTION_PROVIDER.getConnection().fillReport(report);
+      final ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> report = JasperReports.fileReport(
+              "empdept_employees.jasper");
+      CONNECTION_PROVIDER.getConnection().fillReport(report, reportParameters);
     }
     finally {
       server.stopServer();
@@ -109,8 +110,8 @@ public class JasperReportsTest {
   public void classPathReport() throws DatabaseException, ReportException {
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    final ReportWrapper<JasperReport, JasperPrint> report =
-            JasperReports.classPathReport(JasperReports.class, "/empdept_employees.jasper", reportParameters);
-    CONNECTION_PROVIDER.getConnection().fillReport(report);
+    final ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> report =
+            JasperReports.classPathReport(JasperReports.class, "/empdept_employees.jasper");
+    CONNECTION_PROVIDER.getConnection().fillReport(report, reportParameters);
   }
 }

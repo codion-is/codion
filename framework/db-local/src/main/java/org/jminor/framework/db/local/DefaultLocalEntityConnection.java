@@ -665,13 +665,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T, R> R fillReport(final ReportWrapper<T, R> reportWrapper) throws ReportException {
+  public <T, R, P> R fillReport(final ReportWrapper<T, R, P> reportWrapper, final P reportParameters) throws ReportException {
     requireNonNull(reportWrapper, "reportWrapper");
     Exception exception = null;
     synchronized (connection) {
       try {
         logAccess("fillReport", new Object[] {reportWrapper});
-        final R result = reportWrapper.fillReport(connection.getConnection());
+        final R result = reportWrapper.fillReport(connection.getConnection(), reportParameters);
         commitIfTransactionIsNotOpen();
 
         return result;

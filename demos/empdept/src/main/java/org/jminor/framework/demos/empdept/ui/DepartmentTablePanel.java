@@ -34,8 +34,8 @@ public class DepartmentTablePanel extends EntityTablePanel {
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
     EntityReports.viewJdbcReport(DepartmentTablePanel.this,
-            JasperReports.classPathReport(EmpDept.class, "empdept_employees.jasper", reportParameters),
-            JRViewer::new, "Employee Report", getTableModel().getConnectionProvider());
+            JasperReports.classPathReport(EmpDept.class, "empdept_employees.jasper"),
+            reportParameters, JRViewer::new, "Employee Report", getTableModel().getConnectionProvider());
   }
 // end::viewEmployeeReport[]
 

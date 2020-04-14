@@ -84,7 +84,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void fillReport() throws ReportException, DatabaseException, IOException {
-    final String result = connection.fillReport(new TestReportWrapper());
+    final String result = connection.fillReport(new TestReportWrapper(), "");
     assertNotNull(result);
   }
 
@@ -285,10 +285,10 @@ public final class HttpEntityConnectionTest {
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
   }
 
-  private static class TestReportWrapper implements ReportWrapper<Object, String>, Serializable {
+  private static class TestReportWrapper implements ReportWrapper<Object, String, String>, Serializable {
 
     @Override
-    public String fillReport(final Connection connection) throws ReportException {
+    public String fillReport(final Connection connection, final String parameters) throws ReportException {
       return "";
     }
 

@@ -205,10 +205,10 @@ public final class EntityConnectionDemo {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
 
-    ReportWrapper<JasperReport, JasperPrint> reportWrapper =
-            JasperReports.classPathReport(Chinook.class, "customer_report.jasper", reportParameters);
+    ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> reportWrapper =
+            JasperReports.classPathReport(Chinook.class, "customer_report.jasper");
 
-    JasperPrint jasperPrint = connection.fillReport(reportWrapper);
+    JasperPrint jasperPrint = connection.fillReport(reportWrapper, reportParameters);
     //end::report[]
   }
 

@@ -265,14 +265,16 @@ public interface EntityConnection {
   /**
    * Takes a ReportWrapper object using a JDBC datasource and returns an initialized report result object
    * @param reportWrapper the wrapper containing the report to fill
+   * @param reportParameters the report parameters, if any
    * @param <T> the report type
    * @param <R> the report result type
+   * @param <P> the report parameters type
    * @return the filled result object
    * @throws DatabaseException in case of a database exception
    * @throws org.jminor.common.db.reports.ReportException in case of a report exception
-   * @see org.jminor.common.db.reports.ReportWrapper#fillReport(java.sql.Connection)
+   * @see org.jminor.common.db.reports.ReportWrapper#fillReport(java.sql.Connection, Object)
    */
-  <T, R> R fillReport(ReportWrapper<T, R> reportWrapper) throws DatabaseException, ReportException;
+  <T, R, P> R fillReport(ReportWrapper<T, R, P> reportWrapper, P reportParameters) throws DatabaseException, ReportException;
 
   /**
    * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyId}

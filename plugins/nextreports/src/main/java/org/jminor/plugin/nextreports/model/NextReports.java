@@ -19,11 +19,11 @@ public final class NextReports {
   /**
    * Instantiates a new {@link ReportWrapper} based on NextReports.
    * @param reportPath the path to the report
-   * @param reportParameters the report parameters
    * @param format the format
    * @return a report wrapper
    */
-  public static ReportWrapper<Report, NextReportsResult> nextReportsWrapper(final String reportPath, final Map<String, Object> reportParameters, final String format) {
-    return new NextReportsWrapper(reportPath, reportParameters, format);
+  public static ReportWrapper<Report, NextReportsResult, Map<String, Object>> nextReportsWrapper(final String reportPath,
+                                                                                                 final String format) {
+    return new NextReportsWrapper(reportPath, format);
   }
 }
