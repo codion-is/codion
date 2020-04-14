@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.remote.exception;
+package org.jminor.common.remote.server.exception;
 
 import java.util.ResourceBundle;
 

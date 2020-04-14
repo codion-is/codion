@@ -7,11 +7,11 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.remote.client.Clients;
-import org.jminor.common.remote.exception.ConnectionNotAvailableException;
-import org.jminor.common.remote.exception.ConnectionValidationException;
-import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.Servers;
+import org.jminor.common.remote.server.exception.ConnectionNotAvailableException;
+import org.jminor.common.remote.server.exception.ConnectionValidationException;
+import org.jminor.common.remote.server.exception.LoginException;
 import org.jminor.common.user.Users;
 import org.jminor.framework.domain.entity.Entity;
 

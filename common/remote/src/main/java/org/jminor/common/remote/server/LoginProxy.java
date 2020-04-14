@@ -3,7 +3,7 @@
  */
 package org.jminor.common.remote.server;
 
-import org.jminor.common.remote.exception.LoginException;
+import org.jminor.common.remote.server.exception.LoginException;
 
 /**
  * A login proxy.

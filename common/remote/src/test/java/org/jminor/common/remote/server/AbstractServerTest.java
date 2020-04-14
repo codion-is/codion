@@ -5,10 +5,10 @@ package org.jminor.common.remote.server;
 
 import org.jminor.common.remote.client.Clients;
 import org.jminor.common.remote.client.ConnectionRequest;
-import org.jminor.common.remote.exception.ConnectionNotAvailableException;
-import org.jminor.common.remote.exception.ConnectionValidationException;
-import org.jminor.common.remote.exception.ServerAuthenticationException;
-import org.jminor.common.remote.exception.ServerException;
+import org.jminor.common.remote.server.exception.ConnectionNotAvailableException;
+import org.jminor.common.remote.server.exception.ConnectionValidationException;
+import org.jminor.common.remote.server.exception.ServerAuthenticationException;
+import org.jminor.common.remote.server.exception.ServerException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 
