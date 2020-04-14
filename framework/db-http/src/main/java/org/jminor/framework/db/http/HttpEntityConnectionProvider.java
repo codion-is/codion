@@ -98,8 +98,13 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   protected HttpEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
+      if (getHttps()) {
+        HttpEntityConnections.createSecureConnection(getDomainId(getDomainClassName()), getServerHostName(),
+              getServerPort(), getUser(), getClientTypeId(), getClientId());
+      }
+
       return HttpEntityConnections.createConnection(getDomainId(getDomainClassName()), getServerHostName(),
-              getServerPort(), getHttps(), getUser(), getClientTypeId(), getClientId());
+              getServerPort(), getUser(), getClientTypeId(), getClientId());
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
