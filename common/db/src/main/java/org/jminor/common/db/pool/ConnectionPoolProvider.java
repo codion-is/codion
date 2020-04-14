@@ -18,12 +18,13 @@ import static java.util.Objects.requireNonNull;
 public interface ConnectionPoolProvider {
 
   /**
-   * @param user the user to base the pooled connections on
+   * Creates a connection pool based on the given database and user.
    * @param database the underlying database
+   * @param user the user to base the pooled connections on
    * @return a connection pool based on the given user
    * @throws DatabaseException in case of an exception
    */
-  ConnectionPool createConnectionPool(User user, Database database) throws DatabaseException;
+  ConnectionPool createConnectionPool(Database database, User user) throws DatabaseException;
 
   /**
    * Returns the {@link ConnectionPoolProvider} implementation found by the {@link ServiceLoader}
