@@ -6,7 +6,7 @@ package org.jminor.plugin.jasperreports.model;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.remote.http.HttpServer;
+import org.jminor.common.remote.server.http.HttpServer;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;

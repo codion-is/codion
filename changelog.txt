@@ -5865,3 +5865,4 @@
   ConnectionPoolException removed
   PreferencesUtil renamed to UserPreferences and moved to common root
   common.remote package split up into client and server
+  common.remote.http moved to common.remote.server.http
