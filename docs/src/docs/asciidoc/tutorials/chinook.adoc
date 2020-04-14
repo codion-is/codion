@@ -89,6 +89,11 @@ include::{dir-source}/org/jminor/framework/demos/chinook/ui/CustomerEditPanel.ja
 
 [source,java]
 ----
+include::{dir-source}/org/jminor/framework/demos/chinook/ui/CustomerTablePanel.java[lines=4..-1]
+----
+
+[source,java]
+----
 include::{dir-source}/org/jminor/framework/demos/chinook/ui/EmployeeEditPanel.java[lines=4..-1]
 ----
 
