@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package org.jminor.common.model;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;

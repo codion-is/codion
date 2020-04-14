@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.UserPreferences;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.UserPreferences;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.domain.entity.Entity;

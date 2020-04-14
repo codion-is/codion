@@ -4,11 +4,11 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.Text;
-import org.jminor.common.UserPreferences;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
+import org.jminor.common.model.UserPreferences;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.table.TableSortModel;
