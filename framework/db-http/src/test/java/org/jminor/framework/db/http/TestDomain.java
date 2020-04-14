@@ -6,10 +6,14 @@ package org.jminor.framework.db.http;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.operation.AbstractDatabaseFunction;
 import org.jminor.common.db.operation.AbstractDatabaseProcedure;
+import org.jminor.common.db.reports.AbstractReportWrapper;
+import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.StringProvider;
 
+import java.sql.Connection;
 import java.sql.Types;
 import java.util.List;
 
@@ -22,10 +26,23 @@ import static org.jminor.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {
 
+  public static final ReportWrapper<Object, String, String> REPORT = new AbstractReportWrapper<Object, String, String>("report.path") {
+    @Override
+    public String fillReport(final Connection connection, final String parameters) throws ReportException {
+      return "result";
+    }
+
+    @Override
+    public Object loadReport() throws ReportException {
+      return null;
+    }
+  };
+
   public TestDomain() {
     department();
     employee();
     operations();
+    addReport(REPORT);
     registerDomain();
   }
 

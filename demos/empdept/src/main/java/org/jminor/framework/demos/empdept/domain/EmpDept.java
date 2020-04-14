@@ -68,6 +68,7 @@ public final class EmpDept extends Domain {
   public EmpDept() {
     department();
     employee();
+    addReport(EMPLOYEE_REPORT);
   }
 // end::constructor[]
 

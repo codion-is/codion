@@ -8,6 +8,7 @@ import org.jminor.common.Util;
 import org.jminor.common.db.operation.DatabaseFunction;
 import org.jminor.common.db.operation.DatabaseOperation;
 import org.jminor.common.db.operation.DatabaseProcedure;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -26,11 +27,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
@@ -60,6 +63,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
 
   private final String domainId;
   private final DefaultEntityDefinitionProvider definitionProvider = new DefaultEntityDefinitionProvider();
+  private final transient Set<ReportWrapper> reports = new HashSet<>();
   private final transient Map<String, DatabaseOperation> databaseOperations = new HashMap<>();
 
   private Map<Class, EntityDefinition> beanEntities;
@@ -91,6 +95,9 @@ public class Domain implements EntityDefinition.Provider, Serializable {
     this.definitionProvider.entityDefinitions.putAll(domain.definitionProvider.entityDefinitions);
     this.beanEntities = domain.beanEntities;
     this.beanProperties = domain.beanProperties;
+    if (domain.reports != null) {
+      this.reports.addAll(domain.reports);
+    }
     if (domain.databaseOperations != null) {
       this.databaseOperations.putAll(domain.databaseOperations);
     }
@@ -406,6 +413,27 @@ public class Domain implements EntityDefinition.Provider, Serializable {
 
       return method.invoke(entity, args);
     });
+  }
+
+  /**
+   * Adds a report to this domain model.
+   * @param reportWrapper the report to add
+   * @throws IllegalArgumentException in case the report has already been added
+   */
+  public final void addReport(final ReportWrapper reportWrapper) {
+    if (containsReport(reportWrapper)) {
+      throw new IllegalArgumentException("Report has already been added: " + reportWrapper);
+    }
+    reports.add(reportWrapper);
+  }
+
+  /**
+   * Returns true if this domain contains the given report.
+   * @param reportWrapper the report.
+   * @return true if this domain contains the report.
+   */
+  public final boolean containsReport(final ReportWrapper reportWrapper) {
+    return reports.contains(requireNonNull(reportWrapper, "reportWrapper"));
   }
 
   /**

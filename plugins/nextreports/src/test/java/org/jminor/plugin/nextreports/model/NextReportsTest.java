@@ -10,6 +10,7 @@ import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 
@@ -34,9 +35,9 @@ public class NextReportsTest {
             new H2Database("h2db", System.getProperty("jminor.db.initScript")))
             .setDomainClassName(Domain.class.getName()).setUser(UNIT_TEST_USER);
     ReportWrapper.REPORT_PATH.set("src/test/reports/");
-    final NextReportsResult result = connectionProvider.getConnection().fillReport(
-            NextReports.nextReportsWrapper("test-report.report",
-                    ReportRunner.CSV_FORMAT), Collections.emptyMap());
+    final LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();
+    final NextReportsResult result = NextReports.nextReportsWrapper("test-report.report", ReportRunner.CSV_FORMAT)
+            .fillReport(connection.getDatabaseConnection().getConnection(), Collections.emptyMap());
     File file = null;
     try {
       final String tmpDir = System.getProperty("java.io.tmpdir");

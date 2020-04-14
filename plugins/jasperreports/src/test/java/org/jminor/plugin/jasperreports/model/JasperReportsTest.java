@@ -11,6 +11,7 @@ import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -51,8 +52,8 @@ public class JasperReportsTest {
     ReportWrapper.REPORT_PATH.set(REPORT_PATH);
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    final JasperPrint print = CONNECTION_PROVIDER.getConnection().fillReport(
-            JasperReports.fileReport("empdept_employees.jasper"), reportParameters);
+    final LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
+    final JasperPrint print = TestDomain.EMPLOYEE_CLASSPATH_REPORT.fillReport(connection.getDatabaseConnection().getConnection(), reportParameters);
     assertNotNull(print);
   }
 
@@ -97,9 +98,8 @@ public class JasperReportsTest {
       server.startServer();
       final HashMap<String, Object> reportParameters = new HashMap<>();
       reportParameters.put("DEPTNO", asList(10, 20));
-      final ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> report = JasperReports.fileReport(
-              "empdept_employees.jasper");
-      CONNECTION_PROVIDER.getConnection().fillReport(report, reportParameters);
+      final LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
+      TestDomain.EMPLOYEE_FILE_REPORT.fillReport(connection.getDatabaseConnection().getConnection(), reportParameters);
     }
     finally {
       server.stopServer();
@@ -110,6 +110,7 @@ public class JasperReportsTest {
   public void classPathReport() throws DatabaseException, ReportException {
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    CONNECTION_PROVIDER.getConnection().fillReport(TestDomain.EMPLOYEE_REPORT, reportParameters);
+    final LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
+    TestDomain.EMPLOYEE_CLASSPATH_REPORT.fillReport(connection.getDatabaseConnection().getConnection(), reportParameters);
   }
 }

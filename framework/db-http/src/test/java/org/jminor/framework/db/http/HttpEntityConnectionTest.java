@@ -30,10 +30,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
-import java.io.Serializable;
 import java.rmi.registry.Registry;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +82,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void fillReport() throws ReportException, DatabaseException, IOException {
-    final String result = connection.fillReport(new TestReportWrapper(), "");
+    final String result = connection.fillReport(TestDomain.REPORT, "");
     assertNotNull(result);
   }
 
@@ -253,6 +251,7 @@ public final class HttpEntityConnectionTest {
     Server.SERVER_PORT.set(2223);
     Server.SERVER_ADMIN_PORT.set(2223);
     Server.SERVER_HOST_NAME.set("localhost");
+    ReportWrapper.REPORT_PATH.set("report/path");
     HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
@@ -272,6 +271,7 @@ public final class HttpEntityConnectionTest {
     Server.SERVER_PORT.set(null);
     Server.SERVER_ADMIN_PORT.set(null);
     Server.SERVER_HOST_NAME.set(null);
+    ReportWrapper.REPORT_PATH.set(null);
     HttpServer.HTTP_SERVER_PORT.set(null);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(null);
     System.clearProperty("java.security.policy");
@@ -283,19 +283,6 @@ public final class HttpEntityConnectionTest {
     HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
     HttpServer.HTTP_SERVER_SECURE.set(false);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
-  }
-
-  private static class TestReportWrapper implements ReportWrapper<Object, String, String>, Serializable {
-
-    @Override
-    public String fillReport(final Connection connection, final String parameters) throws ReportException {
-      return "";
-    }
-
-    @Override
-    public Object loadReport() throws ReportException {
-      return null;
-    }
   }
 
   private static BasicHttpClientConnectionManager createConnectionManager() {
