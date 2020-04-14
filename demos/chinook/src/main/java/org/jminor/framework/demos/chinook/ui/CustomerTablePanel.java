@@ -5,7 +5,6 @@ package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.entity.Entities;
-import org.jminor.plugin.jasperreports.model.JasperReports;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
@@ -41,8 +40,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
 
-    EntityReports.viewJdbcReport(CustomerTablePanel.this,
-            JasperReports.classPathReport(Chinook.class, "customer_report.jasper"),
+    EntityReports.viewJdbcReport(CustomerTablePanel.this, Chinook.CUSTOMER_REPORT,
             reportParameters, JRViewer::new, null, getTableModel().getConnectionProvider());
   }
 }

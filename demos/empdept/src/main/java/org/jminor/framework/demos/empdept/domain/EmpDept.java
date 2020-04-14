@@ -6,6 +6,7 @@ package org.jminor.framework.demos.empdept.domain;
 import org.jminor.common.item.Item;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.StringProvider;
+import org.jminor.plugin.jasperreports.model.JasperReportWrapper;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -16,6 +17,7 @@ import static org.jminor.common.item.Items.item;
 import static org.jminor.framework.domain.entity.KeyGenerators.increment;
 import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.jminor.framework.domain.property.Properties.*;
+import static org.jminor.plugin.jasperreports.model.JasperReports.classPathReport;
 
 // tag::departmentConstants[]
 /**
@@ -51,6 +53,9 @@ public final class EmpDept extends Domain {
   public static final String EMPLOYEE_MGR_FK = "mgr_fk";
   /**Property identifier for the denormalized department location property*/
   public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
+
+  public static final JasperReportWrapper EMPLOYEE_REPORT =
+          classPathReport(EmpDept.class, "empdept_employees.jasper");
 
   public static final List<Item> JOB_VALUES = asList(
           item("ANALYST", "Analyst"), item("CLERK", "Clerk"),
