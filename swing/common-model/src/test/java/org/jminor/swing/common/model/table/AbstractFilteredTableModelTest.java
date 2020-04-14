@@ -467,7 +467,7 @@ public final class AbstractFilteredTableModelTest {
     final AtomicInteger events = new AtomicInteger();
     final EventListener listener = events::incrementAndGet;
     final EventDataListener dataListener = Events.dataListener(listener);
-    final SwingTableSelectionModel<List<String>> selectionModel = (SwingTableSelectionModel<List<String>>) tableModel.getSelectionModel();
+    final SwingTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
     selectionModel.addSelectedIndexListener(dataListener);
     selectionModel.addSelectionChangedListener(listener);
     selectionModel.addSelectedItemListener(dataListener);
@@ -610,7 +610,7 @@ public final class AbstractFilteredTableModelTest {
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
     //test selection and filtering together
-    final SwingTableSelectionModel<List<String>> selectionModel = (SwingTableSelectionModel<List<String>>) tableModel.getSelectionModel();
+    final SwingTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
     tableModel.getSelectionModel().addSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
 
@@ -640,13 +640,13 @@ public final class AbstractFilteredTableModelTest {
   public void selectionAndFiltering() {
     tableModel.refresh();
     tableModel.getSelectionModel().addSelectedIndexes(singletonList(3));
-    assertEquals(3, ((SwingTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
+    assertEquals(3, tableModel.getSelectionModel().getMinSelectionIndex());
 
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("d");
-    assertEquals(0, ((SwingTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
+    assertEquals(0, tableModel.getSelectionModel().getMinSelectionIndex());
     assertEquals(singletonList(0), tableModel.getSelectionModel().getSelectedIndexes());
     tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
-    assertEquals(0, ((SwingTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
+    assertEquals(0, tableModel.getSelectionModel().getMinSelectionIndex());
     assertEquals(ITEMS.get(3), tableModel.getSelectionModel().getSelectedItem());
   }
 

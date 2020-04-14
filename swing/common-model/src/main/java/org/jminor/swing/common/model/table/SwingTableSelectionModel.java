@@ -30,6 +30,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   private final Event selectionChangedEvent = Events.event();
   private final Event<Integer> selectedIndexChangedEvent = Events.event();
+  private final Event<List<Integer>> selectedIndexesChangedEvent = Events.event();
   private final Event<R> selectedItemChangedEvent = Events.event();
   private final Event<List<R>> selectedItemsChangedEvent = Events.event();
   private final State singleSelectionModeState = States.state(false);
@@ -275,8 +276,12 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
         selectedIndexChangedEvent.onEvent(selectedIndex);
         selectedItemChangedEvent.onEvent(getSelectedItem());
       }
+      final List<Integer> selectedIndexes = getSelectedIndexes();
       selectionChangedEvent.onEvent();
-      selectedItemsChangedEvent.onEvent(getSelectedItems());
+      selectedIndexesChangedEvent.onEvent(selectedIndexes);
+      //we don't call getSelectedItems() since that would cause another call to getSelectedIndexes()
+      selectedItemsChangedEvent.onEvent(selectedIndexes.stream().mapToInt(modelIndex ->
+            modelIndex).mapToObj(tableModel::getItemAt).collect(toList()));
     }
   }
 
@@ -288,6 +293,16 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   @Override
   public void removeSelectedIndexListener(final EventDataListener<Integer> listener) {
     selectedIndexChangedEvent.removeDataListener(listener);
+  }
+
+  @Override
+  public void addSelectedIndexesListener(final EventDataListener<List<Integer>> listener) {
+    selectedIndexesChangedEvent.addDataListener(listener);
+  }
+
+  @Override
+  public void removeSelectedIndexesListener(final EventDataListener<List<Integer>> listener) {
+    selectedIndexesChangedEvent.removeDataListener(listener);
   }
 
   @Override
