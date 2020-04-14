@@ -4,8 +4,8 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.common.Text;
-import org.jminor.common.UserPreferences;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.UserPreferences;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;

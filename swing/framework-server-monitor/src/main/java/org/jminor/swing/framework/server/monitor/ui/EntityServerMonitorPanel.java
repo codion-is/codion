@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.common.UserPreferences;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.UserPreferences;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.Servers;
 import org.jminor.swing.common.ui.Components;
