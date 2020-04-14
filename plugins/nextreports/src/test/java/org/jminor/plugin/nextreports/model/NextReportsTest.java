@@ -5,6 +5,7 @@ package org.jminor.plugin.nextreports.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;
@@ -32,8 +33,9 @@ public class NextReportsTest {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             new H2Database("h2db", System.getProperty("jminor.db.initScript")))
             .setDomainClassName(Domain.class.getName()).setUser(UNIT_TEST_USER);
+    ReportWrapper.REPORT_PATH.set("src/test/reports/");
     final NextReportsResult result = connectionProvider.getConnection().fillReport(
-            NextReports.nextReportsWrapper("src/test/reports/test-report.report",
+            NextReports.nextReportsWrapper("test-report.report",
                     ReportRunner.CSV_FORMAT), Collections.emptyMap());
     File file = null;
     try {

@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.util.HashMap;
@@ -28,9 +27,11 @@ import static java.util.Objects.requireNonNull;
 /**
  * A NextReports {@link ReportWrapper} implementation
  */
-final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResult, Map<String, Object>>, Serializable {
+final class DefaultNextReportWrapper implements NextReportWrapper {
 
   private static final long serialVersionUID = 1;
+
+  private static final String SLASH = "/";
 
   static {
     DialectFactory.addDialect(Database.Type.H2.toString().toUpperCase(), OracleDialect.class.getName());
@@ -39,7 +40,7 @@ final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResul
   private final String reportPath;
   private final String format;
 
-  NextReportsWrapper(final String reportPath, final String format) {
+  DefaultNextReportWrapper(final String reportPath, final String format) {
     this.reportPath = requireNonNull(reportPath, "reportPath");
     this.format = requireNonNull(format, "format");
   }
@@ -74,10 +75,20 @@ final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResul
   @Override
   public Report loadReport() throws ReportException {
     try {
-      return ReportUtil.loadReport(new FileInputStream(reportPath));
+      return ReportUtil.loadReport(new FileInputStream(getFullReportPath()));
     }
     catch (final Exception e) {
       throw new ReportException(e);
     }
+  }
+
+  protected String getFullReportPath() {
+    final String reportLocation = ReportWrapper.getReportPath();
+    final StringBuilder builder = new StringBuilder(reportLocation);
+    if (!reportLocation.endsWith(SLASH) && !reportPath.startsWith(SLASH)) {
+      builder.append(SLASH);
+    }
+
+    return builder.append(reportPath).toString();
   }
 }
