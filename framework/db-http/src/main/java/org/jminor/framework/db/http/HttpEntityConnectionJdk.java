@@ -411,10 +411,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T, R> R fillReport(final ReportWrapper<T, R> reportWrapper) throws DatabaseException, ReportException {
+  public <T, R, P> R fillReport(final ReportWrapper<T, R, P> reportWrapper, final P reportParameters) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportWrapper, "reportWrapper");
     try {
-      return handleResponse(execute(createRequest("report", reportWrapper)));
+      return handleResponse(execute(createRequest("report", Arrays.asList(reportWrapper, reportParameters))));
     }
     catch (final ReportException | DatabaseException e) {
       throw e;
