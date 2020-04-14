@@ -77,7 +77,7 @@ net.sf.jasperreports.engine.type.WhenResourceMissingTypeEnum
 org.jminor.common.Conjunction
 org.jminor.common.db.Operator
 org.jminor.common.db.reports.AbstractReportWrapper
-org.jminor.common.remote.Clients$DefaultConnectionRequest
+org.jminor.common.remote.client.DefaultConnectionRequest
 org.jminor.common.user.DefaultUser
 org.jminor.common.version.DefaultVersion
 org.jminor.framework.db.condition.DefaultConditionSet

@@ -5,9 +5,9 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.remote.ClientLog;
-import org.jminor.common.remote.RemoteClient;
-import org.jminor.common.remote.Server;
+import org.jminor.common.remote.server.ClientLog;
+import org.jminor.common.remote.server.RemoteClient;
+import org.jminor.common.remote.server.Server;
 import org.jminor.common.user.User;
 
 import java.rmi.Remote;

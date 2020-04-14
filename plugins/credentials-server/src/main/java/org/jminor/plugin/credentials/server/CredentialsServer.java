@@ -5,7 +5,7 @@ package org.jminor.plugin.credentials.server;
 
 import org.jminor.common.CredentialsProvider;
 import org.jminor.common.TaskScheduler;
-import org.jminor.common.remote.Servers;
+import org.jminor.common.remote.server.Servers;
 import org.jminor.common.user.User;
 
 import org.slf4j.Logger;

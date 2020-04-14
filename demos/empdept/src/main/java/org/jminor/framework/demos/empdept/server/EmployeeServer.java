@@ -6,7 +6,7 @@ package org.jminor.framework.demos.empdept.server;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.user.Users;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Domain;

@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.demos.empdept.server;
 
-import org.jminor.common.remote.LoginProxy;
-import org.jminor.common.remote.RemoteClient;
-import org.jminor.common.remote.Servers;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.remote.server.LoginProxy;
+import org.jminor.common.remote.server.RemoteClient;
+import org.jminor.common.remote.server.Servers;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 

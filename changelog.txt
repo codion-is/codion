@@ -5864,3 +5864,4 @@
   DefaultConnectionPoolState and DefaultConnectionPoolStatistics no longer public
   ConnectionPoolException removed
   PreferencesUtil renamed to UserPreferences and moved to common root
+  common.remote package split up into client and server

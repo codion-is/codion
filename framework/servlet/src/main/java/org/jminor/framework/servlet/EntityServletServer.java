@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.servlet;
 
-import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
+import org.jminor.common.remote.server.Server;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
