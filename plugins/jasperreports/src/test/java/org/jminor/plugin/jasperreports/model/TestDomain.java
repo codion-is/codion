@@ -13,6 +13,7 @@ import static org.jminor.common.item.Items.item;
 import static org.jminor.framework.domain.entity.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 import static org.jminor.plugin.jasperreports.model.JasperReports.classPathReport;
+import static org.jminor.plugin.jasperreports.model.JasperReports.fileReport;
 
 public final class TestDomain extends Domain {
 
@@ -55,7 +56,9 @@ public final class TestDomain extends Domain {
   public static final String EMP_DEPARTMENT_LOCATION = "location";
   public static final String T_EMP = "scott.emp";
 
-  public static final JasperReportWrapper EMPLOYEE_REPORT =
+  public static final JasperReportWrapper EMPLOYEE_FILE_REPORT =
+          fileReport("/empdept_employees.jasper");
+  public static final JasperReportWrapper EMPLOYEE_CLASSPATH_REPORT =
             classPathReport(TestDomain.class, "/empdept_employees.jasper");
 
   void employee() {

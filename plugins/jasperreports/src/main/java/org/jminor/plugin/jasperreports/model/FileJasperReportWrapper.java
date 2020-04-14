@@ -4,7 +4,6 @@
 package org.jminor.plugin.jasperreports.model;
 
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportWrapper;
 
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -12,11 +11,11 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import java.io.File;
 import java.net.URL;
 
-final class FileReportWrapper extends AbstractReportWrapper {
+final class FileJasperReportWrapper extends AbstractJasperReportWrapper {
 
   private static final long serialVersionUID = 1;
 
-  FileReportWrapper(final String reportPath) {
+  FileJasperReportWrapper(final String reportPath) {
     super(reportPath);
   }
 
@@ -37,10 +36,5 @@ final class FileReportWrapper extends AbstractReportWrapper {
     catch (final Exception e) {
       throw new ReportException(e);
     }
-  }
-
-  @Override
-  protected String getFullReportPath() {
-    return ReportWrapper.getFullReportPath(reportPath);
   }
 }

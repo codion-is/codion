@@ -47,6 +47,7 @@ public final class ChinookImpl extends Domain implements Chinook {
     playlist();
     playlistTrack();
     dbOperations();
+    addReport(CUSTOMER_REPORT);
   }
 
   void artist() {

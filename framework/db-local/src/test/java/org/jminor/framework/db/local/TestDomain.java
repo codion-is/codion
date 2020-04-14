@@ -6,6 +6,9 @@ package org.jminor.framework.db.local;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.operation.AbstractDatabaseFunction;
 import org.jminor.common.db.operation.AbstractDatabaseProcedure;
+import org.jminor.common.db.reports.AbstractReportWrapper;
+import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
@@ -13,11 +16,13 @@ import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.KeyGenerator;
 import org.jminor.framework.domain.entity.StringProvider;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
@@ -26,6 +31,18 @@ import static org.jminor.framework.domain.entity.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {
+
+  public static final ReportWrapper<Object, String, Map<String, Object>> REPORT = new AbstractReportWrapper<Object, String, Map<String, Object>>("report.path") {
+    @Override
+    public String fillReport(final Connection connection, final Map<String, Object> parameters) throws ReportException {
+      return "result";
+    }
+
+    @Override
+    public Object loadReport() throws ReportException {
+      return null;
+    }
+  };
 
   public static final String PROCEDURE_ID = "procedureId";
   public static final String FUNCTION_ID = "functionId";
@@ -40,6 +57,8 @@ public final class TestDomain extends Domain {
     groupByQuery();
     noPkEntity();
     registerDomain();
+    ReportWrapper.REPORT_PATH.set("path/to/reports");
+    addReport(REPORT);
   }
 
   public static final String DEPARTMENT_ID = "deptno";

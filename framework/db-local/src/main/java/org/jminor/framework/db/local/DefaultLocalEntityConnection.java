@@ -671,6 +671,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         logAccess("fillReport", new Object[] {reportWrapper});
+        if (!domain.containsReport(reportWrapper)) {
+          throw new ReportException("Undefined report: " + reportWrapper);
+        }
         final R result = reportWrapper.fillReport(connection.getConnection(), reportParameters);
         commitIfTransactionIsNotOpen();
 

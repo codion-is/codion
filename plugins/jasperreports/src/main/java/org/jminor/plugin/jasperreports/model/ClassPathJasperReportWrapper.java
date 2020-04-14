@@ -5,13 +5,13 @@ import org.jminor.common.db.reports.ReportException;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
-final class ClassPathReportWrapper extends AbstractReportWrapper {
+final class ClassPathJasperReportWrapper extends AbstractJasperReportWrapper {
 
   private static final long serialVersionUID = 1;
 
   private final Class resourceClass;
 
-  ClassPathReportWrapper(final Class resourceClass, final String reportPath) {
+  ClassPathJasperReportWrapper(final Class resourceClass, final String reportPath) {
     super(reportPath);
     this.resourceClass = resourceClass;
   }

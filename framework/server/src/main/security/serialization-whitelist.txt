@@ -76,6 +76,7 @@ net.sf.jasperreports.engine.type.TextAdjustEnum
 net.sf.jasperreports.engine.type.WhenResourceMissingTypeEnum
 org.jminor.common.Conjunction
 org.jminor.common.db.Operator
+org.jminor.common.db.reports.AbstractReportWrapper
 org.jminor.common.remote.Clients$DefaultConnectionRequest
 org.jminor.common.user.DefaultUser
 org.jminor.common.version.DefaultVersion
@@ -93,7 +94,6 @@ org.jminor.framework.domain.entity.DefaultOrderBy$DefaultOrderByProperty
 org.jminor.framework.demos.chinook.domain.Chinook
 org.jminor.framework.demos.empdept.domain.EmpDept
 org.jminor.framework.servlet.EntityService
-org.jminor.plugin.jasperreports.model.AbstractReportWrapper
-org.jminor.plugin.jasperreports.model.ClassPathReportWrapper
-org.jminor.plugin.jasperreports.model.FileSystemReportWrapper
-org.jminor.plugin.jasperreports.model.UrlReportWrapper
+org.jminor.plugin.jasperreports.model.AbstractJasperReportWrapper
+org.jminor.plugin.jasperreports.model.ClassPathJasperReportWrapper
+org.jminor.plugin.jasperreports.model.FileJasperReportWrapper
