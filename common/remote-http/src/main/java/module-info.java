@@ -6,5 +6,5 @@ module org.jminor.common.remote.http {
   requires org.eclipse.jetty.util;
   requires transitive org.jminor.common.remote;
 
-  exports org.jminor.common.remote.http;
+  exports org.jminor.common.remote.server.http;
 }

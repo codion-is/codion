@@ -5,8 +5,9 @@ module org.jminor.common.remote {
   requires transitive java.rmi;
   requires transitive org.jminor.common.core;
 
-  exports org.jminor.common.remote;
-  exports org.jminor.common.remote.exception;
+  exports org.jminor.common.remote.client;
+  exports org.jminor.common.remote.server;
+  exports org.jminor.common.remote.server.exception;
 
-  uses org.jminor.common.remote.Server.AuxiliaryServer;
+  uses org.jminor.common.remote.server.Server.AuxiliaryServer;
 }

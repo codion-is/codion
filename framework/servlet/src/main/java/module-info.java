@@ -1,6 +1,6 @@
 /**
  * Servlet application server.
- * @provides org.jminor.common.remote.Server.AuxiliaryServer
+ * @provides org.jminor.common.remote.server.Server.AuxiliaryServer
  */
 module org.jminor.framework.servlet {
   requires java.ws.rs;
@@ -12,6 +12,6 @@ module org.jminor.framework.servlet {
 
   exports org.jminor.framework.servlet;
 
-  provides org.jminor.common.remote.Server.AuxiliaryServer
+  provides org.jminor.common.remote.server.Server.AuxiliaryServer
           with org.jminor.framework.servlet.EntityServletServer;
 }
