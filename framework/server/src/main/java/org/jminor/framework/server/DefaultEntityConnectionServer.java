@@ -14,18 +14,18 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.remote.AbstractServer;
-import org.jminor.common.remote.ClientLog;
-import org.jminor.common.remote.ConnectionRequest;
-import org.jminor.common.remote.ConnectionValidator;
-import org.jminor.common.remote.LoginProxy;
-import org.jminor.common.remote.RemoteClient;
-import org.jminor.common.remote.SerializationWhitelist;
-import org.jminor.common.remote.Server;
-import org.jminor.common.remote.Servers;
+import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
+import org.jminor.common.remote.server.AbstractServer;
+import org.jminor.common.remote.server.ClientLog;
+import org.jminor.common.remote.server.ConnectionValidator;
+import org.jminor.common.remote.server.LoginProxy;
+import org.jminor.common.remote.server.RemoteClient;
+import org.jminor.common.remote.server.SerializationWhitelist;
+import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.Servers;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
@@ -65,8 +65,8 @@ import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.common.remote.SerializationWhitelist.isSerializationDryRunActive;
-import static org.jminor.common.remote.SerializationWhitelist.writeDryRunWhitelist;
+import static org.jminor.common.remote.server.SerializationWhitelist.isSerializationDryRunActive;
+import static org.jminor.common.remote.server.SerializationWhitelist.writeDryRunWhitelist;
 
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.

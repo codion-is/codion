@@ -1,0 +1,106 @@
+/*
+ * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package org.jminor.common.remote.server;
+
+import org.jminor.common.remote.client.ConnectionRequest;
+import org.jminor.common.user.User;
+import org.jminor.common.version.Version;
+
+import java.util.Map;
+import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
+
+final class DefaultRemoteClient implements RemoteClient {
+
+  private static final long serialVersionUID = 1;
+
+  private final ConnectionRequest connectionRequest;
+  private final User databaseUser;
+
+  private String clientHost;
+
+  /**
+   * Instantiates a new RemoteClient
+   * @param connectionRequest the connection request
+   * @param databaseUser the user to use when connecting to the underlying database
+   */
+  DefaultRemoteClient(final ConnectionRequest connectionRequest, final User databaseUser) {
+    this.connectionRequest = requireNonNull(connectionRequest, "connectionRequest");
+    this.databaseUser = requireNonNull(databaseUser, "databaseUser");
+  }
+
+  @Override
+  public ConnectionRequest getConnectionRequest() {
+    return connectionRequest;
+  }
+
+  @Override
+  public User getUser() {
+    return connectionRequest.getUser();
+  }
+
+  @Override
+  public User getDatabaseUser() {
+    return databaseUser;
+  }
+
+  @Override
+  public UUID getClientId() {
+    return connectionRequest.getClientId();
+  }
+
+  @Override
+  public String getClientTypeId() {
+    return connectionRequest.getClientTypeId();
+  }
+
+  @Override
+  public Version getClientVersion() {
+    return connectionRequest.getClientVersion();
+  }
+
+  @Override
+  public Version getFrameworkVersion() {
+    return connectionRequest.getFrameworkVersion();
+  }
+
+  @Override
+  public Map<String, Object> getParameters() {
+    return connectionRequest.getParameters();
+  }
+
+  @Override
+  public String getClientHost() {
+    return clientHost;
+  }
+
+  @Override
+  public void setClientHost(final String clientHost) {
+    this.clientHost = clientHost;
+  }
+
+  @Override
+  public int hashCode() {
+    return connectionRequest.hashCode();
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    return this == obj || obj instanceof RemoteClient && connectionRequest.equals(((RemoteClient) obj).getConnectionRequest());
+  }
+
+  @Override
+  public String toString() {
+    final StringBuilder builder = new StringBuilder(connectionRequest.getUser().toString());
+    if (databaseUser != null && !connectionRequest.getUser().equals(databaseUser)) {
+      builder.append(" (databaseUser: ").append(databaseUser.toString()).append(")");
+    }
+    builder.append("@").append(clientHost == null ? "unknown" : clientHost).append(" [").append(connectionRequest.getClientTypeId())
+            .append(connectionRequest.getClientVersion() != null ? "-" + connectionRequest.getClientVersion() : "")
+            .append("] - ").append(connectionRequest.getClientId().toString());
+
+    return builder.toString();
+  }
+}

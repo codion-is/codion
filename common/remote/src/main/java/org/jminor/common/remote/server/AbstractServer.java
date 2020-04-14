@@ -1,20 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.remote;
+package org.jminor.common.remote.server;
 
+import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.exception.ConnectionValidationException;
 import org.jminor.common.remote.exception.LoginException;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
-import org.jminor.common.version.Version;
-import org.jminor.common.version.Versions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -22,7 +20,6 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +27,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -387,59 +383,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
     private T getConnection() {
       return connection;
-    }
-  }
-
-  private static final class DefaultServerInfo implements ServerInfo, Serializable {
-    private static final long serialVersionUID = 1;
-
-    private final UUID serverId;
-    private final String serverName;
-    private final int serverPort;
-    private final ZonedDateTime serverStartupTime;
-    private final Locale locale = Locale.getDefault();
-    private final Version serverVersion = Versions.getVersion();
-
-    private DefaultServerInfo(final UUID serverId, final String serverName, final int serverPort, final ZonedDateTime serverStartupTime) {
-      this.serverId = serverId;
-      this.serverName = serverName;
-      this.serverPort = serverPort;
-      this.serverStartupTime = serverStartupTime;
-    }
-
-    @Override
-    public String getServerName() {
-      return serverName;
-    }
-
-    @Override
-    public UUID getServerId() {
-      return serverId;
-    }
-
-    @Override
-    public int getServerPort() {
-      return serverPort;
-    }
-
-    @Override
-    public Version getServerVersion() {
-      return serverVersion;
-    }
-
-    @Override
-    public ZonedDateTime getStartTime() {
-      return serverStartupTime;
-    }
-
-    @Override
-    public Locale getLocale() {
-      return locale;
-    }
-
-    @Override
-    public ZoneId getTimeZone() {
-      return serverStartupTime.getZone();
     }
   }
 

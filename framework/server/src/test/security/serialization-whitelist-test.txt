@@ -54,11 +54,11 @@ org.jminor.common.MethodLogger$Entry
 org.jminor.common.Text$ComparatorSansSpace
 org.jminor.common.db.AbstractDatabase$DefaultDatabaseStatistics
 org.jminor.common.item.DefaultItem
-org.jminor.common.remote.AbstractServer$DefaultServerInfo
-org.jminor.common.remote.Clients$DefaultConnectionRequest
-org.jminor.common.remote.Server
-org.jminor.common.remote.Servers$DefaultClientLog
-org.jminor.common.remote.Servers$DefaultRemoteClient
+org.jminor.common.remote.client.DefaultConnectionRequest
+org.jminor.common.remote.server.Server
+org.jminor.common.remote.server.DefaultServerInfo
+org.jminor.common.remote.server.DefaultClientLog
+org.jminor.common.remote.server.DefaultRemoteClient
 org.jminor.common.remote.exception.ConnectionNotAvailableException
 org.jminor.common.remote.exception.LoginException
 org.jminor.common.remote.exception.ServerAuthenticationException

@@ -5,9 +5,9 @@ package org.jminor.framework.servlet;
 
 import org.jminor.common.Serializer;
 import org.jminor.common.db.Operator;
-import org.jminor.common.remote.RemoteClient;
-import org.jminor.common.remote.Server;
-import org.jminor.common.remote.http.HttpServer;
+import org.jminor.common.remote.server.RemoteClient;
+import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.http.HttpServer;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.Value;

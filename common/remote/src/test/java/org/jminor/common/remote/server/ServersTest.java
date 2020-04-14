@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurösson. All Rights Reserved.
  */
-package org.jminor.common.remote;
+package org.jminor.common.remote.server;
 
 import org.jminor.common.remote.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;

@@ -1,8 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.remote;
+package org.jminor.common.remote.server;
 
+import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.exception.ConnectionValidationException;
 
 /**

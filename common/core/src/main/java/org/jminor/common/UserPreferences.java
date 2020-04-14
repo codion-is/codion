@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -11,13 +11,13 @@ import static java.util.Objects.requireNonNull;
 /**
  * A utility class for working with user preferences
  */
-public final class PreferencesUtil {
+public final class UserPreferences {
 
   private static final String KEY = "key";
 
   private static Preferences userPreferences;
 
-  private PreferencesUtil() {}
+  private UserPreferences() {}
 
   /**
    * @param key the key identifying the preference

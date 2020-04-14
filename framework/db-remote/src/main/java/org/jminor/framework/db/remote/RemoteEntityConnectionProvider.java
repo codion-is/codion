@@ -4,9 +4,9 @@
 package org.jminor.framework.db.remote;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.remote.Clients;
-import org.jminor.common.remote.Server;
-import org.jminor.common.remote.Servers;
+import org.jminor.common.remote.client.Clients;
+import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.Servers;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
 
