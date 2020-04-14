@@ -63,6 +63,16 @@ public interface SelectionModel<R> {
   void removeSelectedIndexListener(EventDataListener<Integer> listener);
 
   /**
+   * @param listener a listener to be notified each time the selected indexes change
+   */
+  void addSelectedIndexesListener(EventDataListener<List<Integer>> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeSelectedIndexesListener(EventDataListener<List<Integer>> listener);
+
+  /**
    * @param listener a listener to be notified each time the selected item changes
    */
   void addSelectedItemListener(EventDataListener<R> listener);
