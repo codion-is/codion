@@ -8,6 +8,7 @@ import org.jminor.common.Util;
 import org.jminor.common.db.operation.DatabaseFunction;
 import org.jminor.common.db.operation.DatabaseOperation;
 import org.jminor.common.db.operation.DatabaseProcedure;
+import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.domain.entity.Entity;
@@ -418,13 +419,20 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   /**
    * Adds a report to this domain model.
    * @param reportWrapper the report to add
+   * @throws RuntimeException in case loading the report failed
    * @throws IllegalArgumentException in case the report has already been added
    */
   public final void addReport(final ReportWrapper reportWrapper) {
     if (containsReport(reportWrapper)) {
       throw new IllegalArgumentException("Report has already been added: " + reportWrapper);
     }
-    reports.add(reportWrapper);
+    try {
+      reportWrapper.loadReport();
+      reports.add(reportWrapper);
+    }
+    catch (final ReportException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**

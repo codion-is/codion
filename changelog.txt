@@ -5883,3 +5883,4 @@
   ReportWrappers now constants in the domain model, since they no longer contain the parameters
   AbstractReportWrapper added
   Domain.addReport() and containsReport() added, reports must now be added to domain model
+  Domain.addReport() now tries to load the report, fail-fast
