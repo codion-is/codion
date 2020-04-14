@@ -65,6 +65,7 @@ public interface ReportWrapper<T, R, P> extends Serializable {
    * and the given report path.
    * @param reportPath the report path relative to {@link ReportWrapper#REPORT_PATH}.
    * @return a full report path
+   * @throws IllegalArgumentException in case {@link ReportWrapper#REPORT_PATH} is not specified
    */
   static String getFullReportPath(final String reportPath) {
     final String slash = "/";

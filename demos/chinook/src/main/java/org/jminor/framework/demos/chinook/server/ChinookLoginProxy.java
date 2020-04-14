@@ -36,14 +36,15 @@ import static org.jminor.framework.domain.property.Properties.primaryKeyProperty
 public final class ChinookLoginProxy implements LoginProxy {
 
   /**
-   * The actual user credentials to return for successfully authenticated users.
-   */
-  private final User databaseUser = Users.parseUser("scott:tiger");
-
-  /**
    * The Database instance we're connecting to.
    */
   private final Database database = Databases.getInstance();
+
+  /**
+   * The actual user credentials to return for successfully authenticated users.
+   * Also used for user lookup.
+   */
+  private final User databaseUser = Users.parseUser("scott:tiger");
 
   /**
    * The Domain containing the authentication table.
@@ -56,7 +57,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   private final ConnectionPool connectionPool;
 
   public ChinookLoginProxy() throws DatabaseException {
-    connectionPool = getConnectionPoolProvider().createConnectionPool(databaseUser, database);
+    connectionPool = getConnectionPoolProvider().createConnectionPool(database, databaseUser);
   }
 
   /**

@@ -41,8 +41,7 @@ public interface ConnectionPool {
   /**
    * Fetches a connection from the pool. Close the connection to return it to the pool.
    * @return a database connection retrieved from the pool
-   * @throws ConnectionPoolException.NoConnectionAvailable in case the maximum check out time is exceeded
-   * @throws DatabaseException in case of a database exception
+   * @throws DatabaseException in case of an exception while fetching the connection
    * @throws IllegalStateException if the pool is closed
    * @see #setMaximumCheckOutTime(int)
    * @see Connection#close()
@@ -145,7 +144,6 @@ public interface ConnectionPool {
 
   /**
    * @return the maximum number of milliseconds to retry connection checkout before throwing an exception
-   * @see ConnectionPoolException.NoConnectionAvailable
    */
   int getMaximumCheckOutTime();
 

@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * A default ConnectionPoolState implementation
  */
-public final class DefaultConnectionPoolState implements ConnectionPoolState, Serializable {
+final class DefaultConnectionPoolState implements ConnectionPoolState, Serializable {
 
   private static final long serialVersionUID = 1;
 

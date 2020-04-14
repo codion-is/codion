@@ -40,7 +40,7 @@ public final class ConnectionPools {
     requireNonNull(database, "database");
     requireNonNull(users, "users");
     for (final User user : users) {
-      CONNECTION_POOLS.put(user.getUsername(), connectionPoolProvider.createConnectionPool(user, database));
+      CONNECTION_POOLS.put(user.getUsername(), connectionPoolProvider.createConnectionPool(database, user));
     }
   }
 

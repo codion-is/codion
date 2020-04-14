@@ -24,12 +24,12 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
 
   /**
    * Creates a HikariCP based connection pool
-   * @param user the user
    * @param database the underlying database
+   * @param user the user
    * @return a connection pool
    */
   @Override
-  public ConnectionPool createConnectionPool(final User user, final Database database) {
+  public ConnectionPool createConnectionPool(final Database database, final User user) {
     return new HikariConnectionPool(database, user);
   }
 

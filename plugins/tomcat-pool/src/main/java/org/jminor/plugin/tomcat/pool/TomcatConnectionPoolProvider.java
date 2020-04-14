@@ -25,12 +25,12 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
   /**
    * Creates a Tomcat based connection pool
-   * @param user the user
    * @param database the underlying database
+   * @param user the user
    * @return a connection pool
    */
   @Override
-  public ConnectionPool createConnectionPool(final User user, final Database database) {
+  public ConnectionPool createConnectionPool(final Database database, final User user) {
     return new DataSourceWrapper(database, user, createDataSource(user, database));
   }
 

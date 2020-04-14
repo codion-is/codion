@@ -5884,3 +5884,6 @@
   AbstractReportWrapper added
   Domain.addReport() and containsReport() added, reports must now be added to domain model
   Domain.addReport() now tries to load the report, fail-fast
+  ConnectionPoolProvider.createConnectionPool() parameters reordered
+  DefaultConnectionPoolState and DefaultConnectionPoolStatistics no longer public
+  ConnectionPoolException removed

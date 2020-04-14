@@ -8,7 +8,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.db.pool.ConnectionPoolException;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
@@ -289,11 +288,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       catch (final InvocationTargetException e) {
         LOG.error(e.getMessage(), e);
         exception = e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
-
-        throw exception;
-      }
-      catch (final ConnectionPoolException.NoConnectionAvailable e) {
-        exception = e;
         throw exception;
       }
       catch (final Exception e) {

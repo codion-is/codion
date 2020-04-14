@@ -11,7 +11,7 @@ import static java.util.Collections.emptyList;
 /**
  * A default ConnectionPoolStatistics implementation
  */
-public final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics, Serializable {
+final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -37,7 +37,7 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
   /**
    * @param username the database user the pool is based on
    */
-  public DefaultConnectionPoolStatistics(final String username) {
+  DefaultConnectionPoolStatistics(final String username) {
     this.username = username;
   }
 
