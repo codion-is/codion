@@ -8,6 +8,7 @@ import org.jminor.common.CredentialsProvider;
 import org.jminor.common.LoggerProxy;
 import org.jminor.common.Memory;
 import org.jminor.common.Text;
+import org.jminor.common.UserPreferences;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
@@ -16,7 +17,6 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.item.Item;
 import org.jminor.common.item.Items;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
@@ -361,7 +361,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             resourceBundle.getString(SELECT_LOOK_AND_FEEL), JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (option == JOptionPane.OK_OPTION) {
-      PreferencesUtil.putUserPreference(applicationLookAndFeelProperty, (String) lookAndFeelComboBox.getSelectedItem());
+      UserPreferences.putUserPreference(applicationLookAndFeelProperty, (String) lookAndFeelComboBox.getSelectedItem());
       JOptionPane.showMessageDialog(this, resourceBundle.getString("look_and_feel_selected_message"));
     }
   }
@@ -398,7 +398,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             resourceBundle.getString("select_font_size"), JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (option == JOptionPane.OK_OPTION) {
-      PreferencesUtil.putUserPreference(applicationFontSizeProperty, comboBoxModel.getSelectedItem().getValue().toString());
+      UserPreferences.putUserPreference(applicationFontSizeProperty, comboBoxModel.getSelectedItem().getValue().toString());
       JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
     }
   }
@@ -534,7 +534,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
     try {
       savePreferences();
-      PreferencesUtil.flushUserPreferences();
+      UserPreferences.flushUserPreferences();
     }
     catch (final Exception e) {
       LOG.debug("Exception while saving preferences", e);
@@ -1103,7 +1103,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see Components#getDefaultLookAndFeelClassName()
    */
   protected String getDefaultLookAndFeelClassName() {
-    return PreferencesUtil.getUserPreference(applicationLookAndFeelProperty, Components.getDefaultLookAndFeelClassName());
+    return UserPreferences.getUserPreference(applicationLookAndFeelProperty, Components.getDefaultLookAndFeelClassName());
   }
 
   /**
@@ -1111,7 +1111,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #selectFontSize()
    */
   protected Integer getDefaultFontSize() {
-    return Integer.parseInt(PreferencesUtil.getUserPreference(applicationFontSizeProperty, "100"));
+    return Integer.parseInt(UserPreferences.getUserPreference(applicationFontSizeProperty, "100"));
   }
 
   /**
@@ -1277,14 +1277,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param username the username
    */
   protected void saveDefaultUsername(final String username) {
-    PreferencesUtil.putUserPreference(applicationDefaultUsernameProperty, username);
+    UserPreferences.putUserPreference(applicationDefaultUsernameProperty, username);
   }
 
   /**
    * @return a default username previously saved to user preferences or the OS username
    */
   protected String getDefaultUsername() {
-    return PreferencesUtil.getUserPreference(applicationDefaultUsernameProperty,
+    return UserPreferences.getUserPreference(applicationDefaultUsernameProperty,
             EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name"));
   }
 

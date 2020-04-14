@@ -4,11 +4,11 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.Text;
+import org.jminor.common.UserPreferences;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
-import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.table.TableSortModel;
@@ -533,7 +533,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   public final void savePreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       try {
-        PreferencesUtil.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
+        UserPreferences.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
       }
       catch (final Exception e) {
         LOG.error("Error while saving preferences", e);
@@ -677,7 +677,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * Clears any user preferences saved for this table model
    */
   final void clearPreferences() {
-    PreferencesUtil.removeUserPreference(getUserPreferencesKey());
+    UserPreferences.removeUserPreference(getUserPreferencesKey());
   }
 
   private void bindEventsInternal() {
@@ -788,7 +788,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   private void applyPreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
-      final String preferencesString = PreferencesUtil.getUserPreference(getUserPreferencesKey(), "");
+      final String preferencesString = UserPreferences.getUserPreference(getUserPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {
           applyColumnPreferences(new org.json.JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS));

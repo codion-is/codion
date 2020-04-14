@@ -5863,3 +5863,4 @@
   ConnectionPoolProvider.createConnectionPool() parameters reordered
   DefaultConnectionPoolState and DefaultConnectionPoolStatistics no longer public
   ConnectionPoolException removed
+  PreferencesUtil renamed to UserPreferences and moved to common root

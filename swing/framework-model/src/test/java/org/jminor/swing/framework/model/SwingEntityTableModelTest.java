@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.UserPreferences;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.domain.entity.Entity;
@@ -245,6 +245,6 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(170, column.getPreferredWidth());
 
     model.clearPreferences();
-    PreferencesUtil.flushUserPreferences();
+    UserPreferences.flushUserPreferences();
   }
 }

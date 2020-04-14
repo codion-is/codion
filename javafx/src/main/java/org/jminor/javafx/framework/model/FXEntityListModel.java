@@ -4,8 +4,8 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.common.Text;
+import org.jminor.common.UserPreferences;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
@@ -379,7 +379,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final void savePreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       try {
-        PreferencesUtil.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
+        UserPreferences.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
       }
       catch (final Exception e) {
         LOG.error("Error while saving preferences", e);
@@ -526,7 +526,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private void applyPreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
-      final String preferencesString = PreferencesUtil.getUserPreference(getUserPreferencesKey(), "");
+      final String preferencesString = UserPreferences.getUserPreference(getUserPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {
           final org.json.JSONObject preferences = new org.json.JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS);
