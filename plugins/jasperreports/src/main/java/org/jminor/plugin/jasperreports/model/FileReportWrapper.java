@@ -16,8 +16,6 @@ final class FileReportWrapper extends AbstractReportWrapper {
 
   private static final long serialVersionUID = 1;
 
-  private static final String SLASH = "/";
-
   FileReportWrapper(final String reportPath) {
     super(reportPath);
   }
@@ -43,12 +41,6 @@ final class FileReportWrapper extends AbstractReportWrapper {
 
   @Override
   protected String getFullReportPath() {
-    final String reportLocation = ReportWrapper.getReportPath();
-    final StringBuilder builder = new StringBuilder(reportLocation);
-    if (!reportLocation.endsWith(SLASH) && !reportPath.startsWith(SLASH)) {
-      builder.append(SLASH);
-    }
-
-    return builder.append(reportPath).toString();
+    return ReportWrapper.getFullReportPath(reportPath);
   }
 }

@@ -7,14 +7,12 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.model.ChinookApplicationModel;
 import org.jminor.framework.demos.chinook.ui.ChinookAppPanel;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.plugin.jasperreports.model.JasperReports;
 import org.jminor.swing.common.tools.loadtest.ui.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -97,8 +95,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
                         Entities.getDistinctValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
                 final HashMap<String, Object> reportParameters = new HashMap<>();
                 reportParameters.put("CUSTOMER_IDS", customerIDs);
-                customerModel.getConnectionProvider().getConnection()
-                        .fillReport(JasperReports.classPathReport(Chinook.class, "customer_report.jasper"), reportParameters);
+                customerModel.getConnectionProvider().getConnection().fillReport(CUSTOMER_REPORT, reportParameters);
               }
               catch (final Exception e) {
                 throw new ScenarioException(e);

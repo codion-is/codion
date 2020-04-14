@@ -29,8 +29,7 @@ public final class JasperReports {
    * @param reportPath the report classpath
    * @return a report wrapper
    */
-  public static ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> classPathReport(final Class resourceClass,
-                                                                                              final String reportPath) {
+  public static JasperReportWrapper classPathReport(final Class resourceClass, final String reportPath) {
     return new ClassPathReportWrapper(resourceClass, reportPath);
   }
 
@@ -39,7 +38,7 @@ public final class JasperReports {
    * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
    * @return a report wrapper
    */
-  public static ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> fileReport(final String reportPath) {
+  public static JasperReportWrapper fileReport(final String reportPath) {
     return new FileReportWrapper(reportPath);
   }
 

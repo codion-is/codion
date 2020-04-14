@@ -110,8 +110,6 @@ public class JasperReportsTest {
   public void classPathReport() throws DatabaseException, ReportException {
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    final ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> report =
-            JasperReports.classPathReport(JasperReports.class, "/empdept_employees.jasper");
-    CONNECTION_PROVIDER.getConnection().fillReport(report, reportParameters);
+    CONNECTION_PROVIDER.getConnection().fillReport(TestDomain.EMPLOYEE_REPORT, reportParameters);
   }
 }

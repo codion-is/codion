@@ -4,7 +4,6 @@
 package org.jminor.plugin.jasperreports.model;
 
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportWrapper;
 
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -17,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractReportWrapper implements ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> {
+abstract class AbstractReportWrapper implements JasperReportWrapper  {
 
   private static final long serialVersionUID = 1;
 

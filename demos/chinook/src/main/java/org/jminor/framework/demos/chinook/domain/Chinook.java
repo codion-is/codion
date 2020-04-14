@@ -4,8 +4,11 @@
 package org.jminor.framework.demos.chinook.domain;
 
 import org.jminor.framework.domain.property.DerivedProperty;
+import org.jminor.plugin.jasperreports.model.JasperReportWrapper;
 
 import java.math.BigDecimal;
+
+import static org.jminor.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public interface Chinook {
 
@@ -54,6 +57,9 @@ public interface Chinook {
   String CUSTOMER_EMAIL = "email";
   String CUSTOMER_SUPPORTREPID = "supportrepid";
   String CUSTOMER_SUPPORTREP_FK = "supportrep_fk";
+
+  JasperReportWrapper CUSTOMER_REPORT =
+          classPathReport(Chinook.class, "customer_report.jasper");
 
   String T_GENRE = "genre@chinook";
   String GENRE_GENREID = "genreid";

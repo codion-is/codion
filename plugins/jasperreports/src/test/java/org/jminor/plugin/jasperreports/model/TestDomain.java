@@ -12,6 +12,7 @@ import static java.util.Arrays.asList;
 import static org.jminor.common.item.Items.item;
 import static org.jminor.framework.domain.entity.KeyGenerators.increment;
 import static org.jminor.framework.domain.property.Properties.*;
+import static org.jminor.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public final class TestDomain extends Domain {
 
@@ -53,6 +54,9 @@ public final class TestDomain extends Domain {
   public static final String EMP_MGR_FK = "mgr_fk";
   public static final String EMP_DEPARTMENT_LOCATION = "location";
   public static final String T_EMP = "scott.emp";
+
+  public static final JasperReportWrapper EMPLOYEE_REPORT =
+            classPathReport(TestDomain.class, "/empdept_employees.jasper");
 
   void employee() {
     define(T_EMP,

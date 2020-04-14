@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.util.HashMap;
@@ -28,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A NextReports {@link ReportWrapper} implementation
  */
-final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResult, Map<String, Object>>, Serializable {
+final class DefaultNextReportWrapper implements NextReportWrapper {
 
   private static final long serialVersionUID = 1;
 
@@ -39,7 +38,7 @@ final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResul
   private final String reportPath;
   private final String format;
 
-  NextReportsWrapper(final String reportPath, final String format) {
+  DefaultNextReportWrapper(final String reportPath, final String format) {
     this.reportPath = requireNonNull(reportPath, "reportPath");
     this.format = requireNonNull(format, "format");
   }
@@ -74,7 +73,7 @@ final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResul
   @Override
   public Report loadReport() throws ReportException {
     try {
-      return ReportUtil.loadReport(new FileInputStream(reportPath));
+      return ReportUtil.loadReport(new FileInputStream(ReportWrapper.getFullReportPath(reportPath)));
     }
     catch (final Exception e) {
       throw new ReportException(e);

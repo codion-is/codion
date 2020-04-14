@@ -5,10 +5,6 @@ package org.jminor.plugin.nextreports.model;
 
 import org.jminor.common.db.reports.ReportWrapper;
 
-import ro.nextreports.engine.Report;
-
-import java.util.Map;
-
 /**
  * Factory for {@link ReportWrapper} based on NextReports.
  */
@@ -22,8 +18,7 @@ public final class NextReports {
    * @param format the format
    * @return a report wrapper
    */
-  public static ReportWrapper<Report, NextReportsResult, Map<String, Object>> nextReportsWrapper(final String reportPath,
-                                                                                                 final String format) {
-    return new NextReportsWrapper(reportPath, format);
+  public static NextReportWrapper nextReportsWrapper(final String reportPath, final String format) {
+    return new DefaultNextReportWrapper(reportPath, format);
   }
 }
