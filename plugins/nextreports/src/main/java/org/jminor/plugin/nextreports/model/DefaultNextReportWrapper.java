@@ -4,6 +4,7 @@
 package org.jminor.plugin.nextreports.model;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.reports.AbstractReportWrapper;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
 
@@ -27,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A NextReports {@link ReportWrapper} implementation
  */
-final class DefaultNextReportWrapper implements NextReportWrapper {
+final class DefaultNextReportWrapper extends AbstractReportWrapper<Report, NextReportsResult, Map<String, Object>> implements NextReportWrapper {
 
   private static final long serialVersionUID = 1;
 
@@ -35,11 +36,10 @@ final class DefaultNextReportWrapper implements NextReportWrapper {
     DialectFactory.addDialect(Database.Type.H2.toString().toUpperCase(), OracleDialect.class.getName());
   }
 
-  private final String reportPath;
   private final String format;
 
   DefaultNextReportWrapper(final String reportPath, final String format) {
-    this.reportPath = requireNonNull(reportPath, "reportPath");
+    super(reportPath);
     this.format = requireNonNull(format, "format");
   }
 
@@ -73,7 +73,7 @@ final class DefaultNextReportWrapper implements NextReportWrapper {
   @Override
   public Report loadReport() throws ReportException {
     try {
-      return ReportUtil.loadReport(new FileInputStream(ReportWrapper.getFullReportPath(reportPath)));
+      return ReportUtil.loadReport(new FileInputStream(getFullReportPath()));
     }
     catch (final Exception e) {
       throw new ReportException(e);

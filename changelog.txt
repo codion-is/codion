@@ -5857,3 +5857,4 @@
   JasperReportWrapper and NextReportWrapper convenience interfaces added to hide all the generic type parameters
   ReportWrapper.getFullReportPath() added
   ReportWrappers now constants in the domain model, since they no longer contain the parameters
+  AbstractReportWrapper added

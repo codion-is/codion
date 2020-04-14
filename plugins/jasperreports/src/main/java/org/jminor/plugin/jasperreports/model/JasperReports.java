@@ -30,7 +30,7 @@ public final class JasperReports {
    * @return a report wrapper
    */
   public static JasperReportWrapper classPathReport(final Class resourceClass, final String reportPath) {
-    return new ClassPathReportWrapper(resourceClass, reportPath);
+    return new ClassPathJasperReportWrapper(resourceClass, reportPath);
   }
 
   /**
@@ -39,7 +39,7 @@ public final class JasperReports {
    * @return a report wrapper
    */
   public static JasperReportWrapper fileReport(final String reportPath) {
-    return new FileReportWrapper(reportPath);
+    return new FileJasperReportWrapper(reportPath);
   }
 
   /**
