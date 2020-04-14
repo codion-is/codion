@@ -4,8 +4,8 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.remote.client.ConnectionRequest;
-import org.jminor.common.remote.exception.ConnectionValidationException;
 import org.jminor.common.remote.server.ConnectionValidator;
+import org.jminor.common.remote.server.exception.ConnectionValidationException;
 
 public class TestConnectionValidator implements ConnectionValidator {
 

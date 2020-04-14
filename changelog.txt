@@ -5891,3 +5891,4 @@
   common.remote package split up into client and server
   common.remote.http moved to common.remote.server.http
   UserPreferences moved back to common.model, introduced java.prefs module dependency
+  common.remote.exception moved under common.remote.server

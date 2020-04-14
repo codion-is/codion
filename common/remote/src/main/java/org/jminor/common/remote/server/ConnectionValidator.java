@@ -4,7 +4,7 @@
 package org.jminor.common.remote.server;
 
 import org.jminor.common.remote.client.ConnectionRequest;
-import org.jminor.common.remote.exception.ConnectionValidationException;
+import org.jminor.common.remote.server.exception.ConnectionValidationException;
 
 /**
  * Responsible for validating connections to a remote server, for example a required client version
