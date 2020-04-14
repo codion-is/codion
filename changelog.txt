@@ -5855,3 +5855,4 @@
   Database.supportsSelectForUpdate() and supportsNowait() replaced with getSelectForUpdateSupport() with enum SelectForUpdateSupport
   ReportWrapper, added P generic type for report parameters, EntityConnection.fillReport() added P reportParameters parameter, ReportWrapper instances no longer contain parameters
   JasperReportWrapper and NextReportWrapper convenience interfaces added to hide all the generic type parameters
+  ReportWrapper.getFullReportPath() added

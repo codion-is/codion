@@ -59,4 +59,21 @@ public interface ReportWrapper<T, R, P> extends Serializable {
 
     return path;
   }
+
+  /**
+   * Returns a full report path, combined from the report location specified by {@link #REPORT_PATH}
+   * and the given report path.
+   * @param reportPath the report path relative to {@link ReportWrapper#REPORT_PATH}.
+   * @return a full report path
+   */
+  static String getFullReportPath(final String reportPath) {
+    final String slash = "/";
+    final String reportLocation = getReportPath();
+    final StringBuilder builder = new StringBuilder(reportLocation);
+    if (!reportLocation.endsWith(slash) && !reportPath.startsWith(slash)) {
+      builder.append(slash);
+    }
+
+    return builder.append(reportPath).toString();
+  }
 }

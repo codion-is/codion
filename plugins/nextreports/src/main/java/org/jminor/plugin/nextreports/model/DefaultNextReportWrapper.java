@@ -31,8 +31,6 @@ final class DefaultNextReportWrapper implements NextReportWrapper {
 
   private static final long serialVersionUID = 1;
 
-  private static final String SLASH = "/";
-
   static {
     DialectFactory.addDialect(Database.Type.H2.toString().toUpperCase(), OracleDialect.class.getName());
   }
@@ -75,20 +73,10 @@ final class DefaultNextReportWrapper implements NextReportWrapper {
   @Override
   public Report loadReport() throws ReportException {
     try {
-      return ReportUtil.loadReport(new FileInputStream(getFullReportPath()));
+      return ReportUtil.loadReport(new FileInputStream(ReportWrapper.getFullReportPath(reportPath)));
     }
     catch (final Exception e) {
       throw new ReportException(e);
     }
-  }
-
-  protected String getFullReportPath() {
-    final String reportLocation = ReportWrapper.getReportPath();
-    final StringBuilder builder = new StringBuilder(reportLocation);
-    if (!reportLocation.endsWith(SLASH) && !reportPath.startsWith(SLASH)) {
-      builder.append(SLASH);
-    }
-
-    return builder.append(reportPath).toString();
   }
 }
