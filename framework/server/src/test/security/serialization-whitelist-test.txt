@@ -59,10 +59,10 @@ org.jminor.common.remote.server.Server
 org.jminor.common.remote.server.DefaultServerInfo
 org.jminor.common.remote.server.DefaultClientLog
 org.jminor.common.remote.server.DefaultRemoteClient
-org.jminor.common.remote.exception.ConnectionNotAvailableException
-org.jminor.common.remote.exception.LoginException
-org.jminor.common.remote.exception.ServerAuthenticationException
-org.jminor.common.remote.exception.ServerException
+org.jminor.common.remote.server.exception.ConnectionNotAvailableException
+org.jminor.common.remote.server.exception.LoginException
+org.jminor.common.remote.server.exception.ServerAuthenticationException
+org.jminor.common.remote.server.exception.ServerException
 org.jminor.common.user.DefaultUser
 org.jminor.common.version.DefaultVersion
 org.jminor.framework.db.condition.Condition$EmptyCondition
