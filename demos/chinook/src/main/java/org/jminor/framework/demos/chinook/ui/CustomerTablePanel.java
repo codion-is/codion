@@ -42,7 +42,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     reportParameters.put("CUSTOMER_IDS", customerIDs);
 
     EntityReports.viewJdbcReport(CustomerTablePanel.this,
-            JasperReports.classPathReport(Chinook.class, "customer_report.jasper", reportParameters),
-            JRViewer::new, null, getTableModel().getConnectionProvider());
+            JasperReports.classPathReport(Chinook.class, "customer_report.jasper"),
+            reportParameters, JRViewer::new, null, getTableModel().getConnectionProvider());
   }
 }

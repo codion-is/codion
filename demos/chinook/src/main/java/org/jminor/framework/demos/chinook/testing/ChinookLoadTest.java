@@ -98,7 +98,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
                 final HashMap<String, Object> reportParameters = new HashMap<>();
                 reportParameters.put("CUSTOMER_IDS", customerIDs);
                 customerModel.getConnectionProvider().getConnection()
-                        .fillReport(JasperReports.classPathReport(Chinook.class, "customer_report.jasper", reportParameters));
+                        .fillReport(JasperReports.classPathReport(Chinook.class, "customer_report.jasper"), reportParameters);
               }
               catch (final Exception e) {
                 throw new ScenarioException(e);

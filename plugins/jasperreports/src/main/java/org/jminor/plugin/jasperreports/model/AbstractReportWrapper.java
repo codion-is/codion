@@ -11,30 +11,29 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractReportWrapper implements ReportWrapper<JasperReport, JasperPrint> {
+abstract class AbstractReportWrapper implements ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> {
 
   private static final long serialVersionUID = 1;
 
   private static final Map<String, JasperReport> REPORT_CACHE = new ConcurrentHashMap<>();
 
-  private final Map<String, Object> reportParameters;
   protected final String reportPath;
 
-  protected AbstractReportWrapper(final String reportPath, final Map<String, Object> reportParameters) {
+  protected AbstractReportWrapper(final String reportPath) {
     this.reportPath = requireNonNull(reportPath, "reportPath");
-    this.reportParameters = requireNonNull(reportParameters, "reportParameters");
   }
 
   @Override
-  public final JasperPrint fillReport(final Connection connection) throws ReportException {
+  public final JasperPrint fillReport(final Connection connection, final Map<String, Object> parameters) throws ReportException {
     requireNonNull(connection, "connection");
     try {
-      return JasperFillManager.fillReport(loadReportInternal(), reportParameters, connection);
+      return JasperFillManager.fillReport(loadReportInternal(), parameters == null ? new HashMap<>() : parameters, connection);
     }
     catch (final Exception e) {
       throw new ReportException(e);

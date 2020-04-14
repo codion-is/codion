@@ -178,10 +178,10 @@ public class DefaultLocalEntityConnectionTest {
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
     final String reportResult = "result";
-    connection.fillReport(new ReportWrapper<String, String>() {
+    connection.fillReport(new ReportWrapper<String, String, Map<String, Object>>() {
 
       @Override
-      public String fillReport(final Connection connection) throws ReportException {
+      public String fillReport(final Connection connection, final Map<String, Object> reportParameters) throws ReportException {
         return reportResult;
       }
 
@@ -189,7 +189,7 @@ public class DefaultLocalEntityConnectionTest {
       public String loadReport() throws ReportException {
         return null;
       }
-    });
+    }, reportParameters);
   }
 
   @Test

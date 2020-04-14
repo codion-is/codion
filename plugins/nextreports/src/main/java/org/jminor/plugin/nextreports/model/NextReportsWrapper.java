@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -27,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A NextReports {@link ReportWrapper} implementation
  */
-final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResult>, Serializable {
+final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResult, Map<String, Object>>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -36,23 +37,22 @@ final class NextReportsWrapper implements ReportWrapper<Report, NextReportsResul
   }
 
   private final String reportPath;
-  private final Map<String, Object> reportParameters;
   private final String format;
 
-  NextReportsWrapper(final String reportPath, final Map<String, Object> reportParameters, final String format) {
+  NextReportsWrapper(final String reportPath, final String format) {
     this.reportPath = requireNonNull(reportPath, "reportPath");
-    this.reportParameters = requireNonNull(reportParameters, "reportParameters");
-    this.format = format;
+    this.format = requireNonNull(format, "format");
   }
 
   @Override
-  public NextReportsResult fillReport(final Connection connection) throws ReportException {
+  public NextReportsResult fillReport(final Connection connection, final Map<String, Object> parameters) throws ReportException {
+    requireNonNull(connection, "connection");
     File file = null;
     try (final OutputStream output = new FileOutputStream(file = File.createTempFile("NextReportsWrapper", null, null))) {
       FluentReportRunner.report(loadReport())
               .connectTo(connection)
               .withQueryTimeout(60)
-              .withParameterValues(reportParameters)
+              .withParameterValues(parameters == null ? new HashMap<>() : parameters)
               .formatAs(format)
               .run(output);
       output.close();

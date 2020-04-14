@@ -428,10 +428,10 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T, R> R fillReport(final ReportWrapper<T, R> reportWrapper) throws DatabaseException, ReportException {
+  public <T, R, P> R fillReport(final ReportWrapper<T, R, P> reportWrapper, final P reportParameters) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportWrapper, "reportWrapper");
     try {
-      return onResponse(execute(createHttpPost("report", reportWrapper)));
+      return onResponse(execute(createHttpPost("report", asList(reportWrapper, reportParameters))));
     }
     catch (final ReportException | DatabaseException e) {
       throw e;

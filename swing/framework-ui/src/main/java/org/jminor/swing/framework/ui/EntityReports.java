@@ -33,17 +33,19 @@ public final class EntityReports {
    * Shows a report viewer for report printing
    * @param component the component for which to set the wait cursor while the report is being filled
    * @param reportWrapper the report wrapper
+   * @param reportParameters the report parameters, if any
    * @param uiWrapper the ui wrapper
    * @param reportTitle the title to display on the frame
    * @param connectionProvider the db provider
    * @param <R> the report result type
+   * @param <P> the report parameters type
    */
-  public static <R> void viewJdbcReport(final JComponent component, final ReportWrapper<?, R> reportWrapper,
-                                        final ReportComponentProvider<R, JComponent> uiWrapper, final String reportTitle,
-                                        final EntityConnectionProvider connectionProvider) {
+  public static <R, P> void viewJdbcReport(final JComponent component, final ReportWrapper<?, R, P> reportWrapper,
+                                           final P reportParameters, final ReportComponentProvider<R, JComponent> uiWrapper,
+                                           final String reportTitle, final EntityConnectionProvider connectionProvider) {
     try {
       Components.showWaitCursor(component);
-      viewReport(connectionProvider.getConnection().fillReport(reportWrapper), uiWrapper, reportTitle);
+      viewReport(connectionProvider.getConnection().fillReport(reportWrapper, reportParameters), uiWrapper, reportTitle);
     }
     catch (final ReportException | DatabaseException e) {
       throw new RuntimeException(e);

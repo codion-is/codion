@@ -15,8 +15,9 @@ import static org.jminor.common.Util.nullOrEmpty;
  * A simple wrapper for a report
  * @param <T> the report type
  * @param <R> the report result type
+ * @param <P> the report parameters type
  */
-public interface ReportWrapper<T, R> extends Serializable {
+public interface ReportWrapper<T, R, P> extends Serializable {
 
   /**
    * The report path used for file based report generation.
@@ -33,10 +34,11 @@ public interface ReportWrapper<T, R> extends Serializable {
   /**
    * Loads and fills the report using the given database connection
    * @param connection the connection to use for the report generation
+   * @param parameters the report parameters, if any
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  R fillReport(Connection connection) throws ReportException;
+  R fillReport(Connection connection, P parameters) throws ReportException;
 
   /**
    * Loads the report this report wrapper is based on.

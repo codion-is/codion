@@ -5,6 +5,7 @@ package org.jminor.framework.servlet;
 
 import org.jminor.common.Serializer;
 import org.jminor.common.Util;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.remote.Clients;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.exception.ServerAuthenticationException;
@@ -263,7 +264,8 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Serializer.serialize(connection.fillReport(deserialize(request)))).build();
+      final List parameters = deserialize(request);
+      return Response.ok(Serializer.serialize(connection.fillReport((ReportWrapper) parameters.get(0), parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

@@ -93,9 +93,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T, R> R fillReport(final ReportWrapper<T, R> reportWrapper) throws ReportException, DatabaseException {
+  public <T, R, P> R fillReport(final ReportWrapper<T, R, P> reportWrapper, final P reportParameters) throws ReportException, DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.fillReport(reportWrapper);
+      return connectionProxy.fillReport(reportWrapper, reportParameters);
     }
   }
 

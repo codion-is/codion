@@ -34,7 +34,7 @@ public class NextReportsTest {
             .setDomainClassName(Domain.class.getName()).setUser(UNIT_TEST_USER);
     final NextReportsResult result = connectionProvider.getConnection().fillReport(
             NextReports.nextReportsWrapper("src/test/reports/test-report.report",
-                    Collections.emptyMap(), ReportRunner.CSV_FORMAT));
+                    ReportRunner.CSV_FORMAT), Collections.emptyMap());
     File file = null;
     try {
       final String tmpDir = System.getProperty("java.io.tmpdir");
