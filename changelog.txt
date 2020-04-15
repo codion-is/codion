@@ -5872,4 +5872,4 @@
   SelectionModel.add/removeSelectedIndexesListener() added, for completeness sake
 0.14.5
   SelectionModel.isSelectionNotEmpty() added, isSelectionEmpty() was mostly called with negation
-  FilteredModel.contains(item, includeFiltered) removed includeFiltered parameter, rename to containsItem() to prevent clash in JavaFX
+  FilteredModel.contains(item, includeFiltered) removed includeFiltered parameter, renamed to containsItem() to prevent clash in JavaFX
