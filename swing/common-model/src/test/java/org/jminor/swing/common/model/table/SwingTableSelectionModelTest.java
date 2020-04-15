@@ -52,7 +52,7 @@ public class SwingTableSelectionModelTest {
     };
     tableModel.refresh();
 
-    testModel = (SwingTableSelectionModel<String>) tableModel.getSelectionModel();
+    testModel = tableModel.getSelectionModel();
   }
 
   @Test

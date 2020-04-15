@@ -114,7 +114,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.columnProperty("name", Types.VARCHAR),
                 Properties.columnProperty("info", Types.VARCHAR),
                 Properties.derivedProperty("derived", Types.VARCHAR, null, linkedValues ->
-                        ((String) linkedValues.get("name")) + linkedValues.get("info"), "name", "info"));
+                        linkedValues.get("name").toString() + linkedValues.get("info"), "name", "info"));
       }
     }
     final Domain domain = new TestDomain();

@@ -18,6 +18,8 @@ dependencies {
     api project(':jminor-framework-db-remote')
     implementation project(':jminor-framework-db-local')
 
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+
     testRuntimeOnly project(':jminor-plugin-hikari-pool')
     testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"

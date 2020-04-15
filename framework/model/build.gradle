@@ -8,6 +8,8 @@ dependencies {
 
     testImplementation project(':jminor-framework-db-local')
 
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+
     runtimeOnly "org.json:json:${jsonVersion}"
 
     testRuntimeOnly project(':jminor-dbms-h2database')

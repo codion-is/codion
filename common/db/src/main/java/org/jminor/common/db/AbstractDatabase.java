@@ -7,9 +7,6 @@ import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,8 +22,6 @@ import static org.jminor.common.Util.nullOrEmpty;
  * A default abstract implementation of the Database interface.
  */
 public abstract class AbstractDatabase implements Database {
-
-  private static final Logger LOG = LoggerFactory.getLogger(AbstractDatabase.class);
 
   private final QueryCounter queryCounter = new QueryCounter();
   private final Type databaseType;
@@ -286,7 +281,7 @@ public abstract class AbstractDatabase implements Database {
       Class.forName(requireNonNull(driverClassName, "driverClassName"));
     }
     catch (final ClassNotFoundException e) {
-      LOG.warn(driverClassName + " not found on classpath", e);
+      System.err.println(driverClassName + " not found on classpath");
     }
   }
 
