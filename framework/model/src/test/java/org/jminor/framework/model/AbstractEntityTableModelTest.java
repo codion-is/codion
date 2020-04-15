@@ -157,14 +157,14 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
       tableModel.setRemoveEntitiesOnDelete(true);
       assertTrue(tableModel.isRemoveEntitiesOnDelete());
       tableModel.deleteSelected();
-      assertFalse(tableModel.contains(selected, false));
+      assertFalse(tableModel.containsItem(selected));
 
       tableModel.setSelectedByKey(singletonList(pk2));
       selected = tableModel.getSelectionModel().getSelectedItem();
       tableModel.setRemoveEntitiesOnDelete(false);
       assertFalse(tableModel.isRemoveEntitiesOnDelete());
       tableModel.deleteSelected();
-      assertTrue(tableModel.contains(selected, false));
+      assertTrue(tableModel.containsItem(selected));
     }
     finally {
       tableModel.getConnectionProvider().getConnection().rollbackTransaction();

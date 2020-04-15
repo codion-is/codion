@@ -263,7 +263,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public int getFilteredItemCount() {return 0;}
     @Override
-    public boolean contains(final Entity item, final boolean includeFiltered) {return false;}
+    public boolean containsItem(final Entity item) {return false;}
     @Override
     public boolean isVisible(final Entity item) {return false;}
     @Override

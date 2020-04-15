@@ -291,12 +291,12 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     final EntityModel model = createDepartmentModelWithoutDetailModel();
     model.getEditModel().insert(asList(dept, emp));
-    assertTrue(model.getTableModel().contains(dept, true));
-    assertFalse(model.getTableModel().contains(emp, true));
+    assertTrue(model.getTableModel().containsItem(dept));
+    assertFalse(model.getTableModel().containsItem(emp));
 
     model.getEditModel().delete(asList(dept, emp));
 
-    assertFalse(model.getTableModel().contains(dept, true));
+    assertFalse(model.getTableModel().containsItem(dept));
   }
 
   protected final EntityConnectionProvider getConnectionProvider() {

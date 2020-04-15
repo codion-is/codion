@@ -157,6 +157,6 @@ public class EntityInputComponentsTest {
     final SteppedComboBox comboBox = EntityInputComponents.createValueListComboBox(property, value);
     final ItemComboBoxModel model = (ItemComboBoxModel) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
-    assertTrue(model.contains(Items.item(null), true));
+    assertTrue(model.containsItem(Items.item(null)));
   }
 }

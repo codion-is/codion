@@ -225,7 +225,7 @@ public final class ClientUserMonitor {
           final UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeId(),
                   remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.getClientId(), remoteClient.getClientVersion(),
                   remoteClient.getFrameworkVersion());
-          if (contains(newUserInfo, true)) {
+          if (containsItem(newUserInfo)) {
             final UserInfo currentUserInfo = getItemAt(indexOf(newUserInfo));
             currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
             if (currentUserInfo.isNewConnection(newUserInfo.getClientId())) {

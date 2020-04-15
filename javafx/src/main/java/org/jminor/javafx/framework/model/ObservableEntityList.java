@@ -182,12 +182,8 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   }
 
   @Override
-  public final boolean contains(final Entity item, final boolean includeFiltered) {
-    if (includeFiltered) {
-      return filteredList.contains(item) || contains(item);
-    }
-
-    return contains(item);
+  public final boolean containsItem(final Entity item) {
+    return filteredList.contains(item) || contains(item);
   }
 
   @Override
@@ -197,7 +193,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   @Override
   public final boolean isFiltered(final Entity item) {
-    return contains(item) && !filteredList.contains(item);
+    return containsItem(item) && !filteredList.contains(item);
   }
 
   @Override

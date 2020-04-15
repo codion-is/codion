@@ -76,20 +76,19 @@ public interface FilteredModel<T> {
   /**
    * Returns true if this model contains the given item, visible or filtered.
    * @param item the item
-   * @param includeFiltered if true then the filtered items are included
    * @return true if this model contains the item
    */
-  boolean contains(T item, boolean includeFiltered);
+  boolean containsItem(T item);
 
   /**
-   * Returns true if the given item is visible, that is, not filtered in this model
+   * Returns true if this model contains the given item and it is visible, that is, not filtered
    * @param item the item
    * @return true if the given item is visible
    */
   boolean isVisible(T item);
 
   /**
-   * Returns true if the given item is being filtered in this model, that is, is not visible
+   * Returns true if this model contains the given item and it is filtered, that is, is not visible
    * @param item the item
    * @return true if the given item is filtered
    */
