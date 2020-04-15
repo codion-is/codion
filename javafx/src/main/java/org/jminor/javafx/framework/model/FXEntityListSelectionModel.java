@@ -333,6 +333,11 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     return selectionModel.isEmpty();
   }
 
+  @Override
+  public boolean isSelectionNotEmpty() {
+    return !selectionModel.isEmpty();
+  }
+
   private void bindEvents() {
     if (selectionModel instanceof MultipleSelectionModel) {
       final MultipleSelectionModel<Entity> multipleSelectionModel = (MultipleSelectionModel<Entity>) this.selectionModel;

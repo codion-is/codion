@@ -79,11 +79,11 @@ public final class AbstractFilteredTableModelTest {
     column.setIdentifier(0);
     final ColumnConditionModel<List<String>, Integer> filterModel =
             new DefaultColumnConditionModel<List<String>, Integer>(0, String.class, "%") {
-      @Override
-      protected Comparable getComparable(final List<String> row) {
-        return row.get(0);
-      }
-    };
+              @Override
+              protected Comparable getComparable(final List<String> row) {
+                return row.get(0);
+              }
+            };
     return new TestAbstractFilteredTableModel(new AbstractTableSortModel<List<String>, Integer>(singletonList(column)) {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
@@ -120,15 +120,15 @@ public final class AbstractFilteredTableModelTest {
   public void filterContents() {
     tableModel.refresh();
     tableModel.setIncludeCondition(item -> !item.equals(B) && !item.equals(F));
-    assertFalse(tableModel.contains(B, false));
-    assertTrue(tableModel.contains(B, true));
+    assertFalse(tableModel.isVisible(B));
+    assertTrue(tableModel.containsItem(B));
     tableModel.addItemsAt(Collections.singletonList(F), 0);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING);
-    assertFalse(tableModel.contains(F, false));
-    assertTrue(tableModel.contains(F, true));
+    assertFalse(tableModel.isVisible(F));
+    assertTrue(tableModel.containsItem(F));
     tableModel.setIncludeCondition(null);
-    assertTrue(tableModel.contains(B, false));
-    assertTrue(tableModel.contains(F, false));
+    assertTrue(tableModel.isVisible(B));
+    assertTrue(tableModel.isVisible(F));
   }
 
   @Test
@@ -184,15 +184,15 @@ public final class AbstractFilteredTableModelTest {
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
     tableModel.removeItem(B);
     assertEquals(3, events.get());
-    assertFalse(tableModel.contains(B, false));
-    assertTrue(tableModel.contains(A, true));
+    assertFalse(tableModel.isVisible(B));
+    assertTrue(tableModel.containsItem(A));
     tableModel.removeItem(A);
     assertEquals(4, events.get());
-    assertFalse(tableModel.contains(A, true));
+    assertFalse(tableModel.containsItem(A));
     tableModel.removeItems(asList(D, E));
     assertEquals(4, events.get());//no change when removing filtered items
-    assertFalse(tableModel.contains(D, false));
-    assertFalse(tableModel.contains(E, false));
+    assertFalse(tableModel.isVisible(D));
+    assertFalse(tableModel.isVisible(E));
     tableModel.removeTableDataChangedListener(listener);
   }
 
@@ -205,11 +205,11 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(1, events.get());
     tableModel.removeItems(1, 3);
     assertEquals(2, events.get());
-    assertTrue(tableModel.contains(A, true));
-    assertFalse(tableModel.contains(B, true));
-    assertFalse(tableModel.contains(C, true));
-    assertTrue(tableModel.contains(D, true));
-    assertTrue(tableModel.contains(E, true));
+    assertTrue(tableModel.containsItem(A));
+    assertFalse(tableModel.containsItem(B));
+    assertFalse(tableModel.containsItem(C));
+    assertTrue(tableModel.containsItem(D));
+    assertTrue(tableModel.containsItem(E));
     tableModel.removeTableDataChangedListener(listener);
   }
 
@@ -666,11 +666,11 @@ public final class AbstractFilteredTableModelTest {
   public void filterAndRemove() {
     tableModel.refresh();
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
-    assertTrue(tableModel.contains(B, true));
+    assertTrue(tableModel.containsItem(B));
     tableModel.removeItem(B);
-    assertFalse(tableModel.contains(B, true));
+    assertFalse(tableModel.containsItem(B));
     tableModel.removeItem(A);
-    assertFalse(tableModel.contains(A, true));
+    assertFalse(tableModel.containsItem(A));
   }
 
   @Test
@@ -684,14 +684,14 @@ public final class AbstractFilteredTableModelTest {
     assertNotNull(tableModel.getIncludeCondition());
 
     //test filters
-    assertTrue(tableModel.contains(B, false));
+    assertTrue(tableModel.isVisible(B));
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
     assertEquals(2, done.get());
     assertTrue(tableModel.isVisible(A));
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.isFiltered(D));
-    assertFalse(tableModel.contains(B, false));
-    assertTrue(tableModel.contains(B, true));
+    assertFalse(tableModel.isVisible(B));
+    assertTrue(tableModel.containsItem(B));
     assertTrue(tableModel.getColumnModel().getColumnFilterModel(0).isEnabled());
     assertEquals(4, tableModel.getFilteredItemCount());
     assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
@@ -757,7 +757,12 @@ public final class AbstractFilteredTableModelTest {
   private static boolean tableModelContainsAll(final List<List<String>> rows, final boolean includeFiltered,
                                                final AbstractFilteredTableModel<List<String>, Integer> model) {
     for (final List<String> row : rows) {
-      if (!model.contains(row, includeFiltered)) {
+      if (includeFiltered) {
+        if (!model.containsItem(row)) {
+          return false;
+        }
+      }
+      else if (!model.isVisible(row)) {
         return false;
       }
     }

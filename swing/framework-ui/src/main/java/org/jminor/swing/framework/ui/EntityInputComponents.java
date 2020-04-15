@@ -758,7 +758,7 @@ public final class EntityInputComponents {
   private static ItemComboBoxModel createValueListComboBoxModel(final ValueListProperty property, final boolean sortItems) {
     final ItemComboBoxModel model = sortItems ?
             new ItemComboBoxModel(property.getValues()) : new ItemComboBoxModel(null, property.getValues());
-    if (property.isNullable() && !model.contains(Items.item(null), true)) {
+    if (property.isNullable() && !model.containsItem(Items.item(null))) {
       model.addItem(Items.item(null, EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
     }
 

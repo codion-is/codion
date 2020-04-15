@@ -71,7 +71,7 @@ public final class ObservableEntityListTest {
     assertFalse(list.isFiltered(sales));
     assertTrue(list.isVisible(sales));
 
-    assertTrue(list.contains(operations, true));
+    assertTrue(list.containsItem(operations));
 
     list.setIncludeCondition(null);
     assertEquals(2, counter.get());

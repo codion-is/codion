@@ -55,7 +55,7 @@ public final class SwingEntityComboBoxModelTest {
     temp.put(TestDomain.EMP_NAME, "Noname");
 
     EntityEditEvents.notifyInserted(singletonList(temp));
-    assertTrue(comboBoxModel.contains(temp, false));
+    assertTrue(comboBoxModel.isVisible(temp));
 
     temp.put(TestDomain.EMP_NAME, "Newname");
     temp.save(TestDomain.EMP_NAME);
@@ -67,12 +67,12 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals("Newname", comboBoxModel.getEntity(temp.getKey()).getString(TestDomain.EMP_NAME));
 
     EntityEditEvents.notifyDeleted(singletonList(temp));
-    assertFalse(comboBoxModel.contains(temp, false));
+    assertFalse(comboBoxModel.isVisible(temp));
 
     comboBoxModel.setListenToEditEvents(false);
 
     EntityEditEvents.notifyInserted(singletonList(temp));
-    assertFalse(comboBoxModel.contains(temp, false));
+    assertFalse(comboBoxModel.isVisible(temp));
   }
 
   @Test

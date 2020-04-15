@@ -185,8 +185,8 @@ public class SwingFilteredComboBoxModelTest {
     testModel.addItem(BJORN);//already contained
     assertEquals(4, testModel.getFilteredItemCount());
 
-    assertFalse(testModel.contains(BJORN, false));
-    assertTrue(testModel.contains(BJORN, true));
+    assertFalse(testModel.isVisible(BJORN));
+    assertTrue(testModel.containsItem(BJORN));
 
     testModel.removeListDataListener(listDataListener);
     testModel.removeFilteringListener(filteringEndedListener);

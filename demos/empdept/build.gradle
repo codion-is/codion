@@ -95,7 +95,7 @@ task buildReports(dependsOn: 'compileJava') {
         }
     }
 }
-compileJava.finalizedBy buildReports
+classes.finalizedBy buildReports
 
 task runClientLocal(type: ModularJavaExec) {
     group 'run'

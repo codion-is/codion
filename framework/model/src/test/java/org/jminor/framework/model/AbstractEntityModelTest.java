@@ -62,7 +62,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final Entity.Key operationsKey = deptEditModel.getDomain().key(TestDomain.T_DEPARTMENT, 40);//operations
     deptTableModel.setSelectedByKey(singletonList(operationsKey));
 
-    assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
+    assertTrue(deptTableModel.getSelectionModel().isSelectionNotEmpty());
     deptEditModel.put(TestDomain.DEPARTMENT_ID, 80);
     assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
     deptEditModel.update();
@@ -146,7 +146,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     }
     departmentModel.refresh();
     departmentModel.getTableModel().getSelectionModel().setSelectedIndexes(asList(1, 2, 3));
-    assertFalse(departmentModel.getTableModel().getSelectionModel().isSelectionEmpty());
+    assertTrue(departmentModel.getTableModel().getSelectionModel().isSelectionNotEmpty());
     assertFalse(departmentModel.getEditModel().isEntityNew());
     departmentModel.getEditModel().setEntity(null);
     assertTrue(departmentModel.getTableModel().getSelectionModel().isSelectionEmpty());
@@ -291,12 +291,12 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     final EntityModel model = createDepartmentModelWithoutDetailModel();
     model.getEditModel().insert(asList(dept, emp));
-    assertTrue(model.getTableModel().contains(dept, true));
-    assertFalse(model.getTableModel().contains(emp, true));
+    assertTrue(model.getTableModel().containsItem(dept));
+    assertFalse(model.getTableModel().containsItem(emp));
 
     model.getEditModel().delete(asList(dept, emp));
 
-    assertFalse(model.getTableModel().contains(dept, true));
+    assertFalse(model.getTableModel().containsItem(dept));
   }
 
   protected final EntityConnectionProvider getConnectionProvider() {
