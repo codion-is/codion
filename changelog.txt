@@ -5871,3 +5871,4 @@
   HttpEntityConnections.createConnection() split into createConnection() and createSecureConnection()
   SelectionModel.add/removeSelectedIndexesListener() added, for completeness sake
 0.14.5
+  SelectionModel.isSelectionNotEmpty() added, isSelectionEmpty() was mostly called with negation

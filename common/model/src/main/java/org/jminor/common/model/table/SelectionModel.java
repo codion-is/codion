@@ -219,4 +219,9 @@ public interface SelectionModel<R> {
    * @return true if the selection is empty
    */
   boolean isSelectionEmpty();
+
+  /**
+   * @return true if the selection is not empty
+   */
+  boolean isSelectionNotEmpty();
 }

@@ -586,7 +586,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     getEditModel().addAfterDeleteListener(this::onDelete);
     getEditModel().addAfterRefreshListener(this::refresh);
     getEditModel().addEntitySetListener(entity -> {
-      if (entity == null && selectionModelHasBeenSet() && !getSelectionModel().isSelectionEmpty()) {
+      if (entity == null && selectionModelHasBeenSet() && getSelectionModel().isSelectionNotEmpty()) {
         getSelectionModel().clearSelection();
       }
     });

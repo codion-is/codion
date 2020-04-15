@@ -264,6 +264,11 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   @Override
+  public boolean isSelectionNotEmpty() {
+    return !isSelectionEmpty();
+  }
+
+  @Override
   public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
     super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
     if (!isAdjusting) {

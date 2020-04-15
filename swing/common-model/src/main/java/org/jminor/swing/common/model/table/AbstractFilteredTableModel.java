@@ -642,7 +642,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
     @Override
     public boolean isValueSubset() {
-      return !tableModel.getSelectionModel().isSelectionEmpty();
+      return tableModel.getSelectionModel().isSelectionNotEmpty();
     }
   }
 }

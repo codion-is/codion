@@ -459,7 +459,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private List<Entity> getActiveEntities() {
-    if (tableModel != null && !tableModel.getSelectionModel().isSelectionEmpty()) {
+    if (tableModel != null && tableModel.getSelectionModel().isSelectionNotEmpty()) {
       return tableModel.getSelectionModel().getSelectedItems();
     }
     else if (editModel.isEntityNew()) {
