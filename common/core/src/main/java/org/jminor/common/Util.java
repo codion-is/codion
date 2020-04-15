@@ -3,9 +3,6 @@
  */
 package org.jminor.common;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,8 +23,6 @@ import static java.util.Objects.requireNonNull;
  * Misc. utilities.
  */
 public final class Util {
-
-  private static final Logger LOG = LoggerFactory.getLogger(Util.class);
 
   private static final int TEN = 10;
 
@@ -213,7 +208,7 @@ public final class Util {
       }
     }
     catch (final SecurityException e) {
-      LOG.error(e.getMessage(), e);
+      System.err.println(e.getMessage());
       return "";
     }
     final Properties props = System.getProperties();

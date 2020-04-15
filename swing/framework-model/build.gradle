@@ -9,6 +9,8 @@ dependencies {
 
     api project(':jminor-swing-common-model')
 
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+
     testImplementation project(':jminor-framework-db-local')
     testImplementation project(path: ':jminor-framework-model', configuration: 'testArtifact')
     testImplementation project(':jminor-swing-common-ui')

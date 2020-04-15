@@ -28,7 +28,6 @@ configure(project.frameworkModules) {
     targetCompatibility = JavaVersion.VERSION_1_8
 
     dependencies {
-        api "org.slf4j:slf4j-api:${slf4jApiVersion}"
         testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     }

@@ -3,5 +3,7 @@ dependencies {
 
     api "org.eclipse.jetty:jetty-server:${jettyVersion}"
 
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+
     testImplementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
 }

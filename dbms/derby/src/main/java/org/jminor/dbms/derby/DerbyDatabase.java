@@ -6,9 +6,6 @@ package org.jminor.dbms.derby;
 import org.jminor.common.db.AbstractDatabase;
 import org.jminor.common.db.Database;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -27,8 +24,6 @@ public final class DerbyDatabase extends AbstractDatabase {
   static final String EMBEDDED_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
   static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
   static final String URL_PREFIX = "jdbc:derby:";
-
-  private static final Logger LOG = LoggerFactory.getLogger(DerbyDatabase.class);
 
   static final boolean EMBEDDED = Database.DATABASE_EMBEDDED.get();
 
@@ -89,7 +84,7 @@ public final class DerbyDatabase extends AbstractDatabase {
     }
     catch (final SQLException e) {
       if (!e.getSQLState().equals(SHUTDOWN_ERROR_CODE)) {//08006 is expected on Derby shutdown
-        LOG.error("Embedded Derby database was did not successfully shut down!", e);
+        System.err.println("Embedded Derby database was did not successfully shut down: " + e.getMessage());
       }
     }
   }

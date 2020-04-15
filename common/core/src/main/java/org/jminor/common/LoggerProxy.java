@@ -3,9 +3,6 @@
  */
 package org.jminor.common;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -14,8 +11,6 @@ import java.util.ServiceLoader;
  * A simple logging proxy facilitating the setting of log levels
  */
 public interface LoggerProxy {
-
-  Logger LOG = LoggerFactory.getLogger(LoggerProxy.class);
 
   /**
    * @return the current log level
@@ -43,7 +38,7 @@ public interface LoggerProxy {
       return proxyIterator.next();
     }
 
-    LOG.warn("No LoggerProxy service implementation found");
+    System.err.println("No LoggerProxy service implementation found");
     return null;
   }
 }

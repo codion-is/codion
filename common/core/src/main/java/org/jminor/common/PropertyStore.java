@@ -6,9 +6,6 @@ package org.jminor.common;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.PropertyValue;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -50,8 +47,6 @@ import static java.util.Objects.requireNonNull;
  * </pre>
  */
 public final class PropertyStore {
-
-  private static final Logger LOG = LoggerFactory.getLogger(PropertyStore.class);
 
   /**
    * The separator used to separate multiple values.
@@ -272,7 +267,6 @@ public final class PropertyStore {
     if (!propertiesFile.exists() && !propertiesFile.createNewFile()) {
       throw new IOException("Unable to create properties file: " + propertiesFile);
     }
-    LOG.debug("Writing configuration to file: {}", propertiesFile);
     try (final OutputStream output = new FileOutputStream(propertiesFile)) {
       properties.store(output, null);
     }
@@ -287,7 +281,6 @@ public final class PropertyStore {
   public static Properties readFromFile(final File propertiesFile) throws IOException {
     final Properties propertiesFromFile = new Properties();
     if (propertiesFile.exists()) {
-      LOG.debug("Reading configuration from file: {}", propertiesFile);
       try (final InputStream input = new FileInputStream(propertiesFile)) {
         propertiesFromFile.load(input);
       }
@@ -325,12 +318,10 @@ public final class PropertyStore {
       if (!Objects.equals(this.value, newValue)) {
         this.value = newValue;
         if (newValue == null) {
-          LOG.debug("Property value removed {}", property);
           properties.remove(property);
           System.clearProperty(property);
         }
         else {
-          LOG.debug("Property value set {} -> {}", property, newValue);
           properties.setProperty(property, encoder.apply(newValue));
           System.setProperty(property, properties.getProperty(property));
         }

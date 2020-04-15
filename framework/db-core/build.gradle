@@ -3,4 +3,6 @@ dependencies {
     api project(':jminor-common-db')
     
     api project(':jminor-framework-domain')
+
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 }

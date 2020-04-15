@@ -5873,3 +5873,4 @@
 0.14.5
   SelectionModel.isSelectionNotEmpty() added, isSelectionEmpty() was mostly called with negation
   FilteredModel.contains(item, includeFiltered) removed includeFiltered parameter, renamed to containsItem() to prevent clash in JavaFX
+  Replaced logger with System.err.println in common.core and common.db, SLF4J no longer default dependency for all modules, only where actually used

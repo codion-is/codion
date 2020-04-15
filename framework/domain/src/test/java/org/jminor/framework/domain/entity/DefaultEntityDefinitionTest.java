@@ -63,7 +63,7 @@ public class DefaultEntityDefinitionTest {
                                 .primaryKeyIndex(0)));
       }
     }
-    assertThrows(IllegalArgumentException.class, TestDomain::new);
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
   }
 
   @Test
@@ -76,7 +76,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.columnProperty("id"));
       }
     }
-    assertThrows(IllegalArgumentException.class, TestDomain::new);
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
   }
 
   @Test
@@ -90,7 +90,7 @@ public class DefaultEntityDefinitionTest {
                         Properties.columnProperty("id")));
       }
     }
-    assertThrows(IllegalArgumentException.class, TestDomain::new);
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
   }
 
   @Test
@@ -102,7 +102,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.columnProperty("name", Types.VARCHAR)).searchPropertyIds("id");
       }
     }
-    assertThrows(IllegalArgumentException.class, TestDomain::new);
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
   }
 
   @Test
@@ -154,7 +154,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.columnProperty("p2").groupingColumn(true)).groupByClause("p1, p2");
       }
     }
-    assertThrows(IllegalStateException.class, TestDomain::new);
+    assertThrows(IllegalStateException.class, () -> new TestDomain());
   }
 
   @Test
@@ -182,7 +182,7 @@ public class DefaultEntityDefinitionTest {
                 .havingClause(havingClause);
       }
     }
-    assertThrows(IllegalStateException.class, TestDomain::new);
+    assertThrows(IllegalStateException.class, () -> new TestDomain());
   }
 
   @Test
@@ -198,7 +198,7 @@ public class DefaultEntityDefinitionTest {
                         Properties.columnProperty("fk_col")));
       }
     }
-    assertThrows(IllegalArgumentException.class, TestDomain::new);
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
   }
 
   @Test
@@ -225,7 +225,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.columnProperty("col"));
       }
     }
-    assertThrows(IllegalArgumentException.class, TestDomain::new);
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
   }
 
   @Test
@@ -239,7 +239,7 @@ public class DefaultEntityDefinitionTest {
                         Properties.columnProperty("col")));
       }
     }
-    assertThrows(IllegalArgumentException.class, TestDomain::new);
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
   }
 
   @Test
@@ -300,7 +300,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.primaryKeyProperty("propertyId")).stringProvider(null);
       }
     }
-    assertThrows(NullPointerException.class, TestDomain::new);
+    assertThrows(NullPointerException.class, () -> new TestDomain());
   }
 
   @Test
@@ -343,7 +343,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.primaryKeyProperty("propertyId")).keyGenerator(null);
       }
     }
-    assertThrows(NullPointerException.class, TestDomain::new);
+    assertThrows(NullPointerException.class, () -> new TestDomain());
   }
 
   @Test

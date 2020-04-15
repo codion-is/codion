@@ -8,9 +8,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,8 +23,6 @@ import static java.util.Objects.requireNonNull;
  * This class is not thread-safe.
  */
 final class DefaultDatabaseConnection implements DatabaseConnection {
-
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultDatabaseConnection.class);
 
   private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
   private static final ResultPacker<Long> LONG_RESULT_PACKER = resultSet -> resultSet.getLong(1);
@@ -137,7 +132,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       }
     }
     catch (final SQLException ex) {
-      LOG.warn("DefaultDatabaseConnection.disconnect(), connection invalid", ex);
+      System.err.println("DefaultDatabaseConnection.disconnect(), connection invalid");
     }
     Databases.closeSilently(connection);
     connection = null;
@@ -189,7 +184,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw new IllegalStateException("Transaction already open");
     }
 
-    LOG.debug("{}: begin transaction;", user.getUsername());
     logAccess("beginTransaction", new Object[0]);
     transactionOpen = true;
     logExit("beginTransaction", null);
@@ -203,7 +197,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
         throw new IllegalStateException("Transaction is not open");
       }
 
-      LOG.debug("{}: rollback transaction;", user.getUsername());
       logAccess("rollbackTransaction", null);
       connection.rollback();
     }
@@ -224,7 +217,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
         throw new IllegalStateException("Transaction is not open");
       }
 
-      LOG.debug("{}: commit transaction;", user.getUsername());
       logAccess("commitTransaction", null);
       connection.commit();
     }
@@ -248,14 +240,13 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw new IllegalStateException("Can not perform a commit during an open transaction, use 'commitTransaction()'");
     }
 
-    LOG.debug("{}: commit;", user.getUsername());
     SQLException exception = null;
     try {
       logAccess("commit", null);
       connection.commit();
     }
     catch (final SQLException e) {
-      LOG.error("Exception during commit: " + user.getUsername(), e);
+      System.err.println("Exception during commit: " + user.getUsername() + ": " + e.getMessage());
       exception = e;
       throw e;
     }
@@ -270,14 +261,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw new IllegalStateException("Can not perform a rollback during an open transaction, use 'rollbackTransaction()'");
     }
 
-    LOG.debug("{}: rollback;", user.getUsername());
     logAccess("rollback", null);
     SQLException exception = null;
     try {
       connection.rollback();
     }
     catch (final SQLException e) {
-      LOG.error("Exception during rollback: " + user.getUsername(), e);
       exception = e;
       throw e;
     }
@@ -315,10 +304,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     finally {
       Databases.closeSilently(statement);
       Databases.closeSilently(resultSet);
-      final MethodLogger.Entry logEntry = logExit("query", exception);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(Databases.createLogMessage(getUser(), sql, null, exception, logEntry));
-      }
+      logExit("query", exception);
     }
   }
 
@@ -350,7 +336,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       return connection;
     }
     catch (final SQLException e) {
-      LOG.error("Unable to disable auto commit on connection, assuming invalid state", e);
+      System.err.println("Unable to disable auto commit on connection, assuming invalid state");
       throw new DatabaseException(e, "Connection invalid during instantiation");
     }
   }

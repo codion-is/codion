@@ -10,6 +10,8 @@ dependencies {
     api project(':jminor-swing-common-model')
     api project(':jminor-swing-common-tools')
 
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+
     testImplementation project(':jminor-common-remote')
     testImplementation project(':jminor-framework-server')
     testRuntimeOnly project(':jminor-framework-db-local')

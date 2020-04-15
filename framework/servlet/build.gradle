@@ -14,6 +14,8 @@ dependencies {
     implementation "org.glassfish.jersey.containers:jersey-container-jetty-servlet:2.30"
     implementation "org.glassfish.jersey.inject:jersey-hk2:2.30"
 
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+
     testImplementation project(':jminor-framework-db-local')
     testImplementation project(':jminor-framework-server')
 
