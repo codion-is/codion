@@ -1,4 +1,5 @@
 module org.jminor.swing.common.tools {
+  requires org.slf4j;
   requires jfreechart;
   requires jdk.management;
   requires transitive java.desktop;
