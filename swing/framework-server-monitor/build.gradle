@@ -8,27 +8,25 @@ dependencies {
     implementation project(':jminor-common-model')
     implementation project(':jminor-common-remote')
 
-    implementation project(':jminor-framework-db-local')
-    implementation project(':jminor-framework-db-remote')
-    implementation project(':jminor-framework-server')
     implementation project(':jminor-swing-common-model')
     implementation project(':jminor-swing-common-ui')
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    implementation (project(':jminor-framework-server')) {
+        exclude group: 'org.jminor'//we don't need any transitive dependencies
+    }
 
-    testImplementation project(':jminor-framework-domain')
-    testImplementation project(':jminor-framework-db-core')
-    testImplementation project(':jminor-framework-db-remote')
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
     implementation "org.json:json:${jsonVersion}"
     implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
+    runtimeOnly project(':jminor-plugin-logback-proxy')
+
+    testImplementation project(':jminor-framework-server')
     testRuntimeOnly project(':jminor-plugin-hikari-pool')
     testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
-
-    runtimeOnly project(':jminor-plugin-logback-proxy')
 }
 
 ext {
@@ -52,19 +50,6 @@ test {
 
 mainClassName = "$moduleName/org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel"
 
-task runServerMonitor(type: ModularJavaExec) {
-    group 'run'
-    classpath = sourceSets.main.runtimeClasspath
-    main = mainClassName
-    systemProperties = [
-            'jminor.server.hostname'          : 'localhost',
-            'jminor.server.admin.user'        : 'scott:tiger',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
-            'javax.net.ssl.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/config/logback.xml'
-    ]
-}
-
 applicationDistribution.from(files(
         '../../framework/server/src/main/security/jminor_truststore.jks',
         '../../framework/server/src/main/security/all_permissions.policy',
@@ -80,3 +65,16 @@ applicationDefaultJvmArgs = [
         '-Dlogback.configurationFile=../config/logback.xml',
         '-Djminor.configurationFile=../config/server_monitor.config'
 ]
+
+task runServerMonitor(type: ModularJavaExec) {
+    group 'run'
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    systemProperties = [
+            'jminor.server.hostname'          : 'localhost',
+            'jminor.server.admin.user'        : 'scott:tiger',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'logback.configurationFile'       : 'src/config/logback.xml'
+    ]
+}
