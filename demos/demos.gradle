@@ -55,7 +55,6 @@ startScripts {
             '-Djminor.db.host=h2db',
             '-Djminor.db.embeddedInMemory=true',
             '-Djminor.db.initScript=../config/create_schema.sql',
-            '-Djminor.report.path=../reports',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -67,7 +66,6 @@ task clientRMIScript(type: CreateStartScripts) {
     defaultJvmOpts = [
             '-Djminor.client.connectionType=remote',
             '-Djminor.server.hostname=localhost',
-            '-Djminor.report.path=../reports',
             '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
             '-Djavax.net.ssl.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
@@ -82,7 +80,6 @@ task clientHttpScript(type: CreateStartScripts) {
             '-Djminor.client.connectionType=http',
             '-Djminor.client.http.secure=false',
             '-Djminor.client.http.hostname=localhost',
-            '-Djminor.report.path=../reports',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -95,7 +92,6 @@ task loadTestRMIScript(type: CreateStartScripts) {
     defaultJvmOpts = [
             '-Djminor.client.connectionType=remote',
             '-Djminor.server.hostname=localhost',
-            '-Djminor.report.path=../reports',
             '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
             '-Djavax.net.ssl.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
@@ -111,7 +107,6 @@ task loadTestHttpScript(type: CreateStartScripts) {
             '-Djminor.client.connectionType=http',
             '-Djminor.client.http.secure=false',
             '-Djminor.client.http.hostname=localhost',
-            '-Djminor.report.path=../reports',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -142,7 +137,6 @@ task runClientLocal(type: JavaExec) {
             'jminor.db.type'              : 'h2',
             'jminor.db.embeddedInMemory'  : 'true',
             'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
-            'jminor.report.path'          : 'build/classes/reports',
             'logback.configurationFile'   : 'src/main/resources/logback.xml',
             'sun.awt.disablegrab'         : 'true'
     ]
