@@ -5876,3 +5876,4 @@
   Replaced logger with System.err.println in common.core and common.db, SLF4J no longer default dependency for all modules, only where actually used
   framework-server-monitor, dependency cleanup, removed unnecessary transitive dependencies via framework-server
   framework-server project dependencies changed from api to implementation
+  Upgraded a few 3d party dependencies
