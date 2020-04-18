@@ -21,16 +21,18 @@ import static java.util.Objects.requireNonNull;
  */
 public class IkonliFoundationIcons implements Icons {
 
+  protected static final int ICON_SIZE = 16;
+
   private final Icons defaultIcons = new DefaultIcons();
 
   @Override
   public final ImageIcon filter() {
-    return imageIcon(FontIcon.of(Foundation.FILTER));
+    return imageIcon(FontIcon.of(Foundation.FILTER, ICON_SIZE));
   }
 
   @Override
   public final ImageIcon configure() {
-    return imageIcon(FontIcon.of(Foundation.WIDGET));
+    return imageIcon(FontIcon.of(Foundation.WIDGET, ICON_SIZE));
   }
 
   @Override
