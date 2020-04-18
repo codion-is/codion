@@ -10,7 +10,6 @@ import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.common.ui.value.AbstractComponentValue;
@@ -21,6 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import java.util.Collection;
 import java.util.ResourceBundle;
+
+import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A UI component based on the SwingEntityComboBoxModel.
@@ -58,7 +59,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
       if (result != JOptionPane.OK_OPTION) {
         getModel().setForeignKeyFilterEntities(foreignKeyPropertyId, current);
       }
-    }, null, null, null, 0, null, Images.loadImage(Images.IMG_FILTER_16));
+    }, null, null, null, 0, null, frameworkIcons().filter());
   }
 
   /**

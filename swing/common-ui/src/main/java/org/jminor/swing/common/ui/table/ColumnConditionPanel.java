@@ -23,7 +23,6 @@ import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
@@ -66,6 +65,7 @@ import java.util.Collection;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static org.jminor.swing.common.ui.icons.Icons.icons;
 
 /**
  * A UI implementation for ColumnConditionModel
@@ -153,10 +153,10 @@ public class ColumnConditionPanel<R, C> extends JPanel {
     this.lowerBoundField = lowerBoundField;
     this.toggleEnabledButton = ControlProvider.createToggleButton(
             Controls.toggleControl(conditionModel, "enabled", null, conditionModel.getEnabledObserver()));
-    this.toggleEnabledButton.setIcon(Images.loadImage(Images.IMG_FILTER_16));
+    this.toggleEnabledButton.setIcon(icons().filter());
     if (toggleAdvancedButton) {
       this.toggleAdvancedButton = ControlProvider.createToggleButton(Controls.toggleControl(advancedConditionState));
-      this.toggleAdvancedButton.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
+      this.toggleAdvancedButton.setIcon(icons().configure());
     }
     else {
       this.toggleAdvancedButton = null;

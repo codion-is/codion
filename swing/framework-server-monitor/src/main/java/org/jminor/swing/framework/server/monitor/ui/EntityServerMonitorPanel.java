@@ -18,7 +18,6 @@ import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.server.monitor.EntityServerMonitor;
 import org.jminor.swing.framework.server.monitor.HostMonitor;
@@ -40,6 +39,8 @@ import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
+
+import static org.jminor.swing.common.ui.icons.Icons.icons;
 
 /**
  * A UI based on the EntityServerMonitor model
@@ -120,7 +121,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   public void showFrame() {
     monitorFrame = new JFrame();
-    monitorFrame.setIconImage(Images.loadImage("jminor_logo_red24.png").getImage());
+    monitorFrame.setIconImage(icons().logoRed().getImage());
     monitorFrame.setJMenuBar(ControlProvider.createMenuBar(initializeMainMenuControlSets()));
     monitorFrame.setTitle("JMinor Server Monitor");
     monitorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

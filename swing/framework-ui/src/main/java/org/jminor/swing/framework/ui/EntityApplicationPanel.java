@@ -104,6 +104,7 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
+import static org.jminor.swing.common.ui.icons.Icons.icons;
 
 /**
  * A central application panel class.
@@ -741,11 +742,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return a Control for setting the log level
    */
   protected final Control createLogLevelControl() {
-    final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_LOGGING);
     final Control setLogLevel = Controls.control(this::setLogLevel,
             resourceBundle.getString(SET_LOG_LEVEL));
     setLogLevel.setDescription(resourceBundle.getString(SET_LOG_LEVEL_DESC));
-    setLogLevel.setIcon(setLoggingIcon);
 
     return setLogLevel;
   }
@@ -843,7 +842,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(Layouts.borderLayout());
     final String versionString = Versions.getVersionAndBuildNumberString();
-    panel.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
+    panel.add(new JLabel(icons().logo()), BorderLayout.WEST);
     final JTextField versionMemoryField = new JTextField(versionString + " (" + Memory.getMemoryUsageString() + ")");
     versionMemoryField.setEditable(false);
     versionMemoryField.setFocusable(false);
@@ -1359,7 +1358,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (!fontSize.equals(100)) {
       Components.setFontSize(fontSize / 100f);
     }
-    final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
+    final ImageIcon applicationIcon = iconName != null ? Images.loadIcon(getClass(), iconName) : icons().logo();
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
       final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : Users.user("");
