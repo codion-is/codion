@@ -21,8 +21,8 @@ import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 import org.jminor.swing.framework.ui.icons.FrameworkIcons;
-import org.jminor.swing.plugin.ikonli.IkonliFoundationIcons;
-import org.jminor.swing.plugin.ikonli.IkonliFrameworkFoundationIcons;
+import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
+import org.jminor.swing.plugin.ikonli.foundation.IkonliFrameworkFoundationIcons;
 
 import javax.swing.JTable;
 import java.awt.Dimension;
