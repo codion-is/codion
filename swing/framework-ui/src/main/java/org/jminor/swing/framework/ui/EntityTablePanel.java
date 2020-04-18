@@ -36,7 +36,6 @@ import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.dialog.Modal;
-import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
@@ -92,6 +91,7 @@ import static org.jminor.swing.common.ui.Components.hideWaitCursor;
 import static org.jminor.swing.common.ui.Components.showWaitCursor;
 import static org.jminor.swing.common.ui.Windows.getParentWindow;
 import static org.jminor.swing.common.ui.control.Controls.control;
+import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.
@@ -506,7 +506,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
     final StateObserver enabled = States.aggregateState(Conjunction.AND, selectionNotEmpty, updateEnabled);
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
-            (char) 0, Images.loadImage("Modify16.gif"), enabled);
+            (char) 0, frameworkIcons().edit(), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getPropertyId())) {
@@ -541,7 +541,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
                     tableModel.getEditModel().getDeleteEnabledObserver(),
                     tableModel.getSelectionModel().getSelectionNotEmptyObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
-            Images.loadImage(Images.IMG_DELETE_16));
+            frameworkIcons().delete());
   }
 
   /**
@@ -550,7 +550,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final Control getPrintTableControl() {
     final String printCaption = MESSAGES.getString("print_table");
     return control(this::printTable, printCaption, null,
-            printCaption, printCaption.charAt(0), null, Images.loadImage("Print16.gif"));
+            printCaption, printCaption.charAt(0), null, frameworkIcons().print());
   }
 
   /**
@@ -560,7 +560,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
     return control(tableModel::refresh, refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
-            null, Images.loadImage(Images.IMG_REFRESH_16));
+            null, frameworkIcons().refresh());
   }
 
   /**
@@ -711,7 +711,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return null;
     }
 
-    final Control toggleControl = control(this::toggleConditionPanel, Images.loadImage(Images.IMG_FILTER_16));
+    final Control toggleControl = control(this::toggleConditionPanel, frameworkIcons().filter());
     toggleControl.setDescription(MESSAGES.getString("show_condition_panel"));
 
     return toggleControl;
@@ -724,7 +724,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final Control getToggleSummaryPanelControl() {
     final Control toggleControl = Controls.toggleControl(this, "summaryPanelVisible", null,
             summaryPanelVisibleChangedEvent);
-    toggleControl.setIcon(Images.loadImage("Sum16.gif"));
+    toggleControl.setIcon(frameworkIcons().summary());
     toggleControl.setDescription(MESSAGES.getString("toggle_summary_tip"));
 
     return toggleControl;
@@ -736,7 +736,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final Control getClearSelectionControl() {
     final Control clearSelection = control(tableModel.getSelectionModel()::clearSelection, null,
             tableModel.getSelectionModel().getSelectionNotEmptyObserver(), null, -1, null,
-            Images.loadImage("ClearSelection16.gif"));
+            frameworkIcons().clearSelection());
     clearSelection.setDescription(MESSAGES.getString("clear_selection_tip"));
 
     return clearSelection;
@@ -747,7 +747,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final Control getMoveSelectionDownControl() {
     final Control selectionDown = control(tableModel.getSelectionModel()::moveSelectionDown,
-            Images.loadImage(Images.IMG_DOWN_16));
+            frameworkIcons().down());
     selectionDown.setDescription(MESSAGES.getString("selection_down_tip"));
 
     return selectionDown;
@@ -758,7 +758,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final Control getMoveSelectionUpControl() {
     final Control selectionUp = control(tableModel.getSelectionModel()::moveSelectionUp,
-            Images.loadImage(Images.IMG_UP_16));
+            frameworkIcons().up());
     selectionUp.setDescription(MESSAGES.getString("selection_up_tip"));
 
     return selectionUp;
@@ -1034,7 +1034,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected ControlSet getPrintControls() {
     final String printCaption = Messages.get(Messages.PRINT);
-    final ControlSet printControls = new ControlSet(printCaption, printCaption.charAt(0), Images.loadImage("Print16.gif"));
+    final ControlSet printControls = new ControlSet(printCaption, printCaption.charAt(0),
+            frameworkIcons().print());
     printControls.add(controlMap.get(PRINT_TABLE));
 
     return printControls;
@@ -1233,7 +1234,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final String keyName = keyStroke.toString().replace("pressed ", "");
     final Control refresh = control(tableModel::refresh, null,
             tableModel.getConditionModel().getConditionChangedObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
-                    + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
+                    + " (" + keyName + ")", 0, null, frameworkIcons().refreshRequired());
 
     final InputMap inputMap = table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     final ActionMap actionMap = table.getActionMap();

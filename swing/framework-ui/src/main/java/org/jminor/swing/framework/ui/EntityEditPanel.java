@@ -26,7 +26,6 @@ import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
-import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
@@ -56,6 +55,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.jminor.swing.common.ui.Components.hideWaitCursor;
 import static org.jminor.swing.common.ui.Components.showWaitCursor;
+import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A UI component based on a {@link EntityEditModel}.
@@ -260,7 +260,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Controls.control(getEditModel()::refresh, FrameworkMessages.get(FrameworkMessages.REFRESH),
             activeState, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
-                    + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
+                    + mnemonic + ")", mnemonic.charAt(0), null, frameworkIcons().refresh());
   }
 
   /**
@@ -274,7 +274,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
                     getEditModel().getDeleteEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0), null,
-            Images.loadImage(Images.IMG_DELETE_16));
+            frameworkIcons().delete());
   }
 
   /**
@@ -284,7 +284,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return Controls.control(this::clearAndRequestFocus, FrameworkMessages.get(FrameworkMessages.CLEAR),
             activeState, FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
-            mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
+            mnemonic.charAt(0), null, frameworkIcons().clear());
   }
 
   /**
@@ -299,7 +299,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
                     getEditModel().getEntityNewObserver().getReversedObserver(),
                     getEditModel().getModifiedObserver()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0),
-            null, Images.loadImage(Images.IMG_SAVE_16));
+            null, frameworkIcons().update());
   }
 
   /**
@@ -310,7 +310,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     return Controls.control(this::insert, FrameworkMessages.get(FrameworkMessages.INSERT),
             States.aggregateState(Conjunction.AND, activeState, getEditModel().getInsertEnabledObserver()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
-            mnemonic.charAt(0), null, Images.loadImage(Images.IMG_ADD_16));
+            mnemonic.charAt(0), null, frameworkIcons().add());
   }
 
   /**
@@ -325,7 +325,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     return Controls.control(this::save, FrameworkMessages.get(FrameworkMessages.SAVE),
             States.aggregateState(Conjunction.AND, activeState, insertUpdateState),
             FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")",
-            mnemonic.charAt(0), null, Images.loadImage(Images.IMG_ADD_16));
+            mnemonic.charAt(0), null, frameworkIcons().add());
   }
 
   /**
@@ -838,7 +838,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     private InsertEntityAction(final JComponent component, final EntityPanelBuilder panelProvider,
                                final EntityConnectionProvider connectionProvider,
                                final EventDataListener<List<Entity>> insertListener) {
-      super("", Images.loadImage(Images.IMG_ADD_16));
+      super("", frameworkIcons().add());
       this.component = component;
       this.panelProvider = panelProvider;
       this.connectionProvider = connectionProvider;

@@ -15,7 +15,6 @@ import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
-import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
@@ -55,6 +54,7 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
+import static org.jminor.swing.common.ui.icons.Icons.icons;
 
 /**
  * A default UI component for the LoadTestModel class.
@@ -109,7 +109,7 @@ public final class LoadTestPanel extends JPanel {
    */
   public JFrame showFrame() {
     final JFrame frame = new JFrame();
-    frame.setIconImage(Images.loadImage("jminor_logo32.gif").getImage());
+    frame.setIconImage(icons().logo().getImage());
     final String title = "JMinor - " + loadTestModel.getTitle();
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {

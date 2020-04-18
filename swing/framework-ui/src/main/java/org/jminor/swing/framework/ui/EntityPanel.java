@@ -15,7 +15,6 @@ import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.dialog.DisposeOnEscape;
 import org.jminor.swing.common.ui.dialog.Modal;
-import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -59,6 +58,7 @@ import static java.util.Objects.requireNonNull;
 import static org.jminor.swing.common.ui.KeyEvents.addKeyEvent;
 import static org.jminor.swing.framework.ui.EntityPanel.Direction.*;
 import static org.jminor.swing.framework.ui.EntityPanel.PanelState.*;
+import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
@@ -669,7 +669,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return a control for toggling the edit panel
    */
   public final Control getToggleEditPanelControl() {
-    final Control toggle = Controls.control(this::toggleEditPanelState, Images.loadImage("Form16.gif"));
+    final Control toggle = Controls.control(this::toggleEditPanelState, frameworkIcons().editPanel());
     toggle.setDescription(MESSAGES.getString("toggle_edit"));
 
     return toggle;
@@ -679,7 +679,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return a control for toggling the detail panel
    */
   public final Control getToggleDetailPanelControl() {
-    final Control toggle = Controls.control(this::toggleDetailPanelState, Images.loadImage(Images.IMG_HISTORY_16));
+    final Control toggle = Controls.control(this::toggleDetailPanelState, frameworkIcons().detail());
     toggle.setDescription(MESSAGES.getString("toggle_detail"));
 
     return toggle;

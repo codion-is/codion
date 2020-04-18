@@ -21,7 +21,6 @@ import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
@@ -39,6 +38,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A UI component based on the EntityTableConditionModel
@@ -191,7 +192,7 @@ public final class EntityTableConditionPanel extends JPanel {
    */
   public ControlSet getControls() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
-    controlSet.setIcon(Images.loadImage(Images.IMG_FILTER_16));
+    controlSet.setIcon(frameworkIcons().filter());
     if (canToggleAdvanced()) {
       controlSet.add(Controls.toggleControl(this, "advanced",
               FrameworkMessages.get(FrameworkMessages.ADVANCED), advancedChangedEvent));

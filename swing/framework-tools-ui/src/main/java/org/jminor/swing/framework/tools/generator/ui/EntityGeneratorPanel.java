@@ -10,13 +10,11 @@ import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.FilteredTable;
 import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.framework.tools.generator.EntityGeneratorModel;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -29,6 +27,7 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 
 import static org.jminor.common.Util.nullOrEmpty;
+import static org.jminor.swing.common.ui.icons.Icons.icons;
 
 /**
  * A UI class based on the EntityGeneratorModel.
@@ -95,9 +94,8 @@ public class EntityGeneratorPanel extends JPanel {
         final User user = new LoginPanel(Users.user(schemaName)).showLoginPanel(null);
         final EntityGeneratorModel generatorModel = new EntityGeneratorModel(user, schemaName);
         final EntityGeneratorPanel generatorPanel = new EntityGeneratorPanel(generatorModel);
-        final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
         final JFrame frame = new JFrame("JMinor Entity Generator");
-        frame.setIconImage(icon.getImage());
+        frame.setIconImage(icons().logo().getImage());
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.add(generatorPanel);
 

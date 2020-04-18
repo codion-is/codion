@@ -5901,3 +5901,4 @@
   framework-server-monitor, dependency cleanup, removed unnecessary transitive dependencies via framework-server
   framework-server project dependencies changed from api to implementation
   Upgraded a few 3d party dependencies
+  Icons and FrameworkIcons added, preparing for pluggable icons
