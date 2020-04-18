@@ -6,9 +6,7 @@ package org.jminor.swing.common.ui.icons;
 import javax.swing.ImageIcon;
 import java.awt.Toolkit;
 
-final class DefaultIcons implements Icons {
-
-  static final Icons INSTANCE = new DefaultIcons();
+public class DefaultIcons implements Icons {
 
   private static final String IMG_FILTER_16 = "Filter16.gif";
   private static final String IMG_PREFERENCES_16 = "Preferences16.gif";
@@ -16,22 +14,22 @@ final class DefaultIcons implements Icons {
   private static final String IMG_JMINOR_LOGO_RED_24 = "jminor_logo_red24.png";
 
   @Override
-  public ImageIcon filter() {
+  public final ImageIcon filter() {
     return imageIcon(IMG_FILTER_16);
   }
 
   @Override
-  public ImageIcon configure() {
+  public final ImageIcon configure() {
     return imageIcon(IMG_PREFERENCES_16);
   }
 
   @Override
-  public ImageIcon logo() {
+  public final ImageIcon logo() {
     return imageIcon(IMG_JMINOR_LOGO_32);
   }
 
   @Override
-  public ImageIcon logoRed() {
+  public final ImageIcon logoRed() {
     return imageIcon(IMG_JMINOR_LOGO_RED_24);
   }
 

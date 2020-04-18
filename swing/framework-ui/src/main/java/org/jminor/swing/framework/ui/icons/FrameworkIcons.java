@@ -3,14 +3,20 @@
  */
 package org.jminor.swing.framework.ui.icons;
 
+import org.jminor.common.Configuration;
+import org.jminor.common.value.PropertyValue;
 import org.jminor.swing.common.ui.icons.Icons;
 
 import javax.swing.ImageIcon;
+import java.util.Objects;
+import java.util.ServiceLoader;
 
 /**
  * Provides icons for framework ui components.
  */
 public interface FrameworkIcons extends Icons {
+
+  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("org.jminor.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
 
   /**
    * @return icon for the 'add' action.
@@ -83,9 +89,24 @@ public interface FrameworkIcons extends Icons {
   ImageIcon editPanel();
 
   /**
-   * @return the active {@link FrameworkIcons} instance.
+   * @return a {@link FrameworkIcons} implementation of the type specified by
+   * {@link FrameworkIcons#FRAMEWORK_ICONS_CLASSNAME}.
+   * @throws IllegalArgumentException in case no such implementation is found
    */
   static FrameworkIcons frameworkIcons() {
-    return DefaultFrameworkIcons.INSTANCE;
+    final String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
+    try {
+      final ServiceLoader<FrameworkIcons> loader = ServiceLoader.load(FrameworkIcons.class);
+      for (final FrameworkIcons icons : loader) {
+        if (Objects.equals(icons.getClass().getName(), iconsClassName)) {
+          return icons;
+        }
+      }
+
+      throw new IllegalArgumentException("No FrameworkIcons implementation available of type: " + iconsClassName);
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }
