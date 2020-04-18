@@ -7,4 +7,8 @@ module org.jminor.swing.framework.ui {
   exports org.jminor.swing.framework.ui.icons;
 
   uses org.jminor.common.CredentialsProvider;
+  uses org.jminor.swing.framework.ui.icons.FrameworkIcons;
+
+  provides org.jminor.swing.framework.ui.icons.FrameworkIcons
+          with org.jminor.swing.framework.ui.icons.DefaultFrameworkIcons;
 }

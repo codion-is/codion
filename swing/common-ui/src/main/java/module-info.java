@@ -15,4 +15,9 @@ module org.jminor.swing.common.ui {
   exports org.jminor.swing.common.ui.time;
   exports org.jminor.swing.common.ui.value;
   exports org.jminor.swing.common.ui.worker;
+
+  uses org.jminor.swing.common.ui.icons.Icons;
+
+  provides org.jminor.swing.common.ui.icons.Icons
+          with org.jminor.swing.common.ui.icons.DefaultIcons;
 }
