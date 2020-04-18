@@ -5903,3 +5903,4 @@
   Upgraded a few 3d party dependencies
   Icons and FrameworkIcons added, preparing for pluggable icons
   Icons and FrameworkIcons now service based
+  ikonli-foundation icon plugin module added

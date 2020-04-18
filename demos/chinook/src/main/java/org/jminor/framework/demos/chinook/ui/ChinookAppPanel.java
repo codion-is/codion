@@ -14,11 +14,15 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.icons.Icons;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
 import org.jminor.swing.framework.ui.EntityTablePanel;
+import org.jminor.swing.framework.ui.icons.FrameworkIcons;
+import org.jminor.swing.plugin.ikonli.IkonliFoundationIcons;
+import org.jminor.swing.plugin.ikonli.IkonliFrameworkFoundationIcons;
 
 import javax.swing.JTable;
 import java.awt.Dimension;
@@ -143,6 +147,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
 
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
+    Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
+    FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFrameworkFoundationIcons.class.getName());
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);

@@ -111,6 +111,9 @@ project(':jminor-plugin-credentials-server').projectDir = file('plugins/credenti
 include 'jminor-plugin-hikari-pool'
 project(':jminor-plugin-hikari-pool').projectDir = file('plugins/hikari-pool')
 
+include 'jminor-plugin-ikonli-foundation'
+project(':jminor-plugin-ikonli-foundation').projectDir = file('plugins/ikonli-foundation')
+
 include 'jminor-plugin-imagepanel'
 project(':jminor-plugin-imagepanel').projectDir = file('plugins/imagepanel')
 

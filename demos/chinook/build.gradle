@@ -21,6 +21,7 @@ dependencies {
 
     implementation project(':jminor-plugin-imagepanel')
     implementation project(':jminor-plugin-jasperreports')
+    implementation project(':jminor-plugin-ikonli-foundation')
 
     runtimeOnly project(':jminor-plugin-logback-proxy')
 
