@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.plugin.ikonli;
+package org.jminor.swing.plugin.ikonli.foundation;
 
 import org.jminor.swing.framework.ui.icons.FrameworkIcons;
 
