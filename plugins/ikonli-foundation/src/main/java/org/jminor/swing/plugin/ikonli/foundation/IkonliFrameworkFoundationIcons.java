@@ -18,27 +18,27 @@ public final class IkonliFrameworkFoundationIcons extends IkonliFoundationIcons 
 
   @Override
   public ImageIcon add() {
-    return imageIcon(FontIcon.of(Foundation.PAGE_ADD));
+    return imageIcon(FontIcon.of(Foundation.PAGE_ADD, ICON_SIZE));
   }
 
   @Override
   public ImageIcon delete() {
-    return imageIcon(FontIcon.of(Foundation.TRASH));
+    return imageIcon(FontIcon.of(Foundation.TRASH, ICON_SIZE));
   }
 
   @Override
   public ImageIcon update() {
-    return imageIcon(FontIcon.of(Foundation.SAVE));
+    return imageIcon(FontIcon.of(Foundation.SAVE, ICON_SIZE));
   }
 
   @Override
   public ImageIcon refresh() {
-    return imageIcon(FontIcon.of(Foundation.REFRESH));
+    return imageIcon(FontIcon.of(Foundation.REFRESH, ICON_SIZE));
   }
 
   @Override
   public ImageIcon refreshRequired() {
-    final FontIcon refresh = FontIcon.of(Foundation.REFRESH);
+    final FontIcon refresh = FontIcon.of(Foundation.REFRESH, ICON_SIZE);
     refresh.setIconColor(Color.RED.darker());
 
     return imageIcon(refresh);
@@ -46,46 +46,46 @@ public final class IkonliFrameworkFoundationIcons extends IkonliFoundationIcons 
 
   @Override
   public ImageIcon clear() {
-    return imageIcon(FontIcon.of(Foundation.PAGE));
+    return imageIcon(FontIcon.of(Foundation.PAGE, ICON_SIZE));
   }
 
   @Override
   public ImageIcon up() {
-    return imageIcon(FontIcon.of(Foundation.ARROW_UP));
+    return imageIcon(FontIcon.of(Foundation.ARROW_UP, ICON_SIZE));
   }
 
   @Override
   public ImageIcon down() {
-    return imageIcon(FontIcon.of(Foundation.ARROW_DOWN));
+    return imageIcon(FontIcon.of(Foundation.ARROW_DOWN, ICON_SIZE));
   }
 
   @Override
   public ImageIcon detail() {
-    return imageIcon(FontIcon.of(Foundation.PAGE_MULTIPLE));
+    return imageIcon(FontIcon.of(Foundation.PAGE_MULTIPLE, ICON_SIZE));
   }
 
   @Override
   public ImageIcon print() {
-    return imageIcon(FontIcon.of(Foundation.PRINT));
+    return imageIcon(FontIcon.of(Foundation.PRINT, ICON_SIZE));
   }
 
   @Override
   public ImageIcon clearSelection() {
-    return imageIcon(FontIcon.of(Foundation.ARROW_DOWN));
+    return imageIcon(FontIcon.of(Foundation.ARROW_DOWN, ICON_SIZE));
   }
 
   @Override
   public ImageIcon edit() {
-    return imageIcon(FontIcon.of(Foundation.PAGE_EDIT));
+    return imageIcon(FontIcon.of(Foundation.PAGE_EDIT, ICON_SIZE));
   }
 
   @Override
   public ImageIcon summary() {
-    return imageIcon(FontIcon.of(Foundation.DOWNLOAD));
+    return imageIcon(FontIcon.of(Foundation.DOWNLOAD, ICON_SIZE));
   }
 
   @Override
   public ImageIcon editPanel() {
-    return imageIcon(FontIcon.of(Foundation.LIST_THUMBNAILS));
+    return imageIcon(FontIcon.of(Foundation.LIST_THUMBNAILS, ICON_SIZE));
   }
 }
