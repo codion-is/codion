@@ -38,8 +38,8 @@ public interface Icons {
   ImageIcon logoRed();
 
   /**
-   * @return a {@link FrameworkIcons} implementation of the type specified by
-   * {@link FrameworkIcons#FRAMEWORK_ICONS_CLASSNAME}.
+   * @return a {@link Icons} implementation of the type specified by
+   * {@link Icons#ICONS_CLASSNAME}.
    * @throws IllegalArgumentException in case no such implementation is found
    */
   static Icons icons() {
