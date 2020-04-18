@@ -3,14 +3,12 @@
  */
 package org.jminor.swing.framework.ui.icons;
 
+import org.jminor.swing.common.ui.icons.DefaultIcons;
+
 import javax.swing.ImageIcon;
 import java.awt.Toolkit;
 
-import static org.jminor.swing.common.ui.icons.Icons.icons;
-
-final class DefaultFrameworkIcons implements FrameworkIcons {
-
-  static final FrameworkIcons INSTANCE = new DefaultFrameworkIcons();
+public final class DefaultFrameworkIcons extends DefaultIcons implements FrameworkIcons {
 
   private static final String IMG_ADD_16 = "Add16.gif";
   private static final String IMG_DELETE_16 = "Delete16.gif";
@@ -26,26 +24,6 @@ final class DefaultFrameworkIcons implements FrameworkIcons {
   private static final String IMG_MODIFY_16 = "Modify16.gif";
   private static final String IMG_SUM_16 = "Sum16.gif";
   private static final String IMG_FORM_16 = "Form16.gif";
-
-  @Override
-  public ImageIcon filter() {
-    return icons().filter();
-  }
-
-  @Override
-  public ImageIcon configure() {
-    return icons().configure();
-  }
-
-  @Override
-  public ImageIcon logo() {
-    return icons().logo();
-  }
-
-  @Override
-  public ImageIcon logoRed() {
-    return icons().logoRed();
-  }
 
   @Override
   public ImageIcon add() {
