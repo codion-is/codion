@@ -432,6 +432,15 @@ image::modules/plugins/credentials-server/build/reports/dependency-graph/depende
 ====
 
 [discrete]
+==== jminor-plugin-ikonli-foundation
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/plugins/ikonli-foundation/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
 ==== jminor-plugin-imagepanel
 
 .Dependency graph
