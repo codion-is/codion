@@ -41,6 +41,11 @@ public final class DefaultFrameworkIcons extends DefaultIcons implements Framewo
   }
 
   @Override
+  public ImageIcon copy() {
+    return null;
+  }
+
+  @Override
   public ImageIcon refresh() {
     return imageIcon(IMG_REFRESH_16);
   }
@@ -93,6 +98,11 @@ public final class DefaultFrameworkIcons extends DefaultIcons implements Framewo
   @Override
   public ImageIcon editPanel() {
     return imageIcon(IMG_FORM_16);
+  }
+
+  @Override
+  public ImageIcon dependencies() {
+    return null;
   }
 
   private static ImageIcon imageIcon(final String resourceName) {

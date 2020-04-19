@@ -1227,11 +1227,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (toolbarControls.size() > 0) {
       tablePanel.addToolBarControls(toolbarControls);
     }
-    if (showDetailPanelControls) {
-      final ControlSet detailPanelControlSet = getDetailPanelControlSet();
-      if (detailPanelControlSet != null) {
-        tablePanel.addPopupControls(detailPanelControlSet);
-      }
+    if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
+      tablePanel.addPopupControls(getDetailPanelControls(EMBEDDED));
     }
     if (tablePanel.getTable().getDoubleClickAction() == null) {
       tablePanel.getTable().setDoubleClickAction(initializeTableDoubleClickAction());
@@ -1301,23 +1298,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Returns a ControlSet containing the detail panel controls, if no detail
-   * panels exist null is returned.
-   * @return a ControlSet for activating individual detail panels
-   * @see #getDetailPanelControls(PanelState)
-   */
-  private ControlSet getDetailPanelControlSet() {
-    if (!detailEntityPanels.isEmpty()) {
-      final ControlSet controlSet = new ControlSet("");
-      controlSet.add(getDetailPanelControls(EMBEDDED));
-
-      return controlSet;
-    }
-
-    return null;
-  }
-
-  /**
    * Initialize the Control to trigger when a double click is performed on the table, if a table is present.
    * The default implementation shows the edit panel in a dialog if one is available and hidden, if that is
    * not the case and the detail panels are hidden those are shown in a dialog.
@@ -1346,7 +1326,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       return null;
     }
 
-    final ControlSet controlSet = new ControlSet(MESSAGES.getString(MSG_DETAIL_TABLES));
+    final ControlSet controlSet = new ControlSet(MESSAGES.getString(MSG_DETAIL_TABLES), (char) 0,
+            frameworkIcons().detail());
     for (final EntityPanel detailPanel : detailEntityPanels) {
       controlSet.add(Controls.control(() -> {
         setDetailPanelState(status);

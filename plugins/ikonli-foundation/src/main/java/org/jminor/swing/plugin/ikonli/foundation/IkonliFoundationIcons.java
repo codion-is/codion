@@ -11,7 +11,6 @@ import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 
 import static java.util.Objects.requireNonNull;
@@ -53,7 +52,7 @@ public class IkonliFoundationIcons implements Icons {
   public static ImageIcon imageIcon(final Icon icon) {
     requireNonNull(icon, "icon");
     final BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-    icon.paintIcon(new JPanel(), image.getGraphics(), 0, 0);
+    icon.paintIcon(null, image.getGraphics(), 0, 0);
 
     return new ImageIcon(image);
   }

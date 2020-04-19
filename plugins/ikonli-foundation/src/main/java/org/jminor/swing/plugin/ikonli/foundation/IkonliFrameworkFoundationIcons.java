@@ -32,6 +32,11 @@ public final class IkonliFrameworkFoundationIcons extends IkonliFoundationIcons 
   }
 
   @Override
+  public ImageIcon copy() {
+    return imageIcon(FontIcon.of(Foundation.PAGE_COPY, ICON_SIZE));
+  }
+
+  @Override
   public ImageIcon refresh() {
     return imageIcon(FontIcon.of(Foundation.REFRESH, ICON_SIZE));
   }
@@ -71,7 +76,7 @@ public final class IkonliFrameworkFoundationIcons extends IkonliFoundationIcons 
 
   @Override
   public ImageIcon clearSelection() {
-    return imageIcon(FontIcon.of(Foundation.ARROW_DOWN, ICON_SIZE));
+    return imageIcon(FontIcon.of(Foundation.PAGE, ICON_SIZE));
   }
 
   @Override
@@ -87,5 +92,10 @@ public final class IkonliFrameworkFoundationIcons extends IkonliFoundationIcons 
   @Override
   public ImageIcon editPanel() {
     return imageIcon(FontIcon.of(Foundation.LIST_THUMBNAILS, ICON_SIZE));
+  }
+
+  @Override
+  public ImageIcon dependencies() {
+    return imageIcon(FontIcon.of(Foundation.SHARE, ICON_SIZE));
   }
 }

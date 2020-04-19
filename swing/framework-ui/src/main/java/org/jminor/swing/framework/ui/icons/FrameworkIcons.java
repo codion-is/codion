@@ -34,6 +34,11 @@ public interface FrameworkIcons extends Icons {
   ImageIcon update();
 
   /**
+   * @return icon for the 'copy' action.
+   */
+  ImageIcon copy();
+
+  /**
    * @return icon for the 'refresh' action.
    */
   ImageIcon refresh();
@@ -87,6 +92,11 @@ public interface FrameworkIcons extends Icons {
    * @return icon for the 'edit panel' action.
    */
   ImageIcon editPanel();
+
+  /**
+   * @return icon for the 'view dependencies' action.
+   */
+  ImageIcon dependencies();
 
   /**
    * @return a {@link FrameworkIcons} implementation of the type specified by

@@ -48,9 +48,7 @@ import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
-import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -187,7 +185,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static final String MOVE_SELECTION_DOWN = "moveSelectionDown";
   public static final String COPY_TABLE_DATA = "copyTableData";
 
-  private static final Dimension TOOLBAR_BUTTON_SIZE = new Dimension(20, 20);
+  private static final Dimension TOOLBAR_BUTTON_SIZE = new Dimension(24, 24);
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
   private static final int POPUP_LOCATION_X_OFFSET = 42;
   private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
@@ -525,7 +523,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return control(this::viewSelectionDependencies,
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
             tableModel.getSelectionModel().getSelectionNotEmptyObserver(),
-            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
+            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W',
+            null, frameworkIcons().dependencies());
   }
 
   /**
@@ -1047,7 +1046,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected final ControlSet getCopyControlSet() {
-    return new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl());
+    final ControlSet copyControls = new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(),
+            getCopyTableWithHeaderControl());
+    copyControls.setIcon(frameworkIcons().copy());
+
+    return copyControls;
   }
 
   protected final Control getCopyCellControl() {
@@ -1236,11 +1239,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             tableModel.getConditionModel().getConditionChangedObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, frameworkIcons().refreshRequired());
 
-    final InputMap inputMap = table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    final ActionMap actionMap = table.getActionMap();
-
-    inputMap.put(keyStroke, "EntityTablePanel.refreshControl");
-    actionMap.put("EntityTablePanel.refreshControl", refresh);
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_F5, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, refresh);
 
     final JButton button = new JButton(refresh);
     button.setPreferredSize(TOOLBAR_BUTTON_SIZE);
@@ -1357,7 +1356,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void addConditionControls(final ControlSet popupControls) {
     if (conditionPanel != null) {
-      final ControlSet controls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
+      final ControlSet controls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH),
+              (char) 0, frameworkIcons().filter());
       if (controlMap.containsKey(CONDITION_PANEL_VISIBLE)) {
         controls.add(getControl(CONDITION_PANEL_VISIBLE));
       }
