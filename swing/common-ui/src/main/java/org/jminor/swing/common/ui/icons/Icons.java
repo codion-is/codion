@@ -44,18 +44,13 @@ public interface Icons {
    */
   static Icons icons() {
     final String iconsClassName = ICONS_CLASSNAME.get();
-    try {
-      final ServiceLoader<Icons> loader = ServiceLoader.load(Icons.class);
-      for (final Icons icons : loader) {
-        if (Objects.equals(icons.getClass().getName(), iconsClassName)) {
-          return icons;
-        }
+    final ServiceLoader<Icons> loader = ServiceLoader.load(Icons.class);
+    for (final Icons icons : loader) {
+      if (Objects.equals(icons.getClass().getName(), iconsClassName)) {
+        return icons;
       }
+    }
 
-      throw new IllegalArgumentException("No Icons implementation available of type: " + iconsClassName);
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
+    throw new IllegalArgumentException("No Icons implementation available of type: " + iconsClassName);
   }
 }
