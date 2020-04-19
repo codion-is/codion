@@ -100,6 +100,11 @@ public final class DefaultFrameworkIcons extends DefaultIcons implements Framewo
     return imageIcon(IMG_FORM_16);
   }
 
+  @Override
+  public ImageIcon dependencies() {
+    return null;
+  }
+
   private static ImageIcon imageIcon(final String resourceName) {
     return new ImageIcon(Toolkit.getDefaultToolkit().getImage(FrameworkIcons.class.getResource(resourceName)));
   }

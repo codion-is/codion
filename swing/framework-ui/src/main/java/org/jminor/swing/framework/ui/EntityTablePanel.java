@@ -523,7 +523,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return control(this::viewSelectionDependencies,
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
             tableModel.getSelectionModel().getSelectionNotEmptyObserver(),
-            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
+            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W',
+            null, frameworkIcons().dependencies());
   }
 
   /**

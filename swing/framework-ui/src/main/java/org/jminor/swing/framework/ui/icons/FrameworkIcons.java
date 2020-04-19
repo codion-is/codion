@@ -94,6 +94,11 @@ public interface FrameworkIcons extends Icons {
   ImageIcon editPanel();
 
   /**
+   * @return icon for the 'view dependencies' action.
+   */
+  ImageIcon dependencies();
+
+  /**
    * @return a {@link FrameworkIcons} implementation of the type specified by
    * {@link FrameworkIcons#FRAMEWORK_ICONS_CLASSNAME}.
    * @throws IllegalArgumentException in case no such implementation is found
