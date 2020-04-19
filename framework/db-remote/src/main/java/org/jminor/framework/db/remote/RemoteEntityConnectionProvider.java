@@ -23,6 +23,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collections;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A class responsible for managing a remote entity connection.
  */
@@ -35,18 +37,23 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   public static final String REMOTE_CLIENT_DOMAIN_ID = "jminor.client.domainId";
 
+  private final String serverHostName;
+  private final Integer serverPort;
+  private final Integer registryPort;
+
   private Server<RemoteEntityConnection, Remote> server;
   private Server.ServerInfo serverInfo;
   private boolean truststoreResolved = false;
 
-  private String serverHostName;
-  private Integer serverPort;
-  private Integer registryPort;
-
   /**
-   * Instantiates a new unconfigured {@link RemoteEntityConnectionProvider}.
+   * Instantiates a new {@link RemoteEntityConnectionProvider} using configuration values.
+   * @see Server#SERVER_HOST_NAME
+   * @see Server#SERVER_PORT
+   * @see Server#REGISTRY_PORT
    */
-  public RemoteEntityConnectionProvider() {}
+  public RemoteEntityConnectionProvider() {
+    this(Server.SERVER_HOST_NAME.get(), Server.SERVER_PORT.get(), Server.REGISTRY_PORT.get());
+  }
 
   /**
    * Instantiates a new {@link RemoteEntityConnectionProvider}.
@@ -55,9 +62,9 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param registryPort the registry port
    */
   public RemoteEntityConnectionProvider(final String serverHostName, final Integer serverPort, final Integer registryPort) {
-    this.serverHostName = serverHostName;
-    this.serverPort = serverPort;
-    this.registryPort = registryPort;
+    this.serverHostName = requireNonNull(serverHostName, "serverHostName");
+    this.serverPort = serverPort == null ? -1 : serverPort;
+    this.registryPort = requireNonNull(registryPort, "registryPort");
   }
 
   @Override
@@ -81,10 +88,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @return the name of the host of the server providing the connection
    */
   public String getServerHostName() {
-    if (serverHostName == null) {
-      serverHostName = Server.SERVER_HOST_NAME.get();
-    }
-
     return serverHostName;
   }
 
@@ -150,30 +153,12 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    this.server = Servers.getServer(getServerHostName(), Server.SERVER_NAME_PREFIX.get(), getRegistryPort(), getServerPort());
+    this.server = Servers.getServer(getServerHostName(), Server.SERVER_NAME_PREFIX.get(), registryPort, serverPort);
     this.serverInfo = this.server.getServerInfo();
   }
 
-  private Integer getServerPort() {
-    if (serverPort == null) {
-      serverPort = Server.SERVER_PORT.get();
-      if (serverPort == null) {
-        serverPort = -1;
-      }
-    }
-
-    return serverPort;
-  }
-
-  private Integer getRegistryPort() {
-    if (registryPort == null) {
-      registryPort = Server.REGISTRY_PORT.get();
-    }
-
-    return registryPort;
-  }
-
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {
+
     private final RemoteEntityConnection remote;
 
     private RemoteEntityConnectionHandler(final RemoteEntityConnection remote) {
