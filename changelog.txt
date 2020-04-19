@@ -5885,3 +5885,4 @@
   EntityPanel, EntityTablePanel added a couple of icons
   Removed try/catch from ServerLoader.load() calls
   RemoteEntityConnectionProvider, minor refactoring, some undo
+  ColumnConditionPanel, increased Operator combobox font size, center alignment, Operator removed spaces, minor refactoring
