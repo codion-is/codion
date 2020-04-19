@@ -149,8 +149,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
 
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
-    Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
+    Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFrameworkFoundationIcons.class.getName());
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);

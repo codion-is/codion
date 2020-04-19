@@ -7,10 +7,14 @@ import org.jminor.framework.demos.world.domain.World;
 import org.jminor.framework.demos.world.model.CountryCustomModel;
 import org.jminor.framework.demos.world.model.CountryModel;
 import org.jminor.framework.demos.world.model.WorldAppModel;
+import org.jminor.swing.common.ui.icons.Icons;
 import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
+import org.jminor.swing.framework.ui.icons.FrameworkIcons;
+import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
+import org.jminor.swing.plugin.ikonli.foundation.IkonliFrameworkFoundationIcons;
 
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -61,6 +65,8 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
+    Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
+    FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFrameworkFoundationIcons.class.getName());
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.world.domain.World");
     new WorldAppPanel().startApplication("World", null, false,

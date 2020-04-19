@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class IkonliFoundationIcons implements Icons {
 
-  protected static final int ICON_SIZE = 16;
+  public static final int ICON_SIZE = 16;
 
   private final Icons defaultIcons = new DefaultIcons();
 
