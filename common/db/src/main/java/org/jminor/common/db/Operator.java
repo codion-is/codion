@@ -10,12 +10,12 @@ import java.util.ResourceBundle;
  */
 public enum Operator {
 
-  LIKE("  = ", "like", Values.MANY),
-  NOT_LIKE("  \u2260 ", "not_like", Values.MANY),
+  LIKE("=", "like", Values.MANY),
+  NOT_LIKE("\u2260", "not_like", Values.MANY),
   /** Less than or equals*/
-  LESS_THAN("  \u2264 ", "less_than", Values.ONE),
+  LESS_THAN("\u2264", "less_than", Values.ONE),
   /** Greater than or equals*/
-  GREATER_THAN("  \u2265 ", "greater_than", Values.ONE),
+  GREATER_THAN("\u2265", "greater_than", Values.ONE),
   WITHIN_RANGE("\u2265 \u2264", "within_range", Values.TWO),
   OUTSIDE_RANGE("\u2264 \u2265", "outside_range", Values.TWO);
 
@@ -29,6 +29,11 @@ public enum Operator {
     this.caption = caption;
     this.description = messages.getString(descriptionKey);
     this.values = values;
+  }
+
+  @Override
+  public String toString() {
+    return caption;
   }
 
   public String getCaption() {

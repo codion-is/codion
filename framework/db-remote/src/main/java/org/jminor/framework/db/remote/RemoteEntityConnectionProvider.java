@@ -23,6 +23,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collections;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A class responsible for managing a remote entity connection.
  */
@@ -55,9 +57,9 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param registryPort the registry port
    */
   public RemoteEntityConnectionProvider(final String serverHostName, final Integer serverPort, final Integer registryPort) {
-    this.serverHostName = serverHostName;
-    this.serverPort = serverPort;
-    this.registryPort = registryPort;
+    this.serverHostName = requireNonNull(serverHostName, "serverHostName");
+    this.serverPort = requireNonNull(serverPort, "serverPort");
+    this.registryPort = requireNonNull(registryPort, "registryPort");
   }
 
   @Override

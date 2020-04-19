@@ -8,15 +8,12 @@ import org.jminor.common.db.Operator;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
-import org.jminor.common.item.Item;
-import org.jminor.common.item.Items;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
-import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
@@ -34,9 +31,8 @@ import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.TemporalValues;
 import org.jminor.swing.common.ui.value.TextValues;
 
-import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -44,7 +40,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.SwingConstants;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -61,10 +57,12 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.SwingConstants.CENTER;
 import static org.jminor.swing.common.ui.icons.Icons.icons;
 
 /**
@@ -78,26 +76,11 @@ public class ColumnConditionPanel<R, C> extends JPanel {
 
   private static final int ENABLED_BUTTON_SIZE = 20;
 
-  /**
-   * The ColumnConditionModel this ColumnConditionPanel represents
-   */
   private final ColumnConditionModel<R, C> conditionModel;
-
-  /**
-   * The operators allowed in this model
-   */
   private final Collection<Operator> operators;
-
-  /**
-   * A JToggleButton for enabling/disabling the filter
-   */
   private final JToggleButton toggleEnabledButton;
-
-  /**
-   * A JToggleButton for toggling advanced/simple search
-   */
   private final JToggleButton toggleAdvancedButton;
-  private final JComboBox operatorCombo;
+  private final SteppedComboBox<Operator> operatorCombo;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
@@ -385,7 +368,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
       }
       else if (typeClass.equals(Boolean.class)) {
         final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
-        checkBox.setHorizontalAlignment(SwingConstants.CENTER);
+        checkBox.setHorizontalAlignment(CENTER);
 
         return checkBox;
       }
@@ -475,26 +458,13 @@ public class ColumnConditionPanel<R, C> extends JPanel {
     revalidate();
   }
 
-  private JComboBox initializeOperatorComboBox() {
-    final ItemComboBoxModel<Operator> comboBoxModel = new ItemComboBoxModel<>();
-    for (final Operator type : Operator.values()) {
-      if (operators.contains(type)) {
-        comboBoxModel.addItem(Items.item(type, type.getCaption()));
-      }
-    }
-    final JComboBox<Operator> comboBox = new SteppedComboBox(comboBoxModel);
+  private SteppedComboBox<Operator> initializeOperatorComboBox() {
+    final DefaultComboBoxModel<Operator> comboBoxModel = new DefaultComboBoxModel<>();
+    Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
+    final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
     Values.propertyValue(conditionModel, "operator", Operator.class, conditionModel.getOperatorObserver())
             .link(SelectedValues.selectedValue(comboBox));
-    comboBox.setRenderer(new DefaultListCellRenderer() {
-      @Override
-      public Component getListCellRendererComponent(final JList list, final Object value, final int index,
-                                                    final boolean isSelected, final boolean cellHasFocus) {
-        final JComponent component = (JComponent) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        component.setToolTipText(((Item<Operator>) value).getValue().getDescription());
-
-        return component;
-      }
-    });
+    comboBox.setRenderer(new OperatorComboBoxRenderer());
 
     return comboBox;
   }
@@ -591,5 +561,21 @@ public class ColumnConditionPanel<R, C> extends JPanel {
         disableDialog();
       }
     });
+  }
+
+  private static final class OperatorComboBoxRenderer extends BasicComboBoxRenderer {
+
+    private OperatorComboBoxRenderer() {
+      setHorizontalAlignment(CENTER);
+    }
+
+    @Override
+    public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+                                                  final boolean isSelected, final boolean cellHasFocus) {
+      super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+      setToolTipText(((Operator) value).getDescription());
+
+      return this;
+    }
   }
 }

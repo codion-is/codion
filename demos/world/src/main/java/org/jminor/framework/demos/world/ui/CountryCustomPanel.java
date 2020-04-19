@@ -12,6 +12,7 @@ import org.jminor.swing.framework.ui.EntityPanel;
 
 import org.jfree.chart.ChartPanel;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -49,11 +50,13 @@ public final class CountryCustomPanel extends EntityPanel {
     countryTablePanel.setSummaryPanelVisible(true);
 
     EntityPanel cityPanel = new EntityPanel(cityModel);
+    cityPanel.setBorder(BorderFactory.createTitledBorder("Cities"));
     cityPanel.getTablePanel().getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     cityPanel.getTablePanel().setSummaryPanelVisible(true);
     cityPanel.getTablePanel().setIncludeSouthPanel(false);
 
     EntityPanel languagePanel = new EntityPanel(countryLanguageModel);
+    languagePanel.setBorder(BorderFactory.createTitledBorder("Languages"));
     languagePanel.getTablePanel().getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     languagePanel.getTablePanel().setIncludeSouthPanel(false);
 

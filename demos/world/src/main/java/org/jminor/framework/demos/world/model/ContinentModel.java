@@ -54,10 +54,10 @@ public final class ContinentModel extends SwingEntityModel {
             continent.getDouble(World.CONTINENT_GNP));
       lifeExpectancyDataset.addValue(
               continent.getDouble(World.CONTINENT_MIN_LIFE_EXPECTANCY),
-              "Minimum", continent.getString(World.CONTINENT_CONTINENT));
+              "Lowest", continent.getString(World.CONTINENT_CONTINENT));
       lifeExpectancyDataset.addValue(
               continent.getDouble(World.CONTINENT_MAX_LIFE_EXPECTANCY),
-              "Maximum",continent.getString(World.CONTINENT_CONTINENT));
+              "Highest",continent.getString(World.CONTINENT_CONTINENT));
     });
   }
 }

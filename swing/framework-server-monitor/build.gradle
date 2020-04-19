@@ -11,11 +11,7 @@ dependencies {
     implementation project(':jminor-swing-common-model')
     implementation project(':jminor-swing-common-ui')
 
-    implementation (project(':jminor-framework-server')) {
-        exclude group: 'org.jminor'//we don't need any transitive dependencies
-    }
-    compileOnly project(':jminor-framework-db-local')//for modules
-    compileOnly project(':jminor-framework-db-remote')//for modules
+    implementation project(':jminor-framework-server')
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 

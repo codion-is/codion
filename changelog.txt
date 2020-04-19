@@ -5908,3 +5908,6 @@
   EntityTablePanel, toolbar button size increased from 20 to 24
   EntityPanel, EntityTablePanel added a couple of icons
   Removed try/catch from ServerLoader.load() calls
+  RemoteEntityConnectionProvider, minor refactoring, some undo
+  ColumnConditionPanel, increased Operator combobox font size, center alignment, Operator removed spaces, minor refactoring
+  framework-server project dependencies changed from api to implementation rolled back, module problems
