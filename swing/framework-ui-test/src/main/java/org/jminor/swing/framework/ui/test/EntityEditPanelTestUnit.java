@@ -23,10 +23,8 @@ public class EntityEditPanelTestUnit {
    */
   protected EntityEditPanelTestUnit(final SwingEntityEditModel editModel,
                                     final Class<? extends EntityEditPanel> editPanelClass) {
-    requireNonNull(editModel, "editModel");
-    requireNonNull(editPanelClass, "editPanelClass");
-    this.editModel = editModel;
-    this.editPanelClass = editPanelClass;
+    this.editModel = requireNonNull(editModel, "editModel");
+    this.editPanelClass = requireNonNull(editPanelClass, "editPanelClass");
   }
 
   /**
