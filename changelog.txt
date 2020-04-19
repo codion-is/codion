@@ -5882,3 +5882,4 @@
   ikonli-foundation icon plugin module added
   EntityTablePanel bug fixed, refresh via F5 did not work when toolbar or condition panel had focus, only when the table itself had focus
   EntityTablePanel, toolbar button size increased from 20 to 24
+  EntityPanel, EntityTablePanel added a couple of icons

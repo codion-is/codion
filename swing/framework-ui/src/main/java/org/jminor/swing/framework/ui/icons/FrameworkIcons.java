@@ -34,6 +34,11 @@ public interface FrameworkIcons extends Icons {
   ImageIcon update();
 
   /**
+   * @return icon for the 'copy' action.
+   */
+  ImageIcon copy();
+
+  /**
    * @return icon for the 'refresh' action.
    */
   ImageIcon refresh();

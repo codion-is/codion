@@ -1045,7 +1045,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected final ControlSet getCopyControlSet() {
-    return new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl());
+    final ControlSet copyControls = new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(),
+            getCopyTableWithHeaderControl());
+    copyControls.setIcon(frameworkIcons().copy());
+
+    return copyControls;
   }
 
   protected final Control getCopyCellControl() {
@@ -1351,7 +1355,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void addConditionControls(final ControlSet popupControls) {
     if (conditionPanel != null) {
-      final ControlSet controls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
+      final ControlSet controls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH),
+              (char) 0, frameworkIcons().filter());
       if (controlMap.containsKey(CONDITION_PANEL_VISIBLE)) {
         controls.add(getControl(CONDITION_PANEL_VISIBLE));
       }

@@ -32,6 +32,11 @@ public final class IkonliFrameworkFoundationIcons extends IkonliFoundationIcons 
   }
 
   @Override
+  public ImageIcon copy() {
+    return imageIcon(FontIcon.of(Foundation.PAGE_COPY, ICON_SIZE));
+  }
+
+  @Override
   public ImageIcon refresh() {
     return imageIcon(FontIcon.of(Foundation.REFRESH, ICON_SIZE));
   }

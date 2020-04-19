@@ -41,6 +41,11 @@ public final class DefaultFrameworkIcons extends DefaultIcons implements Framewo
   }
 
   @Override
+  public ImageIcon copy() {
+    return null;
+  }
+
+  @Override
   public ImageIcon refresh() {
     return imageIcon(IMG_REFRESH_16);
   }
