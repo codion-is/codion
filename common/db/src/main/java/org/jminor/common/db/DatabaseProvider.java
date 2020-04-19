@@ -27,16 +27,11 @@ public interface DatabaseProvider {
    */
   static DatabaseProvider getInstance() {
     final Database.Type databaseType = Database.getDatabaseType();
-    try {
-      final ServiceLoader<DatabaseProvider> loader = ServiceLoader.load(DatabaseProvider.class);
-      for (final DatabaseProvider provider : loader) {
-        if (Objects.equals(provider.getDatabaseType(), databaseType)) {
-          return provider;
-        }
+    final ServiceLoader<DatabaseProvider> loader = ServiceLoader.load(DatabaseProvider.class);
+    for (final DatabaseProvider provider : loader) {
+      if (Objects.equals(provider.getDatabaseType(), databaseType)) {
+        return provider;
       }
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
     }
 
     throw new IllegalArgumentException("No DatabaseProvider implementation available for type: " + databaseType);

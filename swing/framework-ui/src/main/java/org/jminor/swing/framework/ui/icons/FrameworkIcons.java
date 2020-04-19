@@ -105,18 +105,13 @@ public interface FrameworkIcons extends Icons {
    */
   static FrameworkIcons frameworkIcons() {
     final String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
-    try {
-      final ServiceLoader<FrameworkIcons> loader = ServiceLoader.load(FrameworkIcons.class);
-      for (final FrameworkIcons icons : loader) {
-        if (Objects.equals(icons.getClass().getName(), iconsClassName)) {
-          return icons;
-        }
+    final ServiceLoader<FrameworkIcons> loader = ServiceLoader.load(FrameworkIcons.class);
+    for (final FrameworkIcons icons : loader) {
+      if (Objects.equals(icons.getClass().getName(), iconsClassName)) {
+        return icons;
       }
+    }
 
-      throw new IllegalArgumentException("No FrameworkIcons implementation available of type: " + iconsClassName);
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
+    throw new IllegalArgumentException("No FrameworkIcons implementation available of type: " + iconsClassName);
   }
 }
