@@ -185,7 +185,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static final String MOVE_SELECTION_DOWN = "moveSelectionDown";
   public static final String COPY_TABLE_DATA = "copyTableData";
 
-  private static final Dimension TOOLBAR_BUTTON_SIZE = new Dimension(20, 20);
+  private static final Dimension TOOLBAR_BUTTON_SIZE = new Dimension(24, 24);
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
   private static final int POPUP_LOCATION_X_OFFSET = 42;
   private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
