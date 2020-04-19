@@ -48,9 +48,7 @@ import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
-import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -1236,11 +1234,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             tableModel.getConditionModel().getConditionChangedObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, frameworkIcons().refreshRequired());
 
-    final InputMap inputMap = table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    final ActionMap actionMap = table.getActionMap();
-
-    inputMap.put(keyStroke, "EntityTablePanel.refreshControl");
-    actionMap.put("EntityTablePanel.refreshControl", refresh);
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_F5, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, refresh);
 
     final JButton button = new JButton(refresh);
     button.setPreferredSize(TOOLBAR_BUTTON_SIZE);
