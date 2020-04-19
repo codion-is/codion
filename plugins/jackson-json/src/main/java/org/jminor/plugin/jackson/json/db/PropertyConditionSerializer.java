@@ -25,7 +25,7 @@ final class PropertyConditionSerializer implements Serializable {
     generator.writeStartObject();
     generator.writeObjectField("type", "property");
     generator.writeObjectField("propertyId", condition.getPropertyId());
-    generator.writeObjectField("operator", condition.getOperator().toString());
+    generator.writeObjectField("operator", condition.getOperator().name());
     generator.writeFieldName("values");
     generator.writeStartArray();
     for (final Object value : condition.getValues()) {

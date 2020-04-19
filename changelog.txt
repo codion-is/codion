@@ -5887,3 +5887,4 @@
   RemoteEntityConnectionProvider, minor refactoring, some undo
   ColumnConditionPanel, increased Operator combobox font size, center alignment, Operator removed spaces, minor refactoring
   framework-server project dependencies changed from api to implementation rolled back, module problems
+  PropertyConditionSerializer bug fixed, now uses Operator enum name instead of toString()
