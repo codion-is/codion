@@ -5884,4 +5884,4 @@
   EntityTablePanel, toolbar button size increased from 20 to 24
   EntityPanel, EntityTablePanel added a couple of icons
   Removed try/catch from ServerLoader.load() calls
-  RemoteEntityConnectionProvider, minor refactoring
+  RemoteEntityConnectionProvider, minor refactoring, some undo
