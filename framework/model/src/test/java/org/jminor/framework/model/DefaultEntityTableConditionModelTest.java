@@ -16,6 +16,7 @@ import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.model.tests.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

@@ -21,7 +21,7 @@ task testJar(type: Jar, dependsOn: testClasses) {
     group 'build'
     archiveClassifier = 'tests'
     from sourceSets.test.output
-    include('org/jminor/framework/model/Abstract**', 'org/jminor/framework/model/TestDomain**')
+    include('org/jminor/framework/model/tests/**')
     manifest {
         attributes(
                 "Specification-Title": project.name,
@@ -31,7 +31,7 @@ task testJar(type: Jar, dependsOn: testClasses) {
                 "Implementation-Version": project.version,
                 "Implementation-Vendor": "JMinor",
                 "Implementation-Vendor-Id": "org.jminor",
-                "Implementation-URL": "http://jminor.org",
+                "Implementation-URL": "https://jminor.org",
                 "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
                 "Built-By": System.getProperty("user.name")/*,
                 "Build-Time": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")*/)

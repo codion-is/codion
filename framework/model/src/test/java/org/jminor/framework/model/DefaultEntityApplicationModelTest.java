@@ -3,6 +3,9 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.framework.model.tests.AbstractEntityApplicationModelTest;
+import org.jminor.framework.model.tests.TestDomain;
+
 public final class DefaultEntityApplicationModelTest extends AbstractEntityApplicationModelTest<DefaultEntityModelTest.TestEntityModel,
         DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {
 

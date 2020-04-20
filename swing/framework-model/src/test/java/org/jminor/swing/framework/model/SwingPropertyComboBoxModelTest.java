@@ -12,7 +12,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.model.TestDomain;
+import org.jminor.framework.model.tests.TestDomain;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import org.junit.jupiter.api.Test;

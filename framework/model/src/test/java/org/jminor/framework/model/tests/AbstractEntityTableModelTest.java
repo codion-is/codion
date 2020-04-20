@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package org.jminor.framework.model.tests;
 
 import org.jminor.common.Util;
 import org.jminor.common.db.Databases;
@@ -14,6 +14,8 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.exception.ValidationException;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityTableModel;
 
 import org.junit.jupiter.api.Test;
 

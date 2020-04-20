@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package org.jminor.framework.model.tests;
 
 import org.jminor.common.item.Item;
 import org.jminor.framework.domain.Domain;
