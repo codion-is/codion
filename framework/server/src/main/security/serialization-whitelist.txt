@@ -80,7 +80,7 @@ org.jminor.common.db.reports.AbstractReportWrapper
 org.jminor.common.remote.client.DefaultConnectionRequest
 org.jminor.common.user.DefaultUser
 org.jminor.common.version.DefaultVersion
-org.jminor.framework.db.condition.DefaultConditionSet
+org.jminor.framework.db.condition.DefaultConditionCombination
 org.jminor.framework.db.condition.DefaultCustomCondition
 org.jminor.framework.db.condition.DefaultEntityCondition
 org.jminor.framework.db.condition.DefaultEntitySelectCondition

@@ -39,11 +39,11 @@ final class DefaultWhereCondition implements WhereCondition {
   }
 
   private String getWhereClause(final Condition condition) {
-    if (condition instanceof Condition.Set) {
-      final Condition.Set conditionSet = (Condition.Set) condition;
-      final List<Condition> conditions = conditionSet.getConditions();
+    if (condition instanceof Condition.Combination) {
+      final Condition.Combination conditionCombination = (Condition.Combination) condition;
+      final List<Condition> conditions = conditionCombination.getConditions();
       final StringBuilder conditionString = new StringBuilder(conditions.size() > 1 ? "(" : "");
-      final String conjunction = toString(conditionSet.getConjunction());
+      final String conjunction = toString(conditionCombination.getConjunction());
       for (int i = 0; i < conditions.size(); i++) {
         conditionString.append(getWhereClause(conditions.get(i)));
         if (i < conditions.size() - 1) {

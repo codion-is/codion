@@ -14,15 +14,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-final class ConditionSetDeserializer {
+final class ConditionCombinationDeserializer {
 
   private final ConditionDeserializer conditionDeserializer;
 
-  ConditionSetDeserializer(final ConditionDeserializer conditionDeserializer) {
+  ConditionCombinationDeserializer(final ConditionDeserializer conditionDeserializer) {
     this.conditionDeserializer = conditionDeserializer;
   }
 
-  Condition.Set deserialize(final EntityDefinition definition, final JsonNode jsonNode) throws IOException {
+  Condition.Combination deserialize(final EntityDefinition definition, final JsonNode jsonNode) throws IOException {
     final Conjunction conjunction = Conjunction.valueOf(jsonNode.get("conjunction").asText());
     final JsonNode conditionsNode = jsonNode.get("conditions");
     final List<Condition> conditions = new ArrayList<>(conditionsNode.size());
@@ -30,6 +30,6 @@ final class ConditionSetDeserializer {
       conditions.add(conditionDeserializer.deserialize(definition, conditionNode));
     }
 
-    return Conditions.conditionSet(conjunction, conditions);
+    return Conditions.combination(conjunction, conditions);
   }
 }

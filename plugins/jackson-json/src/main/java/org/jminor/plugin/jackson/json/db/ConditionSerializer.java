@@ -18,20 +18,20 @@ final class ConditionSerializer implements Serializable {
   private static final long serialVersionUID = 1;
 
   private final PropertyConditionSerializer propertyConditionSerializer;
-  private final ConditionSetSerializer conditionSetSerializer;
+  private final ConditionCombinationSerializer conditionCombinationSerializer;
   private final CustomConditionSerializer customConditionSerializer;
 
   ConditionSerializer(final PropertyConditionSerializer propertyConditionSerializer,
                       final EntityObjectMapper entityObjectMapper) {
     this.propertyConditionSerializer = propertyConditionSerializer;
-    this.conditionSetSerializer = new ConditionSetSerializer(propertyConditionSerializer);
+    this.conditionCombinationSerializer = new ConditionCombinationSerializer(propertyConditionSerializer);
     this.customConditionSerializer = new CustomConditionSerializer(entityObjectMapper);
   }
 
   void serialize(final Condition condition, final JsonGenerator generator) throws IOException {
-    if (condition instanceof Condition.Set) {
-      final Condition.Set set = (Condition.Set) condition;
-      conditionSetSerializer.serialize(set, generator);
+    if (condition instanceof Condition.Combination) {
+      final Condition.Combination combination = (Condition.Combination) condition;
+      conditionCombinationSerializer.serialize(combination, generator);
     }
     else if (condition instanceof PropertyCondition) {
       final PropertyCondition propertyCondition = (PropertyCondition) condition;

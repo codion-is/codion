@@ -48,7 +48,7 @@ public final class EntityConnectionDemo {
 
     List<Entity> artists = connection.select(condition);
 
-    condition = selectCondition(T_ALBUM, conditionSet(AND,
+    condition = selectCondition(T_ALBUM, combination(AND,
             propertyCondition(ALBUM_ARTIST_FK, LIKE, artists),
             propertyCondition(ALBUM_TITLE, NOT_LIKE, "%live%")
                     .setCaseSensitive(false)));
@@ -81,7 +81,7 @@ public final class EntityConnectionDemo {
             selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "Iron Maiden"));
 
     Entity liveAlbum = connection.selectSingle(
-            selectCondition(T_ALBUM, conditionSet(AND,
+            selectCondition(T_ALBUM, combination(AND,
                     propertyCondition(ALBUM_ARTIST_FK, LIKE, ironMaiden),
                     propertyCondition(ALBUM_TITLE, LIKE, "%live after%")
                             .setCaseSensitive(false))));

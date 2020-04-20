@@ -12,25 +12,25 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
-final class ConditionSetSerializer implements Serializable {
+final class ConditionCombinationSerializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
   private final PropertyConditionSerializer propertyConditionSerializer;
 
-  ConditionSetSerializer(final PropertyConditionSerializer propertyConditionSerializer) {
+  ConditionCombinationSerializer(final PropertyConditionSerializer propertyConditionSerializer) {
     this.propertyConditionSerializer = propertyConditionSerializer;
   }
 
-  void serialize(final Condition.Set set, final JsonGenerator generator) throws IOException {
+  void serialize(final Condition.Combination combination, final JsonGenerator generator) throws IOException {
     generator.writeStartObject();
-    generator.writeObjectField("type", "set");
-    generator.writeObjectField("conjunction", set.getConjunction().toString());
+    generator.writeObjectField("type", "combination");
+    generator.writeObjectField("conjunction", combination.getConjunction().toString());
     generator.writeArrayFieldStart("conditions");
-    final List<Condition> conditions = set.getConditions();
+    final List<Condition> conditions = combination.getConditions();
     for (final Condition condition : conditions) {
-      if (condition instanceof Condition.Set) {
-        serialize((Condition.Set) condition, generator);
+      if (condition instanceof Condition.Combination) {
+        serialize((Condition.Combination) condition, generator);
       }
       else if (condition instanceof PropertyCondition) {
         propertyConditionSerializer.serialize((PropertyCondition) condition, generator);

@@ -17,20 +17,20 @@ final class ConditionDeserializer implements Serializable {
   private static final long serialVersionUID = 1;
 
   private final PropertyConditionDeserializer propertyConditionDeserializer;
-  private final ConditionSetDeserializer conditionSetDeserializer;
+  private final ConditionCombinationDeserializer conditionCombinationDeserializer;
   private final CustomConditionDeserializer customConditionDeserializer;
 
   ConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
     this.propertyConditionDeserializer = new PropertyConditionDeserializer(entityObjectMapper);
-    this.conditionSetDeserializer = new ConditionSetDeserializer(this);
+    this.conditionCombinationDeserializer = new ConditionCombinationDeserializer(this);
     this.customConditionDeserializer = new CustomConditionDeserializer(entityObjectMapper);
   }
 
   Condition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
     final JsonNode type = conditionNode.get("type");
     final String typeString = type.asText();
-    if ("set".equals(typeString)) {
-      return conditionSetDeserializer.deserialize(definition, conditionNode);
+    if ("combination".equals(typeString)) {
+      return conditionCombinationDeserializer.deserialize(definition, conditionNode);
     }
     else if ("property".equals(typeString)) {
       return propertyConditionDeserializer.deserialize(definition, conditionNode);

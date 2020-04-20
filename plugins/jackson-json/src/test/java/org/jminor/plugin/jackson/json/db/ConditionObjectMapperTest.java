@@ -37,7 +37,7 @@ public final class ConditionObjectMapperTest {
     dept2.put(TestDomain.DEPARTMENT_ID, 2);
 
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
-            Conditions.conditionSet(Conjunction.AND,
+            Conditions.combination(Conjunction.AND,
                     Conditions.propertyCondition(TestDomain.EMP_DEPARTMENT_FK,
                             Operator.NOT_LIKE, asList(dept1, dept2)),
                     Conditions.propertyCondition(TestDomain.EMP_NAME,
