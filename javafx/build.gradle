@@ -12,7 +12,7 @@ dependencies {
     api project(':jminor-framework-model')
 
     testImplementation project(':jminor-framework-db-local')
-    testImplementation project(path: ':jminor-framework-model', configuration: 'testArtifact')
+    testImplementation project(':jminor-framework-model-test')
 
     implementation "org.json:json:${jsonVersion}"
 
