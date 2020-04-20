@@ -14,7 +14,7 @@ import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityTableConditionModel;
-import org.jminor.framework.model.TestDomain;
+import org.jminor.framework.model.tests.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

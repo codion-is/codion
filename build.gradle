@@ -79,7 +79,8 @@ configure(project.frameworkModules) {
                     "Implementation-Version": project.version,
                     "Implementation-Vendor": "JMinor",
                     "Implementation-Vendor-Id": "org.jminor",
-                    "Implementation-URL": "http://jminor.org",
+                    "Implementation-URL": "https://jminor.org",
+                    "Automatic-Module-Name": "org." + project.name.replace('-', '.'),
                     "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
                     "Built-By": System.getProperty("user.name"),
                     "Build-Date": java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()))

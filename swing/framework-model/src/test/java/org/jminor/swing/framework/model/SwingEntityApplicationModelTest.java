@@ -4,8 +4,8 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.model.AbstractEntityApplicationModelTest;
-import org.jminor.framework.model.TestDomain;
+import org.jminor.framework.model.tests.AbstractEntityApplicationModelTest;
+import org.jminor.framework.model.tests.TestDomain;
 
 public final class SwingEntityApplicationModelTest
         extends AbstractEntityApplicationModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {

@@ -16,7 +16,7 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditEvents;
-import org.jminor.framework.model.TestDomain;
+import org.jminor.framework.model.tests.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

@@ -10,12 +10,12 @@ import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.model.AbstractEntityTableModelTest;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityTableConditionModel;
-import org.jminor.framework.model.TestDomain;
+import org.jminor.framework.model.tests.AbstractEntityTableModelTest;
+import org.jminor.framework.model.tests.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

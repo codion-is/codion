@@ -20,6 +20,8 @@ import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.exception.ValidationException;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.model.tests.AbstractEntityModelTest;
+import org.jminor.framework.model.tests.TestDomain;
 
 import java.util.Collection;
 import java.util.Iterator;

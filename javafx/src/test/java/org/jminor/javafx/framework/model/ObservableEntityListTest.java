@@ -13,7 +13,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.model.TestDomain;
+import org.jminor.framework.model.tests.TestDomain;
 
 import javafx.scene.control.ListView;
 import org.junit.jupiter.api.BeforeAll;

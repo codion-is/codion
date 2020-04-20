@@ -255,6 +255,7 @@ public final class Conditions {
    * @return a WhereCondition
    */
   public static WhereCondition whereCondition(final EntityCondition entityCondition, final EntityDefinition entityDefinition) {
+    requireNonNull(entityCondition, "entityCondition");
     return new DefaultWhereCondition(expand(entityCondition.getCondition(), entityDefinition), entityDefinition);
   }
 
@@ -266,6 +267,8 @@ public final class Conditions {
    * @return an expanded Condition
    */
   public static Condition expand(final Condition condition, final EntityDefinition definition) {
+    requireNonNull(condition, "condition");
+    requireNonNull(definition, "definition");
     if (condition instanceof Condition.Combination) {
       final Condition.Combination conditionCombination = (Condition.Combination) condition;
       final ListIterator<Condition> conditionsIterator = conditionCombination.getConditions().listIterator();
@@ -287,47 +290,38 @@ public final class Conditions {
     return condition;
   }
 
-  /**
-   * Creates a composite condition from the given keys, referencing the given properties
-   * @param keys the keys
-   * @param properties the key properties
-   * @param operator the condition operator
-   * @return a Condition referencing the given keys
-   */
-  public static Condition createCompositeKeyCondition(final List<Entity.Key> keys, final List<ColumnProperty> properties,
-                                                      final Operator operator) {
+  private static Condition compositeKeyCondition(final List<Entity.Key> keys, final List<ColumnProperty> properties,
+                                                final Operator operator) {
     if (keys.size() == 1) {
-      return createSingleCompositeCondition(properties, operator, keys.get(0));
+      return singleCompositeCondition(properties, operator, keys.get(0));
     }
 
-    return createMultipleCompositeCondition(properties, operator, keys);
+    return multipleCompositeCondition(properties, operator, keys);
   }
 
   /** Assumes {@code keys} is not empty. */
   private static Condition createKeyCondition(final List<Entity.Key> keys) {
     final Entity.Key firstKey = keys.get(0);
     if (firstKey.isCompositeKey()) {
-      return createCompositeKeyCondition(keys, firstKey.getProperties(), LIKE);
+      return compositeKeyCondition(keys, firstKey.getProperties(), LIKE);
     }
 
     return propertyCondition(firstKey.getFirstProperty().getPropertyId(), LIKE, getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
-  private static Condition createMultipleCompositeCondition(final List<ColumnProperty> properties,
-                                                            final Operator operator,
-                                                            final List<Entity.Key> keys) {
+  private static Condition multipleCompositeCondition(final List<ColumnProperty> properties, final Operator operator,
+                                                      final List<Entity.Key> keys) {
     final Condition.Combination conditionCombination = combination(OR);
     for (int i = 0; i < keys.size(); i++) {
-      conditionCombination.add(createSingleCompositeCondition(properties, operator, keys.get(i)));
+      conditionCombination.add(singleCompositeCondition(properties, operator, keys.get(i)));
     }
 
     return conditionCombination;
   }
 
-  private static Condition createSingleCompositeCondition(final List<ColumnProperty> properties,
-                                                          final Operator operator,
-                                                          final Entity.Key entityKey) {
+  private static Condition singleCompositeCondition(final List<ColumnProperty> properties, final Operator operator,
+                                                    final Entity.Key entityKey) {
     final Condition.Combination conditionCombination = combination(AND);
     for (int i = 0; i < properties.size(); i++) {
       conditionCombination.add(propertyCondition(properties.get(i).getPropertyId(), operator,
@@ -349,7 +343,7 @@ public final class Conditions {
                                                final Operator operator, final Collection values) {
     final List<Entity.Key> keys = getKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
-      return createCompositeKeyCondition(keys, foreignKeyProperty.getColumnProperties(), operator);
+      return compositeKeyCondition(keys, foreignKeyProperty.getColumnProperties(), operator);
     }
 
     if (keys.size() == 1) {
