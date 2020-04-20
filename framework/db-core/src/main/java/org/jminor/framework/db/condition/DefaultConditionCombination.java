@@ -11,14 +11,14 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultConditionSet implements Condition.Set {
+final class DefaultConditionCombination implements Condition.Combination {
 
   private static final long serialVersionUID = 1;
 
   private final ArrayList<Condition> conditions = new ArrayList<>();
   private final Conjunction conjunction;
 
-  DefaultConditionSet(final Conjunction conjunction, final Collection<Condition> conditions) {
+  DefaultConditionCombination(final Conjunction conjunction, final Collection<Condition> conditions) {
     this.conjunction = requireNonNull(conjunction, "conjunction");
     for (final Condition condition : requireNonNull(conditions, "conditions")) {
       add(condition);

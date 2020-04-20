@@ -29,10 +29,10 @@ public interface Condition extends Serializable {
   List<String> getPropertyIds();
 
   /**
-   * An interface encapsulating a set of PropertyCondition objects,
+   * An interface encapsulating a combination of Condition objects,
    * that should be either AND'ed or OR'ed together in a query context
    */
-  interface Set extends Condition {
+  interface Combination extends Condition {
 
     /**
      * Adds a new Condition object to this set, adding null or a {@link EmptyCondition} instance has no effect

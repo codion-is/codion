@@ -278,7 +278,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     if (lookupProperties.isEmpty()) {
       throw new IllegalStateException("No search properties provided for lookup model: " + entityId);
     }
-    final Condition.Set baseCondition = conditionSet(Conjunction.OR);
+    final Condition.Combination baseCondition = combination(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionEnabledValue.get() ?
             searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final ColumnProperty lookupProperty : lookupProperties) {
@@ -292,7 +292,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     }
 
     return selectCondition(entityId, additionalConditionProvider == null ? baseCondition :
-            conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
+            combination(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
             .setOrderBy(connectionProvider.getDomain().getDefinition(entityId).getOrderBy());
   }
 

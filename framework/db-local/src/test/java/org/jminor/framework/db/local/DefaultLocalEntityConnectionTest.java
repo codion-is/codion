@@ -100,7 +100,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       //scott, james, adams
-      assertEquals(3, connection.delete(condition(T_EMP, conditionSet(Conjunction.AND,
+      assertEquals(3, connection.delete(condition(T_EMP, combination(Conjunction.AND,
               propertyCondition(EMP_NAME, Operator.LIKE, "%S%"),
               propertyCondition(EMP_JOB, Operator.LIKE, "CLERK")))));
     }
@@ -870,7 +870,7 @@ public class DefaultLocalEntityConnectionTest {
     List<Entity> entities = connection.select(selectCondition(T_NO_PK));
     assertEquals(6, entities.size());
     entities = connection.select(selectCondition(T_NO_PK,
-            conditionSet(Conjunction.OR,
+            combination(Conjunction.OR,
                     propertyCondition(NO_PK_COL1, Operator.LIKE, 2),
                     propertyCondition(NO_PK_COL3, Operator.LIKE, "5"))));
     assertEquals(4, entities.size());

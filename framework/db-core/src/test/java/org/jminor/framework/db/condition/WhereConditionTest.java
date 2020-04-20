@@ -24,22 +24,22 @@ public final class WhereConditionTest {
 
   @Test
   public void test() {
-    final Condition.Set set1 = Conditions.conditionSet(
+    final Condition.Combination combination1 = Conditions.combination(
             Conjunction.AND,
             Conditions.propertyCondition(TestDomain.DETAIL_STRING, Operator.LIKE, "value"),
             Conditions.propertyCondition(TestDomain.DETAIL_INT, Operator.LIKE, 666)
     );
     final EntityDefinition detailDefinition = DOMAIN.getDefinition(TestDomain.T_DETAIL);
-    final WhereCondition condition = whereCondition(condition(TestDomain.T_DETAIL, set1), detailDefinition);
+    final WhereCondition condition = whereCondition(condition(TestDomain.T_DETAIL, combination1), detailDefinition);
     assertEquals("(string = ? and int = ?)", condition.getWhereClause());
-    final Condition.Set set2 = Conditions.conditionSet(
+    final Condition.Combination combination2 = Conditions.combination(
             Conjunction.AND,
             Conditions.propertyCondition(TestDomain.DETAIL_DOUBLE, Operator.LIKE, 666.666),
             Conditions.propertyCondition(TestDomain.DETAIL_STRING, Operator.LIKE, "valu%e2").setCaseSensitive(false)
     );
-    final Condition.Set set3 = Conditions.conditionSet(Conjunction.OR, set1, set2);
+    final Condition.Combination combination3 = Conditions.combination(Conjunction.OR, combination1, combination2);
     assertEquals("((string = ? and int = ?) or (double = ? and upper(string) like upper(?)))",
-            whereCondition(condition(TestDomain.T_DETAIL, set3), detailDefinition).getWhereClause());
+            whereCondition(condition(TestDomain.T_DETAIL, combination3), detailDefinition).getWhereClause());
   }
 
   @Test

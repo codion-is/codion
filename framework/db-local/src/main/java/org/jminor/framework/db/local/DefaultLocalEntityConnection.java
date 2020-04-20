@@ -529,7 +529,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entityDefinition.getSelectQuery() != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
-    final WhereCondition combinedCondition = whereCondition(condition(condition.getEntityId(), conditionSet(Conjunction.AND,
+    final WhereCondition combinedCondition = whereCondition(condition(condition.getEntityId(), combination(Conjunction.AND,
             expand(condition.getCondition(), entityDefinition),
             propertyCondition(propertyId, NOT_LIKE, null))), entityDefinition);
     final ColumnProperty propertyToSelect = entityDefinition.getColumnProperty(propertyId);

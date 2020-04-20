@@ -183,32 +183,32 @@ public final class Conditions {
   }
 
   /**
-   * Initializes a new {@link Condition.Set} instance
+   * Initializes a new {@link Condition.Combination} instance
    * @param conjunction the Conjunction to use
-   * @return a new {@link Condition.Set} instance
+   * @return a new {@link Condition.Combination} instance
    */
-  public static Condition.Set conditionSet(final Conjunction conjunction) {
-    return conditionSet(conjunction, Collections.emptyList());
+  public static Condition.Combination combination(final Conjunction conjunction) {
+    return combination(conjunction, Collections.emptyList());
   }
 
   /**
-   * Initializes a new {@link Condition.Set} instance
+   * Initializes a new {@link Condition.Combination} instance
    * @param conjunction the Conjunction to use
    * @param conditions the Condition objects to be included in this set
-   * @return a new {@link Condition.Set} instance
+   * @return a new {@link Condition.Combination} instance
    */
-  public static Condition.Set conditionSet(final Conjunction conjunction, final Condition... conditions) {
-    return conditionSet(conjunction, asList(conditions));
+  public static Condition.Combination combination(final Conjunction conjunction, final Condition... conditions) {
+    return combination(conjunction, asList(conditions));
   }
 
   /**
-   * Initializes a new {@link Condition.Set} instance
+   * Initializes a new {@link Condition.Combination} instance
    * @param conjunction the conjunction to use
    * @param condition the Condition objects to be included in this set
-   * @return a new {@link Condition.Set} instance
+   * @return a new {@link Condition.Combination} instance
    */
-  public static Condition.Set conditionSet(final Conjunction conjunction, final Collection<Condition> condition) {
-    return new DefaultConditionSet(conjunction, condition);
+  public static Condition.Combination combination(final Conjunction conjunction, final Collection<Condition> condition) {
+    return new DefaultConditionCombination(conjunction, condition);
   }
 
   /**
@@ -266,9 +266,9 @@ public final class Conditions {
    * @return an expanded Condition
    */
   public static Condition expand(final Condition condition, final EntityDefinition definition) {
-    if (condition instanceof Condition.Set) {
-      final Condition.Set conditionSet = (Condition.Set) condition;
-      final ListIterator<Condition> conditionsIterator = conditionSet.getConditions().listIterator();
+    if (condition instanceof Condition.Combination) {
+      final Condition.Combination conditionCombination = (Condition.Combination) condition;
+      final ListIterator<Condition> conditionsIterator = conditionCombination.getConditions().listIterator();
       while (conditionsIterator.hasNext()) {
         conditionsIterator.set(expand(conditionsIterator.next(), definition));
       }
@@ -317,24 +317,24 @@ public final class Conditions {
   private static Condition createMultipleCompositeCondition(final List<ColumnProperty> properties,
                                                             final Operator operator,
                                                             final List<Entity.Key> keys) {
-    final Condition.Set conditionSet = conditionSet(OR);
+    final Condition.Combination conditionCombination = combination(OR);
     for (int i = 0; i < keys.size(); i++) {
-      conditionSet.add(createSingleCompositeCondition(properties, operator, keys.get(i)));
+      conditionCombination.add(createSingleCompositeCondition(properties, operator, keys.get(i)));
     }
 
-    return conditionSet;
+    return conditionCombination;
   }
 
   private static Condition createSingleCompositeCondition(final List<ColumnProperty> properties,
                                                           final Operator operator,
                                                           final Entity.Key entityKey) {
-    final Condition.Set conditionSet = conditionSet(AND);
+    final Condition.Combination conditionCombination = combination(AND);
     for (int i = 0; i < properties.size(); i++) {
-      conditionSet.add(propertyCondition(properties.get(i).getPropertyId(), operator,
+      conditionCombination.add(propertyCondition(properties.get(i).getPropertyId(), operator,
               entityKey == null ? null : entityKey.get(entityKey.getProperties().get(i))));
     }
 
-    return conditionSet;
+    return conditionCombination;
   }
 
   private static List<Entity.Key> checkKeysParameter(final List<Entity.Key> keys) {

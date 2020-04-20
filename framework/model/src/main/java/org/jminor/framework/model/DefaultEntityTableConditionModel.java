@@ -17,6 +17,7 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
+import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -31,7 +32,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
-import static org.jminor.framework.db.condition.Conditions.conditionSet;
 import static org.jminor.framework.db.condition.Conditions.propertyCondition;
 
 /**
@@ -187,17 +187,17 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public Condition getCondition() {
-    final Condition.Set conditionSet = conditionSet(conjunction);
+    final Condition.Combination conditionCombination = Conditions.combination(conjunction);
     for (final ColumnConditionModel<Entity, ? extends Property> conditionModel : propertyConditionModels.values()) {
       if (conditionModel.isEnabled()) {
-        conditionSet.add(getCondition(conditionModel));
+        conditionCombination.add(getCondition(conditionModel));
       }
     }
     if (additionalConditionProvider != null) {
-      conditionSet.add(additionalConditionProvider.getCondition());
+      conditionCombination.add(additionalConditionProvider.getCondition());
     }
 
-    return conditionSet.getConditions().isEmpty() ? null : conditionSet;
+    return conditionCombination.getConditions().isEmpty() ? null : conditionCombination;
   }
 
   @Override
