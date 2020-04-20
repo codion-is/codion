@@ -26,9 +26,9 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['org.jminor.framework.db.local,org.jminor.framework.model']
+    testAddModules = ['org.jminor.framework.db.local,org.jminor.framework.model,org.jminor.framework.model.tests']
     testAddReads = [
-            'org.jminor.javafx.framework': 'org.jminor.framework.db.local,org.jminor.framework.model',
+            'org.jminor.javafx.framework': 'org.jminor.framework.db.local,org.jminor.framework.model,org.jminor.framework.model.tests',
             'org.jminor.framework.model': 'org.jminor.framework.db.local,org.junit.jupiter.api'
     ]
 }
@@ -43,20 +43,11 @@ compileTestJava {
         addModules = testAddModules
         addReads = testAddReads
     }
-    doFirst {
-        options.compilerArgs.add('--patch-module')
-        options.compilerArgs.add("org.jminor.framework.model=${projectDir}/../framework/model/build/libs/jminor-framework-model-${version}-tests.jar")
-    }
 }
 
 test {
     moduleOptions {
         addModules = testAddModules
         addReads = testAddReads
-    }
-    doFirst {
-        jvmArgs = [ 
-            '--patch-module', "org.jminor.framework.model=${projectDir}/../framework/model/build/libs/jminor-framework-model-${version}-tests.jar", 
-        ]
     }
 }
