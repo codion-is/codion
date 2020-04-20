@@ -5891,3 +5891,4 @@
   Condition.Set renamed to Combination
   All jars/packages now sealed
   Shared tests in framework.model moved to tests package, due to sealed packages
+  framework-model-tests module added, it was either that or a mess on the modular side

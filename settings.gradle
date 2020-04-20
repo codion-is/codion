@@ -66,6 +66,9 @@ project(':jminor-framework-db-http').projectDir = file('framework/db-http')
 include 'jminor-framework-model'
 project(':jminor-framework-model').projectDir = file('framework/model')
 
+include 'jminor-framework-model-test'
+project(':jminor-framework-model-test').projectDir = file('framework/model-test')
+
 include 'jminor-framework-server'
 project(':jminor-framework-server').projectDir = file('framework/server')
 
