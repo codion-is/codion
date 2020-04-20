@@ -71,6 +71,7 @@ configure(project.frameworkModules) {
     jar {
         manifest {
             attributes(
+                    "Sealed": "true",
                     "Specification-Title": project.name,
                     "Specification-Version": project.version,
                     "Specification-Vendor": "JMinor",
