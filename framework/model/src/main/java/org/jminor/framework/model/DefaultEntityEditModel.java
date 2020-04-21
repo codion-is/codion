@@ -476,6 +476,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity insert() throws DatabaseException, ValidationException {
+    if (!isInsertEnabled()) {
+      throw new IllegalStateException("Inserting is not enabled!");
+    }
     final Entity toInsert = getEntityCopy();
     if (getEntityDefinition().isKeyGenerated()) {
       toInsert.clearKeyValues();
@@ -494,6 +497,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
+    if (!isInsertEnabled()) {
+      throw new IllegalStateException("Inserting is not enabled!");
+    }
     requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return emptyList();
@@ -517,14 +523,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException {
+    if (!isUpdateEnabled()) {
+      throw new IllegalStateException("Updating is not enabled!");
+    }
     requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return emptyList();
     }
-    if (!isUpdateEnabled()) {
-      throw new IllegalStateException("This model does not allow updating!");
-    }
-
     LOG.debug("{} - update {}", this, entities.toString());
 
     final List<Entity> modifiedEntities = getModifiedEntities(entities);
@@ -556,14 +561,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final List<Entity> delete(final List<Entity> entities) throws DatabaseException {
+    if (!isDeleteEnabled()) {
+      throw new IllegalStateException("Delete is not enabled!");
+    }
     requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return emptyList();
     }
-    if (!isDeleteEnabled()) {
-      throw new IllegalStateException("This model does not allow deleting!");
-    }
-
     LOG.debug("{} - delete {}", this, entities.toString());
 
     notifyBeforeDelete(unmodifiableList(entities));
@@ -946,12 +950,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {
-    if (!isInsertEnabled()) {
-      throw new IllegalStateException("This model does not allow inserting!");
-    }
-
     LOG.debug("{} - insert {}", this, entities.toString());
-
     notifyBeforeInsert(unmodifiableList(entities));
     validate(entities);
 
