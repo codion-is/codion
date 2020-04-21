@@ -9,5 +9,5 @@ module org.jminor.swing.plugin.ikonli.foundation {
   provides org.jminor.swing.common.ui.icons.Icons
           with org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
   provides org.jminor.swing.framework.ui.icons.FrameworkIcons
-          with org.jminor.swing.plugin.ikonli.foundation.IkonliFrameworkFoundationIcons;
+          with org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 }
