@@ -14,7 +14,7 @@ public final class NextReports {
 
   /**
    * Instantiates a new {@link ReportWrapper} based on NextReports.
-   * @param reportPath the path to the report
+   * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}.
    * @param format the format
    * @return a report wrapper
    */
