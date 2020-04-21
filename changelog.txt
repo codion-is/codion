@@ -5897,3 +5897,5 @@
   EntityTableModel.addEntities() method split into addEntities(), addEntitiesSorted(), addEntitiesAt() and addEntitiesAtSorted(), getting rid of more boolean parameters
   common.db.connection, database and result packages added
   EntityEditObserver, notify methods removed
+  DefaultEntityEditModel now initializes persistent values in constructor, some refactoring
+  DefaultEntityEditModel.removeForeignKeyValues() now clears all related references, as per todo

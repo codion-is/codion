@@ -72,9 +72,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
       super(entityId, connectionProvider);
     }
     @Override
-    public void addForeignKeyValues(final List<Entity> values) {}
+    public void addForeignKeyValues(final List<Entity> entities) {}
     @Override
-    public void removeForeignKeyValues(final List<Entity> values) {}
+    public void removeForeignKeyValues(final List<Entity> entities) {}
     @Override
     public void clear() {}
   }

@@ -174,6 +174,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.validator = validator;
     setReadOnly(getEntityDefinition().isReadOnly());
+    initializePersistentValues();
     bindEventsInternal();
   }
 
@@ -230,17 +231,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public boolean isLookupEnabled(final Property property) {
-    return property instanceof ColumnProperty;
-  }
-
-  @Override
   public boolean isPersistValue(final Property property) {
     if (persistentValues.containsKey(property.getPropertyId())) {
       return persistentValues.get(property.getPropertyId());
     }
 
-    return property instanceof ForeignKeyProperty && EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get();
+    return false;
   }
 
   @Override
@@ -325,8 +321,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void replaceForeignKeyValues(final Collection<Entity> values) {
-    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(values);
+  public final void replaceForeignKeyValues(final Collection<Entity> entities) {
+    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(entities);
     for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
       final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
               .getForeignKeyReferences(entityIdEntities.getKey());
@@ -362,8 +358,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setForeignKeyValues(final Collection<Entity> values) {
-    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(values);
+  public final void setForeignKeyValues(final Collection<Entity> entities) {
+    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(entities);
     for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition()
               .getForeignKeyReferences(entityIdEntities.getKey())) {
@@ -888,11 +884,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /**
    * Notifies that a insert is about to be performed
-   * @param entities the entities about to be inserted
+   * @param entitiesToInsert the entities about to be inserted
    * @see #addBeforeInsertListener(EventDataListener)
    */
-  protected final void notifyBeforeInsert(final List<Entity> entities) {
-    beforeInsertEvent.onEvent(entities);
+  protected final void notifyBeforeInsert(final List<Entity> entitiesToInsert) {
+    beforeInsertEvent.onEvent(entitiesToInsert);
   }
 
   /**
@@ -930,11 +926,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /**
    * Notifies that a delete is about to be performed
-   * @param deleteEvent the entities about to be deleted
+   * @param entitiesToDelete the entities about to be deleted
    * @see #addBeforeDeleteListener(EventDataListener)
    */
-  protected final void notifyBeforeDelete(final List<Entity> deleteEvent) {
-    beforeDeleteEvent.onEvent(deleteEvent);
+  protected final void notifyBeforeDelete(final List<Entity> entitiesToDelete) {
+    beforeDeleteEvent.onEvent(entitiesToDelete);
   }
 
   /**
@@ -988,6 +984,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private Event<ValueChange> getValueChangeEvent(final String propertyId) {
     return valueChangeEventMap.computeIfAbsent(propertyId, k -> Events.event());
+  }
+
+  private void initializePersistentValues() {
+    if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
+      getEntityDefinition().getForeignKeyProperties().forEach(property -> setPersistValue(property.getPropertyId(), true));
+    }
   }
 
   private void bindEventsInternal() {
