@@ -21,8 +21,8 @@ import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 import org.jminor.swing.framework.ui.icons.FrameworkIcons;
+import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
-import org.jminor.swing.plugin.ikonli.foundation.IkonliFrameworkFoundationIcons;
 
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -151,7 +151,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     Locale.setDefault(new Locale("en", "EN"));
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
-    FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFrameworkFoundationIcons.class.getName());
+    FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
