@@ -1,7 +1,6 @@
 dependencies {
     implementation project(':jminor-common-core')
     implementation project(':jminor-common-db')
-    implementation project(':jminor-common-model')
 
     testImplementation project(':jminor-common-remote-http')
     testImplementation project(':jminor-framework-db-local')
