@@ -13,8 +13,8 @@ import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
 import org.jminor.swing.framework.ui.icons.FrameworkIcons;
+import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
-import org.jminor.swing.plugin.ikonli.foundation.IkonliFrameworkFoundationIcons;
 
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -66,7 +66,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     Locale.setDefault(new Locale("en", "EN"));
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
-    FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFrameworkFoundationIcons.class.getName());
+    FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.world.domain.World");
     new WorldAppPanel().startApplication("World", null, false,

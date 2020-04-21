@@ -14,7 +14,7 @@ import java.awt.Color;
 /**
  * {@link FrameworkIcons} implementation based on ikonli-foundation.
  */
-public final class IkonliFrameworkFoundationIcons extends IkonliFoundationIcons implements FrameworkIcons {
+public final class IkonliFoundationFrameworkIcons extends IkonliFoundationIcons implements FrameworkIcons {
 
   @Override
   public ImageIcon add() {
