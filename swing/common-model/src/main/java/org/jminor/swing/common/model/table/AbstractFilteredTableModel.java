@@ -449,7 +449,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * Refreshes the data in this table model.
    * @see #clear()
    * @see #addItems(List, boolean, boolean)
-   * @see #addItems(List, int, boolean)
+   * @see #addItemsAt(int, List, boolean)
    */
   protected abstract void doRefresh();
 
@@ -471,18 +471,18 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @see TableSortModel#isSortingEnabled()
    */
   protected final void addItems(final List<R> items, final boolean atTop, final boolean sortAfterAdding) {
-    addItems(items, atTop ? 0 : visibleItems.size(), sortAfterAdding);
+    addItemsAt(atTop ? 0 : visibleItems.size(), items, sortAfterAdding);
   }
 
   /**
    * Adds the given items to this table model, non-filtered items are added at the given index. If {@code sortAfterAdding}
    * is true and sorting is enabled this model is sorted after the items have been added
-   * @param items the items to add
    * @param index the index at which to add the items
+   * @param items the items to add
    * @param sortAfterAdding if true and sorting is enabled then the model is sorted after adding
    * @see TableSortModel#isSortingEnabled()
    */
-  protected final void addItems(final List<R> items, final int index, final boolean sortAfterAdding) {
+  protected final void addItemsAt(final int index, final List<R> items, final boolean sortAfterAdding) {
     int counter = 0;
     for (final R item : items) {
       if (includeCondition == null || includeCondition.test(item)) {

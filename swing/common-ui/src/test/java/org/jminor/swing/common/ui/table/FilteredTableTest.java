@@ -111,7 +111,7 @@ public class FilteredTableTest {
     }
 
     public void addItems(final List<List<String>> items) {
-      addItems(items, 0, false);
+      addItemsAt(0, items, false);
     }
   }
 

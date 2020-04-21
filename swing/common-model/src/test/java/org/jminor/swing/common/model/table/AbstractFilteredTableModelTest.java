@@ -66,7 +66,7 @@ public final class AbstractFilteredTableModelTest {
     }
 
     public void addItemsAt(final List<List<String>> items, final int index) {
-      addItems(items, index, false);
+      addItemsAt(index, items, false);
     }
   }
 
