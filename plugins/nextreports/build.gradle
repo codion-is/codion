@@ -1,12 +1,10 @@
 dependencies {
     implementation project(':jminor-common-core')
     implementation project(':jminor-common-db')
-    implementation project(':jminor-common-model')
 
     implementation project(':jminor-framework-db-core')
 
     testImplementation project(':jminor-framework-db-local')
-    testImplementation project(':jminor-swing-framework-model')
 
     implementation('ro.nextreports:nextreports-engine:9.2') {
         transitive = false
