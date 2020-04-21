@@ -9,6 +9,8 @@ import org.jminor.framework.domain.entity.Entity;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A central event hub for listening for entity inserts, updates and deletes.
  * Uses {@link java.lang.ref.WeakReference} so adding a listener does not prevent it from being garbage collected, so keep
@@ -18,7 +20,7 @@ import java.util.Map;
  */
 public final class EntityEditEvents {
 
-  private static final EntityEditObserver EVENT_OBSERVER = new DefaultEntityEditObserver();
+  private static final DefaultEntityEditObserver EDIT_OBSERVER = new DefaultEntityEditObserver();
 
   private EntityEditEvents() {}
 
@@ -28,7 +30,7 @@ public final class EntityEditEvents {
    * @param listener the listener
    */
   public static void addInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
-    EVENT_OBSERVER.addInsertListener(entityId, listener);
+    EDIT_OBSERVER.addInsertListener(entityId, listener);
   }
 
   /**
@@ -37,7 +39,7 @@ public final class EntityEditEvents {
    * @param listener the listener
    */
   public static void addUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
-    EVENT_OBSERVER.addUpdateListener(entityId, listener);
+    EDIT_OBSERVER.addUpdateListener(entityId, listener);
   }
 
   /**
@@ -46,7 +48,7 @@ public final class EntityEditEvents {
    * @param listener the listener
    */
   public static void addDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
-    EVENT_OBSERVER.addDeleteListener(entityId, listener);
+    EDIT_OBSERVER.addDeleteListener(entityId, listener);
   }
 
   /**
@@ -55,7 +57,7 @@ public final class EntityEditEvents {
    * @param listener the listener to remove
    */
   public static void removeInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
-    EVENT_OBSERVER.removeInsertListener(entityId, listener);
+    EDIT_OBSERVER.removeInsertListener(entityId, listener);
   }
 
   /**
@@ -64,7 +66,7 @@ public final class EntityEditEvents {
    * @param listener the listener to remove
    */
   public static void removeUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
-    EVENT_OBSERVER.removeUpdateListener(entityId, listener);
+    EDIT_OBSERVER.removeUpdateListener(entityId, listener);
   }
 
   /**
@@ -73,7 +75,7 @@ public final class EntityEditEvents {
    * @param listener the listener to remove
    */
   public static void removeDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
-    EVENT_OBSERVER.removeDeleteListener(entityId, listener);
+    EDIT_OBSERVER.removeDeleteListener(entityId, listener);
   }
 
   /**
@@ -81,7 +83,7 @@ public final class EntityEditEvents {
    * @param insertedEntities the inserted entities
    */
   public static void notifyInserted(final List<Entity> insertedEntities) {
-    EVENT_OBSERVER.notifyInserted(insertedEntities);
+    EDIT_OBSERVER.notifyInserted(requireNonNull(insertedEntities));
   }
 
   /**
@@ -89,7 +91,7 @@ public final class EntityEditEvents {
    * @param updatedEntities the updated entities mapped to their original primary key
    */
   public static void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities) {
-    EVENT_OBSERVER.notifyUpdated(updatedEntities);
+    EDIT_OBSERVER.notifyUpdated(requireNonNull(updatedEntities));
   }
 
   /**
@@ -97,6 +99,6 @@ public final class EntityEditEvents {
    * @param deletedEntities the deleted entities
    */
   public static void notifyDeleted(final List<Entity> deletedEntities) {
-    EVENT_OBSERVER.notifyDeleted(deletedEntities);
+    EDIT_OBSERVER.notifyDeleted(requireNonNull(deletedEntities));
   }
 }

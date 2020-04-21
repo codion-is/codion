@@ -24,11 +24,25 @@ public interface EntityEditObserver {
   void addInsertListener(String entityId, EventDataListener<List<Entity>> listener);
 
   /**
+   * Removes the given listener
+   * @param entityId the entity id
+   * @param listener the listener to remove
+   */
+  void removeInsertListener(String entityId, EventDataListener<List<Entity>> listener);
+
+  /**
    * Adds a update listener
    * @param entityId the type of entity to listen for
    * @param listener the listener
    */
   void addUpdateListener(String entityId, EventDataListener<Map<Entity.Key, Entity>> listener);
+
+  /**
+   * Removes the given listener
+   * @param entityId the entity id
+   * @param listener the listener to remove
+   */
+  void removeUpdateListener(String entityId, EventDataListener<Map<Entity.Key, Entity>> listener);
 
   /**
    * Adds a delete listener
@@ -42,37 +56,5 @@ public interface EntityEditObserver {
    * @param entityId the entity id
    * @param listener the listener to remove
    */
-  void removeInsertListener(String entityId, EventDataListener<List<Entity>> listener);
-
-  /**
-   * Removes the given listener
-   * @param entityId the entity id
-   * @param listener the listener to remove
-   */
-  void removeUpdateListener(String entityId, EventDataListener<Map<Entity.Key, Entity>> listener);
-
-  /**
-   * Removes the given listener
-   * @param entityId the entity id
-   * @param listener the listener to remove
-   */
   void removeDeleteListener(String entityId, EventDataListener<List<Entity>> listener);
-
-  /**
-   * Notifies insert
-   * @param insertedEntities the inserted entities
-   */
-  void notifyInserted(List<Entity> insertedEntities);
-
-  /**
-   * Notifies update
-   * @param updatedEntities the updated entities mapped to their original primary key
-   */
-  void notifyUpdated(Map<Entity.Key, Entity> updatedEntities);
-
-  /**
-   * Notifies delete
-   * @param deletedEntities the deleted entities
-   */
-  void notifyDeleted(List<Entity> deletedEntities);
 }

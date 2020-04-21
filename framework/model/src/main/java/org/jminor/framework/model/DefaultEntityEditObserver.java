@@ -33,18 +33,13 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
   }
 
   @Override
-  public void addUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
-    getUpdateObserver(entityId).addDataListener(listener);
-  }
-
-  @Override
-  public void addDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
-    getDeleteObserver(entityId).addDataListener(listener);
-  }
-
-  @Override
   public void removeInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     getInsertObserver(entityId).removeDataListener(listener);
+  }
+
+  @Override
+  public void addUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
+    getUpdateObserver(entityId).addDataListener(listener);
   }
 
   @Override
@@ -53,13 +48,16 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
   }
 
   @Override
+  public void addDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
+    getDeleteObserver(entityId).addDataListener(listener);
+  }
+
+  @Override
   public void removeDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
     getDeleteObserver(entityId).removeDataListener(listener);
   }
 
-  @Override
-  public void notifyInserted(final List<Entity> insertedEntities) {
-    requireNonNull(insertedEntities);
+  void notifyInserted(final List<Entity> insertedEntities) {
     mapToEntityId(insertedEntities).forEach((entityId, inserted) -> {
       final WeakObserver<List<Entity>> event = insertEvents.get(entityId);
       if (event != null) {
@@ -68,11 +66,8 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
     });
   }
 
-  @Override
-  public void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities) {
-    requireNonNull(updatedEntities);
-    map(updatedEntities.entrySet(),
-            entry -> entry.getKey().getEntityId()).forEach((entityId, updated) -> {
+  void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities) {
+    map(updatedEntities.entrySet(), entry -> entry.getKey().getEntityId()).forEach((entityId, updated) -> {
       final Map<Entity.Key, Entity> updateMap = new HashMap<>();
       updated.forEach(entry -> updateMap.put(entry.getKey(), entry.getValue()));
       final WeakObserver<Map<Entity.Key, Entity>> event = updateEvents.get(entityId);
@@ -82,9 +77,7 @@ final class DefaultEntityEditObserver implements EntityEditObserver {
     });
   }
 
-  @Override
-  public void notifyDeleted(final List<Entity> deletedEntities) {
-    requireNonNull(deletedEntities);
+  void notifyDeleted(final List<Entity> deletedEntities) {
     mapToEntityId(deletedEntities).forEach((entityId, entities) -> {
       final WeakObserver<List<Entity>> event = deleteEvents.get(entityId);
       if (event != null) {

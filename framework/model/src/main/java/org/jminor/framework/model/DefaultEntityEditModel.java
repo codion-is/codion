@@ -174,6 +174,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.validator = validator;
     setReadOnly(getEntityDefinition().isReadOnly());
+    initializePersistentValues();
     bindEventsInternal();
   }
 
@@ -230,17 +231,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public boolean isLookupEnabled(final Property property) {
-    return property instanceof ColumnProperty;
-  }
-
-  @Override
   public boolean isPersistValue(final Property property) {
     if (persistentValues.containsKey(property.getPropertyId())) {
       return persistentValues.get(property.getPropertyId());
     }
 
-    return property instanceof ForeignKeyProperty && EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get();
+    return false;
   }
 
   @Override
@@ -325,8 +321,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void replaceForeignKeyValues(final Collection<Entity> values) {
-    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(values);
+  public final void replaceForeignKeyValues(final Collection<Entity> entities) {
+    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(entities);
     for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
       final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
               .getForeignKeyReferences(entityIdEntities.getKey());
@@ -362,8 +358,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setForeignKeyValues(final Collection<Entity> values) {
-    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(values);
+  public final void setForeignKeyValues(final Collection<Entity> entities) {
+    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(entities);
     for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition()
               .getForeignKeyReferences(entityIdEntities.getKey())) {
@@ -458,7 +454,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void validate(final Collection<Entity> entities) throws ValidationException {
     for (final Entity entityToValidate : entities) {
-      validator.validate(entityToValidate, getDomain().getDefinition(entityToValidate.getEntityId()));
+      final EntityDefinition definition = getDomain().getDefinition(entityToValidate.getEntityId());
+      if (definition.getEntityId().equals(getEntityId())) {
+        validator.validate(entityToValidate, definition);
+      }
+      else {
+        definition.getValidator().validate(entityToValidate, definition);
+      }
     }
   }
 
@@ -480,6 +482,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity insert() throws DatabaseException, ValidationException {
+    if (!isInsertEnabled()) {
+      throw new IllegalStateException("Inserting is not enabled!");
+    }
     final Entity toInsert = getEntityCopy();
     if (getEntityDefinition().isKeyGenerated()) {
       toInsert.clearKeyValues();
@@ -498,6 +503,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
+    if (!isInsertEnabled()) {
+      throw new IllegalStateException("Inserting is not enabled!");
+    }
     requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return emptyList();
@@ -521,14 +529,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException {
+    if (!isUpdateEnabled()) {
+      throw new IllegalStateException("Updating is not enabled!");
+    }
     requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return emptyList();
     }
-    if (!isUpdateEnabled()) {
-      throw new IllegalStateException("This model does not allow updating!");
-    }
-
     LOG.debug("{} - update {}", this, entities.toString());
 
     final List<Entity> modifiedEntities = getModifiedEntities(entities);
@@ -560,14 +567,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final List<Entity> delete(final List<Entity> entities) throws DatabaseException {
+    if (!isDeleteEnabled()) {
+      throw new IllegalStateException("Delete is not enabled!");
+    }
     requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return emptyList();
     }
-    if (!isDeleteEnabled()) {
-      throw new IllegalStateException("This model does not allow deleting!");
-    }
-
     LOG.debug("{} - delete {}", this, entities.toString());
 
     notifyBeforeDelete(unmodifiableList(entities));
@@ -888,11 +894,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /**
    * Notifies that a insert is about to be performed
-   * @param entities the entities about to be inserted
+   * @param entitiesToInsert the entities about to be inserted
    * @see #addBeforeInsertListener(EventDataListener)
    */
-  protected final void notifyBeforeInsert(final List<Entity> entities) {
-    beforeInsertEvent.onEvent(entities);
+  protected final void notifyBeforeInsert(final List<Entity> entitiesToInsert) {
+    beforeInsertEvent.onEvent(entitiesToInsert);
   }
 
   /**
@@ -930,11 +936,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /**
    * Notifies that a delete is about to be performed
-   * @param deleteEvent the entities about to be deleted
+   * @param entitiesToDelete the entities about to be deleted
    * @see #addBeforeDeleteListener(EventDataListener)
    */
-  protected final void notifyBeforeDelete(final List<Entity> deleteEvent) {
-    beforeDeleteEvent.onEvent(deleteEvent);
+  protected final void notifyBeforeDelete(final List<Entity> entitiesToDelete) {
+    beforeDeleteEvent.onEvent(entitiesToDelete);
   }
 
   /**
@@ -950,12 +956,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {
-    if (!isInsertEnabled()) {
-      throw new IllegalStateException("This model does not allow inserting!");
-    }
-
     LOG.debug("{} - insert {}", this, entities.toString());
-
     notifyBeforeInsert(unmodifiableList(entities));
     validate(entities);
 
@@ -988,6 +989,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private Event<ValueChange> getValueChangeEvent(final String propertyId) {
     return valueChangeEventMap.computeIfAbsent(propertyId, k -> Events.event());
+  }
+
+  private void initializePersistentValues() {
+    if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
+      getEntityDefinition().getForeignKeyProperties().forEach(property -> setPersistValue(property.getPropertyId(), true));
+    }
   }
 
   private void bindEventsInternal() {

@@ -329,14 +329,6 @@ public interface EntityEditModel extends Refreshable {
   Object getDefaultValue(Property property);
 
   /**
-   * Returns true if values based on this property should be available for lookup via this EditModel.
-   * This means displaying all the distinct property values to the user, allowing her to select one.
-   * @param property the property
-   * @return true if value lookup should be enabled for this property
-   */
-  boolean isLookupEnabled(Property property);
-
-  /**
    * Returns true if the last available value for this property should be used when initializing
    * a default entity.
    * Override for selective reset of field values when the model is cleared.
@@ -367,7 +359,7 @@ public interface EntityEditModel extends Refreshable {
   Entity insert() throws DatabaseException, ValidationException;
 
   /**
-   * Performs an insert on the given entities, returns silently on receiving an empty list
+   * Performs an insert on the given entities, returns silently on receiving an empty list.
    * @param entities the entities to insert
    * @return a list containing the inserted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
@@ -390,8 +382,7 @@ public interface EntityEditModel extends Refreshable {
   Entity update() throws DatabaseException, ValidationException;
 
   /**
-   * Updates the given entities. If the entities are unmodified or the list is empty
-   * this method returns silently.
+   * Updates the given entities. If the entities are unmodified or the list is empty this method returns silently.
    * @param entities the entities to update
    * @return the updated entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
@@ -430,31 +421,31 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Adds the inserted entities to all foreign key models based on that entity type
-   * @param values the values
+   * @param entities the values
    */
-  void addForeignKeyValues(List<Entity> values);
+  void addForeignKeyValues(List<Entity> entities);
 
   /**
-   * Removes the deleted entities from all foreign key models based on that entity type
-   * todo set foreign key values referencing the deleted entity to null
-   * @param values the values
+   * Removes the given entities from all foreign key models based on that entity type and clears any foreign
+   * key values referencing them.
+   * @param entities the values
    */
-  void removeForeignKeyValues(List<Entity> values);
+  void removeForeignKeyValues(List<Entity> entities);
 
   /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with
    * the corresponding entity from {@code values}, useful when property
    * values have been changed in the referenced entity that must be reflected in the edit model.
-   * @param values the foreign key entities
+   * @param entities the foreign key entities
    */
-  void replaceForeignKeyValues(Collection<Entity> values);
+  void replaceForeignKeyValues(Collection<Entity> entities);
 
   /**
    * Sets the values in the given list as the values for the respective foreign keys, uses the first
    * value found for each entity type in case of multiple entities of that type
-   * @param values the entities
+   * @param entities the entities
    */
-  void setForeignKeyValues(Collection<Entity> values);
+  void setForeignKeyValues(Collection<Entity> entities);
 
   /**
    * @return the validator
@@ -462,9 +453,10 @@ public interface EntityEditModel extends Refreshable {
   Validator getValidator();
 
   /**
-   * Checks if the value associated with the given property is valid, throws a ValidationException if not
+   * Validates the value associated with the given property, using the underlying validator.
    * @param property the property the value is associated with
    * @throws ValidationException if the given value is not valid for the given property
+   * @see #getValidator()
    */
   void validate(Property property) throws ValidationException;
 
@@ -475,27 +467,29 @@ public interface EntityEditModel extends Refreshable {
   void validate() throws ValidationException;
 
   /**
-   * Validates the current state of the given entity
+   * Validates the given entity, using the underlying validator.
    * @param entity the entity to validate
    * @throws ValidationException in case the entity is invalid
+   * @see #getValidator()
    */
   void validate(Entity entity) throws ValidationException;
 
   /**
-   * Validates the given entities
+   * Validates the given entities, using the underlying validator.
    * @param entities the entities to validate
    * @throws ValidationException on finding the first invalid entity
+   * @see #getValidator()
    */
   void validate(Collection<Entity> entities) throws ValidationException;
 
   /**
-   * Returns true if the value associated with the given key is valid, using the {@code validate} method
-   * @param key the key the value is associated with
+   * Returns true if the value associated with the given property is valid, using the {@code validate} method.
+   * @param property the property the value is associated with
    * @return true if the value is valid
    * @see #validate(Property)
    * @see Validator#validate(Entity, EntityDefinition)
    */
-  boolean isValid(Property key);
+  boolean isValid(Property property);
 
   /**
    * @return true if the underlying Entity contains only valid values
