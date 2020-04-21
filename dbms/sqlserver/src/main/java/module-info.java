@@ -6,6 +6,6 @@ module org.jminor.dbms.sqlserver {
 
   exports org.jminor.dbms.sqlserver;
 
-  provides org.jminor.common.db.DatabaseProvider
+  provides org.jminor.common.db.database.DatabaseProvider
           with org.jminor.dbms.sqlserver.SQLServerDatabaseProvider;
 }

@@ -6,6 +6,6 @@ module org.jminor.dbms.postgresql {
 
   exports org.jminor.dbms.postgresql;
 
-  provides org.jminor.common.db.DatabaseProvider
+  provides org.jminor.common.db.database.DatabaseProvider
           with org.jminor.dbms.postgresql.PostgreSQLDatabaseProvider;
 }

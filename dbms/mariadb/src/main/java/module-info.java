@@ -6,6 +6,6 @@ module org.jminor.dbms.mariadb {
 
   exports org.jminor.dbms.mariadb;
 
-  provides org.jminor.common.db.DatabaseProvider
+  provides org.jminor.common.db.database.DatabaseProvider
           with org.jminor.dbms.mariadb.MariaDbDatabaseProvider;
 }

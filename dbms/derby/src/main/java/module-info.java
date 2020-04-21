@@ -6,6 +6,6 @@ module org.jminor.dbms.derby {
 
   exports org.jminor.dbms.derby;
 
-  provides org.jminor.common.db.DatabaseProvider
+  provides org.jminor.common.db.database.DatabaseProvider
           with org.jminor.dbms.derby.DerbyDatabaseProvider;
 }

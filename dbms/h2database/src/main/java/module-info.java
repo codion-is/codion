@@ -6,6 +6,6 @@ module org.jminor.dbms.h2database {
 
   exports org.jminor.dbms.h2database;
 
-  provides org.jminor.common.db.DatabaseProvider
+  provides org.jminor.common.db.database.DatabaseProvider
           with org.jminor.dbms.h2database.H2DatabaseProvider;
 }

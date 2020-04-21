@@ -6,6 +6,6 @@ module org.jminor.dbms.mysql {
 
   exports org.jminor.dbms.mysql;
 
-  provides org.jminor.common.db.DatabaseProvider
+  provides org.jminor.common.db.database.DatabaseProvider
           with org.jminor.dbms.mysql.MySQLDatabaseProvider;
 }

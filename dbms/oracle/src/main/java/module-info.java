@@ -6,6 +6,6 @@ module org.jminor.dbms.oracle {
 
   exports org.jminor.dbms.oracle;
 
-  provides org.jminor.common.db.DatabaseProvider
+  provides org.jminor.common.db.database.DatabaseProvider
           with org.jminor.dbms.oracle.OracleDatabaseProvider;
 }

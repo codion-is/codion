@@ -6,6 +6,6 @@ module org.jminor.dbms.sqlite {
 
   exports org.jminor.dbms.sqlite;
 
-  provides org.jminor.common.db.DatabaseProvider
+  provides org.jminor.common.db.database.DatabaseProvider
           with org.jminor.dbms.sqlite.SQLiteDatabaseProvider;
 }
