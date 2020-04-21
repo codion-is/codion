@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.model.tests;
 
-import org.jminor.common.db.Databases;
 import org.jminor.common.db.Operator;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;

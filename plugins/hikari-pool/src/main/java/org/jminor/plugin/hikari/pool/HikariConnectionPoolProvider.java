@@ -3,7 +3,7 @@
  */
 package org.jminor.plugin.hikari.pool;
 
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.Database;
 import org.jminor.common.db.pool.AbstractConnectionPool;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;

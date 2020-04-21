@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db;
+package org.jminor.common.db.database;
 
 import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;

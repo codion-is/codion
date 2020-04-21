@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.chinook.tutorial;
 
-import org.jminor.common.db.Database;
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.database.Database;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;

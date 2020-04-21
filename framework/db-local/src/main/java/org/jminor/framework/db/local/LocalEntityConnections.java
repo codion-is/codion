@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.connection.DatabaseConnection;
+import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 import org.jminor.framework.domain.Domain;
@@ -43,7 +43,7 @@ public final class LocalEntityConnections {
    * @return a new LocalEntityConnection instance, wrapping the given connection
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case a validation statement is required but could not be created
-   * @see org.jminor.common.db.Database#supportsIsValid()
+   * @see Database#supportsIsValid()
    */
   public static LocalEntityConnection createConnection(final Domain domain, final Database database,
                                                        final Connection connection) throws DatabaseException {

@@ -4,7 +4,7 @@
 package org.jminor.framework.model.tests;
 
 import org.jminor.common.Util;
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;

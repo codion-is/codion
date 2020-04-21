@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.result.ResultPacker;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;

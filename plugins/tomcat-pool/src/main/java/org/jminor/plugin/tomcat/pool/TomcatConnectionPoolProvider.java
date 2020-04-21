@@ -3,9 +3,9 @@
  */
 package org.jminor.plugin.tomcat.pool;
 
-import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.connection.DatabaseConnection;
+import org.jminor.common.db.database.Database;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.pool.AbstractConnectionPool;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;

@@ -4,7 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.DateFormats;
-import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.connection.DatabaseConnection;
 import org.jminor.common.db.operation.AbstractDatabaseProcedure;
 import org.jminor.common.db.operation.DatabaseOperation;
 import org.jminor.common.event.EventListener;

@@ -4,8 +4,8 @@
 package org.jminor.dbms.h2database;
 
 import org.jminor.common.Text;
-import org.jminor.common.db.AbstractDatabase;
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.AbstractDatabase;
+import org.jminor.common.db.database.Database;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

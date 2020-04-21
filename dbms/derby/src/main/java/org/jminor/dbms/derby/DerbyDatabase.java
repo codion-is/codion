@@ -3,8 +3,8 @@
  */
 package org.jminor.dbms.derby;
 
-import org.jminor.common.db.AbstractDatabase;
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.AbstractDatabase;
+import org.jminor.common.db.database.Database;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

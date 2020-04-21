@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.domain.entity;
 
-import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.connection.DatabaseConnection;
+import org.jminor.common.db.database.Database;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.sql.SQLException;

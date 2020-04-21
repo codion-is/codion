@@ -1,6 +1,6 @@
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.item.Items;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;

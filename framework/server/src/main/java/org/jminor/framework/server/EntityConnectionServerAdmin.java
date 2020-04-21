@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.Database;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.remote.server.ClientLog;
 import org.jminor.common.remote.server.RemoteClient;

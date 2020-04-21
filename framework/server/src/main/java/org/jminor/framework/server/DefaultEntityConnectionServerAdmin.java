@@ -6,7 +6,7 @@ package org.jminor.framework.server;
 import org.jminor.common.LoggerProxy;
 import org.jminor.common.Memory;
 import org.jminor.common.Util;
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.Database;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.remote.client.ConnectionRequest;

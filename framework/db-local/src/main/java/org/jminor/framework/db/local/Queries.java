@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.Database;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.WhereCondition;

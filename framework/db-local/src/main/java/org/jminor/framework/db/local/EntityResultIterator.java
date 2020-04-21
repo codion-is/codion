@@ -3,15 +3,15 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.db.ResultIterator;
-import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.result.ResultIterator;
+import org.jminor.common.db.result.ResultPacker;
 import org.jminor.framework.domain.entity.Entity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.jminor.common.db.Databases.closeSilently;
+import static org.jminor.common.db.database.Databases.closeSilently;
 
 final class EntityResultIterator implements ResultIterator<Entity> {
 

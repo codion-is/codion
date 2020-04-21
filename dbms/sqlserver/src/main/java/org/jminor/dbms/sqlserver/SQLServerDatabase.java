@@ -3,7 +3,7 @@
  */
 package org.jminor.dbms.sqlserver;
 
-import org.jminor.common.db.AbstractDatabase;
+import org.jminor.common.db.database.AbstractDatabase;
 
 import java.sql.SQLException;
 import java.util.Properties;
