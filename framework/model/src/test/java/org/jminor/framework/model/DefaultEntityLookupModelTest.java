@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.Databases;
 import org.jminor.common.db.Operator;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;

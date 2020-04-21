@@ -4,8 +4,8 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.db.Database;
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.database.Database;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;

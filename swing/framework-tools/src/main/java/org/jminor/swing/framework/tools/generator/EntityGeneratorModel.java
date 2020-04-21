@@ -4,10 +4,10 @@
 package org.jminor.swing.framework.tools.generator;
 
 import org.jminor.common.Util;
-import org.jminor.common.db.Database;
-import org.jminor.common.db.Databases;
-import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.database.Database;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.result.ResultPacker;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;

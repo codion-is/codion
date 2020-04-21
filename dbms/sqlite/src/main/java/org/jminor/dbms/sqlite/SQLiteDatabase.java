@@ -3,8 +3,8 @@
  */
 package org.jminor.dbms.sqlite;
 
-import org.jminor.common.db.AbstractDatabase;
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.AbstractDatabase;
+import org.jminor.common.db.database.Database;
 
 import java.sql.SQLException;
 import java.util.Properties;

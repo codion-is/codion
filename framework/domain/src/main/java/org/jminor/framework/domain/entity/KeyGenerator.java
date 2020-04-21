@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain.entity;
 
-import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.connection.DatabaseConnection;
 
 import java.sql.SQLException;
 import java.sql.Statement;

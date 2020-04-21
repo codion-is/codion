@@ -5,10 +5,8 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.MethodLogger;
-import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.ResultIterator;
-import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.connection.DatabaseConnection;
+import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.MultipleRecordsFoundException;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -18,6 +16,8 @@ import org.jminor.common.db.exception.UniqueConstraintException;
 import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.common.db.result.ResultIterator;
+import org.jminor.common.db.result.ResultPacker;
 import org.jminor.common.user.User;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
@@ -53,11 +53,11 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.common.db.DatabaseConnections.createConnection;
-import static org.jminor.common.db.Databases.closeSilently;
-import static org.jminor.common.db.Databases.createLogMessage;
 import static org.jminor.common.db.Operator.LIKE;
 import static org.jminor.common.db.Operator.NOT_LIKE;
+import static org.jminor.common.db.connection.DatabaseConnections.createConnection;
+import static org.jminor.common.db.database.Databases.closeSilently;
+import static org.jminor.common.db.database.Databases.createLogMessage;
 import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.db.local.Queries.*;
 import static org.jminor.framework.domain.entity.Entities.*;
@@ -114,7 +114,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param validityCheckTimeout specifies the timeout in seconds when validating this connection
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case a validation statement is required but could not be created
-   * @see org.jminor.common.db.Database#supportsIsValid()
+   * @see Database#supportsIsValid()
    */
   DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection,
                                final int validityCheckTimeout) throws DatabaseException {

@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.TaskScheduler;
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.Database;
 import org.jminor.common.value.Value;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 

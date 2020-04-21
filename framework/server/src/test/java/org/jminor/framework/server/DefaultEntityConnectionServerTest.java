@@ -4,8 +4,8 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.MethodLogger;
-import org.jminor.common.db.Database;
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.database.Database;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.operation.AbstractDatabaseProcedure;
 import org.jminor.common.i18n.Messages;

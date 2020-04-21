@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.user.User;

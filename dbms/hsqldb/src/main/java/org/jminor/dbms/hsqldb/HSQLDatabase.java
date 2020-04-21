@@ -3,7 +3,7 @@
  */
 package org.jminor.dbms.hsqldb;
 
-import org.jminor.common.db.AbstractDatabase;
+import org.jminor.common.db.database.AbstractDatabase;
 
 import java.util.Properties;
 

@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.Database;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.user.User;

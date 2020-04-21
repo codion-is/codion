@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain.property;
 
-import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.result.ResultPacker;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

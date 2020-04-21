@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.model;
 
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.user.Users;

@@ -5919,3 +5919,4 @@
   AbstractFilteredTableModel.addItems(items, index, sortAfterAdding) renamed to addItemsAt(), index parameter moved to front
   AbstractFilteredTableModel, adding items refactored, getting rid of boolean parameters
   EntityTableModel.addEntities() method split into addEntities(), addEntitiesSorted(), addEntitiesAt() and addEntitiesAtSorted(), getting rid of more boolean parameters
+  common.db.connection, database and result packages added

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.manual.store.domain;
 
-import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.connection.DatabaseConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;

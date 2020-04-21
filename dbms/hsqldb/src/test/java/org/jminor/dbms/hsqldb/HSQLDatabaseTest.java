@@ -3,7 +3,7 @@
  */
 package org.jminor.dbms.hsqldb;
 
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.Database;
 
 import org.junit.jupiter.api.Test;
 

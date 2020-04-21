@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.remote.client.Clients;
 import org.jminor.common.remote.server.RemoteClient;

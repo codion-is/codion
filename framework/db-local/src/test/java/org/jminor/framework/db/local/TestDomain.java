@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.connection.DatabaseConnection;
 import org.jminor.common.db.operation.AbstractDatabaseFunction;
 import org.jminor.common.db.operation.AbstractDatabaseProcedure;
 import org.jminor.common.db.reports.AbstractReportWrapper;

@@ -3,8 +3,8 @@
  */
 package org.jminor.dbms.oracle;
 
-import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseProvider;
+import org.jminor.common.db.database.Database;
+import org.jminor.common.db.database.DatabaseProvider;
 
 /**
  * Provides oracle database implementations

@@ -3,7 +3,7 @@
  */
 package org.jminor.dbms.h2database;
 
-import org.jminor.common.db.Database;
+import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
