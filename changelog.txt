@@ -5901,3 +5901,4 @@
   DefaultEntityEditModel.removeForeignKeyValues() now clears all related references, as per todo
   DefaultEntityEditModel, insert, update and delete now start by throwing exceptions is action is not enabled
   DefaultEntityEditModel bug fixed, validation now only uses edit model validator for the underlying entity type, uses the one from the domain model for other types
+  EntityEditObserver removed
