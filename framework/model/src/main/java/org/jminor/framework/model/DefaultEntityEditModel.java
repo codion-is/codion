@@ -454,7 +454,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void validate(final Collection<Entity> entities) throws ValidationException {
     for (final Entity entityToValidate : entities) {
-      validator.validate(entityToValidate, getDomain().getDefinition(entityToValidate.getEntityId()));
+      final EntityDefinition definition = getDomain().getDefinition(entityToValidate.getEntityId());
+      if (definition.getEntityId().equals(getEntityId())) {
+        validator.validate(entityToValidate, definition);
+      }
+      else {
+        definition.getValidator().validate(entityToValidate, definition);
+      }
     }
   }
 
