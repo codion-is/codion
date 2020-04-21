@@ -173,7 +173,13 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {}
     @Override
-    public void addEntities(final List<Entity> entities, final boolean atTop, final boolean sortAfterAdding) {}
+    public void addEntities(final List<Entity> entities) {}
+    @Override
+    public void addEntitiesSorted(final List<Entity> entities) {}
+    @Override
+    public void addEntitiesAt(final int index, final List<Entity> entities) {}
+    @Override
+    public void addEntitiesAtSorted(final int index, final List<Entity> entities) {}
     @Override
     public void replaceEntities(final Collection<Entity> entities) {}
     @Override

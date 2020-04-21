@@ -223,11 +223,24 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void addEntities(final List<Entity> entities, final boolean atTop, final boolean sortAfterAdding) {
-    addAll(atTop ? 0 : getSize(), entities);
-    if (sortAfterAdding) {
-      sort(getSortedList().getComparator());
-    }
+  public void addEntities(final List<Entity> entities) {
+    addEntitiesAt(getSize(), entities);
+  }
+
+  @Override
+  public void addEntitiesSorted(final List<Entity> entities) {
+    addEntitiesAtSorted(getSize(), entities);
+  }
+
+  @Override
+  public void addEntitiesAt(final int index, final List<Entity> entities) {
+    addAll(index, entities);
+  }
+
+  @Override
+  public void addEntitiesAtSorted(final int index, final List<Entity> entities) {
+    addAll(index, entities);
+    sort(getSortedList().getComparator());
   }
 
   @Override
@@ -489,13 +502,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
               entity.getEntityId().equals(getEntityId())).collect(Collectors.toList());
       switch (insertAction) {
         case ADD_TOP:
-          addEntities(entitiesToAdd, true, false);
+          addEntitiesAt(0, entitiesToAdd);
           break;
         case ADD_BOTTOM:
-          addEntities(entitiesToAdd, false, false);
+          addEntities(entitiesToAdd);
           break;
         case ADD_TOP_SORTED:
-          addEntities(entitiesToAdd, true, true);
+          addEntitiesAtSorted(0, entitiesToAdd);
           break;
       }
     }

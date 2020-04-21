@@ -383,7 +383,7 @@ public final class EntityGeneratorModel {
           }
         }
         items.addAll(tables);
-        addItems(new ArrayList<>(items), true, false);
+        addItemsAt(0, new ArrayList<>(items));
       }
       catch (final SQLException e) {
         LOG.error(e.getMessage(), e);

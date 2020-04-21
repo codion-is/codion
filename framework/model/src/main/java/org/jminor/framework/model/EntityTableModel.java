@@ -122,15 +122,39 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void replaceForeignKeyValues(String foreignKeyEntityId, Collection<Entity> foreignKeyValues);
 
   /**
-   * Adds the given entities to this table model, it is recommended to only manually add entities
-   * directly to this table model after they have been inserted into the underlying table
-   * since otherwise they will disappear during the next table model refresh.
+   * Adds the given entities to the bottom of this table model.
+   * It is recommended to only manually add entities directly to this table model after they have
+   * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
    * @param entities the entities to add
-   * @param atTop if true then items are added at the top of the table model, else at the bottom
-   * @param sortAfterAdding if true and sorting is enabled then the model is sorted after adding
+   */
+  void addEntities(List<Entity> entities);
+
+  /**
+   * Adds the given entities to the bottom of this table model and then, if sorting is enabled, sorts this table model.
+   * It is recommended to only manually add entities directly to this table model after they have
+   * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
+   * @param entities the entities to add
+   */
+  void addEntitiesSorted(List<Entity> entities);
+
+  /**
+   * Adds the given entities to the top of this table model.
+   * It is recommended to only manually add entities directly to this table model after they have
+   * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
+   * @param index the index at which to add
+   * @param entities the entities to add
+   */
+  void addEntitiesAt(int index, List<Entity> entities);
+
+  /**
+   * Adds the given entities to the top of this table model and then, if sorting is enabled, sorts this table model.
+   * It is recommended to only manually add entities directly to this table model after they have
+   * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
+   * @param index the index at which to add
+   * @param entities the entities to add
    * @see org.jminor.common.model.table.TableSortModel#isSortingEnabled()
    */
-  void addEntities(List<Entity> entities, boolean atTop, boolean sortAfterAdding);
+  void addEntitiesAtSorted(int index, List<Entity> entities);
 
   /**
    * Replaces the given entities in this table model
@@ -248,7 +272,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    */
   void deleteSelected() throws DatabaseException;
 
-   /**
+  /**
    * Returns a State controlling whether this table model should display all underlying entities
    * when no query condition has been set. Setting this value to 'true' prevents all records from
    * being fetched by accident, when no condition has been set, which is recommended for tables

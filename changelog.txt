@@ -5893,3 +5893,5 @@
   Shared tests in framework.model moved to tests package, due to sealed packages
   framework-model-tests module added, it was either that or a mess on the modular side
   AbstractFilteredTableModel.addItems(items, index, sortAfterAdding) renamed to addItemsAt(), index parameter moved to front
+  AbstractFilteredTableModel, adding items refactored, getting rid of boolean parameters
+  EntityTableModel.addEntities() method split into addEntities(), addEntitiesSorted(), addEntitiesAt() and addEntitiesAtSorted(), getting rid of more boolean parameters
