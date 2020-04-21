@@ -32,13 +32,24 @@ public class FilteredTableTest {
 
   @Test
   public void searchField() throws AWTException {
-    final TestAbstractFilteredTableModel tableModel = createTestModel();
+    final TableColumn column = new TableColumn(0);
+    column.setIdentifier(0);
+    final ColumnConditionModel<List<String>, Integer> filterModel =
+            new DefaultColumnConditionModel<>(0, String.class, "%");
+
+    final TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(
+            new TestAbstractTableSortModel(singletonList(column)), singletonList(filterModel)) {
+      @Override
+      protected void doRefresh() {
+        clear();
+        addItems(asList(singletonList("darri"), singletonList("dac"), singletonList("dansinn"), singletonList("dlabo")));
+      }
+    };
     final FilteredTable<List<String>, Integer, TestAbstractFilteredTableModel> filteredTable =
             new FilteredTable<>(tableModel);
+    tableModel.refresh();
 
     new JScrollPane(filteredTable);
-
-    tableModel.addItems(asList(singletonList("darri"), singletonList("dac"), singletonList("dansinn"), singletonList("dlabo")));
 
     final JTextField searchField = filteredTable.getSearchField();
 
@@ -82,16 +93,6 @@ public class FilteredTableTest {
     filteredTable.findNext(false, "dat");
   }
 
-  public static TestAbstractFilteredTableModel createTestModel() {
-    final TableColumn column = new TableColumn(0);
-    column.setIdentifier(0);
-    final ColumnConditionModel<List<String>, Integer> filterModel =
-            new DefaultColumnConditionModel<>(0, String.class, "%");
-
-    return new TestAbstractFilteredTableModel(
-            new TestAbstractTableSortModel(singletonList(column)), singletonList(filterModel));
-  }
-
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(final AbstractTableSortModel<List<String>, Integer> sortModel,
@@ -102,16 +103,12 @@ public class FilteredTableTest {
     @Override
     protected void doRefresh() {
       clear();
-      addItems(ITEMS, true, false);
+      addItems(ITEMS);
     }
 
     @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
       return getItemAt(rowIndex);
-    }
-
-    public void addItems(final List<List<String>> items) {
-      addItems(items, 0, false);
     }
   }
 

@@ -420,8 +420,23 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final void addEntities(final List<Entity> entities, final boolean atTop, final boolean sortAfterAdding) {
-    addItems(entities, atTop, sortAfterAdding);
+  public void addEntities(final List<Entity> entities) {
+    addEntitiesAt(getVisibleItemCount(), entities);
+  }
+
+  @Override
+  public void addEntitiesSorted(final List<Entity> entities) {
+    addEntitiesAtSorted(getVisibleItemCount(), entities);
+  }
+
+  @Override
+  public void addEntitiesAt(final int index, final List<Entity> entities) {
+    addItemsAt(index, entities);
+  }
+
+  @Override
+  public void addEntitiesAtSorted(final int index, final List<Entity> entities) {
+    addItemsAtSorted(index, entities);
   }
 
   @Override
@@ -583,7 +598,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       LOG.debug("{} refreshing", this);
       final List<Entity> queryResult = performQuery();
       clear();
-      addItems(queryResult, true, true);
+      addEntities(queryResult);
       conditionModel.rememberCondition();
       refreshEvent.onEvent();
     }
@@ -711,13 +726,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
               entity.getEntityId().equals(getEntityId())).collect(Collectors.toList());
       switch (insertAction) {
         case ADD_TOP:
-          addEntities(entitiesToAdd, true, false);
+          addEntitiesAt(0, entitiesToAdd);
           break;
         case ADD_BOTTOM:
-          addEntities(entitiesToAdd, false, false);
+          addEntities(entitiesToAdd);
           break;
         case ADD_TOP_SORTED:
-          addEntities(entitiesToAdd, true, true);
+          addEntitiesAtSorted(0, entitiesToAdd);
           break;
       }
     }

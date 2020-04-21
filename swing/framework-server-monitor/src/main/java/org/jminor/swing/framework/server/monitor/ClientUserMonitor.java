@@ -234,7 +234,7 @@ public final class ClientUserMonitor {
             }
           }
           else {
-            addItems(singletonList(newUserInfo), true, false);
+            addItemsAt(0, singletonList(newUserInfo));
           }
         }
         sort();

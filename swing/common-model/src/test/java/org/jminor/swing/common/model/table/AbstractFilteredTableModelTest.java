@@ -57,7 +57,7 @@ public final class AbstractFilteredTableModelTest {
     @Override
     protected void doRefresh() {
       clear();
-      addItems(ITEMS, true, true);
+      addItemsSorted(ITEMS);
     }
 
     @Override
@@ -66,7 +66,7 @@ public final class AbstractFilteredTableModelTest {
     }
 
     public void addItemsAt(final List<List<String>> items, final int index) {
-      addItems(items, index, false);
+      addItemsAt(index, items);
     }
   }
 
@@ -262,7 +262,7 @@ public final class AbstractFilteredTableModelTest {
       @Override
       protected void doRefresh() {
         clear();
-        addItems(items, false, false);
+        addItems(items);
       }
 
       @Override
@@ -383,7 +383,7 @@ public final class AbstractFilteredTableModelTest {
 
     final List<List<String>> items = new ArrayList<>();
     items.add(NULL);
-    tableModel.addItems(items, true, false);
+    tableModel.addItemsAt(0, items);
     sortModel.setSortingDirective(0, SortingDirective.ASCENDING);
     assertEquals(0, tableModel.indexOf(NULL));
     sortModel.setSortingDirective(0, SortingDirective.DESCENDING);
@@ -391,7 +391,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.refresh();
     items.add(NULL);
-    tableModel.addItems(items, true, false);
+    tableModel.addItemsAt(0, items);
     sortModel.setSortingDirective(0, SortingDirective.ASCENDING);
     assertEquals(0, tableModel.indexOf(NULL));
     sortModel.setSortingDirective(0, SortingDirective.DESCENDING);
@@ -718,7 +718,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("b");
     final int rowCount = tableModel.getRowCount();
-    tableModel.addItems(singletonList(singletonList("x")), true, false);
+    tableModel.addItemsAt(0, singletonList(singletonList("x")));
     assertEquals(rowCount, tableModel.getRowCount());
 
     tableModel.removeFilteringListener(listener);
