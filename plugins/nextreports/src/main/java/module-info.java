@@ -4,5 +4,4 @@ module org.jminor.plugin.nextreports {
   requires org.jminor.common.db;
 
   exports org.jminor.plugin.nextreports.model;
-  exports org.jminor.plugin.nextreports.swing;
 }
