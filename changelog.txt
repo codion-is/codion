@@ -5904,3 +5904,4 @@
   EntityEditObserver removed
   NextReports, JasperReports, some dependency cleanup
 0.14.6
+  ServerConfiguration extracted from DefaultEntityConnectionServer

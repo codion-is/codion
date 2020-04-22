@@ -14,6 +14,7 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.model.DefaultEntityApplicationModel;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
+import org.jminor.framework.server.ServerConfiguration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -139,10 +140,10 @@ public class EntityLoadTestModelTest {
     Server.SERVER_HOST_NAME.set("localhost");
     Server.SERVER_ADMIN_PORT.set(2223);
     Server.SERVER_ADMIN_USER.set("scott:tiger");
-    DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.set(UNIT_TEST_USER.getUsername()
+    ServerConfiguration.SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.set(UNIT_TEST_USER.getUsername()
             + ":" + String.valueOf(UNIT_TEST_USER.getPassword()));
-    DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.swing.framework.tools.loadtest.TestDomain");
+    ServerConfiguration.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
+    ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.swing.framework.tools.loadtest.TestDomain");
     Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
     Server.RMI_SERVER_HOSTNAME.set("localhost");
   }

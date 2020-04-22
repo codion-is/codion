@@ -17,6 +17,7 @@ import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.server.ServerConfiguration;
 import org.jminor.framework.servlet.EntityServletServer;
 
 import org.apache.http.config.RegistryBuilder;
@@ -255,7 +256,7 @@ public final class HttpEntityConnectionTest {
     HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
+    ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
     HttpServer.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
     Server.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
@@ -275,7 +276,7 @@ public final class HttpEntityConnectionTest {
     HttpServer.HTTP_SERVER_PORT.set(null);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(null);
     System.clearProperty("java.security.policy");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
+    ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(null);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
     HttpServer.HTTP_SERVER_KEYSTORE_PATH.set(null);
     Server.TRUSTSTORE.set(null);

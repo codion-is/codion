@@ -16,6 +16,7 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
+import org.jminor.framework.server.ServerConfiguration;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
@@ -394,7 +395,7 @@ public class EntityServletServerTest {
     Server.SERVER_HOST_NAME.set("localhost");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
+    ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
     HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpServer.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
@@ -413,7 +414,7 @@ public class EntityServletServerTest {
     Server.SERVER_HOST_NAME.set(null);
     Server.RMI_SERVER_HOSTNAME.set(null);
     System.clearProperty("java.security.policy");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
+    ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(null);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
     HttpServer.HTTP_SERVER_PORT.set(null);
     HttpServer.HTTP_SERVER_KEYSTORE_PATH.set(null);

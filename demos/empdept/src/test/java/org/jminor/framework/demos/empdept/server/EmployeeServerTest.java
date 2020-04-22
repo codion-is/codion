@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.server;
 
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.remote.client.Clients;
@@ -14,6 +13,7 @@ import org.jminor.common.remote.server.exception.ConnectionValidationException;
 import org.jminor.common.remote.server.exception.LoginException;
 import org.jminor.common.user.Users;
 import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.server.ServerConfiguration;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,14 +29,19 @@ public final class EmployeeServerTest {
 
   public static final int REGISTRY_PORT = 2221;
   public static final int SERVER_PORT = 2223;
+  public static final int SERVER_ADMIN_PORT = 2224;
 
   @Test
   public void test() throws RemoteException, NotBoundException, LoginException,
           ConnectionNotAvailableException, ConnectionValidationException, DatabaseException {
     Server.RMI_SERVER_HOSTNAME.set("localhost");
 
-    final Database database = Databases.getInstance();
-    final EmployeeServer employeeServer = new EmployeeServer(database, SERVER_PORT, SERVER_PORT, REGISTRY_PORT);
+    final ServerConfiguration configuration = new ServerConfiguration()
+            .port(SERVER_PORT).adminPort(SERVER_ADMIN_PORT).registryPort(REGISTRY_PORT)
+            .sslEnabled(false).database(Databases.getInstance()).connectionTimeout(60_000)
+            .adminUser(Users.parseUser("scott:tiger"));
+
+    final EmployeeServer employeeServer = new EmployeeServer(configuration);
 
     final Server<EmployeeService, Remote> remoteServer = Servers.getServer("localhost",
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
