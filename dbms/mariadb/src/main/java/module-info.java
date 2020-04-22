@@ -1,5 +1,5 @@
 /**
- * @provides org.jminor.common.db.Database
+ * @provides org.jminor.common.db.database.Database
  */
 module org.jminor.dbms.mariadb {
   requires transitive org.jminor.common.db;

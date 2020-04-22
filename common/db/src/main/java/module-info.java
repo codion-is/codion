@@ -1,6 +1,6 @@
 /**
  * Classes concerned with database connectivity via JDBC.
- * @uses org.jminor.common.db.DatabaseProvider
+ * @uses org.jminor.common.db.database.DatabaseProvider
  * @uses org.jminor.common.db.pool.ConnectionPoolProvider
  * @provides org.jminor.common.db.pool.ConnectionPoolProvider
  */
