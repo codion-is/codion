@@ -5903,3 +5903,4 @@
   DefaultEntityEditModel bug fixed, validation now only uses edit model validator for the underlying entity type, uses the one from the domain model for other types
   EntityEditObserver removed
   NextReports, JasperReports, some dependency cleanup
+0.14.6
