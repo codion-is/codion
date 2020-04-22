@@ -1,5 +1,5 @@
 /**
- * @provides org.jminor.common.db.Database
+ * @provides org.jminor.common.db.database.DatabaseProvider
  */
 module org.jminor.dbms.hsqldb {
   requires transitive org.jminor.common.db;
