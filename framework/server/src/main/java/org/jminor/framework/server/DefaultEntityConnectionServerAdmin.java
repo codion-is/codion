@@ -24,14 +24,11 @@ import javax.management.NotificationEmitter;
 import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.io.Serializable;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.rmi.RemoteException;
-import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -68,14 +65,14 @@ final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject imple
   /**
    * Instantiates a new DefaultEntityConnectionServerAdmin
    * @param server the server to administer
-   * @param serverAdminPort the port on which to make the server admin available
+   * @param configuration the port on which to make the server admin available
    * @throws RemoteException in case of an exception
-   * @throws NullPointerException in case {@code serverAdminPort} or {@code server} are not specified
+   * @throws NullPointerException in case {@code configuration} or {@code server} are not specified
    */
-  DefaultEntityConnectionServerAdmin(final EntityConnectionServer server, final Integer serverAdminPort) throws RemoteException {
-    super(requireNonNull(serverAdminPort),
-            requireNonNull(server).isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+  DefaultEntityConnectionServerAdmin(final EntityConnectionServer server, final EntityConnectionServerConfiguration configuration) throws RemoteException {
+    super(requireNonNull(configuration).getServerAdminPort(),
+            configuration.getServerConfiguration().getRmiClientSocketFactory(),
+            configuration.getServerConfiguration().getRmiServerSocketFactory());
     this.server = server;
     initializeGarbageCollectionListener();
   }

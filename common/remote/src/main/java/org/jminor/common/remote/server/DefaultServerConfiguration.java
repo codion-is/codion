@@ -3,6 +3,8 @@
  */
 package org.jminor.common.remote.server;
 
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.ArrayList;
@@ -21,10 +23,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private final Collection<String> sharedLoginProxyClassNames = new ArrayList<>();
   private final Collection<String> loginProxyClassNames = new HashSet<>();
   private final Collection<String> connectionValidatorClassNames = new HashSet<>();
+  private boolean sslEnabled = true;
   private String serverName;
   private Supplier<String> serverNameProvider = () -> serverName;
-  private RMIClientSocketFactory rmiClientSocketFactory;
-  private RMIServerSocketFactory rmiServerSocketFactory;
+  private RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
+  private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
 
   DefaultServerConfiguration(final int serverPort) {
     this.serverPort = serverPort;
@@ -57,6 +60,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public Collection<String> getConnectionValidatorClassNames() {
     return connectionValidatorClassNames;
+  }
+
+  @Override
+  public Boolean getSslEnabled() {
+    return sslEnabled;
   }
 
   @Override
@@ -100,14 +108,28 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
+  public ServerConfiguration setSslEnabled(final Boolean sslEnabled) {
+    this.sslEnabled = requireNonNull(sslEnabled);
+    if (sslEnabled) {
+      setRmiClientSocketFactory(new SslRMIClientSocketFactory());
+      setRmiServerSocketFactory(new SslRMIServerSocketFactory());
+    }
+    else {
+      setRmiClientSocketFactory(null);
+      setRmiServerSocketFactory(null);
+    }
+    return this;
+  }
+
+  @Override
   public DefaultServerConfiguration setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
-    this.rmiClientSocketFactory = requireNonNull(rmiClientSocketFactory);
+    this.rmiClientSocketFactory = rmiClientSocketFactory;
     return this;
   }
 
   @Override
   public DefaultServerConfiguration setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
-    this.rmiServerSocketFactory = requireNonNull(rmiServerSocketFactory);
+    this.rmiServerSocketFactory = rmiServerSocketFactory;
     return this;
   }
 }

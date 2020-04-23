@@ -8,8 +8,6 @@ import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.version.Versions;
 
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +26,6 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   private Integer serverAdminPort;
   private Database database;
   private User adminUser;
-  private Boolean sslEnabled = true;
   private Integer connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
   private Boolean clientLoggingEnabled = false;
   private Integer connectionTimeout = ServerConfiguration.DEFAULT_SERVER_CONNECTION_TIMEOUT;
@@ -82,11 +79,6 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   @Override
   public User getAdminUser() {
     return adminUser;
-  }
-
-  @Override
-  public Boolean getSslEnabled() {
-    return sslEnabled;
   }
 
   @Override
@@ -154,16 +146,6 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   @Override
   public DefaultEntityConnectionServerConfiguration setAdminUser(final User adminUser) {
     this.adminUser = requireNonNull(adminUser);
-    return this;
-  }
-
-  @Override
-  public EntityConnectionServerConfiguration setSslEnabled(final Boolean sslEnabled) {
-    this.sslEnabled = requireNonNull(sslEnabled);
-    if (sslEnabled) {
-      serverConfiguration.setRmiClientSocketFactory(new SslRMIClientSocketFactory());
-      serverConfiguration.setRmiServerSocketFactory(new SslRMIServerSocketFactory());
-    }
     return this;
   }
 

@@ -175,6 +175,11 @@ public interface ServerConfiguration {
   Collection<String> getConnectionValidatorClassNames();
 
   /**
+   * @return true if ssl is enabled
+   */
+  Boolean getSslEnabled();
+
+  /**
    * @return the rmi client socket factory to use, null for default
    */
   RMIClientSocketFactory getRmiClientSocketFactory();
@@ -213,6 +218,15 @@ public interface ServerConfiguration {
    * @return this configuration instance
    */
   ServerConfiguration setConnectionValidatorClassNames(Collection<String> connectionValidatorClassNames);
+
+  /**
+   * When set to true this also sets the rmi client/server socket factories.
+   * @param sslEnabled if true then ssl is enabled
+   * @return this configuration instance
+   * @see #setRmiClientSocketFactory(RMIClientSocketFactory)
+   * @see #setRmiServerSocketFactory(RMIServerSocketFactory)
+   */
+  ServerConfiguration setSslEnabled(Boolean sslEnabled);
 
   /**
    * @param rmiClientSocketFactory the rmi client socket factory to use

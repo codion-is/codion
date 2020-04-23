@@ -38,8 +38,9 @@ public final class EmployeeServerTest {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
     final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(SERVER_PORT).setServerName("Employee Server");
+    serverConfiguration.setSslEnabled(false);
     final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(serverConfiguration, REGISTRY_PORT)
-            .setAdminPort(SERVER_ADMIN_PORT).setSslEnabled(false).setDatabase(Databases.getInstance()).setConnectionTimeout(60_000)
+            .setAdminPort(SERVER_ADMIN_PORT).setDatabase(Databases.getInstance()).setConnectionTimeout(60_000)
             .setAdminUser(Users.parseUser("scott:tiger"));
 
     final EmployeeServer employeeServer = new EmployeeServer(configuration);
