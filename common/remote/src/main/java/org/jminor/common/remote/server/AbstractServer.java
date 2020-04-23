@@ -16,16 +16,13 @@ import org.slf4j.LoggerFactory;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.rmi.server.RMIClientSocketFactory;
-import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,10 +41,12 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
+  private static final String FROM_CLASSPATH = "' from classpath";
+
   private final Map<UUID, RemoteClientConnection<T>> connections = new ConcurrentHashMap<>();
-  private final Map<String, LoginProxy> loginProxies = new ConcurrentHashMap<>();
-  private final List<LoginProxy> sharedLoginProxies = Collections.synchronizedList(new LinkedList<>());
-  private final Map<String, ConnectionValidator> connectionValidators = Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, LoginProxy> loginProxies = new HashMap<>();
+  private final List<LoginProxy> sharedLoginProxies = new ArrayList<>();
+  private final Map<String, ConnectionValidator> connectionValidators = new HashMap<>();
   private final ConnectionValidator defaultConnectionValidator = new DefaultConnectionValidator();
 
   private final ServerInfo serverInfo;
@@ -56,26 +55,20 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   /**
    * Instantiates a new AbstractServer
-   * @param serverPort the port on which the server should be exported
-   * @param serverName the name used when exporting this server
+   * @param configuration the configuration
    * @throws RemoteException in case of an exception
    */
-  public AbstractServer(final int serverPort, final String serverName) throws RemoteException {
-    this(serverPort, serverName, null, null);
-  }
-
-  /**
-   * Instantiates a new AbstractServer
-   * @param serverPort the port on which the server should be exported
-   * @param serverName the name used when exporting this server
-   * @param clientSocketFactory the client socket factory to use, null for default
-   * @param serverSocketFactory the server socket factory to use, null for default
-   * @throws RemoteException in case of an exception
-   */
-  public AbstractServer(final int serverPort, final String serverName, final RMIClientSocketFactory clientSocketFactory,
-                        final RMIServerSocketFactory serverSocketFactory) throws RemoteException {
-    super(serverPort, clientSocketFactory, serverSocketFactory);
-    this.serverInfo = new DefaultServerInfo(UUID.randomUUID(), serverName, serverPort, ZonedDateTime.now());
+  public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
+    super(configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
+    this.serverInfo = new DefaultServerInfo(UUID.randomUUID(), configuration.getServerName(), configuration.getServerPort(), ZonedDateTime.now());
+    try {
+      sharedLoginProxies.addAll(loadSharedLoginProxies(configuration.getSharedLoginProxyClassNames()));
+      loginProxies.putAll(loadLoginProxies(configuration.getLoginProxyClassNames()));
+      connectionValidators.putAll(loadConnectionValidators(configuration.getConnectionValidatorClassNames()));
+    }
+    catch (final ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -200,65 +193,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   }
 
   /**
-   * Adds a shared LoginProxy, used for all connection requests.
-   * @param loginProxy the login proxy
-   * @throws IllegalStateException in case the given login proxy has already been added
-   */
-  public final void addSharedLoginProxy(final LoginProxy loginProxy) {
-    synchronized (sharedLoginProxies) {
-      if (sharedLoginProxies.contains(loginProxy)) {
-        throw new IllegalStateException("Login proxy " + loginProxy + " has already been added");
-      }
-      sharedLoginProxies.add(loginProxy);
-    }
-  }
-
-  /**
-   * Sets the LoginProxy for the given client type id, if {@code loginProxy} is null
-   * the current login proxy (if any) is closed and removed.
-   * @param clientTypeId the client type ID with which to associate the given login proxy
-   * @param loginProxy the login proxy
-   * @throws IllegalStateException in case the login proxy has already been set for the given client type
-   */
-  public final void setLoginProxy(final String clientTypeId, final LoginProxy loginProxy) {
-    synchronized (loginProxies) {
-      if (loginProxy == null) {
-        final LoginProxy currentProxy = loginProxies.remove(clientTypeId);
-        if (currentProxy != null) {
-          currentProxy.close();
-        }
-      }
-      else {
-        if (loginProxies.containsKey(clientTypeId)) {
-          throw new IllegalStateException("Login proxy has already been set for: " + clientTypeId);
-        }
-        loginProxies.put(clientTypeId, loginProxy);
-      }
-    }
-  }
-
-  /**
-   * Sets the {@link ConnectionValidator} for the given client type id, if {@code connectionValidator} is null
-   * the current connection validator (if any) is removed.
-   * @param clientTypeId the client type ID with which to associate the given connection validator
-   * @param connectionValidator the connection validator
-   * @throws IllegalStateException in case the connection validator has already been set for the given client type
-   */
-  public final void setConnectionValidator(final String clientTypeId, final ConnectionValidator connectionValidator) {
-    synchronized (connectionValidators) {
-      if (connectionValidator == null) {
-        connectionValidators.remove(clientTypeId);
-      }
-      else {
-        if (connectionValidators.containsKey(clientTypeId)) {
-          throw new IllegalStateException("Connection validator has already been set for: " + clientTypeId);
-        }
-        connectionValidators.put(clientTypeId, connectionValidator);
-      }
-    }
-  }
-
-  /**
    * @return true if this server is in the process of shutting down
    */
   public final boolean isShuttingDown() {
@@ -366,6 +300,59 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     else {
       remoteClient.setClientHost(requestParameterHost);
     }
+  }
+
+  private List<LoginProxy> loadSharedLoginProxies(final Collection<String> sharedLoginProxyClassNames) throws ClassNotFoundException {
+    final List<LoginProxy> loginProxyList = new ArrayList<>();
+    for (final String loginProxyClassName : sharedLoginProxyClassNames) {
+      LOG.info("Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH);
+      final Class loginProxyClass = Class.forName(loginProxyClassName);
+      try {
+        loginProxyList.add((LoginProxy) loginProxyClass.getConstructor().newInstance());
+      }
+      catch (final Exception ex) {
+        LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
+        throw new RuntimeException(ex);
+      }
+    }
+
+    return loginProxyList;
+  }
+
+  private Map<String, LoginProxy> loadLoginProxies(final Collection<String> loginProxyClassNames) throws ClassNotFoundException {
+    final Map<String, LoginProxy> loginProxyMap = new HashMap<>();
+    for (final String loginProxyClassName : loginProxyClassNames) {
+      LOG.info("Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH);
+      final Class loginProxyClass = Class.forName(loginProxyClassName);
+      try {
+        final LoginProxy proxy = (LoginProxy) loginProxyClass.getConstructor().newInstance();
+        loginProxyMap.put(proxy.getClientTypeId(), proxy);
+      }
+      catch (final Exception ex) {
+        LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
+        throw new RuntimeException(ex);
+      }
+    }
+
+    return loginProxyMap;
+  }
+
+  private Map<String, ConnectionValidator> loadConnectionValidators(final Collection<String> connectionValidatorClassNames) throws ClassNotFoundException {
+    final Map<String, ConnectionValidator> connectionValidatorMap = new HashMap<>();
+    for (final String connectionValidatorClassName : connectionValidatorClassNames) {
+      LOG.info("Server loading connection validation class '" + connectionValidatorClassName + FROM_CLASSPATH);
+      final Class connectionValidatorClass = Class.forName(connectionValidatorClassName);
+      try {
+        final ConnectionValidator validator = (ConnectionValidator) connectionValidatorClass.getConstructor().newInstance();
+        connectionValidatorMap.put(validator.getClientTypeId(), validator);
+      }
+      catch (final Exception ex) {
+        LOG.error("Exception while instantiating ConnectionValidator: " + connectionValidatorClassName, ex);
+        throw new RuntimeException(ex);
+      }
+    }
+
+    return connectionValidatorMap;
   }
 
   private static final class RemoteClientConnection<T> {

@@ -4,19 +4,21 @@
 package org.jminor.framework.db.http;
 
 import org.jminor.common.db.Operator;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.remote.server.Server;
-import org.jminor.common.remote.server.http.HttpServer;
+import org.jminor.common.remote.server.ServerConfiguration;
+import org.jminor.common.remote.server.http.HttpServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServerConfiguration;
 import org.jminor.framework.servlet.EntityServletServer;
 
 import org.apache.http.config.RegistryBuilder;
@@ -30,7 +32,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
-import java.rmi.registry.Registry;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
@@ -49,7 +50,7 @@ public final class HttpEntityConnectionTest {
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static DefaultEntityConnectionServer server;
+  private static EntityConnectionServer server;
 
   private final HttpEntityConnection connection = new HttpEntityConnection("TestDomain",
           HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
@@ -60,8 +61,7 @@ public final class HttpEntityConnectionTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    configure();
-    server = DefaultEntityConnectionServer.startServer();
+    server = EntityConnectionServer.startServer(configure());
   }
 
   @AfterAll
@@ -245,44 +245,41 @@ public final class HttpEntityConnectionTest {
     assertThrows(IllegalStateException.class, connection::rollbackTransaction);
   }
 
-  private static void configure() {
-    Server.REGISTRY_PORT.set(2221);
-    Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
-    Server.SERVER_PORT.set(2223);
-    Server.SERVER_ADMIN_PORT.set(2223);
-    Server.SERVER_HOST_NAME.set("localhost");
+  private static EntityConnectionServerConfiguration configure() {
+    ServerConfiguration.SERVER_HOST_NAME.set("localhost");
+    ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
+    ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
     ReportWrapper.REPORT_PATH.set("report/path");
-    HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
+    HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
+    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
-    Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
-    HttpServer.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
-    Server.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
-    Server.TRUSTSTORE_PASSWORD.set("crappypass");
-    HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
-    HttpServer.HTTP_SERVER_SECURE.set(true);
-    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);
+    final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
+    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(serverConfiguration, 2221);
+    configuration.setSslEnabled(false);
+    configuration.setAdminPort(2223);
+    configuration.setDatabase(Databases.getInstance());
+    configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
+    configuration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
+
+    return configuration;
   }
 
   private static void deconfigure() {
-    Server.REGISTRY_PORT.set(Registry.REGISTRY_PORT);
-    Server.SERVER_CONNECTION_SSL_ENABLED.set(true);
-    Server.SERVER_PORT.set(null);
-    Server.SERVER_ADMIN_PORT.set(null);
-    Server.SERVER_HOST_NAME.set(null);
+    ServerConfiguration.SERVER_HOST_NAME.set(null);
+    ServerConfiguration.TRUSTSTORE.set(null);
+    ServerConfiguration.TRUSTSTORE_PASSWORD.set(null);
     ReportWrapper.REPORT_PATH.set(null);
-    HttpServer.HTTP_SERVER_PORT.set(null);
+    HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
+    HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(null);
-    System.clearProperty("java.security.policy");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
-    Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
-    HttpServer.HTTP_SERVER_KEYSTORE_PATH.set(null);
-    Server.TRUSTSTORE.set(null);
-    Server.TRUSTSTORE_PASSWORD.set(null);
-    HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
-    HttpServer.HTTP_SERVER_SECURE.set(false);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
+    System.clearProperty("java.security.policy");
   }
 
   private static BasicHttpClientConnectionManager createConnectionManager() {

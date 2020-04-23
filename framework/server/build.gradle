@@ -43,7 +43,7 @@ dependencies {
     serverRuntime "com.h2database:h2:${h2Version}"
 }
 
-mainClassName = "$moduleName/org.jminor.framework.server.DefaultEntityConnectionServer"
+mainClassName = "$moduleName/org.jminor.framework.server.EntityConnectionServer"
 
 distTar {
     dependsOn(':jminor-demos-empdept:domainJar')

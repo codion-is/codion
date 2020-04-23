@@ -3,23 +3,24 @@
  */
 package org.jminor.swing.framework.tools.loadtest;
 
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.Databases;
 import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
-import org.jminor.common.version.Versions;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.model.DefaultEntityApplicationModel;
-import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
+import org.jminor.framework.server.EntityConnectionServerConfiguration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.rmi.registry.LocateRegistry;
+import java.util.Collections;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,13 +38,10 @@ public class EntityLoadTestModelTest {
 
   @BeforeAll
   public static synchronized void setUp() throws Exception {
-    configure();
-    final Database database = Databases.getInstance();
-    final String serverName = Server.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
-            + "@" + (database.getSid() != null ? database.getSid().toUpperCase() : database.getHost().toUpperCase());
-    DefaultEntityConnectionServer.startServer();
-    server = (Server) LocateRegistry.getRegistry((Server.SERVER_HOST_NAME.get()),
-            Server.REGISTRY_PORT.get()).lookup(serverName);
+    final EntityConnectionServerConfiguration configuration = configure();
+    EntityConnectionServer.startServer(configuration);
+    server = (Server) LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(),
+            configuration.getRegistryPort()).lookup(configuration.getServerConfiguration().getServerName());
     admin = server.getServerAdmin(ADMIN_USER);
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
   }
@@ -133,17 +131,19 @@ public class EntityLoadTestModelTest {
     assertEquals(0, loadTest.getApplicationCount());
   }
 
-  private static void configure() {
-    Server.REGISTRY_PORT.set(2221);
-    Server.SERVER_PORT.set(2223);
-    Server.SERVER_HOST_NAME.set("localhost");
-    Server.SERVER_ADMIN_PORT.set(2223);
-    Server.SERVER_ADMIN_USER.set("scott:tiger");
-    DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.set(UNIT_TEST_USER.getUsername()
-            + ":" + String.valueOf(UNIT_TEST_USER.getPassword()));
-    DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.swing.framework.tools.loadtest.TestDomain");
-    Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
-    Server.RMI_SERVER_HOSTNAME.set("localhost");
+  private static EntityConnectionServerConfiguration configure() {
+    ServerConfiguration.SERVER_HOST_NAME.set("localhost");
+    ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
+    final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
+    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(serverConfiguration, 2221);
+    configuration.setAdminPort(2223);
+    configuration.setAdminUser(Users.parseUser("scott:tiger"));
+    configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
+    configuration.setClientSpecificConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000));
+    configuration.setDomainModelClassNames(Collections.singletonList("org.jminor.swing.framework.tools.loadtest.TestDomain"));
+    configuration.setSslEnabled(false);
+    configuration.setDatabase(Databases.getInstance());
+
+    return configuration;
   }
 }

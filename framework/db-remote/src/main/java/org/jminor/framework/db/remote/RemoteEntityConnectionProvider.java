@@ -6,6 +6,7 @@ package org.jminor.framework.db.remote;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.remote.client.Clients;
 import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.remote.server.Servers;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
@@ -84,7 +85,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   public String getServerHostName() {
     if (serverHostName == null) {
-      serverHostName = Server.SERVER_HOST_NAME.get();
+      serverHostName = ServerConfiguration.SERVER_HOST_NAME.get();
     }
 
     return serverHostName;
@@ -152,13 +153,13 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    this.server = Servers.getServer(getServerHostName(), Server.SERVER_NAME_PREFIX.get(), getRegistryPort(), getServerPort());
+    this.server = Servers.getServer(getServerHostName(), ServerConfiguration.SERVER_NAME_PREFIX.get(), getRegistryPort(), getServerPort());
     this.serverInfo = this.server.getServerInfo();
   }
 
   private Integer getServerPort() {
     if (serverPort == null) {
-      serverPort = Server.SERVER_PORT.get();
+      serverPort = ServerConfiguration.SERVER_PORT.get();
       if (serverPort == null) {
         serverPort = -1;
       }
@@ -169,7 +170,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   private Integer getRegistryPort() {
     if (registryPort == null) {
-      registryPort = Server.REGISTRY_PORT.get();
+      registryPort = ServerConfiguration.REGISTRY_PORT.get();
     }
 
     return registryPort;

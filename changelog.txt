@@ -5928,3 +5928,12 @@
   EntityEditObserver removed
   NextReports, JasperReports, some dependency cleanup
 0.14.6
+  ServerConfiguration extracted from DefaultEntityConnectionServer
+  DefaultEntityConnectionServer renamed EntityConnectionServer
+  HttpServerConfiguration extracted from HttpServer
+  AbstractServer, dynamic adding of login proxies and connection validators removed
+  ServerConfiguration renamed to EntityConnectionServerConfiguration, configuration related refactoring
+  EntityConnectionServerConfiguration uses composition instead of inheritance
+  ServerConfiguration interface extracted
+  EntityConnectionServerConfiguration interface exctracted
+  Configuration constants moved from Server to ServerConfiguration

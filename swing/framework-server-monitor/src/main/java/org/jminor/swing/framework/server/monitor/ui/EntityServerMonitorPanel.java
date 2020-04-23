@@ -7,7 +7,7 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.UserPreferences;
-import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.remote.server.Servers;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.UiManagerDefaults;
@@ -63,7 +63,7 @@ public final class EntityServerMonitorPanel extends JPanel {
    * @throws RemoteException in case of an exception
    */
   public EntityServerMonitorPanel() throws RemoteException {
-    this(new EntityServerMonitor(Server.SERVER_HOST_NAME.get(), Server.REGISTRY_PORT.get()));
+    this(new EntityServerMonitor(ServerConfiguration.SERVER_HOST_NAME.get(), ServerConfiguration.REGISTRY_PORT.get()));
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
             DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(EntityServerMonitorPanel.this)));
   }

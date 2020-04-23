@@ -3,11 +3,9 @@
  */
 package org.jminor.common.remote.server.http;
 
-import org.jminor.common.Configuration;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
-import org.jminor.common.value.PropertyValue;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -32,42 +30,6 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
-  /**
-   * The port on which the http server is made available to clients.<br>
-   * Value type: Integer<br>
-   * Default value: 8080
-   */
-  public static final PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("jminor.server.http.port", 8080);
-
-  /**
-   * Specifies whether https should be used.<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.server.http.secure", true);
-
-  /**
-   * Specifies the keystore to use for securing http connections.<br>
-   * Value type: String<br>
-   * Default value: null
-   */
-  public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("jminor.server.http.keyStore", null);
-
-
-  /**
-   * Specifies the password for the keystore used for securing http connections.<br>
-   * Value type: String<br>
-   * Default value: null
-   */
-  public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("jminor.server.http.keyStorePassword", null);
-
-  /**
-   * Specifies the document root for file serving<br>.
-   * Value type: String<br>
-   * Default value: null
-   */
-  public static final PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("jminor.server.http.documentRoot", null);
-
   private final Event serverStartedEvent = Events.event();
   private final Event serverStoppedEvent = Events.event();
 
@@ -75,31 +37,29 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
   private final int port;
 
   /**
-   * Instantiates a new HttpServer on the given port.
+   * Instantiates a new HttpServer, using system properties.
    */
   public HttpServer() {
-    this(DOCUMENT_ROOT.get(), HTTP_SERVER_PORT.get(), HTTP_SERVER_SECURE.get());
+    this(HttpServerConfiguration.fromSystemProperties());
   }
 
   /**
-   * Instantiates a new HttpServer on the given port.
-   * @param documentRoot the document root, null to disable file serving
-   * @param port the port on which to serve
-   * @param useHttps true if https should be used
+   * Instantiates a new HttpServer.
+   * @param configuration the server configuration.
    */
-  public HttpServer(final String documentRoot, final Integer port, final Boolean useHttps) {
-    super(requireNonNull(port, "port"));
-    this.port = port;
-    if (requireNonNull(useHttps, "useHttps")) {
-      setupSecureConnector();
+  public HttpServer(final HttpServerConfiguration configuration) {
+    super(configuration.getPort());
+    this.port = configuration.getPort();
+    if (configuration.isSecure()) {
+      setupSecureConnector(configuration);
     }
     LOG.info(getClass().getSimpleName() + " created on port: " + port);
     this.handlers = new HandlerList();
     setHandler(handlers);
-    if (!nullOrEmpty(documentRoot)) {
-      LOG.info("HttpServer serving files from: " + documentRoot);
+    if (!nullOrEmpty(configuration.getDocumentRoot())) {
+      LOG.info("HttpServer serving files from: " + configuration.getDocumentRoot());
       final ResourceHandler fileHandler = new ResourceHandler();
-      fileHandler.setResourceBase(documentRoot);
+      fileHandler.setResourceBase(configuration.getDocumentRoot());
       addHandler(fileHandler);
     }
   }
@@ -150,7 +110,7 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
     handlers.addHandler(handler);
   }
 
-  private void setupSecureConnector() {
+  private void setupSecureConnector(final HttpServerConfiguration configuration) {
     final HttpConfiguration httpConfiguration = new HttpConfiguration();
     httpConfiguration.setSecureScheme("https");
     httpConfiguration.setSecurePort(port);
@@ -158,14 +118,12 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
     final HttpConfiguration httpsConfig = new HttpConfiguration(httpConfiguration);
     httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
-    final String keystore = HTTP_SERVER_KEYSTORE_PATH.get();
-    requireNonNull(keystore, HTTP_SERVER_KEYSTORE_PATH.toString());
+    requireNonNull(configuration.getKeystorePath(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.toString());
 
-    final String keystorePassword = HTTP_SERVER_KEYSTORE_PASSWORD.get();
-    requireNonNull(keystorePassword, HTTP_SERVER_KEYSTORE_PASSWORD.toString());
+    requireNonNull(configuration.getKeystorePassword(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.toString());
 
-    final SslContextFactory sslContextFactory = new SslContextFactory(keystore);
-    sslContextFactory.setKeyStorePassword(keystorePassword);
+    final SslContextFactory sslContextFactory = new SslContextFactory(configuration.getKeystorePath());
+    sslContextFactory.setKeyStorePassword(configuration.getKeystorePassword());
 
     final ServerConnector httpsConnector = new ServerConnector(this,
             new SslConnectionFactory(sslContextFactory, "http/1.1"),

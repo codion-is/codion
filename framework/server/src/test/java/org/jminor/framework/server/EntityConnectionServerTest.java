@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.MethodLogger;
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.operation.AbstractDatabaseProcedure;
@@ -14,6 +13,7 @@ import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.ClientLog;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.remote.server.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.server.exception.LoginException;
 import org.jminor.common.remote.server.exception.ServerAuthenticationException;
@@ -40,10 +40,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultEntityConnectionServerTest {
+public class EntityConnectionServerTest {
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -54,13 +55,13 @@ public class DefaultEntityConnectionServerTest {
   private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
+  private static final EntityConnectionServerConfiguration CONFIGURATION = configure();
+
   @BeforeAll
   public static synchronized void setUp() throws Exception {
-    configure();
-    final Database database = Databases.getInstance();
-    final String serverName = DefaultEntityConnectionServer.initializeServerName(database.getHost(), database.getSid());
-    DefaultEntityConnectionServer.startServer();
-    server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(), Server.REGISTRY_PORT.get()).lookup(serverName);
+    final String serverName = CONFIGURATION.getServerConfiguration().getServerName();
+    EntityConnectionServer.startServer(CONFIGURATION);
+    server = (Server) LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -254,7 +255,8 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void remoteEntityConnectionProvider() throws Exception {
-    final RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider) new RemoteEntityConnectionProvider()
+    final RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider)
+            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerConfiguration().getServerPort(), CONFIGURATION.getRegistryPort())
             .setDomainClassName("TestDomain").setClientTypeId("TestClient").setUser(UNIT_TEST_USER);
 
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, provider.getConnectionType());
@@ -265,7 +267,7 @@ public class DefaultEntityConnectionServerTest {
     provider.disconnect();
 
     //not available until a connection has been requested
-    assertEquals(Server.SERVER_HOST_NAME.get(), provider.getServerHostName());
+    assertEquals(ServerConfiguration.SERVER_HOST_NAME.get(), provider.getServerHostName());
 
     final EntityConnection db2 = provider.getConnection();
     assertNotNull(db2);
@@ -320,26 +322,28 @@ public class DefaultEntityConnectionServerTest {
     admin.getUsers();
   }
 
-  private static void configure() {
-    Server.REGISTRY_PORT.set(2221);
-    Server.SERVER_PORT.set(2223);
-    Server.SERVER_HOST_NAME.set("localhost");
-    Server.SERVER_ADMIN_PORT.set(2223);
-    Server.SERVER_ADMIN_USER.set("scott:tiger");
-    Server.SERVER_CONNECTION_SSL_ENABLED.set(true);
-    DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.set(UNIT_TEST_USER.getUsername()
-            + ":" + String.valueOf(UNIT_TEST_USER.getPassword()));
-    DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.framework.server.TestDomain");
-    DefaultEntityConnectionServer.SERVER_LOGIN_PROXY_CLASSES.set("org.jminor.framework.server.TestLoginProxy");
-    DefaultEntityConnectionServer.SERVER_CONNECTION_VALIDATOR_CLASSES.set("org.jminor.framework.server.TestConnectionValidator");
-    DefaultEntityConnectionServer.SERVER_CLIENT_LOGGING_ENABLED.set(true);
-    DefaultEntityConnectionServer.SERIALIZATION_FILTER_WHITELIST.set("src/test/security/serialization-whitelist-test.txt");
-    Server.RMI_SERVER_HOSTNAME.set("localhost");
-    Server.TRUSTSTORE.set("src/main/security/jminor_truststore.jks");
-    Server.TRUSTSTORE_PASSWORD.set("crappypass");
-    Server.KEYSTORE.set("src/main/security/jminor_keystore.jks");
-    Server.KEYSTORE_PASSWORD.set("crappypass");
+  private static DefaultEntityConnectionServerConfiguration configure() {
+    ServerConfiguration.SERVER_HOST_NAME.set("localhost");
+    ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
+    ServerConfiguration.TRUSTSTORE.set("src/main/security/jminor_truststore.jks");
+    ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
+    ServerConfiguration.KEYSTORE.set("src/main/security/jminor_keystore.jks");
+    ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
+    final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
+    serverConfiguration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
+    serverConfiguration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
+    final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(serverConfiguration, 2221);
+    configuration.setAdminPort(2223);
+    configuration.setAdminUser(Users.parseUser("scott:tiger"));
+    configuration.setDatabase(Databases.getInstance());
+    configuration.setSslEnabled(true);
+    configuration.setStartupPoolUsers(singletonList(UNIT_TEST_USER));
+    configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
+    configuration.setDomainModelClassNames(singletonList("org.jminor.framework.server.TestDomain"));
+    configuration.setClientLoggingEnabled(true);
+    configuration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
+
+    return configuration;
   }
 
   public static class EmptyDomain extends Domain {}

@@ -7,12 +7,12 @@ import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.remote.server.RemoteClient;
-import org.jminor.common.user.Users;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.AbstractRemoteEntityConnection;
-import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServerConfiguration;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -21,16 +21,12 @@ import java.util.List;
 
 import static org.jminor.framework.db.condition.Conditions.selectCondition;
 
-public final class EmployeeServer extends DefaultEntityConnectionServer {
+public final class EmployeeServer extends EntityConnectionServer {
 
   private static final Domain DOMAIN = new EmpDept().registerDomain();
 
-  public EmployeeServer(final Database database, final int serverPort, final int serverAdminPort,
-                        final int registryPort) throws RemoteException {
-    super("Employee Server", serverPort, serverAdminPort, registryPort, database,
-            false, -1, null, null,
-            null, null, null, true,
-            600000, null, Users.parseUser("scott:tiger"));
+  public EmployeeServer(final EntityConnectionServerConfiguration configuration) throws RemoteException {
+    super(configuration);
   }
 
   @Override
