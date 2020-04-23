@@ -302,7 +302,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
   }
 
-  private List<LoginProxy> loadSharedLoginProxies(final Collection<String> sharedLoginProxyClassNames) throws ClassNotFoundException {
+  private static List<LoginProxy> loadSharedLoginProxies(final Collection<String> sharedLoginProxyClassNames)
+          throws ClassNotFoundException {
     final List<LoginProxy> loginProxyList = new ArrayList<>();
     for (final String loginProxyClassName : sharedLoginProxyClassNames) {
       LOG.info("Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH);
@@ -319,7 +320,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     return loginProxyList;
   }
 
-  private Map<String, LoginProxy> loadLoginProxies(final Collection<String> loginProxyClassNames) throws ClassNotFoundException {
+  private static Map<String, LoginProxy> loadLoginProxies(final Collection<String> loginProxyClassNames)
+          throws ClassNotFoundException {
     final Map<String, LoginProxy> loginProxyMap = new HashMap<>();
     for (final String loginProxyClassName : loginProxyClassNames) {
       LOG.info("Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH);
@@ -337,7 +339,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     return loginProxyMap;
   }
 
-  private Map<String, ConnectionValidator> loadConnectionValidators(final Collection<String> connectionValidatorClassNames) throws ClassNotFoundException {
+  private static Map<String, ConnectionValidator> loadConnectionValidators(final Collection<String> connectionValidatorClassNames)
+          throws ClassNotFoundException {
     final Map<String, ConnectionValidator> connectionValidatorMap = new HashMap<>();
     for (final String connectionValidatorClassName : connectionValidatorClassNames) {
       LOG.info("Server loading connection validation class '" + connectionValidatorClassName + FROM_CLASSPATH);
