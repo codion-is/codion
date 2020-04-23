@@ -4,8 +4,8 @@
 package org.jminor.swing.framework.tools.loadtest;
 
 import org.jminor.common.db.database.Databases;
-import org.jminor.common.remote.server.AbstractServerConfiguration;
 import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -134,7 +134,7 @@ public class EntityLoadTestModelTest {
   private static EntityConnectionServerConfiguration configure() {
     Server.SERVER_HOST_NAME.set("localhost");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
-    final AbstractServerConfiguration serverConfiguration = new AbstractServerConfiguration(2223);
+    final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
     final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(serverConfiguration, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));

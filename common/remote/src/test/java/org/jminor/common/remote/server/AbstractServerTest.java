@@ -92,7 +92,7 @@ public class AbstractServerTest {
   @Test
   public void testLoginProxy() throws RemoteException, ServerException {
     final String clientTypeId = "clientTypeId";
-    final AbstractServerConfiguration configuration = getConfiguration();
+    final ServerConfiguration configuration = getConfiguration();
     configuration.setLoginProxyClassNames(Collections.singletonList(TestLoginProxy.class.getName()));
     configuration.setSharedLoginProxyClassNames(Collections.singletonList(TestLoginProxy.class.getName()));
     final TestServer server = new TestServer(configuration);
@@ -124,7 +124,7 @@ public class AbstractServerTest {
   @Test
   public void testConnectionValidator() throws RemoteException, ServerException {
     final String clientTypeId = "clientTypeId";
-    final AbstractServerConfiguration configuration = getConfiguration();
+    final ServerConfiguration configuration = getConfiguration();
     configuration.setConnectionValidatorClassNames(Collections.singletonList(TestConnectionValidator.class.getName()));
     final TestServer server = new TestServer(configuration);
     final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
@@ -188,8 +188,8 @@ public class AbstractServerTest {
     RemoteClient getRemoteClient() throws RemoteException;
   }
 
-  private static AbstractServerConfiguration getConfiguration() {
-    return new AbstractServerConfiguration(PORT).setServerName("remoteServerTestServer");
+  private static ServerConfiguration getConfiguration() {
+    return ServerConfiguration.configuration(PORT).setServerName("remoteServerTestServer");
   }
 
   private static final class TestServer extends AbstractServer<ServerTest, Remote> {
@@ -198,7 +198,7 @@ public class AbstractServerTest {
       this(getConfiguration());
     }
 
-    private TestServer(final AbstractServerConfiguration configuration) throws RemoteException {
+    private TestServer(final ServerConfiguration configuration) throws RemoteException {
       super(configuration);
     }
 

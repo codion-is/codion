@@ -58,7 +58,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    * @param configuration the configuration
    * @throws RemoteException in case of an exception
    */
-  public AbstractServer(final AbstractServerConfiguration configuration) throws RemoteException {
+  public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
     super(configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
     this.serverInfo = new DefaultServerInfo(UUID.randomUUID(), configuration.getServerName(), configuration.getServerPort(), ZonedDateTime.now());
     try {

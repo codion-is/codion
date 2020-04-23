@@ -7,8 +7,8 @@ import org.jminor.common.Configuration;
 import org.jminor.common.Text;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.Databases;
-import org.jminor.common.remote.server.AbstractServerConfiguration;
 import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
@@ -108,7 +108,7 @@ public final class EntityConnectionServerConfiguration {
    */
   public static final PropertyValue<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("jminor.server.domain.classes", null);
 
-  private final AbstractServerConfiguration serverConfiguration;
+  private final ServerConfiguration serverConfiguration;
 
   private final int registryPort;
   private Integer serverAdminPort;
@@ -130,7 +130,7 @@ public final class EntityConnectionServerConfiguration {
    * @param serverConfiguration the server configuration
    * @param registryPort the registry port
    */
-  public EntityConnectionServerConfiguration(final AbstractServerConfiguration serverConfiguration, final int registryPort) {
+  public EntityConnectionServerConfiguration(final ServerConfiguration serverConfiguration, final int registryPort) {
     this.serverConfiguration = serverConfiguration;
     this.registryPort = registryPort;
     this.serverConfiguration.setServerNameProvider(() -> {
@@ -148,7 +148,7 @@ public final class EntityConnectionServerConfiguration {
   /**
    * @return the server configuration
    */
-  public AbstractServerConfiguration getServerConfiguration() {
+  public ServerConfiguration getServerConfiguration() {
     return serverConfiguration;
   }
 
@@ -395,7 +395,7 @@ public final class EntityConnectionServerConfiguration {
    * @return the server configuration according to system properties
    */
   public static EntityConnectionServerConfiguration fromSystemProperties() {
-    final AbstractServerConfiguration serverConfiguration = AbstractServerConfiguration.fromSystemProperties();
+    final ServerConfiguration serverConfiguration = ServerConfiguration.fromSystemProperties();
     serverConfiguration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     serverConfiguration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
     final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(serverConfiguration,
