@@ -114,10 +114,10 @@ public interface ServerConfiguration {
 
   /**
    * A comma separated list of auxiliary servers to run alongside this Server<br>
-   * Those must extend {@link Server.AuxiliaryServer}.<br>
+   * Those must extend {@link AuxiliaryServer}.<br>
    * Value type: String<br>
    * Default value: none
-   * @see Server.AuxiliaryServer
+   * @see AuxiliaryServer
    */
   PropertyValue<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("jminor.server.auxiliaryServerClassNames", null);
 

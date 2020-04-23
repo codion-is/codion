@@ -223,16 +223,16 @@ public final class Servers {
 
   private static <T extends Remote, A extends Remote> Server<T, A> getIfReachable(final Server<T, A> server,
                                                                                   final int requestedServerPort) throws RemoteException {
-    final Server.ServerInfo serverInfo = server.getServerInfo();
-    if (requestedServerPort != -1 && serverInfo.getServerPort() != requestedServerPort) {
+    final ServerInformation serverInformation = server.getServerInformation();
+    if (requestedServerPort != -1 && serverInformation.getServerPort() != requestedServerPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
-              new Object[] {serverInfo.getServerName(), serverInfo.getServerPort(), requestedServerPort});
+              new Object[] {serverInformation.getServerName(), serverInformation.getServerPort(), requestedServerPort});
       return null;
     }
     if (server.connectionsAvailable()) {
       return server;
     }
-    LOG.error("No connections available in server \"{}\"", serverInfo.getServerName());
+    LOG.error("No connections available in server \"{}\"", serverInformation.getServerName());
 
     return null;
   }

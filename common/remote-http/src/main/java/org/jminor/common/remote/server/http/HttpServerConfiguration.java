@@ -50,6 +50,7 @@ public interface HttpServerConfiguration {
    * Instantiates a new HttpServerConfiguration.
    * @param port the port on which to serve
    * @param secure true if https should be used
+   * @return a default configuration
    */
   static HttpServerConfiguration configuration(final int port, final boolean secure) {
     return new DefaultHttpServerConfiguration(port, secure);

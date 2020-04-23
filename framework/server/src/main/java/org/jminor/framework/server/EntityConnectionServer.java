@@ -13,6 +13,7 @@ import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.AbstractServer;
+import org.jminor.common.remote.server.AuxiliaryServer;
 import org.jminor.common.remote.server.ClientLog;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.remote.server.SerializationWhitelist;
@@ -162,7 +163,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
       }
 
       final AbstractRemoteEntityConnection connection = createRemoteConnection(connectionPool, getDatabase(), remoteClient,
-              getServerInfo().getServerPort(), isSslEnabled() ? new SslRMIClientSocketFactory() : null,
+              getServerInformation().getServerPort(), isSslEnabled() ? new SslRMIClientSocketFactory() : null,
               isSslEnabled() ? new SslRMIServerSocketFactory() : null);
       connection.setLoggingEnabled(clientLoggingEnabled);
 
@@ -440,8 +441,8 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    * @param registryPort the registry port
    */
   private void bindToRegistry(final int registryPort) throws RemoteException {
-    registry.rebind(getServerInfo().getServerName(), this);
-    final String connectInfo = getServerInfo().getServerName() + " bound to registry on port: " + registryPort;
+    registry.rebind(getServerInformation().getServerName(), this);
+    final String connectInfo = getServerInformation().getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
   }

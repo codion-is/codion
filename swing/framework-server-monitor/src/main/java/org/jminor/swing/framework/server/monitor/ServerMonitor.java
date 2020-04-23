@@ -11,6 +11,7 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerInformation;
 import org.jminor.common.remote.server.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
 import org.jminor.common.value.Value;
@@ -54,7 +55,7 @@ public final class ServerMonitor {
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
   private final String hostName;
-  private final Server.ServerInfo serverInfo;
+  private final ServerInformation serverInformation;
   private final int registryPort;
   private final EntityConnectionServerAdmin server;
   private final User serverAdminUser;
@@ -102,20 +103,20 @@ public final class ServerMonitor {
   /**
    * Instantiates a new {@link ServerMonitor}
    * @param hostName the host name
-   * @param serverInfo the server info
+   * @param serverInformation the server information
    * @param registryPort the registry port
    * @param serverAdminUser the admin user
    * @throws RemoteException in case of an exception
    * @throws ServerAuthenticationException in case the admin user credentials are incorrect
    */
-  public ServerMonitor(final String hostName, final Server.ServerInfo serverInfo, final int registryPort,
+  public ServerMonitor(final String hostName, final ServerInformation serverInformation, final int registryPort,
                        final User serverAdminUser)
           throws RemoteException, ServerAuthenticationException {
     this.hostName = hostName;
-    this.serverInfo = serverInfo;
+    this.serverInformation = serverInformation;
     this.registryPort = registryPort;
     this.serverAdminUser = serverAdminUser;
-    this.server = connectServer(serverInfo.getServerName());
+    this.server = connectServer(serverInformation.getServerName());
     connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
     memoryUsageCollection.addSeries(maxMemorySeries);
     memoryUsageCollection.addSeries(allocatedMemorySeries);
@@ -150,10 +151,10 @@ public final class ServerMonitor {
   }
 
   /**
-   * @return the server into
+   * @return the server information
    */
-  public Server.ServerInfo getServerInfo() {
-    return serverInfo;
+  public ServerInformation getServerInformation() {
+    return serverInformation;
   }
 
   /**
@@ -277,18 +278,18 @@ public final class ServerMonitor {
    */
   public String getEnvironmentInfo() throws RemoteException {
     final StringBuilder contents = new StringBuilder();
-    final String startDate = DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP).format(serverInfo.getStartTime());
+    final String startDate = DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP).format(serverInformation.getStartTime());
     contents.append("Server info:").append("\n");
-    contents.append(serverInfo.getServerName()).append(" (").append(startDate).append(")").append(
-            " port: ").append(serverInfo.getServerPort()).append("\n").append("\n");
+    contents.append(serverInformation.getServerName()).append(" (").append(startDate).append(")").append(
+            " port: ").append(serverInformation.getServerPort()).append("\n").append("\n");
     contents.append("Server version:").append("\n");
-    contents.append(serverInfo.getServerVersion()).append("\n");
+    contents.append(serverInformation.getServerVersion()).append("\n");
     contents.append("Database URL:").append("\n");
     contents.append(server.getDatabaseURL()).append("\n").append("\n");
     contents.append("Server locale: ").append("\n");
-    contents.append(serverInfo.getLocale()).append("\n");
+    contents.append(serverInformation.getLocale()).append("\n");
     contents.append("Server time zone: ").append("\n");
-    contents.append(serverInfo.getTimeZone()).append("\n");
+    contents.append(serverInformation.getTimeZone()).append("\n");
     contents.append("System properties:").append("\n");
     contents.append(server.getSystemProperties());
 

@@ -22,12 +22,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private final Collection<String> loginProxyClassNames = new HashSet<>();
   private final Collection<String> connectionValidatorClassNames = new HashSet<>();
   private String serverName;
-  private Supplier<String> serverNameProvider = new Supplier<String>() {
-    @Override
-    public String get() {
-      return serverName;
-    }
-  };
+  private Supplier<String> serverNameProvider = () -> serverName;
   private RMIClientSocketFactory rmiClientSocketFactory;
   private RMIServerSocketFactory rmiServerSocketFactory;
 

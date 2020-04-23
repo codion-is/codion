@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.UUID;
 
-final class DefaultServerInfo implements Server.ServerInfo, Serializable {
+final class DefaultServerInformation implements ServerInformation, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -23,8 +23,8 @@ final class DefaultServerInfo implements Server.ServerInfo, Serializable {
   private final Locale locale = Locale.getDefault();
   private final Version serverVersion = Versions.getVersion();
 
-  DefaultServerInfo(final UUID serverId, final String serverName, final int serverPort,
-                    final ZonedDateTime serverStartupTime) {
+  DefaultServerInformation(final UUID serverId, final String serverName, final int serverPort,
+                           final ZonedDateTime serverStartupTime) {
     this.serverId = serverId;
     this.serverName = serverName;
     this.serverPort = serverPort;

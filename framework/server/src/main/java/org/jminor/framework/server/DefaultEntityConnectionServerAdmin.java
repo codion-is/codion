@@ -12,7 +12,7 @@ import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.ClientLog;
 import org.jminor.common.remote.server.RemoteClient;
-import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerInformation;
 import org.jminor.common.user.User;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
@@ -81,8 +81,8 @@ final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject imple
   }
 
   @Override
-  public Server.ServerInfo getServerInfo() {
-    return server.getServerInfo();
+  public ServerInformation getServerInfo() {
+    return server.getServerInformation();
   }
 
   @Override
