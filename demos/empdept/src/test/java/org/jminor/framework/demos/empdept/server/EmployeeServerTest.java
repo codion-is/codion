@@ -13,7 +13,7 @@ import org.jminor.common.remote.server.exception.ConnectionValidationException;
 import org.jminor.common.remote.server.exception.LoginException;
 import org.jminor.common.user.Users;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.ServerConfiguration;
+import org.jminor.framework.server.EntityConnectionServerConfiguration;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,9 +36,9 @@ public final class EmployeeServerTest {
           ConnectionNotAvailableException, ConnectionValidationException, DatabaseException {
     Server.RMI_SERVER_HOSTNAME.set("localhost");
 
-    final ServerConfiguration configuration = new ServerConfiguration(SERVER_PORT, REGISTRY_PORT)
-            .adminPort(SERVER_ADMIN_PORT).sslEnabled(false).database(Databases.getInstance()).connectionTimeout(60_000)
-            .adminUser(Users.parseUser("scott:tiger"));
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(SERVER_PORT, REGISTRY_PORT)
+            .setAdminPort(SERVER_ADMIN_PORT).setSslEnabled(false).setDatabase(Databases.getInstance()).setConnectionTimeout(60_000)
+            .setAdminUser(Users.parseUser("scott:tiger"));
 
     final EmployeeServer employeeServer = new EmployeeServer(configuration);
 

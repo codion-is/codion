@@ -7,14 +7,20 @@ import org.jminor.common.Configuration;
 import org.jminor.common.Text;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.Databases;
+import org.jminor.common.remote.server.AbstractServerConfiguration;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
+import org.jminor.common.version.Versions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,9 +33,9 @@ import static org.jminor.common.Util.nullOrEmpty;
 /**
  * Configuration values for a {@link EntityConnectionServer}.
  */
-public final class ServerConfiguration {
+public final class EntityConnectionServerConfiguration extends AbstractServerConfiguration {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ServerConfiguration.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServerConfiguration.class);
 
   private static final int DEFAULT_SERVER_CONNECTION_LIMIT = -1;
 
@@ -102,7 +108,6 @@ public final class ServerConfiguration {
    */
   public static final PropertyValue<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("jminor.server.domain.classes", null);
 
-  private final int serverPort;
   private final int registryPort;
   private Integer serverAdminPort;
   private Database database;
@@ -115,8 +120,6 @@ public final class ServerConfiguration {
   private Boolean serializationFilterDryRun = false;
   private String connectionPoolProvider;
   private final Collection<String> domainModelClassNames = new HashSet<>();
-  private final Collection<String> loginProxyClassNames = new HashSet<>();
-  private final Collection<String> connectionValidatorClassNames = new HashSet<>();
   private final Collection<User> startupPoolUsers = new HashSet<>();
   private final Collection<String> auxiliaryServerClassNames = new HashSet<>();
   private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
@@ -125,16 +128,121 @@ public final class ServerConfiguration {
    * @param serverPort the port on which to make the server accessible
    * @param registryPort the registry port to use
    */
-  public ServerConfiguration(final int serverPort, final int registryPort) {
-    this.serverPort = serverPort;
+  public EntityConnectionServerConfiguration(final int serverPort, final int registryPort) {
+    super(serverPort);
     this.registryPort = registryPort;
+  }
+
+  /**
+   * @return the registry port to use
+   */
+  public int getRegistryPort() {
+    return registryPort;
+  }
+
+  /**
+   * @return the port on which to make the server admin interface accessible
+   */
+  public Integer getServerAdminPort() {
+    return serverAdminPort;
+  }
+
+  /**
+   * @return the Database implementation
+   */
+  public Database getDatabase() {
+    return database;
+  }
+
+  /**
+   * @return the admin user
+   */
+  public User getAdminUser() {
+    return adminUser;
+  }
+
+  /**
+   * @return true if ssl is enabled
+   */
+  public Boolean getSslEnabled() {
+    return sslEnabled;
+  }
+
+  /**
+   * @return the maximum number of concurrent connections, -1 for no limit
+   */
+  public Integer getConnectionLimit() {
+    return connectionLimit;
+  }
+
+  /**
+   * @return true if client logging should be enabled on startup
+   */
+  public Boolean getClientLoggingEnabled() {
+    return clientLoggingEnabled;
+  }
+
+  /**
+   * @return the idle connection timeout
+   */
+  public Integer getConnectionTimeout() {
+    return connectionTimeout;
+  }
+
+  /**
+   * @return the connection pool provider classname
+   */
+  public String getConnectionPoolProvider() {
+    return connectionPoolProvider;
+  }
+
+  /**
+   * @return the serialization whitelist to use, if any
+   */
+  public String getSerializationFilterWhitelist() {
+    return serializationFilterWhitelist;
+  }
+
+  /**
+   * @return true if a serialization filter dry run should be active
+   */
+  public Boolean getSerializationFilterDryRun() {
+    return serializationFilterDryRun;
+  }
+
+  /**
+   * @return the domain model classes to load on startup
+   */
+  public Collection<String> getDomainModelClassNames() {
+    return domainModelClassNames;
+  }
+
+  /**
+   * @return the users for which to initialize connection pools on startup
+   */
+  public Collection<User> getStartupPoolUsers() {
+    return startupPoolUsers;
+  }
+
+  /**
+   * @return the class names of auxiliary servers to run alongside this server
+   */
+  public Collection<String> getAuxiliaryServerClassNames() {
+    return auxiliaryServerClassNames;
+  }
+
+  /**
+   * @return client specific connection timeouts, mapped to clientTypeId
+   */
+  public Map<String, Integer> getClientSpecificConnectionTimeouts() {
+    return clientSpecificConnectionTimeouts;
   }
 
   /**
    * @param adminPort the port on which to make the server admin interface accessible
    * @return this configuration instance
    */
-  public ServerConfiguration adminPort(final Integer adminPort) {
+  public EntityConnectionServerConfiguration setAdminPort(final Integer adminPort) {
     this.serverAdminPort = requireNonNull(adminPort);
     return this;
   }
@@ -143,7 +251,7 @@ public final class ServerConfiguration {
    * @param database the Database implementation
    * @return this configuration instance
    */
-  public ServerConfiguration database(final Database database) {
+  public EntityConnectionServerConfiguration setDatabase(final Database database) {
     this.database = requireNonNull(database);
     return this;
   }
@@ -152,17 +260,24 @@ public final class ServerConfiguration {
    * @param adminUser the admin user
    * @return this configuration instance
    */
-  public ServerConfiguration adminUser(final User adminUser) {
+  public EntityConnectionServerConfiguration setAdminUser(final User adminUser) {
     this.adminUser = requireNonNull(adminUser);
     return this;
   }
 
   /**
+   * When set to true this also sets the rmi client/server socket factories.
    * @param sslEnabled if true then ssl is enabled
    * @return this configuration instance
+   * @see #setRmiClientSocketFactory(RMIClientSocketFactory)
+   * @see #setRmiServerSocketFactory(RMIServerSocketFactory)
    */
-  public ServerConfiguration sslEnabled(final Boolean sslEnabled) {
+  public EntityConnectionServerConfiguration setSslEnabled(final Boolean sslEnabled) {
     this.sslEnabled = requireNonNull(sslEnabled);
+    if (sslEnabled) {
+      setRmiClientSocketFactory(new SslRMIClientSocketFactory());
+      setRmiServerSocketFactory(new SslRMIServerSocketFactory());
+    }
     return this;
   }
 
@@ -170,7 +285,7 @@ public final class ServerConfiguration {
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
    * @return this configuration instance
    */
-  public ServerConfiguration connectionLimit(final Integer connectionLimit) {
+  public EntityConnectionServerConfiguration setConnectionLimit(final Integer connectionLimit) {
     this.connectionLimit = requireNonNull(connectionLimit);
     return this;
   }
@@ -179,7 +294,7 @@ public final class ServerConfiguration {
    * @param clientLoggingEnabled if true then client logging is enabled on startup
    * @return this configuration instance
    */
-  public ServerConfiguration clientLoggingEnabled(final Boolean clientLoggingEnabled) {
+  public EntityConnectionServerConfiguration setClientLoggingEnabled(final Boolean clientLoggingEnabled) {
     this.clientLoggingEnabled = requireNonNull(clientLoggingEnabled);
     return this;
   }
@@ -188,7 +303,7 @@ public final class ServerConfiguration {
    * @param connectionTimeout the idle connection timeout
    * @return this configuration instance
    */
-  public ServerConfiguration connectionTimeout(final Integer connectionTimeout) {
+  public EntityConnectionServerConfiguration setConnectionTimeout(final Integer connectionTimeout) {
     this.connectionTimeout = requireNonNull(connectionTimeout);
     return this;
   }
@@ -197,7 +312,7 @@ public final class ServerConfiguration {
    * @param connectionPoolProvider the connection pool provider classname
    * @return this configuration instance
    */
-  public ServerConfiguration connectionPoolProvider(final String connectionPoolProvider) {
+  public EntityConnectionServerConfiguration setConnectionPoolProvider(final String connectionPoolProvider) {
     this.connectionPoolProvider = requireNonNull(connectionPoolProvider);
     return this;
   }
@@ -206,7 +321,7 @@ public final class ServerConfiguration {
    * @param serializationFilterWhitelist the serialization whitelist
    * @return this configuration instance
    */
-  public ServerConfiguration serializationFilterWhitelist(final String serializationFilterWhitelist) {
+  public EntityConnectionServerConfiguration setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
     this.serializationFilterWhitelist = requireNonNull(serializationFilterWhitelist);
     return this;
   }
@@ -215,7 +330,7 @@ public final class ServerConfiguration {
    * @param serializationFilterDryRun true if serialization filter dry run is active
    * @return this configuration instance
    */
-  public ServerConfiguration serializationFilterDryRun(final Boolean serializationFilterDryRun) {
+  public EntityConnectionServerConfiguration setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
     this.serializationFilterDryRun = requireNonNull(serializationFilterDryRun);
     return this;
   }
@@ -224,26 +339,8 @@ public final class ServerConfiguration {
    * @param domainModelClassNames the domain model classes to load on startup
    * @return this configuration instance
    */
-  public ServerConfiguration domainModelClassNames(final Collection<String> domainModelClassNames) {
+  public EntityConnectionServerConfiguration setDomainModelClassNames(final Collection<String> domainModelClassNames) {
     this.domainModelClassNames.addAll(requireNonNull(domainModelClassNames));
-    return this;
-  }
-
-  /**
-   * @param loginProxyClassNames the login proxy classes to initialize on startup
-   * @return this configuration instance
-   */
-  public ServerConfiguration loginProxyClassNames(final Collection<String> loginProxyClassNames) {
-    this.loginProxyClassNames.addAll(requireNonNull(loginProxyClassNames));
-    return this;
-  }
-
-  /**
-   * @param connectionValidatorClassNames the connection validation classes to initialize on startup
-   * @return this configuration instance
-   */
-  public ServerConfiguration connectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
-    this.connectionValidatorClassNames.addAll(requireNonNull(connectionValidatorClassNames));
     return this;
   }
 
@@ -251,7 +348,7 @@ public final class ServerConfiguration {
    * @param startupPoolUsers the users for which to initialize connection pools on startup
    * @return this configuration instance
    */
-  public ServerConfiguration startupPoolUsers(final Collection<User> startupPoolUsers) {
+  public EntityConnectionServerConfiguration setStartupPoolUsers(final Collection<User> startupPoolUsers) {
     this.startupPoolUsers.addAll(requireNonNull(startupPoolUsers));
     return this;
   }
@@ -260,7 +357,7 @@ public final class ServerConfiguration {
    * @param auxiliaryServerClassNames the class names of auxiliary servers to run alongside this server
    * @return this configuration instance
    */
-  public ServerConfiguration auxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
+  public EntityConnectionServerConfiguration setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
     this.auxiliaryServerClassNames.addAll(requireNonNull(auxiliaryServerClassNames));
     return this;
   }
@@ -269,7 +366,7 @@ public final class ServerConfiguration {
    * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeId
    * @return this configuration instance
    */
-  public ServerConfiguration clientSpecificConnectionTimeouts(final Map<String, Integer> clientSpecificConnectionTimeouts) {
+  public EntityConnectionServerConfiguration setClientSpecificConnectionTimeouts(final Map<String, Integer> clientSpecificConnectionTimeouts) {
     this.clientSpecificConnectionTimeouts.putAll(requireNonNull(clientSpecificConnectionTimeouts));
     return this;
   }
@@ -278,28 +375,28 @@ public final class ServerConfiguration {
    * Parses configuration from system properties.
    * @return the server configuration according to system properties
    */
-  public static ServerConfiguration fromSystemProperties() {
-    final ServerConfiguration configuration = new ServerConfiguration(
+  public static EntityConnectionServerConfiguration fromSystemProperties() {
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(
             requireNonNull(Server.SERVER_PORT.get(), Server.SERVER_PORT.toString()),
             requireNonNull(Server.REGISTRY_PORT.get(), Server.REGISTRY_PORT.toString()));
-    configuration.adminPort(requireNonNull(Server.SERVER_ADMIN_PORT.get(), Server.SERVER_ADMIN_PORT.toString()));
-    configuration.sslEnabled(Server.SERVER_CONNECTION_SSL_ENABLED.get());
-    configuration.connectionLimit(SERVER_CONNECTION_LIMIT.get());
-    configuration.database(Databases.getInstance());
+    configuration.setAdminPort(requireNonNull(Server.SERVER_ADMIN_PORT.get(), Server.SERVER_ADMIN_PORT.toString()));
+    configuration.setSslEnabled(Server.SERVER_CONNECTION_SSL_ENABLED.get());
+    configuration.setConnectionLimit(SERVER_CONNECTION_LIMIT.get());
+    configuration.setDatabase(Databases.getInstance());
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
-      configuration.serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
+      configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
     }
     if (SERIALIZATION_FILTER_DRYRUN.get() != null) {
-      configuration.serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get());
+      configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
     }
-    configuration.domainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
-    configuration.loginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
-    configuration.connectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
-    configuration.startupPoolUsers(getPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())));
-    configuration.auxiliaryServerClassNames(Text.parseCommaSeparatedValues(Server.AUXILIARY_SERVER_CLASS_NAMES.get()));
-    configuration.clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get());
-    configuration.connectionTimeout(Server.SERVER_CONNECTION_TIMEOUT.get());
-    configuration.clientSpecificConnectionTimeouts(getClientTimeoutValues());
+    configuration.setDomainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
+    configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
+    configuration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
+    configuration.setStartupPoolUsers(getPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())));
+    configuration.setAuxiliaryServerClassNames(Text.parseCommaSeparatedValues(Server.AUXILIARY_SERVER_CLASS_NAMES.get()));
+    configuration.setClientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get());
+    configuration.setConnectionTimeout(Server.SERVER_CONNECTION_TIMEOUT.get());
+    configuration.setClientSpecificConnectionTimeouts(getClientTimeouts(Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get())));
     final String adminUserString = Server.SERVER_ADMIN_USER.get();
     final User adminUser = nullOrEmpty(adminUserString) ? null : Users.parseUser(adminUserString);
     if (adminUser == null) {
@@ -307,146 +404,26 @@ public final class ServerConfiguration {
     }
     else {
       LOG.info("Admin user: " + adminUser);
-      configuration.adminUser(adminUser);
+      configuration.setAdminUser(adminUser);
     }
 
     return configuration;
   }
 
-  /**
-   * @return the port on which to make the server accessible
-   */
-  int getServerPort() {
-    return serverPort;
-  }
+  @Override
+  protected String initializeServerName() {
+    if (database == null) {
+      throw new IllegalStateException("Database must be set before initializing server name");
+    }
+    final String databaseHost = database.getHost();
+    final String sid = database.getSid();
 
-  /**
-   * @return the registry port to use
-   */
-  int getRegistryPort() {
-    return registryPort;
-  }
-
-  /**
-   * @return the port on which to make the server admin interface accessible
-   */
-  Integer getServerAdminPort() {
-    return serverAdminPort;
-  }
-
-  /**
-   * @return the Database implementation
-   */
-  Database getDatabase() {
-    return database;
-  }
-
-  /**
-   * @return the admin user
-   */
-  User getAdminUser() {
-    return adminUser;
-  }
-
-  /**
-   * @return true if ssl is enabled
-   */
-  Boolean getSslEnabled() {
-    return sslEnabled;
-  }
-
-  /**
-   * @return the maximum number of concurrent connections, -1 for no limit
-   */
-  Integer getConnectionLimit() {
-    return connectionLimit;
-  }
-
-  /**
-   * @return true if client logging should be enabled on startup
-   */
-  Boolean getClientLoggingEnabled() {
-    return clientLoggingEnabled;
-  }
-
-  /**
-   * @return the idle connection timeout
-   */
-  Integer getConnectionTimeout() {
-    return connectionTimeout;
-  }
-
-  /**
-   * @return the connection pool provider classname
-   */
-  String getConnectionPoolProvider() {
-    return connectionPoolProvider;
-  }
-
-  /**
-   * @return the serialization whitelist to use, if any
-   */
-  String getSerializationFilterWhitelist() {
-    return serializationFilterWhitelist;
-  }
-
-  /**
-   * @return true if a serialization filter dry run should be active
-   */
-  Boolean getSerializationFilterDryRun() {
-    return serializationFilterDryRun;
-  }
-
-  /**
-   * @return the domain model classes to load on startup
-   */
-  Collection<String> getDomainModelClassNames() {
-    return domainModelClassNames;
-  }
-
-  /**
-   * @return the login proxy classes to initialize on startup
-   */
-  Collection<String> getLoginProxyClassNames() {
-    return loginProxyClassNames;
-  }
-
-  /**
-   * @return the connection validation classes to initialize on startup
-   */
-  Collection<String> getConnectionValidatorClassNames() {
-    return connectionValidatorClassNames;
-  }
-
-  /**
-   * @return the users for which to initialize connection pools on startup
-   */
-  Collection<User> getStartupPoolUsers() {
-    return startupPoolUsers;
-  }
-
-  /**
-   * @return the class names of auxiliary servers to run alongside this server
-   */
-  Collection<String> getAuxiliaryServerClassNames() {
-    return auxiliaryServerClassNames;
-  }
-
-  /**
-   * @return client specific connection timeouts, mapped to clientTypeId
-   */
-  Map<String, Integer> getClientSpecificConnectionTimeouts() {
-    return clientSpecificConnectionTimeouts;
+    return Server.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
+            + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 
   private static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
     return poolUsers.stream().map(Users::parseUser).collect(toList());
-  }
-
-  private static Map<String, Integer> getClientTimeoutValues() {
-    final Collection<String> values = Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get());
-
-    return getClientTimeouts(values);
   }
 
   private static Map<String, Integer> getClientTimeouts(final Collection<String> values) {

@@ -14,8 +14,6 @@ import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.AbstractServer;
 import org.jminor.common.remote.server.ClientLog;
-import org.jminor.common.remote.server.ConnectionValidator;
-import org.jminor.common.remote.server.LoginProxy;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.remote.server.SerializationWhitelist;
 import org.jminor.common.remote.server.Server;
@@ -24,8 +22,6 @@ import org.jminor.common.remote.server.exception.ConnectionNotAvailableException
 import org.jminor.common.remote.server.exception.LoginException;
 import org.jminor.common.remote.server.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.common.version.Versions;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -81,7 +77,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
   /** Only Java 8 compatible for now */
   private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = Util.onClasspath("sun.misc.ObjectInputFilter");
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
-  private static final String FROM_CLASSPATH = "' from classpath";
 
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
@@ -100,15 +95,13 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
 
   /**
    * Constructs a new DefaultEntityConnectionServer and binds it to a registry on the given port
-   * @param serverName the serverName
    * @param configuration the server configuration
    * @throws RemoteException in case of a remote exception
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
-  public EntityConnectionServer(final String serverName, final ServerConfiguration configuration) throws RemoteException {
-    super(configuration.getServerPort(), serverName, configuration.getSslEnabled() ? new SslRMIClientSocketFactory() : null,
-            configuration.getSslEnabled() ? new SslRMIServerSocketFactory() : null);
+  public EntityConnectionServer(final EntityConnectionServerConfiguration configuration) throws RemoteException {
+    super(configuration);
     try {
       if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
         if (configuration.getSerializationFilterDryRun()) {
@@ -129,8 +122,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
       setClientTypeConnectionTimeouts(configuration.getClientSpecificConnectionTimeouts());
       loadDomainModels(configuration.getDomainModelClassNames());
       initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getStartupPoolUsers());
-      loadLoginProxies(configuration.getLoginProxyClassNames());
-      loadConnectionValidators(configuration.getConnectionValidatorClassNames());
       setConnectionLimit(configuration.getConnectionLimit());
       startAuxiliaryServers(configuration.getAuxiliaryServerClassNames());
       serverAdmin = new DefaultEntityConnectionServerAdmin(this, configuration.getServerAdminPort());
@@ -477,40 +468,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
     }
   }
 
-  private void loadLoginProxies(final Collection<String> loginProxyClassNames) throws ClassNotFoundException {
-    if (loginProxyClassNames != null) {
-      for (final String loginProxyClassName : loginProxyClassNames) {
-        LOG.info("Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH);
-        final Class loginProxyClass = Class.forName(loginProxyClassName);
-        try {
-          final LoginProxy proxy = (LoginProxy) loginProxyClass.getConstructor().newInstance();
-          setLoginProxy(proxy.getClientTypeId(), proxy);
-        }
-        catch (final Exception ex) {
-          LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
-          throw new RuntimeException(ex);
-        }
-      }
-    }
-  }
-
-  private void loadConnectionValidators(final Collection<String> connectionValidatorClassNames) throws ClassNotFoundException {
-    if (connectionValidatorClassNames != null) {
-      for (final String connectionValidatorClassName : connectionValidatorClassNames) {
-        LOG.info("Server loading connection validation class '" + connectionValidatorClassName + FROM_CLASSPATH);
-        final Class connectionValidatorClass = Class.forName(connectionValidatorClassName);
-        try {
-          final ConnectionValidator validator = (ConnectionValidator) connectionValidatorClass.getConstructor().newInstance();
-          setConnectionValidator(validator.getClientTypeId(), validator);
-        }
-        catch (final Exception ex) {
-          LOG.error("Exception while instantiating ConnectionValidator: " + connectionValidatorClassName, ex);
-          throw new RuntimeException(ex);
-        }
-      }
-    }
-  }
-
   private Runnable getShutdownHook() {
     return () -> {
       try {
@@ -520,11 +477,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
         LOG.error("Exception during shutdown", e);
       }
     };
-  }
-
-  protected static String initializeServerName(final String databaseHost, final String sid) {
-    return Server.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
-            + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 
   /**
@@ -562,7 +514,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
     try {
       if (domainModelClassNames != null) {
         for (final String className : domainModelClassNames) {
-          final String message = "Server loading and registering domain model class '" + className + FROM_CLASSPATH;
+          final String message = "Server loading and registering domain model class '" + className + " from classpath";
           LOG.info(message);
           final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
           domain.registerDomain();
@@ -655,7 +607,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    * @throws RemoteException in case of an exception
    */
   public static synchronized EntityConnectionServer startServer() throws RemoteException {
-    return startServer(ServerConfiguration.fromSystemProperties());
+    return startServer(EntityConnectionServerConfiguration.fromSystemProperties());
   }
 
   /**
@@ -664,12 +616,10 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    * @return the server instance
    * @throws RemoteException in case of an exception
    */
-  public static synchronized EntityConnectionServer startServer(final ServerConfiguration configuration) throws RemoteException {
+  public static synchronized EntityConnectionServer startServer(final EntityConnectionServerConfiguration configuration) throws RemoteException {
     requireNonNull(configuration, "configuration");
     try {
-      final String serverName = initializeServerName(configuration.getDatabase().getHost(), configuration.getDatabase().getSid());
-
-      return new EntityConnectionServer(serverName, configuration);
+      return new EntityConnectionServer(configuration);
     }
     catch (final RuntimeException e) {
       throw e;
@@ -684,15 +634,13 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    * Connects to the server and shuts it down
    */
   static synchronized void shutdownServer() throws ServerAuthenticationException {
-    final int registryPort = Server.REGISTRY_PORT.get();
-    final String sid = Database.DATABASE_SID.get();
-    final String host = Database.DATABASE_HOST.get();
-    final String serverName = initializeServerName(host, sid);
-    final String adminUserString = Server.SERVER_ADMIN_USER.get();
-    if (nullOrEmpty(adminUserString)) {
+    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.fromSystemProperties();
+    final String serverName = configuration.getServerName();
+    final int registryPort = configuration.getRegistryPort();
+    final User adminUser = configuration.getAdminUser();
+    if (adminUser == null) {
       throw new ServerAuthenticationException("No admin user specified");
     }
-    final User adminUser = Users.parseUser(adminUserString);
     Servers.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
     try {
       final Registry registry = Servers.getRegistry(registryPort);

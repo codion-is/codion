@@ -4,6 +4,7 @@
 package org.jminor.framework.db.http;
 
 import org.jminor.common.db.Operator;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.reports.ReportException;
@@ -17,7 +18,7 @@ import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.EntityConnectionServer;
-import org.jminor.framework.server.ServerConfiguration;
+import org.jminor.framework.server.EntityConnectionServerConfiguration;
 import org.jminor.framework.servlet.EntityServletServer;
 
 import org.apache.http.config.RegistryBuilder;
@@ -31,7 +32,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
-import java.rmi.registry.Registry;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
@@ -61,8 +61,7 @@ public final class HttpEntityConnectionTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    configure();
-    server = EntityConnectionServer.startServer();
+    server = EntityConnectionServer.startServer(configure());
   }
 
   @AfterAll
@@ -246,44 +245,40 @@ public final class HttpEntityConnectionTest {
     assertThrows(IllegalStateException.class, connection::rollbackTransaction);
   }
 
-  private static void configure() {
-    Server.REGISTRY_PORT.set(2221);
-    Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
-    Server.SERVER_PORT.set(2223);
-    Server.SERVER_ADMIN_PORT.set(2223);
+  private static EntityConnectionServerConfiguration configure() {
     Server.SERVER_HOST_NAME.set("localhost");
-    ReportWrapper.REPORT_PATH.set("report/path");
-    HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
-    System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
-    Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
     Server.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
     Server.TRUSTSTORE_PASSWORD.set("crappypass");
+    ReportWrapper.REPORT_PATH.set("report/path");
+    HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);
+    HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
+    System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(2223, 2221);
+    configuration.setSslEnabled(false);
+    configuration.setAdminPort(2223);
+    configuration.setDatabase(Databases.getInstance());
+    configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
+    configuration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
+
+    return configuration;
   }
 
   private static void deconfigure() {
-    Server.REGISTRY_PORT.set(Registry.REGISTRY_PORT);
-    Server.SERVER_CONNECTION_SSL_ENABLED.set(true);
-    Server.SERVER_PORT.set(null);
-    Server.SERVER_ADMIN_PORT.set(null);
     Server.SERVER_HOST_NAME.set(null);
-    ReportWrapper.REPORT_PATH.set(null);
-    HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
-    HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(null);
-    System.clearProperty("java.security.policy");
-    ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(null);
-    Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);
     Server.TRUSTSTORE.set(null);
     Server.TRUSTSTORE_PASSWORD.set(null);
+    ReportWrapper.REPORT_PATH.set(null);
+    HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
+    HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(null);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
+    System.clearProperty("java.security.policy");
   }
 
   private static BasicHttpClientConnectionManager createConnectionManager() {

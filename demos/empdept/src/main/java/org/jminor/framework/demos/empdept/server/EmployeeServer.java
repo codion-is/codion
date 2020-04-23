@@ -12,7 +12,7 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.AbstractRemoteEntityConnection;
 import org.jminor.framework.server.EntityConnectionServer;
-import org.jminor.framework.server.ServerConfiguration;
+import org.jminor.framework.server.EntityConnectionServerConfiguration;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -25,8 +25,8 @@ public final class EmployeeServer extends EntityConnectionServer {
 
   private static final Domain DOMAIN = new EmpDept().registerDomain();
 
-  public EmployeeServer(final ServerConfiguration configuration) throws RemoteException {
-    super("Employee Server", configuration);
+  public EmployeeServer(final EntityConnectionServerConfiguration configuration) throws RemoteException {
+    super((EntityConnectionServerConfiguration) configuration.setServerName("Employee Server"));
   }
 
   @Override

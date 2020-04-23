@@ -5,6 +5,7 @@ package org.jminor.framework.servlet;
 
 import org.jminor.common.Serializer;
 import org.jminor.common.db.Operator;
+import org.jminor.common.db.database.Databases;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.http.HttpServerConfiguration;
@@ -16,7 +17,7 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.EntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
-import org.jminor.framework.server.ServerConfiguration;
+import org.jminor.framework.server.EntityConnectionServerConfiguration;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
@@ -49,7 +50,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.rmi.registry.Registry;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
@@ -79,11 +79,11 @@ public class EntityServletServerTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    configure();
+    final EntityConnectionServerConfiguration configuration = configure();
     HOSTNAME = Server.SERVER_HOST_NAME.get();
     TARGET_HOST = new HttpHost(HOSTNAME, WEB_SERVER_PORT_NUMBER, HTTPS);
     SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities";
-    server = EntityConnectionServer.startServer();
+    server = EntityConnectionServer.startServer(configuration);
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -386,41 +386,37 @@ public class EntityServletServerTest {
 
   }
 
-  private static void configure() {
-    Server.REGISTRY_PORT.set(2221);
-    Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
-    Server.SERVER_PORT.set(2223);
-    Server.SERVER_ADMIN_PORT.set(2223);
-    Server.SERVER_ADMIN_USER.set("scott:tiger");
+  private static EntityConnectionServerConfiguration configure() {
     Server.SERVER_HOST_NAME.set("localhost");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
-    System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
-    Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
-    HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
     Server.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
     Server.TRUSTSTORE_PASSWORD.set("crappypass");
+    HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
+    System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(2223, 2221);
+    configuration.setSslEnabled(false);
+    configuration.setAdminPort(2223);
+    configuration.setAdminUser(Users.parseUser("scott:tiger"));
+    configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
+    configuration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
+    configuration.setDatabase(Databases.getInstance());
+
+    return configuration;
   }
 
   private static void deconfigure() {
-    Server.REGISTRY_PORT.set(Registry.REGISTRY_PORT);
-    Server.SERVER_CONNECTION_SSL_ENABLED.set(true);
-    Server.SERVER_PORT.set(null);
-    Server.SERVER_ADMIN_PORT.set(null);
-    Server.SERVER_ADMIN_USER.set(null);
     Server.SERVER_HOST_NAME.set(null);
     Server.RMI_SERVER_HOSTNAME.set(null);
-    System.clearProperty("java.security.policy");
-    ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(null);
+    Server.TRUSTSTORE.set(null);
+    Server.TRUSTSTORE_PASSWORD.set(null);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
     HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);
-    Server.TRUSTSTORE.set(null);
-    Server.TRUSTSTORE_PASSWORD.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
+    System.clearProperty("java.security.policy");
   }
 }

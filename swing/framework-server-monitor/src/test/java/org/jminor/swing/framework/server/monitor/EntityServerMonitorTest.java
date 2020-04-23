@@ -3,24 +3,23 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.Databases;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
-import org.jminor.common.version.Versions;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.server.EntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
-import org.jminor.framework.server.ServerConfiguration;
+import org.jminor.framework.server.EntityConnectionServerConfiguration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.rmi.registry.LocateRegistry;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,15 +32,13 @@ public class EntityServerMonitorTest {
   private static Server<?, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
+  public static final EntityConnectionServerConfiguration CONFIGURATION = configure();
+
   @BeforeAll
   public static synchronized void setUp() throws Exception {
-    configure();
-    final Database database = Databases.getInstance();
-    final String serverName = Server.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
-            + "@" + (database.getSid() != null ? database.getSid().toUpperCase() : database.getHost().toUpperCase());
-    EntityConnectionServer.startServer();
+    EntityConnectionServer.startServer(CONFIGURATION);
     server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(),
-            Server.REGISTRY_PORT.get()).lookup(serverName);
+            CONFIGURATION.getRegistryPort()).lookup(CONFIGURATION.getServerName());
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -54,10 +51,11 @@ public class EntityServerMonitorTest {
   @Test
   public void test() throws Exception {
     final String clientTypeId = EntityServerMonitorTest.class.getName();
-    final EntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider()
+    final EntityConnectionProvider connectionProvider =
+            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
             .setDomainClassName("TestDomain").setClientTypeId(clientTypeId).setUser(UNIT_TEST_USER);
     connectionProvider.getConnection();
-    final EntityServerMonitor model = new EntityServerMonitor("localhost", Server.REGISTRY_PORT.get());
+    final EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.getRegistryPort(), CONFIGURATION.getAdminUser());
     model.refresh();
     final HostMonitor hostMonitor = model.getHostMonitors().iterator().next();
     assertEquals("localhost", hostMonitor.getHostName());
@@ -88,16 +86,17 @@ public class EntityServerMonitorTest {
     serverMonitor.shutdown();
   }
 
-  private static void configure() {
-    Server.REGISTRY_PORT.set(2221);
-    Server.SERVER_PORT.set(2223);
-    Server.SERVER_ADMIN_PORT.set(2223);
-    Server.SERVER_ADMIN_USER.set("scott:tiger");
+  private static EntityConnectionServerConfiguration configure() {
     Server.SERVER_HOST_NAME.set("localhost");
-    ServerConfiguration.SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.set(UNIT_TEST_USER.getUsername()
-            + ":" + String.valueOf(UNIT_TEST_USER.getPassword()));
-    ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
-    Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
     Server.RMI_SERVER_HOSTNAME.set("localhost");
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(2223, 2221);
+    configuration.setAdminPort(2223);
+    configuration.setAdminUser(Users.parseUser("scott:tiger"));
+    configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
+    configuration.setDomainModelClassNames(Collections.singletonList(TestDomain.class.getName()));
+    configuration.setSslEnabled(false);
+    configuration.setDatabase(Databases.getInstance());
+
+    return configuration;
   }
 }
