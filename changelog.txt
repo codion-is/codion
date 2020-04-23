@@ -5911,3 +5911,4 @@
   ServerConfiguration renamed to EntityConnectionServerConfiguration, configuration related refactoring
   EntityConnectionServerConfiguration uses composition instead of inheritance
   ServerConfiguration interface extracted
+  EntityConnectionServerConfiguration interface exctracted

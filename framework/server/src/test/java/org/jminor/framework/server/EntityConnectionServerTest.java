@@ -322,7 +322,7 @@ public class EntityConnectionServerTest {
     admin.getUsers();
   }
 
-  private static EntityConnectionServerConfiguration configure() {
+  private static DefaultEntityConnectionServerConfiguration configure() {
     Server.SERVER_HOST_NAME.set("localhost");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
     Server.TRUSTSTORE.set("src/main/security/jminor_truststore.jks");
@@ -332,7 +332,7 @@ public class EntityConnectionServerTest {
     final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
     serverConfiguration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
     serverConfiguration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
-    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(serverConfiguration, 2221);
+    final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(serverConfiguration, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDatabase(Databases.getInstance());
