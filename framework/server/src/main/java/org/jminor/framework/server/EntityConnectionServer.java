@@ -51,7 +51,6 @@ import java.util.concurrent.TimeUnit;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
@@ -78,7 +77,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
   private final Map<String, Integer> clientTypeConnectionTimeouts = new HashMap<>();
 
   private final EntityConnectionServerAdmin serverAdmin;
-  private final User adminUser;
 
   private int connectionTimeout;
 
@@ -96,7 +94,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
       this.database = requireNonNull(configuration.getDatabase(), "database");
       this.registry = LocateRegistry.createRegistry(configuration.getRegistryPort());
       this.clientLoggingEnabled = configuration.getClientLoggingEnabled();
-      this.adminUser = configuration.getAdminUser();
       setConnectionTimeout(configuration.getConnectionTimeout());
       setClientTypeConnectionTimeouts(configuration.getClientSpecificConnectionTimeouts());
       loadDomainModels(configuration.getDomainModelClassNames());
@@ -117,7 +114,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    */
   @Override
   public final EntityConnectionServerAdmin getServerAdmin(final User user) throws ServerAuthenticationException {
-    validateUserCredentials(user, adminUser);
+    validateUserCredentials(user, configuration.getAdminUser());
 
     return serverAdmin;
   }
@@ -221,9 +218,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    * @param clientTypeConnectionTimeouts the timeout values mapped to each clientTypeId
    */
   final void setClientTypeConnectionTimeouts(final Map<String, Integer> clientTypeConnectionTimeouts) {
-    if (clientTypeConnectionTimeouts != null) {
-      this.clientTypeConnectionTimeouts.putAll(clientTypeConnectionTimeouts);
-    }
+    this.clientTypeConnectionTimeouts.putAll(clientTypeConnectionTimeouts);
   }
 
   /**
@@ -447,13 +442,11 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
 
   private static void loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
     try {
-      if (domainModelClassNames != null) {
-        for (final String className : domainModelClassNames) {
-          final String message = "Server loading and registering domain model class '" + className + " from classpath";
-          LOG.info(message);
-          final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
-          domain.registerDomain();
-        }
+      for (final String className : domainModelClassNames) {
+        final String message = "Server loading and registering domain model class '" + className + " from classpath";
+        LOG.info(message);
+        final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
+        domain.registerDomain();
       }
     }
     catch (final InvocationTargetException ite) {
@@ -468,7 +461,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
 
   private static void initializeConnectionPools(final Database database, final String connectionPoolProviderClassName,
                                                 final Collection<User> startupPoolUsers) throws DatabaseException {
-    if (!nullOrEmpty(startupPoolUsers)) {
+    if (!startupPoolUsers.isEmpty()) {
       final ConnectionPoolProvider poolProvider;
       if (Util.nullOrEmpty(connectionPoolProviderClassName)) {
         poolProvider = ConnectionPoolProvider.getConnectionPoolProvider();
