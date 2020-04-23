@@ -10,5 +10,5 @@ module org.jminor.common.remote {
   exports org.jminor.common.remote.server;
   exports org.jminor.common.remote.server.exception;
 
-  uses org.jminor.common.remote.server.Server.AuxiliaryServer;
+  uses org.jminor.common.remote.server.AuxiliaryServer;
 }
