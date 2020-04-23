@@ -102,7 +102,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    * @return the connection associated with the given client, null if none exists
    */
   public final T getConnection(final UUID clientId) {
-    final RemoteClientConnection<T> clientConnection = connections.get(clientId);
+    final RemoteClientConnection<T> clientConnection = connections.get(requireNonNull(clientId, "clientId"));
     if (clientConnection != null) {
       return clientConnection.getConnection();
     }
@@ -191,7 +191,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       return;
     }
 
-    final RemoteClientConnection<T> remoteClientConnection = connections.remove(clientId);
+    final RemoteClientConnection<T> remoteClientConnection = connections.remove(requireNonNull(clientId, "clientId"));
     if (remoteClientConnection != null) {
       doDisconnect(remoteClientConnection.getConnection());
       final RemoteClient remoteClient = remoteClientConnection.getClient();
