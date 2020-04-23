@@ -22,7 +22,7 @@ import static java.lang.String.valueOf;
 import static org.jminor.common.Conjunction.AND;
 import static org.jminor.common.db.Operator.LIKE;
 import static org.jminor.common.db.pool.ConnectionPoolProvider.getConnectionPoolProvider;
-import static org.jminor.common.remote.server.Servers.remoteClient;
+import static org.jminor.common.remote.server.RemoteClient.remoteClient;
 import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.db.local.LocalEntityConnections.createConnection;
 import static org.jminor.framework.domain.entity.KeyGenerators.automatic;

@@ -5,7 +5,6 @@ package org.jminor.framework.server;
 
 import org.jminor.common.remote.server.LoginProxy;
 import org.jminor.common.remote.server.RemoteClient;
-import org.jminor.common.remote.server.Servers;
 import org.jminor.common.remote.server.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
@@ -34,7 +33,7 @@ public final class TestLoginProxy implements LoginProxy {
   public RemoteClient doLogin(final RemoteClient remoteClient) throws ServerAuthenticationException {
     authenticateUser(remoteClient.getUser());
 
-    final RemoteClient authenticatedClient = Servers.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
+    final RemoteClient authenticatedClient = RemoteClient.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
     authenticatedClient.setClientHost(remoteClient.getClientHost());
 
     return authenticatedClient;

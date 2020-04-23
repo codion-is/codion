@@ -29,4 +29,16 @@ public interface ClientLog extends Serializable {
    * @return the log creation date
    */
   LocalDateTime getConnectionCreationDate();
+
+  /**
+   * Instantiates a new ClientLog instance.
+   * @param clientId the ID of the client this log represents
+   * @param connectionCreationDate the date and time this client connection was created
+   * @param entries the log entries
+   * @return a new ClientLog instance
+   */
+  static ClientLog clientLog(final UUID clientId, final LocalDateTime connectionCreationDate,
+                             final List<MethodLogger.Entry> entries) {
+    return new DefaultClientLog(clientId, connectionCreationDate, entries);
+  }
 }
