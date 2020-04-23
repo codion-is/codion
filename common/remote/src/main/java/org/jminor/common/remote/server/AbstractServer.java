@@ -212,13 +212,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   }
 
   /**
-   * @return true if this server is in the process of shutting down
-   */
-  public final boolean isShuttingDown() {
-    return shuttingDown;
-  }
-
-  /**
    * Shuts down this server.
    */
   public final void shutdown() {
