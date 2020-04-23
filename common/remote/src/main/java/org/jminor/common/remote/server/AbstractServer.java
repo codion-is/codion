@@ -3,7 +3,6 @@
  */
 package org.jminor.common.remote.server;
 
-import org.jminor.common.Util;
 import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.server.exception.ConnectionValidationException;
@@ -47,8 +46,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-  /** Only Java 8 compatible for now */
-  private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = Util.onClasspath("sun.misc.ObjectInputFilter");
   private static final String FROM_CLASSPATH = "' from classpath";
 
   private final Map<UUID, RemoteClientConnection<T>> connections = new ConcurrentHashMap<>();
@@ -72,13 +69,11 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(), configuration.getServerPort(), ZonedDateTime.now());
     startAuxiliaryServers(configuration.getAuxiliaryServerClassNames());
-    if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-      if (configuration.getSerializationFilterDryRun()) {
-        SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
-      }
-      else {
-        SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
-      }
+    if (configuration.getSerializationFilterDryRun()) {
+      SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
+    }
+    else {
+      SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
     }
     try {
       sharedLoginProxies.addAll(loadSharedLoginProxies(configuration.getSharedLoginProxyClassNames()));
@@ -236,7 +231,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     sharedLoginProxies.forEach(AbstractServer::closeLoginProxy);
     loginProxies.values().forEach(AbstractServer::closeLoginProxy);
     auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
-    if (OBJECT_INPUT_FILTER_ON_CLASSPATH && isSerializationDryRunActive()) {
+    if (isSerializationDryRunActive()) {
       writeDryRunWhitelist();
     }
 
