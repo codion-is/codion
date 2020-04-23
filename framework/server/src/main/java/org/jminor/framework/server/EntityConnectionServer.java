@@ -82,7 +82,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
   private final Registry registry;
-  private final boolean sslEnabled;
   private final boolean clientLoggingEnabled;
   private final Map<String, Integer> clientTypeConnectionTimeouts = new HashMap<>();
   private final Thread shutdownHook;
@@ -113,7 +112,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
       Runtime.getRuntime().addShutdownHook(this.shutdownHook);
       this.database = requireNonNull(configuration.getDatabase(), "database");
       this.registry = LocateRegistry.createRegistry(configuration.getRegistryPort());
-      this.sslEnabled = configuration.getSslEnabled();
       this.clientLoggingEnabled = configuration.getClientLoggingEnabled();
       this.adminUser = configuration.getAdminUser();
       setConnectionTimeout(configuration.getConnectionTimeout());
@@ -122,7 +120,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
       initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getStartupPoolUsers());
       setConnectionLimit(configuration.getConnectionLimit());
       startAuxiliaryServers(configuration.getAuxiliaryServerClassNames());
-      serverAdmin = new DefaultEntityConnectionServerAdmin(this, configuration.getServerAdminPort());
+      serverAdmin = new DefaultEntityConnectionServerAdmin(this, configuration);
       bindToRegistry(configuration.getRegistryPort());
     }
     catch (final Throwable t) {
@@ -359,13 +357,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
     if (connection != null) {
       connection.setLoggingEnabled(loggingEnabled);
     }
-  }
-
-  /**
-   * @return true if connections to this server are ssl enabled
-   */
-  final boolean isSslEnabled() {
-    return sslEnabled;
   }
 
   /**

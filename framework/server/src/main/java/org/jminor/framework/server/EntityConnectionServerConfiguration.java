@@ -129,11 +129,6 @@ public interface EntityConnectionServerConfiguration {
   User getAdminUser();
 
   /**
-   * @return true if ssl is enabled
-   */
-  Boolean getSslEnabled();
-
-  /**
    * @return the maximum number of concurrent connections, -1 for no limit
    */
   Integer getConnectionLimit();
@@ -200,15 +195,6 @@ public interface EntityConnectionServerConfiguration {
    * @return this configuration instance
    */
   EntityConnectionServerConfiguration setAdminUser(User adminUser);
-
-  /**
-   * When set to true this also sets the rmi client/server socket factories.
-   * @param sslEnabled if true then ssl is enabled
-   * @return this configuration instance
-   * @see ServerConfiguration#setRmiClientSocketFactory(java.rmi.server.RMIClientSocketFactory)
-   * @see ServerConfiguration#setRmiServerSocketFactory(java.rmi.server.RMIServerSocketFactory)
-   */
-  EntityConnectionServerConfiguration setSslEnabled(Boolean sslEnabled);
 
   /**
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
@@ -287,10 +273,10 @@ public interface EntityConnectionServerConfiguration {
     final ServerConfiguration serverConfiguration = ServerConfiguration.fromSystemProperties();
     serverConfiguration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     serverConfiguration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
+    serverConfiguration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
     final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(serverConfiguration,
             requireNonNull(ServerConfiguration.REGISTRY_PORT.get(), ServerConfiguration.REGISTRY_PORT.toString()));
     configuration.setAdminPort(requireNonNull(ServerConfiguration.SERVER_ADMIN_PORT.get(), ServerConfiguration.SERVER_ADMIN_PORT.toString()));
-    configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setConnectionLimit(SERVER_CONNECTION_LIMIT.get());
     configuration.setDatabase(Databases.getInstance());
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {

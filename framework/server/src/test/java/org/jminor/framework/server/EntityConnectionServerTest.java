@@ -331,11 +331,11 @@ public class EntityConnectionServerTest {
     final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
     serverConfiguration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
     serverConfiguration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
+    serverConfiguration.setSslEnabled(true);
     final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(serverConfiguration, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDatabase(Databases.getInstance());
-    configuration.setSslEnabled(true);
     configuration.setStartupPoolUsers(singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
     configuration.setDomainModelClassNames(singletonList("org.jminor.framework.server.TestDomain"));

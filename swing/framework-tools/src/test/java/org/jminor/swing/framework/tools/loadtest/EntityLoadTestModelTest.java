@@ -135,13 +135,13 @@ public class EntityLoadTestModelTest {
     ServerConfiguration.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
+    serverConfiguration.setSslEnabled(false);
     final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(serverConfiguration, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000));
     configuration.setDomainModelClassNames(Collections.singletonList("org.jminor.swing.framework.tools.loadtest.TestDomain"));
-    configuration.setSslEnabled(false);
     configuration.setDatabase(Databases.getInstance());
 
     return configuration;

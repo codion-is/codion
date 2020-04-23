@@ -5943,3 +5943,4 @@
   Constants moved from Server to ServerConfiguration
   Servers.remoteClient() moved to RemoteClient, clientLog() moved to ClientLog, resolveTruststoreFromClasspath() to Clients
   Clients.connectionRequest() moved to ConnectionRequest
+  sslEnabled along with socket factories moved from EntityConnectionServerConfiguration to ServerConfiguration

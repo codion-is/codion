@@ -30,6 +30,7 @@ public class ServersTest {
   public void setUp() throws RemoteException {
     Servers.initializeRegistry(Registry.REGISTRY_PORT);
     final ServerConfiguration configuration = ServerConfiguration.configuration(12345).setServerName(SERVER_NAME);
+    configuration.setSslEnabled(false);
     server = new AbstractServer(configuration) {
       @Override
       protected Remote doConnect(final RemoteClient remoteClient) {return null;}
