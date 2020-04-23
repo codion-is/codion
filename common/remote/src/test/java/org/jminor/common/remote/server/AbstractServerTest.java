@@ -3,7 +3,6 @@
  */
 package org.jminor.common.remote.server;
 
-import org.jminor.common.remote.client.Clients;
 import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.server.exception.ConnectionValidationException;
@@ -33,9 +32,9 @@ public class AbstractServerTest {
   public void testConnectionCount() throws RemoteException, ServerException {
     final TestServer server = new TestServer();
     final String clientTypeId = "clientTypeId";
-    final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
-    final ConnectionRequest connectionRequest2 = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
-    final ConnectionRequest connectionRequest3 = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
+    final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
+    final ConnectionRequest connectionRequest2 = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
+    final ConnectionRequest connectionRequest3 = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
     server.connect(connectionRequest);
     assertEquals(1, server.getConnectionCount());
     server.connect(connectionRequest2);
@@ -58,8 +57,8 @@ public class AbstractServerTest {
   public void testConnectionLimitReached() throws RemoteException, ServerException {
     final TestServer server = new TestServer();
     final String clientTypeId = "clientTypeId";
-    final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
-    final ConnectionRequest connectionRequest2 = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
+    final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
+    final ConnectionRequest connectionRequest2 = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
     server.setConnectionLimit(1);
     assertEquals(1, server.getConnectionLimit());
     server.connect(connectionRequest);
@@ -70,7 +69,7 @@ public class AbstractServerTest {
   public void testConnect() throws RemoteException, ServerException {
     final TestServer server = new TestServer();
     final String clientTypeId = "clientTypeId";
-    final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
+    final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
     final ServerTest connection = server.connect(connectionRequest);
     assertNotNull(connection);
     final ServerTest connection2 = server.connect(connectionRequest);
@@ -96,7 +95,7 @@ public class AbstractServerTest {
     configuration.setLoginProxyClassNames(Collections.singletonList(TestLoginProxy.class.getName()));
     configuration.setSharedLoginProxyClassNames(Collections.singletonList(TestLoginProxy.class.getName()));
     final TestServer server = new TestServer(configuration);
-    final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
+    final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
     ServerTest connection = server.connect(connectionRequest);
     assertNotNull(connection);
     assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
@@ -127,7 +126,7 @@ public class AbstractServerTest {
     final ServerConfiguration configuration = getConfiguration();
     configuration.setConnectionValidatorClassNames(Collections.singletonList(TestConnectionValidator.class.getName()));
     final TestServer server = new TestServer(configuration);
-    final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
+    final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
     final ServerTest connection = server.connect(connectionRequest);
     assertNotNull(connection);
     assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
@@ -144,8 +143,8 @@ public class AbstractServerTest {
     final String clientTypeId = "clientTypeId";
 
     final UUID connectionId = UUID.randomUUID();
-    final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, connectionId, clientTypeId);
-    final ConnectionRequest connectionRequest2 = Clients.connectionRequest(
+    final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, connectionId, clientTypeId);
+    final ConnectionRequest connectionRequest2 = ConnectionRequest.connectionRequest(
             Users.user(UNIT_TEST_USER.getUsername(), "test".toCharArray()), connectionId, clientTypeId);
 
     server.connect(connectionRequest);
@@ -160,8 +159,8 @@ public class AbstractServerTest {
     final String clientTypeId = "clientTypeId";
 
     final UUID connectionId = UUID.randomUUID();
-    final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, connectionId, clientTypeId);
-    final ConnectionRequest connectionRequest2 = Clients.connectionRequest(
+    final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, connectionId, clientTypeId);
+    final ConnectionRequest connectionRequest2 = ConnectionRequest.connectionRequest(
             Users.user("test", UNIT_TEST_USER.getPassword()), connectionId, clientTypeId);
 
     server.connect(connectionRequest);

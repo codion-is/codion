@@ -5,9 +5,6 @@ package org.jminor.common.remote.client;
 
 import org.jminor.common.Util;
 import org.jminor.common.remote.server.ServerConfiguration;
-import org.jminor.common.user.User;
-import org.jminor.common.version.Version;
-import org.jminor.common.version.Versions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.Map;
-import java.util.UUID;
 
 import static org.jminor.common.Util.nullOrEmpty;
 
@@ -32,44 +27,6 @@ public final class Clients {
   private static final int INPUT_BUFFER_SIZE = 8192;
 
   private Clients() {}
-
-  /**
-   * Instantiates a ConnectionRequest
-   * @param user the user
-   * @param clientId the client id
-   * @param clientTypeId the client type id
-   * @return a ConnectionRequest
-   */
-  public static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId) {
-    return connectionRequest(user, clientId, clientTypeId, null);
-  }
-
-  /**
-   * Instantiates a ConnectionRequest
-   * @param user the user
-   * @param clientId the client id
-   * @param clientTypeId the client type id
-   * @param parameters misc. parameters, values must implement {@link java.io.Serializable}
-   * @return a ConnectionRequest
-   */
-  public static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId,
-                                                    final Map<String, Object> parameters) {
-    return connectionRequest(user, clientId, clientTypeId, null, parameters);
-  }
-
-  /**
-   * Instantiates a ConnectionRequest
-   * @param user the user
-   * @param clientId the client id
-   * @param clientTypeId the client type id
-   * @param clientVersion the client application version
-   * @param parameters misc. parameters, values must implement {@link java.io.Serializable}
-   * @return a ConnectionRequest
-   */
-  public static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId,
-                                                    final Version clientVersion, final Map<String, Object> parameters) {
-    return new DefaultConnectionRequest(user, clientId, clientTypeId, clientVersion, Versions.getVersion(), parameters);
-  }
 
   /**
    * Reads the trust store specified by "javax.net.ssl.trustStore" from the classpath, copies it

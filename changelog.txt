@@ -5918,3 +5918,4 @@
   Server.AuxiliaryServer moved up to package level
   Constants moved from Server to ServerConfiguration
   Servers.remoteClient() moved to RemoteClient, clientLog() moved to ClientLog, resolveTruststoreFromClasspath() to Clients
+  Clients.connectionRequest() moved to ConnectionRequest

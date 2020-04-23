@@ -8,7 +8,6 @@ import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.operation.AbstractDatabaseProcedure;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.remote.client.Clients;
 import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.ClientLog;
 import org.jminor.common.remote.server.RemoteClient;
@@ -77,7 +76,7 @@ public class EntityConnectionServerTest {
     //which registeres the domain received from the server
     //thus overwriting the domain containing the custom conditions
     new TestDomain().registerDomain();
-    final ConnectionRequest connectionRequestOne = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
+    final ConnectionRequest connectionRequestOne = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
@@ -91,7 +90,7 @@ public class EntityConnectionServerTest {
 
   @Test
   public void remoteDomain() throws Exception {
-    final ConnectionRequest connectionRequestOne = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
+    final ConnectionRequest connectionRequestOne = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
     final Domain domain = connection.getDomain();
@@ -106,7 +105,7 @@ public class EntityConnectionServerTest {
 
   @Test
   public void testWrongPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.connect(Clients.connectionRequest(Users.user(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()),
+    assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.connectionRequest(Users.user(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()),
             UUID.randomUUID(), getClass().getSimpleName(), CONNECTION_PARAMS)));
   }
 
@@ -137,7 +136,7 @@ public class EntityConnectionServerTest {
 
   @Test
   public void test() throws Exception {
-    final ConnectionRequest connectionRequestOne = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
+    final ConnectionRequest connectionRequestOne = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
             "ClientTypeID", CONNECTION_PARAMS);
 
     final RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
@@ -149,19 +148,19 @@ public class EntityConnectionServerTest {
     assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER.getUsername()));
 
     try {
-      server.connect(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID"));
+      server.connect(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID"));
       fail();
     }
     catch (final LoginException ignored) {}
 
     try {
-      server.connect(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
+      server.connect(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
               Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, new EmptyDomain().getDomainId())));
       fail();
     }
     catch (final LoginException ignored) {}
 
-    final ConnectionRequest connectionRequestTwo = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
+    final ConnectionRequest connectionRequestTwo = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
     admin.setLoggingEnabled(connectionRequestTwo.getClientId(), true);
@@ -227,11 +226,11 @@ public class EntityConnectionServerTest {
     assertEquals(3, admin.getConnectionLimit());
     final String testClientTypeId = "TestLoginProxy";
     final User john = Users.user("john", "hello".toCharArray());
-    final ConnectionRequest connectionRequestJohn = Clients.connectionRequest(john,
+    final ConnectionRequest connectionRequestJohn = ConnectionRequest.connectionRequest(john,
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
-    final ConnectionRequest connectionRequestHelen = Clients.connectionRequest(Users.user("helen", "juno".toCharArray()),
+    final ConnectionRequest connectionRequestHelen = ConnectionRequest.connectionRequest(Users.user("helen", "juno".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
-    final ConnectionRequest connectionRequestInvalid = Clients.connectionRequest(Users.user("foo", "bar".toCharArray()),
+    final ConnectionRequest connectionRequestInvalid = ConnectionRequest.connectionRequest(Users.user("foo", "bar".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
     server.connect(connectionRequestJohn);
     final RemoteClient clientJohn = admin.getClients(john).iterator().next();

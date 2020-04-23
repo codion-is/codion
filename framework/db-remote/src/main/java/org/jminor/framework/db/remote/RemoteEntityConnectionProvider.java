@@ -5,6 +5,7 @@ package org.jminor.framework.db.remote;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.remote.client.Clients;
+import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.remote.server.ServerInformation;
@@ -109,7 +110,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       LOG.debug("Initializing connection for {}", getUser());
       return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
               new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
-                      getServer().connect(Clients.connectionRequest(getUser(), getClientId(), getClientTypeId(),
+                      getServer().connect(ConnectionRequest.connectionRequest(getUser(), getClientId(), getClientTypeId(),
                               getClientVersion(), Collections.singletonMap(REMOTE_CLIENT_DOMAIN_ID,
                                       getDomainId(getDomainClassName()))))));
     }
