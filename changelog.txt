@@ -5916,3 +5916,4 @@
   HttpServerConfiguration interface extracted
   Server.ServerInfo moved up to package level, renamed ServerInformation
   Server.AuxiliaryServer moved up to package level
+  Constants moved from Server to ServerConfiguration
