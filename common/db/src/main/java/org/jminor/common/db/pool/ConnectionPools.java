@@ -69,7 +69,7 @@ public final class ConnectionPools {
    * @see #containsConnectionPool(String)
    */
   public static synchronized ConnectionPool getConnectionPool(final String username) {
-    return CONNECTION_POOLS.get(username);
+    return CONNECTION_POOLS.get(requireNonNull(username, "username"));
   }
 
   /**
@@ -77,7 +77,7 @@ public final class ConnectionPools {
    * @return true if a connection pool is available for the given user
    */
   public static synchronized boolean containsConnectionPool(final String username) {
-    return CONNECTION_POOLS.containsKey(username);
+    return CONNECTION_POOLS.containsKey(requireNonNull(username, "username"));
   }
 
   /**

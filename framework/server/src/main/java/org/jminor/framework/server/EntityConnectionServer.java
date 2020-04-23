@@ -127,6 +127,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
   @Override
   protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient)
           throws RemoteException, LoginException, ConnectionNotAvailableException {
+    requireNonNull(remoteClient, "remoteClient");
     try {
       final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(remoteClient.getDatabaseUser().getUsername());
       if (connectionPool != null) {
@@ -163,7 +164,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
 
   /**
    * Creates the remote connection provided by this server
-   * @param connectionPool the connection pool to use, if none is provided a local connection is established
+   * @param connectionPool the connection pool to use, if none is provided a direct connection to the database is established
    * @param database the underlying database
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
