@@ -6,7 +6,7 @@ package org.jminor.framework.servlet;
 import org.jminor.common.Serializer;
 import org.jminor.common.Util;
 import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.remote.client.Clients;
+import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.exception.ServerAuthenticationException;
 import org.jminor.common.remote.server.exception.ServerException;
@@ -558,7 +558,7 @@ public final class EntityService extends Application {
             RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId,
             Server.CLIENT_HOST_KEY, getRemoteHost(request));
 
-    return server.connect(Clients.connectionRequest(user, clientId, clientTypeId, parameters));
+    return server.connect(ConnectionRequest.connectionRequest(user, clientId, clientTypeId, parameters));
   }
 
   static void setServer(final Server server) {

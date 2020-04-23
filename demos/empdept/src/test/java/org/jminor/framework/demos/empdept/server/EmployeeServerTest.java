@@ -5,7 +5,7 @@ package org.jminor.framework.demos.empdept.server;
 
 import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.remote.client.Clients;
+import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.remote.server.Servers;
@@ -48,7 +48,7 @@ public final class EmployeeServerTest {
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
 
     final EmployeeService employeeService = remoteServer.connect(
-            Clients.connectionRequest(Users.parseUser("scott:tiger"),
+            ConnectionRequest.connectionRequest(Users.parseUser("scott:tiger"),
                     UUID.randomUUID(), "EmployeeServerTest"));
 
     final List<Entity> employees = employeeService.getEmployees();
