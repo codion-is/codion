@@ -55,7 +55,7 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
       final String databaseHost = database.getHost();
       final String sid = database.getSid();
 
-      return Server.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
+      return ServerConfiguration.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
               + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
     });
   }

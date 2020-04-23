@@ -5912,3 +5912,4 @@
   EntityConnectionServerConfiguration uses composition instead of inheritance
   ServerConfiguration interface extracted
   EntityConnectionServerConfiguration interface exctracted
+  Configuration constants moved from Server to ServerConfiguration

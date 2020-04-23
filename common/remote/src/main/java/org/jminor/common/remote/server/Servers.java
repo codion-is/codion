@@ -149,10 +149,10 @@ public final class Servers {
    * to a temporary file and sets the trust store property so that it points to that temporary file.
    * If the trust store file specified is not found on the classpath this method has no effect.
    * @param temporaryFileNamePrefix the prefix to use for the temporary filename
-   * @see Server#TRUSTSTORE
+   * @see ServerConfiguration#TRUSTSTORE
    */
   public static void resolveTrustStoreFromClasspath(final String temporaryFileNamePrefix) {
-    final String value = Server.TRUSTSTORE.get();
+    final String value = ServerConfiguration.TRUSTSTORE.get();
     if (nullOrEmpty(value)) {
       LOG.debug("No trust store specified via {}", Server.JAVAX_NET_TRUSTSTORE);
       return;
@@ -167,7 +167,7 @@ public final class Servers {
       file.deleteOnExit();
       LOG.debug("Classpath trust store written to file: {} -> {}", Server.JAVAX_NET_TRUSTSTORE, file);
 
-      Server.TRUSTSTORE.set(file.getPath());
+      ServerConfiguration.TRUSTSTORE.set(file.getPath());
     }
     catch (final IOException e) {
       throw new RuntimeException(e);

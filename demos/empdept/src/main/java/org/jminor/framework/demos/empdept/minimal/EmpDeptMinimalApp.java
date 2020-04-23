@@ -5,7 +5,7 @@ package org.jminor.framework.demos.empdept.minimal;
 
 import org.jminor.common.db.Operator;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
@@ -226,9 +226,9 @@ public class EmpDeptMinimalApp {
     //the remote connection settings
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(EmpDeptDomain.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
-    Server.SERVER_HOST_NAME.set("jminor.no-ip.org");
+    ServerConfiguration.SERVER_HOST_NAME.set("jminor.no-ip.org");
     //we're using Secure Sockets Layer so we need to specify a truststore
-    Server.TRUSTSTORE.set("resources/security/jminor_truststore.jks");
+    ServerConfiguration.TRUSTSTORE.set("resources/security/jminor_truststore.jks");
     System.setProperty("java.security.policy", "resources/security/jminor_demos.policy");
 
     //we create an instance of our application panel and start it

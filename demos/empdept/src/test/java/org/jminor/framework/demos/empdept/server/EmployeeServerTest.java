@@ -35,7 +35,7 @@ public final class EmployeeServerTest {
   @Test
   public void test() throws RemoteException, NotBoundException, LoginException,
           ConnectionNotAvailableException, ConnectionValidationException, DatabaseException {
-    Server.RMI_SERVER_HOSTNAME.set("localhost");
+    ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
     final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(SERVER_PORT).setServerName("Employee Server");
     final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(serverConfiguration, REGISTRY_PORT)

@@ -9,7 +9,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.remote.server.http.HttpServerConfiguration;
 import org.jminor.common.user.User;
@@ -247,9 +246,9 @@ public final class HttpEntityConnectionTest {
   }
 
   private static EntityConnectionServerConfiguration configure() {
-    Server.SERVER_HOST_NAME.set("localhost");
-    Server.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
-    Server.TRUSTSTORE_PASSWORD.set("crappypass");
+    ServerConfiguration.SERVER_HOST_NAME.set("localhost");
+    ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
+    ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
     ReportWrapper.REPORT_PATH.set("report/path");
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
@@ -270,9 +269,9 @@ public final class HttpEntityConnectionTest {
   }
 
   private static void deconfigure() {
-    Server.SERVER_HOST_NAME.set(null);
-    Server.TRUSTSTORE.set(null);
-    Server.TRUSTSTORE_PASSWORD.set(null);
+    ServerConfiguration.SERVER_HOST_NAME.set(null);
+    ServerConfiguration.TRUSTSTORE.set(null);
+    ServerConfiguration.TRUSTSTORE_PASSWORD.set(null);
     ReportWrapper.REPORT_PATH.set(null);
     HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);

@@ -6,7 +6,7 @@ package org.jminor.swing.framework.server.monitor;
 import org.jminor.common.Configuration;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
-import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;
@@ -42,7 +42,7 @@ public final class EntityServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public EntityServerMonitor(final String hostNames, final int registryPort) throws RemoteException {
-    this(hostNames, registryPort, Users.parseUser(Server.SERVER_ADMIN_USER.get()));
+    this(hostNames, registryPort, Users.parseUser(ServerConfiguration.SERVER_ADMIN_USER.get()));
   }
 
   /**

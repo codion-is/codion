@@ -61,7 +61,7 @@ public class EntityConnectionServerTest {
   public static synchronized void setUp() throws Exception {
     final String serverName = CONFIGURATION.getServerConfiguration().getServerName();
     EntityConnectionServer.startServer(CONFIGURATION);
-    server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
+    server = (Server) LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -267,7 +267,7 @@ public class EntityConnectionServerTest {
     provider.disconnect();
 
     //not available until a connection has been requested
-    assertEquals(Server.SERVER_HOST_NAME.get(), provider.getServerHostName());
+    assertEquals(ServerConfiguration.SERVER_HOST_NAME.get(), provider.getServerHostName());
 
     final EntityConnection db2 = provider.getConnection();
     assertNotNull(db2);
@@ -323,12 +323,12 @@ public class EntityConnectionServerTest {
   }
 
   private static DefaultEntityConnectionServerConfiguration configure() {
-    Server.SERVER_HOST_NAME.set("localhost");
-    Server.RMI_SERVER_HOSTNAME.set("localhost");
-    Server.TRUSTSTORE.set("src/main/security/jminor_truststore.jks");
-    Server.TRUSTSTORE_PASSWORD.set("crappypass");
-    Server.KEYSTORE.set("src/main/security/jminor_keystore.jks");
-    Server.KEYSTORE_PASSWORD.set("crappypass");
+    ServerConfiguration.SERVER_HOST_NAME.set("localhost");
+    ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
+    ServerConfiguration.TRUSTSTORE.set("src/main/security/jminor_truststore.jks");
+    ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
+    ServerConfiguration.KEYSTORE.set("src/main/security/jminor_keystore.jks");
+    ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
     final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
     serverConfiguration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
     serverConfiguration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));

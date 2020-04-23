@@ -8,7 +8,6 @@ import org.jminor.common.Configuration;
 import org.jminor.common.Text;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.Databases;
-import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
@@ -289,9 +288,9 @@ public interface EntityConnectionServerConfiguration {
     serverConfiguration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     serverConfiguration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
     final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(serverConfiguration,
-            requireNonNull(Server.REGISTRY_PORT.get(), Server.REGISTRY_PORT.toString()));
-    configuration.setAdminPort(requireNonNull(Server.SERVER_ADMIN_PORT.get(), Server.SERVER_ADMIN_PORT.toString()));
-    configuration.setSslEnabled(Server.SERVER_CONNECTION_SSL_ENABLED.get());
+            requireNonNull(ServerConfiguration.REGISTRY_PORT.get(), ServerConfiguration.REGISTRY_PORT.toString()));
+    configuration.setAdminPort(requireNonNull(ServerConfiguration.SERVER_ADMIN_PORT.get(), ServerConfiguration.SERVER_ADMIN_PORT.toString()));
+    configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setConnectionLimit(SERVER_CONNECTION_LIMIT.get());
     configuration.setDatabase(Databases.getInstance());
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
@@ -303,9 +302,9 @@ public interface EntityConnectionServerConfiguration {
     configuration.setDomainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
     configuration.setStartupPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())
             .stream().map(Users::parseUser).collect(toList()));
-    configuration.setAuxiliaryServerClassNames(Text.parseCommaSeparatedValues(Server.AUXILIARY_SERVER_CLASS_NAMES.get()));
+    configuration.setAuxiliaryServerClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_CLASS_NAMES.get()));
     configuration.setClientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get());
-    configuration.setConnectionTimeout(Server.SERVER_CONNECTION_TIMEOUT.get());
+    configuration.setConnectionTimeout(ServerConfiguration.SERVER_CONNECTION_TIMEOUT.get());
     final Map<String, Integer> timeoutMap = new HashMap<>();
     for (final String clientTimeout : Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get())) {
       final String[] split = clientTimeout.split(":");
@@ -315,7 +314,7 @@ public interface EntityConnectionServerConfiguration {
       timeoutMap.put(split[0], Integer.parseInt(split[1]));
     }
     configuration.setClientSpecificConnectionTimeouts(timeoutMap);
-    final String adminUserString = Server.SERVER_ADMIN_USER.get();
+    final String adminUserString = ServerConfiguration.SERVER_ADMIN_USER.get();
     final User adminUser = nullOrEmpty(adminUserString) ? null : Users.parseUser(adminUserString);
     if (adminUser == null) {
       EntityConnectionServerConfiguration.LOG.info("No admin user specified");
