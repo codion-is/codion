@@ -34,6 +34,26 @@ public final class ServerConfiguration {
   private static final int DEFAULT_SERVER_CONNECTION_LIMIT = -1;
 
   /**
+   * The serialization whitelist file to use if any
+   */
+  public static final PropertyValue<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("jminor.server.serializationFilterWhitelist", null);
+
+  /**
+   * If true then the serialization whitelist specified by {@link #SERIALIZATION_FILTER_WHITELIST} is populated
+   * with the names of all deserialized classes on server shutdown. Note this overwrites the file if it already exists.
+   */
+  public static final PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("jminor.server.serializationFilterDryRun", false);
+
+  /**
+   * Specifies the class name of the connection pool provider to user, if none is specified
+   * the internal connection pool is used if necessary<br>
+   * Value type: String<br>
+   * Default value: none
+   * @see org.jminor.common.db.pool.ConnectionPoolProvider
+   */
+  public static final PropertyValue<String> SERVER_CONNECTION_POOL_PROVIDER_CLASS = Configuration.stringValue("jminor.server.pooling.poolProviderClass", null);
+
+  /**
    * Specifies maximum number of concurrent connections the server accepts<br>
    * -1 indicates no limit and 0 indicates a closed server.
    * Value type: Integer<br>
@@ -65,14 +85,14 @@ public final class ServerConfiguration {
   /**
    * Specifies a comma separated list of ConnectionValidator class names, which should be initialized on server startup,
    * these classes must be available on the server classpath and contain a parameterless constructor
-   * @see ConnectionValidator
+   * @see org.jminor.common.remote.server.ConnectionValidator
    */
   public static final PropertyValue<String> SERVER_CONNECTION_VALIDATOR_CLASSES = Configuration.stringValue("jminor.server.connectionValidatorClasses", null);
 
   /**
    * Specifies a comma separated list of LoginProxy class names, which should be initialized on server startup,
    * these classes must be available on the server classpath and contain a parameterless constructor
-   * @see LoginProxy
+   * @see org.jminor.common.remote.server.LoginProxy
    */
   public static final PropertyValue<String> SERVER_LOGIN_PROXY_CLASSES = Configuration.stringValue("jminor.server.loginProxyClasses", null);
 
@@ -91,6 +111,9 @@ public final class ServerConfiguration {
   private Integer connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
   private Boolean clientLoggingEnabled = false;
   private Integer connectionTimeout = Server.DEFAULT_SERVER_CONNECTION_TIMEOUT;
+  private String serializationFilterWhitelist;
+  private Boolean serializationFilterDryRun = false;
+  private String connectionPoolProvider;
   private final Collection<String> domainModelClassNames = new HashSet<>();
   private final Collection<String> loginProxyClassNames = new HashSet<>();
   private final Collection<String> connectionValidatorClassNames = new HashSet<>();
@@ -108,7 +131,8 @@ public final class ServerConfiguration {
   }
 
   /**
-   * @param serverAdminPort the port on which to make the server admin interface accessible
+   * @param adminPort the port on which to make the server admin interface accessible
+   * @return this configuration instance
    */
   public ServerConfiguration adminPort(final Integer adminPort) {
     this.serverAdminPort = requireNonNull(adminPort);
@@ -117,6 +141,7 @@ public final class ServerConfiguration {
 
   /**
    * @param database the Database implementation
+   * @return this configuration instance
    */
   public ServerConfiguration database(final Database database) {
     this.database = requireNonNull(database);
@@ -125,6 +150,7 @@ public final class ServerConfiguration {
 
   /**
    * @param adminUser the admin user
+   * @return this configuration instance
    */
   public ServerConfiguration adminUser(final User adminUser) {
     this.adminUser = requireNonNull(adminUser);
@@ -133,6 +159,7 @@ public final class ServerConfiguration {
 
   /**
    * @param sslEnabled if true then ssl is enabled
+   * @return this configuration instance
    */
   public ServerConfiguration sslEnabled(final Boolean sslEnabled) {
     this.sslEnabled = requireNonNull(sslEnabled);
@@ -141,6 +168,7 @@ public final class ServerConfiguration {
 
   /**
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
+   * @return this configuration instance
    */
   public ServerConfiguration connectionLimit(final Integer connectionLimit) {
     this.connectionLimit = requireNonNull(connectionLimit);
@@ -149,6 +177,7 @@ public final class ServerConfiguration {
 
   /**
    * @param clientLoggingEnabled if true then client logging is enabled on startup
+   * @return this configuration instance
    */
   public ServerConfiguration clientLoggingEnabled(final Boolean clientLoggingEnabled) {
     this.clientLoggingEnabled = requireNonNull(clientLoggingEnabled);
@@ -157,6 +186,7 @@ public final class ServerConfiguration {
 
   /**
    * @param connectionTimeout the idle connection timeout
+   * @return this configuration instance
    */
   public ServerConfiguration connectionTimeout(final Integer connectionTimeout) {
     this.connectionTimeout = requireNonNull(connectionTimeout);
@@ -164,7 +194,35 @@ public final class ServerConfiguration {
   }
 
   /**
+   * @param connectionPoolProvider the connection pool provider classname
+   * @return this configuration instance
+   */
+  public ServerConfiguration connectionPoolProvider(final String connectionPoolProvider) {
+    this.connectionPoolProvider = requireNonNull(connectionPoolProvider);
+    return this;
+  }
+
+  /**
+   * @param serializationFilterWhitelist the serialization whitelist
+   * @return this configuration instance
+   */
+  public ServerConfiguration serializationFilterWhitelist(final String serializationFilterWhitelist) {
+    this.serializationFilterWhitelist = requireNonNull(serializationFilterWhitelist);
+    return this;
+  }
+
+  /**
+   * @param serializationFilterDryRun true if serialization filter dry run is active
+   * @return this configuration instance
+   */
+  public ServerConfiguration serializationFilterDryRun(final Boolean serializationFilterDryRun) {
+    this.serializationFilterDryRun = requireNonNull(serializationFilterDryRun);
+    return this;
+  }
+
+  /**
    * @param domainModelClassNames the domain model classes to load on startup
+   * @return this configuration instance
    */
   public ServerConfiguration domainModelClassNames(final Collection<String> domainModelClassNames) {
     this.domainModelClassNames.addAll(requireNonNull(domainModelClassNames));
@@ -173,6 +231,7 @@ public final class ServerConfiguration {
 
   /**
    * @param loginProxyClassNames the login proxy classes to initialize on startup
+   * @return this configuration instance
    */
   public ServerConfiguration loginProxyClassNames(final Collection<String> loginProxyClassNames) {
     this.loginProxyClassNames.addAll(requireNonNull(loginProxyClassNames));
@@ -181,6 +240,7 @@ public final class ServerConfiguration {
 
   /**
    * @param connectionValidatorClassNames the connection validation classes to initialize on startup
+   * @return this configuration instance
    */
   public ServerConfiguration connectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
     this.connectionValidatorClassNames.addAll(requireNonNull(connectionValidatorClassNames));
@@ -189,6 +249,7 @@ public final class ServerConfiguration {
 
   /**
    * @param startupPoolUsers the users for which to initialize connection pools on startup
+   * @return this configuration instance
    */
   public ServerConfiguration startupPoolUsers(final Collection<User> startupPoolUsers) {
     this.startupPoolUsers.addAll(requireNonNull(startupPoolUsers));
@@ -197,6 +258,7 @@ public final class ServerConfiguration {
 
   /**
    * @param auxiliaryServerClassNames the class names of auxiliary servers to run alongside this server
+   * @return this configuration instance
    */
   public ServerConfiguration auxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
     this.auxiliaryServerClassNames.addAll(requireNonNull(auxiliaryServerClassNames));
@@ -205,6 +267,7 @@ public final class ServerConfiguration {
 
   /**
    * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeId
+   * @return this configuration instance
    */
   public ServerConfiguration clientSpecificConnectionTimeouts(final Map<String, Integer> clientSpecificConnectionTimeouts) {
     this.clientSpecificConnectionTimeouts.putAll(requireNonNull(clientSpecificConnectionTimeouts));
@@ -223,6 +286,12 @@ public final class ServerConfiguration {
     configuration.sslEnabled(Server.SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.connectionLimit(SERVER_CONNECTION_LIMIT.get());
     configuration.database(Databases.getInstance());
+    if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
+      configuration.serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
+    }
+    if (SERIALIZATION_FILTER_DRYRUN.get() != null) {
+      configuration.serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get());
+    }
     configuration.domainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
     configuration.loginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     configuration.connectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
@@ -305,6 +374,27 @@ public final class ServerConfiguration {
    */
   Integer getConnectionTimeout() {
     return connectionTimeout;
+  }
+
+  /**
+   * @return the connection pool provider classname
+   */
+  String getConnectionPoolProvider() {
+    return connectionPoolProvider;
+  }
+
+  /**
+   * @return the serialization whitelist to use, if any
+   */
+  String getSerializationFilterWhitelist() {
+    return serializationFilterWhitelist;
+  }
+
+  /**
+   * @return true if a serialization filter dry run should be active
+   */
+  Boolean getSerializationFilterDryRun() {
+    return serializationFilterDryRun;
   }
 
   /**

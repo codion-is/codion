@@ -1,7 +1,7 @@
 /**
  * Package configuration values:<br>
- * {@link org.jminor.framework.server.EntityConnectionServer#SERIALIZATION_FILTER_WHITELIST}<br>
- * {@link org.jminor.framework.server.EntityConnectionServer#SERIALIZATION_FILTER_DRYRUN}<br>
+ * {@link org.jminor.framework.server.ServerConfiguration#SERIALIZATION_FILTER_WHITELIST}<br>
+ * {@link org.jminor.framework.server.ServerConfiguration#SERIALIZATION_FILTER_DRYRUN}<br>
  * {@link org.jminor.framework.server.ServerConfiguration#SERVER_CONNECTION_POOL_PROVIDER_CLASS}<br>
  * {@link org.jminor.framework.server.ServerConfiguration#SERVER_CONNECTION_LIMIT}<br>
  * {@link org.jminor.framework.server.ServerConfiguration#SERVER_CLIENT_CONNECTION_TIMEOUT}<br>

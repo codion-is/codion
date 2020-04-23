@@ -5,6 +5,7 @@ package org.jminor.framework.servlet;
 
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.http.HttpServer;
+import org.jminor.common.remote.server.http.HttpServerConfiguration;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -16,14 +17,21 @@ import org.glassfish.jersey.servlet.ServletContainer;
 public final class EntityServletServer extends HttpServer implements Server.AuxiliaryServer {
 
   /**
-   * Instantiates a new EntityServletServer.
-   * @see HttpServer#DOCUMENT_ROOT
-   * @see HttpServer#HTTP_SERVER_PORT
-   * @see HttpServer#HTTP_SERVER_SECURE
+   * Instantiates a new EntityServletServer, using configuration values from system properties.
+   * @see HttpServerConfiguration#DOCUMENT_ROOT
+   * @see HttpServerConfiguration#HTTP_SERVER_PORT
+   * @see HttpServerConfiguration#HTTP_SERVER_SECURE
    */
   public EntityServletServer() {
-    super(HttpServer.DOCUMENT_ROOT.get(), HttpServer.HTTP_SERVER_PORT.get(),
-            HttpServer.HTTP_SERVER_SECURE.get());
+    this(HttpServerConfiguration.fromSystemProperties());
+  }
+
+  /**
+   * Instantiates a new EntityServletServer.
+   * @param configuration the server configuration
+   */
+  public EntityServletServer(final HttpServerConfiguration configuration) {
+    super(configuration);
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
     servletHandler.setContextPath("/");
     final ServletHolder holder = servletHandler.addServlet(ServletContainer.class, "/entities/*");

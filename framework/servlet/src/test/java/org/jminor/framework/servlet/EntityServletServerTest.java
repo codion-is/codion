@@ -7,7 +7,7 @@ import org.jminor.common.Serializer;
 import org.jminor.common.db.Operator;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.remote.server.Server;
-import org.jminor.common.remote.server.http.HttpServer;
+import org.jminor.common.remote.server.http.HttpServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.Value;
@@ -397,12 +397,12 @@ public class EntityServletServerTest {
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
     ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
-    HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpServer.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
+    HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
     Server.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
     Server.TRUSTSTORE_PASSWORD.set("crappypass");
-    HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
-    HttpServer.HTTP_SERVER_SECURE.set(true);
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
+    HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
   }
 
   private static void deconfigure() {
@@ -416,11 +416,11 @@ public class EntityServletServerTest {
     System.clearProperty("java.security.policy");
     ServerConfiguration.SERVER_DOMAIN_MODEL_CLASSES.set(null);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
-    HttpServer.HTTP_SERVER_PORT.set(null);
-    HttpServer.HTTP_SERVER_KEYSTORE_PATH.set(null);
+    HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);
     Server.TRUSTSTORE.set(null);
     Server.TRUSTSTORE_PASSWORD.set(null);
-    HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
-    HttpServer.HTTP_SERVER_SECURE.set(false);
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
+    HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
   }
 }

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.Configuration;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.Util;
 import org.jminor.common.db.database.Database;
@@ -26,7 +25,6 @@ import org.jminor.common.remote.server.exception.LoginException;
 import org.jminor.common.remote.server.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
-import org.jminor.common.value.PropertyValue;
 import org.jminor.common.version.Versions;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
@@ -71,26 +69,6 @@ import static org.jminor.common.remote.server.SerializationWhitelist.writeDryRun
  */
 public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityConnection, EntityConnectionServerAdmin> {
 
-  /**
-   * The serialization whitelist file to use if any
-   */
-  public static final PropertyValue<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("jminor.server.serializationFilterWhitelist", null);
-
-  /**
-   * If true then the serialization whitelist specified by {@link #SERIALIZATION_FILTER_WHITELIST} is populated
-   * with the names of all deserialized classes on server shutdown. Note this overwrites the file if it already exists.
-   */
-  public static final PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("jminor.server.serializationFilterDryRun", false);
-
-  /**
-   * Specifies the class name of the connection pool provider to user, if none is specified
-   * the internal connection pool is used if necessary<br>
-   * Value type: String<br>
-   * Default value: none
-   * @see ConnectionPoolProvider
-   */
-  public static final PropertyValue<String> SERVER_CONNECTION_POOL_PROVIDER_CLASS = Configuration.stringValue("jminor.server.pooling.poolProviderClass", null);
-
   private static final long serialVersionUID = 1;
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServer.class);
@@ -133,11 +111,11 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
             configuration.getSslEnabled() ? new SslRMIServerSocketFactory() : null);
     try {
       if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-        if (SERIALIZATION_FILTER_DRYRUN.get()) {
-          SerializationWhitelist.configureDryRun(SERIALIZATION_FILTER_WHITELIST.get());
+        if (configuration.getSerializationFilterDryRun()) {
+          SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
         }
         else {
-          SerializationWhitelist.configure(SERIALIZATION_FILTER_WHITELIST.get());
+          SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
         }
       }
       this.shutdownHook = new Thread(getShutdownHook());
@@ -150,7 +128,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
       setConnectionTimeout(configuration.getConnectionTimeout());
       setClientTypeConnectionTimeouts(configuration.getClientSpecificConnectionTimeouts());
       loadDomainModels(configuration.getDomainModelClassNames());
-      initializeConnectionPools(configuration.getDatabase(), configuration.getStartupPoolUsers());
+      initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getStartupPoolUsers());
       loadLoginProxies(configuration.getLoginProxyClassNames());
       loadConnectionValidators(configuration.getConnectionValidatorClassNames());
       setConnectionLimit(configuration.getConnectionLimit());
@@ -601,10 +579,9 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
     }
   }
 
-  private static void initializeConnectionPools(final Database database, final Collection<User> startupPoolUsers)
-          throws DatabaseException {
+  private static void initializeConnectionPools(final Database database, final String connectionPoolProviderClassName,
+                                                final Collection<User> startupPoolUsers) throws DatabaseException {
     if (!nullOrEmpty(startupPoolUsers)) {
-      final String connectionPoolProviderClassName = SERVER_CONNECTION_POOL_PROVIDER_CLASS.get();
       final ConnectionPoolProvider poolProvider;
       if (Util.nullOrEmpty(connectionPoolProviderClassName)) {
         poolProvider = ConnectionPoolProvider.getConnectionPoolProvider();

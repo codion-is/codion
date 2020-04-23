@@ -334,7 +334,7 @@ public class EntityConnectionServerTest {
     ServerConfiguration.SERVER_LOGIN_PROXY_CLASSES.set("org.jminor.framework.server.TestLoginProxy");
     ServerConfiguration.SERVER_CONNECTION_VALIDATOR_CLASSES.set("org.jminor.framework.server.TestConnectionValidator");
     ServerConfiguration.SERVER_CLIENT_LOGGING_ENABLED.set(true);
-    EntityConnectionServer.SERIALIZATION_FILTER_WHITELIST.set("src/test/security/serialization-whitelist-test.txt");
+    ServerConfiguration.SERIALIZATION_FILTER_WHITELIST.set("src/test/security/serialization-whitelist-test.txt");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
     Server.TRUSTSTORE.set("src/main/security/jminor_truststore.jks");
     Server.TRUSTSTORE_PASSWORD.set("crappypass");

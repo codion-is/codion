@@ -5906,3 +5906,4 @@
 0.14.6
   ServerConfiguration extracted from DefaultEntityConnectionServer
   DefaultEntityConnectionServer renamed EntityConnectionServer
+  HttpServerConfiguration extracted from HttpServer
