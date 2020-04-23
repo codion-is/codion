@@ -5920,3 +5920,7 @@
   Servers.remoteClient() moved to RemoteClient, clientLog() moved to ClientLog, resolveTruststoreFromClasspath() to Clients
   Clients.connectionRequest() moved to ConnectionRequest
   sslEnabled along with socket factories moved from EntityConnectionServerConfiguration to ServerConfiguration
+  auxiliary server functionality moved from EntityConnectionServer moved to AbstractServer
+  auxiliaryClassNames moved from EntityConnectionServerConfiguration to ServerConfiguration
+  serialization whitelist moved from EntityConnectionServerConfiguration to ServerConfiguration
+  login proxies and connection validators moved from EntityConnectionServerConfiguration to ServerConfiguration

@@ -398,11 +398,11 @@ public class EntityServletServerTest {
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
     final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
     serverConfiguration.setSslEnabled(false);
+    serverConfiguration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
     final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(serverConfiguration, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
-    configuration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
     configuration.setDatabase(Databases.getInstance());
 
     return configuration;

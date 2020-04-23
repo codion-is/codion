@@ -13,6 +13,10 @@
  * {@link org.jminor.common.remote.server.ServerConfiguration#SERVER_ADMIN_USER}<br>
  * {@link org.jminor.common.remote.server.ServerConfiguration#SERVER_CONNECTION_SSL_ENABLED}<br>
  * {@link org.jminor.common.remote.server.ServerConfiguration#SERVER_CONNECTION_TIMEOUT}<br>
- * {@link org.jminor.common.remote.server.ServerConfiguration#AUXILIARY_SERVER_CLASS_NAMES}
+ * {@link org.jminor.common.remote.server.ServerConfiguration#AUXILIARY_SERVER_CLASS_NAMES}<br>
+ * {@link org.jminor.common.remote.server.ServerConfiguration#SERIALIZATION_FILTER_WHITELIST}<br>
+ * {@link org.jminor.common.remote.server.ServerConfiguration#SERIALIZATION_FILTER_DRYRUN}<br>
+ * {@link org.jminor.common.remote.server.ServerConfiguration#SERVER_CONNECTION_VALIDATOR_CLASSES}<br>
+ * {@link org.jminor.common.remote.server.ServerConfiguration#SERVER_LOGIN_PROXY_CLASSES}<br>
  */
 package org.jminor.common.remote.server;
