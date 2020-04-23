@@ -69,10 +69,10 @@ public class ServersTest {
   public void clientLog() {
     final UUID uuid = UUID.randomUUID();
     final LocalDateTime currentTime = LocalDateTime.now();
-    final ClientLog log = Servers.clientLog(uuid, currentTime, emptyList());
+    final ClientLog log = ClientLog.clientLog(uuid, currentTime, emptyList());
     assertEquals(uuid, log.getClientId());
     assertEquals(currentTime, log.getConnectionCreationDate());
-    assertEquals(log, Servers.clientLog(uuid, currentTime, emptyList()));
+    assertEquals(log, ClientLog.clientLog(uuid, currentTime, emptyList()));
     assertEquals(uuid.hashCode(), log.hashCode());
     assertTrue(log.getEntries().isEmpty());
   }

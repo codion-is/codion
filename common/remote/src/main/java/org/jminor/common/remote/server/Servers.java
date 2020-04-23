@@ -3,32 +3,18 @@
  */
 package org.jminor.common.remote.server;
 
-import org.jminor.common.MethodLogger;
-import org.jminor.common.Util;
-import org.jminor.common.remote.client.ConnectionRequest;
-import org.jminor.common.user.User;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
-
-import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A utility class for working with Server instances.
@@ -36,54 +22,8 @@ import static org.jminor.common.Util.nullOrEmpty;
 public final class Servers {
 
   private static final Logger LOG = LoggerFactory.getLogger(Servers.class);
-  private static final int INPUT_BUFFER_SIZE = 8192;
 
   private Servers() {}
-
-  /**
-   * Instantiates a new RemoteClient
-   * @param connectionRequest the connection request
-   * @return a new RemoteClient instance
-   */
-  public static RemoteClient remoteClient(final ConnectionRequest connectionRequest) {
-    return remoteClient(connectionRequest, connectionRequest.getUser());
-  }
-
-  /**
-   * Instantiates a new RemoteClient
-   * @param connectionRequest the connection request
-   * @param databaseUser the user to use when connecting to the underlying database
-   * @return a new RemoteClient instance
-   */
-  public static RemoteClient remoteClient(final ConnectionRequest connectionRequest, final User databaseUser) {
-    return new DefaultRemoteClient(connectionRequest, databaseUser);
-  }
-
-  /**
-   * Instantiates a new RemoteClient based on the given client
-   * but with the specified database user
-   * @param remoteClient the remote client to copy
-   * @param databaseUser the database user to use
-   * @return a new RemoteClient instance
-   */
-  public static RemoteClient remoteClient(final RemoteClient remoteClient, final User databaseUser) {
-    final RemoteClient client = remoteClient(remoteClient.getConnectionRequest(), databaseUser);
-    client.setClientHost(remoteClient.getClientHost());
-
-    return client;
-  }
-
-  /**
-   * Instantiates a new ClientLog instance.
-   * @param clientId the ID of the client this log represents
-   * @param connectionCreationDate the date and time this client connection was created
-   * @param entries the log entries
-   * @return a new ClientLog instance
-   */
-  public static ClientLog clientLog(final UUID clientId, final LocalDateTime connectionCreationDate,
-                                    final List<MethodLogger.Entry> entries) {
-    return new DefaultClientLog(clientId, connectionCreationDate, entries);
-  }
 
   /**
    * Initializes a Registry if one is not running
@@ -141,36 +81,6 @@ public final class Servers {
     else {
       throw new NotBoundException("'" + serverNamePrefix + "' is not available, see LOG for details. Host: "
               + serverHostName + (requestedServerPort != -1 ? ", port: " + requestedServerPort : "") + ", registryPort: " + registryPort);
-    }
-  }
-
-  /**
-   * Reads the trust store specified by "javax.net.ssl.trustStore" from the classpath, copies it
-   * to a temporary file and sets the trust store property so that it points to that temporary file.
-   * If the trust store file specified is not found on the classpath this method has no effect.
-   * @param temporaryFileNamePrefix the prefix to use for the temporary filename
-   * @see ServerConfiguration#TRUSTSTORE
-   */
-  public static void resolveTrustStoreFromClasspath(final String temporaryFileNamePrefix) {
-    final String value = ServerConfiguration.TRUSTSTORE.get();
-    if (nullOrEmpty(value)) {
-      LOG.debug("No trust store specified via {}", ServerConfiguration.JAVAX_NET_TRUSTSTORE);
-      return;
-    }
-    try (final InputStream inputStream = Util.class.getClassLoader().getResourceAsStream(value)) {
-      if (inputStream == null) {
-        LOG.debug("Specified trust store not found on classpath: {}", value);
-        return;
-      }
-      final File file = File.createTempFile(temporaryFileNamePrefix, "tmp");
-      Files.write(file.toPath(), getBytes(inputStream));
-      file.deleteOnExit();
-      LOG.debug("Classpath trust store written to file: {} -> {}", ServerConfiguration.JAVAX_NET_TRUSTSTORE, file);
-
-      ServerConfiguration.TRUSTSTORE.set(file.getPath());
-    }
-    catch (final IOException e) {
-      throw new RuntimeException(e);
     }
   }
 
@@ -250,15 +160,4 @@ public final class Servers {
     }
   }
 
-  private static byte[] getBytes(final InputStream stream) throws IOException {
-    final ByteArrayOutputStream os = new ByteArrayOutputStream();
-    final byte[] buffer = new byte[INPUT_BUFFER_SIZE];
-    int line;
-    while ((line = stream.read(buffer)) != -1) {
-      os.write(buffer, 0, line);
-    }
-    os.flush();
-
-    return os.toByteArray();
-  }
 }

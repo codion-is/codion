@@ -11,6 +11,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
+import org.jminor.common.remote.client.Clients;
 import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.AbstractServer;
 import org.jminor.common.remote.server.AuxiliaryServer;
@@ -638,7 +639,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
     if (adminUser == null) {
       throw new ServerAuthenticationException("No admin user specified");
     }
-    Servers.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
+    Clients.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
     try {
       final Registry registry = Servers.getRegistry(registryPort);
       final Server<?, EntityConnectionServerAdmin> server = (Server) registry.lookup(serverName);

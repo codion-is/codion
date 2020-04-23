@@ -154,7 +154,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       }
 
       LOG.debug("No active connection found for client {}, establishing a new connection", connectionRequest);
-      RemoteClient remoteClient = Servers.remoteClient(connectionRequest);
+      RemoteClient remoteClient = RemoteClient.remoteClient(connectionRequest);
       setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
       for (final LoginProxy loginProxy : sharedLoginProxies) {
         remoteClient = loginProxy.doLogin(remoteClient);

@@ -39,19 +39,19 @@ public class DefaultRemoteEntityConnectionTest {
 
   @Test
   public void wrongUsername() throws Exception {
-    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(Users.user("foo", "bar".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = RemoteClient.remoteClient(Clients.connectionRequest(Users.user("foo", "bar".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1234));
   }
 
   @Test
   public void wrongPassword() throws Exception {
-    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(Users.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = RemoteClient.remoteClient(Clients.connectionRequest(Users.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1235));
   }
 
   @Test
   public void rollbackOnDisconnect() throws Exception {
-    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = RemoteClient.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238);
     final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
@@ -69,7 +69,7 @@ public class DefaultRemoteEntityConnectionTest {
     DefaultRemoteEntityConnection adapter = null;
     final String serviceName = "DefaultRemoteEntityConnectionTest";
     try {
-      final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+      final RemoteClient client = RemoteClient.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
       adapter = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238);
 
       Servers.initializeRegistry(Registry.REGISTRY_PORT);
