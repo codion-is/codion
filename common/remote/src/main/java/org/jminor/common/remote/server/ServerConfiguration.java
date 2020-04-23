@@ -210,7 +210,7 @@ public interface ServerConfiguration {
   /**
    * @return a configuration according to system properties.
    */
-  static DefaultServerConfiguration fromSystemProperties() {
+  static ServerConfiguration fromSystemProperties() {
     return new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()));
   }
 }
