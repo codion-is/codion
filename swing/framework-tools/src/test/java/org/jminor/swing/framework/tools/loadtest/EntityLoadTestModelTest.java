@@ -4,6 +4,7 @@
 package org.jminor.swing.framework.tools.loadtest;
 
 import org.jminor.common.db.database.Databases;
+import org.jminor.common.remote.server.AbstractServerConfiguration;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
@@ -40,7 +41,7 @@ public class EntityLoadTestModelTest {
     final EntityConnectionServerConfiguration configuration = configure();
     EntityConnectionServer.startServer(configuration);
     server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(),
-            configuration.getRegistryPort()).lookup(configuration.getServerName());
+            configuration.getRegistryPort()).lookup(configuration.getServerConfiguration().getServerName());
     admin = server.getServerAdmin(ADMIN_USER);
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
   }
@@ -133,7 +134,8 @@ public class EntityLoadTestModelTest {
   private static EntityConnectionServerConfiguration configure() {
     Server.SERVER_HOST_NAME.set("localhost");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
-    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(2223, 2221);
+    final AbstractServerConfiguration serverConfiguration = new AbstractServerConfiguration(2223);
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(serverConfiguration, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));

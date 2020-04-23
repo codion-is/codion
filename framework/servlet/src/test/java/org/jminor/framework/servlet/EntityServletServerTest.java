@@ -6,6 +6,7 @@ package org.jminor.framework.servlet;
 import org.jminor.common.Serializer;
 import org.jminor.common.db.Operator;
 import org.jminor.common.db.database.Databases;
+import org.jminor.common.remote.server.AbstractServerConfiguration;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.http.HttpServerConfiguration;
@@ -396,7 +397,8 @@ public class EntityServletServerTest {
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(2223, 2221);
+    final AbstractServerConfiguration serverConfiguration = new AbstractServerConfiguration(2223);
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(serverConfiguration, 2221);
     configuration.setSslEnabled(false);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));

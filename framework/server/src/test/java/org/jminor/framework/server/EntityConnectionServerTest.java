@@ -10,6 +10,7 @@ import org.jminor.common.db.operation.AbstractDatabaseProcedure;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.remote.client.Clients;
 import org.jminor.common.remote.client.ConnectionRequest;
+import org.jminor.common.remote.server.AbstractServerConfiguration;
 import org.jminor.common.remote.server.ClientLog;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.remote.server.Server;
@@ -58,7 +59,7 @@ public class EntityConnectionServerTest {
 
   @BeforeAll
   public static synchronized void setUp() throws Exception {
-    final String serverName = CONFIGURATION.getServerName();
+    final String serverName = CONFIGURATION.getServerConfiguration().getServerName();
     EntityConnectionServer.startServer(CONFIGURATION);
     server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
     admin = server.getServerAdmin(ADMIN_USER);
@@ -255,7 +256,7 @@ public class EntityConnectionServerTest {
   @Test
   public void remoteEntityConnectionProvider() throws Exception {
     final RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider)
-            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
+            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerConfiguration().getServerPort(), CONFIGURATION.getRegistryPort())
             .setDomainClassName("TestDomain").setClientTypeId("TestClient").setUser(UNIT_TEST_USER);
 
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, provider.getConnectionType());
@@ -328,7 +329,10 @@ public class EntityConnectionServerTest {
     Server.TRUSTSTORE_PASSWORD.set("crappypass");
     Server.KEYSTORE.set("src/main/security/jminor_keystore.jks");
     Server.KEYSTORE_PASSWORD.set("crappypass");
-    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(2223, 2221);
+    final AbstractServerConfiguration serverConfiguration = new AbstractServerConfiguration(2223);
+    serverConfiguration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
+    serverConfiguration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(serverConfiguration, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDatabase(Databases.getInstance());
@@ -336,8 +340,6 @@ public class EntityConnectionServerTest {
     configuration.setStartupPoolUsers(singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
     configuration.setDomainModelClassNames(singletonList("org.jminor.framework.server.TestDomain"));
-    configuration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
-    configuration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
     configuration.setClientLoggingEnabled(true);
     configuration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
 

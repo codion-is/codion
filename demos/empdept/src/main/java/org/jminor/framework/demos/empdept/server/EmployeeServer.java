@@ -26,7 +26,7 @@ public final class EmployeeServer extends EntityConnectionServer {
   private static final Domain DOMAIN = new EmpDept().registerDomain();
 
   public EmployeeServer(final EntityConnectionServerConfiguration configuration) throws RemoteException {
-    super((EntityConnectionServerConfiguration) configuration.setServerName("Employee Server"));
+    super(configuration);
   }
 
   @Override

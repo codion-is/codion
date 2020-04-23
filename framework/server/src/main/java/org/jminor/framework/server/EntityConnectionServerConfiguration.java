@@ -33,7 +33,7 @@ import static org.jminor.common.Util.nullOrEmpty;
 /**
  * Configuration values for a {@link EntityConnectionServer}.
  */
-public final class EntityConnectionServerConfiguration extends AbstractServerConfiguration {
+public final class EntityConnectionServerConfiguration {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServerConfiguration.class);
 
@@ -108,6 +108,8 @@ public final class EntityConnectionServerConfiguration extends AbstractServerCon
    */
   public static final PropertyValue<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("jminor.server.domain.classes", null);
 
+  private final AbstractServerConfiguration serverConfiguration;
+
   private final int registryPort;
   private Integer serverAdminPort;
   private Database database;
@@ -125,12 +127,29 @@ public final class EntityConnectionServerConfiguration extends AbstractServerCon
   private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
 
   /**
-   * @param serverPort the port on which to make the server accessible
-   * @param registryPort the registry port to use
+   * @param serverConfiguration the server configuration
+   * @param registryPort the registry port
    */
-  public EntityConnectionServerConfiguration(final int serverPort, final int registryPort) {
-    super(serverPort);
+  public EntityConnectionServerConfiguration(final AbstractServerConfiguration serverConfiguration, final int registryPort) {
+    this.serverConfiguration = serverConfiguration;
     this.registryPort = registryPort;
+    this.serverConfiguration.setServerNameProvider(() -> {
+      if (database == null) {
+        throw new IllegalStateException("Database must be set before initializing server name");
+      }
+      final String databaseHost = database.getHost();
+      final String sid = database.getSid();
+
+      return Server.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
+              + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
+    });
+  }
+
+  /**
+   * @return the server configuration
+   */
+  public AbstractServerConfiguration getServerConfiguration() {
+    return serverConfiguration;
   }
 
   /**
@@ -275,8 +294,8 @@ public final class EntityConnectionServerConfiguration extends AbstractServerCon
   public EntityConnectionServerConfiguration setSslEnabled(final Boolean sslEnabled) {
     this.sslEnabled = requireNonNull(sslEnabled);
     if (sslEnabled) {
-      setRmiClientSocketFactory(new SslRMIClientSocketFactory());
-      setRmiServerSocketFactory(new SslRMIServerSocketFactory());
+      serverConfiguration.setRmiClientSocketFactory(new SslRMIClientSocketFactory());
+      serverConfiguration.setRmiServerSocketFactory(new SslRMIServerSocketFactory());
     }
     return this;
   }
@@ -376,8 +395,10 @@ public final class EntityConnectionServerConfiguration extends AbstractServerCon
    * @return the server configuration according to system properties
    */
   public static EntityConnectionServerConfiguration fromSystemProperties() {
-    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(
-            requireNonNull(Server.SERVER_PORT.get(), Server.SERVER_PORT.toString()),
+    final AbstractServerConfiguration serverConfiguration = AbstractServerConfiguration.fromSystemProperties();
+    serverConfiguration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
+    serverConfiguration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(serverConfiguration,
             requireNonNull(Server.REGISTRY_PORT.get(), Server.REGISTRY_PORT.toString()));
     configuration.setAdminPort(requireNonNull(Server.SERVER_ADMIN_PORT.get(), Server.SERVER_ADMIN_PORT.toString()));
     configuration.setSslEnabled(Server.SERVER_CONNECTION_SSL_ENABLED.get());
@@ -390,8 +411,6 @@ public final class EntityConnectionServerConfiguration extends AbstractServerCon
       configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
     }
     configuration.setDomainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
-    configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
-    configuration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
     configuration.setStartupPoolUsers(getPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())));
     configuration.setAuxiliaryServerClassNames(Text.parseCommaSeparatedValues(Server.AUXILIARY_SERVER_CLASS_NAMES.get()));
     configuration.setClientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get());
@@ -408,18 +427,6 @@ public final class EntityConnectionServerConfiguration extends AbstractServerCon
     }
 
     return configuration;
-  }
-
-  @Override
-  protected String initializeServerName() {
-    if (database == null) {
-      throw new IllegalStateException("Database must be set before initializing server name");
-    }
-    final String databaseHost = database.getHost();
-    final String sid = database.getSid();
-
-    return Server.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
-            + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 
   private static Collection<User> getPoolUsers(final Collection<String> poolUsers) {

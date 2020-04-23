@@ -5909,3 +5909,4 @@
   HttpServerConfiguration extracted from HttpServer
   AbstractServer, dynamic adding of login proxies and connection validators removed
   ServerConfiguration renamed to EntityConnectionServerConfiguration, configuration related refactoring
+  EntityConnectionServerConfiguration uses composition instead of inheritance

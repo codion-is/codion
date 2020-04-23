@@ -6,6 +6,7 @@ package org.jminor.framework.demos.empdept.server;
 import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.remote.client.Clients;
+import org.jminor.common.remote.server.AbstractServerConfiguration;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.Servers;
 import org.jminor.common.remote.server.exception.ConnectionNotAvailableException;
@@ -36,7 +37,8 @@ public final class EmployeeServerTest {
           ConnectionNotAvailableException, ConnectionValidationException, DatabaseException {
     Server.RMI_SERVER_HOSTNAME.set("localhost");
 
-    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(SERVER_PORT, REGISTRY_PORT)
+    final AbstractServerConfiguration serverConfiguration = new AbstractServerConfiguration(SERVER_PORT).setServerName("Employee Server");
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(serverConfiguration, REGISTRY_PORT)
             .setAdminPort(SERVER_ADMIN_PORT).setSslEnabled(false).setDatabase(Databases.getInstance()).setConnectionTimeout(60_000)
             .setAdminUser(Users.parseUser("scott:tiger"));
 

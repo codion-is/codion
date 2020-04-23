@@ -4,6 +4,7 @@
 package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.db.database.Databases;
+import org.jminor.common.remote.server.AbstractServerConfiguration;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.user.User;
@@ -38,7 +39,7 @@ public class EntityServerMonitorTest {
   public static synchronized void setUp() throws Exception {
     EntityConnectionServer.startServer(CONFIGURATION);
     server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(),
-            CONFIGURATION.getRegistryPort()).lookup(CONFIGURATION.getServerName());
+            CONFIGURATION.getRegistryPort()).lookup(CONFIGURATION.getServerConfiguration().getServerName());
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -52,7 +53,7 @@ public class EntityServerMonitorTest {
   public void test() throws Exception {
     final String clientTypeId = EntityServerMonitorTest.class.getName();
     final EntityConnectionProvider connectionProvider =
-            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
+            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerConfiguration().getServerPort(), CONFIGURATION.getRegistryPort())
             .setDomainClassName("TestDomain").setClientTypeId(clientTypeId).setUser(UNIT_TEST_USER);
     connectionProvider.getConnection();
     final EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.getRegistryPort(), CONFIGURATION.getAdminUser());
@@ -89,7 +90,8 @@ public class EntityServerMonitorTest {
   private static EntityConnectionServerConfiguration configure() {
     Server.SERVER_HOST_NAME.set("localhost");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
-    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(2223, 2221);
+    final AbstractServerConfiguration serverConfiguration = new AbstractServerConfiguration(2223);
+    final EntityConnectionServerConfiguration configuration = new EntityConnectionServerConfiguration(serverConfiguration, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));

@@ -92,7 +92,7 @@ public class AbstractServerTest {
   @Test
   public void testLoginProxy() throws RemoteException, ServerException {
     final String clientTypeId = "clientTypeId";
-    final AbstractServerConfiguration configuration = new TestServerConfiguration();
+    final AbstractServerConfiguration configuration = getConfiguration();
     configuration.setLoginProxyClassNames(Collections.singletonList(TestLoginProxy.class.getName()));
     configuration.setSharedLoginProxyClassNames(Collections.singletonList(TestLoginProxy.class.getName()));
     final TestServer server = new TestServer(configuration);
@@ -124,7 +124,7 @@ public class AbstractServerTest {
   @Test
   public void testConnectionValidator() throws RemoteException, ServerException {
     final String clientTypeId = "clientTypeId";
-    final AbstractServerConfiguration configuration = new TestServerConfiguration();
+    final AbstractServerConfiguration configuration = getConfiguration();
     configuration.setConnectionValidatorClassNames(Collections.singletonList(TestConnectionValidator.class.getName()));
     final TestServer server = new TestServer(configuration);
     final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
@@ -188,22 +188,14 @@ public class AbstractServerTest {
     RemoteClient getRemoteClient() throws RemoteException;
   }
 
-  private static final class TestServerConfiguration extends AbstractServerConfiguration {
-
-    public TestServerConfiguration() {
-      super(PORT);
-    }
-
-    @Override
-    public String initializeServerName() {
-      return "remoteServerTestServer";
-    }
+  private static AbstractServerConfiguration getConfiguration() {
+    return new AbstractServerConfiguration(PORT).setServerName("remoteServerTestServer");
   }
 
   private static final class TestServer extends AbstractServer<ServerTest, Remote> {
 
     private TestServer() throws RemoteException {
-      this(new TestServerConfiguration());
+      this(getConfiguration());
     }
 
     private TestServer(final AbstractServerConfiguration configuration) throws RemoteException {

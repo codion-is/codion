@@ -8,19 +8,26 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * Configuration values for a {@link AbstractServer}.
  */
-public abstract class AbstractServerConfiguration {
+public final class AbstractServerConfiguration {
 
   private final int serverPort;
   private final Collection<String> sharedLoginProxyClassNames = new ArrayList<>();
   private final Collection<String> loginProxyClassNames = new HashSet<>();
   private final Collection<String> connectionValidatorClassNames = new HashSet<>();
   private String serverName;
+  private Supplier<String> serverNameProvider = new Supplier<String>() {
+    @Override
+    public String get() {
+      return serverName;
+    }
+  };
   private RMIClientSocketFactory rmiClientSocketFactory;
   private RMIServerSocketFactory rmiServerSocketFactory;
 
@@ -32,12 +39,19 @@ public abstract class AbstractServerConfiguration {
   }
 
   /**
+   * @return a configuration according to system properties.
+   */
+  public static AbstractServerConfiguration fromSystemProperties() {
+    return new AbstractServerConfiguration(requireNonNull(Server.SERVER_PORT.get(), Server.SERVER_PORT.getProperty()));
+  }
+
+  /**
    * @return the server name
    * @see #initializeServerName()
    */
   public String getServerName() {
     if (serverName == null) {
-      serverName = initializeServerName();
+      serverName = serverNameProvider.get();
     }
 
     return serverName;
@@ -46,50 +60,59 @@ public abstract class AbstractServerConfiguration {
   /**
    * @return the server port
    */
-  public final int getServerPort() {
+  public int getServerPort() {
     return serverPort;
   }
 
   /**
    * @return the shared login proxy classnames
    */
-  public final Collection<String> getSharedLoginProxyClassNames() {
+  public Collection<String> getSharedLoginProxyClassNames() {
     return sharedLoginProxyClassNames;
   }
 
   /**
    * @return the login proxy classnames
    */
-  public final Collection<String> getLoginProxyClassNames() {
+  public Collection<String> getLoginProxyClassNames() {
     return loginProxyClassNames;
   }
 
   /**
    * @return the connection validator classnames
    */
-  public final Collection<String> getConnectionValidatorClassNames() {
+  public Collection<String> getConnectionValidatorClassNames() {
     return connectionValidatorClassNames;
   }
 
   /**
    * @return the rmi client socket factory to use, null for default
    */
-  public final RMIClientSocketFactory getRmiClientSocketFactory() {
+  public RMIClientSocketFactory getRmiClientSocketFactory() {
     return rmiClientSocketFactory;
   }
 
   /**
    * @return the rmi server socket factory to use, null for default
    */
-  public final RMIServerSocketFactory getRmiServerSocketFactory() {
+  public RMIServerSocketFactory getRmiServerSocketFactory() {
     return rmiServerSocketFactory;
+  }
+
+  /**
+   * @param serverNameProvider the server name provider
+   * @return this configuration instance
+   */
+  public AbstractServerConfiguration setServerNameProvider(final Supplier<String> serverNameProvider) {
+    this.serverNameProvider = requireNonNull(serverNameProvider);
+    return this;
   }
 
   /**
    * @param serverName the server name
    * @return this configuration instance
    */
-  public final AbstractServerConfiguration setServerName(final String serverName) {
+  public AbstractServerConfiguration setServerName(final String serverName) {
     this.serverName = requireNonNull(serverName);
     return this;
   }
@@ -98,7 +121,7 @@ public abstract class AbstractServerConfiguration {
    * @param sharedLoginProxyClassNames the shared login proxy classnames
    * @return this configuration instance
    */
-  public final AbstractServerConfiguration setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
+  public AbstractServerConfiguration setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
     this.sharedLoginProxyClassNames.addAll(requireNonNull(sharedLoginProxyClassNames));
     return this;
   }
@@ -107,7 +130,7 @@ public abstract class AbstractServerConfiguration {
    * @param loginProxyClassNames the login proxy classes to initialize on startup
    * @return this configuration instance
    */
-  public final AbstractServerConfiguration setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
+  public AbstractServerConfiguration setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
     this.loginProxyClassNames.addAll(requireNonNull(loginProxyClassNames));
     return this;
   }
@@ -116,7 +139,7 @@ public abstract class AbstractServerConfiguration {
    * @param connectionValidatorClassNames the connection validation classes to initialize on startup
    * @return this configuration instance
    */
-  public final AbstractServerConfiguration setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
+  public AbstractServerConfiguration setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
     this.connectionValidatorClassNames.addAll(requireNonNull(connectionValidatorClassNames));
     return this;
   }
@@ -125,7 +148,7 @@ public abstract class AbstractServerConfiguration {
    * @param rmiClientSocketFactory the rmi client socket factory to use
    * @return this configuration instance
    */
-  public final AbstractServerConfiguration setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
+  public AbstractServerConfiguration setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
     this.rmiClientSocketFactory = requireNonNull(rmiClientSocketFactory);
     return this;
   }
@@ -134,10 +157,8 @@ public abstract class AbstractServerConfiguration {
    * @param rmiServerSocketFactory the rmi server socket factory to use
    * @return this configuration instance
    */
-  public final AbstractServerConfiguration setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
+  public AbstractServerConfiguration setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
     this.rmiServerSocketFactory = requireNonNull(rmiServerSocketFactory);
     return this;
   }
-
-  protected abstract String initializeServerName();
 }

@@ -101,7 +101,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
   public EntityConnectionServer(final EntityConnectionServerConfiguration configuration) throws RemoteException {
-    super(configuration);
+    super(configuration.getServerConfiguration());
     try {
       if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
         if (configuration.getSerializationFilterDryRun()) {
@@ -635,7 +635,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    */
   static synchronized void shutdownServer() throws ServerAuthenticationException {
     final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.fromSystemProperties();
-    final String serverName = configuration.getServerName();
+    final String serverName = configuration.getServerConfiguration().getServerName();
     final int registryPort = configuration.getRegistryPort();
     final User adminUser = configuration.getAdminUser();
     if (adminUser == null) {
