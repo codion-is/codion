@@ -74,14 +74,14 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     this.sslEnabled = configuration.getSslEnabled();
     this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(), configuration.getServerPort(), ZonedDateTime.now());
     startAuxiliaryServers(configuration.getAuxiliaryServerClassNames());
-      if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-        if (configuration.getSerializationFilterDryRun()) {
-          SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
-        }
-        else {
-          SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
-        }
+    if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
+      if (configuration.getSerializationFilterDryRun()) {
+        SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
       }
+      else {
+        SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
+      }
+    }
     try {
       sharedLoginProxies.addAll(loadSharedLoginProxies(configuration.getSharedLoginProxyClassNames()));
       loginProxies.putAll(loadLoginProxies(configuration.getLoginProxyClassNames()));
