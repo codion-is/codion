@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.servlet;
 
+import org.jminor.common.remote.server.AuxiliaryServer;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.http.HttpServer;
 import org.jminor.common.remote.server.http.HttpServerConfiguration;
@@ -14,7 +15,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 /**
  * A Entity servlet server
  */
-public final class EntityServletServer extends HttpServer implements Server.AuxiliaryServer {
+public final class EntityServletServer extends HttpServer implements AuxiliaryServer {
 
   /**
    * Instantiates a new EntityServletServer, using configuration values from system properties.

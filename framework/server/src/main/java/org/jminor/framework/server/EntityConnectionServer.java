@@ -13,6 +13,7 @@ import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.AbstractServer;
+import org.jminor.common.remote.server.AuxiliaryServer;
 import org.jminor.common.remote.server.ClientLog;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.remote.server.SerializationWhitelist;
