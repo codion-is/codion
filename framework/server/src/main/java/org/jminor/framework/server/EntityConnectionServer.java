@@ -14,11 +14,10 @@ import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.remote.client.Clients;
 import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.AbstractServer;
-import org.jminor.common.remote.server.AuxiliaryServer;
 import org.jminor.common.remote.server.ClientLog;
 import org.jminor.common.remote.server.RemoteClient;
-import org.jminor.common.remote.server.SerializationWhitelist;
 import org.jminor.common.remote.server.Server;
+import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.remote.server.Servers;
 import org.jminor.common.remote.server.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.server.exception.LoginException;
@@ -31,8 +30,6 @@ import org.jminor.framework.domain.entity.EntityDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
@@ -46,21 +43,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.common.remote.server.SerializationWhitelist.isSerializationDryRunActive;
-import static org.jminor.common.remote.server.SerializationWhitelist.writeDryRunWhitelist;
 
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
@@ -78,14 +69,13 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
 
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
 
+  private final EntityConnectionServerConfiguration configuration;
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
   private final Registry registry;
   private final boolean clientLoggingEnabled;
   private final Map<String, Integer> clientTypeConnectionTimeouts = new HashMap<>();
-  private final Thread shutdownHook;
-  private final Collection<AuxiliaryServer> auxiliaryServers = new LinkedList<>();
 
   private final EntityConnectionServerAdmin serverAdmin;
   private final User adminUser;
@@ -101,15 +91,8 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    */
   public EntityConnectionServer(final EntityConnectionServerConfiguration configuration) throws RemoteException {
     super(configuration.getServerConfiguration());
+    this.configuration = configuration;
     try {
-      if (configuration.getSerializationFilterDryRun()) {
-        SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
-      }
-      else {
-        SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
-      }
-      this.shutdownHook = new Thread(getShutdownHook());
-      Runtime.getRuntime().addShutdownHook(this.shutdownHook);
       this.database = requireNonNull(configuration.getDatabase(), "database");
       this.registry = LocateRegistry.createRegistry(configuration.getRegistryPort());
       this.clientLoggingEnabled = configuration.getClientLoggingEnabled();
@@ -119,7 +102,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
       loadDomainModels(configuration.getDomainModelClassNames());
       initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getStartupPoolUsers());
       setConnectionLimit(configuration.getConnectionLimit());
-      startAuxiliaryServers(configuration.getAuxiliaryServerClassNames());
       serverAdmin = new DefaultEntityConnectionServerAdmin(this, configuration);
       bindToRegistry(configuration.getRegistryPort());
     }
@@ -161,9 +143,10 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
         checkConnectionPoolCredentials(connectionPool.getUser(), remoteClient.getDatabaseUser());
       }
 
+      final ServerConfiguration serverConfiguration = configuration.getServerConfiguration();
       final AbstractRemoteEntityConnection connection = createRemoteConnection(connectionPool, getDatabase(), remoteClient,
-              getServerInformation().getServerPort(), isSslEnabled() ? new SslRMIClientSocketFactory() : null,
-              isSslEnabled() ? new SslRMIServerSocketFactory() : null);
+              serverConfiguration.getServerPort(), serverConfiguration.getRmiClientSocketFactory(),
+              serverConfiguration.getRmiServerSocketFactory());
       connection.setLoggingEnabled(clientLoggingEnabled);
 
       connection.addDisconnectListener(this::disconnectQuietly);
@@ -400,21 +383,20 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
   }
 
   @Override
-  protected final void onShutdown() throws RemoteException {
+  protected final void onShutdown() {
     super.onShutdown();
-    connectionMaintenanceScheduler.stop();
-    ConnectionPools.closeConnectionPools();
-    auxiliaryServers.forEach(EntityConnectionServer::stopAuxiliaryServer);
-    if (database.isEmbedded()) {
-      database.shutdownEmbedded(null);
-    }
     try {
       UnicastRemoteObject.unexportObject(registry, true);
     }
     catch (final NoSuchObjectException ignored) {/*ignored*/}
-    UnicastRemoteObject.unexportObject(serverAdmin, true);
-    if (isSerializationDryRunActive()) {
-      writeDryRunWhitelist();
+    try {
+      UnicastRemoteObject.unexportObject(serverAdmin, true);
+    }
+    catch (final NoSuchObjectException ignored) {/*ignored*/}
+    connectionMaintenanceScheduler.stop();
+    ConnectionPools.closeConnectionPools();
+    if (database.isEmbedded()) {
+      database.shutdownEmbedded(null);
     }
   }
 
@@ -437,35 +419,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
     final String connectInfo = getServerInformation().getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
-  }
-
-  private void startAuxiliaryServers(final Collection<String> auxiliaryServerClassNames) {
-    if (!Util.nullOrEmpty(auxiliaryServerClassNames)) {
-      try {
-        for (final String auxiliaryServerClassName : auxiliaryServerClassNames) {
-          final AuxiliaryServer auxiliaryServer = AuxiliaryServer.getAuxiliaryServer(auxiliaryServerClassName);
-          auxiliaryServer.setServer(this);
-          auxiliaryServers.add(auxiliaryServer);
-          newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
-                  startAuxiliaryServer(auxiliaryServer)).get();
-        }
-      }
-      catch (final Exception e) {
-        LOG.error("Starting auxiliary server", e);
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
-  private Runnable getShutdownHook() {
-    return () -> {
-      try {
-        shutdown();
-      }
-      catch (final RemoteException e) {
-        LOG.error("Exception during shutdown", e);
-      }
-    };
   }
 
   /**
@@ -534,33 +487,9 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
     }
   }
 
-  private static Object startAuxiliaryServer(final AuxiliaryServer server) throws Exception {
-    try {
-      server.startServer();
-
-      return null;
-    }
-    catch (final Exception e) {
-      LOG.error("Starting auxiliary server", e);
-      throw e;
-    }
-  }
-
-  private static void stopAuxiliaryServer(final AuxiliaryServer server) {
-    try {
-      server.stopServer();
-    }
-    catch (final Exception e) {
-      LOG.error("Stopping auxiliary server", e);
-    }
-  }
-
   private static <T extends Throwable> T logShutdownAndReturn(final T exception, final EntityConnectionServer server) {
     LOG.error("Exception on server startup", exception);
-    try {
-      server.shutdown();
-    }
-    catch (final RemoteException ignored) {/*ignored*/}
+    server.shutdown();
 
     return exception;
   }
@@ -576,17 +505,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
       catch (final Exception e) {
         LOG.error("Exception while maintaining connections", e);
       }
-    }
-  }
-
-  private static final class DaemonThreadFactory implements ThreadFactory {
-
-    @Override
-    public Thread newThread(final Runnable runnable) {
-      final Thread thread = new Thread(runnable);
-      thread.setDaemon(true);
-
-      return thread;
     }
   }
 

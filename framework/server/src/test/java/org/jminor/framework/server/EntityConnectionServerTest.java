@@ -332,6 +332,7 @@ public class EntityConnectionServerTest {
     serverConfiguration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
     serverConfiguration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
     serverConfiguration.setSslEnabled(true);
+    serverConfiguration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
     final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(serverConfiguration, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
@@ -340,7 +341,6 @@ public class EntityConnectionServerTest {
     configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
     configuration.setDomainModelClassNames(singletonList("org.jminor.framework.server.TestDomain"));
     configuration.setClientLoggingEnabled(true);
-    configuration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
 
     return configuration;
   }

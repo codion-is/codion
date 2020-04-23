@@ -29,12 +29,9 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   private Integer connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
   private Boolean clientLoggingEnabled = false;
   private Integer connectionTimeout = ServerConfiguration.DEFAULT_SERVER_CONNECTION_TIMEOUT;
-  private String serializationFilterWhitelist;
-  private Boolean serializationFilterDryRun = false;
   private String connectionPoolProvider;
   private final Collection<String> domainModelClassNames = new HashSet<>();
   private final Collection<User> startupPoolUsers = new HashSet<>();
-  private final Collection<String> auxiliaryServerClassNames = new HashSet<>();
   private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
 
   /**
@@ -102,16 +99,6 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   }
 
   @Override
-  public String getSerializationFilterWhitelist() {
-    return serializationFilterWhitelist;
-  }
-
-  @Override
-  public Boolean getSerializationFilterDryRun() {
-    return serializationFilterDryRun;
-  }
-
-  @Override
   public Collection<String> getDomainModelClassNames() {
     return domainModelClassNames;
   }
@@ -119,11 +106,6 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   @Override
   public Collection<User> getStartupPoolUsers() {
     return startupPoolUsers;
-  }
-
-  @Override
-  public Collection<String> getAuxiliaryServerClassNames() {
-    return auxiliaryServerClassNames;
   }
 
   @Override
@@ -174,18 +156,6 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   }
 
   @Override
-  public EntityConnectionServerConfiguration setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
-    this.serializationFilterWhitelist = requireNonNull(serializationFilterWhitelist);
-    return this;
-  }
-
-  @Override
-  public EntityConnectionServerConfiguration setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
-    this.serializationFilterDryRun = requireNonNull(serializationFilterDryRun);
-    return this;
-  }
-
-  @Override
   public EntityConnectionServerConfiguration setDomainModelClassNames(final Collection<String> domainModelClassNames) {
     this.domainModelClassNames.addAll(requireNonNull(domainModelClassNames));
     return this;
@@ -194,12 +164,6 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   @Override
   public EntityConnectionServerConfiguration setStartupPoolUsers(final Collection<User> startupPoolUsers) {
     this.startupPoolUsers.addAll(requireNonNull(startupPoolUsers));
-    return this;
-  }
-
-  @Override
-  public EntityConnectionServerConfiguration setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
-    this.auxiliaryServerClassNames.addAll(requireNonNull(auxiliaryServerClassNames));
     return this;
   }
 

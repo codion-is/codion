@@ -23,11 +23,14 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private final Collection<String> sharedLoginProxyClassNames = new ArrayList<>();
   private final Collection<String> loginProxyClassNames = new HashSet<>();
   private final Collection<String> connectionValidatorClassNames = new HashSet<>();
+  private final Collection<String> auxiliaryServerClassNames = new HashSet<>();
   private boolean sslEnabled = true;
   private String serverName;
   private Supplier<String> serverNameProvider = () -> serverName;
   private RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
   private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
+  private String serializationFilterWhitelist;
+  private Boolean serializationFilterDryRun = false;
 
   DefaultServerConfiguration(final int serverPort) {
     this.serverPort = serverPort;
@@ -63,6 +66,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
+  public Collection<String> getAuxiliaryServerClassNames() {
+    return auxiliaryServerClassNames;
+  }
+
+  @Override
   public Boolean getSslEnabled() {
     return sslEnabled;
   }
@@ -75,6 +83,16 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public RMIServerSocketFactory getRmiServerSocketFactory() {
     return rmiServerSocketFactory;
+  }
+
+  @Override
+  public String getSerializationFilterWhitelist() {
+    return serializationFilterWhitelist;
+  }
+
+  @Override
+  public Boolean getSerializationFilterDryRun() {
+    return serializationFilterDryRun;
   }
 
   @Override
@@ -108,6 +126,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
+  public ServerConfiguration setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
+    this.auxiliaryServerClassNames.addAll(requireNonNull(auxiliaryServerClassNames));
+    return this;
+  }
+
+  @Override
   public ServerConfiguration setSslEnabled(final Boolean sslEnabled) {
     this.sslEnabled = requireNonNull(sslEnabled);
     if (sslEnabled) {
@@ -130,6 +154,18 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public DefaultServerConfiguration setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
     this.rmiServerSocketFactory = rmiServerSocketFactory;
+    return this;
+  }
+
+  @Override
+  public ServerConfiguration setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
+    this.serializationFilterWhitelist = requireNonNull(serializationFilterWhitelist);
+    return this;
+  }
+
+  @Override
+  public ServerConfiguration setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
+    this.serializationFilterDryRun = requireNonNull(serializationFilterDryRun);
     return this;
   }
 }

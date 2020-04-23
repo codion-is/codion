@@ -4,6 +4,7 @@
 package org.jminor.common.remote.server;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.Text;
 import org.jminor.common.value.PropertyValue;
 
 import java.rmi.registry.Registry;
@@ -149,6 +150,31 @@ public interface ServerConfiguration {
   PropertyValue<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("jminor.server.auxiliaryServerClassNames", null);
 
   /**
+   * The serialization whitelist file to use if any
+   */
+  PropertyValue<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("jminor.server.serializationFilterWhitelist", null);
+
+  /**
+   * If true then the serialization whitelist specified by {@link #SERIALIZATION_FILTER_WHITELIST} is populated
+   * with the names of all deserialized classes on server shutdown. Note this overwrites the file if it already exists.
+   */
+  PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("jminor.server.serializationFilterDryRun", false);
+
+  /**
+   * Specifies a comma separated list of ConnectionValidator class names, which should be initialized on server startup,
+   * these classes must be available on the server classpath and contain a parameterless constructor
+   * @see org.jminor.common.remote.server.ConnectionValidator
+   */
+  PropertyValue<String> SERVER_CONNECTION_VALIDATOR_CLASSES = Configuration.stringValue("jminor.server.connectionValidatorClasses", null);
+
+  /**
+   * Specifies a comma separated list of LoginProxy class names, which should be initialized on server startup,
+   * these classes must be available on the server classpath and contain a parameterless constructor
+   * @see org.jminor.common.remote.server.LoginProxy
+   */
+  PropertyValue<String> SERVER_LOGIN_PROXY_CLASSES = Configuration.stringValue("jminor.server.loginProxyClasses", null);
+
+  /**
    * @return the server name
    * @see #setServerNameProvider(Supplier)
    */
@@ -175,6 +201,11 @@ public interface ServerConfiguration {
   Collection<String> getConnectionValidatorClassNames();
 
   /**
+   * @return the class names of auxiliary servers to run alongside this server
+   */
+  Collection<String> getAuxiliaryServerClassNames();
+
+  /**
    * @return true if ssl is enabled
    */
   Boolean getSslEnabled();
@@ -188,6 +219,16 @@ public interface ServerConfiguration {
    * @return the rmi server socket factory to use, null for default
    */
   RMIServerSocketFactory getRmiServerSocketFactory();
+
+  /**
+   * @return the serialization whitelist to use, if any
+   */
+  String getSerializationFilterWhitelist();
+
+  /**
+   * @return true if a serialization filter dry run should be active
+   */
+  Boolean getSerializationFilterDryRun();
 
   /**
    * @param serverNameProvider the server name provider
@@ -220,6 +261,12 @@ public interface ServerConfiguration {
   ServerConfiguration setConnectionValidatorClassNames(Collection<String> connectionValidatorClassNames);
 
   /**
+   * @param auxiliaryServerClassNames the class names of auxiliary servers to run alongside this server
+   * @return this configuration instance
+   */
+  ServerConfiguration setAuxiliaryServerClassNames(Collection<String> auxiliaryServerClassNames);
+
+  /**
    * When set to true this also sets the rmi client/server socket factories.
    * @param sslEnabled if true then ssl is enabled
    * @return this configuration instance
@@ -241,6 +288,18 @@ public interface ServerConfiguration {
   ServerConfiguration setRmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory);
 
   /**
+   * @param serializationFilterWhitelist the serialization whitelist
+   * @return this configuration instance
+   */
+  ServerConfiguration setSerializationFilterWhitelist(String serializationFilterWhitelist);
+
+  /**
+   * @param serializationFilterDryRun true if serialization filter dry run is active
+   * @return this configuration instance
+   */
+  ServerConfiguration setSerializationFilterDryRun(Boolean serializationFilterDryRun);
+
+  /**
    * @param serverPort the server port
    * @return a default server configuration
    */
@@ -252,6 +311,19 @@ public interface ServerConfiguration {
    * @return a configuration according to system properties.
    */
   static ServerConfiguration fromSystemProperties() {
-    return new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()));
+    final DefaultServerConfiguration configuration =
+            new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()));
+    configuration.setAuxiliaryServerClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_CLASS_NAMES.get()));
+    configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
+    configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
+    configuration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
+    if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
+      configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
+    }
+    if (SERIALIZATION_FILTER_DRYRUN.get() != null) {
+      configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
+    }
+
+    return configuration;
   }
 }

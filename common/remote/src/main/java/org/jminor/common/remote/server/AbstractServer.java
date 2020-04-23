@@ -3,6 +3,7 @@
  */
 package org.jminor.common.remote.server;
 
+import org.jminor.common.Util;
 import org.jminor.common.remote.client.ConnectionRequest;
 import org.jminor.common.remote.server.exception.ConnectionNotAvailableException;
 import org.jminor.common.remote.server.exception.ConnectionValidationException;
@@ -27,9 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadFactory;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
+import static org.jminor.common.remote.server.SerializationWhitelist.isSerializationDryRunActive;
+import static org.jminor.common.remote.server.SerializationWhitelist.writeDryRunWhitelist;
 
 /**
  * A default Server implementation.
@@ -41,6 +47,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
+  /** Only Java 8 compatible for now */
+  private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = Util.onClasspath("sun.misc.ObjectInputFilter");
   private static final String FROM_CLASSPATH = "' from classpath";
 
   private final Map<UUID, RemoteClientConnection<T>> connections = new ConcurrentHashMap<>();
@@ -48,6 +56,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   private final List<LoginProxy> sharedLoginProxies = new ArrayList<>();
   private final Map<String, ConnectionValidator> connectionValidators = new HashMap<>();
   private final ConnectionValidator defaultConnectionValidator = new DefaultConnectionValidator();
+  private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
 
   private final boolean sslEnabled;
   private final ServerInformation serverInformation;
@@ -61,8 +70,18 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    */
   public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
     super(configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
+    Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     this.sslEnabled = configuration.getSslEnabled();
     this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(), configuration.getServerPort(), ZonedDateTime.now());
+    startAuxiliaryServers(configuration.getAuxiliaryServerClassNames());
+      if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
+        if (configuration.getSerializationFilterDryRun()) {
+          SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
+        }
+        else {
+          SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
+        }
+      }
     try {
       sharedLoginProxies.addAll(loadSharedLoginProxies(configuration.getSharedLoginProxyClassNames()));
       loginProxies.putAll(loadLoginProxies(configuration.getLoginProxyClassNames()));
@@ -121,6 +140,9 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     this.connectionLimit = connectionLimit;
   }
 
+  /**
+   * @return true if ssl is enabled
+   */
   public final boolean isSslEnabled() {
     return sslEnabled;
   }
@@ -207,9 +229,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   /**
    * Shuts down this server.
-   * @throws RemoteException in case of an exception
    */
-  public final void shutdown() throws RemoteException {
+  public final void shutdown() {
     if (shuttingDown) {
       return;
     }
@@ -230,15 +251,18 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
     sharedLoginProxies.forEach(AbstractServer::closeLoginProxy);
     loginProxies.values().forEach(AbstractServer::closeLoginProxy);
+    auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
+    if (OBJECT_INPUT_FILTER_ON_CLASSPATH && isSerializationDryRunActive()) {
+      writeDryRunWhitelist();
+    }
 
     onShutdown();
   }
 
   /**
    * Called after shutdown has finished, for subclasses
-   * @throws RemoteException in case of an exception
    */
-  protected void onShutdown() throws RemoteException {/*Provided for subclasses*/}
+  protected void onShutdown() {/*Provided for subclasses*/}
 
   /**
    * Establishes the actual client connection.
@@ -287,12 +311,49 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
   }
 
+  private void startAuxiliaryServers(final Collection<String> auxiliaryServerClassNames) {
+    try {
+      for (final String auxiliaryServerClassName : auxiliaryServerClassNames) {
+        final AuxiliaryServer auxiliaryServer = AuxiliaryServer.getAuxiliaryServer(auxiliaryServerClassName);
+        auxiliaryServer.setServer(this);
+        auxiliaryServers.add(auxiliaryServer);
+        newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
+                startAuxiliaryServer(auxiliaryServer)).get();
+      }
+    }
+    catch (final Exception e) {
+      LOG.error("Starting auxiliary server", e);
+      throw new RuntimeException(e);
+    }
+  }
+
   private static void closeLoginProxy(final LoginProxy loginProxy) {
     try {
       loginProxy.close();
     }
     catch (final Exception e) {
       LOG.error("Exception while closing loginProxy for client type: " + loginProxy.getClientTypeId(), e);
+    }
+  }
+
+  private static Object startAuxiliaryServer(final AuxiliaryServer server) throws Exception {
+    try {
+      server.startServer();
+
+      return null;
+    }
+    catch (final Exception e) {
+      LOG.error("Starting auxiliary server", e);
+      throw e;
+    }
+  }
+
+  private static void stopAuxiliaryServer(final AuxiliaryServer server) {
+    try {
+      server.stopServer();
+    }
+    catch (final Exception e) {
+      LOG.error("Stopping auxiliary server", e);
     }
   }
 
@@ -390,5 +451,16 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
     @Override
     public void validate(final ConnectionRequest connectionRequest) throws ConnectionValidationException {/*No validation*/}
+  }
+
+  private static final class DaemonThreadFactory implements ThreadFactory {
+
+    @Override
+    public Thread newThread(final Runnable runnable) {
+      final Thread thread = new Thread(runnable);
+      thread.setDaemon(true);
+
+      return thread;
+    }
   }
 }
