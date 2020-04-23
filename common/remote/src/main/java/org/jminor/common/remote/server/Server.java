@@ -21,37 +21,10 @@ import java.util.UUID;
  */
 public interface Server<T extends Remote, A extends Remote> extends Remote {
 
-  int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
-
   /**
    * Specifies the client host connection parameter
    */
   String CLIENT_HOST_KEY = "clientHost";
-
-  /**
-   * The system property key for specifying a ssl keystore
-   */
-  String JAVAX_NET_KEYSTORE = "javax.net.ssl.keyStore";
-
-  /**
-   * The system property key for specifying a ssl keystore password
-   */
-  String JAVAX_NET_KEYSTORE_PASSWORD = "javax.net.ssl.keyStorePassword";
-
-  /**
-   * The system property key for specifying a ssl truststore
-   */
-  String JAVAX_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
-
-  /**
-   * The system property key for specifying a ssl truststore password
-   */
-  String JAVAX_NET_TRUSTSTORE_PASSWORD = "javax.net.ssl.trustStorePassword";
-
-  /**
-   * Localhost
-   */
-  String LOCALHOST = "localhost";
 
   /**
    * Establishes a connection to this Server

@@ -19,12 +19,39 @@ import static java.util.Objects.requireNonNull;
  */
 public interface ServerConfiguration {
 
+  int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
+
+  /**
+   * The system property key for specifying a ssl keystore
+   */
+  String JAVAX_NET_KEYSTORE = "javax.net.ssl.keyStore";
+
+  /**
+   * The system property key for specifying a ssl keystore password
+   */
+  String JAVAX_NET_KEYSTORE_PASSWORD = "javax.net.ssl.keyStorePassword";
+
+  /**
+   * The system property key for specifying a ssl truststore
+   */
+  String JAVAX_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
+
+  /**
+   * The system property key for specifying a ssl truststore password
+   */
+  String JAVAX_NET_TRUSTSTORE_PASSWORD = "javax.net.ssl.trustStorePassword";
+
+  /**
+   * Localhost
+   */
+  String LOCALHOST = "localhost";
+
   /**
    * The host on which to locate the server<br>
    * Value type: String<br>
    * Default value: localhost
    */
-  PropertyValue<String> SERVER_HOST_NAME = Configuration.stringValue("jminor.server.hostname", Server.LOCALHOST);
+  PropertyValue<String> SERVER_HOST_NAME = Configuration.stringValue("jminor.server.hostname", LOCALHOST);
 
   /**
    * Specifies the rmi server hostname<br>
@@ -32,7 +59,7 @@ public interface ServerConfiguration {
    * Value type: String<br>
    * Default value: localhost
    */
-  PropertyValue<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", Server.LOCALHOST);
+  PropertyValue<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", LOCALHOST);
 
   /**
    * Specifies the prefix used when exporting/looking up the JMinor server<br>
@@ -62,28 +89,28 @@ public interface ServerConfiguration {
    * Value type: String
    * Default value: null
    */
-  PropertyValue<String> KEYSTORE = Configuration.stringValue(Server.JAVAX_NET_KEYSTORE, null);
+  PropertyValue<String> KEYSTORE = Configuration.stringValue(JAVAX_NET_KEYSTORE, null);
 
   /**
    * The rmi ssl keystore password to use<br>
    * Value type: String
    * Default value: null
    */
-  PropertyValue<String> KEYSTORE_PASSWORD = Configuration.stringValue(Server.JAVAX_NET_KEYSTORE_PASSWORD, null);
+  PropertyValue<String> KEYSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_KEYSTORE_PASSWORD, null);
 
   /**
    * The rmi ssl truststore to use<br>
    * Value type: String
    * Default value: null
    */
-  PropertyValue<String> TRUSTSTORE = Configuration.stringValue(Server.JAVAX_NET_TRUSTSTORE, null);
+  PropertyValue<String> TRUSTSTORE = Configuration.stringValue(JAVAX_NET_TRUSTSTORE, null);
 
   /**
    * The rmi ssl truststore password to use<br>
    * Value type: String
    * Default value: null
    */
-  PropertyValue<String> TRUSTSTORE_PASSWORD = Configuration.stringValue(Server.JAVAX_NET_TRUSTSTORE_PASSWORD, null);
+  PropertyValue<String> TRUSTSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_TRUSTSTORE_PASSWORD, null);
 
   /**
    * The port on which the server should export the remote admin interface<br>
@@ -110,7 +137,7 @@ public interface ServerConfiguration {
    * Value type: Integer<br>
    * Default value: 120000ms (2 minutes)
    */
-  PropertyValue<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("jminor.server.connectionTimeout", Server.DEFAULT_SERVER_CONNECTION_TIMEOUT);
+  PropertyValue<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("jminor.server.connectionTimeout", DEFAULT_SERVER_CONNECTION_TIMEOUT);
 
   /**
    * A comma separated list of auxiliary servers to run alongside this Server<br>

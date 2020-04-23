@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.database.Database;
-import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.version.Versions;
@@ -32,7 +31,7 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   private Boolean sslEnabled = true;
   private Integer connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
   private Boolean clientLoggingEnabled = false;
-  private Integer connectionTimeout = Server.DEFAULT_SERVER_CONNECTION_TIMEOUT;
+  private Integer connectionTimeout = ServerConfiguration.DEFAULT_SERVER_CONNECTION_TIMEOUT;
   private String serializationFilterWhitelist;
   private Boolean serializationFilterDryRun = false;
   private String connectionPoolProvider;
