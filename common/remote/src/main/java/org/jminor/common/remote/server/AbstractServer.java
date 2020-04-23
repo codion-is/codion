@@ -49,7 +49,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   private final Map<String, ConnectionValidator> connectionValidators = new HashMap<>();
   private final ConnectionValidator defaultConnectionValidator = new DefaultConnectionValidator();
 
-  private final ServerInfo serverInfo;
+  private final ServerInformation serverInformation;
   private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
 
@@ -60,7 +60,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    */
   public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
     super(configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
-    this.serverInfo = new DefaultServerInfo(UUID.randomUUID(), configuration.getServerName(), configuration.getServerPort(), ZonedDateTime.now());
+    this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(), configuration.getServerPort(), ZonedDateTime.now());
     try {
       sharedLoginProxies.addAll(loadSharedLoginProxies(configuration.getSharedLoginProxyClassNames()));
       loginProxies.putAll(loadLoginProxies(configuration.getLoginProxyClassNames()));
@@ -120,8 +120,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   }
 
   @Override
-  public final ServerInfo getServerInfo() {
-    return serverInfo;
+  public final ServerInformation getServerInformation() {
+    return serverInformation;
   }
 
   @Override

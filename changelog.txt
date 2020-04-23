@@ -5914,3 +5914,4 @@
   EntityConnectionServerConfiguration interface extracted
   Configuration constants moved from Server to ServerConfiguration
   HttpServerConfiguration interface extracted
+  Server.ServerInfo moved up to package level, renamed ServerInformation

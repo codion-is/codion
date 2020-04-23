@@ -7,6 +7,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.remote.client.Clients;
 import org.jminor.common.remote.server.Server;
 import org.jminor.common.remote.server.ServerConfiguration;
+import org.jminor.common.remote.server.ServerInformation;
 import org.jminor.common.remote.server.Servers;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
@@ -39,7 +40,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   public static final String REMOTE_CLIENT_DOMAIN_ID = "jminor.client.domainId";
 
   private Server<RemoteEntityConnection, Remote> server;
-  private Server.ServerInfo serverInfo;
+  private ServerInformation serverInformation;
   private boolean truststoreResolved = false;
 
   private String serverHostName;
@@ -77,7 +78,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       return serverHostName + " - " + Messages.get(Messages.NOT_CONNECTED);
     }
 
-    return serverInfo.getServerName() + "@" + serverHostName;
+    return serverInformation.getServerName() + "@" + serverHostName;
   }
 
   /**
@@ -94,8 +95,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   /**
    * @return the info on the server last connected to
    */
-  public Server.ServerInfo getServerInfo() {
-    return serverInfo;
+  public ServerInformation getServerInformation() {
+    return serverInformation;
   }
 
   @Override
@@ -140,13 +141,13 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       }//just to check the connection
     }
     catch (final RemoteException e) {
-      LOG.info("{} was unreachable, {} - {} reconnecting...", new Object[] {serverInfo.getServerName(), getUser(), getClientId()});
+      LOG.info("{} was unreachable, {} - {} reconnecting...", new Object[] {serverInformation.getServerName(), getUser(), getClientId()});
       unreachable = true;
     }
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      LOG.info("ClientID: {}, {} connected to server: {}", new Object[] {getUser(), getClientId(), serverInfo.getServerName()});
+      LOG.info("ClientID: {}, {} connected to server: {}", new Object[] {getUser(), getClientId(), serverInformation.getServerName()});
     }
 
     return this.server;
@@ -154,7 +155,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   private void connectToServer() throws RemoteException, NotBoundException {
     this.server = Servers.getServer(getServerHostName(), ServerConfiguration.SERVER_NAME_PREFIX.get(), getRegistryPort(), getServerPort());
-    this.serverInfo = this.server.getServerInfo();
+    this.serverInformation = this.server.getServerInformation();
   }
 
   private Integer getServerPort() {
