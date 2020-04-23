@@ -127,13 +127,6 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
     return AbstractRemoteEntityConnection.getRequestsPerSecond();
   }
 
-  /**
-   * @return true if client logging is enabled
-   */
-  public final boolean isClientLoggingEnabled() {
-    return clientLoggingEnabled;
-  }
-
   @Override
   protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient)
           throws RemoteException, LoginException, ConnectionNotAvailableException {
