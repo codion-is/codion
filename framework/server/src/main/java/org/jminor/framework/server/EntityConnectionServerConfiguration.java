@@ -205,8 +205,8 @@ public interface EntityConnectionServerConfiguration {
    * When set to true this also sets the rmi client/server socket factories.
    * @param sslEnabled if true then ssl is enabled
    * @return this configuration instance
-   * @see #setRmiClientSocketFactory(RMIClientSocketFactory)
-   * @see #setRmiServerSocketFactory(RMIServerSocketFactory)
+   * @see ServerConfiguration#setRmiClientSocketFactory(java.rmi.server.RMIClientSocketFactory)
+   * @see ServerConfiguration#setRmiServerSocketFactory(java.rmi.server.RMIServerSocketFactory)
    */
   EntityConnectionServerConfiguration setSslEnabled(Boolean sslEnabled);
 

@@ -150,7 +150,7 @@ public interface ServerConfiguration {
 
   /**
    * @return the server name
-   * @see #initializeServerName()
+   * @see #setServerNameProvider(Supplier)
    */
   String getServerName();
 
