@@ -16,7 +16,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServer;
 import org.jminor.framework.server.ServerConfiguration;
 import org.jminor.framework.servlet.EntityServletServer;
 
@@ -50,7 +50,7 @@ public final class HttpEntityConnectionTest {
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static DefaultEntityConnectionServer server;
+  private static EntityConnectionServer server;
 
   private final HttpEntityConnection connection = new HttpEntityConnection("TestDomain",
           HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
@@ -62,7 +62,7 @@ public final class HttpEntityConnectionTest {
   @BeforeAll
   public static void setUp() throws Exception {
     configure();
-    server = DefaultEntityConnectionServer.startServer();
+    server = EntityConnectionServer.startServer();
   }
 
   @AfterAll

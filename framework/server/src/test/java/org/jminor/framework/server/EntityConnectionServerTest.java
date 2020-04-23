@@ -43,7 +43,7 @@ import static java.util.Collections.singletonList;
 import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultEntityConnectionServerTest {
+public class EntityConnectionServerTest {
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -58,8 +58,8 @@ public class DefaultEntityConnectionServerTest {
   public static synchronized void setUp() throws Exception {
     configure();
     final Database database = Databases.getInstance();
-    final String serverName = DefaultEntityConnectionServer.initializeServerName(database.getHost(), database.getSid());
-    DefaultEntityConnectionServer.startServer();
+    final String serverName = EntityConnectionServer.initializeServerName(database.getHost(), database.getSid());
+    EntityConnectionServer.startServer();
     server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(), Server.REGISTRY_PORT.get()).lookup(serverName);
     admin = server.getServerAdmin(ADMIN_USER);
   }
@@ -334,7 +334,7 @@ public class DefaultEntityConnectionServerTest {
     ServerConfiguration.SERVER_LOGIN_PROXY_CLASSES.set("org.jminor.framework.server.TestLoginProxy");
     ServerConfiguration.SERVER_CONNECTION_VALIDATOR_CLASSES.set("org.jminor.framework.server.TestConnectionValidator");
     ServerConfiguration.SERVER_CLIENT_LOGGING_ENABLED.set(true);
-    DefaultEntityConnectionServer.SERIALIZATION_FILTER_WHITELIST.set("src/test/security/serialization-whitelist-test.txt");
+    EntityConnectionServer.SERIALIZATION_FILTER_WHITELIST.set("src/test/security/serialization-whitelist-test.txt");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
     Server.TRUSTSTORE.set("src/main/security/jminor_truststore.jks");
     Server.TRUSTSTORE_PASSWORD.set("crappypass");

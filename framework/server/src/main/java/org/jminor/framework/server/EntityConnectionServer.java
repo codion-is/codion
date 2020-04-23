@@ -69,7 +69,7 @@ import static org.jminor.common.remote.server.SerializationWhitelist.writeDryRun
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
  */
-public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemoteEntityConnection, EntityConnectionServerAdmin> {
+public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityConnection, EntityConnectionServerAdmin> {
 
   /**
    * The serialization whitelist file to use if any
@@ -93,7 +93,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   private static final long serialVersionUID = 1;
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConnectionServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServer.class);
 
   protected static final String START = "start";
   protected static final String STOP = "stop";
@@ -128,7 +128,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
-  public DefaultEntityConnectionServer(final String serverName, final ServerConfiguration configuration) throws RemoteException {
+  public EntityConnectionServer(final String serverName, final ServerConfiguration configuration) throws RemoteException {
     super(configuration.getServerPort(), serverName, configuration.getSslEnabled() ? new SslRMIClientSocketFactory() : null,
             configuration.getSslEnabled() ? new SslRMIServerSocketFactory() : null);
     try {
@@ -446,7 +446,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     super.onShutdown();
     connectionMaintenanceScheduler.stop();
     ConnectionPools.closeConnectionPools();
-    auxiliaryServers.forEach(DefaultEntityConnectionServer::stopAuxiliaryServer);
+    auxiliaryServers.forEach(EntityConnectionServer::stopAuxiliaryServer);
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
     }
@@ -637,7 +637,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
-  private static <T extends Throwable> T logShutdownAndReturn(final T exception, final DefaultEntityConnectionServer server) {
+  private static <T extends Throwable> T logShutdownAndReturn(final T exception, final EntityConnectionServer server) {
     LOG.error("Exception on server startup", exception);
     try {
       server.shutdown();
@@ -673,16 +673,26 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * Starts the server
+   * Starts the server, using the configuration from system properties.
    * @return the server instance
    * @throws RemoteException in case of an exception
    */
-  public static synchronized DefaultEntityConnectionServer startServer() throws RemoteException {
+  public static synchronized EntityConnectionServer startServer() throws RemoteException {
+    return startServer(ServerConfiguration.fromSystemProperties());
+  }
+
+  /**
+   * Starts the server.
+   * @param configuration the configuration
+   * @return the server instance
+   * @throws RemoteException in case of an exception
+   */
+  public static synchronized EntityConnectionServer startServer(final ServerConfiguration configuration) throws RemoteException {
+    requireNonNull(configuration, "configuration");
     try {
-      final ServerConfiguration configuration = ServerConfiguration.fromSystemProperties();
       final String serverName = initializeServerName(configuration.getDatabase().getHost(), configuration.getDatabase().getSid());
 
-      return new DefaultEntityConnectionServer(serverName, configuration);
+      return new EntityConnectionServer(serverName, configuration);
     }
     catch (final RuntimeException e) {
       throw e;

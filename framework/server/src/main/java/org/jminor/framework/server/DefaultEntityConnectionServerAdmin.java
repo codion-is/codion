@@ -59,7 +59,7 @@ final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject imple
   /**
    * The server being administrated
    */
-  private final DefaultEntityConnectionServer server;
+  private final EntityConnectionServer server;
   private final LinkedList<GcEvent> gcEventList = new LinkedList<>();
   private final Util.PropertyWriter propertyWriter = new SystemPropertyWriter();
 
@@ -72,7 +72,7 @@ final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject imple
    * @throws RemoteException in case of an exception
    * @throws NullPointerException in case {@code serverAdminPort} or {@code server} are not specified
    */
-  DefaultEntityConnectionServerAdmin(final DefaultEntityConnectionServer server, final Integer serverAdminPort) throws RemoteException {
+  DefaultEntityConnectionServerAdmin(final EntityConnectionServer server, final Integer serverAdminPort) throws RemoteException {
     super(requireNonNull(serverAdminPort),
             requireNonNull(server).isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());

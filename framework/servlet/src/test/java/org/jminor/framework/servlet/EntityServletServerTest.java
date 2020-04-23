@@ -14,7 +14,7 @@ import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.framework.server.ServerConfiguration;
 
@@ -74,7 +74,7 @@ public class EntityServletServerTest {
   private static HttpHost TARGET_HOST;
   private static String SERVER_BASEURL;
 
-  private static DefaultEntityConnectionServer server;
+  private static EntityConnectionServer server;
   private static EntityConnectionServerAdmin admin;
 
   @BeforeAll
@@ -83,7 +83,7 @@ public class EntityServletServerTest {
     HOSTNAME = Server.SERVER_HOST_NAME.get();
     TARGET_HOST = new HttpHost(HOSTNAME, WEB_SERVER_PORT_NUMBER, HTTPS);
     SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities";
-    server = DefaultEntityConnectionServer.startServer();
+    server = EntityConnectionServer.startServer();
     admin = server.getServerAdmin(ADMIN_USER);
   }
 

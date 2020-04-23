@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 import static org.jminor.common.Util.nullOrEmpty;
 
 /**
- * Configuration values for a {@link DefaultEntityConnectionServer}.
+ * Configuration values for a {@link EntityConnectionServer}.
  */
 public final class ServerConfiguration {
 
@@ -82,15 +82,15 @@ public final class ServerConfiguration {
    */
   public static final PropertyValue<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("jminor.server.domain.classes", null);
 
-  private Integer serverPort;
+  private final int serverPort;
+  private final int registryPort;
   private Integer serverAdminPort;
-  private Integer registryPort;
   private Database database;
+  private User adminUser;
   private Boolean sslEnabled = true;
   private Integer connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
   private Boolean clientLoggingEnabled = false;
   private Integer connectionTimeout = Server.DEFAULT_SERVER_CONNECTION_TIMEOUT;
-  private User adminUser;
   private final Collection<String> domainModelClassNames = new HashSet<>();
   private final Collection<String> loginProxyClassNames = new HashSet<>();
   private final Collection<String> connectionValidatorClassNames = new HashSet<>();
@@ -100,10 +100,11 @@ public final class ServerConfiguration {
 
   /**
    * @param serverPort the port on which to make the server accessible
+   * @param registryPort the registry port to use
    */
-  public ServerConfiguration port(final Integer serverPort) {
-    this.serverPort = requireNonNull(serverPort);
-    return this;
+  public ServerConfiguration(final int serverPort, final int registryPort) {
+    this.serverPort = serverPort;
+    this.registryPort = registryPort;
   }
 
   /**
@@ -115,18 +116,18 @@ public final class ServerConfiguration {
   }
 
   /**
-   * @param registryPort the registry port to use
-   */
-  public ServerConfiguration registryPort(final Integer registryPort) {
-    this.registryPort = requireNonNull(registryPort);
-    return this;
-  }
-
-  /**
    * @param database the Database implementation
    */
   public ServerConfiguration database(final Database database) {
     this.database = requireNonNull(database);
+    return this;
+  }
+
+  /**
+   * @param adminUser the admin user
+   */
+  public ServerConfiguration adminUser(final User adminUser) {
+    this.adminUser = requireNonNull(adminUser);
     return this;
   }
 
@@ -159,14 +160,6 @@ public final class ServerConfiguration {
    */
   public ServerConfiguration connectionTimeout(final Integer connectionTimeout) {
     this.connectionTimeout = requireNonNull(connectionTimeout);
-    return this;
-  }
-
-  /**
-   * @param adminUser the admin user
-   */
-  public ServerConfiguration adminUser(final User adminUser) {
-    this.adminUser = requireNonNull(adminUser);
     return this;
   }
 
@@ -219,10 +212,50 @@ public final class ServerConfiguration {
   }
 
   /**
+   * Parses configuration from system properties.
+   * @return the server configuration according to system properties
+   */
+  public static ServerConfiguration fromSystemProperties() {
+    final ServerConfiguration configuration = new ServerConfiguration(
+            requireNonNull(Server.SERVER_PORT.get(), Server.SERVER_PORT.toString()),
+            requireNonNull(Server.REGISTRY_PORT.get(), Server.REGISTRY_PORT.toString()));
+    configuration.adminPort(requireNonNull(Server.SERVER_ADMIN_PORT.get(), Server.SERVER_ADMIN_PORT.toString()));
+    configuration.sslEnabled(Server.SERVER_CONNECTION_SSL_ENABLED.get());
+    configuration.connectionLimit(SERVER_CONNECTION_LIMIT.get());
+    configuration.database(Databases.getInstance());
+    configuration.domainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
+    configuration.loginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
+    configuration.connectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
+    configuration.startupPoolUsers(getPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())));
+    configuration.auxiliaryServerClassNames(Text.parseCommaSeparatedValues(Server.AUXILIARY_SERVER_CLASS_NAMES.get()));
+    configuration.clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get());
+    configuration.connectionTimeout(Server.SERVER_CONNECTION_TIMEOUT.get());
+    configuration.clientSpecificConnectionTimeouts(getClientTimeoutValues());
+    final String adminUserString = Server.SERVER_ADMIN_USER.get();
+    final User adminUser = nullOrEmpty(adminUserString) ? null : Users.parseUser(adminUserString);
+    if (adminUser == null) {
+      LOG.info("No admin user specified");
+    }
+    else {
+      LOG.info("Admin user: " + adminUser);
+      configuration.adminUser(adminUser);
+    }
+
+    return configuration;
+  }
+
+  /**
    * @return the port on which to make the server accessible
    */
-  Integer getServerPort() {
+  int getServerPort() {
     return serverPort;
+  }
+
+  /**
+   * @return the registry port to use
+   */
+  int getRegistryPort() {
+    return registryPort;
   }
 
   /**
@@ -233,17 +266,17 @@ public final class ServerConfiguration {
   }
 
   /**
-   * @return the registry port to use
-   */
-  Integer getRegistryPort() {
-    return registryPort;
-  }
-
-  /**
    * @return the Database implementation
    */
   Database getDatabase() {
     return database;
+  }
+
+  /**
+   * @return the admin user
+   */
+  User getAdminUser() {
+    return adminUser;
   }
 
   /**
@@ -272,13 +305,6 @@ public final class ServerConfiguration {
    */
   Integer getConnectionTimeout() {
     return connectionTimeout;
-  }
-
-  /**
-   * @return the admin user
-   */
-  User getAdminUser() {
-    return adminUser;
   }
 
   /**
@@ -323,44 +349,11 @@ public final class ServerConfiguration {
     return clientSpecificConnectionTimeouts;
   }
 
-  /**
-   * Parses configuration from system properties.
-   * @return the server configuration according to system properties
-   */
-  public static ServerConfiguration fromSystemProperties() {
-    final ServerConfiguration configuration = new ServerConfiguration();
-    configuration.port(requireNonNull(Server.SERVER_PORT.get(), Server.SERVER_PORT.toString()));
-    configuration.registryPort(requireNonNull(Server.REGISTRY_PORT.get(), Server.REGISTRY_PORT.toString()));
-    configuration.adminPort(requireNonNull(Server.SERVER_ADMIN_PORT.get(), Server.SERVER_ADMIN_PORT.toString()));
-    configuration.sslEnabled(Server.SERVER_CONNECTION_SSL_ENABLED.get());
-    configuration.connectionLimit(SERVER_CONNECTION_LIMIT.get());
-    configuration.database(Databases.getInstance());
-    configuration.domainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
-    configuration.loginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
-    configuration.connectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
-    configuration.startupPoolUsers(getPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())));
-    configuration.auxiliaryServerClassNames(Text.parseCommaSeparatedValues(Server.AUXILIARY_SERVER_CLASS_NAMES.get()));
-    configuration.clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get());
-    configuration.connectionTimeout(Server.SERVER_CONNECTION_TIMEOUT.get());
-    configuration.clientSpecificConnectionTimeouts(getClientTimeoutValues());
-    final String adminUserString = Server.SERVER_ADMIN_USER.get();
-    final User adminUser = nullOrEmpty(adminUserString) ? null : Users.parseUser(adminUserString);
-    if (adminUser == null) {
-      LOG.info("No admin user specified");
-    }
-    else {
-      LOG.info("Admin user: " + adminUser);
-      configuration.adminUser(adminUser);
-    }
-
-    return configuration;
-  }
-
-  protected static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
+  private static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
     return poolUsers.stream().map(Users::parseUser).collect(toList());
   }
 
-  protected static Map<String, Integer> getClientTimeoutValues() {
+  private static Map<String, Integer> getClientTimeoutValues() {
     final Collection<String> values = Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get());
 
     return getClientTimeouts(values);

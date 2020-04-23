@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * A base class for remote connections served by a {@link DefaultEntityConnectionServer}.
+ * A base class for remote connections served by a {@link EntityConnectionServer}.
  * Handles logging of service calls and database connection pooling.
  */
 public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject {

@@ -12,7 +12,7 @@ import org.jminor.common.user.Users;
 import org.jminor.common.version.Versions;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.framework.server.ServerConfiguration;
 
@@ -39,7 +39,7 @@ public class EntityServerMonitorTest {
     final Database database = Databases.getInstance();
     final String serverName = Server.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString()
             + "@" + (database.getSid() != null ? database.getSid().toUpperCase() : database.getHost().toUpperCase());
-    DefaultEntityConnectionServer.startServer();
+    EntityConnectionServer.startServer();
     server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(),
             Server.REGISTRY_PORT.get()).lookup(serverName);
     admin = server.getServerAdmin(ADMIN_USER);

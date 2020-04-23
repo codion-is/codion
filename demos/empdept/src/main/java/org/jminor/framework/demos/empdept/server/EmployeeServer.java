@@ -11,7 +11,7 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.AbstractRemoteEntityConnection;
-import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServer;
 import org.jminor.framework.server.ServerConfiguration;
 
 import java.rmi.RemoteException;
@@ -21,7 +21,7 @@ import java.util.List;
 
 import static org.jminor.framework.db.condition.Conditions.selectCondition;
 
-public final class EmployeeServer extends DefaultEntityConnectionServer {
+public final class EmployeeServer extends EntityConnectionServer {
 
   private static final Domain DOMAIN = new EmpDept().registerDomain();
 
