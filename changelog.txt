@@ -5913,3 +5913,4 @@
   ServerConfiguration interface extracted
   EntityConnectionServerConfiguration interface exctracted
   Configuration constants moved from Server to ServerConfiguration
+  HttpServerConfiguration interface extracted
