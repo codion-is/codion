@@ -58,7 +58,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   private final ConnectionValidator defaultConnectionValidator = new DefaultConnectionValidator();
   private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
 
-  private final boolean sslEnabled;
   private final ServerInformation serverInformation;
   private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
@@ -71,7 +70,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
     super(configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
-    this.sslEnabled = configuration.getSslEnabled();
     this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(), configuration.getServerPort(), ZonedDateTime.now());
     startAuxiliaryServers(configuration.getAuxiliaryServerClassNames());
     if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
@@ -138,13 +136,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    */
   public final void setConnectionLimit(final int connectionLimit) {
     this.connectionLimit = connectionLimit;
-  }
-
-  /**
-   * @return true if ssl is enabled
-   */
-  public final boolean isSslEnabled() {
-    return sslEnabled;
   }
 
   @Override
