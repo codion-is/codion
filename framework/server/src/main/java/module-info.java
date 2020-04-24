@@ -5,7 +5,7 @@ module org.jminor.framework.server {
   requires org.slf4j;
   requires jdk.management;
   requires transitive org.jminor.framework.db.local;
-  requires transitive org.jminor.framework.db.remote;
+  requires transitive org.jminor.framework.db.rmi;
 
   exports org.jminor.framework.server;
 }

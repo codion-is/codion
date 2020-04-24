@@ -3,7 +3,7 @@ module org.jminor.framework.demos.manual {
   requires jasperreports;
   requires org.jminor.common.core;
   requires org.jminor.framework.db.local;
-  requires org.jminor.framework.db.remote;
+  requires org.jminor.framework.db.rmi;
   requires org.jminor.swing.common.ui;
   requires org.jminor.swing.framework.model;
   requires org.jminor.swing.framework.tools;

@@ -2,7 +2,7 @@
  * Framework database connection classes for connection via RMI.
  * @provides org.jminor.framework.db.EntityConnectionProvider
  */
-module org.jminor.framework.db.remote {
+module org.jminor.framework.db.rmi {
   requires org.slf4j;
   requires transitive org.jminor.common.rmi;
   requires transitive org.jminor.framework.db.core;
