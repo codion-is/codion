@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
-import org.jminor.common.remote.server.RemoteClient;
+import org.jminor.common.rmi.server.RemoteClient;
 import org.jminor.common.user.User;
 import org.jminor.framework.server.EntityServerAdmin;
 

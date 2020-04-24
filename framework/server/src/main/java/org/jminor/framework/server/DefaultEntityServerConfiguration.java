@@ -4,7 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.database.Database;
-import org.jminor.common.remote.server.ServerConfiguration;
+import org.jminor.common.rmi.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.version.Versions;
 

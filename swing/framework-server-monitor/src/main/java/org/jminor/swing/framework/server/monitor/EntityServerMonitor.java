@@ -6,7 +6,7 @@ package org.jminor.swing.framework.server.monitor;
 import org.jminor.common.Configuration;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
-import org.jminor.common.remote.server.ServerConfiguration;
+import org.jminor.common.rmi.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;

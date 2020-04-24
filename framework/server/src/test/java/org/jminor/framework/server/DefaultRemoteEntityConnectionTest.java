@@ -5,9 +5,9 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.remote.client.ConnectionRequest;
-import org.jminor.common.remote.server.RemoteClient;
-import org.jminor.common.remote.server.Servers;
+import org.jminor.common.rmi.client.ConnectionRequest;
+import org.jminor.common.rmi.server.RemoteClient;
+import org.jminor.common.rmi.server.Servers;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
