@@ -61,10 +61,12 @@ public interface HttpServerConfiguration {
    * @return a server configuration according to system properties
    */
   static HttpServerConfiguration fromSystemProperties() {
-    return new DefaultHttpServerConfiguration(HttpServerConfiguration.HTTP_SERVER_PORT.get(),
-            HttpServerConfiguration.HTTP_SERVER_SECURE.get())
-            .setDocumentRoot(HttpServerConfiguration.DOCUMENT_ROOT.get())
-            .setKeystore(HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.get(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.get());
+    final DefaultHttpServerConfiguration configuration = new DefaultHttpServerConfiguration(
+            HttpServerConfiguration.HTTP_SERVER_PORT.get(), HttpServerConfiguration.HTTP_SERVER_SECURE.get());
+    configuration.setDocumentRoot(HttpServerConfiguration.DOCUMENT_ROOT.get());
+    configuration.setKeystore(HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.get(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.get());
+
+    return configuration;
   }
 
   /**
@@ -94,14 +96,12 @@ public interface HttpServerConfiguration {
 
   /**
    * @param documentRoot the document root
-   * @return this configuration instance
    */
-  HttpServerConfiguration setDocumentRoot(String documentRoot);
+  void setDocumentRoot(String documentRoot);
 
   /**
    * @param keystorePath the keystore path
    * @param keystorePassword the keystore password
-   * @return this configuration instance
    */
-  HttpServerConfiguration setKeystore(String keystorePath, String keystorePassword);
+  void setKeystore(String keystorePath, String keystorePassword);
 }

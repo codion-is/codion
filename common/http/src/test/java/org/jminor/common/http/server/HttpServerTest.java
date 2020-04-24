@@ -16,9 +16,13 @@ public class HttpServerTest {
 
   private static final int FILE_SERVER_PORT_NUMBER = 8089;
 
-  private final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(
-          FILE_SERVER_PORT_NUMBER, false).setDocumentRoot(System.getProperty("user.dir"));
-  private final HttpServer httpServer = new HttpServer(configuration);
+  private final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(FILE_SERVER_PORT_NUMBER, false);
+  private final HttpServer httpServer;
+
+  public HttpServerTest() {
+    configuration.setDocumentRoot(System.getProperty("user.dir"));
+    httpServer = new HttpServer(configuration);
+  }
 
   @BeforeEach
   public void setUp() throws Exception {
