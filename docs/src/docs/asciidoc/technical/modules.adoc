@@ -38,21 +38,21 @@ image::modules/common/model/build/reports/dependency-graph/dependency-graph.svg[
 ====
 
 [discrete]
-=== jminor-common-remote
+=== jminor-common-rmi
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/common/remote/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/common/rmi/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
-=== jminor-common-remote-http
+=== jminor-common-http
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/common/remote-http/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/common/http/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 == DBMS
@@ -186,7 +186,7 @@ image::modules/framework/db-local/build/reports/dependency-graph/dependency-grap
 .Dependency graph
 [%collapsible]
 ====
-image::modules/framework/db-remote/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/framework/db-rmi/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
