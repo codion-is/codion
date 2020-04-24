@@ -5952,3 +5952,4 @@
   EntityConnectionServer renamed to EntityServer, along with related classes
   ServerConfiguration, EntityServerConfiguration, setters no longer return instance, no need for fluidity here
   org.jminor.common.remote.server.http package renamed org.jminor.common.http.server
+  Module jminor-common-remote-http renamed to jminor-common-http

@@ -10,7 +10,7 @@ dependencies {
     implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
 
     testImplementation project(':jminor-common-remote')
-    testImplementation project(':jminor-common-remote-http')
+    testImplementation project(':jminor-common-http')
     testImplementation project(':jminor-framework-server')
     testImplementation project(':jminor-framework-servlet')
 
