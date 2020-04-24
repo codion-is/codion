@@ -5,7 +5,7 @@
 module org.jminor.credentials.server {
   requires org.slf4j;
   requires transitive java.rmi;
-  requires transitive org.jminor.common.remote;
+  requires transitive org.jminor.common.rmi;
 
   exports org.jminor.plugin.credentials.server;
 

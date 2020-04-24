@@ -1,5 +1,5 @@
 module org.jminor.framework.demos.chinook {
-  requires org.jminor.common.remote;
+  requires org.jminor.common.rmi;
   requires org.jminor.framework.db.local;
   requires org.jminor.framework.db.http;
   requires org.jminor.framework.db.remote;

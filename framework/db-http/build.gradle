@@ -20,8 +20,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['java.sql,java.rmi,org.jminor.common.remote,org.jminor.common.http,org.jminor.framework.server,org.jminor.framework.servlet']
-    testAddReads = ['org.jminor.framework.db.http': 'java.sql,java.rmi,org.jminor.common.remote,org.jminor.common.http,org.jminor.framework.server,org.jminor.framework.servlet']
+    testAddModules = ['java.sql,java.rmi,org.jminor.common.rmi,org.jminor.common.http,org.jminor.framework.server,org.jminor.framework.servlet']
+    testAddReads = ['org.jminor.framework.db.http': 'java.sql,java.rmi,org.jminor.common.rmi,org.jminor.common.http,org.jminor.framework.server,org.jminor.framework.servlet']
 }
 
 compileTestJava {
