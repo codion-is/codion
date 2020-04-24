@@ -43,7 +43,7 @@ import static java.util.Collections.singletonMap;
 import static org.jminor.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EntityConnectionServerTest {
+public class EntityServerTest {
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -51,15 +51,15 @@ public class EntityConnectionServerTest {
   private static final User ADMIN_USER = Users.parseUser("scott:tiger");
   private static final Map<String, Object> CONNECTION_PARAMS =
           Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, "TestDomain");
-  private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;
-  private static EntityConnectionServerAdmin admin;
+  private static Server<RemoteEntityConnection, EntityServerAdmin> server;
+  private static EntityServerAdmin admin;
 
-  private static final EntityConnectionServerConfiguration CONFIGURATION = configure();
+  private static final EntityServerConfiguration CONFIGURATION = configure();
 
   @BeforeAll
   public static synchronized void setUp() throws Exception {
     final String serverName = CONFIGURATION.getServerConfiguration().getServerName();
-    EntityConnectionServer.startServer(CONFIGURATION);
+    EntityServer.startServer(CONFIGURATION);
     server = (Server) LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
     admin = server.getServerAdmin(ADMIN_USER);
   }
@@ -321,19 +321,14 @@ public class EntityConnectionServerTest {
     admin.getUsers();
   }
 
-  private static DefaultEntityConnectionServerConfiguration configure() {
+  private static DefaultEntityServerConfiguration configure() {
     ServerConfiguration.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     ServerConfiguration.TRUSTSTORE.set("src/main/security/jminor_truststore.jks");
     ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
     ServerConfiguration.KEYSTORE.set("src/main/security/jminor_keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
-    final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
-    serverConfiguration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
-    serverConfiguration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
-    serverConfiguration.setSslEnabled(true);
-    serverConfiguration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
-    final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(serverConfiguration, 2221);
+    final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(2223, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDatabase(Databases.getInstance());
@@ -341,6 +336,10 @@ public class EntityConnectionServerTest {
     configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
     configuration.setDomainModelClassNames(singletonList("org.jminor.framework.server.TestDomain"));
     configuration.setClientLoggingEnabled(true);
+    configuration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
+    configuration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
+    configuration.setSslEnabled(true);
+    configuration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
 
     return configuration;
   }

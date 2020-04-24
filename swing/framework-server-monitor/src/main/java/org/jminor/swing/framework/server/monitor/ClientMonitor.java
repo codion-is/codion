@@ -5,7 +5,7 @@ package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.user.User;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
+import org.jminor.framework.server.EntityServerAdmin;
 
 import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
@@ -19,7 +19,7 @@ import java.util.List;
 public final class ClientMonitor {
 
   private static final Comparator<RemoteClient> CLIENT_INFO_COMPARATOR = (c1, c2) -> c1.getUser().getUsername().compareToIgnoreCase(c2.getUser().getUsername());
-  private final EntityConnectionServerAdmin server;
+  private final EntityServerAdmin server;
   private final String clientTypeId;
   private final User user;
 
@@ -32,7 +32,7 @@ public final class ClientMonitor {
    * @param user the user to monitor
    * @throws RemoteException in case of an exception
    */
-  public ClientMonitor(final EntityConnectionServerAdmin server, final String clientTypeId, final User user) throws RemoteException {
+  public ClientMonitor(final EntityServerAdmin server, final String clientTypeId, final User user) throws RemoteException {
     this.server = server;
     this.clientTypeId = clientTypeId;
     this.user = user;

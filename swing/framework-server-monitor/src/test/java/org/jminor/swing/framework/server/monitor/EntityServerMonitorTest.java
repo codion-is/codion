@@ -11,9 +11,9 @@ import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.server.EntityConnectionServer;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
-import org.jminor.framework.server.EntityConnectionServerConfiguration;
+import org.jminor.framework.server.EntityServer;
+import org.jminor.framework.server.EntityServerAdmin;
+import org.jminor.framework.server.EntityServerConfiguration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,14 +30,14 @@ public class EntityServerMonitorTest {
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final User ADMIN_USER = Users.parseUser("scott:tiger");
-  private static Server<?, EntityConnectionServerAdmin> server;
-  private static EntityConnectionServerAdmin admin;
+  private static Server<?, EntityServerAdmin> server;
+  private static EntityServerAdmin admin;
 
-  public static final EntityConnectionServerConfiguration CONFIGURATION = configure();
+  public static final EntityServerConfiguration CONFIGURATION = configure();
 
   @BeforeAll
   public static synchronized void setUp() throws Exception {
-    EntityConnectionServer.startServer(CONFIGURATION);
+    EntityServer.startServer(CONFIGURATION);
     server = (Server) LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(),
             CONFIGURATION.getRegistryPort()).lookup(CONFIGURATION.getServerConfiguration().getServerName());
     admin = server.getServerAdmin(ADMIN_USER);
@@ -87,17 +87,16 @@ public class EntityServerMonitorTest {
     serverMonitor.shutdown();
   }
 
-  private static EntityConnectionServerConfiguration configure() {
+  private static EntityServerConfiguration configure() {
     ServerConfiguration.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
-    serverConfiguration.setSslEnabled(false);
-    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(serverConfiguration, 2221);
+    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
     configuration.setDomainModelClassNames(Collections.singletonList(TestDomain.class.getName()));
     configuration.setDatabase(Databases.getInstance());
+    configuration.setSslEnabled(false);
 
     return configuration;
   }

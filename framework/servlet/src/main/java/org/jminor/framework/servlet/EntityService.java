@@ -546,7 +546,7 @@ public final class EntityService extends Application {
   private static RemoteEntityConnection authenticate(final HttpServletRequest request, final HttpHeaders headers)
           throws RemoteException, ServerException {
     if (server == null) {
-      throw new IllegalStateException("EntityConnectionServer has not been set for EntityService");
+      throw new IllegalStateException("EntityServer has not been set for EntityService");
     }
 
     final MultivaluedMap<String, String> headerValues = headers.getRequestHeaders();

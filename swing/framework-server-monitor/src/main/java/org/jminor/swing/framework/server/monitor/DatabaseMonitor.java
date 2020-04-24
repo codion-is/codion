@@ -6,7 +6,7 @@ package org.jminor.swing.framework.server.monitor;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.value.Value;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
+import org.jminor.framework.server.EntityServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class DatabaseMonitor {
 
-  private final EntityConnectionServerAdmin server;
+  private final EntityServerAdmin server;
   private final PoolMonitor poolMonitor;
   private final XYSeries queriesPerSecond = new XYSeries("Queries per second");
   private final XYSeries selectsPerSecond = new XYSeries("Selects per second");
@@ -28,7 +28,6 @@ public final class DatabaseMonitor {
   private final XYSeries updatesPerSecond = new XYSeries("Updates per second");
   private final XYSeries deletesPerSecond = new XYSeries("Deletes per second");
   private final XYSeriesCollection queriesPerSecondCollection = new XYSeriesCollection();
-
   private final TaskScheduler updateScheduler = new TaskScheduler(() -> {
     try {
       updateStatistics();
@@ -42,7 +41,7 @@ public final class DatabaseMonitor {
    * @param server the server
    * @throws RemoteException in case of an exception
    */
-  public DatabaseMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
+  public DatabaseMonitor(final EntityServerAdmin server) throws RemoteException {
     this.server = server;
     this.poolMonitor = new PoolMonitor(server);
     this.queriesPerSecondCollection.addSeries(queriesPerSecond);

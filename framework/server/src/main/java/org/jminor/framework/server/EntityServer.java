@@ -55,11 +55,11 @@ import static java.util.stream.Collectors.toSet;
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
  */
-public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityConnection, EntityConnectionServerAdmin> {
+public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection, EntityServerAdmin> {
 
   private static final long serialVersionUID = 1;
 
-  private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityServer.class);
 
   protected static final String START = "start";
   protected static final String STOP = "stop";
@@ -68,7 +68,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
 
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
 
-  private final EntityConnectionServerConfiguration configuration;
+  private final EntityServerConfiguration configuration;
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
@@ -76,18 +76,18 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
   private final boolean clientLoggingEnabled;
   private final Map<String, Integer> clientTypeConnectionTimeouts = new HashMap<>();
 
-  private final EntityConnectionServerAdmin serverAdmin;
+  private final EntityServerAdmin serverAdmin;
 
   private int connectionTimeout;
 
   /**
-   * Constructs a new DefaultEntityConnectionServer and binds it to a registry on the given port
+   * Constructs a new DefaultEntityServer and binds it to a registry on the given port
    * @param configuration the server configuration
    * @throws RemoteException in case of a remote exception
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
-  public EntityConnectionServer(final EntityConnectionServerConfiguration configuration) throws RemoteException {
+  public EntityServer(final EntityServerConfiguration configuration) throws RemoteException {
     super(configuration.getServerConfiguration());
     this.configuration = configuration;
     try {
@@ -99,7 +99,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
       loadDomainModels(configuration.getDomainModelClassNames());
       initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getStartupPoolUsers());
       setConnectionLimit(configuration.getConnectionLimit());
-      serverAdmin = new DefaultEntityConnectionServerAdmin(this, configuration);
+      serverAdmin = new DefaultEntityServerAdmin(this, configuration);
       bindToRegistry(configuration.getRegistryPort());
     }
     catch (final Throwable t) {
@@ -113,7 +113,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    * @throws ServerAuthenticationException in case authentication fails
    */
   @Override
-  public final EntityConnectionServerAdmin getServerAdmin(final User user) throws ServerAuthenticationException {
+  public final EntityServerAdmin getServerAdmin(final User user) throws ServerAuthenticationException {
     validateUserCredentials(user, configuration.getAdminUser());
 
     return serverAdmin;
@@ -474,7 +474,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
     }
   }
 
-  private static <T extends Throwable> T logShutdownAndReturn(final T exception, final EntityConnectionServer server) {
+  private static <T extends Throwable> T logShutdownAndReturn(final T exception, final EntityServer server) {
     LOG.error("Exception on server startup", exception);
     server.shutdown();
 
@@ -500,8 +500,8 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    * @return the server instance
    * @throws RemoteException in case of an exception
    */
-  public static synchronized EntityConnectionServer startServer() throws RemoteException {
-    return startServer(EntityConnectionServerConfiguration.fromSystemProperties());
+  public static synchronized EntityServer startServer() throws RemoteException {
+    return startServer(EntityServerConfiguration.fromSystemProperties());
   }
 
   /**
@@ -510,10 +510,10 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    * @return the server instance
    * @throws RemoteException in case of an exception
    */
-  public static synchronized EntityConnectionServer startServer(final EntityConnectionServerConfiguration configuration) throws RemoteException {
+  public static synchronized EntityServer startServer(final EntityServerConfiguration configuration) throws RemoteException {
     requireNonNull(configuration, "configuration");
     try {
-      return new EntityConnectionServer(configuration);
+      return new EntityServer(configuration);
     }
     catch (final RuntimeException e) {
       throw e;
@@ -528,18 +528,18 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
    * Connects to the server and shuts it down
    */
   static synchronized void shutdownServer() throws ServerAuthenticationException {
-    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.fromSystemProperties();
+    final EntityServerConfiguration configuration = EntityServerConfiguration.fromSystemProperties();
     final String serverName = configuration.getServerConfiguration().getServerName();
     final int registryPort = configuration.getRegistryPort();
     final User adminUser = configuration.getAdminUser();
     if (adminUser == null) {
       throw new ServerAuthenticationException("No admin user specified");
     }
-    Clients.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
+    Clients.resolveTrustStoreFromClasspath(DefaultEntityServerAdmin.class.getSimpleName());
     try {
       final Registry registry = Servers.getRegistry(registryPort);
-      final Server<?, EntityConnectionServerAdmin> server = (Server) registry.lookup(serverName);
-      final EntityConnectionServerAdmin serverAdmin = server.getServerAdmin(adminUser);
+      final Server<?, EntityServerAdmin> server = (Server) registry.lookup(serverName);
+      final EntityServerAdmin serverAdmin = server.getServerAdmin(adminUser);
       final String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
       LOG.info(shutDownInfo);
       System.out.println(shutDownInfo);
@@ -559,7 +559,7 @@ public class EntityConnectionServer extends AbstractServer<AbstractRemoteEntityC
   }
 
   /**
-   * If no arguments are supplied a new DefaultEntityConnectionServer is started.
+   * If no arguments are supplied a new DefaultEntityServer is started.
    * @param arguments 'start' (or no argument) starts the server, 'stop' or 'shutdown' causes a running server to be shut down and 'restart' restarts the server
    * @throws RemoteException in case of a remote exception during service export
    * @throws ServerAuthenticationException in case of missing or incorrect admin user information

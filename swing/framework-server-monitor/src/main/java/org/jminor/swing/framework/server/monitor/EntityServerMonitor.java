@@ -18,7 +18,7 @@ import java.util.Collection;
 import static org.jminor.common.Util.nullOrEmpty;
 
 /**
- * A monitor for the EntityConnectionServer
+ * A monitor for the EntityServer
  */
 public final class EntityServerMonitor {
 

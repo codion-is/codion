@@ -9,7 +9,7 @@ import org.jminor.common.event.Events;
 import org.jminor.common.remote.server.ClientLog;
 import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.value.Values;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
+import org.jminor.framework.server.EntityServerAdmin;
 import org.jminor.swing.common.ui.value.BooleanValues;
 
 import javax.swing.ButtonModel;
@@ -32,7 +32,7 @@ public final class ClientInstanceMonitor {
   private final Event<Boolean> loggingStatusChangedEvent = Events.event();
 
   private final RemoteClient remoteClient;
-  private final EntityConnectionServerAdmin server;
+  private final EntityServerAdmin server;
   private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
   private final ButtonModel loggingEnabledButtonModel = new JToggleButton.ToggleButtonModel();
@@ -42,7 +42,7 @@ public final class ClientInstanceMonitor {
    * @param server the server being monitored
    * @param remoteClient the client info
    */
-  public ClientInstanceMonitor(final EntityConnectionServerAdmin server, final RemoteClient remoteClient) {
+  public ClientInstanceMonitor(final EntityServerAdmin server, final RemoteClient remoteClient) {
     this.remoteClient = remoteClient;
     this.server = server;
     Values.propertyValue(this, "loggingEnabled", boolean.class, loggingStatusChangedEvent)
