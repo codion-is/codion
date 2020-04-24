@@ -25,6 +25,8 @@ import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -179,6 +181,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {
+
+    private final Map<Method, Method> methodCache = new HashMap<>();
     private final RemoteEntityConnection remote;
 
     private RemoteEntityConnectionHandler(final RemoteEntityConnection remote) {
@@ -192,7 +196,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
         return isConnected();
       }
 
-      final Method remoteMethod = RemoteEntityConnection.class.getMethod(methodName, method.getParameterTypes());
+      final Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::getRemoteMethod);
       try {
         return remoteMethod.invoke(remote, args);
       }
@@ -212,6 +216,15 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       }
       catch (final NoSuchObjectException e) {
         return false;
+      }
+    }
+
+    private static Method getRemoteMethod(final Method method) {
+      try {
+        return RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
+      }
+      catch (final NoSuchMethodException e) {
+        throw new RuntimeException(e);
       }
     }
   }
