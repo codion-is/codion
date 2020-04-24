@@ -13,9 +13,9 @@ import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.EntityConnectionServer;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
-import org.jminor.framework.server.EntityConnectionServerConfiguration;
+import org.jminor.framework.server.EntityServer;
+import org.jminor.framework.server.EntityServerAdmin;
+import org.jminor.framework.server.EntityServerConfiguration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,8 +51,8 @@ public class EntityServletServerTest {
   private static final User ADMIN_USER = Users.parseUser("scott:tiger");
   private static String SERVER_BASEURL;
 
-  private static EntityConnectionServer server;
-  private static EntityConnectionServerAdmin admin;
+  private static EntityServer server;
+  private static EntityServerAdmin admin;
 
   private static final String AUTHORIZATION_HEADER = "Basic " + Base64.getEncoder().encodeToString(
           (UNIT_TEST_USER.getUsername() + ":" + String.valueOf(UNIT_TEST_USER.getPassword())).getBytes());
@@ -70,9 +70,9 @@ public class EntityServletServerTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    final EntityConnectionServerConfiguration configuration = configure();
+    final EntityServerConfiguration configuration = configure();
     SERVER_BASEURL = "https://" + ServerConfiguration.SERVER_HOST_NAME.get() + ":" + WEB_SERVER_PORT_NUMBER + "/entities";
-    server = EntityConnectionServer.startServer(configuration);
+    server = EntityServer.startServer(configuration);
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -271,7 +271,7 @@ public class EntityServletServerTest {
     assertTrue(clients.isEmpty());
   }
 
-  private static EntityConnectionServerConfiguration configure() {
+  private static EntityServerConfiguration configure() {
     System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
     ServerConfiguration.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
@@ -282,14 +282,13 @@ public class EntityServletServerTest {
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
-    serverConfiguration.setSslEnabled(false);
-    serverConfiguration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
-    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(serverConfiguration, 2221);
+    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
     configuration.setDatabase(Databases.getInstance());
+    configuration.setSslEnabled(false);
+    configuration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
 
     return configuration;
   }
