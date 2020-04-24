@@ -10,7 +10,7 @@ import org.jminor.common.rmi.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
+import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
 import org.jminor.framework.server.EntityServer;
 import org.jminor.framework.server.EntityServerAdmin;
 import org.jminor.framework.server.EntityServerConfiguration;

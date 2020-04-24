@@ -23,8 +23,8 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.remote.RemoteEntityConnection;
-import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
+import org.jminor.framework.db.rmi.RemoteEntityConnection;
+import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 
 import org.junit.jupiter.api.AfterAll;

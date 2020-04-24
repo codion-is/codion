@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.remote;
+package org.jminor.framework.db.rmi;
 
 import org.jminor.framework.db.EntityConnection;
 

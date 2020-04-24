@@ -12,7 +12,7 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.http.HttpEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
+import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Domain;
