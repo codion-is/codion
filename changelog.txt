@@ -5934,3 +5934,4 @@
   org.jminor.common.remote package renamed org.jminor.common.rmi
   common-remote module renamed to common-rmi
   org.jminor.framework.db.remote package renamed org.jminor.framework.db.rmi
+  framework-db-remote module renamed to framework-db-rmi

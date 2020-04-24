@@ -57,8 +57,8 @@ project(':jminor-framework-db-core').projectDir = file('framework/db-core')
 include 'jminor-framework-db-local'
 project(':jminor-framework-db-local').projectDir = file('framework/db-local')
 
-include 'jminor-framework-db-remote'
-project(':jminor-framework-db-remote').projectDir = file('framework/db-remote')
+include 'jminor-framework-db-rmi'
+project(':jminor-framework-db-rmi').projectDir = file('framework/db-rmi')
 
 include 'jminor-framework-db-http'
 project(':jminor-framework-db-http').projectDir = file('framework/db-http')

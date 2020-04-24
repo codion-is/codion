@@ -12,7 +12,7 @@ dependencies {
     runtimeOnly project(':jminor-plugin-logback-proxy')
 
     runtimeOnly project(':jminor-framework-db-local')
-    runtimeOnly project(':jminor-framework-db-remote')
+    runtimeOnly project(':jminor-framework-db-rmi')
     runtimeOnly project(':jminor-framework-db-http')
 
     runtimeOnly project(':jminor-dbms-h2database')
