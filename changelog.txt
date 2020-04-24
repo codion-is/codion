@@ -5950,3 +5950,4 @@
   login proxies and connection validators moved from EntityConnectionServerConfiguration to ServerConfiguration
   EntityConnectionServerConfiguration now extends ServerConfiguration
   EntityConnectionServer renamed to EntityServer, along with related classes
+  ServerConfiguration, EntityServerConfiguration, setters no longer return instance, no need for fluidity here

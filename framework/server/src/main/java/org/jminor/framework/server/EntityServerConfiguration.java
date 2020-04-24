@@ -140,63 +140,53 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 
   /**
    * @param adminPort the port on which to make the server admin interface accessible
-   * @return this configuration instance
    */
-  EntityServerConfiguration setAdminPort(Integer adminPort);
+  void setAdminPort(Integer adminPort);
 
   /**
    * @param database the Database implementation
-   * @return this configuration instance
    */
-  EntityServerConfiguration setDatabase(Database database);
+  void setDatabase(Database database);
 
   /**
    * @param adminUser the admin user
-   * @return this configuration instance
    */
-  EntityServerConfiguration setAdminUser(User adminUser);
+  void setAdminUser(User adminUser);
 
   /**
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
-   * @return this configuration instance
    */
-  EntityServerConfiguration setConnectionLimit(Integer connectionLimit);
+  void setConnectionLimit(Integer connectionLimit);
 
   /**
    * @param clientLoggingEnabled if true then client logging is enabled on startup
-   * @return this configuration instance
    */
-  EntityServerConfiguration setClientLoggingEnabled(Boolean clientLoggingEnabled);
+  void setClientLoggingEnabled(Boolean clientLoggingEnabled);
 
   /**
    * @param connectionTimeout the idle connection timeout
-   * @return this configuration instance
    */
-  EntityServerConfiguration setConnectionTimeout(Integer connectionTimeout);
+  void setConnectionTimeout(Integer connectionTimeout);
 
   /**
    * @param connectionPoolProvider the connection pool provider classname
-   * @return this configuration instance
    */
-  EntityServerConfiguration setConnectionPoolProvider(String connectionPoolProvider);
+  void setConnectionPoolProvider(String connectionPoolProvider);
 
   /**
    * @param domainModelClassNames the domain model classes to load on startup
-   * @return this configuration instance
    */
-  EntityServerConfiguration setDomainModelClassNames(Collection<String> domainModelClassNames);
+  void setDomainModelClassNames(Collection<String> domainModelClassNames);
 
   /**
    * @param startupPoolUsers the users for which to initialize connection pools on startup
-   * @return this configuration instance
    */
-  EntityServerConfiguration setStartupPoolUsers(Collection<User> startupPoolUsers);
+  void setStartupPoolUsers(Collection<User> startupPoolUsers);
 
   /**
    * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeId
-   * @return this configuration instance
    */
-  EntityServerConfiguration setClientSpecificConnectionTimeouts(Map<String, Integer> clientSpecificConnectionTimeouts);
+  void setClientSpecificConnectionTimeouts(Map<String, Integer> clientSpecificConnectionTimeouts);
 
   /**
    * @param serverPort the server port

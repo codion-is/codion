@@ -232,72 +232,61 @@ public interface ServerConfiguration {
 
   /**
    * @param serverNameProvider the server name provider
-   * @return this configuration instance
    */
-  ServerConfiguration setServerNameProvider(Supplier<String> serverNameProvider);
+  void setServerNameProvider(Supplier<String> serverNameProvider);
 
   /**
    * @param serverName the server name
-   * @return this configuration instance
    */
-  ServerConfiguration setServerName(String serverName);
+  void setServerName(String serverName);
 
   /**
    * @param sharedLoginProxyClassNames the shared login proxy classnames
-   * @return this configuration instance
    */
-  ServerConfiguration setSharedLoginProxyClassNames(Collection<String> sharedLoginProxyClassNames);
+  void setSharedLoginProxyClassNames(Collection<String> sharedLoginProxyClassNames);
 
   /**
    * @param loginProxyClassNames the login proxy classes to initialize on startup
-   * @return this configuration instance
    */
-  ServerConfiguration setLoginProxyClassNames(Collection<String> loginProxyClassNames);
+  void setLoginProxyClassNames(Collection<String> loginProxyClassNames);
 
   /**
    * @param connectionValidatorClassNames the connection validation classes to initialize on startup
-   * @return this configuration instance
    */
-  ServerConfiguration setConnectionValidatorClassNames(Collection<String> connectionValidatorClassNames);
+  void setConnectionValidatorClassNames(Collection<String> connectionValidatorClassNames);
 
   /**
    * @param auxiliaryServerClassNames the class names of auxiliary servers to run alongside this server
-   * @return this configuration instance
    */
-  ServerConfiguration setAuxiliaryServerClassNames(Collection<String> auxiliaryServerClassNames);
+  void setAuxiliaryServerClassNames(Collection<String> auxiliaryServerClassNames);
 
   /**
    * When set to true this also sets the rmi client/server socket factories.
    * @param sslEnabled if true then ssl is enabled
-   * @return this configuration instance
    * @see #setRmiClientSocketFactory(RMIClientSocketFactory)
    * @see #setRmiServerSocketFactory(RMIServerSocketFactory)
    */
-  ServerConfiguration setSslEnabled(Boolean sslEnabled);
+  void setSslEnabled(Boolean sslEnabled);
 
   /**
    * @param rmiClientSocketFactory the rmi client socket factory to use
-   * @return this configuration instance
    */
-  ServerConfiguration setRmiClientSocketFactory(RMIClientSocketFactory rmiClientSocketFactory);
+  void setRmiClientSocketFactory(RMIClientSocketFactory rmiClientSocketFactory);
 
   /**
    * @param rmiServerSocketFactory the rmi server socket factory to use
-   * @return this configuration instance
    */
-  ServerConfiguration setRmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory);
+  void setRmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory);
 
   /**
    * @param serializationFilterWhitelist the serialization whitelist
-   * @return this configuration instance
    */
-  ServerConfiguration setSerializationFilterWhitelist(String serializationFilterWhitelist);
+  void setSerializationFilterWhitelist(String serializationFilterWhitelist);
 
   /**
    * @param serializationFilterDryRun true if serialization filter dry run is active
-   * @return this configuration instance
    */
-  ServerConfiguration setSerializationFilterDryRun(Boolean serializationFilterDryRun);
+  void setSerializationFilterDryRun(Boolean serializationFilterDryRun);
 
   /**
    * @param serverPort the server port
