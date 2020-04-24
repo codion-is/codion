@@ -23,7 +23,7 @@ import org.jminor.common.rmi.server.exception.ConnectionNotAvailableException;
 import org.jminor.common.rmi.server.exception.LoginException;
 import org.jminor.common.rmi.server.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
-import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
+import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.EntityDefinition;
 

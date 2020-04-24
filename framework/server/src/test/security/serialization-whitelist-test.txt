@@ -69,7 +69,7 @@ org.jminor.framework.db.condition.Condition$EmptyCondition
 org.jminor.framework.db.condition.DefaultCustomCondition
 org.jminor.framework.db.condition.DefaultEntityCondition
 org.jminor.framework.db.condition.DefaultEntitySelectCondition
-org.jminor.framework.db.remote.RemoteEntityConnection
+org.jminor.framework.db.rmi.RemoteEntityConnection
 org.jminor.framework.domain.Domain
 org.jminor.framework.domain.Domain$DefaultEntityDefinitionProvider
 org.jminor.framework.domain.entity.DefaultEntity

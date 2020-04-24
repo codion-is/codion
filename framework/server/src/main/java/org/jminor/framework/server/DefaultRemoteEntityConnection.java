@@ -12,7 +12,7 @@ import org.jminor.common.rmi.server.RemoteClient;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.db.remote.RemoteEntityConnection;
+import org.jminor.framework.db.rmi.RemoteEntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 

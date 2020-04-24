@@ -13,7 +13,7 @@ import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.remote.RemoteEntityConnection;
+import org.jminor.framework.db.rmi.RemoteEntityConnection;
 import org.jminor.framework.domain.Domain;
 
 import org.junit.jupiter.api.Test;
