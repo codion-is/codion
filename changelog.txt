@@ -5936,3 +5936,4 @@
   org.jminor.framework.db.remote package renamed org.jminor.framework.db.rmi
   framework-db-remote module renamed to framework-db-rmi
 0.14.7
+  Domain.toBeans() added V type parameter

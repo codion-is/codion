@@ -665,8 +665,8 @@ public class DomainTest {
     department.put(TestDomain.DEPARTMENT_LOCATION, deptLocation);
     department.put(TestDomain.DEPARTMENT_ACTIVE, deptActive);
 
-    final List<Object> deptBeans = domain.toBeans(singletonList(department));
-    final Department departmentBean = (Department) deptBeans.get(0);
+    final List<Department> deptBeans = domain.toBeans(singletonList(department));
+    final Department departmentBean = deptBeans.get(0);
     assertEquals(deptNo, departmentBean.getDeptNo());
     assertEquals(deptName, departmentBean.getName());
     assertEquals(deptLocation, departmentBean.getLocation());
@@ -693,8 +693,8 @@ public class DomainTest {
     employee.put(TestDomain.EMP_NAME, name);
     employee.put(TestDomain.EMP_SALARY, salary);
 
-    final List<Object> empBeans = domain.toBeans(singletonList(employee));
-    final Employee employeeBean = (Employee) empBeans.get(0);
+    final List<Employee> empBeans = domain.toBeans(singletonList(employee));
+    final Employee employeeBean = empBeans.get(0);
     assertEquals(id, employeeBean.getId());
     assertEquals(commission, employeeBean.getCommission());
     assertEquals(deptNo, employeeBean.getDeptno());
