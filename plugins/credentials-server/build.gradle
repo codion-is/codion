@@ -1,6 +1,6 @@
 dependencies {
     api project(':jminor-common-core')
-    api project(':jminor-common-remote')
+    api project(':jminor-common-rmi')
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 }

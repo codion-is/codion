@@ -15,8 +15,8 @@ project(':jminor-common-http').projectDir = file('common/http')
 include 'jminor-common-model'
 project(':jminor-common-model').projectDir = file('common/model')
 
-include 'jminor-common-remote'
-project(':jminor-common-remote').projectDir = file('common/remote')
+include 'jminor-common-rmi'
+project(':jminor-common-rmi').projectDir = file('common/rmi')
 
 include 'jminor-dbms-derby'
 project(':jminor-dbms-derby').projectDir = file('dbms/derby')
