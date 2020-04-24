@@ -20,8 +20,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['org.jminor.common.remote.http,org.jminor.dbms.h2database,org.jminor.framework.db.local']
-    testAddReads = ['org.jminor.plugin.jasperreports': 'org.jminor.common.remote.http,org.jminor.dbms.h2database,org.jminor.framework.domain,org.jminor.framework.db.core,org.jminor.framework.db.local']
+    testAddModules = ['org.jminor.common.http,org.jminor.dbms.h2database,org.jminor.framework.db.local']
+    testAddReads = ['org.jminor.plugin.jasperreports': 'org.jminor.common.http,org.jminor.dbms.h2database,org.jminor.framework.domain,org.jminor.framework.db.core,org.jminor.framework.db.local']
 }
 
 compileTestJava {

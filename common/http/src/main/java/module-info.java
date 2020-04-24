@@ -1,7 +1,7 @@
 /**
  * http server classes.
  */
-module org.jminor.common.remote.http {
+module org.jminor.common.http {
   requires org.slf4j;
   requires org.eclipse.jetty.server;
   requires org.eclipse.jetty.util;

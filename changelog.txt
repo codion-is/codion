@@ -5954,3 +5954,4 @@
   org.jminor.common.remote.server.http package renamed org.jminor.common.http.server
   Module jminor-common-remote-http renamed to jminor-common-http
   HttpServerConfiguration no longer fluid
+  jminor-common-http jpms module renamed to reflect module name

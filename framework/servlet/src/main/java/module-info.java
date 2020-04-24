@@ -8,7 +8,7 @@ module org.jminor.framework.servlet {
   requires javax.servlet.api;
   requires jersey.container.jetty.servlet;
   requires jersey.container.servlet.core;
-  requires org.jminor.common.remote.http;
+  requires org.jminor.common.http;
   requires org.jminor.framework.db.remote;
 
   exports org.jminor.framework.servlet;
