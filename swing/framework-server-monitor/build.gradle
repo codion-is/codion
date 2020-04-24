@@ -21,7 +21,7 @@ dependencies {
     runtimeOnly project(':jminor-plugin-logback-proxy')
 
     testImplementation project(':jminor-framework-server')
-    testImplementation project(':jminor-framework-db-remote')
+    testImplementation project(':jminor-framework-db-rmi')
     testCompileOnly project(':jminor-framework-db-local')//for modules
     testRuntimeOnly project(':jminor-plugin-hikari-pool')
     testRuntimeOnly project(':jminor-dbms-h2database')

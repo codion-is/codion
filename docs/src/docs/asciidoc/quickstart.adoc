@@ -22,7 +22,7 @@ A JMinor client has three ways of connecting to a database, directly via a local
 |DB Connection|Artifact
 
 |Local|org.jminor.{jminor-jdk}:jminor-framework-db-local:{jminor-version}
-|RMI|org.jminor.{jminor-jdk}:jminor-framework-db-remote:{jminor-version}
+|RMI|org.jminor.{jminor-jdk}:jminor-framework-db-rmi:{jminor-version}
 |HTTP|org.jminor.{jminor-jdk}:jminor-framework-db-http:{jminor-version}
 |===
 

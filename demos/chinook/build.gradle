@@ -26,7 +26,7 @@ dependencies {
     runtimeOnly project(':jminor-plugin-logback-proxy')
 
     implementation project(':jminor-framework-db-http')
-    implementation project(':jminor-framework-db-remote')
+    implementation project(':jminor-framework-db-rmi')
 
     testImplementation project(':jminor-framework-domain-test')
 

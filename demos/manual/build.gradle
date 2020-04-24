@@ -7,7 +7,7 @@ dependencies {
     implementation project(':jminor-swing-framework-tools')
     implementation project(':jminor-framework-domain-test')
     implementation project(':jminor-framework-db-local')
-    implementation project(':jminor-framework-db-remote')
+    implementation project(':jminor-framework-db-rmi')
     implementation project(':jminor-plugin-jasperreports')
 
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {

@@ -181,7 +181,7 @@ image::modules/framework/db-local/build/reports/dependency-graph/dependency-grap
 ====
 
 [discrete]
-=== jminor-framework-db-remote
+=== jminor-framework-db-rmi
 
 .Dependency graph
 [%collapsible]
