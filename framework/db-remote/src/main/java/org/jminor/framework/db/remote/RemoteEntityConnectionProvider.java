@@ -4,12 +4,12 @@
 package org.jminor.framework.db.remote;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.remote.client.Clients;
-import org.jminor.common.remote.client.ConnectionRequest;
-import org.jminor.common.remote.server.Server;
-import org.jminor.common.remote.server.ServerConfiguration;
-import org.jminor.common.remote.server.ServerInformation;
-import org.jminor.common.remote.server.Servers;
+import org.jminor.common.rmi.client.Clients;
+import org.jminor.common.rmi.client.ConnectionRequest;
+import org.jminor.common.rmi.server.Server;
+import org.jminor.common.rmi.server.ServerConfiguration;
+import org.jminor.common.rmi.server.ServerInformation;
+import org.jminor.common.rmi.server.Servers;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
 

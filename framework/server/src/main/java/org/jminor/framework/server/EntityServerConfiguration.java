@@ -8,7 +8,7 @@ import org.jminor.common.Configuration;
 import org.jminor.common.Text;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.Databases;
-import org.jminor.common.remote.server.ServerConfiguration;
+import org.jminor.common.rmi.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.PropertyValue;

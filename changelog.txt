@@ -5931,3 +5931,4 @@
   Module jminor-common-remote-http renamed to jminor-common-http
   HttpServerConfiguration no longer fluid
   RemoteEntityConnectionProvider now caches the remote method handles
+  org.jminor.common.remote package renamed org.jminor.common.rmi

@@ -4,8 +4,8 @@
 package org.jminor.swing.framework.tools.loadtest;
 
 import org.jminor.common.db.database.Databases;
-import org.jminor.common.remote.server.Server;
-import org.jminor.common.remote.server.ServerConfiguration;
+import org.jminor.common.rmi.server.Server;
+import org.jminor.common.rmi.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;

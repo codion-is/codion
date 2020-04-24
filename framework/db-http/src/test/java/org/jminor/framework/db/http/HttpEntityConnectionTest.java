@@ -10,7 +10,7 @@ import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.http.server.HttpServerConfiguration;
-import org.jminor.common.remote.server.ServerConfiguration;
+import org.jminor.common.rmi.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.condition.EntitySelectCondition;

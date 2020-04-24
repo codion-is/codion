@@ -6,10 +6,10 @@ package org.jminor.swing.framework.server.monitor;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
-import org.jminor.common.remote.server.Server;
-import org.jminor.common.remote.server.ServerConfiguration;
-import org.jminor.common.remote.server.ServerInformation;
-import org.jminor.common.remote.server.exception.ServerAuthenticationException;
+import org.jminor.common.rmi.server.Server;
+import org.jminor.common.rmi.server.ServerConfiguration;
+import org.jminor.common.rmi.server.ServerInformation;
+import org.jminor.common.rmi.server.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
 
 import org.slf4j.Logger;

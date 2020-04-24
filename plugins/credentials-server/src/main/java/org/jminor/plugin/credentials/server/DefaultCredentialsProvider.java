@@ -4,7 +4,7 @@
 package org.jminor.plugin.credentials.server;
 
 import org.jminor.common.CredentialsProvider;
-import org.jminor.common.remote.server.Servers;
+import org.jminor.common.rmi.server.Servers;
 import org.jminor.common.user.User;
 
 import org.slf4j.Logger;

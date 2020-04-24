@@ -5,7 +5,7 @@ package org.jminor.swing.framework.server.monitor.ui;
 
 import org.jminor.common.DateFormats;
 import org.jminor.common.MethodLogger;
-import org.jminor.common.remote.server.ClientLog;
+import org.jminor.common.rmi.server.ClientLog;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.server.monitor.ClientInstanceMonitor;
