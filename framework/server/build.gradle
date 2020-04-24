@@ -115,7 +115,7 @@ def applicationGenerateSecurityPolicyJvmArgs = [
 task runServer(type: JavaExec, dependsOn: createServerKeystore) {
     group = 'run'
     classpath = configurations.serverRuntime
-    main = 'org.jminor.framework.server.EntityServer'
+    main = mainClassName
     maxHeapSize = '256m'
     systemProperties = [
             'jminor.db.type'                            : 'h2',
@@ -138,20 +138,5 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'java.rmi.server.hostname'                  : 'localhost',
             'logback.configurationFile'                 : 'src/main/config/logback.xml',
             'java.security.policy'                      : 'src/main/security/jminor_server.policy'
-    ]
-}
-
-task shutdownServer(type: JavaExec, dependsOn: createServerKeystore) {
-    group = 'run'
-    classpath = configurations.serverRuntime
-    main = 'org.jminor.framework.server.EntityServer'
-    maxHeapSize = '256m'
-    args 'shutdown'
-    systemProperties = [
-            'jminor.db.host'                            : 'h2db',
-            'jminor.server.admin.user'                  : 'scott:tiger',
-            'javax.net.ssl.trustStore'                  : 'src/main/security/jminor_truststore.jks',
-            'javax.net.ssl.trustStorePassword'          : 'crappypass',
-            'logback.configurationFile'                 : 'src/main/config/logback.xml'
     ]
 }
