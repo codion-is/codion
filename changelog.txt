@@ -5962,3 +5962,4 @@
   org.jminor.framework.db.remote package renamed org.jminor.framework.db.rmi
   framework-db-remote module renamed to framework-db-rmi
   framework-db-remote jpms module renamed to reflect module name
+0.14.7
