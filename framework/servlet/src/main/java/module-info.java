@@ -1,6 +1,6 @@
 /**
  * Servlet application server.
- * @provides org.jminor.common.remote.server.AuxiliaryServer
+ * @provides org.jminor.common.rmi.server.AuxiliaryServer
  */
 module org.jminor.framework.servlet {
   requires org.slf4j;
@@ -13,6 +13,6 @@ module org.jminor.framework.servlet {
 
   exports org.jminor.framework.servlet;
 
-  provides org.jminor.common.remote.server.AuxiliaryServer
+  provides org.jminor.common.rmi.server.AuxiliaryServer
           with org.jminor.framework.servlet.EntityServletServer;
 }
