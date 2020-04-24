@@ -21,7 +21,7 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 == RemoteEntityConnectionProvider
 
-{url-javadoc}/org/jminor/framework/db/remote/RemoteEntityConnectionProvider.html[RemoteEntityConnectionProvider]
+{url-javadoc}/org/jminor/framework/db/rmi/RemoteEntityConnectionProvider.html[RemoteEntityConnectionProvider]
 
 Provides a connection based on a remote RMI connection.
 
