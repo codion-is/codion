@@ -22,9 +22,9 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
     super(EmpDept.T_EMPLOYEE, connectionProvider);
     bindEvents();
   }
-// end::constructor[]
+  // end::constructor[]
 
-// tag::createForeignKeyComboBox[]
+  // tag::createForeignKeyComboBox[]
   /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
   @Override
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
@@ -43,9 +43,9 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 
     return comboBoxModel;
   }
-// end::createForeignKeyComboBox[]
+  // end::createForeignKeyComboBox[]
 
-// tag::bindEvents[]
+  // tag::bindEvents[]
   private void bindEvents() {
     //Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
     //in case a new manager got hired, fired or promoted

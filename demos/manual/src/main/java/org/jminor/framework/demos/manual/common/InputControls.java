@@ -47,8 +47,7 @@ public final class InputControls {
 
     Value<Boolean> booleanValue = Values.value(initialValue, nullValue);
 
-    JToggleButton.ToggleButtonModel buttonModel =
-            new JToggleButton.ToggleButtonModel();
+    JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
 
     booleanValue.link(BooleanValues.booleanButtonModelValue(buttonModel));
 
@@ -62,8 +61,7 @@ public final class InputControls {
     //nullable boolean value
     Value<Boolean> booleanValue = Values.value();
 
-    NullableToggleButtonModel buttonModel =
-            new NullableToggleButtonModel();
+    NullableToggleButtonModel buttonModel = new NullableToggleButtonModel();
 
     booleanValue.link(BooleanValues.booleanButtonModelValue(buttonModel));
 

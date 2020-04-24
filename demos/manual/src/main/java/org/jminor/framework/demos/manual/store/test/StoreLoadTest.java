@@ -39,8 +39,7 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
     protected void performScenario(StoreAppModel application)
             throws ScenarioException {
       try {
-        EntityModel customerModel =
-                application.getEntityModel(Store.T_CUSTOMER);
+        EntityModel customerModel = application.getEntityModel(Store.T_CUSTOMER);
         customerModel.refresh();
         selectRandomRow(customerModel.getTableModel());
       }

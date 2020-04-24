@@ -227,16 +227,17 @@ public class Domain implements EntityDefinition.Provider, Serializable {
 
   /**
    * Transforms the given entities into beans according to the information found in this Domain model
+   * @param <V> the bean type
    * @param entities the entities to transform
    * @return a List containing the beans derived from the given entities, an empty List if {@code entities} is null or empty
    * @see EntityDefinition.Builder#beanClass(Class)
    * @see Property.Builder#beanProperty(String)
    */
-  public final List<Object> toBeans(final List<Entity> entities) {
+  public final <V> List<V> toBeans(final List<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
       return emptyList();
     }
-    final List<Object> beans = new ArrayList<>(entities.size());
+    final List<V> beans = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
       beans.add(toBean(entity));
     }

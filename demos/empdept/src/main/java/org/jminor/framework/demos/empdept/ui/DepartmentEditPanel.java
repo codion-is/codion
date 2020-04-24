@@ -17,9 +17,9 @@ public class DepartmentEditPanel extends EntityEditPanel {
   public DepartmentEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
-// end::constructor[]
+  // end::constructor[]
 
-// tag::initializeUI[]
+  // tag::initializeUI[]
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(EmpDept.DEPARTMENT_ID);

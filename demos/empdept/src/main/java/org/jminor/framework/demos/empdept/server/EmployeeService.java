@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.empdept.server;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.framework.demos.empdept.domain.Employee;
 import org.jminor.framework.domain.entity.Entity;
 
 import java.rmi.Remote;
@@ -14,5 +15,5 @@ public interface EmployeeService extends Remote {
 
   List<Entity> getEmployees() throws RemoteException, DatabaseException;
 
-  void disconnect() throws RemoteException;
+  List<Employee> getEmployeeBeans() throws RemoteException, DatabaseException;
 }

@@ -31,19 +31,15 @@ public final class ClientArchitecture {
    */
   static SwingEntityModel artistModel(EntityConnectionProvider connectionProvider) {
     //initialize a default edit model
-    SwingEntityEditModel artistEditModel =
-            new SwingEntityEditModel(Chinook.T_ARTIST, connectionProvider);
+    SwingEntityEditModel artistEditModel = new SwingEntityEditModel(Chinook.T_ARTIST, connectionProvider);
     //initialize a default table model
-    SwingEntityTableModel artistTableModel =
-            new SwingEntityTableModel(Chinook.T_ARTIST, connectionProvider);
+    SwingEntityTableModel artistTableModel = new SwingEntityTableModel(Chinook.T_ARTIST, connectionProvider);
     //initialize a default model using the edit and table models
-    SwingEntityModel artistModel =
-            new SwingEntityModel(artistEditModel, artistTableModel);
+    SwingEntityModel artistModel = new SwingEntityModel(artistEditModel, artistTableModel);
 
     //Note that this does the same as the above, that is, initializes
     //a SwingEntityModel with a default edit and table model
-    SwingEntityModel albumModel =
-            new SwingEntityModel(Chinook.T_ALBUM, connectionProvider);
+    SwingEntityModel albumModel = new SwingEntityModel(Chinook.T_ALBUM, connectionProvider);
 
     artistModel.addDetailModel(albumModel);
 

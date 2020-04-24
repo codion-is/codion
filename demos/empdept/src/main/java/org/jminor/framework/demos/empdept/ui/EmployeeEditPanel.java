@@ -19,9 +19,9 @@ public class EmployeeEditPanel extends EntityEditPanel {
   public EmployeeEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
-// end::constructor[]
+  // end::constructor[]
 
-// tag::initializeUI[]
+  // tag::initializeUI[]
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(EmpDept.EMPLOYEE_NAME);

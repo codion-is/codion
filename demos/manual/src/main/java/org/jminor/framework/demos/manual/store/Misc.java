@@ -22,8 +22,7 @@ public final class Misc {
                     .setUser(Users.parseUser("scott:tiger"))
                     .setClientTypeId("StoreMisc");
 
-    CustomerEditModel editModel =
-            new CustomerEditModel(connectionProvider);
+    CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
 
     editModel.put(Store.CUSTOMER_ID, 42);
     editModel.put(Store.CUSTOMER_FIRST_NAME, "Björn");

@@ -5963,3 +5963,5 @@
   framework-db-remote module renamed to framework-db-rmi
   framework-db-remote jpms module renamed to reflect module name
 0.14.7
+  Domain.toBeans() added V type parameter
+  Added entity to beans example to EmployeeService, some documentation code cleanup

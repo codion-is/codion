@@ -8,6 +8,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.rmi.server.RemoteClient;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.demos.empdept.domain.Employee;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.AbstractRemoteEntityConnection;
@@ -23,7 +24,7 @@ import static org.jminor.framework.db.condition.Conditions.selectCondition;
 
 public final class EmployeeServer extends EntityServer {
 
-  private static final Domain DOMAIN = new EmpDept().registerDomain();
+  private final Domain domain = new EmpDept().registerDomain();
 
   public EmployeeServer(final EntityServerConfiguration configuration) throws RemoteException {
     super(configuration);
@@ -35,20 +36,29 @@ public final class EmployeeServer extends EntityServer {
                                                           final RMIClientSocketFactory clientSocketFactory,
                                                           final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
-    return new DefaultEmployeeService(database, remoteClient, port);
+    return new DefaultEmployeeService(domain, database, remoteClient, port);
   }
 
   static final class DefaultEmployeeService extends AbstractRemoteEntityConnection implements EmployeeService {
 
-    private DefaultEmployeeService(final Database database, final RemoteClient remoteClient, final int port)
+    private DefaultEmployeeService(final Domain domain, final Database database, final RemoteClient remoteClient, final int port)
             throws DatabaseException, RemoteException {
-      super(DOMAIN, null, database, remoteClient, port, null, null);
+      super(domain, null, database, remoteClient, port, null, null);
     }
 
     @Override
     public List<Entity> getEmployees() throws DatabaseException {
       synchronized (connectionProxy) {
         return connectionProxy.select(selectCondition(EmpDept.T_EMPLOYEE));
+      }
+    }
+
+    @Override
+    public List<Employee> getEmployeeBeans() throws RemoteException, DatabaseException {
+      synchronized (connectionProxy) {
+        final List<Entity> employees = connectionProxy.select(selectCondition(EmpDept.T_EMPLOYEE).setForeignKeyFetchDepthLimit(-1));
+
+        return connectionProxy.getDomain().toBeans(employees);
       }
     }
   }
