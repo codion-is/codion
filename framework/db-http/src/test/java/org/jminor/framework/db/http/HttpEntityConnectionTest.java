@@ -17,8 +17,8 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.EntityConnectionServer;
-import org.jminor.framework.server.EntityConnectionServerConfiguration;
+import org.jminor.framework.server.EntityServer;
+import org.jminor.framework.server.EntityServerConfiguration;
 import org.jminor.framework.servlet.EntityServletServer;
 
 import org.apache.http.config.RegistryBuilder;
@@ -50,7 +50,7 @@ public final class HttpEntityConnectionTest {
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static EntityConnectionServer server;
+  private static EntityServer server;
 
   private final HttpEntityConnection connection = new HttpEntityConnection("TestDomain",
           HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
@@ -61,7 +61,7 @@ public final class HttpEntityConnectionTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    server = EntityConnectionServer.startServer(configure());
+    server = EntityServer.startServer(configure());
   }
 
   @AfterAll
@@ -245,7 +245,7 @@ public final class HttpEntityConnectionTest {
     assertThrows(IllegalStateException.class, connection::rollbackTransaction);
   }
 
-  private static EntityConnectionServerConfiguration configure() {
+  private static EntityServerConfiguration configure() {
     ServerConfiguration.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
     ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
@@ -257,7 +257,7 @@ public final class HttpEntityConnectionTest {
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(2223, 2221);
+    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
     configuration.setAdminPort(2223);
     configuration.setDatabase(Databases.getInstance());
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));

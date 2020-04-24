@@ -12,7 +12,7 @@ import org.jminor.common.remote.server.RemoteClient;
 import org.jminor.common.user.User;
 import org.jminor.common.value.Value;
 import org.jminor.common.version.Version;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
+import org.jminor.framework.server.EntityServerAdmin;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
 
@@ -55,7 +55,7 @@ public final class ClientUserMonitor {
   private static final int CONNECTION_COUNT_COLUMN = 6;
   private static final Comparator<User> USER_COMPARATOR = (u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername());
 
-  private final EntityConnectionServerAdmin server;
+  private final EntityServerAdmin server;
   private final Event<Integer> connectionTimeoutChangedEvent = Events.event();
   private final DefaultListModel<ClientMonitor> clientTypeListModel = new DefaultListModel<>();
   private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
@@ -76,7 +76,7 @@ public final class ClientUserMonitor {
    * @param server the server
    * @throws RemoteException in case of a communication error
    */
-  public ClientUserMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
+  public ClientUserMonitor(final EntityServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }

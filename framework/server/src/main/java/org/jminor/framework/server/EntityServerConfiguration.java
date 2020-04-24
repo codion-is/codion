@@ -25,11 +25,11 @@ import static java.util.stream.Collectors.toList;
 import static org.jminor.common.Util.nullOrEmpty;
 
 /**
- * Configuration values for a {@link EntityConnectionServer}.
+ * Configuration values for a {@link EntityServer}.
  */
-public interface EntityConnectionServerConfiguration extends ServerConfiguration {
+public interface EntityServerConfiguration extends ServerConfiguration {
 
-  Logger LOG = LoggerFactory.getLogger(EntityConnectionServerConfiguration.class);
+  Logger LOG = LoggerFactory.getLogger(EntityServerConfiguration.class);
 
   int DEFAULT_SERVER_CONNECTION_LIMIT = -1;
 
@@ -142,77 +142,77 @@ public interface EntityConnectionServerConfiguration extends ServerConfiguration
    * @param adminPort the port on which to make the server admin interface accessible
    * @return this configuration instance
    */
-  EntityConnectionServerConfiguration setAdminPort(Integer adminPort);
+  EntityServerConfiguration setAdminPort(Integer adminPort);
 
   /**
    * @param database the Database implementation
    * @return this configuration instance
    */
-  EntityConnectionServerConfiguration setDatabase(Database database);
+  EntityServerConfiguration setDatabase(Database database);
 
   /**
    * @param adminUser the admin user
    * @return this configuration instance
    */
-  EntityConnectionServerConfiguration setAdminUser(User adminUser);
+  EntityServerConfiguration setAdminUser(User adminUser);
 
   /**
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
    * @return this configuration instance
    */
-  EntityConnectionServerConfiguration setConnectionLimit(Integer connectionLimit);
+  EntityServerConfiguration setConnectionLimit(Integer connectionLimit);
 
   /**
    * @param clientLoggingEnabled if true then client logging is enabled on startup
    * @return this configuration instance
    */
-  EntityConnectionServerConfiguration setClientLoggingEnabled(Boolean clientLoggingEnabled);
+  EntityServerConfiguration setClientLoggingEnabled(Boolean clientLoggingEnabled);
 
   /**
    * @param connectionTimeout the idle connection timeout
    * @return this configuration instance
    */
-  EntityConnectionServerConfiguration setConnectionTimeout(Integer connectionTimeout);
+  EntityServerConfiguration setConnectionTimeout(Integer connectionTimeout);
 
   /**
    * @param connectionPoolProvider the connection pool provider classname
    * @return this configuration instance
    */
-  EntityConnectionServerConfiguration setConnectionPoolProvider(String connectionPoolProvider);
+  EntityServerConfiguration setConnectionPoolProvider(String connectionPoolProvider);
 
   /**
    * @param domainModelClassNames the domain model classes to load on startup
    * @return this configuration instance
    */
-  EntityConnectionServerConfiguration setDomainModelClassNames(Collection<String> domainModelClassNames);
+  EntityServerConfiguration setDomainModelClassNames(Collection<String> domainModelClassNames);
 
   /**
    * @param startupPoolUsers the users for which to initialize connection pools on startup
    * @return this configuration instance
    */
-  EntityConnectionServerConfiguration setStartupPoolUsers(Collection<User> startupPoolUsers);
+  EntityServerConfiguration setStartupPoolUsers(Collection<User> startupPoolUsers);
 
   /**
    * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeId
    * @return this configuration instance
    */
-  EntityConnectionServerConfiguration setClientSpecificConnectionTimeouts(Map<String, Integer> clientSpecificConnectionTimeouts);
+  EntityServerConfiguration setClientSpecificConnectionTimeouts(Map<String, Integer> clientSpecificConnectionTimeouts);
 
   /**
    * @param serverPort the server port
    * @param registryPort the registry port
    * @return a default entity connection server configuration
    */
-  static EntityConnectionServerConfiguration configuration(final int serverPort, final int registryPort) {
-    return new DefaultEntityConnectionServerConfiguration(serverPort, registryPort);
+  static EntityServerConfiguration configuration(final int serverPort, final int registryPort) {
+    return new DefaultEntityServerConfiguration(serverPort, registryPort);
   }
 
   /**
    * Parses configuration from system properties.
    * @return the server configuration according to system properties
    */
-  static EntityConnectionServerConfiguration fromSystemProperties() {
-    final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(
+  static EntityServerConfiguration fromSystemProperties() {
+    final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(
             requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()),
             requireNonNull(REGISTRY_PORT.get(), REGISTRY_PORT.toString()));
     configuration.setAuxiliaryServerClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_CLASS_NAMES.get()));
@@ -245,10 +245,10 @@ public interface EntityConnectionServerConfiguration extends ServerConfiguration
     final String adminUserString = SERVER_ADMIN_USER.get();
     final User adminUser = nullOrEmpty(adminUserString) ? null : Users.parseUser(adminUserString);
     if (adminUser == null) {
-      EntityConnectionServerConfiguration.LOG.info("No admin user specified");
+      EntityServerConfiguration.LOG.info("No admin user specified");
     }
     else {
-      EntityConnectionServerConfiguration.LOG.info("Admin user: " + adminUser);
+      EntityServerConfiguration.LOG.info("Admin user: " + adminUser);
       configuration.setAdminUser(adminUser);
     }
 

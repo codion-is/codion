@@ -15,7 +15,7 @@ import org.jminor.common.remote.server.ServerInformation;
 import org.jminor.common.remote.server.exception.ServerAuthenticationException;
 import org.jminor.common.user.User;
 import org.jminor.common.value.Value;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
+import org.jminor.framework.server.EntityServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -57,7 +57,7 @@ public final class ServerMonitor {
   private final String hostName;
   private final ServerInformation serverInformation;
   private final int registryPort;
-  private final EntityConnectionServerAdmin server;
+  private final EntityServerAdmin server;
   private final User serverAdminUser;
 
   private final TaskScheduler updateScheduler = new TaskScheduler(this::updateStatistics,
@@ -146,7 +146,7 @@ public final class ServerMonitor {
   /**
    * @return the server being monitored
    */
-  public EntityConnectionServerAdmin getServer() {
+  public EntityServerAdmin getServer() {
     return server;
   }
 
@@ -393,11 +393,11 @@ public final class ServerMonitor {
     return logLevelChangedEvent.getObserver();
   }
 
-  private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException, ServerAuthenticationException {
+  private EntityServerAdmin connectServer(final String serverName) throws RemoteException, ServerAuthenticationException {
     final long time = System.currentTimeMillis();
     try {
-      final Server<?, EntityConnectionServerAdmin> theServer = (Server) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
-      final EntityConnectionServerAdmin serverAdmin = theServer.getServerAdmin(serverAdminUser);
+      final Server<?, EntityServerAdmin> theServer = (Server) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
+      final EntityServerAdmin serverAdmin = theServer.getServerAdmin(serverAdminUser);
       //just some simple call to validate the remote connection
       serverAdmin.getUsedMemory();
       LOG.info("ServerMonitor connected to server: {}", serverName);
@@ -439,7 +439,7 @@ public final class ServerMonitor {
     catch (final RemoteException ignored) {/*ignored*/}
   }
 
-  private void addThreadStatistics(final long time, final EntityConnectionServerAdmin.ThreadStatistics threadStatistics) {
+  private void addThreadStatistics(final long time, final EntityServerAdmin.ThreadStatistics threadStatistics) {
     threadCountSeries.add(time, threadStatistics.getThreadCount());
     daemonThreadCountSeries.add(time, threadStatistics.getDaemonThreadCount());
     for (final Map.Entry<Thread.State, Integer> entry : threadStatistics.getThreadStateCount().entrySet()) {
@@ -453,8 +453,8 @@ public final class ServerMonitor {
     }
   }
 
-  private void addGCInfo(final List<EntityConnectionServerAdmin.GcEvent> gcEvents) {
-    for (final EntityConnectionServerAdmin.GcEvent event : gcEvents) {
+  private void addGCInfo(final List<EntityServerAdmin.GcEvent> gcEvents) {
+    for (final EntityServerAdmin.GcEvent event : gcEvents) {
       XYSeries typeSeries = gcTypeSeries.get(GC_EVENT_PREFIX + event.getGcName());
       if (typeSeries == null) {
         typeSeries = new XYSeries(GC_EVENT_PREFIX + event.getGcName());

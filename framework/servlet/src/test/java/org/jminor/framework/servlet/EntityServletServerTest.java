@@ -15,9 +15,9 @@ import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.EntityConnectionServer;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
-import org.jminor.framework.server.EntityConnectionServerConfiguration;
+import org.jminor.framework.server.EntityServer;
+import org.jminor.framework.server.EntityServerAdmin;
+import org.jminor.framework.server.EntityServerConfiguration;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
@@ -74,16 +74,16 @@ public class EntityServletServerTest {
   private static HttpHost TARGET_HOST;
   private static String SERVER_BASEURL;
 
-  private static EntityConnectionServer server;
-  private static EntityConnectionServerAdmin admin;
+  private static EntityServer server;
+  private static EntityServerAdmin admin;
 
   @BeforeAll
   public static void setUp() throws Exception {
-    final EntityConnectionServerConfiguration configuration = configure();
+    final EntityServerConfiguration configuration = configure();
     HOSTNAME = ServerConfiguration.SERVER_HOST_NAME.get();
     TARGET_HOST = new HttpHost(HOSTNAME, WEB_SERVER_PORT_NUMBER, HTTPS);
     SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities";
-    server = EntityConnectionServer.startServer(configuration);
+    server = EntityServer.startServer(configuration);
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -386,7 +386,7 @@ public class EntityServletServerTest {
 
   }
 
-  private static EntityConnectionServerConfiguration configure() {
+  private static EntityServerConfiguration configure() {
     ServerConfiguration.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
@@ -396,7 +396,7 @@ public class EntityServletServerTest {
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(2223, 2221);
+    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));

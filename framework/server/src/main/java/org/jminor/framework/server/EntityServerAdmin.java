@@ -20,7 +20,7 @@ import java.util.UUID;
 /**
  * Defines the server admin service methods.
  */
-public interface EntityConnectionServerAdmin extends Remote {
+public interface EntityServerAdmin extends Remote {
 
   /**
    * Shuts down the server

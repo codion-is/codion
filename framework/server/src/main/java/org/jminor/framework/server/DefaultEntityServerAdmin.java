@@ -43,11 +43,11 @@ import static java.util.stream.Collectors.toSet;
 import static org.jminor.common.db.pool.ConnectionPools.getConnectionPool;
 
 /**
- * Implements the EntityConnectionServerAdmin interface, providing admin access to a EntityConnectionServer instance.
+ * Implements the EntityServerAdmin interface, providing admin access to a EntityServer instance.
  */
-final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject implements EntityConnectionServerAdmin {
+final class DefaultEntityServerAdmin extends UnicastRemoteObject implements EntityServerAdmin {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConnectionServerAdmin.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityServerAdmin.class);
 
   private static final long serialVersionUID = 1;
 
@@ -56,20 +56,20 @@ final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject imple
   /**
    * The server being administrated
    */
-  private final EntityConnectionServer server;
+  private final EntityServer server;
   private final LinkedList<GcEvent> gcEventList = new LinkedList<>();
   private final Util.PropertyWriter propertyWriter = new SystemPropertyWriter();
 
   private final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
 
   /**
-   * Instantiates a new DefaultEntityConnectionServerAdmin
+   * Instantiates a new DefaultEntityServerAdmin
    * @param server the server to administer
    * @param configuration the port on which to make the server admin available
    * @throws RemoteException in case of an exception
    * @throws NullPointerException in case {@code configuration} or {@code server} are not specified
    */
-  DefaultEntityConnectionServerAdmin(final EntityConnectionServer server, final EntityConnectionServerConfiguration configuration) throws RemoteException {
+  DefaultEntityServerAdmin(final EntityServer server, final EntityServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration).getServerAdminPort(),
             configuration.getServerConfiguration().getRmiClientSocketFactory(),
             configuration.getServerConfiguration().getRmiServerSocketFactory());

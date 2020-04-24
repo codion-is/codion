@@ -41,7 +41,7 @@ dependencies {
     serverRuntime "com.h2database:h2:${h2Version}"
 }
 
-mainClassName = 'org.jminor.framework.server.EntityConnectionServer'
+mainClassName = 'org.jminor.framework.server.EntityServer'
 
 distTar {
     dependsOn(':jminor-demos-empdept:domainJar')
@@ -115,7 +115,7 @@ def applicationGenerateSecurityPolicyJvmArgs = [
 task runServer(type: JavaExec, dependsOn: createServerKeystore) {
     group = 'run'
     classpath = configurations.serverRuntime
-    main = 'org.jminor.framework.server.EntityConnectionServer'
+    main = 'org.jminor.framework.server.EntityServer'
     maxHeapSize = '256m'
     systemProperties = [
             'jminor.db.type'                            : 'h2',
@@ -144,7 +144,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
 task shutdownServer(type: JavaExec, dependsOn: createServerKeystore) {
     group = 'run'
     classpath = configurations.serverRuntime
-    main = 'org.jminor.framework.server.EntityConnectionServer'
+    main = 'org.jminor.framework.server.EntityServer'
     maxHeapSize = '256m'
     args 'shutdown'
     systemProperties = [

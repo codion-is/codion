@@ -91,6 +91,6 @@ org.jminor.framework.domain.property.DefaultTransientProperty
 org.jminor.framework.domain.property.DefaultValueListProperty
 org.jminor.framework.domain.property.Properties
 org.jminor.framework.domain.property.Properties$$Lambda$*
-org.jminor.framework.server.DefaultEntityConnectionServerAdmin$DefaultGcEvent
-org.jminor.framework.server.DefaultEntityConnectionServerAdmin$DefaultThreadStatistics
-org.jminor.framework.server.EntityConnectionServerAdmin
+org.jminor.framework.server.DefaultEntityServerAdmin$DefaultGcEvent
+org.jminor.framework.server.DefaultEntityServerAdmin$DefaultThreadStatistics
+org.jminor.framework.server.EntityServerAdmin

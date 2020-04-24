@@ -19,9 +19,9 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Configuration values for a {@link EntityConnectionServer}.
+ * Configuration values for a {@link EntityServer}.
  */
-final class DefaultEntityConnectionServerConfiguration implements EntityConnectionServerConfiguration {
+final class DefaultEntityServerConfiguration implements EntityServerConfiguration {
 
   private final ServerConfiguration serverConfiguration;
 
@@ -41,7 +41,7 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
    * @param serverConfiguration the server configuration
    * @param registryPort the registry port
    */
-  DefaultEntityConnectionServerConfiguration(final int serverPort, final int registryPort) {
+  DefaultEntityServerConfiguration(final int serverPort, final int registryPort) {
     this.serverConfiguration = ServerConfiguration.configuration(serverPort);
     this.registryPort = registryPort;
     this.serverConfiguration.setServerNameProvider(() -> {
@@ -172,127 +172,127 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   }
 
   @Override
-  public EntityConnectionServerConfiguration setServerNameProvider(final Supplier<String> serverNameProvider) {
+  public EntityServerConfiguration setServerNameProvider(final Supplier<String> serverNameProvider) {
     serverConfiguration.setServerNameProvider(serverNameProvider);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setServerName(final String serverName) {
+  public EntityServerConfiguration setServerName(final String serverName) {
     serverConfiguration.setServerName(serverName);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
+  public EntityServerConfiguration setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
     serverConfiguration.setSharedLoginProxyClassNames(sharedLoginProxyClassNames);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
+  public EntityServerConfiguration setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
     serverConfiguration.setLoginProxyClassNames(loginProxyClassNames);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
+  public EntityServerConfiguration setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
     serverConfiguration.setConnectionValidatorClassNames(connectionValidatorClassNames);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
+  public EntityServerConfiguration setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
     serverConfiguration.setAuxiliaryServerClassNames(auxiliaryServerClassNames);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setSslEnabled(final Boolean sslEnabled) {
+  public EntityServerConfiguration setSslEnabled(final Boolean sslEnabled) {
     serverConfiguration.setSslEnabled(sslEnabled);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
+  public EntityServerConfiguration setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
     serverConfiguration.setRmiClientSocketFactory(rmiClientSocketFactory);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
+  public EntityServerConfiguration setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
     serverConfiguration.setRmiServerSocketFactory(rmiServerSocketFactory);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
+  public EntityServerConfiguration setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
     serverConfiguration.setSerializationFilterWhitelist(serializationFilterWhitelist);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
+  public EntityServerConfiguration setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
     serverConfiguration.setSerializationFilterDryRun(serializationFilterDryRun);
     return this;
   }
 
   @Override
-  public DefaultEntityConnectionServerConfiguration setAdminPort(final Integer adminPort) {
+  public DefaultEntityServerConfiguration setAdminPort(final Integer adminPort) {
     this.serverAdminPort = requireNonNull(adminPort);
     return this;
   }
 
   @Override
-  public DefaultEntityConnectionServerConfiguration setDatabase(final Database database) {
+  public DefaultEntityServerConfiguration setDatabase(final Database database) {
     this.database = requireNonNull(database);
     return this;
   }
 
   @Override
-  public DefaultEntityConnectionServerConfiguration setAdminUser(final User adminUser) {
+  public DefaultEntityServerConfiguration setAdminUser(final User adminUser) {
     this.adminUser = requireNonNull(adminUser);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setConnectionLimit(final Integer connectionLimit) {
+  public EntityServerConfiguration setConnectionLimit(final Integer connectionLimit) {
     this.connectionLimit = requireNonNull(connectionLimit);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setClientLoggingEnabled(final Boolean clientLoggingEnabled) {
+  public EntityServerConfiguration setClientLoggingEnabled(final Boolean clientLoggingEnabled) {
     this.clientLoggingEnabled = requireNonNull(clientLoggingEnabled);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setConnectionTimeout(final Integer connectionTimeout) {
+  public EntityServerConfiguration setConnectionTimeout(final Integer connectionTimeout) {
     this.connectionTimeout = requireNonNull(connectionTimeout);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setConnectionPoolProvider(final String connectionPoolProvider) {
+  public EntityServerConfiguration setConnectionPoolProvider(final String connectionPoolProvider) {
     this.connectionPoolProvider = requireNonNull(connectionPoolProvider);
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setDomainModelClassNames(final Collection<String> domainModelClassNames) {
+  public EntityServerConfiguration setDomainModelClassNames(final Collection<String> domainModelClassNames) {
     this.domainModelClassNames.addAll(requireNonNull(domainModelClassNames));
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setStartupPoolUsers(final Collection<User> startupPoolUsers) {
+  public EntityServerConfiguration setStartupPoolUsers(final Collection<User> startupPoolUsers) {
     this.startupPoolUsers.addAll(requireNonNull(startupPoolUsers));
     return this;
   }
 
   @Override
-  public EntityConnectionServerConfiguration setClientSpecificConnectionTimeouts(final Map<String, Integer> clientSpecificConnectionTimeouts) {
+  public EntityServerConfiguration setClientSpecificConnectionTimeouts(final Map<String, Integer> clientSpecificConnectionTimeouts) {
     this.clientSpecificConnectionTimeouts.putAll(requireNonNull(clientSpecificConnectionTimeouts));
     return this;
   }
