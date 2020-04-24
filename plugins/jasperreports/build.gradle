@@ -2,7 +2,7 @@ dependencies {
     implementation project(':jminor-common-core')
     implementation project(':jminor-common-db')
 
-    testImplementation project(':jminor-common-remote-http')
+    testImplementation project(':jminor-common-http')
     testImplementation project(':jminor-framework-db-local')
 
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
