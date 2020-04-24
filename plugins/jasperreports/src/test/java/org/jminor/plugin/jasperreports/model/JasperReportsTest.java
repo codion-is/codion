@@ -94,7 +94,9 @@ public class JasperReportsTest {
   public void urlReport() throws Exception {
     ReportWrapper.CACHE_REPORTS.set(false);
     ReportWrapper.REPORT_PATH.set("http://localhost:1234");
-    final HttpServer server = new HttpServer(HttpServerConfiguration.configuration(1234, false).setDocumentRoot(REPORT_PATH));
+    final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(1234, false);
+    configuration.setDocumentRoot(REPORT_PATH);
+    final HttpServer server = new HttpServer(configuration);
     try {
       server.startServer();
       final HashMap<String, Object> reportParameters = new HashMap<>();

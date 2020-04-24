@@ -17,28 +17,6 @@ final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
     this.secure = secure;
   }
 
-  /**
-   * @param documentRoot the document root, null to disable file serving
-   * @return this configuration instance
-   */
-  @Override
-  public DefaultHttpServerConfiguration setDocumentRoot(final String documentRoot) {
-    this.documentRoot = documentRoot;
-    return this;
-  }
-
-  /**
-   * @param keystorePath the keystore path
-   * @param keystorePassword the keystore password
-   * @return this configuration instance
-   */
-  @Override
-  public DefaultHttpServerConfiguration setKeystore(final String keystorePath, final String keystorePassword) {
-    this.keystorePath = keystorePath;
-    this.keystorePassword = keystorePassword;
-    return this;
-  }
-
   @Override
   public int getServerPort() {
     return serverPort;
@@ -62,5 +40,16 @@ final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
   @Override
   public String getKeystorePassword() {
     return keystorePassword;
+  }
+
+  @Override
+  public void setDocumentRoot(final String documentRoot) {
+    this.documentRoot = documentRoot;
+  }
+
+  @Override
+  public void setKeystore(final String keystorePath, final String keystorePassword) {
+    this.keystorePath = keystorePath;
+    this.keystorePassword = keystorePassword;
   }
 }
