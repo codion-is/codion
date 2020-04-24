@@ -38,17 +38,14 @@ public final class ClientUI {
 
   static void artistPanel(EntityConnectionProvider connectionProvider) {
     //create a EditModel based on the artist entity
-    SwingEntityEditModel editModel =
-            new SwingEntityEditModel(T_ARTIST, connectionProvider);
+    SwingEntityEditModel editModel = new SwingEntityEditModel(T_ARTIST, connectionProvider);
 
     //create a field for entering a artist name
     JTextField nameField = new JTextField(10);
     //create a String Value based on the artist name in the edit model
-    Value<String> editModelNameValue =
-            editModel.value(ARTIST_NAME);
+    Value<String> editModelNameValue = editModel.value(ARTIST_NAME);
     //create a String Value based on the text field
-    Value<String> textFieldNameValue =
-            TextValues.textValue(nameField);
+    Value<String> textFieldNameValue = TextValues.textValue(nameField);
     //link the two values
     editModelNameValue.link(textFieldNameValue);
     //add a insert action to the name field
@@ -80,13 +77,11 @@ public final class ClientUI {
 
   static void albumPanel(final EntityConnectionProvider connectionProvider) {
     //create a EditModel based on the album entity
-    SwingEntityEditModel editModel =
-            new SwingEntityEditModel(T_ALBUM, connectionProvider);
+    SwingEntityEditModel editModel = new SwingEntityEditModel(T_ALBUM, connectionProvider);
 
     //create a combobox for selecting the album artist
     //based on a combobox model supplied by the edit model
-    final SwingEntityComboBoxModel artistComboBoxModel =
-            editModel.getForeignKeyComboBoxModel(ALBUM_ARTIST_FK);
+    final SwingEntityComboBoxModel artistComboBoxModel = editModel.getForeignKeyComboBoxModel(ALBUM_ARTIST_FK);
     EntityComboBox artistComboBox = new EntityComboBox(artistComboBoxModel);
     //limit the combo box width, due to long artist names
     Components.setPreferredWidth(artistComboBox, 240);
@@ -95,22 +90,18 @@ public final class ClientUI {
     //populate the combo box model
     artistComboBoxModel.refresh();
     //create a Entity Value based on the album artist in the edit model
-    Value<Entity> editModelArtistValue =
-            editModel.value(ALBUM_ARTIST_FK);
+    Value<Entity> editModelArtistValue = editModel.value(ALBUM_ARTIST_FK);
     //create a Entity Value based on the combobox
-    Value<Entity> comboBoxArtistValue =
-            SelectedValues.selectedValue(artistComboBox);
+    Value<Entity> comboBoxArtistValue = SelectedValues.selectedValue(artistComboBox);
     //link the two values
     editModelArtistValue.link(comboBoxArtistValue);
 
     //create a field for entering a album title
     JTextField titleField = new JTextField(10);
     //create a String Value based on the album title in the edit model
-    Value<String> editModelNameValue =
-            editModel.value(ALBUM_TITLE);
+    Value<String> editModelNameValue = editModel.value(ALBUM_TITLE);
     //create a String Value based on the text field
-    Value<String> textFieldTitleValue =
-            TextValues.textValue(titleField);
+    Value<String> textFieldTitleValue = TextValues.textValue(titleField);
     //link the two values
     editModelNameValue.link(textFieldTitleValue);
 

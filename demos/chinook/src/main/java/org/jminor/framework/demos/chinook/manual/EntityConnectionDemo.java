@@ -13,12 +13,9 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.plugin.jasperreports.model.JasperReportWrapper;
-import org.jminor.plugin.jasperreports.model.JasperReports;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
@@ -43,8 +40,7 @@ public final class EntityConnectionDemo {
 
   static void selectConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::selectCondition[]
-    EntitySelectCondition condition =
-            selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "The %");
+    EntitySelectCondition condition = selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "The %");
 
     List<Entity> artists = connection.select(condition);
 
@@ -77,14 +73,12 @@ public final class EntityConnectionDemo {
 
   static void selectSingleCondition(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleCondition[]
-    Entity ironMaiden = connection.selectSingle(
-            selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "Iron Maiden"));
+    Entity ironMaiden = connection.selectSingle(selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "Iron Maiden"));
 
-    Entity liveAlbum = connection.selectSingle(
-            selectCondition(T_ALBUM, combination(AND,
-                    propertyCondition(ALBUM_ARTIST_FK, LIKE, ironMaiden),
-                    propertyCondition(ALBUM_TITLE, LIKE, "%live after%")
-                            .setCaseSensitive(false))));
+    Entity liveAlbum = connection.selectSingle(selectCondition(T_ALBUM, combination(AND,
+            propertyCondition(ALBUM_ARTIST_FK, LIKE, ironMaiden),
+            propertyCondition(ALBUM_TITLE, LIKE, "%live after%")
+                    .setCaseSensitive(false))));
     // end::selectSingleCondition[]
   }
 
@@ -125,8 +119,7 @@ public final class EntityConnectionDemo {
 
   static void selectRowCount(EntityConnection connection) throws DatabaseException {
     // tag::selectRowCount[]
-    int numberOfItStaff = connection.selectRowCount(
-            condition(T_EMPLOYEE, EMPLOYEE_TITLE, LIKE, "IT Staff"));
+    int numberOfItStaff = connection.selectRowCount(condition(T_EMPLOYEE, EMPLOYEE_TITLE, LIKE, "IT Staff"));
     // end::selectRowCount[]
   }
 
@@ -159,8 +152,7 @@ public final class EntityConnectionDemo {
 
   static void updateConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::updateCondition[]
-    EntityUpdateCondition updateCondition =
-            updateCondition(T_ARTIST, ARTIST_NAME, LIKE, "Azymuth");
+    EntityUpdateCondition updateCondition = updateCondition(T_ARTIST, ARTIST_NAME, LIKE, "Azymuth");
 
     updateCondition.set(ARTIST_NAME, "Another Name");
 
@@ -204,10 +196,7 @@ public final class EntityConnectionDemo {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
 
-    JasperReportWrapper reportWrapper =
-            JasperReports.classPathReport(Chinook.class, "customer_report.jasper");
-
-    JasperPrint jasperPrint = connection.fillReport(reportWrapper, reportParameters);
+    JasperPrint jasperPrint = connection.fillReport(CUSTOMER_REPORT, reportParameters);
     //end::report[]
   }
 

@@ -5,7 +5,6 @@ package org.jminor.framework.demos.empdept.server;
 
 import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.rmi.client.ConnectionRequest;
 import org.jminor.common.rmi.server.Server;
 import org.jminor.common.rmi.server.ServerConfiguration;
 import org.jminor.common.rmi.server.Servers;
@@ -13,6 +12,7 @@ import org.jminor.common.rmi.server.exception.ConnectionNotAvailableException;
 import org.jminor.common.rmi.server.exception.ConnectionValidationException;
 import org.jminor.common.rmi.server.exception.LoginException;
 import org.jminor.common.user.Users;
+import org.jminor.framework.demos.empdept.domain.Employee;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.EntityServerConfiguration;
 
@@ -24,6 +24,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
 
+import static org.jminor.common.rmi.client.ConnectionRequest.connectionRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class EmployeeServerTest {
@@ -50,14 +51,17 @@ public final class EmployeeServerTest {
     final Server<EmployeeService, Remote> remoteServer = Servers.getServer("localhost",
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
 
+    final UUID clientId = UUID.randomUUID();
     final EmployeeService employeeService = remoteServer.connect(
-            ConnectionRequest.connectionRequest(Users.parseUser("scott:tiger"),
-                    UUID.randomUUID(), "EmployeeServerTest"));
+            connectionRequest(Users.parseUser("scott:tiger"), clientId, "EmployeeServerTest"));
 
     final List<Entity> employees = employeeService.getEmployees();
     assertEquals(16, employees.size());
 
-    employeeService.disconnect();
+    final List<Employee> employeeBeans = employeeService.getEmployeeBeans();
+    assertEquals(16, employeeBeans.size());
+
+    employeeServer.disconnect(clientId);
 
     employeeServer.shutdown();
   }

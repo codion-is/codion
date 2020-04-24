@@ -101,8 +101,7 @@ public final class EntitiesTutorial {
     //select the artist Metallica by name, the selectSingle() method
     //throws a RecordNotFoundException if no record is found and a
     //MultipleRecordsFoundException if more than one are found
-    Entity metallica =
-            connection.selectSingle(T_ARTIST, ARTIST_NAME, "Metallica");
+    Entity metallica = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Metallica");
 
     //select all albums by Metallica, by using select() with the
     //Metallica Entity as condition value, basically asking for the
@@ -117,19 +116,16 @@ public final class EntitiesTutorial {
     //we create a select condition, where we specify the id of the entity
     //we're selecting, the id of the property we're searching by, the type
     //of condition and the value.
-    EntitySelectCondition artistsCondition =
-            selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "An%");
+    EntitySelectCondition artistsCondition = selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "An%");
     //and we set the order by clause
     artistsCondition.setOrderBy(orderBy().ascending(ARTIST_NAME));
 
-    List<Entity> artistsStartingWithAn =
-            connection.select(artistsCondition);
+    List<Entity> artistsStartingWithAn = connection.select(artistsCondition);
 
     artistsStartingWithAn.forEach(System.out::println);
 
     //create a select condition
-    EntitySelectCondition albumsCondition =
-            selectCondition(T_ALBUM, ALBUM_ARTIST_FK, LIKE, artistsStartingWithAn);
+    EntitySelectCondition albumsCondition = selectCondition(T_ALBUM, ALBUM_ARTIST_FK, LIKE, artistsStartingWithAn);
     albumsCondition.setOrderBy(orderBy().ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));
 
     List<Entity> albumsByArtistsStartingWithAn = connection.select(albumsCondition);

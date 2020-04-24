@@ -23,9 +23,9 @@ public class DepartmentTablePanel extends EntityTablePanel {
   public DepartmentTablePanel(final SwingEntityTableModel tableModel) {
     super(tableModel);
   }
-// end::constructor[]
+  // end::constructor[]
 
-// tag::viewEmployeeReport[]
+  // tag::viewEmployeeReport[]
   public void viewEmployeeReport() throws Exception {
     final Collection<Integer> departmentNumbers =
             Entities.getDistinctValues(EmpDept.DEPARTMENT_ID,
@@ -35,9 +35,9 @@ public class DepartmentTablePanel extends EntityTablePanel {
     EntityReports.viewJdbcReport(DepartmentTablePanel.this, EmpDept.EMPLOYEE_REPORT,
             reportParameters, JRViewer::new, "Employee Report", getTableModel().getConnectionProvider());
   }
-// end::viewEmployeeReport[]
+  // end::viewEmployeeReport[]
 
-// tag::getPrintControls[]
+  // tag::getPrintControls[]
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
