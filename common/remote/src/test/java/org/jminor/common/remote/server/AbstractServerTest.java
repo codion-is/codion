@@ -188,7 +188,10 @@ public class AbstractServerTest {
   }
 
   private static ServerConfiguration getConfiguration() {
-    return ServerConfiguration.configuration(PORT).setServerName("remoteServerTestServer");
+    final ServerConfiguration configuration = ServerConfiguration.configuration(PORT);
+    configuration.setServerName("remoteServerTestServer");
+
+    return configuration;
   }
 
   private static final class TestServer extends AbstractServer<ServerTest, Remote> {

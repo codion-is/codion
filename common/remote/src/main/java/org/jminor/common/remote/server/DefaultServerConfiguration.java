@@ -96,43 +96,37 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public DefaultServerConfiguration setServerNameProvider(final Supplier<String> serverNameProvider) {
+  public void setServerNameProvider(final Supplier<String> serverNameProvider) {
     this.serverNameProvider = requireNonNull(serverNameProvider);
-    return this;
   }
 
   @Override
-  public DefaultServerConfiguration setServerName(final String serverName) {
+  public void setServerName(final String serverName) {
     this.serverName = requireNonNull(serverName);
-    return this;
   }
 
   @Override
-  public DefaultServerConfiguration setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
+  public void setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
     this.sharedLoginProxyClassNames.addAll(requireNonNull(sharedLoginProxyClassNames));
-    return this;
   }
 
   @Override
-  public DefaultServerConfiguration setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
+  public void setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
     this.loginProxyClassNames.addAll(requireNonNull(loginProxyClassNames));
-    return this;
   }
 
   @Override
-  public DefaultServerConfiguration setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
+  public void setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
     this.connectionValidatorClassNames.addAll(requireNonNull(connectionValidatorClassNames));
-    return this;
   }
 
   @Override
-  public ServerConfiguration setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
+  public void setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
     this.auxiliaryServerClassNames.addAll(requireNonNull(auxiliaryServerClassNames));
-    return this;
   }
 
   @Override
-  public ServerConfiguration setSslEnabled(final Boolean sslEnabled) {
+  public void setSslEnabled(final Boolean sslEnabled) {
     this.sslEnabled = requireNonNull(sslEnabled);
     if (sslEnabled) {
       setRmiClientSocketFactory(new SslRMIClientSocketFactory());
@@ -142,30 +136,25 @@ final class DefaultServerConfiguration implements ServerConfiguration {
       setRmiClientSocketFactory(null);
       setRmiServerSocketFactory(null);
     }
-    return this;
   }
 
   @Override
-  public DefaultServerConfiguration setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
+  public void setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
     this.rmiClientSocketFactory = rmiClientSocketFactory;
-    return this;
   }
 
   @Override
-  public DefaultServerConfiguration setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
+  public void setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
     this.rmiServerSocketFactory = rmiServerSocketFactory;
-    return this;
   }
 
   @Override
-  public ServerConfiguration setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
+  public void setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
     this.serializationFilterWhitelist = requireNonNull(serializationFilterWhitelist);
-    return this;
   }
 
   @Override
-  public ServerConfiguration setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
+  public void setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
     this.serializationFilterDryRun = requireNonNull(serializationFilterDryRun);
-    return this;
   }
 }

@@ -172,128 +172,107 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public EntityServerConfiguration setServerNameProvider(final Supplier<String> serverNameProvider) {
+  public void setServerNameProvider(final Supplier<String> serverNameProvider) {
     serverConfiguration.setServerNameProvider(serverNameProvider);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setServerName(final String serverName) {
+  public void setServerName(final String serverName) {
     serverConfiguration.setServerName(serverName);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
+  public void setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
     serverConfiguration.setSharedLoginProxyClassNames(sharedLoginProxyClassNames);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
+  public void setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
     serverConfiguration.setLoginProxyClassNames(loginProxyClassNames);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
+  public void setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
     serverConfiguration.setConnectionValidatorClassNames(connectionValidatorClassNames);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
+  public void setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
     serverConfiguration.setAuxiliaryServerClassNames(auxiliaryServerClassNames);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setSslEnabled(final Boolean sslEnabled) {
+  public void setSslEnabled(final Boolean sslEnabled) {
     serverConfiguration.setSslEnabled(sslEnabled);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
+  public void setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
     serverConfiguration.setRmiClientSocketFactory(rmiClientSocketFactory);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
+  public void setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
     serverConfiguration.setRmiServerSocketFactory(rmiServerSocketFactory);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
+  public void setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
     serverConfiguration.setSerializationFilterWhitelist(serializationFilterWhitelist);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
+  public void setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
     serverConfiguration.setSerializationFilterDryRun(serializationFilterDryRun);
-    return this;
   }
 
   @Override
-  public DefaultEntityServerConfiguration setAdminPort(final Integer adminPort) {
+  public void setAdminPort(final Integer adminPort) {
     this.serverAdminPort = requireNonNull(adminPort);
-    return this;
   }
 
   @Override
-  public DefaultEntityServerConfiguration setDatabase(final Database database) {
+  public void setDatabase(final Database database) {
     this.database = requireNonNull(database);
-    return this;
   }
 
   @Override
-  public DefaultEntityServerConfiguration setAdminUser(final User adminUser) {
+  public void setAdminUser(final User adminUser) {
     this.adminUser = requireNonNull(adminUser);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setConnectionLimit(final Integer connectionLimit) {
+  public void setConnectionLimit(final Integer connectionLimit) {
     this.connectionLimit = requireNonNull(connectionLimit);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setClientLoggingEnabled(final Boolean clientLoggingEnabled) {
+  public void setClientLoggingEnabled(final Boolean clientLoggingEnabled) {
     this.clientLoggingEnabled = requireNonNull(clientLoggingEnabled);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setConnectionTimeout(final Integer connectionTimeout) {
+  public void setConnectionTimeout(final Integer connectionTimeout) {
     this.connectionTimeout = requireNonNull(connectionTimeout);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setConnectionPoolProvider(final String connectionPoolProvider) {
+  public void setConnectionPoolProvider(final String connectionPoolProvider) {
     this.connectionPoolProvider = requireNonNull(connectionPoolProvider);
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setDomainModelClassNames(final Collection<String> domainModelClassNames) {
+  public void setDomainModelClassNames(final Collection<String> domainModelClassNames) {
     this.domainModelClassNames.addAll(requireNonNull(domainModelClassNames));
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setStartupPoolUsers(final Collection<User> startupPoolUsers) {
+  public void setStartupPoolUsers(final Collection<User> startupPoolUsers) {
     this.startupPoolUsers.addAll(requireNonNull(startupPoolUsers));
-    return this;
   }
 
   @Override
-  public EntityServerConfiguration setClientSpecificConnectionTimeouts(final Map<String, Integer> clientSpecificConnectionTimeouts) {
+  public void setClientSpecificConnectionTimeouts(final Map<String, Integer> clientSpecificConnectionTimeouts) {
     this.clientSpecificConnectionTimeouts.putAll(requireNonNull(clientSpecificConnectionTimeouts));
-    return this;
   }
 }
