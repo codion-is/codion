@@ -13,7 +13,7 @@ module org.jminor.framework.demos.empdept {
   requires org.jminor.plugin.json;
 
   exports org.jminor.framework.demos.empdept.domain
-          to org.jminor.framework.db.local;
+          to org.jminor.framework.domain, org.jminor.framework.db.local;
   exports org.jminor.framework.demos.empdept.model
           to org.jminor.swing.framework.model;
   exports org.jminor.framework.demos.empdept.ui
