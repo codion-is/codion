@@ -31,10 +31,10 @@ public final class EmployeeServer extends EntityServer {
   }
 
   @Override
-  protected DefaultEmployeeService createRemoteConnection(final ConnectionPool connectionPool, final Database database,
-                                                          final RemoteClient remoteClient, final int port,
-                                                          final RMIClientSocketFactory clientSocketFactory,
-                                                          final RMIServerSocketFactory serverSocketFactory)
+  protected AbstractRemoteEntityConnection createRemoteConnection(final ConnectionPool connectionPool, final Database database,
+                                                                  final RemoteClient remoteClient, final int port,
+                                                                  final RMIClientSocketFactory clientSocketFactory,
+                                                                  final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
     return new DefaultEmployeeService(domain, database, remoteClient, port);
   }
