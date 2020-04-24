@@ -27,7 +27,7 @@ import static org.jminor.common.Util.nullOrEmpty;
 /**
  * Configuration values for a {@link EntityConnectionServer}.
  */
-public interface EntityConnectionServerConfiguration {
+public interface EntityConnectionServerConfiguration extends ServerConfiguration {
 
   Logger LOG = LoggerFactory.getLogger(EntityConnectionServerConfiguration.class);
 
@@ -199,12 +199,12 @@ public interface EntityConnectionServerConfiguration {
   EntityConnectionServerConfiguration setClientSpecificConnectionTimeouts(Map<String, Integer> clientSpecificConnectionTimeouts);
 
   /**
-   * @param serverConfiguration the server configuration
+   * @param serverPort the server port
    * @param registryPort the registry port
    * @return a default entity connection server configuration
    */
-  static EntityConnectionServerConfiguration configuration(final ServerConfiguration serverConfiguration, final int registryPort) {
-    return new DefaultEntityConnectionServerConfiguration(serverConfiguration, registryPort);
+  static EntityConnectionServerConfiguration configuration(final int serverPort, final int registryPort) {
+    return new DefaultEntityConnectionServerConfiguration(serverPort, registryPort);
   }
 
   /**
@@ -212,17 +212,27 @@ public interface EntityConnectionServerConfiguration {
    * @return the server configuration according to system properties
    */
   static EntityConnectionServerConfiguration fromSystemProperties() {
-    final ServerConfiguration serverConfiguration = ServerConfiguration.fromSystemProperties();
-    final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(serverConfiguration,
-            requireNonNull(ServerConfiguration.REGISTRY_PORT.get(), ServerConfiguration.REGISTRY_PORT.toString()));
-    configuration.setAdminPort(requireNonNull(ServerConfiguration.SERVER_ADMIN_PORT.get(), ServerConfiguration.SERVER_ADMIN_PORT.toString()));
+    final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(
+            requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()),
+            requireNonNull(REGISTRY_PORT.get(), REGISTRY_PORT.toString()));
+    configuration.setAuxiliaryServerClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_CLASS_NAMES.get()));
+    configuration.setSslEnabled(SERVER_CONNECTION_SSL_ENABLED.get());
+    configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
+    configuration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
+    if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
+      configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
+    }
+    if (SERIALIZATION_FILTER_DRYRUN.get() != null) {
+      configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
+    }
+    configuration.setAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
     configuration.setConnectionLimit(SERVER_CONNECTION_LIMIT.get());
     configuration.setDatabase(Databases.getInstance());
     configuration.setDomainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
     configuration.setStartupPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())
             .stream().map(Users::parseUser).collect(toList()));
     configuration.setClientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get());
-    configuration.setConnectionTimeout(ServerConfiguration.SERVER_CONNECTION_TIMEOUT.get());
+    configuration.setConnectionTimeout(SERVER_CONNECTION_TIMEOUT.get());
     final Map<String, Integer> timeoutMap = new HashMap<>();
     for (final String clientTimeout : Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get())) {
       final String[] split = clientTimeout.split(":");
@@ -232,7 +242,7 @@ public interface EntityConnectionServerConfiguration {
       timeoutMap.put(split[0], Integer.parseInt(split[1]));
     }
     configuration.setClientSpecificConnectionTimeouts(timeoutMap);
-    final String adminUserString = ServerConfiguration.SERVER_ADMIN_USER.get();
+    final String adminUserString = SERVER_ADMIN_USER.get();
     final User adminUser = nullOrEmpty(adminUserString) ? null : Users.parseUser(adminUserString);
     if (adminUser == null) {
       EntityConnectionServerConfiguration.LOG.info("No admin user specified");

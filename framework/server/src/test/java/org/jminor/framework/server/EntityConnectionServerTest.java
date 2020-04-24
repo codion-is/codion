@@ -328,12 +328,7 @@ public class EntityConnectionServerTest {
     ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
     ServerConfiguration.KEYSTORE.set("src/main/security/jminor_keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
-    final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
-    serverConfiguration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
-    serverConfiguration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
-    serverConfiguration.setSslEnabled(true);
-    serverConfiguration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
-    final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(serverConfiguration, 2221);
+    final DefaultEntityConnectionServerConfiguration configuration = new DefaultEntityConnectionServerConfiguration(2223, 2221);
     configuration.setAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDatabase(Databases.getInstance());
@@ -341,6 +336,10 @@ public class EntityConnectionServerTest {
     configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
     configuration.setDomainModelClassNames(singletonList("org.jminor.framework.server.TestDomain"));
     configuration.setClientLoggingEnabled(true);
+    configuration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
+    configuration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
+    configuration.setSslEnabled(true);
+    configuration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
 
     return configuration;
   }

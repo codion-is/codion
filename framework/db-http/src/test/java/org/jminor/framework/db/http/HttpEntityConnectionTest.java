@@ -257,13 +257,12 @@ public final class HttpEntityConnectionTest {
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(2223);
-    serverConfiguration.setSslEnabled(false);
-    serverConfiguration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
-    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(serverConfiguration, 2221);
+    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(2223, 2221);
     configuration.setAdminPort(2223);
     configuration.setDatabase(Databases.getInstance());
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
+    configuration.setSslEnabled(false);
+    configuration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
 
     return configuration;
   }

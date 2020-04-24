@@ -37,11 +37,10 @@ public final class EmployeeServerTest {
           ConnectionNotAvailableException, ConnectionValidationException, DatabaseException {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
-    final ServerConfiguration serverConfiguration = ServerConfiguration.configuration(SERVER_PORT).setServerName("Employee Server");
-    serverConfiguration.setSslEnabled(false);
-    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(serverConfiguration, REGISTRY_PORT)
+    final EntityConnectionServerConfiguration configuration = EntityConnectionServerConfiguration.configuration(SERVER_PORT, REGISTRY_PORT)
             .setAdminPort(SERVER_ADMIN_PORT).setDatabase(Databases.getInstance()).setConnectionTimeout(60_000)
             .setAdminUser(Users.parseUser("scott:tiger"));
+    configuration.setSslEnabled(false).setServerName("Employee Server");
 
     final EmployeeServer employeeServer = new EmployeeServer(configuration);
 

@@ -5924,3 +5924,4 @@
   auxiliaryClassNames moved from EntityConnectionServerConfiguration to ServerConfiguration
   serialization whitelist moved from EntityConnectionServerConfiguration to ServerConfiguration
   login proxies and connection validators moved from EntityConnectionServerConfiguration to ServerConfiguration
+  EntityConnectionServerConfiguration now extends ServerConfiguration

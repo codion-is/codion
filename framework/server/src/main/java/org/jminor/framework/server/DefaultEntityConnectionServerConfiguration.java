@@ -8,10 +8,13 @@ import org.jminor.common.remote.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.version.Versions;
 
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -38,8 +41,8 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
    * @param serverConfiguration the server configuration
    * @param registryPort the registry port
    */
-  DefaultEntityConnectionServerConfiguration(final ServerConfiguration serverConfiguration, final int registryPort) {
-    this.serverConfiguration = serverConfiguration;
+  DefaultEntityConnectionServerConfiguration(final int serverPort, final int registryPort) {
+    this.serverConfiguration = ServerConfiguration.configuration(serverPort);
     this.registryPort = registryPort;
     this.serverConfiguration.setServerNameProvider(() -> {
       if (database == null) {
@@ -56,6 +59,61 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   @Override
   public ServerConfiguration getServerConfiguration() {
     return serverConfiguration;
+  }
+
+  @Override
+  public String getServerName() {
+    return serverConfiguration.getServerName();
+  }
+
+  @Override
+  public int getServerPort() {
+    return serverConfiguration.getServerPort();
+  }
+
+  @Override
+  public Collection<String> getSharedLoginProxyClassNames() {
+    return serverConfiguration.getSharedLoginProxyClassNames();
+  }
+
+  @Override
+  public Collection<String> getLoginProxyClassNames() {
+    return serverConfiguration.getLoginProxyClassNames();
+  }
+
+  @Override
+  public Collection<String> getConnectionValidatorClassNames() {
+    return serverConfiguration.getConnectionValidatorClassNames();
+  }
+
+  @Override
+  public Collection<String> getAuxiliaryServerClassNames() {
+    return serverConfiguration.getAuxiliaryServerClassNames();
+  }
+
+  @Override
+  public Boolean getSslEnabled() {
+    return serverConfiguration.getSslEnabled();
+  }
+
+  @Override
+  public RMIClientSocketFactory getRmiClientSocketFactory() {
+    return serverConfiguration.getRmiClientSocketFactory();
+  }
+
+  @Override
+  public RMIServerSocketFactory getRmiServerSocketFactory() {
+    return serverConfiguration.getRmiServerSocketFactory();
+  }
+
+  @Override
+  public String getSerializationFilterWhitelist() {
+    return serverConfiguration.getSerializationFilterWhitelist();
+  }
+
+  @Override
+  public Boolean getSerializationFilterDryRun() {
+    return serverConfiguration.getSerializationFilterDryRun();
   }
 
   @Override
@@ -111,6 +169,72 @@ final class DefaultEntityConnectionServerConfiguration implements EntityConnecti
   @Override
   public Map<String, Integer> getClientSpecificConnectionTimeouts() {
     return clientSpecificConnectionTimeouts;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setServerNameProvider(final Supplier<String> serverNameProvider) {
+    serverConfiguration.setServerNameProvider(serverNameProvider);
+    return this;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setServerName(final String serverName) {
+    serverConfiguration.setServerName(serverName);
+    return this;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
+    serverConfiguration.setSharedLoginProxyClassNames(sharedLoginProxyClassNames);
+    return this;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
+    serverConfiguration.setLoginProxyClassNames(loginProxyClassNames);
+    return this;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
+    serverConfiguration.setConnectionValidatorClassNames(connectionValidatorClassNames);
+    return this;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
+    serverConfiguration.setAuxiliaryServerClassNames(auxiliaryServerClassNames);
+    return this;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setSslEnabled(final Boolean sslEnabled) {
+    serverConfiguration.setSslEnabled(sslEnabled);
+    return this;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
+    serverConfiguration.setRmiClientSocketFactory(rmiClientSocketFactory);
+    return this;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
+    serverConfiguration.setRmiServerSocketFactory(rmiServerSocketFactory);
+    return this;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
+    serverConfiguration.setSerializationFilterWhitelist(serializationFilterWhitelist);
+    return this;
+  }
+
+  @Override
+  public EntityConnectionServerConfiguration setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
+    serverConfiguration.setSerializationFilterDryRun(serializationFilterDryRun);
+    return this;
   }
 
   @Override
