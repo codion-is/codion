@@ -3,7 +3,6 @@
  */
 package org.jminor.common.rmi.server;
 
-import org.jminor.common.Util;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
@@ -50,7 +49,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-  private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = Util.onClasspath("sun.misc.ObjectInputFilter");
   private static final String FROM_CLASSPATH = "' from classpath";
 
   private final Map<UUID, RemoteClientConnection<T>> connections = new ConcurrentHashMap<>();
