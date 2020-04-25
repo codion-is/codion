@@ -11,6 +11,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
+import org.jminor.common.event.EventListener;
 import org.jminor.common.rmi.client.Clients;
 import org.jminor.common.rmi.client.ConnectionRequest;
 import org.jminor.common.rmi.server.AbstractServer;
@@ -89,6 +90,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    */
   public EntityServer(final EntityServerConfiguration configuration) throws RemoteException {
     super(configuration.getServerConfiguration());
+    addShutdownListener(new ShutdownListener());
     this.configuration = configuration;
     try {
       this.database = requireNonNull(configuration.getDatabase(), "database");
@@ -99,7 +101,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       loadDomainModels(configuration.getDomainModelClassNames());
       initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getStartupPoolUsers());
       setConnectionLimit(configuration.getConnectionLimit());
-      serverAdmin = new DefaultEntityServerAdmin(this, configuration);
+      serverAdmin = initializeServerAdmin(configuration);
       bindToRegistry(configuration.getRegistryPort());
     }
     catch (final Throwable t) {
@@ -111,10 +113,14 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param user the server admin user
    * @return the administration interface for this server
    * @throws ServerAuthenticationException in case authentication fails
+   * @throws IllegalStateException in case no server admin instance is available
    */
   @Override
   public final EntityServerAdmin getServerAdmin(final User user) throws ServerAuthenticationException {
     validateUserCredentials(user, configuration.getAdminUser());
+    if (serverAdmin == null) {
+      throw new IllegalStateException("No admin instance available");
+    }
 
     return serverAdmin;
   }
@@ -371,24 +377,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
   }
 
-  @Override
-  protected final void onShutdown() {
-    super.onShutdown();
-    try {
-      UnicastRemoteObject.unexportObject(registry, true);
-    }
-    catch (final NoSuchObjectException ignored) {/*ignored*/}
-    try {
-      UnicastRemoteObject.unexportObject(serverAdmin, true);
-    }
-    catch (final NoSuchObjectException ignored) {/*ignored*/}
-    connectionMaintenanceScheduler.stop();
-    ConnectionPools.closeConnectionPools();
-    if (database.isEmbedded()) {
-      database.shutdownEmbedded(null);
-    }
-  }
-
   private void disconnectQuietly(final AbstractRemoteEntityConnection connection) {
     try {
       disconnect(connection.getRemoteClient().getClientId());
@@ -396,6 +384,20 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     catch (final RemoteException ex) {
       LOG.error(ex.getMessage(), ex);
     }
+  }
+
+  /**
+   * Creates a {@link EntityServerAdmin} instance if the server admin port is specified.
+   * @param configuration the server configuration
+   * @return a admin instance
+   * @throws RemoteException in case of an exception
+   */
+  private EntityServerAdmin initializeServerAdmin(final EntityServerConfiguration configuration) throws RemoteException {
+    if (configuration.getServerAdminPort() != null) {
+      return new DefaultEntityServerAdmin(this, configuration);
+    }
+
+    return null;
   }
 
   /**
@@ -580,6 +582,26 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
         break;
       default:
         startServer();
+    }
+  }
+
+  private final class ShutdownListener implements EventListener {
+
+    @Override
+    public void onEvent() {
+      try {
+        UnicastRemoteObject.unexportObject(registry, true);
+      }
+      catch (final NoSuchObjectException ignored) {/*ignored*/}
+      try {
+        UnicastRemoteObject.unexportObject(serverAdmin, true);
+      }
+      catch (final NoSuchObjectException ignored) {/*ignored*/}
+      connectionMaintenanceScheduler.stop();
+      ConnectionPools.closeConnectionPools();
+      if (database.isEmbedded()) {
+        database.shutdownEmbedded(null);
+      }
     }
   }
 }
