@@ -5942,3 +5942,4 @@
   AbstractServer.onShutdown() replaced with addShutdownListener()
   H2Database, replaced public constructors with factory methods, some doc improvements
   Database implementations, replaced public constructors with factory methods
+  Memory.getMemoryUsageString() finally formatted
