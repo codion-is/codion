@@ -22,20 +22,11 @@ public final class MySQLDatabase extends AbstractDatabase {
   private static final int UNIQUE_CONSTRAINT_ERROR1 = 1062;
   private static final int UNIQUE_CONSTRAINT_ERROR2 = 1586;
 
-  /**
-   * Instantiates a new MySQLDatabase.
-   */
-  public MySQLDatabase() {
+  MySQLDatabase() {
     super(Type.MYSQL, DRIVER_CLASS_NAME);
   }
 
-  /**
-   * Instantiates a new MySQLDatabase.
-   * @param host the host name
-   * @param port the port number
-   * @param dbname the db name
-   */
-  public MySQLDatabase(final String host, final Integer port, final String dbname) {
+  private MySQLDatabase(final String host, final Integer port, final String dbname) {
     super(Type.MYSQL, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
             requireNonNull(port, "port"), requireNonNull(dbname, "dbname"));
   }
@@ -63,5 +54,16 @@ public final class MySQLDatabase extends AbstractDatabase {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
+  }
+
+  /**
+   * Instantiates a new MySQLDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param dbname the db name
+   * @return a database instance
+   */
+  public static MySQLDatabase mySqlDatabase(final String host, final Integer port, final String dbname) {
+    return new MySQLDatabase(host, port, dbname);
   }
 }

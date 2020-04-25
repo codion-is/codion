@@ -11,13 +11,13 @@ public class SQLiteDatabaseTest {
 
   @Test
   public void getURL() {
-    final SQLiteDatabase database = new SQLiteDatabase("/net/test");
+    final SQLiteDatabase database = SQLiteDatabase.sqliteDatabase("/net/test");
     assertEquals("jdbc:sqlite:/net/test", database.getURL(null));
   }
 
   @Test
   public void getAutoIncrementQuery() {
-    final SQLiteDatabase database = new SQLiteDatabase("test");
+    final SQLiteDatabase database = SQLiteDatabase.sqliteDatabase("test");
     assertEquals("select last_insert_rowid()", database.getAutoIncrementQuery(null));
   }
 }

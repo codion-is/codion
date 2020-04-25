@@ -20,7 +20,7 @@ public class TomcatConnectionPoolProviderTest {
   @Test
   public void test() throws Exception {
     final TomcatConnectionPoolProvider provider = new TomcatConnectionPoolProvider();
-    final ConnectionPool pool = provider.createConnectionPool(H2Database.memoryDatabase("TomcatConnectionPoolProviderTest.test",
+    final ConnectionPool pool = provider.createConnectionPool(H2Database.h2MemoryDatabase("TomcatConnectionPoolProviderTest.test",
             System.getProperty("jminor.db.initScript")), UNIT_TEST_USER);
     pool.setCollectSnapshotStatistics(true);
     assertTrue(pool.isCollectSnapshotStatistics());

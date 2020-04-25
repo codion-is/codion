@@ -27,18 +27,11 @@ public final class DerbyDatabase extends AbstractDatabase {
 
   static final boolean EMBEDDED = Database.DATABASE_EMBEDDED.get();
 
-  /**
-   * Instantiates a new DerbyDatabase.
-   */
-  public DerbyDatabase() {
+  DerbyDatabase() {
     super(Type.DERBY, EMBEDDED ? EMBEDDED_DRIVER_CLASS_NAME : DRIVER_CLASS_NAME);
   }
 
-  /**
-   * Instantiates a new embedded DerbyDatabase.
-   * @param databaseName the path to the database files
-   */
-  public DerbyDatabase(final String databaseName) {
+  private DerbyDatabase(final String databaseName) {
     super(Type.DERBY, EMBEDDED_DRIVER_CLASS_NAME, requireNonNull(databaseName, "databaseName"),
             null, null, true);
   }
@@ -49,7 +42,7 @@ public final class DerbyDatabase extends AbstractDatabase {
    * @param port the port number
    * @param sid the service identifier
    */
-  public DerbyDatabase(final String host, final Integer port, final String sid) {
+  private DerbyDatabase(final String host, final Integer port, final String sid) {
     super(Type.DERBY, DRIVER_CLASS_NAME, requireNonNull(host, "host"), requireNonNull(port),
             requireNonNull(sid, "sid"), false);
   }
@@ -96,5 +89,25 @@ public final class DerbyDatabase extends AbstractDatabase {
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getErrorCode() == FOREIGN_KEY_ERROR;
+  }
+
+  /**
+   * Instantiates a new server-based DerbyDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param dbname the db name
+   * @return a database instance
+   */
+  public static DerbyDatabase derbyServerDatabase(final String host, final Integer port, final String dbname) {
+    return new DerbyDatabase(host, port, dbname);
+  }
+
+  /**
+   * Instantiates a new embedded DerbyDatabase.
+   * @param databaseName the path to the database files
+   * @return a database instance
+   */
+  public static DerbyDatabase derbyFileDatabase(final String databaseName) {
+    return new DerbyDatabase(databaseName);
   }
 }

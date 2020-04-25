@@ -20,28 +20,15 @@ public final class HSQLDatabase extends AbstractDatabase {
   static final String EMBEDDED_URL_PREFIX = "jdbc:hsqldb:file:";
   static final String NETWORKED_URL_PREFIX = "jdbc:hsqldb:hsql//";
 
-  /**
-   * Instantiates a new H2Database.
-   */
-  public HSQLDatabase() {
+  HSQLDatabase() {
     super(Type.HSQL, DRIVER_CLASS_NAME);
   }
 
-  /**
-   * Instantiates a new embedded HSQLDatabase.
-   * @param databaseName the path to the database files
-   */
-  public HSQLDatabase(final String databaseName) {
+  private HSQLDatabase(final String databaseName) {
     super(Type.HSQL, DRIVER_CLASS_NAME, requireNonNull(databaseName, "databaseName"), null, null, true);
   }
 
-  /**
-   * Instantiates a new networked HSQLDatabase.
-   * @param host the host name
-   * @param port the port number
-   * @param sid the service identifier
-   */
-  public HSQLDatabase(final String host, final Integer port, final String sid) {
+  private HSQLDatabase(final String host, final Integer port, final String sid) {
     super(Type.HSQL, DRIVER_CLASS_NAME, requireNonNull(host, "host"), requireNonNull(port, "port"),
             requireNonNull(sid, "sid"), false);
   }
@@ -65,5 +52,25 @@ public final class HSQLDatabase extends AbstractDatabase {
     else {
       return NETWORKED_URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + getUrlAppend();
     }
+  }
+
+  /**
+   * Instantiates a new server-based HSQLDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param dbname the db name
+   * @return a database instance
+   */
+  public static HSQLDatabase hsqlServerDatabase(final String host, final Integer port, final String dbname) {
+    return new HSQLDatabase(host, port, dbname);
+  }
+
+  /**
+   * Instantiates a new embedded HSQLDatabase.
+   * @param databaseName the path to the database files
+   * @return a database instance
+   */
+  public static HSQLDatabase hsqlFileDatabase(final String databaseName) {
+    return new HSQLDatabase(databaseName);
   }
 }

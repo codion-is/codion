@@ -31,7 +31,7 @@ public final class ClientServer {
 
   private static void runServer() throws RemoteException, DatabaseException {
     // tag::runServer[]
-    Database database = H2Database.memoryDatabase("testdb", "src/main/sql/create_schema.sql");
+    Database database = H2Database.h2MemoryDatabase("testdb", "src/main/sql/create_schema.sql");
 
     EntityServerConfiguration configuration = EntityServerConfiguration.configuration(SERVER_PORT, REGISTRY_PORT);
     configuration.setDomainModelClassNames(singletonList(Store.class.getName()));
@@ -59,7 +59,7 @@ public final class ClientServer {
 
   private static void runServerWithHttp() throws RemoteException, DatabaseException {
     // tag::runServerWithHttp[]
-    Database database = H2Database.memoryDatabase("testdb", "src/main/sql/create_schema.sql");
+    Database database = H2Database.h2MemoryDatabase("testdb", "src/main/sql/create_schema.sql");
 
     EntityServerConfiguration configuration = EntityServerConfiguration.configuration(SERVER_PORT, REGISTRY_PORT);
     configuration.setDomainModelClassNames(singletonList(Store.class.getName()));
