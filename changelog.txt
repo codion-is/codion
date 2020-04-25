@@ -5946,3 +5946,4 @@
   EntityService is now a singleton, no state, less garbage
   LoadTestModel bug fixed, did not clear system/process load series
   LoadTestModel now uses ScheduledExecutorService, using thinkTime as delay, major refactoring
+  ItemRandomizer moved to separate package

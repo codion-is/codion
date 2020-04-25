@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.loadtest.ui;
+package org.jminor.swing.common.tools.randomizer.ui;
 
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.value.AbstractValue;
-import org.jminor.swing.common.tools.loadtest.ItemRandomizer;
-import org.jminor.swing.common.tools.loadtest.ItemRandomizerModel;
+import org.jminor.swing.common.tools.randomizer.ItemRandomizer;
+import org.jminor.swing.common.tools.randomizer.ItemRandomizerModel;
 import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.ButtonModel;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.loadtest;
+package org.jminor.swing.common.tools.randomizer;
 
 import org.jminor.common.event.EventListener;
 

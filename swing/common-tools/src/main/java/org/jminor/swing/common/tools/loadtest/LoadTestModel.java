@@ -11,6 +11,8 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.user.User;
+import org.jminor.swing.common.tools.randomizer.ItemRandomizer;
+import org.jminor.swing.common.tools.randomizer.ItemRandomizerModel;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
