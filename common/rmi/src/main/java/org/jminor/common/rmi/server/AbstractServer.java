@@ -4,6 +4,9 @@
 package org.jminor.common.rmi.server;
 
 import org.jminor.common.Util;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventListener;
+import org.jminor.common.event.Events;
 import org.jminor.common.rmi.client.ConnectionRequest;
 import org.jminor.common.rmi.server.exception.ConnectionNotAvailableException;
 import org.jminor.common.rmi.server.exception.ConnectionValidationException;
@@ -47,7 +50,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-  /** Only Java 8 compatible for now */
   private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = Util.onClasspath("sun.misc.ObjectInputFilter");
   private static final String FROM_CLASSPATH = "' from classpath";
 
@@ -59,6 +61,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
 
   private final ServerInformation serverInformation;
+  private final Event shutdownEvent = Events.event();
   private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
 
@@ -70,16 +73,10 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
     super(configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
-    this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(), configuration.getServerPort(), ZonedDateTime.now());
+    this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
+            configuration.getServerPort(), ZonedDateTime.now());
     startAuxiliaryServers(configuration.getAuxiliaryServerClassNames());
-    if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-      if (configuration.getSerializationFilterDryRun()) {
-        SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
-      }
-      else {
-        SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
-      }
-    }
+    configureSerializationWhitelist(configuration);
     try {
       sharedLoginProxies.addAll(loadSharedLoginProxies(configuration.getSharedLoginProxyClassNames()));
       loginProxies.putAll(loadLoginProxies(configuration.getLoginProxyClassNames()));
@@ -239,14 +236,15 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     if (OBJECT_INPUT_FILTER_ON_CLASSPATH && isSerializationDryRunActive()) {
       writeDryRunWhitelist();
     }
-
-    onShutdown();
+    shutdownEvent.onEvent();
   }
 
   /**
-   * Called after shutdown has finished, for subclasses
+   * @param listener a listener notified when this server is shutting down.
    */
-  protected void onShutdown() {/*Provided for subclasses*/}
+  protected final void addShutdownListener(final EventListener listener) {
+    shutdownEvent.addListener(requireNonNull(listener, "listener"));
+  }
 
   /**
    * Establishes the actual client connection.
@@ -311,6 +309,17 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
   }
 
+  private void configureSerializationWhitelist(final ServerConfiguration configuration) {
+    if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
+      if (configuration.getSerializationFilterDryRun()) {
+        SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
+      }
+      else {
+        SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
+      }
+    }
+  }
+
   private static void closeLoginProxy(final LoginProxy loginProxy) {
     try {
       loginProxy.close();
@@ -358,9 +367,9 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     final List<LoginProxy> loginProxyList = new ArrayList<>();
     for (final String loginProxyClassName : sharedLoginProxyClassNames) {
       LOG.info("Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH);
-      final Class loginProxyClass = Class.forName(loginProxyClassName);
+      final Class<LoginProxy> loginProxyClass = (Class<LoginProxy>) Class.forName(loginProxyClassName);
       try {
-        loginProxyList.add((LoginProxy) loginProxyClass.getConstructor().newInstance());
+        loginProxyList.add(loginProxyClass.getConstructor().newInstance());
       }
       catch (final Exception ex) {
         LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
@@ -376,9 +385,9 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     final Map<String, LoginProxy> loginProxyMap = new HashMap<>();
     for (final String loginProxyClassName : loginProxyClassNames) {
       LOG.info("Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH);
-      final Class loginProxyClass = Class.forName(loginProxyClassName);
+      final Class<LoginProxy> loginProxyClass = (Class<LoginProxy>) Class.forName(loginProxyClassName);
       try {
-        final LoginProxy proxy = (LoginProxy) loginProxyClass.getConstructor().newInstance();
+        final LoginProxy proxy = loginProxyClass.getConstructor().newInstance();
         loginProxyMap.put(proxy.getClientTypeId(), proxy);
       }
       catch (final Exception ex) {
@@ -395,9 +404,9 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     final Map<String, ConnectionValidator> connectionValidatorMap = new HashMap<>();
     for (final String connectionValidatorClassName : connectionValidatorClassNames) {
       LOG.info("Server loading connection validation class '" + connectionValidatorClassName + FROM_CLASSPATH);
-      final Class connectionValidatorClass = Class.forName(connectionValidatorClassName);
+      final Class<ConnectionValidator> connectionValidatorClass = (Class<ConnectionValidator>) Class.forName(connectionValidatorClassName);
       try {
-        final ConnectionValidator validator = (ConnectionValidator) connectionValidatorClass.getConstructor().newInstance();
+        final ConnectionValidator validator = connectionValidatorClass.getConstructor().newInstance();
         connectionValidatorMap.put(validator.getClientTypeId(), validator);
       }
       catch (final Exception ex) {
@@ -410,6 +419,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   }
 
   private static final class RemoteClientConnection<T> {
+
     private final RemoteClient client;
     private final T connection;
 
