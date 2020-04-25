@@ -47,7 +47,18 @@ distributions {
 
 applicationName = 'entity_generator'
 
-mainClassName = "$moduleName/org.jminor.swing.framework.tools.ui.EntityGeneratorPanel"
+mainClassName = '$moduleName/org.jminor.swing.framework.tools.ui.generator.EntityGeneratorPanel'
+
+applicationDefaultJvmArgs = [
+        '-Djminor.configurationFile=../config/entity_generator.config',
+        '-Dlogback.configurationFile=../config/logback.xml'
+]
+
+applicationDistribution.into('config') {
+    from(files('src/main/config/entity_generator.config'))
+    from(files('src/main/config/create_schema.sql'))
+    from(files('src/main/config/logback.xml'))
+}
 
 task runEntityGenerator(type: ModularJavaExec) {
     group 'run'
@@ -60,15 +71,4 @@ task runEntityGenerator(type: ModularJavaExec) {
             'jminor.db.initScript'      : 'src/main/config/create_schema.sql',
             'logback.configurationFile' : 'src/main/config/logback.xml'
     ]
-}
-
-applicationDefaultJvmArgs = [
-        '-Djminor.configurationFile=../config/entity_generator.config',
-        '-Dlogback.configurationFile=../config/logback.xml'
-]
-
-applicationDistribution.into('config') {
-    from(files('src/main/config/entity_generator.config'))
-    from(files('src/main/config/create_schema.sql'))
-    from(files('src/main/config/logback.xml'))
 }
