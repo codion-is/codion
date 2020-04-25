@@ -290,6 +290,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
     allocatedMemoryCollection.clear();
     usedMemoryCollection.clear();
     maxMemoryCollection.clear();
+    systemLoadSeries.clear();
+    processLoadSeries.clear();
     for (final XYSeries series : usageSeries) {
       series.clear();
     }
