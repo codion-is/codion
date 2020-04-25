@@ -22,6 +22,7 @@ import org.jminor.framework.domain.entity.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -49,6 +50,7 @@ import java.util.UUID;
  * A service for dealing with entities
  */
 @Path("/")
+@Singleton
 public final class EntityService extends Application {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityService.class);
