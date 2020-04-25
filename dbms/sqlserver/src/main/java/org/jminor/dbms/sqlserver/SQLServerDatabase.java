@@ -25,20 +25,11 @@ public final class SQLServerDatabase extends AbstractDatabase {
   private static final int UNIQUE_CONSTRAINT_ERROR1 = 2601;
   private static final int UNIQUE_CONSTRAINT_ERROR2 = 2627;
 
-  /**
-   * Instantiates a new SQLServerDatabase.
-   */
-  public SQLServerDatabase() {
+  SQLServerDatabase() {
     super(Type.SQLSERVER, DRIVER_CLASS_NAME);
   }
 
-  /**
-   * Instantiates a new SQLServerDatabase.
-   * @param host the host name
-   * @param port the port number
-   * @param databaseName the database name
-   */
-  public SQLServerDatabase(final String host, final Integer port, final String databaseName) {
+  private SQLServerDatabase(final String host, final Integer port, final String databaseName) {
     super(Type.SQLSERVER, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
             requireNonNull(port, "port"), requireNonNull(databaseName, "databaseName"), false);
   }
@@ -80,5 +71,16 @@ public final class SQLServerDatabase extends AbstractDatabase {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
+  }
+
+  /**
+   * Instantiates a new SQLServerDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param databaseName the database name
+   * @return a database instance
+   */
+  public static SQLServerDatabase sqlServerDatabase(final String host, final Integer port, final String databaseName) {
+    return new SQLServerDatabase(host, port, databaseName);
   }
 }

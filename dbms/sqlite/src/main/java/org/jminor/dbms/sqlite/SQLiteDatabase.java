@@ -23,18 +23,11 @@ public final class SQLiteDatabase extends AbstractDatabase {
 
   private final String databaseFilePath;
 
-  /**
-   * Instantiates a new embedded SQLiteDatabase, using {@link Database#DATABASE_HOST} for database file path.
-   */
-  public SQLiteDatabase() {
+  SQLiteDatabase() {
     this(Database.DATABASE_HOST.get());
   }
 
-  /**
-   * Instantiates a new embedded SQLiteDatabase
-   * @param databaseFilePath the path to the database file
-   */
-  public SQLiteDatabase(final String databaseFilePath) {
+  private SQLiteDatabase(final String databaseFilePath) {
     super(Type.SQLITE, DRIVER_CLASS_NAME);
     this.databaseFilePath = requireNonNull(databaseFilePath, "databaseFilePath");
   }
@@ -61,5 +54,14 @@ public final class SQLiteDatabase extends AbstractDatabase {
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getErrorCode() == FOREIGN_KEY_ERROR;
+  }
+
+  /**
+   * Instantiates a new embedded SQLiteDatabase
+   * @param databaseFilePath the path to the database file
+   * @return a database instance
+   */
+  public static SQLiteDatabase sqliteDatabase(final String databaseFilePath) {
+    return new SQLiteDatabase(databaseFilePath);
   }
 }

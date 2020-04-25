@@ -23,20 +23,11 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   static final String URL_PREFIX = "jdbc:postgresql://";
   static final String CHECK_QUERY = "select 1";
 
-  /**
-   * Instantiates a new PostgreSQLDatabase.
-   */
-  public PostgreSQLDatabase() {
+  PostgreSQLDatabase() {
     super(Type.POSTGRESQL, DRIVER_CLASS_NAME);
   }
 
-  /**
-   * Instantiates a new PostgreSQLDatabase.
-   * @param host the host name
-   * @param port the port number
-   * @param database the database name
-   */
-  public PostgreSQLDatabase(final String host, final Integer port, final String database) {
+  private PostgreSQLDatabase(final String host, final Integer port, final String database) {
     super(Type.POSTGRESQL, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
             requireNonNull(port, "port"), requireNonNull(database, "database"), false);
   }
@@ -90,5 +81,16 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   @Override
   public String getCheckConnectionQuery() {
     return CHECK_QUERY;
+  }
+
+  /**
+   * Instantiates a new PostgreSQLDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param database the database name
+   * @return a database instance
+   */
+  public static PostgreSQLDatabase postgreSqlDatabase(final String host, final Integer port, final String database) {
+    return new PostgreSQLDatabase(host, port, database);
   }
 }

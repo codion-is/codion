@@ -172,7 +172,7 @@ public final class H2Database extends AbstractDatabase {
    * @param databaseName the database name
    * @return a server-based database
    */
-  public static H2Database serverDatabase(final String host, final Integer port, final String databaseName) {
+  public static H2Database h2ServerDatabase(final String host, final Integer port, final String databaseName) {
     return new H2Database(host, port, databaseName);
   }
 
@@ -181,8 +181,8 @@ public final class H2Database extends AbstractDatabase {
    * @param databaseFile the path to the database file
    * @return a file-based database
    */
-  public static H2Database fileDatabase(final String databaseFile) {
-    return fileDatabase(databaseFile, emptyList());
+  public static H2Database h2FileDatabase(final String databaseFile) {
+    return h2FileDatabase(databaseFile, emptyList());
   }
 
   /**
@@ -191,7 +191,7 @@ public final class H2Database extends AbstractDatabase {
    * @param scriptPath the initialization script path
    * @return a file-based database
    */
-  public static H2Database fileDatabase(final String databaseFile, final String scriptPath) {
+  public static H2Database h2FileDatabase(final String databaseFile, final String scriptPath) {
     return new H2Database(databaseFile, false, singletonList(scriptPath));
   }
 
@@ -201,7 +201,7 @@ public final class H2Database extends AbstractDatabase {
    * @param scriptPaths the initialization script paths
    * @return a file-based database
    */
-  public static H2Database fileDatabase(final String databaseFile, final List<String> scriptPaths) {
+  public static H2Database h2FileDatabase(final String databaseFile, final List<String> scriptPaths) {
     return new H2Database(databaseFile, false, scriptPaths);
   }
 
@@ -210,8 +210,8 @@ public final class H2Database extends AbstractDatabase {
    * @param databaseName the database name
    * @return a in memory database
    */
-  public static H2Database memoryDatabase(final String databaseName) {
-    return memoryDatabase(databaseName, emptyList());
+  public static H2Database h2MemoryDatabase(final String databaseName) {
+    return h2MemoryDatabase(databaseName, emptyList());
   }
 
   /**
@@ -220,7 +220,7 @@ public final class H2Database extends AbstractDatabase {
    * @param scriptPath the initialization script path
    * @return a in memory database
    */
-  public static H2Database memoryDatabase(final String databaseName, final String scriptPath) {
+  public static H2Database h2MemoryDatabase(final String databaseName, final String scriptPath) {
     return new H2Database(databaseName, true, singletonList(scriptPath));
   }
 
@@ -230,7 +230,7 @@ public final class H2Database extends AbstractDatabase {
    * @param scriptPaths the initialization script paths
    * @return a in memory database
    */
-  public static H2Database memoryDatabase(final String databaseName, final List<String> scriptPaths) {
+  public static H2Database h2MemoryDatabase(final String databaseName, final List<String> scriptPaths) {
     return new H2Database(databaseName, true, scriptPaths);
   }
 

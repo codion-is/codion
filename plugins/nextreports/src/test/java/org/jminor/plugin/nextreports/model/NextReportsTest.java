@@ -32,7 +32,7 @@ public class NextReportsTest {
   @Test
   public void fillReport() throws ReportException, IOException, DatabaseException {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
-            H2Database.memoryDatabase("h2db", System.getProperty("jminor.db.initScript")))
+            H2Database.h2MemoryDatabase("h2db", System.getProperty("jminor.db.initScript")))
             .setDomainClassName(Domain.class.getName()).setUser(UNIT_TEST_USER);
     ReportWrapper.REPORT_PATH.set("src/test/reports/");
     final LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();

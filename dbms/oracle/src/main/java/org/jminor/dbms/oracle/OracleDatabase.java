@@ -60,20 +60,11 @@ public final class OracleDatabase extends AbstractDatabase {
 
   private boolean useLegacySid = USE_LEGACY_SID.get();
 
-  /**
-   * Instantiates a new OracleDatabase.
-   */
-  public OracleDatabase() {
+  OracleDatabase() {
     super(Type.ORACLE, DRIVER_CLASS_NAME);
   }
 
-  /**
-   * Instantiates a new OracleDatabase.
-   * @param host the host name
-   * @param port the port number
-   * @param sid the service identifier
-   */
-  public OracleDatabase(final String host, final Integer port, final String sid) {
+  private OracleDatabase(final String host, final Integer port, final String sid) {
     super(Type.ORACLE, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
             requireNonNull(port, "port"), requireNonNull(sid, "sid"));
   }
@@ -150,5 +141,16 @@ public final class OracleDatabase extends AbstractDatabase {
   public OracleDatabase setUseLegacySid(final boolean useLegacySid) {
     this.useLegacySid = useLegacySid;
     return this;
+  }
+
+  /**
+   * Instantiates a new OracleDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param sid the service identifier
+   * @return a database instance
+   */
+  public static OracleDatabase oracleDatabase(final String host, final Integer port, final String sid) {
+    return new OracleDatabase(host, port, sid);
   }
 }

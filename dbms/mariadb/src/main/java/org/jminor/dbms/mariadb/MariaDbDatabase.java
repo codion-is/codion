@@ -22,20 +22,11 @@ public final class MariaDbDatabase extends AbstractDatabase {
   private static final int UNIQUE_CONSTRAINT_ERROR1 = 1062;
   private static final int UNIQUE_CONSTRAINT_ERROR2 = 1586;
 
-  /**
-   * Instantiates a new MySQLDatabase.
-   */
-  public MariaDbDatabase() {
+  MariaDbDatabase() {
     super(Type.MARIADB, DRIVER_CLASS_NAME);
   }
 
-  /**
-   * Instantiates a new MySQLDatabase.
-   * @param host the host name
-   * @param port the port number
-   * @param dbname the db name
-   */
-  public MariaDbDatabase(final String host, final Integer port, final String dbname) {
+  private MariaDbDatabase(final String host, final Integer port, final String dbname) {
     super(Type.MARIADB, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
             requireNonNull(port, "port"), requireNonNull(dbname, "dbname"));
   }
@@ -63,5 +54,16 @@ public final class MariaDbDatabase extends AbstractDatabase {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
+  }
+
+  /**
+   * Instantiates a new MariaDbDatabase.
+   * @param host the host name
+   * @param port the port number
+   * @param dbname the db name
+   * @return a database instance
+   */
+  public static MariaDbDatabase mariaDbDatabase(final String host, final Integer port, final String dbname) {
+    return new MariaDbDatabase(host, port, dbname);
   }
 }

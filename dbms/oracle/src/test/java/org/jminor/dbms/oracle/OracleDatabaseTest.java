@@ -11,36 +11,36 @@ public class OracleDatabaseTest {
 
   @Test
   public void getSequenceSQLNullSequence() {
-    assertThrows(NullPointerException.class, () -> new OracleDatabase("host", 1234, "sid").getSequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> OracleDatabase.oracleDatabase("host", 1234, "sid").getSequenceQuery(null));
   }
 
   @Test
   public void supportsIsValid() {
-    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
+    final OracleDatabase db = OracleDatabase.oracleDatabase("host", 1234, "sid");
     assertFalse(db.supportsIsValid());
   }
 
   @Test
   public void getAuthenticationInfo() {
-    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
+    final OracleDatabase db = OracleDatabase.oracleDatabase("host", 1234, "sid");
     assertNull(db.getAuthenticationInfo(null));
   }
 
   @Test
   public void getAutoIncrementQuery() {
-    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
+    final OracleDatabase db = OracleDatabase.oracleDatabase("host", 1234, "sid");
     assertEquals("select seq.currval from dual", db.getAutoIncrementQuery("seq"));
   }
 
   @Test
   public void getSequenceQuery() {
-    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
+    final OracleDatabase db = OracleDatabase.oracleDatabase("host", 1234, "sid");
     assertEquals("select seq.nextval from dual", db.getSequenceQuery("seq"));
   }
 
   @Test
   public void getURL() {
-    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
+    final OracleDatabase db = OracleDatabase.oracleDatabase("host", 1234, "sid");
     db.setUseLegacySid(true);
     assertEquals("jdbc:oracle:thin:@host:1234:sid", db.getURL(null));
     db.setUseLegacySid(false);
@@ -49,12 +49,12 @@ public class OracleDatabaseTest {
 
   @Test
   public void getCheckConnectionQuery() {
-    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
+    final OracleDatabase db = OracleDatabase.oracleDatabase("host", 1234, "sid");
     assertEquals(OracleDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
   }
 
   @Test
   public void constructorNullHost() {
-    assertThrows(NullPointerException.class, () -> new OracleDatabase(null, null, null));
+    assertThrows(NullPointerException.class, () -> OracleDatabase.oracleDatabase(null, null, null));
   }
 }
