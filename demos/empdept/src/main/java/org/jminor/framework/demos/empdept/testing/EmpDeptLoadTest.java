@@ -13,7 +13,7 @@ import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.test.EntityTestUnit;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityModel;
-import org.jminor.swing.common.tools.loadtest.ui.LoadTestPanel;
+import org.jminor.swing.common.tools.ui.loadtest.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
 

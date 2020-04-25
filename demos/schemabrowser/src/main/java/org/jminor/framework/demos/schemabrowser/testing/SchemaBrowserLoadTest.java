@@ -10,7 +10,7 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 import org.jminor.swing.common.tools.loadtest.UsageScenario;
-import org.jminor.swing.common.tools.loadtest.ui.LoadTestPanel;
+import org.jminor.swing.common.tools.ui.loadtest.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
 

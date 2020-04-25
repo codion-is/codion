@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.loadtest.ui;
+package org.jminor.swing.common.tools.ui.loadtest;
 
 import org.jminor.common.Util;
 import org.jminor.common.user.User;
@@ -11,7 +11,7 @@ import org.jminor.swing.common.tools.loadtest.LoadTest;
 import org.jminor.swing.common.tools.loadtest.LoadTestModel;
 import org.jminor.swing.common.tools.loadtest.UsageScenario;
 import org.jminor.swing.common.tools.randomizer.ItemRandomizer;
-import org.jminor.swing.common.tools.randomizer.ui.ItemRandomizerPanel;
+import org.jminor.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlProvider;
