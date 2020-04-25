@@ -5974,3 +5974,4 @@
   LoadTestModel bug fixed, did not clear system/process load series
   LoadTestModel now uses ScheduledExecutorService, using thinkTime as delay, major refactoring
   ItemRandomizer moved to separate package, moved some more
+  EntityGeneratorPanel moved, for consistency

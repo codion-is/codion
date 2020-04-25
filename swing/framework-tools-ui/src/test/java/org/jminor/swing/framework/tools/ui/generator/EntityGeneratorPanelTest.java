@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.tools.generator.ui;
+package org.jminor.swing.framework.tools.ui.generator;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
