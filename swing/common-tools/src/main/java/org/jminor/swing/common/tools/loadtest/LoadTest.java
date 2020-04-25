@@ -5,6 +5,7 @@ package org.jminor.swing.common.tools.loadtest;
 
 import org.jminor.common.event.EventObserver;
 import org.jminor.common.user.User;
+import org.jminor.swing.common.tools.randomizer.ItemRandomizer;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
