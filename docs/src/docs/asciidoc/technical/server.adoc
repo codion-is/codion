@@ -1,6 +1,7 @@
 = Server
 :dir-tutorials: ../tutorials
 :dir-source: ../../../../../framework/server
+:dir-manual-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
 == Features
@@ -102,4 +103,18 @@ include::{dir-source}/src/main/security/jminor_server.policy[]
 [source]
 ----
 include::{dir-source}/src/main/config/h2_embedded.config[]
+----
+
+== Code examples
+
+=== RMI
+[source]
+----
+include::{dir-manual-source}/org/jminor/framework/demos/manual/store/ClientServer.java[tags=runServer]
+----
+
+=== HTTP
+[source]
+----
+include::{dir-manual-source}/org/jminor/framework/demos/manual/store/ClientServer.java[tags=runServerWithHttp]
 ----

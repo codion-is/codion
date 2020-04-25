@@ -8,16 +8,19 @@ dependencies {
     implementation project(':jminor-framework-domain-test')
     implementation project(':jminor-framework-db-local')
     implementation project(':jminor-framework-db-rmi')
+    implementation project(':jminor-framework-db-http')
     implementation project(':jminor-plugin-jasperreports')
+
+    implementation project(':jminor-framework-server')
+    implementation project(':jminor-framework-servlet')
+    implementation project(':jminor-dbms-h2database')
 
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
     }
 
     runtimeOnly project(':jminor-plugin-logback-proxy')
-    runtimeOnly project(':jminor-framework-db-http')
 
-    runtimeOnly project(':jminor-dbms-h2database')
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 

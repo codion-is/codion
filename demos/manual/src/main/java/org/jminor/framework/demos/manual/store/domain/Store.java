@@ -10,6 +10,7 @@ import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.KeyGenerator;
 import org.jminor.framework.domain.entity.StringProvider;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.UUID;
@@ -97,7 +98,7 @@ public final class Store extends Domain {
   }
 
   // tag::toString[]
-  private static final class CustomerToString implements Function<Entity, String> {
+  private static final class CustomerToString implements Function<Entity, String>, Serializable {
 
     @Override
     public String apply(final Entity customer) {
