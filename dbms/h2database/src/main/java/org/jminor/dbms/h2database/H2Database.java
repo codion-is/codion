@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
@@ -34,8 +35,6 @@ public final class H2Database extends AbstractDatabase {
   private static final int UNIQUE_CONSTRAINT_ERROR = 23505;
   private static final String DEFAULT_EMBEDDED_DATABASE_NAME = "h2db";
 
-  private static boolean sharedDatabaseInitialized = false;
-
   static final String DRIVER_CLASS_NAME = "org.h2.Driver";
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
@@ -50,7 +49,7 @@ public final class H2Database extends AbstractDatabase {
   /**
    * Instantiates a new embedded H2Database, using {@link Database#DATABASE_HOST} for database name.
    */
-  public H2Database() {
+  H2Database() {
     this(Database.DATABASE_HOST.get());
   }
 
@@ -58,19 +57,21 @@ public final class H2Database extends AbstractDatabase {
    * Instantiates a new embedded H2Database.
    * @param databaseName the path to the database files
    */
-  public H2Database(final String databaseName) {
-    this(databaseName, Database.DATABASE_EMBEDDED_IN_MEMORY.get());
+  private H2Database(final String databaseName) {
+    this(databaseName, Database.DATABASE_EMBEDDED_IN_MEMORY.get(),
+            Text.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPT.get()));
   }
 
   /**
    * Instantiates a new embedded H2Database.
    * @param databaseName the path to the database files or the database name if in-memory
    * @param embeddedInMemory if true then this instance is memory based
+   * @param scriptPaths paths to the scripts to run to initialize the database
    */
-  public H2Database(final String databaseName, final boolean embeddedInMemory) {
+  private H2Database(final String databaseName, final boolean embeddedInMemory, final List<String> scriptPaths) {
     super(Type.H2, DRIVER_CLASS_NAME, getEmbeddedName(databaseName, embeddedInMemory), null, null, true);
     this.embeddedInMemory = embeddedInMemory;
-    initializeSharedDatabase(Text.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPT.get()));
+    initializeEmbeddedDatabase(scriptPaths);
   }
 
   /**
@@ -79,34 +80,10 @@ public final class H2Database extends AbstractDatabase {
    * @param port the port number
    * @param databaseName the database name
    */
-  public H2Database(final String host, final Integer port, final String databaseName) {
+  private H2Database(final String host, final Integer port, final String databaseName) {
     super(Type.H2, DRIVER_CLASS_NAME, requireNonNull(host, "host"), requireNonNull(port, "port"),
             requireNonNull(databaseName, "databaseName"), false);
     this.embeddedInMemory = false;
-  }
-
-  /**
-   * Instantiates a new embedded H2Database instance, in memory, initialized with the given script, if any
-   * @param databaseName the database name
-   * @param initScript a script to use for initializing the database, null if not required
-   * @throws RuntimeException in case of an error during initialization
-   */
-  public H2Database(final String databaseName, final String initScript) {
-    this(databaseName, initScript, true);
-  }
-
-  /**
-   * Instantiates a new embedded H2Database instance, initialized with the given script, if any
-   * @param databaseName the database name
-   * @param initScript a script to use for initializing the database, null if not required
-   * @param embeddedInMemory if true then the resulting database is in memory
-   * @throws RuntimeException in case of an error during initialization
-   */
-  public H2Database(final String databaseName, final String initScript, final boolean embeddedInMemory) {
-    super(Type.H2, DRIVER_CLASS_NAME, requireNonNull(databaseName, "databaseName"),
-            null, null, true);
-    this.embeddedInMemory = embeddedInMemory;
-    initializeDatabase(initScript == null ? null : singletonList(initScript));
   }
 
   @Override
@@ -165,7 +142,7 @@ public final class H2Database extends AbstractDatabase {
    * @param scriptPath the path to the script
    * @param username the username to run the script under
    * @param password the password
-   * @param scriptCharset the script characterset
+   * @param scriptCharset the script character set
    * @throws SQLException in case of an exception
    */
   public void runScript(final String scriptPath, final String username, final String password, final Charset scriptCharset) throws SQLException {
@@ -189,18 +166,75 @@ public final class H2Database extends AbstractDatabase {
   }
 
   /**
-   * Initializes a shared H2 database instance
+   * Instantiates a new server-based database.
+   * @param host the server host
+   * @param port the server port
+   * @param databaseName the database name
+   * @return a server-based database
    */
-  private void initializeSharedDatabase(final List<String> scriptPaths) {
-    synchronized (H2Database.class) {
-      if (!sharedDatabaseInitialized) {
-        initializeDatabase(scriptPaths);
-        sharedDatabaseInitialized = true;
-      }
-    }
+  public static H2Database serverDatabase(final String host, final Integer port, final String databaseName) {
+    return new H2Database(host, port, databaseName);
   }
 
-  private void initializeDatabase(final List<String> scriptPaths) {
+  /**
+   * Instantiates a new file-based database.
+   * @param databaseFile the path to the database file
+   * @return a file-based database
+   */
+  public static H2Database fileDatabase(final String databaseFile) {
+    return fileDatabase(databaseFile, emptyList());
+  }
+
+  /**
+   * Instantiates a new file-based database, initialized with the given script.
+   * @param databaseFile the path to the database file
+   * @param scriptPath the initialization script path
+   * @return a file-based database
+   */
+  public static H2Database fileDatabase(final String databaseFile, final String scriptPath) {
+    return new H2Database(databaseFile, false, singletonList(scriptPath));
+  }
+
+  /**
+   * Instantiates a new file-based database, initialized with the given scripts.
+   * @param databaseFile the path to the database file
+   * @param scriptPaths the initialization script paths
+   * @return a file-based database
+   */
+  public static H2Database fileDatabase(final String databaseFile, final List<String> scriptPaths) {
+    return new H2Database(databaseFile, false, scriptPaths);
+  }
+
+  /**
+   * Instantiates a new empty in memory database.
+   * @param databaseName the database name
+   * @return a in memory database
+   */
+  public static H2Database memoryDatabase(final String databaseName) {
+    return memoryDatabase(databaseName, emptyList());
+  }
+
+  /**
+   * Instantiates a new in memory database, initialized with the given script.
+   * @param databaseName the database name
+   * @param scriptPath the initialization script path
+   * @return a in memory database
+   */
+  public static H2Database memoryDatabase(final String databaseName, final String scriptPath) {
+    return new H2Database(databaseName, true, singletonList(scriptPath));
+  }
+
+  /**
+   * Instantiates a new in memory database, initialized with the given scripts.
+   * @param databaseName the database name
+   * @param scriptPaths the initialization script paths
+   * @return a in memory database
+   */
+  public static H2Database memoryDatabase(final String databaseName, final List<String> scriptPaths) {
+    return new H2Database(databaseName, true, scriptPaths);
+  }
+
+  private void initializeEmbeddedDatabase(final List<String> scriptPaths) {
     if (!nullOrEmpty(scriptPaths) && (embeddedInMemory || !Files.exists(Paths.get(getHost() + ".h2.db")))) {
       final Properties properties = new Properties();
       properties.put(USER_PROPERTY, SYSADMIN_USERNAME);

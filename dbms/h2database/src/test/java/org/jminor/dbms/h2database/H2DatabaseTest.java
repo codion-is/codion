@@ -24,18 +24,18 @@ public class H2DatabaseTest {
 
   @Test
   public void getSequenceSQLNullSequence() {
-    assertThrows(NullPointerException.class, () -> new H2Database("host", 1234, "sid").getSequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> H2Database.serverDatabase("host", 1234, "sid").getSequenceQuery(null));
   }
 
   @Test
   public void supportsIsValid() {
-    final H2Database db = new H2Database("host", 1234, "sid");
+    final H2Database db = H2Database.serverDatabase("host", 1234, "sid");
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   public void getAuthenticationInfo() {
-    final H2Database db = new H2Database("host", 1234, "sid");
+    final H2Database db = H2Database.serverDatabase("host", 1234, "sid");
     final Properties props = new Properties();
     props.put(Database.USER_PROPERTY, "scott");
     props.put(Database.PASSWORD_PROPERTY, "tiger");
@@ -44,20 +44,20 @@ public class H2DatabaseTest {
 
   @Test
   public void getAutoIncrementQuery() {
-    final H2Database db = new H2Database("host", 1234, "sid");
+    final H2Database db = H2Database.serverDatabase("host", 1234, "sid");
     assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
   public void getSequenceQuery() {
-    final H2Database db = new H2Database("host", 1234, "sid");
+    final H2Database db = H2Database.serverDatabase("host", 1234, "sid");
     final String idSource = "seq";
     assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
   }
 
   @Test
   public void constructorNullHost() {
-    assertThrows(NullPointerException.class, () -> new H2Database(null, null, null));
+    assertThrows(NullPointerException.class, () -> H2Database.serverDatabase(null, null, null));
   }
 
   @Test
@@ -67,8 +67,8 @@ public class H2DatabaseTest {
     Files.write(file1.toPath(), singletonList("create schema scott; create table scott.test1 (id int);"));
     Files.write(file2.toPath(), singletonList("create schema scott; create table scott.test2 (id int);"));
     final User user = Users.user("sa");
-    final H2Database db1 = new H2Database("test1", file1.getAbsolutePath(), true);
-    final H2Database db2 = new H2Database("test2", file2.getAbsolutePath(), true);
+    final H2Database db1 = H2Database.memoryDatabase("test1", file1.getAbsolutePath());
+    final H2Database db2 = H2Database.memoryDatabase("test2", file2.getAbsolutePath());
     final Connection connection1 = db1.createConnection(user);
     final Connection connection2 = db2.createConnection(user);
     connection1.prepareCall("select id from scott.test1").executeQuery();

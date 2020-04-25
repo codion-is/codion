@@ -21,7 +21,7 @@ public class HikariConnectionPoolProviderTest {
   public void test() throws Exception {
     final long startTime = System.currentTimeMillis();
     final HikariConnectionPoolProvider provider = new HikariConnectionPoolProvider();
-    final ConnectionPool pool = provider.createConnectionPool(new H2Database("HikariConnectionPoolProviderTest.test",
+    final ConnectionPool pool = provider.createConnectionPool(H2Database.memoryDatabase("HikariConnectionPoolProviderTest.test",
             System.getProperty("jminor.db.initScript")), UNIT_TEST_USER);
     pool.setCollectSnapshotStatistics(true);
     assertTrue(pool.isCollectSnapshotStatistics());

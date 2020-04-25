@@ -39,7 +39,7 @@ public class JasperReportsTest {
   private static final String REPORT_PATH = "build/resources/test";
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          new H2Database("JasperReportsWrapperTest.fillJdbcReport", System.getProperty("jminor.db.initScript")))
+          H2Database.memoryDatabase("JasperReportsWrapperTest.fillJdbcReport", System.getProperty("jminor.db.initScript")))
           .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @AfterAll

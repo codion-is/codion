@@ -5940,3 +5940,4 @@
   Added entity to beans example to EmployeeService, some documentation code cleanup
   EntityServer now instantiates a admin instance only if admin port is specified
   AbstractServer.onShutdown() replaced with addShutdownListener()
+  H2Database, replaced public constructors with factory methods, some doc improvements
