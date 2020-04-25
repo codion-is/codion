@@ -10,12 +10,12 @@ import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Specifies a class for running multiple application instances for load testing purposes.
+ * @param <T> the type of application used by this load test.
  */
-public interface LoadTest {
+public interface LoadTest<T> {
 
   /**
    * Removes all applications and exits
@@ -58,7 +58,7 @@ public interface LoadTest {
   void setScenarioEnabled(String scenarioName, boolean enabled);
 
   /**
-   * @return the usage scenarios used by this load test;
+   * @return the names of the usage scenarios used by this load test.
    */
   Collection<String> getUsageScenarios();
 
@@ -66,17 +66,7 @@ public interface LoadTest {
    * @param usageScenarioName the scenario name
    * @return the usage scenario
    */
-  UsageScenario getUsageScenario(String usageScenarioName);
-
-  /**
-   * @return the the maximum time in milliseconds a work request has to finish
-   */
-  int getWarningTime();
-
-  /**
-   * @param warningTime the the maximum time in milliseconds a work request has to finish
-   */
-  void setWarningTime(int warningTime);
+  UsageScenario<T> getUsageScenario(String usageScenarioName);
 
   /**
    * @return the chart data update interval in milliseconds
@@ -236,11 +226,6 @@ public interface LoadTest {
   EventObserver<Integer> getMinimumThinkTimeObserver();
 
   /**
-   * @return an observer notified each time the warning time changes
-   */
-  EventObserver<Integer> getWarningTimeObserver();
-
-  /**
    * @return an observer notified each time the paused state changes
    */
   EventObserver<Boolean> getPauseObserver();
@@ -248,60 +233,7 @@ public interface LoadTest {
   /**
    * @return the randomizer used to select scenarios
    */
-  ItemRandomizer<UsageScenario> getScenarioChooser();
-
-  /**
-   * Specifies a load test usage scenario.
-   * @param <T> the type used to run the scenario
-   */
-  interface UsageScenario<T> {
-
-    /**
-     * @return the name of this scenario
-     */
-    String getName();
-
-    /**
-     * @return the default weight for this scenario, 1 by default
-     */
-    int getDefaultWeight();
-
-    /**
-     * Runs this scenario with the given application
-     * @param application the application to use
-     */
-    void run(T application);
-
-    /**
-     * @return the total number of times this scenario has been run
-     */
-    int getTotalRunCount();
-
-    /**
-     * @return any exceptions that have occurred during a run
-     */
-    List<ScenarioException> getExceptions();
-
-    /**
-     * Resets the run counters
-     */
-    void resetRunCount();
-
-    /**
-     * Clears the exceptions that have been collected so far
-     */
-    void clearExceptions();
-
-    /**
-     * @return the number of times this scenario has been successfully run
-     */
-    int getSuccessfulRunCount();
-
-    /**
-     * @return the number of times this scenario has been unsuccessfully run
-     */
-    int getUnsuccessfulRunCount();
-  }
+  ItemRandomizer<UsageScenario<T>> getScenarioChooser();
 
   /**
    * An exception originating from a scenario run

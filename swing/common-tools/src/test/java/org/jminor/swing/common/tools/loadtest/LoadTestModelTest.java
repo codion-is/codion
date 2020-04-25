@@ -19,7 +19,7 @@ public class LoadTestModelTest {
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static final LoadTestModel.UsageScenario SCENARIO = new LoadTestModel.AbstractUsageScenario("test") {
+  private static final UsageScenario SCENARIO = new AbstractUsageScenario("test") {
     int counter = 0;
     @Override
     protected void performScenario(final Object application) throws LoadTest.ScenarioException {
@@ -29,76 +29,65 @@ public class LoadTestModelTest {
     }
   };
 
-  private static final LoadTestModel.UsageScenario SCENARIO_II = new LoadTestModel.AbstractUsageScenario("testII") {
+  private static final UsageScenario SCENARIO_II = new AbstractUsageScenario("testII") {
     @Override
     protected void performScenario(final Object application) throws LoadTest.ScenarioException {}
   };
 
   @Test
   public void constructorNegativeThinkTime() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, -100, 2, 5, 1000));
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, -100, 2, 5));
   }
 
   @Test
   public void constructorNegativeLoginDelayFactor() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, -2, 5, 1000));
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, -2, 5));
   }
 
   @Test
   public void constructorNegativeApplicationBatchSize() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, 2, -5, 1000));
-  }
-
-  @Test
-  public void constructorNegativeWarningTime() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, 2, 5, -1000));
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, 2, -5));
   }
 
   @Test
   public void setApplicationBatchSizeNegative() {
-    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.setApplicationBatchSize(-5));
   }
 
   @Test
   public void setUpdateIntervalNegative() {
-    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.setUpdateInterval(-1));
   }
 
   @Test
   public void setLoginDelayFactorNegative() {
-    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.setLoginDelayFactor(-1));
   }
 
   @Test
-  public void setWarningTimeNegative() {
-    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2, 1000);
-    assertThrows(IllegalArgumentException.class, () -> model.setWarningTime(-1));
-  }
-
-  @Test
   public void setMinimumThinkTimeNegative() {
-    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.setMinimumThinkTime(-1));
   }
 
   @Test
   public void setMaximumThinkTimeNegative() {
-    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.setMaximumThinkTime(-1));
   }
 
   @Test
   public void getUnknownUsageScenario() {
-    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getUsageScenario("bla"));
   }
 
   @Test
   public void test() throws Exception {
-    final LoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2);
     assertEquals(2, model.getApplicationBatchSize());
     model.setCollectChartData(true);
 
@@ -108,7 +97,6 @@ public class LoadTestModelTest {
     assertNotNull(model.maximumThinkTimeObserver());
     assertNotNull(model.getMinimumThinkTimeObserver());
     assertNotNull(model.getPauseObserver());
-    assertNotNull(model.getWarningTimeObserver());
 
     assertNotNull(model.getMemoryUsageDataset());
     assertNotNull(model.getNumberOfApplicationsDataset());
@@ -119,10 +107,7 @@ public class LoadTestModelTest {
     model.setLoginDelayFactor(3);
     assertEquals(3, model.getLoginDelayFactor());
     assertEquals(LoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.getUpdateInterval());
-    assertEquals(1000, model.getWarningTime());
     assertEquals(2, model.getApplicationBatchSize());
-    model.setWarningTime(80);
-    assertEquals(80, model.getWarningTime());
 
     assertEquals(25, model.getMinimumThinkTime());
     assertEquals(50, model.getMaximumThinkTime());
@@ -168,8 +153,8 @@ public class LoadTestModelTest {
   public static final class TestLoadTestModel extends LoadTestModel {
 
     public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
-                             final int applicationBatchSize, final int warningTime) {
-      super(user, asList(SCENARIO, SCENARIO_II), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
+                             final int applicationBatchSize) {
+      super(user, asList(SCENARIO, SCENARIO_II), maximumThinkTime, loginDelayFactor, applicationBatchSize);
     }
 
     @Override

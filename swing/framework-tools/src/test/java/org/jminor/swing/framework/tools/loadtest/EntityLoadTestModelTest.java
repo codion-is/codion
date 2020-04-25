@@ -99,7 +99,6 @@ public class EntityLoadTestModelTest {
 
     loadTest.setMaximumThinkTime(100);
     loadTest.setMinimumThinkTime(50);
-    loadTest.setWarningTime(10);
 
     loadTest.setApplicationBatchSize(2);
     assertEquals(2, loadTest.getApplicationBatchSize());

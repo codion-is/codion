@@ -11,7 +11,9 @@ import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityTableModel;
+import org.jminor.swing.common.tools.loadtest.AbstractUsageScenario;
 import org.jminor.swing.common.tools.loadtest.LoadTestModel;
+import org.jminor.swing.common.tools.loadtest.UsageScenario;
 
 import java.util.ArrayList;
 import java.util.Collection;

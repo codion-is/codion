@@ -28,7 +28,6 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   private static final int DEFAULT_MAXIMUM_THINK_TIME_MS = 500;
   private static final int DEFAULT_LOGIN_DELAY_MS = 2;
   private static final int DEFAULT_BATCH_SIZE = 5;
-  private static final int DEFAULT_QUERY_WARNING_TIME_MS = 50;
 
   private final ConnectionPool pool;
 
@@ -40,7 +39,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws DatabaseException {
-    super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_QUERY_WARNING_TIME_MS);
+    super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE);
     final ConnectionPoolProvider poolProvider = ConnectionPoolProvider.getConnectionPoolProvider();
     this.pool = poolProvider.createConnectionPool(database, user);
     addExitListener(pool::close);
