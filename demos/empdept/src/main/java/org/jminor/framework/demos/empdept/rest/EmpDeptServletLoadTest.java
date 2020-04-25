@@ -11,6 +11,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.http.HttpEntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.entity.Entity;
+import org.jminor.swing.common.tools.loadtest.AbstractUsageScenario;
 import org.jminor.swing.common.tools.loadtest.LoadTestModel;
 import org.jminor.swing.common.tools.loadtest.ui.LoadTestPanel;
 
@@ -30,7 +31,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
   public EmpDeptServletLoadTest(final User user) {
     super(user, asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),
-            5000, 2, 10, 500);
+            5000, 2, 10);
     setWeight(UpdateLocation.NAME, 2);
     setWeight(SelectDepartment.NAME, 4);
     setWeight(SelectEmployees.NAME, 5);

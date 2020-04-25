@@ -27,23 +27,22 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+
+import static java.util.Collections.unmodifiableCollection;
 
 /**
  * A default LoadTest implementation.
  * @param <T> the type of the applications this load test uses
  */
-public abstract class LoadTestModel<T> implements LoadTest {
+public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
-  public static final int DEFAULT_WARNING_TIME_MS = 2000;
 
   protected static final Logger LOG = LoggerFactory.getLogger(LoadTestModel.class);
 
@@ -57,7 +56,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private final Event<Boolean> collectChartDataChangedEvent = Events.event();
   private final Event<Integer> maximumThinkTimeChangedEvent = Events.event();
   private final Event<Integer> minimumThinkTimeChangedEvent = Events.event();
-  private final Event<Integer> warningTimeChangedEvent = Events.event();
   private final Event<Integer> loginDelayFactorChangedEvent = Events.event();
   private final Event<Integer> applicationCountChangedEvent = Events.event();
   private final Event<Integer> applicationBatchSizeChangedEvent = Events.event();
@@ -73,13 +71,12 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private volatile boolean paused = false;
   private volatile boolean collectChartData = false;
 
-  private final Deque<ApplicationRunner<T>> applications = new LinkedList<>();
-  private final Collection<? extends UsageScenario<T>> usageScenarios;
-  private final ItemRandomizer<UsageScenario> scenarioChooser;
-  private final ExecutorService executor = Executors.newCachedThreadPool();
-  private final Counter counter;
+  private final Deque<ApplicationRunner> applications = new ConcurrentLinkedDeque<>();
+  private final Map<String, UsageScenario<T>> usageScenarios = new HashMap<>();
+  private final ItemRandomizer<UsageScenario<T>> scenarioChooser;
+  private final ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+  private final Counter counter = new Counter();
   private final TaskScheduler updateChartDataScheduler;
-  private volatile int warningTime;
 
   private final XYSeries scenariosRunSeries = new XYSeries("Total");
   private final XYSeries delayedScenarioRunsSeries = new XYSeries("Warn. time exceeded");
@@ -93,7 +90,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private final XYSeries numberOfApplicationsSeries = new XYSeries("Application count");
   private final XYSeriesCollection numberOfApplicationsCollection = new XYSeriesCollection();
 
-  private final XYSeries warningTimeSeries = new XYSeries("Warn. limit");
   private final XYSeriesCollection usageScenarioCollection = new XYSeriesCollection();
 
   private final XYSeries allocatedMemoryCollection = new XYSeries("Allocated");
@@ -110,31 +106,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
   /**
    * Constructs a new LoadTestModel.
    * @param user the default user to use when initializing applications
-   * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
-   * @param loginDelayFactor the value with which to multiply the think time when delaying login
-   * @param applicationBatchSize the number of applications to add in a batch
-   */
-  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
-                       final int applicationBatchSize) {
-    this(user, maximumThinkTime, loginDelayFactor, applicationBatchSize, DEFAULT_WARNING_TIME_MS);
-  }
-
-  /**
-   * Constructs a new LoadTestModel.
-   * @param user the default user to use when initializing applications
-   * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
-   * @param loginDelayFactor the value with which to multiply the think time when delaying login
-   * @param applicationBatchSize the number of applications to add in a batch
-   * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
-   */
-  public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
-                       final int applicationBatchSize, final int warningTime) {
-    this(user, new ArrayList<>(), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
-  }
-
-  /**
-   * Constructs a new LoadTestModel.
-   * @param user the default user to use when initializing applications
    * @param usageScenarios the usage scenarios to use
    * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
    * @param loginDelayFactor the value with which to multiply the think time when delaying login
@@ -142,21 +113,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
    */
   public LoadTestModel(final User user, final Collection<? extends UsageScenario<T>> usageScenarios,
                        final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize) {
-    this(user, usageScenarios, maximumThinkTime, loginDelayFactor, applicationBatchSize, DEFAULT_WARNING_TIME_MS);
-  }
-
-  /**
-   * Constructs a new LoadTestModel.
-   * @param user the default user to use when initializing applications
-   * @param usageScenarios the usage scenarios to use
-   * @param maximumThinkTime the maximum think time, by default the minimum think time is max / 2
-   * @param loginDelayFactor the value with which to multiply the think time when delaying login
-   * @param applicationBatchSize the number of applications to add in a batch
-   * @param warningTime a work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)
-   */
-  public LoadTestModel(final User user, final Collection<? extends UsageScenario<T>> usageScenarios,
-                       final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize,
-                       final int warningTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
     }
@@ -166,19 +122,15 @@ public abstract class LoadTestModel<T> implements LoadTest {
     if (applicationBatchSize <= 0) {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
     }
-    if (warningTime <= 0) {
-      throw new IllegalArgumentException("Warning time must be a positive integer");
-    }
-
     this.user = user;
     this.maximumThinkTime = maximumThinkTime;
     this.minimumThinkTime = maximumThinkTime / 2;
     this.loginDelayFactor = loginDelayFactor;
     this.applicationBatchSize = applicationBatchSize;
-    this.warningTime = warningTime;
-    this.usageScenarios = usageScenarios;
+    for (final UsageScenario<T> scenario : usageScenarios) {
+      this.usageScenarios.put(scenario.getName(), scenario);
+    }
     this.scenarioChooser = initializeScenarioChooser();
-    this.counter = new Counter(this.usageScenarios);
     initializeChartData();
     this.updateChartDataScheduler = new TaskScheduler(() -> {
       if (shuttingDown || paused) {
@@ -208,10 +160,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   @Override
   public final UsageScenario<T> getUsageScenario(final String usageScenarioName) {
-    for (final UsageScenario<T> scenario : usageScenarios) {
-      if (scenario.getName().equals(usageScenarioName)) {
-        return scenario;
-      }
+    final UsageScenario<T> scenario = usageScenarios.get(usageScenarioName);
+    if (scenario != null) {
+      return scenario;
     }
 
     throw new IllegalArgumentException("UsageScenario not found: " + usageScenarioName);
@@ -219,7 +170,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   @Override
   public final Collection<String> getUsageScenarios() {
-    return usageScenarios.stream().map(UsageScenario::getName).collect(Collectors.toList());
+    return unmodifiableCollection(usageScenarios.keySet());
   }
 
   @Override
@@ -238,7 +189,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   @Override
-  public final ItemRandomizer<UsageScenario> getScenarioChooser() {
+  public final ItemRandomizer<UsageScenario<T>> getScenarioChooser() {
     return scenarioChooser;
   }
 
@@ -290,6 +241,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
     allocatedMemoryCollection.clear();
     usedMemoryCollection.clear();
     maxMemoryCollection.clear();
+    systemLoadSeries.clear();
+    processLoadSeries.clear();
     for (final XYSeries series : usageSeries) {
       series.clear();
     }
@@ -298,23 +251,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
     for (final YIntervalSeries series : durationSeries.values()) {
       series.clear();
-    }
-  }
-
-  @Override
-  public final int getWarningTime() {
-    return warningTime;
-  }
-
-  @Override
-  public final void setWarningTime(final int warningTime) {
-    if (warningTime <= 0) {
-      throw new IllegalArgumentException("Warning time must be a positive integer");
-    }
-
-    if (this.warningTime != warningTime) {
-      this.warningTime = warningTime;
-      warningTimeChangedEvent.onEvent(this.warningTime);
     }
   }
 
@@ -351,21 +287,23 @@ public abstract class LoadTestModel<T> implements LoadTest {
   @Override
   public final void addApplicationBatch() {
     for (int i = 0; i < applicationBatchSize; i++) {
-      final ApplicationRunner<T> runner = new ApplicationRunner<>(this);
-      synchronized (applications) {
-        applications.push(runner);
-      }
+      final ApplicationRunner runner = new ApplicationRunner();
+      applications.push(runner);
       applicationCountChangedEvent.onEvent();
-
-      executor.execute(runner);
+      int initialDelay = getThinkTime();
+      if (loginDelayFactor > 0) {
+        initialDelay *= loginDelayFactor;
+      }
+      scheduledExecutor.schedule(runner, initialDelay, TimeUnit.MILLISECONDS);
     }
   }
 
   @Override
   public final void removeApplicationBatch() {
     for (int i = 0; i < applicationBatchSize && !applications.isEmpty(); i++) {
-      removeApplication();
+      applications.pop().stop();
     }
+    applicationCountChangedEvent.onEvent(applications.size());
   }
 
   @Override
@@ -394,20 +332,18 @@ public abstract class LoadTestModel<T> implements LoadTest {
   public final void exit() {
     shuttingDown = true;
     updateChartDataScheduler.stop();
-    executor.shutdown();
+    scheduledExecutor.shutdown();
     paused = false;
     synchronized (applications) {
       while (!applications.isEmpty()) {
-        removeApplication();
+        applications.pop().stop();
       }
     }
-    while (!executor.isTerminated()) {
-      try {
-        Thread.sleep(maximumThinkTime);
-      }
-      catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+    try {
+      scheduledExecutor.awaitTermination(10, TimeUnit.SECONDS);
+    }
+    catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
     exitingDoneEvent.onEvent();
   }
@@ -487,18 +423,13 @@ public abstract class LoadTestModel<T> implements LoadTest {
     return collectChartDataChangedEvent.getObserver();
   }
 
-  @Override
-  public final EventObserver<Integer> getWarningTimeObserver() {
-    return warningTimeChangedEvent.getObserver();
-  }
-
   /**
    * Runs the scenario with the given name on the given application
-   * @param usageScenarioName the name of the scenario to run
+   * @param usageScenario the scenario to run
    * @param application the application to use
    */
-  protected final void runScenario(final String usageScenarioName, final T application) {
-    getUsageScenario(usageScenarioName).run(application);
+  protected final void runScenario(final UsageScenario<T> usageScenario, final T application) {
+    usageScenario.run(application);
   }
 
   /**
@@ -529,19 +460,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime : minimumThinkTime;
   }
 
-  /**
-   * Removes a single application
-   */
-  private void removeApplication() {
-    synchronized (applications) {
-      applications.pop().stop();
-    }
-    applicationCountChangedEvent.onEvent(applications.size());
-  }
-
-  private ItemRandomizer<UsageScenario> initializeScenarioChooser() {
-    final ItemRandomizer<UsageScenario> model = new ItemRandomizerModel<>();
-    for (final UsageScenario scenario : this.usageScenarios) {
+  private ItemRandomizer<UsageScenario<T>> initializeScenarioChooser() {
+    final ItemRandomizer<UsageScenario<T>> model = new ItemRandomizerModel<>();
+    for (final UsageScenario<T> scenario : usageScenarios.values()) {
       model.addItem(scenario, scenario.getDefaultWeight());
     }
 
@@ -558,7 +479,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     systemLoadCollection.addSeries(systemLoadSeries);
     systemLoadCollection.addSeries(processLoadSeries);
     usageScenarioCollection.addSeries(scenariosRunSeries);
-    for (final UsageScenario usageScenario : this.usageScenarios) {
+    for (final UsageScenario<T> usageScenario : usageScenarios.values()) {
       final XYSeries series = new XYSeries(usageScenario.getName());
       usageScenarioCollection.addSeries(series);
       usageSeries.add(series);
@@ -583,7 +504,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
     systemLoadSeries.add(time, getSystemCpuLoad() * HUNDRED);
     processLoadSeries.add(time, getProcessCpuLoad() * HUNDRED);
     scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());
-    warningTimeSeries.add(time, warningTime);
     for (final XYSeries series : usageSeries) {
       series.add(time, counter.getScenarioRate((String) series.getKey()));
     }
@@ -605,14 +525,10 @@ public abstract class LoadTestModel<T> implements LoadTest {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
   }
 
-  private static final class ApplicationRunner<T> implements Runnable {
+  private final class ApplicationRunner implements Runnable {
 
-    private final LoadTestModel<T> loadTestModel;
-    private boolean stopped = false;
-
-    private ApplicationRunner(final LoadTestModel<T> loadTestModel) {
-      this.loadTestModel = loadTestModel;
-    }
+    private T application = null;
+    private volatile boolean stopped = false;
 
     private void stop() {
       stopped = true;
@@ -620,219 +536,52 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
     @Override
     public void run() {
-      delayLogin();
-
-      T application = null;
-      while (!stopped) {
-        try {
-          if (application == null) {
-            application = loadTestModel.initializeApplication();
-            LOG.debug("LoadTestModel initialized application: {}", application);
-          }
-          think();
-          if (!loadTestModel.isPaused()) {
-            runRandomScenario(application);
-          }
+      try {
+        if (application == null) {
+          application = initializeApplication();
+          LOG.debug("LoadTestModel initialized application: {}", application);
         }
-        catch (final Exception e) {
-          final String message = "Exception during " + (application == null ? "application initialization" : ("run " + application));
-          LOG.debug(message, e);
+        if (!stopped && !paused) {
+          runRandomScenario(application);
+        }
+        if (stopped) {
+          disconnectApplication(application);
+          LOG.debug("LoadTestModel disconnected application: {}", application);
+        }
+        else {
+          scheduledExecutor.schedule(this, getThinkTime(), TimeUnit.MILLISECONDS);
         }
       }
-      if (application != null) {
-        loadTestModel.disconnectApplication(application);
-        LOG.debug("LoadTestModel disconnected application: {}", application);
+      catch (final Exception e) {
+        LOG.debug("Exception during " + (application == null ? "application initialization" : ("run " + application)), e);
       }
-    }
-
-    /**
-     * Simulates a user think pause by sleeping for a little while
-     * @throws InterruptedException in case the sleep is interrupted
-     */
-    private void think() throws InterruptedException {
-      Thread.sleep(loadTestModel.getThinkTime());
     }
 
     private void runRandomScenario(final T application) {
       final long currentTimeNano = System.nanoTime();
-      String scenarioName = null;
+      UsageScenario<T> scenario = null;
       try {
-        scenarioName = performWork(application);
+        scenario = scenarioChooser.getRandomItem();
+        runScenario(scenario, application);
       }
       finally {
-        loadTestModel.counter.incrementWorkRequests();
+        counter.incrementWorkRequests();
         final long workTimeMillis = (System.nanoTime() - currentTimeNano) / NANO_IN_MILLI;
-        if (scenarioName != null) {
-          loadTestModel.counter.addScenarioDuration(scenarioName, (int) workTimeMillis);
+        if (scenario != null) {
+          counter.addScenarioDuration(scenario.getName(), (int) workTimeMillis);
         }
-        if (workTimeMillis > loadTestModel.getWarningTime()) {
-          loadTestModel.counter.incrementDelayedWorkRequests();
-        }
-      }
-    }
-
-    /**
-     * Selects a random scenario and runs it with the given application
-     * @param application the application for running the next scenario
-     * @return the name of the scenario that was run
-     */
-    private String performWork(final T application) {
-      final String scenarioName = loadTestModel.scenarioChooser.getRandomItem().getName();
-      loadTestModel.runScenario(scenarioName, application);
-
-      return scenarioName;
-    }
-
-    private void delayLogin() {
-      if (loadTestModel.getLoginDelayFactor() > 0) {
-        try {
-          final int sleepyTime = RANDOM.nextInt(loadTestModel.getMaximumThinkTime() *
-                  (loadTestModel.getLoginDelayFactor() <= 0 ? 1 : loadTestModel.getLoginDelayFactor()));
-          Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
-        }
-        catch (final InterruptedException e) {
-          LOG.error("Delay login sleep interrupted", e);
-          Thread.currentThread().interrupt();
+        final int maximumTime = scenario.getMaximumTime();
+        if (maximumTime > 0 && workTimeMillis > maximumTime) {
+          counter.incrementDelayedWorkRequests();
         }
       }
     }
   }
 
-  /**
-   * An abstract usage scenario.
-   * @param <T> the type used to run this scenario
-   */
-  public abstract static class AbstractUsageScenario<T> implements LoadTest.UsageScenario<T> {
-
-    private final String name;
-    private final AtomicInteger successfulRunCount = new AtomicInteger();
-    private final AtomicInteger unsuccessfulRunCount = new AtomicInteger();
-    private final List<ScenarioException> exceptions = new ArrayList<>();
-
-    /**
-     * Instantiates a new UsageScenario using the simple class name as scenario name
-     */
-    public AbstractUsageScenario() {
-      this.name = getClass().getSimpleName();
-    }
-
-    /**
-     * Instantiates a new UsageScenario with the given name
-     * @param name the scenario name
-     */
-    public AbstractUsageScenario(final String name) {
-      this.name = name;
-    }
-
-    @Override
-    public final String getName() {
-      return this.name;
-    }
-
-    @Override
-    public final int getSuccessfulRunCount() {
-      return successfulRunCount.get();
-    }
-
-    @Override
-    public final int getUnsuccessfulRunCount() {
-      return unsuccessfulRunCount.get();
-    }
-
-    @Override
-    public final int getTotalRunCount() {
-      return successfulRunCount.get() + unsuccessfulRunCount.get();
-    }
-
-    @Override
-    public final List<ScenarioException> getExceptions() {
-      synchronized (exceptions) {
-        return new ArrayList<>(exceptions);
-      }
-    }
-
-    @Override
-    public final void resetRunCount() {
-      successfulRunCount.set(0);
-      unsuccessfulRunCount.set(0);
-    }
-
-    @Override
-    public final void clearExceptions() {
-      synchronized (exceptions) {
-        exceptions.clear();
-      }
-    }
-
-    /**
-     * @return the name of this scenario
-     */
-    @Override
-    public final String toString() {
-      return name;
-    }
-
-    @Override
-    public final void run(final T application) {
-      if (application == null) {
-        throw new IllegalArgumentException("Can not run without an application");
-      }
-      try {
-        prepare(application);
-        performScenario(application);
-        successfulRunCount.incrementAndGet();
-      }
-      catch (final ScenarioException e) {
-        unsuccessfulRunCount.incrementAndGet();
-        synchronized (exceptions) {
-          exceptions.add(e);
-        }
-      }
-      finally {
-        cleanup(application);
-      }
-    }
-
-    @Override
-    public final int hashCode() {
-      return name.hashCode();
-    }
-
-    @Override
-    public final boolean equals(final Object obj) {
-      return obj instanceof UsageScenario && ((UsageScenario) obj).getName().equals(name);
-    }
-
-    @Override
-    public int getDefaultWeight() {
-      return 1;
-    }
-
-    /**
-     * Runs a set of actions on the given application.
-     * @param application the application
-     * @throws ScenarioException in case of an exception
-     */
-    protected abstract void performScenario(T application) throws ScenarioException;
-
-    /**
-     * Called before this scenario is run, override to prepare the application for each run
-     * @param application the application
-     */
-    protected void prepare(final Object application) {/*Provided for subclasses*/}
-
-    /**
-     * Called after this scenario has been run, override to cleanup the application after each run
-     * @param application the application
-     */
-    protected void cleanup(final Object application) {/*Provided for subclasses*/}
-  }
-
-  private static final class Counter {
+  private final class Counter {
 
     private static final int UPDATE_INTERVAL = 5;
 
-    private final Collection<? extends UsageScenario> usageScenarios;
     private final Map<String, Integer> usageScenarioRates = new HashMap<>();
     private final Map<String, Integer> usageScenarioAvgDurations = new HashMap<>();
     private final Map<String, Integer> usageScenarioMaxDurations = new HashMap<>();
@@ -845,10 +594,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
     private int delayedWorkRequestsPerSecond = 0;
     private int delayedWorkRequestCounter = 0;
     private long time = System.currentTimeMillis();
-
-    private Counter(final Collection<? extends UsageScenario> usageScenarios) {
-      this.usageScenarios = usageScenarios;
-    }
 
     private double getWorkRequestsPerSecond() {
       return workRequestsPerSecond;
@@ -924,7 +669,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
         usageScenarioMaxDurations.clear();
         workRequestsPerSecond = workRequestCounter / elapsedSeconds;
         delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / elapsedSeconds);
-        for (final UsageScenario scenario : usageScenarios) {
+        for (final UsageScenario<T> scenario : usageScenarios.values()) {
           usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / elapsedSeconds));
           usageScenarioFailures.put(scenario.getName(), scenario.getUnsuccessfulRunCount());
           calculateScenarioDuration(scenario);
@@ -934,7 +679,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       }
     }
 
-    private void calculateScenarioDuration(final UsageScenario scenario) {
+    private void calculateScenarioDuration(final UsageScenario<T> scenario) {
       synchronized (scenarioDurations) {
         final Collection<Integer> durations = scenarioDurations.get(scenario.getName());
         if (!Util.nullOrEmpty(durations)) {
@@ -960,7 +705,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     private void resetCounters() {
-      for (final UsageScenario scenario : usageScenarios) {
+      for (final UsageScenario<T> scenario : usageScenarios.values()) {
         scenario.resetRunCount();
       }
       workRequestCounter = 0;

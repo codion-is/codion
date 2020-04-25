@@ -10,6 +10,7 @@ import org.jminor.common.value.Values;
 import org.jminor.swing.common.tools.loadtest.ItemRandomizer;
 import org.jminor.swing.common.tools.loadtest.LoadTest;
 import org.jminor.swing.common.tools.loadtest.LoadTestModel;
+import org.jminor.swing.common.tools.loadtest.UsageScenario;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -167,8 +168,8 @@ public final class LoadTestPanel extends JPanel {
     return southPanel;
   }
 
-  private ItemRandomizerPanel<LoadTestModel.UsageScenario> initializeScenarioPanel() {
-    final ItemRandomizerPanel<LoadTestModel.UsageScenario> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
+  private ItemRandomizerPanel<UsageScenario> initializeScenarioPanel() {
+    final ItemRandomizerPanel<UsageScenario> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
     panel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
     panel.addSelectedItemListener(this::onScenarioSelectionChanged);
 
@@ -340,13 +341,6 @@ public final class LoadTestPanel extends JPanel {
     final JSpinner minThinkTimeSpinner = new JSpinner(minSpinnerModel);
     ((JSpinner.DefaultEditor) minThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
-    final SpinnerNumberModel warningSpinnerModel = NumericalValues.integerValueSpinnerModel(loadTestModel, "warningTime",
-            loadTestModel.getWarningTimeObserver());
-    warningSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
-    final JSpinner warningTimeSpinner = new JSpinner(warningSpinnerModel);
-    ((JSpinner.DefaultEditor) warningTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
-    warningTimeSpinner.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
-
     final ToggleControl pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
     pauseControl.setMnemonic('P');
 
@@ -357,8 +351,6 @@ public final class LoadTestPanel extends JPanel {
     thinkTimePanel.add(maxThinkTimeSpinner);
     thinkTimePanel.add(new JLabel("Min. think time", JLabel.CENTER));
     thinkTimePanel.add(minThinkTimeSpinner);
-    thinkTimePanel.add(new JLabel("Warning time", JLabel.CENTER));
-    thinkTimePanel.add(warningTimeSpinner);
     thinkTimePanel.add(ControlProvider.createToggleButton(pauseControl));
 
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
@@ -366,16 +358,16 @@ public final class LoadTestPanel extends JPanel {
     return thinkTimePanel;
   }
 
-  private void onScenarioSelectionChanged(final List<ItemRandomizer.RandomItem<LoadTest.UsageScenario>> selectedScenarios) {
+  private void onScenarioSelectionChanged(final List<ItemRandomizer.RandomItem<UsageScenario>> selectedScenarios) {
     scenarioBase.removeAll();
-    for (final ItemRandomizer.RandomItem<LoadTest.UsageScenario> selectedItem : selectedScenarios) {
+    for (final ItemRandomizer.RandomItem<UsageScenario> selectedItem : selectedScenarios) {
       scenarioBase.add(createScenarioPanel(selectedItem.getItem()));
     }
     validate();
     repaint();
   }
 
-  private JPanel createScenarioPanel(final LoadTest.UsageScenario item) {
+  private JPanel createScenarioPanel(final UsageScenario item) {
     final JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getScenarioDurationDataset(item.getName()),
             PlotOrientation.VERTICAL, true, true, false);
@@ -421,9 +413,9 @@ public final class LoadTestPanel extends JPanel {
 
   private abstract static class ExceptionsAction extends AbstractAction {
     private final JTextArea exceptionsTextArea;
-    private final LoadTest.UsageScenario scenario;
+    private final UsageScenario scenario;
 
-    private ExceptionsAction(final String name, final JTextArea exceptionsTextArea, final LoadTest.UsageScenario scenario) {
+    private ExceptionsAction(final String name, final JTextArea exceptionsTextArea, final UsageScenario scenario) {
       super(name);
       this.exceptionsTextArea = exceptionsTextArea;
       this.scenario = scenario;
@@ -433,14 +425,14 @@ public final class LoadTestPanel extends JPanel {
       return exceptionsTextArea;
     }
 
-    LoadTest.UsageScenario getScenario() {
+    UsageScenario getScenario() {
       return scenario;
     }
   }
 
   private static final class ClearExceptionsAction extends ExceptionsAction {
 
-    private ClearExceptionsAction(final JTextArea exceptionsArea, final LoadTest.UsageScenario scenario) {
+    private ClearExceptionsAction(final JTextArea exceptionsArea, final UsageScenario scenario) {
       super("Clear", exceptionsArea, scenario);
     }
 
@@ -453,7 +445,7 @@ public final class LoadTestPanel extends JPanel {
 
   private static final class RefreshExceptionsAction extends ExceptionsAction {
 
-    private RefreshExceptionsAction(final JTextArea exceptionsArea, final LoadTest.UsageScenario scenario) {
+    private RefreshExceptionsAction(final JTextArea exceptionsArea, final UsageScenario scenario) {
       super("Refresh", exceptionsArea, scenario);
     }
 

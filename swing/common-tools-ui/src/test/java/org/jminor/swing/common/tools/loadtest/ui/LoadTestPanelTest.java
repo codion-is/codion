@@ -18,7 +18,7 @@ public class LoadTestPanelTest {
 
   @Test
   public void test() {
-    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
     final LoadTestPanel panel = new LoadTestPanel(model);
     assertEquals(model, panel.getModel());
     model.exit();
@@ -32,8 +32,8 @@ public class LoadTestPanelTest {
   private static final class TestLoadTestModel extends LoadTestModel {
 
     public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
-                             final int applicationBatchSize, final int warningTime) {
-      super(user, emptyList(), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
+                             final int applicationBatchSize) {
+      super(user, emptyList(), maximumThinkTime, loginDelayFactor, applicationBatchSize);
     }
 
     @Override
