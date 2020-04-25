@@ -14,7 +14,7 @@ import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.tools.loadtest.UsageScenario;
-import org.jminor.swing.common.tools.loadtest.ui.LoadTestPanel;
+import org.jminor.swing.common.tools.ui.loadtest.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.loadtest.ui;
+package org.jminor.swing.common.tools.ui.loadtest;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.user.User;
