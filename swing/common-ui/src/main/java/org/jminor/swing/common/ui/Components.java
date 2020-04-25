@@ -309,7 +309,7 @@ public final class Components {
     textField.setEditable(false);
     textField.setHorizontalAlignment(JTextField.CENTER);
     new TaskScheduler(() -> SwingUtilities.invokeLater(() ->
-            textField.setText(Memory.getMemoryUsageString())), updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
+            textField.setText(Memory.getMemoryUsage())), updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
 
     return textField;
   }

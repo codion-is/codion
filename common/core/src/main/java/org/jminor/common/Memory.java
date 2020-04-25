@@ -3,11 +3,14 @@
  */
 package org.jminor.common;
 
+import java.text.NumberFormat;
+
 /**
  * A utility class for memory usage information.
  */
 public final class Memory {
 
+  private static final NumberFormat FORMAT = NumberFormat.getIntegerInstance();
   private static final int K = 1024;
 
   private Memory() {}
@@ -41,9 +44,11 @@ public final class Memory {
   }
 
   /**
-   * @return a String indicating the memory usage of this JVM
+   * @return a String containing the memory usage of this JVM in kilobytes.
    */
-  public static String getMemoryUsageString() {
-    return getUsedMemory() + " KB";
+  public static String getMemoryUsage() {
+    synchronized (FORMAT) {
+      return FORMAT.format(getUsedMemory()) + " KB";
+    }
   }
 }
