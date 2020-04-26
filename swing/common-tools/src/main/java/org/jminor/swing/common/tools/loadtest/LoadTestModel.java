@@ -570,11 +570,12 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       }
       finally {
         counter.incrementWorkRequests();
+        int maximumTime = 0;
         final long workTimeMillis = (System.nanoTime() - currentTimeNano) / NANO_IN_MILLI;
         if (scenario != null) {
           counter.addScenarioDuration(scenario.getName(), (int) workTimeMillis);
+          maximumTime = scenario.getMaximumTime();
         }
-        final int maximumTime = scenario.getMaximumTime();
         if (maximumTime > 0 && workTimeMillis > maximumTime) {
           counter.incrementDelayedWorkRequests();
         }

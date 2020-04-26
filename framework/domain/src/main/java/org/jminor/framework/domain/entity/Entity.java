@@ -11,7 +11,6 @@ import org.jminor.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.Format;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -168,28 +167,10 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   byte[] getBlob(String propertyId);
 
   /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * formatted with the given Format.
-   * @param propertyId the ID of the property for which to retrieve the formatted value
-   * @param format the format object
-   * @return the value of the property identified by {@code propertyId}, formatted with {@code format}
-   */
-  String getFormatted(String propertyId, Format format);
-
-  /**
-   * Returns the value associated with the given property, formatted with the given Format.
-   * @param property the property for which to retrieve the formatted value
-   * @param format the format object
-   * @return the value of the given property, formatted with {@code format}
-   */
-  String getFormatted(Property property, Format format);
-
-  /**
    * This method returns a String representation of the value associated with the given property,
    * if the property has a format it is used.
    * @param propertyId the ID of the property for which to retrieve the value
    * @return a String representation of the value of {@code property}
-   * @see #getFormatted(Property, java.text.Format)
    */
   String getAsString(String propertyId);
 

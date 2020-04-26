@@ -306,7 +306,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     }
   }
 
-  private void configureSerializationWhitelist(final ServerConfiguration configuration) {
+  private static void configureSerializationWhitelist(final ServerConfiguration configuration) {
     if (configuration.getSerializationFilterDryRun()) {
       SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
     }

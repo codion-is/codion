@@ -119,6 +119,16 @@ public interface Property extends Serializable {
   Object prepareValue(Object value);
 
   /**
+   * Returns a value formatted with this property's format. If no format is specified {@link Object#toString()} is used.
+   * Null values result in an empty string.
+   * @param value the value to format.
+   * @return the value formatted as a string
+   * @see Property.Builder#format(Format)
+   * @see Property.Builder#dateTimeFormatPattern(String)
+   */
+  String formatValue(Object value);
+
+  /**
    * @param propertyId the property ID
    * @return true if this property is of the given type
    */

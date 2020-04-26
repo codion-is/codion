@@ -5982,3 +5982,5 @@
   H2Database now keeps track of embedded databases that have been initialized
   EntityServerConfiguration.getServerConfiguration() removed
   EntityServer bug fixed, no longer tries to unexport a null admin instance
+  Entity.getFormatted(propertyId, format) removed
+  Property.formatValue(value) added
