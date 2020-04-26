@@ -38,7 +38,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -443,8 +442,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private static void loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
     try {
       for (final String className : domainModelClassNames) {
-        final String message = "Server loading and registering domain model class '" + className + " from classpath";
-        LOG.info(message);
+        LOG.info("Server loading and registering domain model class '" + className + " from classpath");
         final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
         domain.registerDomain();
       }
@@ -499,7 +497,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return the server instance
    * @throws RemoteException in case of an exception
    */
-  public static synchronized EntityServer startServer() throws RemoteException {
+  public static EntityServer startServer() throws RemoteException {
     return startServer(EntityServerConfiguration.fromSystemProperties());
   }
 
@@ -587,11 +585,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     @Override
     public void onEvent() {
       try {
-        UnicastRemoteObject.unexportObject(registry, true);
+        unexportObject(registry, true);
       }
       catch (final NoSuchObjectException ignored) {/*ignored*/}
       try {
-        UnicastRemoteObject.unexportObject(serverAdmin, true);
+        if (serverAdmin != null) {
+          unexportObject(serverAdmin, true);
+        }
       }
       catch (final NoSuchObjectException ignored) {/*ignored*/}
       connectionMaintenanceScheduler.stop();
