@@ -37,6 +37,8 @@ import java.util.concurrent.ThreadFactory;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
+import static org.jminor.common.rmi.server.AuxiliaryServer.getAuxiliaryServer;
+import static org.jminor.common.rmi.server.RemoteClient.remoteClient;
 import static org.jminor.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static org.jminor.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 
@@ -75,8 +77,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
             configuration.getServerPort(), ZonedDateTime.now());
-    startAuxiliaryServers(configuration.getAuxiliaryServerClassNames());
     configureSerializationWhitelist(configuration);
+    startAuxiliaryServers(configuration.getAuxiliaryServerClassNames());
     try {
       sharedLoginProxies.addAll(loadSharedLoginProxies(configuration.getSharedLoginProxyClassNames()));
       loginProxies.putAll(loadLoginProxies(configuration.getLoginProxyClassNames()));
@@ -170,7 +172,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       }
 
       LOG.debug("No active connection found for client {}, establishing a new connection", connectionRequest);
-      RemoteClient remoteClient = RemoteClient.remoteClient(connectionRequest);
+      RemoteClient remoteClient = remoteClient(connectionRequest);
       setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
       for (final LoginProxy loginProxy : sharedLoginProxies) {
         remoteClient = loginProxy.doLogin(remoteClient);
@@ -217,7 +219,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
     shuttingDown = true;
     try {
-      UnicastRemoteObject.unexportObject(this, true);
+      unexportObject(this, true);
     }
     catch (final NoSuchObjectException e) {
       LOG.error("Exception while unexporting server on shutdown", e);
@@ -294,7 +296,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   private void startAuxiliaryServers(final Collection<String> auxiliaryServerClassNames) {
     try {
       for (final String auxiliaryServerClassName : auxiliaryServerClassNames) {
-        final AuxiliaryServer auxiliaryServer = AuxiliaryServer.getAuxiliaryServer(auxiliaryServerClassName);
+        final AuxiliaryServer auxiliaryServer = getAuxiliaryServer(auxiliaryServerClassName);
         auxiliaryServer.setServer(this);
         auxiliaryServers.add(auxiliaryServer);
         newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->

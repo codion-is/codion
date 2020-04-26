@@ -19,16 +19,16 @@ final class DefaultServerInformation implements ServerInformation, Serializable 
   private final UUID serverId;
   private final String serverName;
   private final int serverPort;
-  private final ZonedDateTime serverStartupTime;
+  private final ZonedDateTime serverStartTime;
   private final Locale locale = Locale.getDefault();
   private final Version serverVersion = Versions.getVersion();
 
   DefaultServerInformation(final UUID serverId, final String serverName, final int serverPort,
-                           final ZonedDateTime serverStartupTime) {
+                           final ZonedDateTime serverStartTime) {
     this.serverId = serverId;
     this.serverName = serverName;
     this.serverPort = serverPort;
-    this.serverStartupTime = serverStartupTime;
+    this.serverStartTime = serverStartTime;
   }
 
   @Override
@@ -53,7 +53,7 @@ final class DefaultServerInformation implements ServerInformation, Serializable 
 
   @Override
   public ZonedDateTime getStartTime() {
-    return serverStartupTime;
+    return serverStartTime;
   }
 
   @Override
@@ -63,6 +63,6 @@ final class DefaultServerInformation implements ServerInformation, Serializable 
 
   @Override
   public ZoneId getTimeZone() {
-    return serverStartupTime.getZone();
+    return serverStartTime.getZone();
   }
 }
