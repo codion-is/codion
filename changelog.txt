@@ -5976,3 +5976,4 @@
   ItemRandomizer moved to separate package, moved some more
   EntityGeneratorPanel moved, for consistency
   LoadTestModel, minimum number of threads added
+  AbstractServer, removed unnecessary synchronization for connectionValidators
