@@ -165,19 +165,21 @@ final class Queries {
     final String columnsClause;
     if (orderByProperties.size() == 1) {
       final OrderBy.OrderByProperty orderByProperty = orderByProperties.get(0);
-      columnsClause = entityDefinition.getColumnProperty(orderByProperty.getPropertyId()).getColumnName() +
-              (orderByProperty.isAscending() ? "" : " desc");
+      columnsClause = getColumnOrderByClause(entityDefinition, orderByProperty);
     }
     else {
-      final List<String> orderByColumns = new ArrayList<>(orderByProperties.size());
+      final List<String> orderByColumnClauses = new ArrayList<>(orderByProperties.size());
       for (final OrderBy.OrderByProperty property : orderByProperties) {
-        orderByColumns.add(entityDefinition.getColumnProperty(property.getPropertyId()).getColumnName() +
-                (property.isAscending() ? "" : " desc"));
+        orderByColumnClauses.add(getColumnOrderByClause(entityDefinition, property));
       }
-      columnsClause = String.join(", ", orderByColumns);
+      columnsClause = String.join(", ", orderByColumnClauses);
     }
 
     return "order by " + columnsClause;
+  }
+
+  private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByProperty property) {
+    return entityDefinition.getColumnProperty(property.getPropertyId()).getColumnName() + (property.isAscending() ? "" : " desc");
   }
 
   private static void addForUpdate(final StringBuilder queryBuilder, final Database database) {
