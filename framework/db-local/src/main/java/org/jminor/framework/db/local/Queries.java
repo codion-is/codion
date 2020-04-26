@@ -158,16 +158,26 @@ final class Queries {
    * @return a order by string
    */
   static String getOrderByClause(final OrderBy orderBy, final EntityDefinition entityDefinition) {
-    if (orderBy.getOrderByProperties().isEmpty()) {
+    final List<OrderBy.OrderByProperty> orderByProperties = orderBy.getOrderByProperties();
+    if (orderByProperties.isEmpty()) {
       throw new IllegalArgumentException("An order by clause must contain at least a single property");
     }
-    final List<String> orderBys = new ArrayList<>(orderBy.getOrderByProperties().size());
-    for (final OrderBy.OrderByProperty property : orderBy.getOrderByProperties()) {
-      orderBys.add(entityDefinition.getColumnProperty(property.getPropertyId()).getColumnName() +
-              (property.isAscending() ? "" : " desc"));
+    final String columnsClause;
+    if (orderByProperties.size() == 1) {
+      final OrderBy.OrderByProperty orderByProperty = orderByProperties.get(0);
+      columnsClause = entityDefinition.getColumnProperty(orderByProperty.getPropertyId()).getColumnName() +
+              (orderByProperty.isAscending() ? "" : " desc");
+    }
+    else {
+      final List<String> orderByColumns = new ArrayList<>(orderByProperties.size());
+      for (final OrderBy.OrderByProperty property : orderByProperties) {
+        orderByColumns.add(entityDefinition.getColumnProperty(property.getPropertyId()).getColumnName() +
+                (property.isAscending() ? "" : " desc"));
+      }
+      columnsClause = String.join(", ", orderByColumns);
     }
 
-    return "order by " + String.join(", ", orderBys);
+    return "order by " + columnsClause;
   }
 
   private static void addForUpdate(final StringBuilder queryBuilder, final Database database) {

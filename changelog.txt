@@ -5977,3 +5977,4 @@
   EntityGeneratorPanel moved, for consistency
   LoadTestModel, minimum number of threads added
   AbstractServer, removed unnecessary synchronization for connectionValidators
+  Queries.getOrderByClause() optimizes single column order bys
