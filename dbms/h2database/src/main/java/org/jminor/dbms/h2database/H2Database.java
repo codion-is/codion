@@ -14,8 +14,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -34,6 +36,7 @@ public final class H2Database extends AbstractDatabase {
   private static final int REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING = 23506;
   private static final int UNIQUE_CONSTRAINT_ERROR = 23505;
   private static final String DEFAULT_EMBEDDED_DATABASE_NAME = "h2db";
+  private static final Set<String> INITIALIZED_DATABASES = new HashSet<>();
 
   static final String DRIVER_CLASS_NAME = "org.h2.Driver";
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
@@ -235,17 +238,22 @@ public final class H2Database extends AbstractDatabase {
   }
 
   private void initializeEmbeddedDatabase(final List<String> scriptPaths) {
-    if (!nullOrEmpty(scriptPaths) && (embeddedInMemory || !Files.exists(Paths.get(getHost() + ".h2.db")))) {
-      final Properties properties = new Properties();
-      properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
-      for (final String scriptPath : scriptPaths) {
-        final String url = (embeddedInMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + getHost()
-                + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
-        try {
-          DriverManager.getConnection(url, properties).close();
-        }
-        catch (final SQLException e) {
-          throw new RuntimeException(e);
+    final String databaseName = getHost();
+    synchronized (INITIALIZED_DATABASES) {
+      if (!nullOrEmpty(scriptPaths) && (embeddedInMemory || !Files.exists(Paths.get(databaseName + ".h2.db")))
+              && !INITIALIZED_DATABASES.contains(databaseName)) {
+        final Properties properties = new Properties();
+        properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
+        for (final String scriptPath : scriptPaths) {
+          final String url = (embeddedInMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + databaseName
+                  + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
+          try {
+            DriverManager.getConnection(url, properties).close();
+            INITIALIZED_DATABASES.add(databaseName);
+          }
+          catch (final SQLException e) {
+            throw new RuntimeException(e);
+          }
         }
       }
     }

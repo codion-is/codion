@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -56,11 +57,6 @@ abstract class DefaultProperty implements Property {
    * The caption to use when this property is presented
    */
   private final String caption;
-
-  /**
-   * This is based on an immutable field, so cache it
-   */
-  private final int hashCode;
 
   /**
    * The name of a bean property linked to this property, if any
@@ -140,7 +136,6 @@ abstract class DefaultProperty implements Property {
                   final Class typeClass) {
     requireNonNull(propertyId, "propertyId");
     this.propertyId = propertyId;
-    this.hashCode = propertyId.hashCode();
     this.type = type;
     this.caption = caption;
     this.typeClass = typeClass;
@@ -343,13 +338,21 @@ abstract class DefaultProperty implements Property {
   }
 
   @Override
-  public final boolean equals(final Object obj) {
-    return this == obj || obj instanceof Property && this.propertyId.equals(((Property) obj).getPropertyId());
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    final DefaultProperty that = (DefaultProperty) obj;
+
+    return Objects.equals(entityId, that.entityId) && propertyId.equals(that.propertyId);
   }
 
   @Override
-  public final int hashCode() {
-    return hashCode;
+  public int hashCode() {
+    return propertyId.hashCode() + 31 * (entityId == null ? 0 : entityId.hashCode());
   }
 
   @Override
