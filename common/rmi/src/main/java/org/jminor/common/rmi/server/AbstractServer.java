@@ -46,8 +46,7 @@ import static org.jminor.common.rmi.server.SerializationWhitelist.writeDryRunWhi
  * @param <T> the type of remote interface served by this server
  * @param <A> the type of the admin interface this server provides
  */
-public abstract class AbstractServer<T extends Remote, A extends Remote>
-        extends UnicastRemoteObject implements Server<T, A> {
+public abstract class AbstractServer<T extends Remote, A extends Remote> extends UnicastRemoteObject implements Server<T, A> {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 

@@ -39,7 +39,7 @@ public class EntityServerMonitorTest {
   public static synchronized void setUp() throws Exception {
     EntityServer.startServer(CONFIGURATION);
     server = (Server) LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(),
-            CONFIGURATION.getRegistryPort()).lookup(CONFIGURATION.getServerConfiguration().getServerName());
+            CONFIGURATION.getRegistryPort()).lookup(CONFIGURATION.getServerName());
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -53,7 +53,7 @@ public class EntityServerMonitorTest {
   public void test() throws Exception {
     final String clientTypeId = EntityServerMonitorTest.class.getName();
     final EntityConnectionProvider connectionProvider =
-            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerConfiguration().getServerPort(), CONFIGURATION.getRegistryPort())
+            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
             .setDomainClassName("TestDomain").setClientTypeId(clientTypeId).setUser(UNIT_TEST_USER);
     connectionProvider.getConnection();
     final EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.getRegistryPort(), CONFIGURATION.getAdminUser());

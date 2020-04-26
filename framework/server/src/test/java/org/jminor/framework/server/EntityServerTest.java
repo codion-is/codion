@@ -58,7 +58,7 @@ public class EntityServerTest {
 
   @BeforeAll
   public static synchronized void setUp() throws Exception {
-    final String serverName = CONFIGURATION.getServerConfiguration().getServerName();
+    final String serverName = CONFIGURATION.getServerName();
     EntityServer.startServer(CONFIGURATION);
     server = (Server) LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
     admin = server.getServerAdmin(ADMIN_USER);
@@ -255,7 +255,7 @@ public class EntityServerTest {
   @Test
   public void remoteEntityConnectionProvider() throws Exception {
     final RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider)
-            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerConfiguration().getServerPort(), CONFIGURATION.getRegistryPort())
+            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
             .setDomainClassName("TestDomain").setClientTypeId("TestClient").setUser(UNIT_TEST_USER);
 
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, provider.getConnectionType());

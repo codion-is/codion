@@ -18,7 +18,6 @@ import org.jminor.common.rmi.server.AbstractServer;
 import org.jminor.common.rmi.server.ClientLog;
 import org.jminor.common.rmi.server.RemoteClient;
 import org.jminor.common.rmi.server.Server;
-import org.jminor.common.rmi.server.ServerConfiguration;
 import org.jminor.common.rmi.server.Servers;
 import org.jminor.common.rmi.server.exception.ConnectionNotAvailableException;
 import org.jminor.common.rmi.server.exception.LoginException;
@@ -39,7 +38,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -89,7 +87,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
   public EntityServer(final EntityServerConfiguration configuration) throws RemoteException {
-    super(configuration.getServerConfiguration());
+    super(configuration);
     addShutdownListener(new ShutdownListener());
     this.configuration = configuration;
     try {
@@ -140,10 +138,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
         checkConnectionPoolCredentials(connectionPool.getUser(), remoteClient.getDatabaseUser());
       }
 
-      final ServerConfiguration serverConfiguration = configuration.getServerConfiguration();
       final AbstractRemoteEntityConnection connection = createRemoteConnection(connectionPool, getDatabase(), remoteClient,
-              serverConfiguration.getServerPort(), serverConfiguration.getRmiClientSocketFactory(),
-              serverConfiguration.getRmiServerSocketFactory());
+              configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
       connection.setLoggingEnabled(clientLoggingEnabled);
 
       connection.addDisconnectListener(this::disconnectQuietly);
@@ -446,8 +442,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private static void loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
     try {
       for (final String className : domainModelClassNames) {
-        final String message = "Server loading and registering domain model class '" + className + " from classpath";
-        LOG.info(message);
+        LOG.info("Server loading and registering domain model class '" + className + " from classpath");
         final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
         domain.registerDomain();
       }
@@ -502,7 +497,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return the server instance
    * @throws RemoteException in case of an exception
    */
-  public static synchronized EntityServer startServer() throws RemoteException {
+  public static EntityServer startServer() throws RemoteException {
     return startServer(EntityServerConfiguration.fromSystemProperties());
   }
 
@@ -531,7 +526,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    */
   static synchronized void shutdownServer() throws ServerAuthenticationException {
     final EntityServerConfiguration configuration = EntityServerConfiguration.fromSystemProperties();
-    final String serverName = configuration.getServerConfiguration().getServerName();
+    final String serverName = configuration.getServerName();
     final int registryPort = configuration.getRegistryPort();
     final User adminUser = configuration.getAdminUser();
     if (adminUser == null) {
@@ -590,11 +585,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     @Override
     public void onEvent() {
       try {
-        UnicastRemoteObject.unexportObject(registry, true);
+        unexportObject(registry, true);
       }
       catch (final NoSuchObjectException ignored) {/*ignored*/}
       try {
-        UnicastRemoteObject.unexportObject(serverAdmin, true);
+        if (serverAdmin != null) {
+          unexportObject(serverAdmin, true);
+        }
       }
       catch (final NoSuchObjectException ignored) {/*ignored*/}
       connectionMaintenanceScheduler.stop();

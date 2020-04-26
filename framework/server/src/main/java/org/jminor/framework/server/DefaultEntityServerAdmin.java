@@ -71,8 +71,8 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
    */
   DefaultEntityServerAdmin(final EntityServer server, final EntityServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration).getServerAdminPort(),
-            configuration.getServerConfiguration().getRmiClientSocketFactory(),
-            configuration.getServerConfiguration().getRmiServerSocketFactory());
+            configuration.getRmiClientSocketFactory(),
+            configuration.getRmiServerSocketFactory());
     this.server = server;
     initializeGarbageCollectionListener();
   }

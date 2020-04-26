@@ -41,7 +41,7 @@ public class EntityLoadTestModelTest {
     final EntityServerConfiguration configuration = configure();
     EntityServer.startServer(configuration);
     server = (Server) LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(),
-            configuration.getRegistryPort()).lookup(configuration.getServerConfiguration().getServerName());
+            configuration.getRegistryPort()).lookup(configuration.getServerName());
     admin = server.getServerAdmin(ADMIN_USER);
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
   }
