@@ -32,11 +32,11 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 /**
  * A default LoadTest implementation.
@@ -53,6 +53,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private static final long NANO_IN_MILLI = 1000000;
   private static final double THOUSAND = 1000d;
   private static final double HUNDRED = 100d;
+  private static final int MINIMUM_NUMBER_OF_THREADS = 12;
 
   private final Event<Boolean> pausedChangedEvent = Events.event();
   private final Event<Boolean> collectChartDataChangedEvent = Events.event();
@@ -76,7 +77,8 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final Deque<ApplicationRunner> applications = new ConcurrentLinkedDeque<>();
   private final Map<String, UsageScenario<T>> usageScenarios = new HashMap<>();
   private final ItemRandomizer<UsageScenario<T>> scenarioChooser;
-  private final ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+  private final ScheduledExecutorService scheduledExecutor =
+          newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, Runtime.getRuntime().availableProcessors() * 2));
   private final Counter counter = new Counter();
   private final TaskScheduler updateChartDataScheduler;
 
