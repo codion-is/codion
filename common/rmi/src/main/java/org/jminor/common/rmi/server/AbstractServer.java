@@ -283,14 +283,12 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   }
 
   private ConnectionValidator getConnectionValidator(final String clientTypeId) {
-    synchronized (connectionValidators) {
-      final ConnectionValidator connectionValidator = connectionValidators.get(clientTypeId);
-      if (connectionValidator == null) {
-        return defaultConnectionValidator;
-      }
-
-      return connectionValidator;
+    final ConnectionValidator connectionValidator = connectionValidators.get(clientTypeId);
+    if (connectionValidator == null) {
+      return defaultConnectionValidator;
     }
+
+    return connectionValidator;
   }
 
   private void startAuxiliaryServers(final Collection<String> auxiliaryServerClassNames) {
