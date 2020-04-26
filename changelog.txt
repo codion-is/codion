@@ -5957,3 +5957,4 @@
   EntityServer bug fixed, no longer tries to unexport a null admin instance
   Entity.getFormatted(propertyId, format) removed
   Property.formatValue(value) added
+  LoadTestModel.exit() renamed shutdown()

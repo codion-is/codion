@@ -118,7 +118,7 @@ public final class LoadTestPanel extends JPanel {
       @Override
       public void windowClosing(final WindowEvent e) {
         frame.setTitle(title + " - Closing...");
-        loadTestModel.exit();
+        loadTestModel.shutdown();
       }
     });
     frame.setTitle(title);

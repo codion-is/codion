@@ -122,7 +122,7 @@ public class EntityLoadTestModelTest {
     loadTest.setApplicationBatchSize(1);
     loadTest.removeApplicationBatch();
     assertEquals(1, loadTest.getApplicationCount());
-    loadTest.exit();
+    loadTest.shutdown();
 
     Thread.sleep(500);
 
