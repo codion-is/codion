@@ -51,7 +51,7 @@ public final class QueryLoadTestModelTest {
     catch (final InterruptedException ignored) {/*ignored*/}
     assertTrue(SELECT_DEPARTMENTS.getSuccessfulRunCount() > 0);
     assertTrue(SELECT_EMPLOYEE.getSuccessfulRunCount() > 0);
-    loadTest.exit();
+    loadTest.shutdown();
   }
 
   private static Database createTestDatabaseInstance() {

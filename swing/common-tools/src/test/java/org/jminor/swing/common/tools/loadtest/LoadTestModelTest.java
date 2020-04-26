@@ -145,8 +145,8 @@ public class LoadTestModelTest {
     assertEquals(0, model.getApplicationCount());
 
     final AtomicInteger exitCounter = new AtomicInteger();
-    model.addExitListener(exitCounter::incrementAndGet);
-    model.exit();
+    model.addShutdownListener(exitCounter::incrementAndGet);
+    model.shutdown();
     assertEquals(1, exitCounter.get());
   }
 

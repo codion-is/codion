@@ -62,7 +62,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final Event<Integer> loginDelayFactorChangedEvent = Events.event();
   private final Event<Integer> applicationCountChangedEvent = Events.event();
   private final Event<Integer> applicationBatchSizeChangedEvent = Events.event();
-  private final Event exitingDoneEvent = Events.event();
+  private final Event shutdownEvent = Events.event();
 
   private int maximumThinkTime;
   private int minimumThinkTime;
@@ -333,7 +333,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   @Override
-  public final void exit() {
+  public final void shutdown() {
     shuttingDown = true;
     updateChartDataScheduler.stop();
     scheduledExecutor.shutdown();
@@ -349,7 +349,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
     }
-    exitingDoneEvent.onEvent();
+    shutdownEvent.onEvent();
   }
 
   @Override
@@ -437,10 +437,10 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   /**
-   * @param listener a listener notified when this load test model has finished removing all applications
+   * @param listener a listener notified when this load test model has been shutdown.
    */
-  protected void addExitListener(final EventListener listener) {
-    exitingDoneEvent.addListener(listener);
+  protected void addShutdownListener(final EventListener listener) {
+    shutdownEvent.addListener(listener);
   }
 
   /**

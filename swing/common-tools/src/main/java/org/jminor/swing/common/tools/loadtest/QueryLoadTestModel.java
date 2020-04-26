@@ -42,7 +42,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE);
     final ConnectionPoolProvider poolProvider = ConnectionPoolProvider.getConnectionPoolProvider();
     this.pool = poolProvider.createConnectionPool(database, user);
-    addExitListener(pool::close);
+    addShutdownListener(pool::close);
   }
 
   /**

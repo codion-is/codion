@@ -21,7 +21,7 @@ public interface LoadTest<T> {
   /**
    * Removes all applications and exits
    */
-  void exit();
+  void shutdown();
 
   /**
    * @return the user to use when initializing new application instances
