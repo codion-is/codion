@@ -22,11 +22,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
-import java.text.Format;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -281,39 +279,10 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         return referencedKey.toString();
       }
     }
-    if (property.isTemporal()) {
-      final TemporalAccessor value = (TemporalAccessor) get(property);
 
-      return value == null ? "" : property.getDateTimeFormatter().format(value);
-    }
-
-    return getFormatted(property, property.getFormat());
+    return property.formatValue(get(property));
   }
 
-  @Override
-  public String getFormatted(final String propertyId, final Format format) {
-    return getFormatted(definition.getProperty(propertyId), format);
-  }
-
-  @Override
-  public String getFormatted(final Property property, final Format format) {
-    final Object value = get(property);
-    if (value == null) {
-      return "";
-    }
-
-    if (format == null) {
-      return value.toString();
-    }
-
-    return format.format(value);
-  }
-
-  /**
-   * @param propertyId the ID of the property for which to retrieve the value
-   * @return a String representation of the value of the property identified by {@code propertyId}
-   * @see #getFormatted(Property, java.text.Format)
-   */
   @Override
   public String getAsString(final String propertyId) {
     return getAsString(definition.getProperty(propertyId));

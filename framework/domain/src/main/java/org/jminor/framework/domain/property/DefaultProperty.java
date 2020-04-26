@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -338,7 +339,7 @@ abstract class DefaultProperty implements Property {
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public final boolean equals(final Object obj) {
     if (this == obj) {
       return true;
     }
@@ -351,7 +352,7 @@ abstract class DefaultProperty implements Property {
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return propertyId.hashCode() + 31 * (entityId == null ? 0 : entityId.hashCode());
   }
 
@@ -381,6 +382,24 @@ abstract class DefaultProperty implements Property {
     }
 
     return value;
+  }
+
+  @Override
+  public String formatValue(final Object value) {
+    if (value == null) {
+      return "";
+    }
+    if (isTemporal()) {
+      final DateTimeFormatter dateTimeFormatter = getDateTimeFormatter();
+      if (dateTimeFormatter != null) {
+        return dateTimeFormatter.format((TemporalAccessor) value);
+      }
+    }
+    if (format != null) {
+      return format.format(value);
+    }
+
+    return value.toString();
   }
 
   private Format initializeDefaultFormat() {
