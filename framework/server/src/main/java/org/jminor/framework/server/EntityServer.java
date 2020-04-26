@@ -18,7 +18,6 @@ import org.jminor.common.rmi.server.AbstractServer;
 import org.jminor.common.rmi.server.ClientLog;
 import org.jminor.common.rmi.server.RemoteClient;
 import org.jminor.common.rmi.server.Server;
-import org.jminor.common.rmi.server.ServerConfiguration;
 import org.jminor.common.rmi.server.Servers;
 import org.jminor.common.rmi.server.exception.ConnectionNotAvailableException;
 import org.jminor.common.rmi.server.exception.LoginException;
@@ -89,7 +88,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
   public EntityServer(final EntityServerConfiguration configuration) throws RemoteException {
-    super(configuration.getServerConfiguration());
+    super(configuration);
     addShutdownListener(new ShutdownListener());
     this.configuration = configuration;
     try {
@@ -140,10 +139,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
         checkConnectionPoolCredentials(connectionPool.getUser(), remoteClient.getDatabaseUser());
       }
 
-      final ServerConfiguration serverConfiguration = configuration.getServerConfiguration();
       final AbstractRemoteEntityConnection connection = createRemoteConnection(connectionPool, getDatabase(), remoteClient,
-              serverConfiguration.getServerPort(), serverConfiguration.getRmiClientSocketFactory(),
-              serverConfiguration.getRmiServerSocketFactory());
+              configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
       connection.setLoggingEnabled(clientLoggingEnabled);
 
       connection.addDisconnectListener(this::disconnectQuietly);
@@ -531,7 +528,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    */
   static synchronized void shutdownServer() throws ServerAuthenticationException {
     final EntityServerConfiguration configuration = EntityServerConfiguration.fromSystemProperties();
-    final String serverName = configuration.getServerConfiguration().getServerName();
+    final String serverName = configuration.getServerName();
     final int registryPort = configuration.getRegistryPort();
     final User adminUser = configuration.getAdminUser();
     if (adminUser == null) {

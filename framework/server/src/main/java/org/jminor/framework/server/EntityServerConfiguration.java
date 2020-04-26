@@ -79,11 +79,6 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   PropertyValue<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("jminor.server.domain.classes", null);
 
   /**
-   * @return the server configuration
-   */
-  ServerConfiguration getServerConfiguration();
-
-  /**
    * @return the registry port to use
    */
   int getRegistryPort();

@@ -57,11 +57,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public ServerConfiguration getServerConfiguration() {
-    return serverConfiguration;
-  }
-
-  @Override
   public String getServerName() {
     return serverConfiguration.getServerName();
   }
