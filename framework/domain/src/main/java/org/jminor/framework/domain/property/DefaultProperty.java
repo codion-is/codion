@@ -390,9 +390,9 @@ abstract class DefaultProperty implements Property {
       return "";
     }
     if (isTemporal()) {
-      final DateTimeFormatter dateTimeFormatter = getDateTimeFormatter();
-      if (dateTimeFormatter != null) {
-        return dateTimeFormatter.format((TemporalAccessor) value);
+      final DateTimeFormatter formatter = getDateTimeFormatter();
+      if (formatter != null) {
+        return formatter.format((TemporalAccessor) value);
       }
     }
     if (format != null) {
