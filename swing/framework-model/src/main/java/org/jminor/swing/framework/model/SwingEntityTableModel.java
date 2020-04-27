@@ -6,6 +6,7 @@ package org.jminor.swing.framework.model;
 import org.jminor.common.Text;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.model.UserPreferences;
@@ -88,6 +89,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * The EntityConnection provider
    */
   private final EntityConnectionProvider connectionProvider;
+
+  /**
+   * Event notifying that the edit model has been set.
+   */
+  private final Event<SwingEntityEditModel> editModelSetEvent = Events.event();
 
   /**
    * The edit model to use when updating/deleting entities
@@ -202,7 +208,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
     this.editModel = editModel;
     bindEditModelEvents();
-    onSetEditModel(editModel);
+    editModelSetEvent.onEvent(editModel);
   }
 
   @Override
@@ -567,6 +573,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
+  public final void addEditModelSetListener(final EventDataListener<SwingEntityEditModel> listener) {
+    editModelSetEvent.addDataListener(listener);
+  }
+
+  @Override
   public final void addSelectionChangedListener(final EventListener listener) {
     getSelectionModel().addSelectionChangedListener(listener);
   }
@@ -653,19 +664,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   protected OrderBy getOrderBy() {
     return getEntityDefinition().getOrderBy();
   }
-
-  /**
-   * Called after a delete has been performed via the associated edit model.
-   * @param deletedEntities the deleted entities
-   */
-  protected void onDelete(final List<Entity> deletedEntities) {/*Provided for subclasses*/}
-
-  /**
-   * Override to handle the edit model being set.
-   * @param editModel the edit model that was just set, never null
-   * @see #setEditModel(SwingEntityEditModel)
-   */
-  protected void onSetEditModel(final SwingEntityEditModel editModel) {/*Provided for subclasses*/}
 
   /**
    * Returns the key used to identify user preferences for this table model, that is column positions, widths and such.
@@ -765,7 +763,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     if (removeEntitiesOnDelete) {
       removeItems(deletedEntities);
     }
-    onDelete(deletedEntities);
   }
 
   private void onColumnHidden(final Property property) {

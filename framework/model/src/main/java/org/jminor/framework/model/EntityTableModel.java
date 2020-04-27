@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
@@ -364,6 +365,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return the {@link SelectionModel}
    */
   SelectionModel<Entity> getSelectionModel();
+
+  /**
+   * @param listener listener notified when a edit model has been set.
+   */
+  void addEditModelSetListener(EventDataListener<E> listener);
 
   /**
    * @param listener notified when the selection changes in the underlying selection model
