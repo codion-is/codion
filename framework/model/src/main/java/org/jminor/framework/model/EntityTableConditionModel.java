@@ -57,9 +57,8 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * Sets the additional condition provider, one not based on any individual property condition
    * @param conditionProvider the condition provider
-   * @return this EntityTableConditionModel instance
    */
-  EntityTableConditionModel setAdditionalConditionProvider(Condition.Provider conditionProvider);
+  void setAdditionalConditionProvider(Condition.Provider conditionProvider);
 
   /**
    * @return true if any of the underlying PropertyConditionModels is enabled

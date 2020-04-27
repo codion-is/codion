@@ -183,15 +183,13 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   @Override
-  public EntityLookupModel setWildcard(final String wildcard) {
+  public void setWildcard(final String wildcard) {
     this.wildcard = wildcard;
-    return this;
   }
 
   @Override
-  public EntityLookupModel setAdditionalConditionProvider(final Condition.Provider additionalConditionProvider) {
+  public void setAdditionalConditionProvider(final Condition.Provider additionalConditionProvider) {
     this.additionalConditionProvider = additionalConditionProvider;
-    return this;
   }
 
   @Override
@@ -200,9 +198,8 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   @Override
-  public EntityLookupModel setToStringProvider(final Function<Entity, String> toStringProvider) {
+  public void setToStringProvider(final Function<Entity, String> toStringProvider) {
     this.toStringProvider = toStringProvider == null ? DEFAULT_TO_STRING : toStringProvider;
-    return this;
   }
 
   @Override

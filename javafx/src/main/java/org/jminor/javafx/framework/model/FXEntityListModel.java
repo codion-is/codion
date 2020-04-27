@@ -279,15 +279,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final FXEntityListModel setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
+  public final void setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
     this.batchUpdateEnabled = batchUpdateEnabled;
-    return this;
   }
 
   @Override
-  public final FXEntityListModel setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
+  public final void setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
     this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
-    return this;
   }
 
   @Override
@@ -316,9 +314,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final FXEntityListModel setFetchCount(final int fetchCount) {
+  public final void setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
-    return this;
   }
 
   @Override
@@ -339,9 +336,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final FXEntityListModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
+  public final void setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
     this.removeEntitiesOnDelete = removeEntitiesOnDelete;
-    return this;
   }
 
   @Override
@@ -350,10 +346,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final FXEntityListModel setInsertAction(final InsertAction insertAction) {
-    requireNonNull(insertAction);
-    this.insertAction = insertAction;
-    return this;
+  public final void setInsertAction(final InsertAction insertAction) {
+    this.insertAction = requireNonNull(insertAction);
   }
 
   @Override

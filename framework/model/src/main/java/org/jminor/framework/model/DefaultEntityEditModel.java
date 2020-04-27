@@ -212,11 +212,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityEditModel setReadOnly(final boolean readOnly) {
+  public final void setReadOnly(final boolean readOnly) {
     insertEnabledState.set(!readOnly);
     updateEnabledState.set(!readOnly);
     deleteEnabledState.set(!readOnly);
-    return this;
   }
 
   @Override
@@ -225,9 +224,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityEditModel setWarnAboutUnsavedData(final boolean warnAboutUnsavedData) {
+  public final void setWarnAboutUnsavedData(final boolean warnAboutUnsavedData) {
     this.warnAboutUnsavedData = warnAboutUnsavedData;
-    return this;
   }
 
   @Override
@@ -240,9 +238,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityEditModel setPersistValue(final String propertyId, final boolean persistValue) {
+  public final void setPersistValue(final String propertyId, final boolean persistValue) {
     persistentValues.put(propertyId, persistValue);
-    return this;
   }
 
   @Override
@@ -251,9 +248,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityEditModel setInsertEnabled(final boolean insertEnabled) {
+  public final void setInsertEnabled(final boolean insertEnabled) {
     insertEnabledState.set(insertEnabled);
-    return this;
   }
 
   @Override
@@ -267,9 +263,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityEditModel setUpdateEnabled(final boolean updateEnabled) {
+  public final void setUpdateEnabled(final boolean updateEnabled) {
     updateEnabledState.set(updateEnabled);
-    return this;
   }
 
   @Override
@@ -283,9 +278,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityEditModel setDeleteEnabled(final boolean deleteEnabled) {
+  public final void setDeleteEnabled(final boolean deleteEnabled) {
     deleteEnabledState.set(deleteEnabled);
-    return this;
   }
 
   @Override
@@ -679,9 +673,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityEditModel setPostEditEvents(final boolean postEditEvents) {
+  public final void setPostEditEvents(final boolean postEditEvents) {
     this.postEditEvents = postEditEvents;
-    return this;
   }
 
   @Override

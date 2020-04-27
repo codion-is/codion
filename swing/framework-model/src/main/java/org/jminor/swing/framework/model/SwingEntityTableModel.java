@@ -216,9 +216,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final SwingEntityTableModel setFetchCount(final int fetchCount) {
+  public final void setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
-    return this;
   }
 
   @Override
@@ -232,10 +231,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final SwingEntityTableModel setInsertAction(final InsertAction insertAction) {
-    requireNonNull(insertAction, "insertAction");
-    this.insertAction = insertAction;
-    return this;
+  public final void setInsertAction(final InsertAction insertAction) {
+    this.insertAction = requireNonNull(insertAction, "insertAction");
   }
 
   @Override
@@ -244,9 +241,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final SwingEntityTableModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
+  public final void setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
     this.removeEntitiesOnDelete = removeEntitiesOnDelete;
-    return this;
   }
 
   @Override
@@ -288,15 +284,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final SwingEntityTableModel setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
+  public final void setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
     this.batchUpdateEnabled = batchUpdateEnabled;
-    return this;
   }
 
   @Override
-  public final SwingEntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
+  public final void setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
     this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
-    return this;
   }
 
   @Override

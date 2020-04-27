@@ -148,9 +148,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final EntityComboBoxModel setStaticData(final boolean staticData) {
+  public final void setStaticData(final boolean staticData) {
     this.staticData = staticData;
-    return this;
   }
 
   @Override
@@ -159,7 +158,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public EntityComboBoxModel setListenToEditEvents(final boolean listenToEditEvents) {
+  public void setListenToEditEvents(final boolean listenToEditEvents) {
     this.listenToEditEvents = listenToEditEvents;
     if (listenToEditEvents) {
       addEditEventListeners();
@@ -167,7 +166,6 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     else {
       removeEditEventListeners();
     }
-    return this;
   }
 
   @Override

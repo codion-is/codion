@@ -5958,3 +5958,4 @@
   Entity.getFormatted(propertyId, format) removed
   Property.formatValue(value) added
   LoadTestModel.exit() renamed shutdown()
+  EntityComboBoxModel, EntityEditModel, EntityTableConditionModel and EntityTableModel, removed fluid return value from setters, not useful really
