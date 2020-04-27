@@ -157,30 +157,24 @@ public final class EntityLookupField extends JTextField {
 
   /**
    * @param validBackgroundColor the background color to use when the text represents the selected items
-   * @return this lookup field
    */
-  public EntityLookupField setValidBackgroundColor(final Color validBackgroundColor) {
+  public void setValidBackgroundColor(final Color validBackgroundColor) {
     this.validBackgroundColor = validBackgroundColor;
-    return this;
   }
 
   /**
    * @param invalidBackgroundColor the background color to use when the text does not represent the selected items
-   * @return this lookup field
    */
-  public EntityLookupField setInvalidBackgroundColor(final Color invalidBackgroundColor) {
+  public void setInvalidBackgroundColor(final Color invalidBackgroundColor) {
     this.invalidBackgroundColor = invalidBackgroundColor;
-    return this;
   }
 
   /**
    * Activates the transferal of focus on ENTER
-   * @return this lookup field
    */
-  public EntityLookupField setTransferFocusOnEnter() {
+  public void setTransferFocusOnEnter() {
     KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, transferFocusAction);
     KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, transferFocusBackwardAction);
-    return this;
   }
 
   /**
