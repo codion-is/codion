@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
@@ -211,9 +212,8 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * @param batchUpdateEnabled true if this model should enable multiple entities to be updated at a time
-   * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel<E> setBatchUpdateEnabled(boolean batchUpdateEnabled);
+  void setBatchUpdateEnabled(boolean batchUpdateEnabled);
 
   /**
    * Returns the {@link ColumnSummaryModel} associated with the property identified by {@code propertyId}
@@ -247,9 +247,8 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Sets the maximum number of records to fetch via the underlying query the next time
    * this table model is refreshed, a value of -1 means all records should be fetched
    * @param fetchCount the fetch count
-   * @return this table model
    */
-  EntityTableModel<E> setFetchCount(int fetchCount);
+  void setFetchCount(int fetchCount);
 
   /**
    * Updates the given entities. If the entities are unmodified or the list is empty
@@ -290,9 +289,8 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @param removeEntitiesOnDelete true if entities that are deleted via the associated edit model
    * should be automatically removed from this table model
-   * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel<E> setRemoveEntitiesOnDelete(boolean removeEntitiesOnDelete);
+  void setRemoveEntitiesOnDelete(boolean removeEntitiesOnDelete);
 
   /**
    * @return the action performed when entities are inserted via the associated edit model
@@ -301,9 +299,8 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * @param insertAction the action to perform when entities are inserted via the associated edit model
-   * @return this EntityTableModel instance
    */
-  EntityTableModel<E> setInsertAction(InsertAction insertAction);
+  void setInsertAction(InsertAction insertAction);
 
   /**
    * Finds entities according to the values in {@code keys}
@@ -370,6 +367,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   SelectionModel<Entity> getSelectionModel();
 
   /**
+   * @param listener listener notified when a edit model has been set.
+   */
+  void addEditModelSetListener(EventDataListener<E> listener);
+
+  /**
    * @param listener notified when the selection changes in the underlying selection model
    */
   void addSelectionChangedListener(EventListener listener);
@@ -387,9 +389,8 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @param refreshOnForeignKeyConditionValuesSet true if this table model should automatically refresh when foreign key condition values are set
    * @see #setForeignKeyConditionValues(ForeignKeyProperty, Collection)
-   * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel<E> setRefreshOnForeignKeyConditionValuesSet(boolean refreshOnForeignKeyConditionValuesSet);
+  void setRefreshOnForeignKeyConditionValuesSet(boolean refreshOnForeignKeyConditionValuesSet);
 
   /**
    * @return true if this table model automatically refreshes when foreign key condition values are set

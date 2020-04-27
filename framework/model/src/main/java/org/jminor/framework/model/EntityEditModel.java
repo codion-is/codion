@@ -214,12 +214,11 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Makes this model read-only by disabling insert, update and delete
    * @param readOnly the read only status
-   * @return this edit model instance
    * @see #setInsertEnabled(boolean)
    * @see #setUpdateEnabled(boolean)
    * @see #setDeleteEnabled(boolean)
    */
-  EntityEditModel setReadOnly(boolean readOnly);
+  void setReadOnly(boolean readOnly);
 
   /**
    * @return true if this model warns about unsaved data
@@ -229,10 +228,9 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * @param warnAboutUnsavedData if true then this model warns about unsaved data
-   * @return this edit model instance
    * @see #WARN_ABOUT_UNSAVED_DATA
    */
-  EntityEditModel setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
+  void setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
 
   /**
    * @return true if this model should enable records to be inserted
@@ -241,9 +239,8 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * @param insertEnabled true if this model should enable inserts
-   * @return this edit model instance
    */
-  EntityEditModel setInsertEnabled(boolean insertEnabled);
+  void setInsertEnabled(boolean insertEnabled);
 
   /**
    * @return true if this model should enable records to be updated
@@ -252,9 +249,8 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * @param updateEnabled true if this model should enable records to be updated
-   * @return this edit model instance
    */
-  EntityEditModel setUpdateEnabled(boolean updateEnabled);
+  void setUpdateEnabled(boolean updateEnabled);
 
   /**
    * @return true if this model should allow records to be deleted
@@ -263,9 +259,8 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * @param deleteEnabled true if this model should enable records to be deleted
-   * @return this edit model instance
    */
-  EntityEditModel setDeleteEnabled(boolean deleteEnabled);
+  void setDeleteEnabled(boolean deleteEnabled);
 
   /**
    * Returns true if this edit model posts its insert, update and delete events on the
@@ -278,9 +273,8 @@ public interface EntityEditModel extends Refreshable {
    * Set to true if this edit model should post its insert, update and delete
    * events on the {@link EntityEditEvents} event bus
    * @param postEditEvents true if edit events should be posted
-   * @return this edit model instance
    */
-  EntityEditModel setPostEditEvents(boolean postEditEvents);
+  void setPostEditEvents(boolean postEditEvents);
 
   /**
    * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,
@@ -343,10 +337,9 @@ public interface EntityEditModel extends Refreshable {
   /**
    * @param propertyId the property ID
    * @param persistValue true if this model should persist the value of the given property on clear
-   * @return this edit model instance
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  EntityEditModel setPersistValue(String propertyId, boolean persistValue);
+  void setPersistValue(String propertyId, boolean persistValue);
 
   /**
    * Performs a insert on the active entity, sets the primary key values of the active entity

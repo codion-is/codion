@@ -217,47 +217,39 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Adds main application panels, displayed on application start
    * @param panelBuilders the main application panel providers
-   * @return this application panel instance
    */
-  public final EntityApplicationPanel<M> addEntityPanelBuilders(final EntityPanelBuilder... panelBuilders) {
+  public final void addEntityPanelBuilders(final EntityPanelBuilder... panelBuilders) {
     requireNonNull(panelBuilders, "panelBuilders");
     for (final EntityPanelBuilder panelProvider : panelBuilders) {
       addEntityPanelBuilder(panelProvider);
     }
-    return this;
   }
 
   /**
    * Adds a main application panel, displayed on application start
    * @param panelBuilder the main application panel provider
-   * @return this application panel instance
    */
-  public final EntityApplicationPanel<M> addEntityPanelBuilder(final EntityPanelBuilder panelBuilder) {
+  public final void addEntityPanelBuilder(final EntityPanelBuilder panelBuilder) {
     entityPanelBuilders.add(panelBuilder);
-    return this;
   }
 
   /**
    * Adds support application panels, available via a support panel menu
    * @param panelBuilders the support application panel providers
-   * @return this application panel instance
    */
-  public final EntityApplicationPanel<M> addSupportPanelBuilders(final EntityPanelBuilder... panelBuilders) {
+  public final void addSupportPanelBuilders(final EntityPanelBuilder... panelBuilders) {
     requireNonNull(panelBuilders, "panelBuilders");
     for (final EntityPanelBuilder panelProvider : panelBuilders) {
       addSupportPanelBuilder(panelProvider);
     }
-    return this;
   }
 
   /**
    * Adds a support application panel, available via a support panel menu
    * @param panelBuilder the support application panel provider
-   * @return this application panel instance
    */
-  public final EntityApplicationPanel<M> addSupportPanelBuilder(final EntityPanelBuilder panelBuilder) {
+  public final void addSupportPanelBuilder(final EntityPanelBuilder panelBuilder) {
     supportPanelBuilders.add(panelBuilder);
-    return this;
   }
 
   /**

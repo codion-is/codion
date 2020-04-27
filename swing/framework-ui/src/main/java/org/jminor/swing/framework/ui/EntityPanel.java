@@ -391,11 +391,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * etc.
    *</pre>
    * @param controlPanelConstraints the control panel layout constraints (BorderLayout constraints)
-   * @return this entity panel
    * @throws IllegalStateException if the panel has been initialized
    * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
    */
-  public final EntityPanel setControlPanelConstraints(final String controlPanelConstraints) {
+  public final void setControlPanelConstraints(final String controlPanelConstraints) {
     checkIfInitialized();
     switch (controlPanelConstraints) {
       case BorderLayout.SOUTH:
@@ -407,7 +406,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         throw new IllegalArgumentException("Control panel constraint must be one of BorderLayout.SOUTH, NORTH, EAST or WEST");
     }
     this.controlPanelConstraints = controlPanelConstraints;
-    return this;
   }
 
   /**
@@ -419,27 +417,22 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * @param compactDetailLayout true if this panel and its detail panels should be laid out in a compact state
-   * @return this EntityPanel instance
    */
-  public final EntityPanel setCompactDetailLayout(final boolean compactDetailLayout) {
+  public final void setCompactDetailLayout(final boolean compactDetailLayout) {
     if (detailEntityPanels.isEmpty()) {
       throw new IllegalArgumentException("This panel contains no detail panels, compact detail layout not available");
     }
     this.compactDetailLayout = compactDetailLayout;
-    return this;
   }
 
   /**
    * @param detailPanels the detail panels
-   * @return this entity panel
    */
-  public final EntityPanel addDetailPanels(final EntityPanel... detailPanels) {
+  public final void addDetailPanels(final EntityPanel... detailPanels) {
     requireNonNull(detailPanels, "detailPanels");
     for (final EntityPanel detailPanel : detailPanels) {
       addDetailPanel(detailPanel);
     }
-
-    return this;
   }
 
   /**
@@ -447,15 +440,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * model if it does not contain it already, and then sets {@code includeDetailPanelTabPane}
    * to true
    * @param detailPanel the detail panel to add
-   * @return this entity panel
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final EntityPanel addDetailPanel(final EntityPanel detailPanel) {
+  public final void addDetailPanel(final EntityPanel detailPanel) {
     checkIfInitialized();
     detailPanel.setMasterPanel(this);
     detailEntityPanels.add(detailPanel);
-
-    return this;
   }
 
   /**
@@ -705,13 +695,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * @param detailSplitPanelResizeWeight the detail panel split size weight
-   * @return this entity panel
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final EntityPanel setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
+  public final void setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
     checkIfInitialized();
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
-    return this;
   }
 
   /**
@@ -723,13 +711,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * @param includeDetailPanelTabPane true if the detail panel tab pane should be included
-   * @return this entity panel
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final EntityPanel setIncludeDetailPanelTabPane(final boolean includeDetailPanelTabPane) {
+  public final void setIncludeDetailPanelTabPane(final boolean includeDetailPanelTabPane) {
     checkIfInitialized();
     this.includeDetailPanelTabPane = includeDetailPanelTabPane;
-    return this;
   }
 
   /**
@@ -742,13 +728,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * @param showToggleEditPanelControl true if a control for toggling the edit panel should be shown
-   * @return this EntityPane instance
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final EntityPanel setShowToggleEditPanelControl(final boolean showToggleEditPanelControl) {
+  public final void setShowToggleEditPanelControl(final boolean showToggleEditPanelControl) {
     checkIfInitialized();
     this.showToggleEditPanelControl = showToggleEditPanelControl;
-    return this;
   }
 
   /**
@@ -761,13 +745,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * @param showDetailPanelControls true if detail panel controls should be shown
-   * @return this EntityPane instance
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final EntityPanel setShowDetailPanelControls(final boolean showDetailPanelControls) {
+  public final void setShowDetailPanelControls(final boolean showDetailPanelControls) {
     checkIfInitialized();
     this.showDetailPanelControls = showDetailPanelControls;
-    return this;
   }
 
   /**
@@ -779,13 +761,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * @param includeControlPanel true if the control panel should be included
-   * @return this EntityPane instance
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final EntityPanel setIncludeControlPanel(final boolean includeControlPanel) {
+  public final void setIncludeControlPanel(final boolean includeControlPanel) {
     checkIfInitialized();
     this.includeControlPanel = includeControlPanel;
-    return this;
   }
 
   /**

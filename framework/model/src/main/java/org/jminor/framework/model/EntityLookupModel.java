@@ -89,9 +89,8 @@ public interface EntityLookupModel {
   /**
    * Sets the wildcard to use
    * @param wildcard the wildcard
-   * @return this EntityLookupModel instance
    */
-  EntityLookupModel setWildcard(String wildcard);
+  void setWildcard(String wildcard);
 
   /**
    * @return the wildcard being used by this model
@@ -115,17 +114,15 @@ public interface EntityLookupModel {
    * This condition is AND'ed to the actual lookup condition.
    * NOTE, this does not affect the currently selected value(s), if any.
    * @param additionalConditionProvider the additional lookup condition provider
-   * @return this EntityLookupModel instance
    */
-  EntityLookupModel setAdditionalConditionProvider(Condition.Provider additionalConditionProvider);
+  void setAdditionalConditionProvider(Condition.Provider additionalConditionProvider);
 
   /**
    * Override the default toString() for lookup elements when displayed
    * in a field based on this model
    * @param toStringProvider provides string representations
-   * @return this EntityLookupModel instance
    */
-  EntityLookupModel setToStringProvider(Function<Entity, String> toStringProvider);
+  void setToStringProvider(Function<Entity, String> toStringProvider);
 
   /**
    * @return the toString provider, null if none is specified

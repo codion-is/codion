@@ -5,6 +5,9 @@ package org.jminor.javafx.framework.model;
 
 import org.jminor.common.Text;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.Events;
 import org.jminor.common.model.UserPreferences;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.state.State;
@@ -56,6 +59,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private final EntityTableConditionModel conditionModel;
   private final State queryConditionRequiredState = States.state();
+  private final Event<FXEntityEditModel> editModelSetEvent = Events.event();
 
   private FXEntityEditModel editModel;
   private ObservableList<? extends TableColumn<Entity, ?>> columns;
@@ -121,7 +125,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
     this.editModel = editModel;
     bindEditModelEvents();
-    onSetEditModel(editModel);
+    editModelSetEvent.onEvent(editModel);
   }
 
   @Override
@@ -279,15 +283,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final FXEntityListModel setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
+  public final void setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
     this.batchUpdateEnabled = batchUpdateEnabled;
-    return this;
   }
 
   @Override
-  public final FXEntityListModel setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
+  public final void setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
     this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
-    return this;
   }
 
   @Override
@@ -316,9 +318,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final FXEntityListModel setFetchCount(final int fetchCount) {
+  public final void setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
-    return this;
   }
 
   @Override
@@ -339,9 +340,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final FXEntityListModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
+  public final void setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
     this.removeEntitiesOnDelete = removeEntitiesOnDelete;
-    return this;
   }
 
   @Override
@@ -350,10 +350,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final FXEntityListModel setInsertAction(final InsertAction insertAction) {
-    requireNonNull(insertAction);
-    this.insertAction = insertAction;
-    return this;
+  public final void setInsertAction(final InsertAction insertAction) {
+    this.insertAction = requireNonNull(insertAction);
   }
 
   @Override
@@ -431,6 +429,11 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
             String.valueOf(delimiter));
   }
 
+  @Override
+  public final void addEditModelSetListener(final EventDataListener<FXEntityEditModel> listener) {
+    editModelSetEvent.addDataListener(listener);
+  }
+
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #getOrderBy()}
@@ -462,13 +465,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   protected OrderBy getOrderBy() {
     return getEntityDefinition().getOrderBy();
   }
-
-  /**
-   * Override to handle the edit model being set.
-   * @param editModel the edit model that was just set, never null
-   * @see #setEditModel(FXEntityEditModel)
-   */
-  protected void onSetEditModel(final FXEntityEditModel editModel) {/*Provided for subclasses*/}
 
   /**
    * Returns the key used to identify user preferences for this table model, that is column positions, widths and such.

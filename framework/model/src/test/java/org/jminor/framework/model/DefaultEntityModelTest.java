@@ -199,7 +199,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public boolean isBatchUpdateEnabled() {return false;}
     @Override
-    public EntityTableModel<TestEntityEditModel> setBatchUpdateEnabled(final boolean batchUpdateEnabled) {return null;}
+    public void setBatchUpdateEnabled(final boolean batchUpdateEnabled) {}
     @Override
     public ColumnSummaryModel getColumnSummaryModel(final String propertyId) {return null;}
     @Override
@@ -209,7 +209,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public int getFetchCount() {return 0;}
     @Override
-    public EntityTableModel<TestEntityEditModel> setFetchCount(final int fetchCount) {return null;}
+    public void setFetchCount(final int fetchCount) {}
     @Override
     public void update(final List<Entity> entities) throws ValidationException, DatabaseException {}
     @Override
@@ -219,11 +219,11 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public boolean isRemoveEntitiesOnDelete() {return false;}
     @Override
-    public EntityTableModel<TestEntityEditModel> setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {return null;}
+    public void setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {}
     @Override
     public InsertAction getInsertAction() {return null;}
     @Override
-    public EntityTableModel<TestEntityEditModel> setInsertAction(final InsertAction insertAction) {return null;}
+    public void setInsertAction(final InsertAction insertAction) {}
     @Override
     public Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {return null;}
     @Override
@@ -246,6 +246,8 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     public int getRowCount() {return 0;}
     @Override
     public SelectionModel<Entity> getSelectionModel() {return null;}
+    @Override
+    public void addEditModelSetListener(final EventDataListener<TestEntityEditModel> listener) {}
     @Override
     public void addSelectionChangedListener(final EventListener listener) {}
     @Override
@@ -285,7 +287,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public EntityConnectionProvider getConnectionProvider() {return connectionProvider;}
     @Override
-    public EntityTableModel<TestEntityEditModel> setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {return null;}
+    public void setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {}
     @Override
     public boolean isRefreshOnForeignKeyConditionValuesSet() {return false;}
   }

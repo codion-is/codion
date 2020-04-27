@@ -5985,3 +5985,7 @@
   Entity.getFormatted(propertyId, format) removed
   Property.formatValue(value) added
   LoadTestModel.exit() renamed shutdown()
+  EntityComboBoxModel, EntityEditModel, EntityTableConditionModel and EntityTableModel, removed fluid return value from setters, not useful really
+  FXEntityListModel, SwingEntityTableModel, onEditModelSet() removed, replaced with addEditModelSetListener()
+  SwingEntityTableModel.onDelete() removed, use getEditModel().addAfterDeleteListener() instead
+  EntityApplicationPanel, EntityLookupField and EntityPanel, removed fluid return value from setters

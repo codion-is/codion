@@ -206,9 +206,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider conditionProvider) {
+  public void setAdditionalConditionProvider(final Condition.Provider conditionProvider) {
     this.additionalConditionProvider = conditionProvider;
-    return this;
   }
 
   @Override
