@@ -419,30 +419,30 @@ public final class ServerMonitor {
   private void updateStatistics() {
     try {
       if (!shutdown) {
-        final long time = System.currentTimeMillis();
-        connectionCount = server.getConnectionCount();
-        memoryUsage = server.getUsedMemory();
-        connectionRequestsPerSecondSeries.add(time, server.getRequestsPerSecond());
-        maxMemorySeries.add(time, server.getMaxMemory() / THOUSAND);
-        allocatedMemorySeries.add(time, server.getAllocatedMemory() / THOUSAND);
-        usedMemorySeries.add(time, server.getUsedMemory() / THOUSAND);
-        systemLoadSeries.add(time, server.getSystemCpuLoad() * 100);
-        processLoadSeries.add(time, server.getProcessCpuLoad() * 100);
-        connectionCountSeries.add(time, server.getConnectionCount());
-        connectionLimitSeries.add(time, server.getConnectionLimit());
-        addThreadStatistics(server.getThreadStatistics());
-        addGCInfo(server.getGcEvents(lastStatisticsUpdateTime));
-        lastStatisticsUpdateTime = time;
+        final EntityServerAdmin.ServerStatistics statistics = server.getServerStatistics(lastStatisticsUpdateTime);
+        final long timestamp = statistics.getTimestamp();
+        lastStatisticsUpdateTime = timestamp;
+        connectionCount = statistics.getConnectionCount();
+        memoryUsage = statistics.getUsedMemory();
+        connectionRequestsPerSecondSeries.add(timestamp, statistics.getRequestsPerSecond());
+        maxMemorySeries.add(timestamp, statistics.getMaximumMemory() / THOUSAND);
+        allocatedMemorySeries.add(timestamp, statistics.getAllocatedMemory() / THOUSAND);
+        usedMemorySeries.add(timestamp, statistics.getUsedMemory() / THOUSAND);
+        systemLoadSeries.add(timestamp, statistics.getSystemCpuLoad() * 100);
+        processLoadSeries.add(timestamp, statistics.getProcessCpuLoad() * 100);
+        connectionCountSeries.add(timestamp, statistics.getConnectionCount());
+        connectionLimitSeries.add(timestamp, statistics.getConnectionLimit());
+        addThreadStatistics(timestamp, statistics.getThreadStatistics());
+        addGCInfo(statistics.getGcEvents());
         statisticsUpdatedEvent.onEvent();
       }
     }
     catch (final RemoteException ignored) {/*ignored*/}
   }
 
-  private void addThreadStatistics(final EntityServerAdmin.ThreadStatistics threadStatistics) {
-    final long time = threadStatistics.getTimestamp();
-    threadCountSeries.add(time, threadStatistics.getThreadCount());
-    daemonThreadCountSeries.add(time, threadStatistics.getDaemonThreadCount());
+  private void addThreadStatistics(final long timestamp, final EntityServerAdmin.ThreadStatistics threadStatistics) {
+    threadCountSeries.add(timestamp, threadStatistics.getThreadCount());
+    daemonThreadCountSeries.add(timestamp, threadStatistics.getDaemonThreadCount());
     for (final Map.Entry<Thread.State, Integer> entry : threadStatistics.getThreadStateCount().entrySet()) {
       XYSeries stateSeries = threadStateSeries.get(entry.getKey());
       if (stateSeries == null) {
@@ -450,7 +450,7 @@ public final class ServerMonitor {
         threadStateSeries.put(entry.getKey(), stateSeries);
         threadCountCollection.addSeries(stateSeries);
       }
-      stateSeries.add(time, entry.getValue());
+      stateSeries.add(timestamp, entry.getValue());
     }
   }
 

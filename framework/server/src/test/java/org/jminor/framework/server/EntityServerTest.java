@@ -319,6 +319,7 @@ public class EntityServerTest {
     admin.getSystemProperties();
     admin.getUsedMemory();
     admin.getUsers();
+    admin.getServerStatistics(System.currentTimeMillis());
   }
 
   private static DefaultEntityServerConfiguration configure() {

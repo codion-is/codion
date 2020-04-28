@@ -5970,3 +5970,4 @@
   Validator renamed EntityValidator
   ServerMonitorPanel, synchronized zoom implemented
   EntityServerAdmin.ThreadStatistics, timestamp added
+  EntityServerAdmin.ServerStatistics added along with getServerStatistics()

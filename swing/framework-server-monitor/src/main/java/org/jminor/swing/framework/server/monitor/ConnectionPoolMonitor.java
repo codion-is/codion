@@ -265,15 +265,16 @@ public final class ConnectionPoolMonitor {
 
   private void updateStatistics() {
     poolStatistics = connectionPool.getStatistics(lastStatisticsUpdateTime);
-    lastStatisticsUpdateTime = poolStatistics.getTimestamp();
-    poolSizeSeries.add(poolStatistics.getTimestamp(), poolStatistics.getSize());
-    minimumPoolSizeSeries.add(poolStatistics.getTimestamp(), connectionPool.getMinimumPoolSize());
-    maximumPoolSizeSeries.add(poolStatistics.getTimestamp(), connectionPool.getMaximumPoolSize());
-    inPoolSeries.add(poolStatistics.getTimestamp(), poolStatistics.getAvailable());
-    inUseSeries.add(poolStatistics.getTimestamp(), poolStatistics.getInUse());
-    connectionRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getRequestsPerSecond());
-    failedRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getFailedRequestsPerSecond());
-    averageCheckOutTime.add(poolStatistics.getTimestamp(), poolStatistics.getAverageGetTime(),
+    final long timestamp = poolStatistics.getTimestamp();
+    lastStatisticsUpdateTime = timestamp;
+    poolSizeSeries.add(timestamp, poolStatistics.getSize());
+    minimumPoolSizeSeries.add(timestamp, connectionPool.getMinimumPoolSize());
+    maximumPoolSizeSeries.add(timestamp, connectionPool.getMaximumPoolSize());
+    inPoolSeries.add(timestamp, poolStatistics.getAvailable());
+    inUseSeries.add(timestamp, poolStatistics.getInUse());
+    connectionRequestsPerSecond.add(timestamp, poolStatistics.getRequestsPerSecond());
+    failedRequestsPerSecond.add(timestamp, poolStatistics.getFailedRequestsPerSecond());
+    averageCheckOutTime.add(timestamp, poolStatistics.getAverageGetTime(),
             poolStatistics.getMinimumCheckOutTime(), poolStatistics.getMaximumCheckOutTime());
     final List<ConnectionPoolState> snapshotStatistics = poolStatistics.getSnapshot();
     if (!snapshotStatistics.isEmpty()) {

@@ -106,7 +106,7 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
       threadStateMap.compute(bean.getThreadInfo(threadId).getThreadState(), (threadState, value) -> value == null ? 1 : value + 1);
     }
 
-    return new DefaultThreadStatistics(System.currentTimeMillis(), bean.getThreadCount(), bean.getDaemonThreadCount(), threadStateMap);
+    return new DefaultThreadStatistics(bean.getThreadCount(), bean.getDaemonThreadCount(), threadStateMap);
   }
 
   @Override
@@ -283,6 +283,13 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
   }
 
   @Override
+  public ServerStatistics getServerStatistics(final long since) throws RemoteException {
+    return new DefaultServerStatistics(System.currentTimeMillis(), getConnectionCount(), getConnectionLimit(),
+            getUsedMemory(), getMaxMemory(), getAllocatedMemory(), getRequestsPerSecond(), getSystemCpuLoad(),
+            getProcessCpuLoad(), getThreadStatistics(), getGcEvents(since));
+  }
+
+  @Override
   public long getAllocatedMemory() {
     return Memory.getAllocatedMemory();
   }
@@ -389,26 +396,108 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
     }
   }
 
-  private static final class DefaultThreadStatistics implements ThreadStatistics, Serializable {
+  private static final class DefaultServerStatistics implements ServerStatistics, Serializable {
 
     private static final long serialVersionUID = 1;
 
     private final long timestamp;
-    private final int threadCount;
-    private final int daemonThreadCount;
-    private final Map<Thread.State, Integer> threadStateCount;
+    private final int connectionCount;
+    private final int connectionLimit;
+    private final long usedMemory;
+    private final long maximumMemory;
+    private final long allocatedMemory;
+    private final int requestsPerSecond;
+    private final double systemCpuLoad;
+    private final double processCpuLoad;
+    private final ThreadStatistics threadStatistics;
+    private final List<GcEvent> gcEvents;
 
-    private DefaultThreadStatistics(final long timestamp, final int threadCount, final int daemonThreadCount,
-                                    final Map<Thread.State, Integer> threadStateCount) {
+    private DefaultServerStatistics(final long timestamp, final int connectionCount, final int connectionLimit,
+                                    final long usedMemory, final long maximumMemory, final long allocatedMemory,
+                                    final int requestsPerSecond, final double systemCpuLoad, final double processCpuLoad,
+                                    final ThreadStatistics threadStatistics, final List<GcEvent> gcEvents) {
       this.timestamp = timestamp;
-      this.threadCount = threadCount;
-      this.daemonThreadCount = daemonThreadCount;
-      this.threadStateCount = threadStateCount;
+      this.connectionCount = connectionCount;
+      this.connectionLimit = connectionLimit;
+      this.usedMemory = usedMemory;
+      this.maximumMemory = maximumMemory;
+      this.allocatedMemory = allocatedMemory;
+      this.requestsPerSecond = requestsPerSecond;
+      this.systemCpuLoad = systemCpuLoad;
+      this.processCpuLoad = processCpuLoad;
+      this.threadStatistics = threadStatistics;
+      this.gcEvents = gcEvents;
     }
 
     @Override
     public long getTimestamp() {
       return timestamp;
+    }
+
+    @Override
+    public int getConnectionCount() {
+      return connectionCount;
+    }
+
+    @Override
+    public int getConnectionLimit() {
+      return connectionLimit;
+    }
+
+    @Override
+    public long getUsedMemory() {
+      return usedMemory;
+    }
+
+    @Override
+    public long getMaximumMemory() {
+      return maximumMemory;
+    }
+
+    @Override
+    public long getAllocatedMemory() {
+      return allocatedMemory;
+    }
+
+    @Override
+    public int getRequestsPerSecond() {
+      return requestsPerSecond;
+    }
+
+    @Override
+    public double getSystemCpuLoad() {
+      return systemCpuLoad;
+    }
+
+    @Override
+    public double getProcessCpuLoad() {
+      return processCpuLoad;
+    }
+
+    @Override
+    public ThreadStatistics getThreadStatistics() {
+      return threadStatistics;
+    }
+
+    @Override
+    public List<GcEvent> getGcEvents() {
+      return gcEvents;
+    }
+  }
+
+  private static final class DefaultThreadStatistics implements ThreadStatistics, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private final int threadCount;
+    private final int daemonThreadCount;
+    private final Map<Thread.State, Integer> threadStateCount;
+
+    private DefaultThreadStatistics(final int threadCount, final int daemonThreadCount,
+                                    final Map<Thread.State, Integer> threadStateCount) {
+      this.threadCount = threadCount;
+      this.daemonThreadCount = daemonThreadCount;
+      this.threadStateCount = threadStateCount;
     }
 
     @Override
