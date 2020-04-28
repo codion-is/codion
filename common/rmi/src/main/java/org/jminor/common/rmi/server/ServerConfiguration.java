@@ -141,13 +141,13 @@ public interface ServerConfiguration {
   PropertyValue<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("jminor.server.connectionTimeout", DEFAULT_SERVER_CONNECTION_TIMEOUT);
 
   /**
-   * A comma separated list of auxiliary servers to run alongside this Server<br>
-   * Those must extend {@link AuxiliaryServer}.<br>
+   * A comma separated list of auxiliary server providers, providing servers to run alongside this Server<br>
+   * Those must extend {@link AuxiliaryServerProvider}.<br>
    * Value type: String<br>
    * Default value: none
    * @see AuxiliaryServer
    */
-  PropertyValue<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("jminor.server.auxiliaryServerClassNames", null);
+  PropertyValue<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("jminor.server.auxiliaryServerProviderClassNames", null);
 
   /**
    * The serialization whitelist file to use if any
@@ -201,9 +201,9 @@ public interface ServerConfiguration {
   Collection<String> getConnectionValidatorClassNames();
 
   /**
-   * @return the class names of auxiliary servers to run alongside this server
+   * @return the class names of auxiliary server providers, providing the servers to run alongside this server
    */
-  Collection<String> getAuxiliaryServerClassNames();
+  Collection<String> getAuxiliaryServerProviderClassNames();
 
   /**
    * @return true if ssl is enabled
@@ -256,9 +256,10 @@ public interface ServerConfiguration {
   void setConnectionValidatorClassNames(Collection<String> connectionValidatorClassNames);
 
   /**
-   * @param auxiliaryServerClassNames the class names of auxiliary servers to run alongside this server
+   * @param auxiliaryServerProviderClassNames the class names of auxiliary server providers,
+   * providing the servers to run alongside this server
    */
-  void setAuxiliaryServerClassNames(Collection<String> auxiliaryServerClassNames);
+  void setAuxiliaryServerProviderClassNames(Collection<String> auxiliaryServerProviderClassNames);
 
   /**
    * When set to true this also sets the rmi client/server socket factories.
@@ -302,7 +303,7 @@ public interface ServerConfiguration {
   static ServerConfiguration fromSystemProperties() {
     final DefaultServerConfiguration configuration =
             new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()));
-    configuration.setAuxiliaryServerClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_CLASS_NAMES.get()));
+    configuration.setAuxiliaryServerProviderClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_CLASS_NAMES.get()));
     configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     configuration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));

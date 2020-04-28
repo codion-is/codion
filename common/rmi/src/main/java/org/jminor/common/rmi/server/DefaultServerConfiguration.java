@@ -66,7 +66,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public Collection<String> getAuxiliaryServerClassNames() {
+  public Collection<String> getAuxiliaryServerProviderClassNames() {
     return auxiliaryServerClassNames;
   }
 
@@ -121,8 +121,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public void setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
-    this.auxiliaryServerClassNames.addAll(requireNonNull(auxiliaryServerClassNames));
+  public void setAuxiliaryServerProviderClassNames(final Collection<String> auxiliaryServerProviderClassNames) {
+    this.auxiliaryServerClassNames.addAll(requireNonNull(auxiliaryServerProviderClassNames));
   }
 
   @Override

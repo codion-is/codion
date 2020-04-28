@@ -82,8 +82,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public Collection<String> getAuxiliaryServerClassNames() {
-    return serverConfiguration.getAuxiliaryServerClassNames();
+  public Collection<String> getAuxiliaryServerProviderClassNames() {
+    return serverConfiguration.getAuxiliaryServerProviderClassNames();
   }
 
   @Override
@@ -192,8 +192,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public void setAuxiliaryServerClassNames(final Collection<String> auxiliaryServerClassNames) {
-    serverConfiguration.setAuxiliaryServerClassNames(auxiliaryServerClassNames);
+  public void setAuxiliaryServerProviderClassNames(final Collection<String> auxiliaryServerProviderClassNames) {
+    serverConfiguration.setAuxiliaryServerProviderClassNames(auxiliaryServerProviderClassNames);
   }
 
   @Override

@@ -200,7 +200,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(
             requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()),
             requireNonNull(REGISTRY_PORT.get(), REGISTRY_PORT.toString()));
-    configuration.setAuxiliaryServerClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_CLASS_NAMES.get()));
+    configuration.setAuxiliaryServerProviderClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_CLASS_NAMES.get()));
     configuration.setSslEnabled(SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     configuration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
