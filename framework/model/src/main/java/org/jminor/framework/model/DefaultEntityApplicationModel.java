@@ -4,6 +4,9 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.TaskScheduler;
+import org.jminor.common.event.Event;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.common.event.Events;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
@@ -29,6 +32,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
 
   private final EntityConnectionProvider connectionProvider;
   private final State connectionValidState = States.state();
+  private final Event<User> loginEvent = Events.event();
+  private final Event<User> logoutEvent = Events.event();
   private final TaskScheduler validityCheckScheduler = new TaskScheduler(this::checkConnectionValidity,
           VALIDITY_CHECK_INTERVAL_SECONDS, VALIDITY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS);
   private final List<M> entityModels = new ArrayList<>();
@@ -57,14 +62,15 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     requireNonNull(user, "user");
     connectionProvider.setUser(user);
     refresh();
-    onLogin();
+    loginEvent.onEvent(user);
   }
 
   @Override
   public final void logout() {
+    final User user = connectionProvider.getUser();
     connectionProvider.setUser(null);
     clear();
-    onLogout();
+    logoutEvent.onEvent(user);
   }
 
   @Override
@@ -178,17 +184,25 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     getEntityModels().forEach(EntityModel::savePreferences);
   }
 
-  /**
-   * Called after a logout has been performed.
-   * Override to add a logout handler.
-   */
-  protected void onLogout() {/*For subclasses*/}
+  @Override
+  public final void addLoginListener(final EventDataListener<User> listener) {
+    loginEvent.addDataListener(listener);
+  }
 
-  /**
-   * Called after a login has been performed
-   * Override to add a login handler.
-   */
-  protected void onLogin() {/*For subclasses*/}
+  @Override
+  public final void removeLoginListener(final EventDataListener<User> listener) {
+    loginEvent.removeDataListener(listener);
+  }
+
+  @Override
+  public final void addLogoutListener(final EventDataListener<User> listener) {
+    logoutEvent.addDataListener(listener);
+  }
+
+  @Override
+  public final void removeLogoutListener(final EventDataListener<User> listener) {
+    logoutEvent.removeDataListener(listener);
+  }
 
   private void checkConnectionValidity() {
     connectionValidState.set(connectionProvider.isConnectionValid());

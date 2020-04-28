@@ -5966,3 +5966,4 @@
   JSON library upgraded
   AuxiliaryServerProvider added, AuxiliaryServer no longer a service
   DefaultEntityModel, DefaultEntityEditModel, SwingEntityTableModel, some minor refactoring
+  DefaultEntityApplicationModel.onLogin() and onLogout() removed, replaced with EntityApplicationModel.addLoginListener() and addLogoutListener()
