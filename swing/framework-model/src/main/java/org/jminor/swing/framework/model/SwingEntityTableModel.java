@@ -695,20 +695,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private void bindEditModelEvents() {
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
-    editModel.addAfterDeleteListener(this::onDeleteInternal);
+    editModel.addAfterDeleteListener(this::onDelete);
     editModel.addAfterRefreshListener(this::refresh);
-    editModel.addEntitySetListener(entity -> {
-      if (entity == null && !getSelectionModel().isSelectionEmpty()) {
-        getSelectionModel().clearSelection();
-      }
-    });
+    editModel.addEntitySetListener(this::onEntitySet);
     getSelectionModel().addSelectedItemListener(editModel::setEntity);
-    addTableModelListener(e -> {
-      //if the selected record is updated via the table model, refresh the one in the edit model
-      if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectionModel().getSelectedIndex()) {
-        editModel.setEntity(getSelectionModel().getSelectedItem());
-      }
-    });
+    addTableModelListener(this::onTableModelEvent);
   }
 
   private void onInsert(final List<Entity> insertedEntities) {
@@ -720,11 +711,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
         case ADD_TOP:
           addEntitiesAt(0, entitiesToAdd);
           break;
-        case ADD_BOTTOM:
-          addEntities(entitiesToAdd);
-          break;
         case ADD_TOP_SORTED:
           addEntitiesAtSorted(0, entitiesToAdd);
+          break;
+        case ADD_BOTTOM:
+          addEntities(entitiesToAdd);
           break;
       }
     }
@@ -732,6 +723,25 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   private void onUpdate(final Map<Entity.Key, Entity> updatedEntities) {
     replaceEntitiesByKey(new HashMap<>(updatedEntities));
+  }
+
+  private void onDelete(final List<Entity> deletedEntities) {
+    if (removeEntitiesOnDelete) {
+      removeItems(deletedEntities);
+    }
+  }
+
+  private void onEntitySet(final Entity entity) {
+    if (entity == null && !getSelectionModel().isSelectionEmpty()) {
+      getSelectionModel().clearSelection();
+    }
+  }
+
+  private void onTableModelEvent(final TableModelEvent tableModelEvent) {
+    //if the selected record is updated via the table model, refresh the one in the edit model
+    if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == getSelectionModel().getSelectedIndex()) {
+      editModel.setEntity(getSelectionModel().getSelectedItem());
+    }
   }
 
   /**
@@ -756,12 +766,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       if (entitiesByKey.isEmpty()) {
         break;
       }
-    }
-  }
-
-  private void onDeleteInternal(final List<Entity> deletedEntities) {
-    if (removeEntitiesOnDelete) {
-      removeItems(deletedEntities);
     }
   }
 

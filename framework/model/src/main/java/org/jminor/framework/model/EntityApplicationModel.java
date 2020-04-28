@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.event.EventDataListener;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.user.User;
@@ -154,4 +155,24 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * @return the EntityModel based on the given entityId
    */
   M getEntityModel(String entityId);
+
+  /**
+   * @param listener a listener notified each time a login is performed
+   */
+  void addLoginListener(EventDataListener<User> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeLoginListener(EventDataListener<User> listener);
+
+  /**
+   * @param listener a listener notified each time a logout is performed
+   */
+  void addLogoutListener(EventDataListener<User> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeLogoutListener(EventDataListener<User> listener);
 }
