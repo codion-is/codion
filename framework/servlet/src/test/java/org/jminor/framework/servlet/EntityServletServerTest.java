@@ -288,7 +288,7 @@ public class EntityServletServerTest {
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
     configuration.setDatabase(Databases.getInstance());
     configuration.setSslEnabled(false);
-    configuration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
+    configuration.setAuxiliaryServerProviderClassNames(singletonList(EntityServletServerProvider.class.getName()));
 
     return configuration;
   }

@@ -48,7 +48,7 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
    * @param configuration the server configuration.
    */
   public HttpServer(final HttpServerConfiguration configuration) {
-    super(configuration.getServerPort());
+    super(requireNonNull(configuration, "configuration").getServerPort());
     this.port = configuration.getServerPort();
     if (configuration.isSecure()) {
       setupSecureConnector(configuration);

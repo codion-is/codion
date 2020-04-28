@@ -19,7 +19,7 @@ import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.EntityServer;
 import org.jminor.framework.server.EntityServerConfiguration;
-import org.jminor.framework.servlet.EntityServletServer;
+import org.jminor.framework.servlet.EntityServletServerProvider;
 
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -262,7 +262,7 @@ public final class HttpEntityConnectionTest {
     configuration.setDatabase(Databases.getInstance());
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
     configuration.setSslEnabled(false);
-    configuration.setAuxiliaryServerClassNames(singletonList(EntityServletServer.class.getName()));
+    configuration.setAuxiliaryServerProviderClassNames(singletonList(EntityServletServerProvider.class.getName()));
 
     return configuration;
   }
