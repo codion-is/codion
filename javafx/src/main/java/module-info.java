@@ -3,7 +3,7 @@
  */
 module org.jminor.javafx.framework {
   requires org.slf4j;
-  requires json;
+  requires org.json;
   requires transitive javafx.graphics;
   requires transitive javafx.controls;
   requires transitive org.jminor.framework.model;

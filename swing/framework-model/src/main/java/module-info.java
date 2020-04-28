@@ -1,6 +1,6 @@
 module org.jminor.swing.framework.model {
   requires org.slf4j;
-  requires json;
+  requires org.json;
   requires transitive org.jminor.framework.model;
   requires transitive org.jminor.swing.common.model;
 
