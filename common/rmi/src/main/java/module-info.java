@@ -10,5 +10,5 @@ module org.jminor.common.rmi {
   exports org.jminor.common.rmi.server;
   exports org.jminor.common.rmi.server.exception;
 
-  uses org.jminor.common.rmi.server.AuxiliaryServer;
+  uses org.jminor.common.rmi.server.AuxiliaryServerProvider;
 }

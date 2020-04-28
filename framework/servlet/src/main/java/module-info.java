@@ -13,6 +13,6 @@ module org.jminor.framework.servlet {
 
   exports org.jminor.framework.servlet;
 
-  provides org.jminor.common.rmi.server.AuxiliaryServer
-          with org.jminor.framework.servlet.EntityServletServer;
+  provides org.jminor.common.rmi.server.AuxiliaryServerProvider
+          with org.jminor.framework.servlet.EntityServletServerProvider;
 }
