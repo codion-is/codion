@@ -1285,11 +1285,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
     tableModel.addFilteringListener(statusListener);
     tableModel.addTableDataChangedListener(statusListener);
-
-    tableModel.getConditionModel().addConditionChangedListener(() -> {
-      table.getTableHeader().repaint();
-      table.repaint();
-    });
+    tableModel.getConditionModel().addConditionChangedListener(this::onConditionChanged);
     if (conditionPanel != null) {
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
     }
@@ -1299,33 +1295,20 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void initializeTable() {
-    tableModel.getColumnModel().getAllColumns().forEach(column -> {
-      final Property property = (Property) column.getIdentifier();
-      column.setCellRenderer(initializeTableCellRenderer(property));
-      column.setCellEditor(initializeTableCellEditor(property));
-      column.setResizable(true);
-    });
+    tableModel.getColumnModel().getAllColumns().forEach(this::configureColumn);
     final JTableHeader header = table.getTableHeader();
-    final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
-    final Font defaultFont = table.getFont();
-    final Font searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
-    header.setDefaultRenderer((table, value, isSelected, hasFocus, row, column) -> {
-      final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
-              hasFocus, row, column);
-      final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
-      final TableCellRenderer renderer = tableColumn.getCellRenderer();
-      final Property property = (Property) tableColumn.getIdentifier();
-      final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
-              && ((EntityTableCellRenderer) renderer).isIndicateCondition()
-              && tableModel.getConditionModel().isEnabled(property.getPropertyId());
-      label.setFont(indicateSearch ? searchFont : defaultFont);
-
-      return label;
-    });
+    header.setDefaultRenderer(new HeaderRenderer(header.getDefaultRenderer(), table.getFont()));
     header.setFocusable(false);
     if (includePopupMenu) {
       addTablePopupMenu();
     }
+  }
+
+  private void configureColumn(final TableColumn column) {
+    final Property property = (Property) column.getIdentifier();
+    column.setCellRenderer(initializeTableCellRenderer(property));
+    column.setCellEditor(initializeTableCellEditor(property));
+    column.setResizable(true);
   }
 
   private void addTablePopupMenu() {
@@ -1378,6 +1361,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       new EntityPopupMenu(tableModel.getConnectionProvider().getDomain().copyEntity(selected),
               tableModel.getConnectionProvider()).show(this, location.x, location.y);
     }
+  }
+
+  private void onConditionChanged() {
+    table.getTableHeader().repaint();
+    table.repaint();
   }
 
   private static void addAdditionalControls(final ControlSet popupControls, final List<ControlSet> additionalPopupControlSets) {
@@ -1443,6 +1431,35 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             (table.getSelectedRow() + 1) * table.getRowHeight();
 
     return new Point(x, y);
+  }
+
+  private final class HeaderRenderer implements TableCellRenderer {
+
+    private final TableCellRenderer defaultHeaderRenderer;
+    private final Font defaultFont;
+    private final Font searchFont;
+
+    public HeaderRenderer(final TableCellRenderer defaultHeaderRenderer, final Font defaultFont) {
+      this.defaultHeaderRenderer = defaultHeaderRenderer;
+      this.defaultFont = defaultFont;
+      this.searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+                                                   final boolean hasFocus, final int row, final int column) {
+      final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
+              hasFocus, row, column);
+      final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
+      final TableCellRenderer renderer = tableColumn.getCellRenderer();
+      final Property property = (Property) tableColumn.getIdentifier();
+      final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
+              && ((EntityTableCellRenderer) renderer).isIndicateCondition()
+              && tableModel.getConditionModel().isEnabled(property.getPropertyId());
+      label.setFont(indicateSearch ? searchFont : defaultFont);
+
+      return label;
+    }
   }
 
   private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Entity, Property> {

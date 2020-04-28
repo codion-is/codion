@@ -520,26 +520,18 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   private void bindEvents() {
-    final EventListener autoEnableListener = () -> {
-      if (autoEnable) {
-        final boolean upperBoundNull = upperBoundValue.get() == null;
-        final boolean lowerBoundNull = lowerBoundValue.get() == null;
-        if (operatorValue.get().getValues().equals(Operator.Values.TWO)) {
-          setEnabled(!lowerBoundNull && !upperBoundNull);
-        }
-        else {
-          setEnabled(!upperBoundNull);
-        }
-      }
-    };
+    final EventListener autoEnableListener = new AutoEnableListener();
     upperBoundValue.addListener(autoEnableListener);
     lowerBoundValue.addListener(autoEnableListener);
     upperBoundValue.addListener(conditionChangedEvent);
     lowerBoundValue.addListener(conditionChangedEvent);
     operatorValue.addListener(conditionChangedEvent);
     enabledState.addListener(conditionChangedEvent);
-    operatorValue.addListener(() ->
-            lowerBoundRequiredState.set(getOperator().getValues().equals(Operator.Values.TWO)));
+    operatorValue.addDataListener(this::onOperatorChanged);
+  }
+
+  private void onOperatorChanged(final Operator operator) {
+    lowerBoundRequiredState.set(operator.getValues().equals(Operator.Values.TWO));
   }
 
   private void checkLock() {
@@ -557,6 +549,23 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
       }
       else if (!typeClass.isAssignableFrom(value.getClass())) {
         throw new IllegalArgumentException("Value of type " + typeClass + " expected for condition " + this + ", got: " + value.getClass());
+      }
+    }
+  }
+
+  private final class AutoEnableListener implements EventListener {
+
+    @Override
+    public void onEvent() {
+      if (autoEnable) {
+        final boolean upperBoundNull = upperBoundValue.get() == null;
+        final boolean lowerBoundNull = lowerBoundValue.get() == null;
+        if (operatorValue.get().getValues().equals(Operator.Values.TWO)) {
+          setEnabled(!lowerBoundNull && !upperBoundNull);
+        }
+        else {
+          setEnabled(!upperBoundNull);
+        }
       }
     }
   }
