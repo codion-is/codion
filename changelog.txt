@@ -5965,3 +5965,4 @@
 0.14.8
   JSON library upgraded
   AuxiliaryServerProvider added, AuxiliaryServer no longer a service
+  DefaultEntityModel, DefaultEntityEditModel, SwingEntityTableModel, some minor refactoring

@@ -994,16 +994,18 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     afterDeleteEvent.addListener(entitiesChangedEvent);
     afterInsertEvent.addListener(entitiesChangedEvent);
     afterUpdateEvent.addListener(entitiesChangedEvent);
-    entity.addValueListener(valueChange -> {
-      entityModifiedState.set(entity.isModified());
-      validState.set(validator.isValid(entity, getEntityDefinition()));
-      primaryKeyNullState.set(entity.getKey().isNull());
-      entityNewState.set(isEntityNew());
-      final Event<ValueChange> valueChangeEvent = valueChangeEventMap.get(valueChange.getProperty().getPropertyId());
-      if (valueChangeEvent != null) {
-        valueChangeEvent.onEvent(valueChange);
-      }
-    });
+    entity.addValueListener(this::onValueChange);
+  }
+
+  private void onValueChange(final ValueChange valueChange) {
+    entityModifiedState.set(entity.isModified());
+    validState.set(validator.isValid(entity, getEntityDefinition()));
+    primaryKeyNullState.set(entity.getKey().isNull());
+    entityNewState.set(isEntityNew());
+    final Event<ValueChange> valueChangeEvent = valueChangeEventMap.get(valueChange.getProperty().getPropertyId());
+    if (valueChangeEvent != null) {
+      valueChangeEvent.onEvent(valueChange);
+    }
   }
 
   private static final class EditModelValue<V> extends AbstractValue<V> {

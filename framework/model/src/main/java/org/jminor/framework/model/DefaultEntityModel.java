@@ -489,17 +489,26 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     final EventListener initializer = this::initializeDetailModels;
     linkedDetailModelAddedEvent.addListener(initializer);
     linkedDetailModelRemovedEvent.addListener(initializer);
-    editModel.addAfterInsertListener(insertedEntities ->
-            detailModels.forEach(detailModel -> detailModel.onMasterInsert(insertedEntities)));
-    editModel.addAfterUpdateListener(updatedEntities ->
-            detailModels.forEach(detailModel -> detailModel.onMasterUpdate(updatedEntities)));
-    editModel.addAfterDeleteListener(deletedEntities ->
-            detailModels.forEach(detailModel -> detailModel.onMasterDelete(deletedEntities)));
+    editModel.addAfterInsertListener(this::onInsert);
+    editModel.addAfterUpdateListener(this::onUpdate);
+    editModel.addAfterDeleteListener(this::onDelete);
     if (containsTableModel()) {
       getTableModel().addSelectionChangedListener(initializer);
     }
     else {
       editModel.addEntitySetListener(entity -> initializeDetailModels());
     }
+  }
+
+  private void onInsert(final List<Entity> insertedEntities) {
+    detailModels.forEach(detailModel -> detailModel.onMasterInsert(insertedEntities));
+  }
+
+  private void onUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+    detailModels.forEach(detailModel -> detailModel.onMasterUpdate(updatedEntities));
+  }
+
+  private void onDelete(final List<Entity> deletedEntities) {
+    detailModels.forEach(detailModel -> detailModel.onMasterDelete(deletedEntities));
   }
 }
