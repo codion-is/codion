@@ -10,7 +10,6 @@ import static java.util.Objects.requireNonNull;
 /**
  * Provides a {@link AuxiliaryServer} implementation.
  * @param <T> the server type
- * @param <C> the server configuration type
  */
 public interface AuxiliaryServerProvider<T extends AuxiliaryServer> {
 
