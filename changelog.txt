@@ -5969,3 +5969,4 @@
   DefaultEntityApplicationModel.onLogin() and onLogout() removed, replaced with EntityApplicationModel.addLoginListener() and addLogoutListener()
   Validator renamed EntityValidator
   ServerMonitorPanel, synchronized zoom implemented
+  EntityServerAdmin.ThreadStatistics, timestamp added

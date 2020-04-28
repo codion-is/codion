@@ -430,7 +430,7 @@ public final class ServerMonitor {
         processLoadSeries.add(time, server.getProcessCpuLoad() * 100);
         connectionCountSeries.add(time, server.getConnectionCount());
         connectionLimitSeries.add(time, server.getConnectionLimit());
-        addThreadStatistics(time, server.getThreadStatistics());
+        addThreadStatistics(server.getThreadStatistics());
         addGCInfo(server.getGcEvents(lastStatisticsUpdateTime));
         lastStatisticsUpdateTime = time;
         statisticsUpdatedEvent.onEvent();
@@ -439,7 +439,8 @@ public final class ServerMonitor {
     catch (final RemoteException ignored) {/*ignored*/}
   }
 
-  private void addThreadStatistics(final long time, final EntityServerAdmin.ThreadStatistics threadStatistics) {
+  private void addThreadStatistics(final EntityServerAdmin.ThreadStatistics threadStatistics) {
+    final long time = threadStatistics.getTimestamp();
     threadCountSeries.add(time, threadStatistics.getThreadCount());
     daemonThreadCountSeries.add(time, threadStatistics.getDaemonThreadCount());
     for (final Map.Entry<Thread.State, Integer> entry : threadStatistics.getThreadStateCount().entrySet()) {
@@ -461,7 +462,7 @@ public final class ServerMonitor {
         gcTypeSeries.put(GC_EVENT_PREFIX + event.getGcName(), typeSeries);
         gcEventsCollection.addSeries(typeSeries);
       }
-      typeSeries.add(event.getTimeStamp(), event.getDuration());
+      typeSeries.add(event.getTimestamp(), event.getDuration());
     }
   }
 

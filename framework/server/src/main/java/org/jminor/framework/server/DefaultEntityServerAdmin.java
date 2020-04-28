@@ -93,7 +93,7 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
     synchronized (gcEventList) {
       gcEvents = new LinkedList<>(gcEventList);
     }
-    gcEvents.removeIf(gcEvent -> gcEvent.getTimeStamp() < since);
+    gcEvents.removeIf(gcEvent -> gcEvent.getTimestamp() < since);
 
     return gcEvents;
   }
@@ -106,7 +106,7 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
       threadStateMap.compute(bean.getThreadInfo(threadId).getThreadState(), (threadState, value) -> value == null ? 1 : value + 1);
     }
 
-    return new DefaultThreadStatistics(bean.getThreadCount(), bean.getDaemonThreadCount(), threadStateMap);
+    return new DefaultThreadStatistics(System.currentTimeMillis(), bean.getThreadCount(), bean.getDaemonThreadCount(), threadStateMap);
   }
 
   @Override
@@ -393,15 +393,22 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
 
     private static final long serialVersionUID = 1;
 
+    private final long timestamp;
     private final int threadCount;
     private final int daemonThreadCount;
     private final Map<Thread.State, Integer> threadStateCount;
 
-    private DefaultThreadStatistics(final int threadCount, final int daemonThreadCount,
+    private DefaultThreadStatistics(final long timestamp, final int threadCount, final int daemonThreadCount,
                                     final Map<Thread.State, Integer> threadStateCount) {
+      this.timestamp = timestamp;
       this.threadCount = threadCount;
       this.daemonThreadCount = daemonThreadCount;
       this.threadStateCount = threadStateCount;
+    }
+
+    @Override
+    public long getTimestamp() {
+      return timestamp;
     }
 
     @Override
@@ -424,19 +431,19 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
 
     private static final long serialVersionUID = 1;
 
-    private final long timeStamp;
+    private final long timestamp;
     private final String gcName;
     private final long duration;
 
-    public DefaultGcEvent(final long timeStamp, final String gcName, final long duration) {
-      this.timeStamp = timeStamp;
+    public DefaultGcEvent(final long timestamp, final String gcName, final long duration) {
+      this.timestamp = timestamp;
       this.gcName = gcName;
       this.duration = duration;
     }
 
     @Override
-    public long getTimeStamp() {
-      return timeStamp;
+    public long getTimestamp() {
+      return timestamp;
     }
 
     @Override

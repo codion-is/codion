@@ -356,6 +356,11 @@ public interface EntityServerAdmin extends Remote {
   interface ThreadStatistics {
 
     /**
+     * @return statistics timestamp
+     */
+    long getTimestamp();
+
+    /**
      * @return the number of threads
      */
     int getThreadCount();
@@ -379,7 +384,7 @@ public interface EntityServerAdmin extends Remote {
     /**
      * @return event time stamp
      */
-    long getTimeStamp();
+    long getTimestamp();
 
     /**
      * @return event gc name
