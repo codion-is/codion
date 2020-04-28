@@ -16,7 +16,6 @@ public interface AuxiliaryServer {
 
   /**
    * Stops the server, returns when the server has completed shutdown.
-   * Finally calls {@link #setServer(Server)} with a null parameter.
    * @throws Exception in case of an exception
    */
   void stopServer() throws Exception;
