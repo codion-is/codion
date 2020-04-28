@@ -3,12 +3,15 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
+import org.jminor.common.state.State;
+import org.jminor.common.state.States;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
+import org.jminor.swing.common.ui.value.BooleanValues;
 import org.jminor.swing.common.ui.value.ComponentValue;
 import org.jminor.swing.common.ui.value.Nullable;
 import org.jminor.swing.common.ui.value.NumericalValues;
@@ -19,11 +22,16 @@ import org.jminor.swing.framework.server.monitor.ServerMonitor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.event.AxisChangeEvent;
+import org.jfree.chart.event.AxisChangeListener;
 import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -42,7 +50,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
+import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.jminor.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
 /**
@@ -78,6 +88,8 @@ public final class ServerMonitorPanel extends JPanel {
           null, true, null, null);
   private final ChartPanel gcEventsChartPanel = new ChartPanel(gcEventsChart);
 
+  private final State synchronizedZoomState = States.state(true);
+
   /**
    * Instantiates a new ServerMonitorPanel
    * @param model the ServerMonitor to base this panel on
@@ -99,6 +111,7 @@ public final class ServerMonitorPanel extends JPanel {
     setColors(gcEventsChart);
     setColors(threadCountChart);
     initializeUI();
+    bindEvents();
   }
 
   public ServerMonitor getModel() {
@@ -141,19 +154,24 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(new JLabel("Connections", JLabel.RIGHT));
     infoPanel.add(initializeConnectionCountField());
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
-    final JSpinner connectionLimitSpinner = new JSpinner(
-            integerValueSpinnerModel(model, "connectionLimit", model.getConnectionLimitObserver()));
+    final JSpinner connectionLimitSpinner = new JSpinner(integerValueSpinnerModel(model, "connectionLimit",
+            model.getConnectionLimitObserver()));
     ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     infoPanel.add(connectionLimitSpinner);
     infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
     infoPanel.add(initializeMemoryField());
     infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
     infoPanel.add(initializeLogLevelField());
-    infoPanel.add(new JButton(Controls.control(this::shutdownServer, "Shutdown")));
     infoPanel.add(new JButton(Controls.control(this::setUpdateInterval, "Update interval")));
 
+    final JPanel northPanel = new JPanel(Layouts.borderLayout());
+    northPanel.add(infoPanel, BorderLayout.CENTER);
+    final JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
+    shutdownBasePanel.add(new JButton(Controls.control(this::shutdownServer, "Shutdown")), BorderLayout.EAST);
+    northPanel.add(shutdownBasePanel, BorderLayout.EAST);
+
     setLayout(new BorderLayout());
-    add(infoPanel, BorderLayout.NORTH);
+    add(northPanel, BorderLayout.NORTH);
     final JTabbedPane pane = new JTabbedPane();
     pane.addTab("Performance", initializePerformancePanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
@@ -174,6 +192,10 @@ public final class ServerMonitorPanel extends JPanel {
 
     controlPanel.add(new JLabel("Update interval (s)"));
     controlPanel.add(updateIntervalSpinner);
+    final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
+    Values.stateValue(synchronizedZoomState).link(BooleanValues.booleanButtonModelValue(synchronizedZoomCheckBox.getModel()));
+    controlPanel.add(synchronizedZoomCheckBox);
+    controlPanel.add(new JButton(Controls.control(this::resetZoom, "Reset zoom")));
 
     final JPanel controlPanelBase = new JPanel(Layouts.borderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
@@ -259,7 +281,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JComboBox initializeLogLevelField() {
     final DefaultComboBoxModel comboModel = new DefaultComboBoxModel(model.getLogLevels().toArray());
 
-    final JComboBox box = new JComboBox<>(comboModel);
+    final JComboBox box = new JComboBox(comboModel);
     Values.propertyValue(model, "logLevel", Object.class, model.getLogLevelObserver())
             .link(SelectedValues.selectedValue(box));
 
@@ -269,5 +291,52 @@ public final class ServerMonitorPanel extends JPanel {
   private void setColors(final JFreeChart chart) {
     chart.getXYPlot().setBackgroundPaint(Color.BLACK);
     chart.setBackgroundPaint(this.getBackground());
+  }
+
+  private void resetZoom() {
+    final boolean isSync = synchronizedZoomState.get();
+    synchronizedZoomState.set(false);
+    requestsPerSecondChartPanel.restoreAutoBounds();
+    memoryUsageChartPanel.restoreAutoBounds();
+    connectionCountChartPanel.restoreAutoBounds();
+    systemLoadChartPanel.restoreAutoBounds();
+    gcEventsChartPanel.restoreAutoBounds();
+    threadCountChartPanel.restoreAutoBounds();
+    synchronizedZoomState.set(isSync);
+  }
+
+  private void bindEvents() {
+    final ZoomSyncListener zoomSyncListener = new ZoomSyncListener();
+    requestsPerSecondChart.getXYPlot().getDomainAxis().addChangeListener(zoomSyncListener);
+    memoryUsageChart.getXYPlot().getDomainAxis().addChangeListener(zoomSyncListener);
+    connectionCountChart.getXYPlot().getDomainAxis().addChangeListener(zoomSyncListener);
+    systemLoadChart.getXYPlot().getDomainAxis().addChangeListener(zoomSyncListener);
+    gcEventsChart.getXYPlot().getDomainAxis().addChangeListener(zoomSyncListener);
+    threadCountChart.getXYPlot().getDomainAxis().addChangeListener(zoomSyncListener);
+  }
+
+  private final class ZoomSyncListener implements AxisChangeListener {
+
+    private final List<JFreeChart> performanceCharts;
+
+    private ZoomSyncListener() {
+      performanceCharts = asList(requestsPerSecondChart, memoryUsageChart, connectionCountChart,
+              systemLoadChart, gcEventsChart, threadCountChart);
+    }
+
+    @Override
+    public void axisChanged(final AxisChangeEvent event) {
+      if (synchronizedZoomState.get()) {
+        final DateAxis dateAxis = (DateAxis) event.getAxis();
+        performanceCharts.forEach(chart -> {
+          if (!chart.equals(event.getChart())) {
+            final ValueAxis domainAxis = chart.getXYPlot().getDomainAxis();
+            if (!domainAxis.getRange().equals(dateAxis.getRange())) {
+              domainAxis.setRange(dateAxis.getRange());
+            }
+          }
+        });
+      }
+    }
   }
 }

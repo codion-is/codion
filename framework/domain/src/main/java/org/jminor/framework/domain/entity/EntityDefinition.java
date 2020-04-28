@@ -60,7 +60,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the validator for this entity type
    */
-  Validator getValidator();
+  EntityValidator getValidator();
 
   /**
    * @return the caption to use when presenting entities of this type
@@ -462,7 +462,7 @@ public interface EntityDefinition extends Serializable {
      * @param validator the validator for this entity type
      * @return this {@link Builder} instance
      */
-    Builder validator(Validator validator);
+    Builder validator(EntityValidator validator);
 
     /**
      * Adds a {@link ConditionProvider} which provides a dynamic query condition string.

@@ -8,7 +8,7 @@ import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.Validator;
+import org.jminor.framework.domain.entity.EntityValidator;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -48,7 +48,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public SwingEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider, final Validator validator) {
+  public SwingEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider, final EntityValidator validator) {
     super(entityId, connectionProvider, validator);
   }
 

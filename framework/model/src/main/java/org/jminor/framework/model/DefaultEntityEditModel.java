@@ -20,7 +20,7 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.Validator;
+import org.jminor.framework.domain.entity.EntityValidator;
 import org.jminor.framework.domain.entity.ValueChange;
 import org.jminor.framework.domain.entity.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -114,7 +114,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * The validator used by this edit model
    */
-  private final Validator validator;
+  private final EntityValidator validator;
 
   /**
    * A state indicating whether the entity being edited is in a valid state according the validator
@@ -169,7 +169,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param validator the validator to use
    */
   public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider,
-                                final Validator validator) {
+                                final EntityValidator validator) {
     this.entity = connectionProvider.getDomain().entity(entityId);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.validator = validator;
@@ -470,7 +470,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Validator getValidator() {
+  public final EntityValidator getValidator() {
     return validator;
   }
 

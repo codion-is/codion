@@ -351,6 +351,74 @@ public interface EntityServerAdmin extends Remote {
   void setMinimumConnectionPoolSize(String username, int value) throws RemoteException;
 
   /**
+   * @param since the time since from which to retrieve statistics
+   * @return current statistics for this server
+   * @throws RemoteException in case of an exception
+   */
+  ServerStatistics getServerStatistics(long since) throws RemoteException;
+
+  /**
+   * Basic server performance statistics.
+   */
+  interface ServerStatistics {
+
+    /**
+     * @return the timestamp
+     */
+    long getTimestamp();
+
+    /**
+     * @return the connection count
+     */
+    int getConnectionCount();
+
+    /**
+     * @return the connection limit
+     */
+    int getConnectionLimit();
+
+    /**
+     * @return used memory
+     */
+    long getUsedMemory();
+
+    /**
+     * @return maximum memory
+     */
+    long getMaximumMemory();
+
+    /**
+     * @return allocated memory
+     */
+    long getAllocatedMemory();
+
+    /**
+     * @return requests per second
+     */
+    int getRequestsPerSecond();
+
+    /**
+     * @return the system cpu load
+     */
+    double getSystemCpuLoad();
+
+    /**
+     * @return the process cpu load
+     */
+    double getProcessCpuLoad();
+
+    /**
+     * @return thread statistics
+     */
+    ThreadStatistics getThreadStatistics();
+
+    /**
+     * @return GC events
+     */
+    List<GcEvent> getGcEvents();
+  }
+
+  /**
    * Thread statistics
    */
   interface ThreadStatistics {
@@ -379,7 +447,7 @@ public interface EntityServerAdmin extends Remote {
     /**
      * @return event time stamp
      */
-    long getTimeStamp();
+    long getTimestamp();
 
     /**
      * @return event gc name

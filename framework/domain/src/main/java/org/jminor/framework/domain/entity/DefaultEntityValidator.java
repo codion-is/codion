@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
- * A default {@link Validator} implementation providing null validation for properties marked as not null,
+ * A default {@link EntityValidator} implementation providing null validation for properties marked as not null,
  * range validation for numerical properties with max and/or min values specified and string length validation
  * based on the specified max length.
  * This Validator can be extended to provide further validation.
@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
  * @see Property.Builder#maximumValue(double)
  * @see Property.Builder#maximumLength(int)
  */
-public class DefaultEntityValidator implements Validator {
+public class DefaultEntityValidator implements EntityValidator {
 
   private static final long serialVersionUID = 1;
 
