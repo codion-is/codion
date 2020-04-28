@@ -5968,3 +5968,4 @@
   DefaultEntityModel, DefaultEntityEditModel, SwingEntityTableModel, some minor refactoring
   DefaultEntityApplicationModel.onLogin() and onLogout() removed, replaced with EntityApplicationModel.addLoginListener() and addLogoutListener()
   Validator renamed EntityValidator
+  ServerMonitorPanel, synchronized zoom implemented
