@@ -16,7 +16,7 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.ColorProvider;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.Validator;
+import org.jminor.framework.domain.entity.EntityValidator;
 import org.jminor.framework.domain.entity.exception.ValidationException;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
@@ -259,7 +259,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow updating
-   * @see Validator#validate(Collection, EntityDefinition)
+   * @see EntityValidator#validate(Collection, EntityDefinition)
    */
   void update(List<Entity> entities) throws ValidationException, DatabaseException;
 

@@ -16,7 +16,7 @@ import java.util.Collection;
 /**
  * Responsible for providing validation for entities.
  */
-public interface Validator extends Serializable {
+public interface EntityValidator extends Serializable {
 
   /**
    * Returns true if the given property accepts a null value for the given entity,

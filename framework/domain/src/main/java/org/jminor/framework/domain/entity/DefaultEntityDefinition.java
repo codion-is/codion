@@ -104,7 +104,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The validator
    */
-  private Validator validator = new DefaultEntityValidator();
+  private EntityValidator validator = new DefaultEntityValidator();
 
   /**
    * The IDs of the properties to use when performing a string based lookup on this entity
@@ -552,7 +552,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Validator getValidator() {
+  public EntityValidator getValidator() {
     return validator;
   }
 
@@ -932,7 +932,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder validator(final Validator validator) {
+    public Builder validator(final EntityValidator validator) {
       definition.validator = requireNonNull(validator, "validator");
       return this;
     }

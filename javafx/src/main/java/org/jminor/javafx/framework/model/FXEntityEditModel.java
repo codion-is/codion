@@ -6,7 +6,7 @@ package org.jminor.javafx.framework.model;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.Validator;
+import org.jminor.framework.domain.entity.EntityValidator;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.DefaultEntityEditModel;
 
@@ -40,7 +40,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param validator the validator to use
    */
   public FXEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider,
-                           final Validator validator) {
+                           final EntityValidator validator) {
     super(entityId, connectionProvider, validator);
   }
 

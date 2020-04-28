@@ -9,7 +9,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.Validator;
+import org.jminor.framework.domain.entity.EntityValidator;
 import org.jminor.framework.domain.entity.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
@@ -89,7 +89,7 @@ final class EntityPopupMenu extends JPopupMenu {
         visitedEntities.add(entity);
         Text.collate(fkProperties);
         final EntityDefinition definition = connectionProvider.getDomain().getDefinition(entity.getEntityId());
-        final Validator validator = definition.getValidator();
+        final EntityValidator validator = definition.getValidator();
         for (final ForeignKeyProperty property : fkProperties) {
           final boolean fkValueNull = entity.isForeignKeyNull(property);
           final boolean isLoaded = entity.isLoaded(property.getPropertyId());
@@ -145,7 +145,7 @@ final class EntityPopupMenu extends JPopupMenu {
     Text.collate(properties);
     final int maxValueLength = 20;
     final EntityDefinition definition = domain.getDefinition(entity.getEntityId());
-    final Validator validator = definition.getValidator();
+    final EntityValidator validator = definition.getValidator();
     for (final Property property : properties) {
       final boolean valid = isValid(validator, entity, definition, property);
       final boolean modified = entity.isModified(property);
@@ -204,7 +204,7 @@ final class EntityPopupMenu extends JPopupMenu {
     return " | " + (originalValue == null ? "<null>" : originalValue.toString());
   }
 
-  private static boolean isValid(final Validator validator, final Entity entity, final EntityDefinition definition, final Property property) {
+  private static boolean isValid(final EntityValidator validator, final Entity entity, final EntityDefinition definition, final Property property) {
     try {
       validator.validate(entity, definition, property);
       return true;
