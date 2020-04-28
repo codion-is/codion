@@ -5963,3 +5963,4 @@
   SwingEntityTableModel.onDelete() removed, use getEditModel().addAfterDeleteListener() instead
   EntityApplicationPanel, EntityLookupField and EntityPanel, removed fluid return value from setters
 0.14.8
+  JSON library upgraded
