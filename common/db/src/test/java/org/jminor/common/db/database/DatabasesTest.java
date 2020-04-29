@@ -135,6 +135,11 @@ public class DatabasesTest {
     }
 
     @Override
+    public boolean isEmbedded() {
+      return false;
+    }
+
+    @Override
     public String getCheckConnectionQuery() {
       return "select 1 from dual";
     }

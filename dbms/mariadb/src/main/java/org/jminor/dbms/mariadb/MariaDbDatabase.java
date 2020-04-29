@@ -32,6 +32,11 @@ public final class MariaDbDatabase extends AbstractDatabase {
   }
 
   @Override
+  public boolean isEmbedded() {
+    return false;
+  }
+
+  @Override
   public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }

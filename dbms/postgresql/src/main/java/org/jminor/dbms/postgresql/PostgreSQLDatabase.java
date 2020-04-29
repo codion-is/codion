@@ -29,7 +29,12 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
 
   private PostgreSQLDatabase(final String host, final Integer port, final String database) {
     super(Type.POSTGRESQL, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
-            requireNonNull(port, "port"), requireNonNull(database, "database"), false);
+            requireNonNull(port, "port"), requireNonNull(database, "database"));
+  }
+
+  @Override
+  public boolean isEmbedded() {
+    return false;
   }
 
   @Override

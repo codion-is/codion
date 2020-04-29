@@ -70,6 +70,11 @@ public final class OracleDatabase extends AbstractDatabase {
   }
 
   @Override
+  public boolean isEmbedded() {
+    return false;
+  }
+
+  @Override
   public String getAutoIncrementQuery(final String idSource) {
     return "select " + requireNonNull(idSource, "idSource") + ".currval from dual";
   }

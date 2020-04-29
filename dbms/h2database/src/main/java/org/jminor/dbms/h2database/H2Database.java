@@ -47,6 +47,7 @@ public final class H2Database extends AbstractDatabase {
   static final String URL_PREFIX_MEM = "jdbc:h2:mem:";
   static final String URL_PREFIX_FILE = "jdbc:h2:file:";
 
+  private final boolean embedded;
   private final boolean embeddedInMemory;
 
   /**
@@ -72,7 +73,8 @@ public final class H2Database extends AbstractDatabase {
    * @param scriptPaths paths to the scripts to run to initialize the database
    */
   private H2Database(final String databaseName, final boolean embeddedInMemory, final List<String> scriptPaths) {
-    super(Type.H2, DRIVER_CLASS_NAME, getEmbeddedName(databaseName, embeddedInMemory), null, null, true);
+    super(Type.H2, DRIVER_CLASS_NAME, getEmbeddedName(databaseName, embeddedInMemory), null, null);
+    this.embedded = true;
     this.embeddedInMemory = embeddedInMemory;
     initializeEmbeddedDatabase(scriptPaths);
   }
@@ -85,8 +87,14 @@ public final class H2Database extends AbstractDatabase {
    */
   private H2Database(final String host, final Integer port, final String databaseName) {
     super(Type.H2, DRIVER_CLASS_NAME, requireNonNull(host, "host"), requireNonNull(port, "port"),
-            requireNonNull(databaseName, "databaseName"), false);
+            requireNonNull(databaseName, "databaseName"));
+    this.embedded = false;
     this.embeddedInMemory = false;
+  }
+
+  @Override
+  public boolean isEmbedded() {
+    return embedded;
   }
 
   @Override

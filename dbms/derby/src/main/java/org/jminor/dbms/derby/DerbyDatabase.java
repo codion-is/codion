@@ -25,15 +25,16 @@ public final class DerbyDatabase extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
   static final String URL_PREFIX = "jdbc:derby:";
 
-  static final boolean EMBEDDED = Database.DATABASE_EMBEDDED.get();
+  private final boolean embedded;
 
   DerbyDatabase() {
-    super(Type.DERBY, EMBEDDED ? EMBEDDED_DRIVER_CLASS_NAME : DRIVER_CLASS_NAME);
+    super(Type.DERBY, Database.DATABASE_EMBEDDED.get() ? EMBEDDED_DRIVER_CLASS_NAME : DRIVER_CLASS_NAME);
+    this.embedded = Database.DATABASE_EMBEDDED.get();
   }
 
   private DerbyDatabase(final String databaseName) {
-    super(Type.DERBY, EMBEDDED_DRIVER_CLASS_NAME, requireNonNull(databaseName, "databaseName"),
-            null, null, true);
+    super(Type.DERBY, EMBEDDED_DRIVER_CLASS_NAME, requireNonNull(databaseName, "databaseName"), null, null);
+    this.embedded = true;
   }
 
   /**
@@ -44,7 +45,13 @@ public final class DerbyDatabase extends AbstractDatabase {
    */
   private DerbyDatabase(final String host, final Integer port, final String sid) {
     super(Type.DERBY, DRIVER_CLASS_NAME, requireNonNull(host, "host"), requireNonNull(port),
-            requireNonNull(sid, "sid"), false);
+            requireNonNull(sid, "sid"));
+    this.embedded = false;
+  }
+
+  @Override
+  public boolean isEmbedded() {
+    return embedded;
   }
 
   @Override

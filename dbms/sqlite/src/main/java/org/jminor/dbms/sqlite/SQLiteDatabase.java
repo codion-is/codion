@@ -33,6 +33,11 @@ public final class SQLiteDatabase extends AbstractDatabase {
   }
 
   @Override
+  public boolean isEmbedded() {
+    return true;
+  }
+
+  @Override
   public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }

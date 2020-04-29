@@ -14,7 +14,11 @@ public final class AbstractDatabaseTest {
 
   private static final String DRIVER_CLASS = "some.driver.Class";
 
-  private final AbstractDatabase database = new AbstractDatabase(Database.Type.H2, DRIVER_CLASS, "host", 1234, "sid", false) {
+  private final AbstractDatabase database = new AbstractDatabase(Database.Type.H2, DRIVER_CLASS, "host", 1234, "sid") {
+    @Override
+    public boolean isEmbedded() {
+      return false;
+    }
     @Override
     public String getAutoIncrementQuery(final String idSource) {
       return null;

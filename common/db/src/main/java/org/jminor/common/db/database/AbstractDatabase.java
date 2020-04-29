@@ -29,7 +29,6 @@ public abstract class AbstractDatabase implements Database {
   private final String host;
   private final String sid;
   private final Integer port;
-  private final boolean embedded;
 
   private String urlAppend = "";
 
@@ -83,27 +82,12 @@ public abstract class AbstractDatabase implements Database {
    */
   public AbstractDatabase(final Type databaseType, final String driverClassName, final String host, final Integer port,
                           final String sid) {
-    this(databaseType, driverClassName, host, port, sid, Database.DATABASE_EMBEDDED.get());
-  }
-
-  /**
-   * Instantiates a new AbstractDatabase
-   * @param databaseType a the database type
-   * @param driverClassName the database driver class name
-   * @param host the database host name or path to the database files in case of an embedded database
-   * @param port the database server port
-   * @param sid the service identifier
-   * @param embedded true if the database is embedded
-   */
-  public AbstractDatabase(final Type databaseType, final String driverClassName, final String host, final Integer port,
-                          final String sid, final boolean embedded) {
     loadDriver(driverClassName);
     this.databaseType = requireNonNull(databaseType, "databaseType");
     this.driverClassName = driverClassName;
     this.host = host;
     this.port = port;
     this.sid = sid;
-    this.embedded = embedded;
   }
 
   @Override
@@ -129,11 +113,6 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public final String getSid() {
     return sid;
-  }
-
-  @Override
-  public final boolean isEmbedded() {
-    return embedded;
   }
 
   public final void setUrlAppend(final String urlAppend) {

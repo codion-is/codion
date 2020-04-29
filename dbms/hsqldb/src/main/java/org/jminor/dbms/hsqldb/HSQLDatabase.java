@@ -20,17 +20,27 @@ public final class HSQLDatabase extends AbstractDatabase {
   static final String EMBEDDED_URL_PREFIX = "jdbc:hsqldb:file:";
   static final String NETWORKED_URL_PREFIX = "jdbc:hsqldb:hsql//";
 
+  private final boolean embedded;
+
   HSQLDatabase() {
     super(Type.HSQL, DRIVER_CLASS_NAME);
+    this.embedded = false;
   }
 
   private HSQLDatabase(final String databaseName) {
-    super(Type.HSQL, DRIVER_CLASS_NAME, requireNonNull(databaseName, "databaseName"), null, null, true);
+    super(Type.HSQL, DRIVER_CLASS_NAME, requireNonNull(databaseName, "databaseName"), null, null);
+    this.embedded = true;
   }
 
   private HSQLDatabase(final String host, final Integer port, final String sid) {
     super(Type.HSQL, DRIVER_CLASS_NAME, requireNonNull(host, "host"), requireNonNull(port, "port"),
-            requireNonNull(sid, "sid"), false);
+            requireNonNull(sid, "sid"));
+    this.embedded = false;
+  }
+
+  @Override
+  public boolean isEmbedded() {
+    return embedded;
   }
 
   @Override

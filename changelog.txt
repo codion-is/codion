@@ -5971,3 +5971,4 @@
   ServerMonitorPanel, synchronized zoom implemented
   EntityServerAdmin.ThreadStatistics, timestamp added
   EntityServerAdmin.ServerStatistics added along with getServerStatistics()
+  AbstractDatabase.embedded removed, isEmbedded() moved to subclasses

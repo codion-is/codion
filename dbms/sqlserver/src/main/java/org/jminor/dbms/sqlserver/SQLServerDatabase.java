@@ -31,7 +31,12 @@ public final class SQLServerDatabase extends AbstractDatabase {
 
   private SQLServerDatabase(final String host, final Integer port, final String databaseName) {
     super(Type.SQLSERVER, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
-            requireNonNull(port, "port"), requireNonNull(databaseName, "databaseName"), false);
+            requireNonNull(port, "port"), requireNonNull(databaseName, "databaseName"));
+  }
+
+  @Override
+  public boolean isEmbedded() {
+    return false;
   }
 
   @Override
