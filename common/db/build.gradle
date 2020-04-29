@@ -1,15 +1,15 @@
 dependencies {
     api project(':jminor-common-core')
 
-    testImplementation project(':jminor-dbms-derby')
-    testImplementation project(':jminor-dbms-h2database')
-    testImplementation project(':jminor-dbms-hsqldb')
-    testImplementation project(':jminor-dbms-mariadb')
-    testImplementation project(':jminor-dbms-mysql')
-    testImplementation project(':jminor-dbms-oracle')
-    testImplementation project(':jminor-dbms-postgresql')
-    testImplementation project(':jminor-dbms-sqlite')
-    testImplementation project(':jminor-dbms-sqlserver')
+    testRuntimeOnly project(':jminor-dbms-derby')
+    testRuntimeOnly project(':jminor-dbms-h2database')
+    testRuntimeOnly project(':jminor-dbms-hsqldb')
+    testRuntimeOnly project(':jminor-dbms-mariadb')
+    testRuntimeOnly project(':jminor-dbms-mysql')
+    testRuntimeOnly project(':jminor-dbms-oracle')
+    testRuntimeOnly project(':jminor-dbms-postgresql')
+    testRuntimeOnly project(':jminor-dbms-sqlite')
+    testRuntimeOnly project(':jminor-dbms-sqlserver')
 
     testRuntimeOnly project(':jminor-plugin-hikari-pool')
     testRuntimeOnly "com.h2database:h2:${h2Version}"

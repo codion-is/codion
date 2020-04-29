@@ -10,7 +10,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Database implementation based on the HSQL database.
  */
-public final class HSQLDatabase extends AbstractDatabase {
+final class HSQLDatabase extends AbstractDatabase {
 
   static final String AUTO_INCREMENT_QUERY = "IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";

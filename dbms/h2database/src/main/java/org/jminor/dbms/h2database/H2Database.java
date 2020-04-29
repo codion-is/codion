@@ -24,7 +24,7 @@ import static org.jminor.common.Util.nullOrEmpty;
 /**
  * A Database implementation based on the H2 database.
  */
-public final class H2Database extends AbstractDatabase {
+final class H2Database extends AbstractDatabase {
 
   /**
    * The error code representing incorrect login credentials

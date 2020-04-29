@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Database implementation based on the Derby database.
  */
-public final class DerbyDatabase extends AbstractDatabase {
+final class DerbyDatabase extends AbstractDatabase {
 
   private static final int FOREIGN_KEY_ERROR = 23503;
 
