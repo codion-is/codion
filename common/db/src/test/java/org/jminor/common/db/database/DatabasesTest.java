@@ -5,15 +5,6 @@ package org.jminor.common.db.database;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.Users;
-import org.jminor.dbms.derby.DerbyDatabase;
-import org.jminor.dbms.h2database.H2Database;
-import org.jminor.dbms.hsqldb.HSQLDatabase;
-import org.jminor.dbms.mariadb.MariaDbDatabase;
-import org.jminor.dbms.mysql.MySQLDatabase;
-import org.jminor.dbms.oracle.OracleDatabase;
-import org.jminor.dbms.postgresql.PostgreSQLDatabase;
-import org.jminor.dbms.sqlite.SQLiteDatabase;
-import org.jminor.dbms.sqlserver.SQLServerDatabase;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,39 +30,39 @@ public class DatabasesTest {
 
       Database.DATABASE_TYPE.set(Database.Type.DERBY.toString());
       Database database = Databases.getInstance();
-      assertTrue(database instanceof DerbyDatabase);
+      assertSame(database.getType(), Database.Type.DERBY);
 
       Database.DATABASE_TYPE.set(Database.Type.H2.toString());
       database = Databases.getInstance();
-      assertTrue(database instanceof H2Database);
+      assertSame(database.getType(), Database.Type.H2);
 
       Database.DATABASE_TYPE.set(Database.Type.HSQL.toString());
       database = Databases.getInstance();
-      assertTrue(database instanceof HSQLDatabase);
+      assertSame(database.getType(), Database.Type.HSQL);
 
       Database.DATABASE_TYPE.set(Database.Type.MARIADB.toString());
       database = Databases.getInstance();
-      assertTrue(database instanceof MariaDbDatabase);
+      assertSame(database.getType(), Database.Type.MARIADB);
 
       Database.DATABASE_TYPE.set(Database.Type.MYSQL.toString());
       database = Databases.getInstance();
-      assertTrue(database instanceof MySQLDatabase);
+      assertSame(database.getType(), Database.Type.MYSQL);
 
       Database.DATABASE_TYPE.set(Database.Type.ORACLE.toString());
       database = Databases.getInstance();
-      assertTrue(database instanceof OracleDatabase);
+      assertSame(database.getType(), Database.Type.ORACLE);
 
       Database.DATABASE_TYPE.set(Database.Type.POSTGRESQL.toString());
       database = Databases.getInstance();
-      assertTrue(database instanceof PostgreSQLDatabase);
+      assertSame(database.getType(), Database.Type.POSTGRESQL);
 
       Database.DATABASE_TYPE.set(Database.Type.SQLSERVER.toString());
       database = Databases.getInstance();
-      assertTrue(database instanceof SQLServerDatabase);
+      assertSame(database.getType(), Database.Type.SQLSERVER);
 
       Database.DATABASE_TYPE.set(Database.Type.SQLITE.toString());
       database = Databases.getInstance();
-      assertTrue(database instanceof SQLiteDatabase);
+      assertSame(database.getType(), Database.Type.SQLITE);
 
       Database.DATABASE_TYPE.set(Database.Type.OTHER.toString());
       assertThrows(IllegalArgumentException.class, Databases::getInstance);

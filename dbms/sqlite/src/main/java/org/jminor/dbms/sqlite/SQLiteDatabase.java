@@ -10,7 +10,7 @@ import java.sql.SQLException;
 /**
  * A SQLite embedded database implementation, quite experimental, based on the xerial/sqlite-jdbc driver.
  */
-public final class SQLiteDatabase extends AbstractDatabase {
+final class SQLiteDatabase extends AbstractDatabase {
 
   private static final String AUTO_INCREMENT_QUERY = "select last_insert_rowid()";
   private static final int FOREIGN_KEY_ERROR = 787;

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 /**
  * A Database implementation based on the MySQL database.
  */
-public final class MySQLDatabase extends AbstractDatabase {
+final class MySQLDatabase extends AbstractDatabase {
 
   static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
   private static final int REFERENTIAL_CONSTRAINT_ERROR = 1452;

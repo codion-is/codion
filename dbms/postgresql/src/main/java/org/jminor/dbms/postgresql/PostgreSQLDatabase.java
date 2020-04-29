@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Database implementation based on the PostgreSQL database.
  */
-public final class PostgreSQLDatabase extends AbstractDatabase {
+final class PostgreSQLDatabase extends AbstractDatabase {
 
   private static final String INVALID_AUTHORIZATION_SPECIFICATION = "28000";
   private static final String INTEGRITY_CONSTRAINT_VIOLATION = "23000";

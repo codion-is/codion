@@ -10,7 +10,7 @@ import java.sql.SQLException;
 /**
  * A Database implementation based on the SQL Server (2000 or higher) database.
  */
-public final class SQLServerDatabase extends AbstractDatabase {
+final class SQLServerDatabase extends AbstractDatabase {
 
   static final String AUTO_INCREMENT_QUERY = "SELECT @@IDENTITY";
 

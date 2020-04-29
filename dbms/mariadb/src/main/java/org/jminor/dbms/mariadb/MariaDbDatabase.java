@@ -10,7 +10,7 @@ import java.sql.SQLException;
 /**
  * A Database implementation based on the MariaDB database.
  */
-public final class MariaDbDatabase extends AbstractDatabase {
+final class MariaDbDatabase extends AbstractDatabase {
 
   static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
   private static final int REFERENTIAL_CONSTRAINT_ERROR = 1452;

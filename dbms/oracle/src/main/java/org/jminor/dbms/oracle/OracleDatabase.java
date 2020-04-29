@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Database implementation based on the Oracle database.
  */
-public final class OracleDatabase extends AbstractDatabase {
+final class OracleDatabase extends AbstractDatabase {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(OracleDatabase.class.getName());
 

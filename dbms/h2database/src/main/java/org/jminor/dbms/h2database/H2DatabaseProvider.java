@@ -9,6 +9,7 @@ import org.jminor.common.db.database.DatabaseProvider;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
@@ -31,6 +32,6 @@ public final class H2DatabaseProvider implements DatabaseProvider {
   }
 
   public H2Database createDatabase(final String jdbcUrl, final String initScript) {
-    return new H2Database(jdbcUrl, singletonList(initScript));
+    return new H2Database(jdbcUrl, initScript == null ? emptyList() : singletonList(initScript));
   }
 }
