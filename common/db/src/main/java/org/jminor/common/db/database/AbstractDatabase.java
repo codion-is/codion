@@ -30,6 +30,7 @@ public abstract class AbstractDatabase implements Database {
   /**
    * Instantiates a new AbstractDatabase.
    * @param databaseType the database type
+   * @param jdbcUrl the jdbc url
    */
   public AbstractDatabase(final Type databaseType, final String jdbcUrl) {
     this.databaseType = requireNonNull(databaseType, "databaseType");
