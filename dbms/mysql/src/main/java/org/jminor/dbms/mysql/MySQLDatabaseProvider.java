@@ -6,6 +6,8 @@ package org.jminor.dbms.mysql;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.DatabaseProvider;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Provides mysql database implementations
  */
@@ -18,6 +20,8 @@ public final class MySQLDatabaseProvider implements DatabaseProvider {
 
   @Override
   public Database createDatabase() {
-    return new MySQLDatabase();
+    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
+
+    return new MySQLDatabase(jdbcUrl);
   }
 }

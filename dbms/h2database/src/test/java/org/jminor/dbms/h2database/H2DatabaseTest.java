@@ -24,18 +24,18 @@ public class H2DatabaseTest {
 
   @Test
   public void getSequenceSQLNullSequence() {
-    assertThrows(NullPointerException.class, () -> H2Database.h2ServerDatabase("host", 1234, "sid").getSequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> new H2Database("url").getSequenceQuery(null));
   }
 
   @Test
   public void supportsIsValid() {
-    final H2Database db = H2Database.h2ServerDatabase("host", 1234, "sid");
+    final H2Database db = new H2Database("url");
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   public void getAuthenticationInfo() {
-    final H2Database db = H2Database.h2ServerDatabase("host", 1234, "sid");
+    final H2Database db = new H2Database("url");
     final Properties props = new Properties();
     props.put(Database.USER_PROPERTY, "scott");
     props.put(Database.PASSWORD_PROPERTY, "tiger");
@@ -44,20 +44,20 @@ public class H2DatabaseTest {
 
   @Test
   public void getAutoIncrementQuery() {
-    final H2Database db = H2Database.h2ServerDatabase("host", 1234, "sid");
+    final H2Database db = new H2Database("url");
     assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
   public void getSequenceQuery() {
-    final H2Database db = H2Database.h2ServerDatabase("host", 1234, "sid");
+    final H2Database db = new H2Database("url");
     final String idSource = "seq";
     assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
   }
 
   @Test
-  public void constructorNullHost() {
-    assertThrows(NullPointerException.class, () -> H2Database.h2ServerDatabase(null, null, null));
+  public void constructorNullUrl() {
+    assertThrows(NullPointerException.class, () -> new H2Database(null));
   }
 
   @Test
@@ -66,9 +66,13 @@ public class H2DatabaseTest {
     final File file2 = File.createTempFile("h2db_test_2", ".sql");
     Files.write(file1.toPath(), singletonList("create schema scott; create table scott.test1 (id int);"));
     Files.write(file2.toPath(), singletonList("create schema scott; create table scott.test2 (id int);"));
+
+    final String url1 = "jdbc:h2:mem:test1";
+    final String url2 = "jdbc:h2:mem:test2";
+
     final User user = Users.user("sa");
-    final H2Database db1 = H2Database.h2MemoryDatabase("test1", file1.getAbsolutePath());
-    final H2Database db2 = H2Database.h2MemoryDatabase("test2", file2.getAbsolutePath());
+    final H2Database db1 = new H2Database(url1, singletonList(file1.getAbsolutePath()));
+    final H2Database db2 = new H2Database(url2, singletonList(file2.getAbsolutePath()));
     final Connection connection1 = db1.createConnection(user);
     final Connection connection2 = db2.createConnection(user);
     connection1.prepareCall("select id from scott.test1").executeQuery();

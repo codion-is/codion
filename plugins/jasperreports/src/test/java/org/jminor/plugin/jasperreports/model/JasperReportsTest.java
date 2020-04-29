@@ -10,7 +10,7 @@ import org.jminor.common.http.server.HttpServer;
 import org.jminor.common.http.server.HttpServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
-import org.jminor.dbms.h2database.H2Database;
+import org.jminor.dbms.h2database.H2DatabaseProvider;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
@@ -39,7 +39,7 @@ public class JasperReportsTest {
   private static final String REPORT_PATH = "build/resources/test";
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          H2Database.h2MemoryDatabase("JasperReportsWrapperTest.fillJdbcReport", System.getProperty("jminor.db.initScript")))
+          new H2DatabaseProvider().createDatabase("jdbc:h2:mem:JasperReportsWrapperTest", System.getProperty("jminor.db.initScript")))
           .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @AfterAll

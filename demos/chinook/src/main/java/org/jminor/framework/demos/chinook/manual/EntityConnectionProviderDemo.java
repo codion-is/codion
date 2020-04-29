@@ -25,7 +25,7 @@ public class EntityConnectionProviderDemo {
   static void localConnectionProvider() {
     // tag::local[]
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
-    Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
+    Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
 
     LocalEntityConnectionProvider connectionProvider =

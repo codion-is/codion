@@ -6,6 +6,8 @@ package org.jminor.dbms.sqlite;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.DatabaseProvider;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Provides sqlite database implementations
  */
@@ -18,6 +20,8 @@ public final class SQLiteDatabaseProvider implements DatabaseProvider {
 
   @Override
   public Database createDatabase() {
-    return new SQLiteDatabase();
+    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
+
+    return new SQLiteDatabase(jdbcUrl);
   }
 }

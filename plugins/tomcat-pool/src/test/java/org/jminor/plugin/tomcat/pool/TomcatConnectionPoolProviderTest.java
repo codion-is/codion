@@ -6,7 +6,7 @@ package org.jminor.plugin.tomcat.pool;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
-import org.jminor.dbms.h2database.H2Database;
+import org.jminor.dbms.h2database.H2DatabaseProvider;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +20,7 @@ public class TomcatConnectionPoolProviderTest {
   @Test
   public void test() throws Exception {
     final TomcatConnectionPoolProvider provider = new TomcatConnectionPoolProvider();
-    final ConnectionPool pool = provider.createConnectionPool(H2Database.h2MemoryDatabase("TomcatConnectionPoolProviderTest.test",
+    final ConnectionPool pool = provider.createConnectionPool(new H2DatabaseProvider().createDatabase("jdbc:h2:mem:TomcatConnectionPoolProviderTest",
             System.getProperty("jminor.db.initScript")), UNIT_TEST_USER);
     pool.setCollectSnapshotStatistics(true);
     assertTrue(pool.isCollectSnapshotStatistics());

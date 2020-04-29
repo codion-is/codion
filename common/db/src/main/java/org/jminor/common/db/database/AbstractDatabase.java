@@ -25,85 +25,15 @@ public abstract class AbstractDatabase implements Database {
 
   private final QueryCounter queryCounter = new QueryCounter();
   private final Type databaseType;
-  private final String driverClassName;
-  private final String host;
-  private final String sid;
-  private final Integer port;
-  private final boolean embedded;
-
-  private String urlAppend = "";
+  private final String jdbcUrl;
 
   /**
-   * Instantiates a new AbstractDatabase using host/port/sid/embedded settings specified by system properties
+   * Instantiates a new AbstractDatabase.
    * @param databaseType the database type
-   * @param driverClassName the database driver class name
-   * @see #DATABASE_HOST
-   * @see #DATABASE_PORT
-   * @see #DATABASE_SID
-   * @see #DATABASE_EMBEDDED
    */
-  public AbstractDatabase(final Type databaseType, final String driverClassName) {
-    this(databaseType, driverClassName, Database.DATABASE_HOST.get());
-  }
-
-  /**
-   * Instantiates a new AbstractDatabase using port/sid/embedded settings specified by system properties
-   * @param databaseType the database type
-   * @param driverClassName the database driver class name
-   * @param host the database host name or path to the database files in case of an embedded database
-   * @see #DATABASE_PORT
-   * @see #DATABASE_SID
-   * @see #DATABASE_EMBEDDED
-   */
-  public AbstractDatabase(final Type databaseType, final String driverClassName, final String host) {
-    this(databaseType, driverClassName, host, Database.DATABASE_PORT.get());
-  }
-
-  /**
-   * Instantiates a new AbstractDatabase using sid/embedded settings specified by system properties
-   * @param databaseType the database type
-   * @param driverClassName the database driver class name
-   * @param host the database host name or path to the database files in case of an embedded database
-   * @param port the database server port
-   * @see #DATABASE_SID
-   * @see #DATABASE_EMBEDDED
-   */
-  public AbstractDatabase(final Type databaseType, final String driverClassName, final String host, final Integer port) {
-    this(databaseType, driverClassName, host, port, Database.DATABASE_SID.get());
-  }
-
-  /**
-   * Instantiates a new AbstractDatabase using the embedded settings specified by the system property
-   * @param databaseType the database type
-   * @param driverClassName the database driver class name
-   * @param host the database host name or path to the database files in case of an embedded database
-   * @param port the database server port
-   * @param sid the service identifier
-   * @see #DATABASE_EMBEDDED
-   */
-  public AbstractDatabase(final Type databaseType, final String driverClassName, final String host, final Integer port,
-                          final String sid) {
-    this(databaseType, driverClassName, host, port, sid, Database.DATABASE_EMBEDDED.get());
-  }
-
-  /**
-   * Instantiates a new AbstractDatabase
-   * @param databaseType a the database type
-   * @param driverClassName the database driver class name
-   * @param host the database host name or path to the database files in case of an embedded database
-   * @param port the database server port
-   * @param sid the service identifier
-   * @param embedded true if the database is embedded
-   */
-  public AbstractDatabase(final Type databaseType, final String driverClassName, final String host, final Integer port,
-                          final String sid, final boolean embedded) {
-    loadDriver(driverClassName);
+  public AbstractDatabase(final Type databaseType, final String jdbcUrl) {
     this.databaseType = requireNonNull(databaseType, "databaseType");
-    this.driverClassName = driverClassName;
-    this.host = host;
-    this.port = port;
-    this.sid = sid;
-    this.embedded = embedded;
+    this.jdbcUrl = requireNonNull(jdbcUrl, "jdbcUrl");
   }
 
   @Override
@@ -112,36 +42,8 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final String getDriverClassName() {
-    return driverClassName;
-  }
-
-  @Override
-  public final String getHost() {
-    return host;
-  }
-
-  @Override
-  public final Integer getPort() {
-    return port;
-  }
-
-  @Override
-  public final String getSid() {
-    return sid;
-  }
-
-  @Override
-  public final boolean isEmbedded() {
-    return embedded;
-  }
-
-  public final void setUrlAppend(final String urlAppend) {
-    this.urlAppend = urlAppend;
-  }
-
-  public final String getUrlAppend() {
-    return urlAppend;
+  public final String getURL() {
+    return jdbcUrl;
   }
 
   @Override
@@ -154,7 +56,7 @@ public abstract class AbstractDatabase implements Database {
     connectionProperties.put(PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
     DriverManager.setLoginTimeout(getLoginTimeout());
     try {
-      return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
+      return DriverManager.getConnection(getURL(), addConnectionProperties(connectionProperties));
     }
     catch (final SQLException e) {
       if (isAuthenticationException(e)) {
@@ -270,19 +172,6 @@ public abstract class AbstractDatabase implements Database {
    */
   protected int getLoginTimeout() {
     return Database.DEFAULT_LOGIN_TIMEOUT;
-  }
-
-  /**
-   * Loads the given class by name
-   * @param driverClassName the class name
-   */
-  private static void loadDriver(final String driverClassName) {
-    try {
-      Class.forName(requireNonNull(driverClassName, "driverClassName"));
-    }
-    catch (final ClassNotFoundException e) {
-      System.err.println(driverClassName + " not found on classpath");
-    }
   }
 
   private static final class QueryCounter {

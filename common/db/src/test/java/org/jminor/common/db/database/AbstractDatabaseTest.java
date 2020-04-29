@@ -6,34 +6,28 @@ package org.jminor.common.db.database;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
-import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class AbstractDatabaseTest {
 
-  private static final String DRIVER_CLASS = "some.driver.Class";
-
-  private final AbstractDatabase database = new AbstractDatabase(Database.Type.H2, DRIVER_CLASS, "host", 1234, "sid", false) {
+  private final AbstractDatabase database = new AbstractDatabase(Database.Type.H2, "jdbc:h2:mem:h2db") {
     @Override
-    public String getAutoIncrementQuery(final String idSource) {
-      return null;
+    public String getName() {
+      return "name";
     }
     @Override
-    public String getURL(final Properties connectionProperties) {
+    public String getAutoIncrementQuery(final String idSource) {
       return null;
     }
   };
 
   @Test
   public void test() throws Exception {
-    assertEquals("host", database.getHost());
-    assertEquals(1234, database.getPort());
-    assertEquals("sid", database.getSid());
-    assertFalse(database.isEmbedded());
     assertEquals(Database.SelectForUpdateSupport.FOR_UPDATE_NOWAIT, database.getSelectForUpdateSupport());
     assertTrue(database.supportsIsValid());
-    assertEquals(DRIVER_CLASS, database.getDriverClassName());
+    assertEquals("name", database.getName());
     database.shutdownEmbedded(null);
     database.getErrorMessage(new SQLException());
   }

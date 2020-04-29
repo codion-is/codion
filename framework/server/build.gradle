@@ -122,9 +122,7 @@ task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
     jvmArgs = ['--add-modules', 'org.jminor.plugin.jasperreports']
     systemProperties = [
             'jminor.db.type'                            : 'h2',
-            'jminor.db.host'                            : 'h2db',
-            'jminor.db.embedded'                        : 'true',
-            'jminor.db.embeddedInMemory'                : 'true',
+            'jminor.db.url'                             : 'jdbc:h2:mem:h2db',
             'jminor.db.initScript'                      : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
             'jminor.server.pooling.startupPoolUsers'    : 'scott:tiger',
             'jminor.server.port'                        : '2222',

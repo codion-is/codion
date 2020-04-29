@@ -3,14 +3,11 @@
  */
 package org.jminor.dbms.oracle;
 
-import org.jminor.common.Configuration;
 import org.jminor.common.db.database.AbstractDatabase;
-import org.jminor.common.value.PropertyValue;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
@@ -22,11 +19,7 @@ public final class OracleDatabase extends AbstractDatabase {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(OracleDatabase.class.getName());
 
-  static final String DRIVER_CLASS_NAME = "oracle.jdbc.OracleDriver";
-  static final String URL_PREFIX = "jdbc:oracle:thin:@";
   static final String CHECK_QUERY = "select 1 from dual";
-
-  static final PropertyValue<Boolean> USE_LEGACY_SID = Configuration.booleanValue("jminor.db.oracle.useLegacySID", false);
 
   private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<>();
 
@@ -58,15 +51,13 @@ public final class OracleDatabase extends AbstractDatabase {
     ERROR_CODE_MAP.put(VIEW_HAS_ERRORS_ERROR, MESSAGES.getString("view_has_errors_error"));
   }
 
-  private boolean useLegacySid = USE_LEGACY_SID.get();
-
-  OracleDatabase() {
-    super(Type.ORACLE, DRIVER_CLASS_NAME);
+  OracleDatabase(final String jdbcUrl) {
+    super(Type.ORACLE, jdbcUrl);
   }
 
-  private OracleDatabase(final String host, final Integer port, final String sid) {
-    super(Type.ORACLE, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
-            requireNonNull(port, "port"), requireNonNull(sid, "sid"));
+  @Override
+  public String getName() {
+    return getURL();
   }
 
   @Override
@@ -77,11 +68,6 @@ public final class OracleDatabase extends AbstractDatabase {
   @Override
   public String getSequenceQuery(final String sequenceName) {
     return "select " + requireNonNull(sequenceName, "sequenceName") + ".nextval from dual";
-  }
-
-  @Override
-  public String getURL(final Properties connectionProperties) {
-    return URL_PREFIX + getHost() + ":" + getPort() + (useLegacySid ? ":" : "/") + getSid() + getUrlAppend();
   }
 
   /**
@@ -131,26 +117,5 @@ public final class OracleDatabase extends AbstractDatabase {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_KEY_ERROR;
-  }
-
-  /**
-   * Set to true for Oracle databases version 11 and below
-   * @param useLegacySid true if legacy SID url configuration should be used
-   * @return this instance
-   */
-  public OracleDatabase setUseLegacySid(final boolean useLegacySid) {
-    this.useLegacySid = useLegacySid;
-    return this;
-  }
-
-  /**
-   * Instantiates a new OracleDatabase.
-   * @param host the host name
-   * @param port the port number
-   * @param sid the service identifier
-   * @return a database instance
-   */
-  public static OracleDatabase oracleDatabase(final String host, final Integer port, final String sid) {
-    return new OracleDatabase(host, port, sid);
   }
 }

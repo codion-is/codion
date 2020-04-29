@@ -5998,3 +5998,5 @@
   ServerMonitorPanel, synchronized zoom implemented
   EntityServerAdmin.ThreadStatistics, timestamp added
   EntityServerAdmin.ServerStatistics added along with getServerStatistics()
+  AbstractDatabase.embedded removed, isEmbedded() moved to subclasses
+  Database, major surgery, replaced host, port and sid with jdbc url, finally

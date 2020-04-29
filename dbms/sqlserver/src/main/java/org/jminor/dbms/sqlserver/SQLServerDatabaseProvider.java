@@ -6,6 +6,8 @@ package org.jminor.dbms.sqlserver;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.DatabaseProvider;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Provides sql server database implementations
  */
@@ -18,6 +20,8 @@ public final class SQLServerDatabaseProvider implements DatabaseProvider {
 
   @Override
   public Database createDatabase() {
-    return new SQLServerDatabase();
+    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
+
+    return new SQLServerDatabase(jdbcUrl);
   }
 }

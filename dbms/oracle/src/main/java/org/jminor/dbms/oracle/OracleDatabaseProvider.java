@@ -6,6 +6,8 @@ package org.jminor.dbms.oracle;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.DatabaseProvider;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Provides oracle database implementations
  */
@@ -18,6 +20,8 @@ public final class OracleDatabaseProvider implements DatabaseProvider {
 
   @Override
   public Database createDatabase() {
-    return new OracleDatabase();
+    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
+
+    return new OracleDatabase(jdbcUrl);
   }
 }

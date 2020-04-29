@@ -14,8 +14,6 @@ import org.jminor.framework.domain.Domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -61,16 +59,11 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   }
 
   /**
-   * @return the service identifier (sid) of the underlying database or the hostname if sid is not specified
+   * @return the name of the underlying database
    */
   @Override
   public String getDescription() {
-    final String sid = getDatabase().getSid();
-    if (sid == null) {
-      return getDatabase().getHost();
-    }
-
-    return sid;
+    return database.getName();
   }
 
   @Override
@@ -87,12 +80,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   @Override
   protected void disconnect(final EntityConnection connection) {
     connection.disconnect();
-    if (database != null && database.isEmbedded() && SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get()) {
-      final Properties connectionProperties = new Properties();
-      connectionProperties.put(Database.USER_PROPERTY, getUser().getUsername());
-      connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(getUser().getPassword()));
-      database.shutdownEmbedded(connectionProperties);
-    }
   }
 
   private Database getDatabase() {

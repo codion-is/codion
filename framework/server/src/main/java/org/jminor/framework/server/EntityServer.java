@@ -596,9 +596,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       catch (final NoSuchObjectException ignored) {/*ignored*/}
       connectionMaintenanceScheduler.stop();
       ConnectionPools.closeConnectionPools();
-      if (database.isEmbedded()) {
-        database.shutdownEmbedded(null);
-      }
     }
   }
 }

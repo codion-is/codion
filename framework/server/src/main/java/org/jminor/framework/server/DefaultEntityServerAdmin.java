@@ -111,7 +111,7 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
 
   @Override
   public String getDatabaseURL() {
-    return server.getDatabase().getURL(null);
+    return server.getDatabase().getURL();
   }
 
   @Override

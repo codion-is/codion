@@ -9,49 +9,45 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PostgreSQLDatabaseTest {
 
+  private static final String URL = "jdbc:postgresql://host:1234/sid";
+
   @Test
   public void getSequenceQueryNullSequence() {
-    assertThrows(NullPointerException.class, () -> PostgreSQLDatabase.postgreSqlDatabase("host", 1234, "sid").getSequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(URL).getSequenceQuery(null));
   }
 
   @Test
   public void supportsIsValid() {
-    final PostgreSQLDatabase db = PostgreSQLDatabase.postgreSqlDatabase("host", 1234, "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertFalse(db.supportsIsValid());
   }
 
   @Test
   public void getAuthenticationInfo() {
-    final PostgreSQLDatabase db = PostgreSQLDatabase.postgreSqlDatabase("host", 1234, "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertNull(db.getAuthenticationInfo(null));
   }
 
   @Test
   public void getAutoIncrementQuery() {
-    final PostgreSQLDatabase db = PostgreSQLDatabase.postgreSqlDatabase("host", 1234, "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals("select currval('seq')", db.getAutoIncrementQuery("seq"));
   }
 
   @Test
   public void getSequenceQuery() {
-    final PostgreSQLDatabase db = PostgreSQLDatabase.postgreSqlDatabase("host", 1234, "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals("select nextval('seq')", db.getSequenceQuery("seq"));
   }
 
   @Test
-  public void getURL() {
-    final PostgreSQLDatabase db = PostgreSQLDatabase.postgreSqlDatabase("host", 1234, "sid");
-    assertEquals("jdbc:postgresql://host:1234/sid", db.getURL(null));
-  }
-
-  @Test
   public void getCheckConnectionQuery() {
-    final PostgreSQLDatabase db = PostgreSQLDatabase.postgreSqlDatabase("host", 1234, "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals(PostgreSQLDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
   }
 
   @Test
   public void constructorNullHost() {
-    assertThrows(NullPointerException.class, () -> PostgreSQLDatabase.postgreSqlDatabase(null, null, null));
+    assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(null));
   }
 }

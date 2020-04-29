@@ -75,9 +75,7 @@ Here are the parameters required for running the EmpDept test on the default H2 
 
 -Djminor.db.type=h2
 
--Djminor.db.embedded=true
-
--Djminor.db.host=h2db/h2
+-Djminor.db.url=jdbc:h2:mem:h2db
 
 For further information on parameters required for running JMinor applications see <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> and <<{basedir}/technical/server.adoc#_server_configuration, server configuration>>.
 

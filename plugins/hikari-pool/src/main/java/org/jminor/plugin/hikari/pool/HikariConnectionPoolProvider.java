@@ -38,15 +38,15 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     private final HikariConfig config = new HikariConfig();
 
     public HikariConnectionPool(final Database database, final User user) {
-      super(database, user, new DriverDataSource(database.getURL(null), database.getDriverClassName(),
+      super(database, user, new DriverDataSource(database.getURL(), null,
               new Properties(), user.getUsername(), String.valueOf(user.getPassword())));
-      config.setJdbcUrl(database.getURL(null));
+      config.setJdbcUrl(database.getURL());
       config.setAutoCommit(false);
       config.setUsername(user.getUsername());
       config.setMaximumPoolSize(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
       config.setMinimumIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());
       config.setIdleTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get());
-      config.setJdbcUrl(database.getURL(null));
+      config.setJdbcUrl(database.getURL());
       config.setDataSource(getPoolDataSource());
       setPool(new HikariPool(config));
     }
