@@ -36,8 +36,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
   private static DataSource createDataSource(final User user, final Database database) {
     final PoolProperties pp = new PoolProperties();
-    pp.setDriverClassName(database.getDriverClassName());
-    pp.setUrl(database.getURL(null));
+    pp.setUrl(database.getURL());
     pp.setDefaultAutoCommit(false);
     pp.setName(user.getUsername());
     //JMinor does not validate connections coming from a connection pool

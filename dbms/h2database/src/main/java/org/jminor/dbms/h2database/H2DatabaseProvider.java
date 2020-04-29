@@ -3,8 +3,14 @@
  */
 package org.jminor.dbms.h2database;
 
+import org.jminor.common.Text;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.DatabaseProvider;
+
+import java.util.List;
+
+import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Provides h2 database implementations
@@ -17,7 +23,14 @@ public final class H2DatabaseProvider implements DatabaseProvider {
   }
 
   @Override
-  public Database createDatabase() {
-    return new H2Database();
+  public H2Database createDatabase() {
+    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
+    final List<String> initScripts = Text.parseCommaSeparatedValues(H2Database.DATABASE_INIT_SCRIPT.get());
+
+    return new H2Database(jdbcUrl, initScripts);
+  }
+
+  public H2Database createDatabase(final String jdbcUrl, final String initScript) {
+    return new H2Database(jdbcUrl, singletonList(initScript));
   }
 }

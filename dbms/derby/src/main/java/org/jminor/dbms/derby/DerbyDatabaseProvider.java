@@ -6,6 +6,8 @@ package org.jminor.dbms.derby;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.DatabaseProvider;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Provides derby database implementations
  */
@@ -18,6 +20,8 @@ public final class DerbyDatabaseProvider implements DatabaseProvider {
 
   @Override
   public Database createDatabase() {
-    return new DerbyDatabase();
+    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
+
+    return new DerbyDatabase(jdbcUrl);
   }
 }

@@ -9,6 +9,7 @@ import org.jminor.common.event.EventDataListener;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2Database;
+import org.jminor.dbms.h2database.H2DatabaseProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnections;
@@ -41,7 +42,7 @@ public class EntityConnectionsTest {
   @BeforeAll
   public static void setUp() {
     try {
-      final H2Database destinationDatabase = H2Database.h2MemoryDatabase("TempDB", "src/test/sql/create_h2_db.sql");
+      final H2Database destinationDatabase = new H2DatabaseProvider().createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
       DESTINATION_CONNECTION = LocalEntityConnections.createConnection(DOMAIN, destinationDatabase, Users.user("sa"));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
       DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));

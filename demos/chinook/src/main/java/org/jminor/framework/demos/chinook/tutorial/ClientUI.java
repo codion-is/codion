@@ -138,7 +138,7 @@ public final class ClientUI {
   public static void main(final String[] args) {
     // Configure the database
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
-    Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
+    Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
     //initialize a connection provider, this class is responsible
     //for supplying a valid connection or throwing an exception

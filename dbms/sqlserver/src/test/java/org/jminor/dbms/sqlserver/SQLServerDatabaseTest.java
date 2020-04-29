@@ -9,37 +9,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLServerDatabaseTest {
 
+  private static final String URL = "jdbc:sqlserver://host:1234;databaseName=sid";
+
   @Test
   public void getSequenceQuery() {
-    assertThrows(UnsupportedOperationException.class, () -> SQLServerDatabase.sqlServerDatabase("host", 1234, "sid").getSequenceQuery("seq"));
+    assertThrows(UnsupportedOperationException.class, () -> new SQLServerDatabase(URL).getSequenceQuery("seq"));
   }
 
   @Test
   public void supportsIsValid() {
-    final SQLServerDatabase db = SQLServerDatabase.sqlServerDatabase("host", 1234, "sid");
+    final SQLServerDatabase db = new SQLServerDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   public void getAuthenticationInfo() {
-    final SQLServerDatabase db = SQLServerDatabase.sqlServerDatabase("host", 1234, "sid");
+    final SQLServerDatabase db = new SQLServerDatabase(URL);
     assertNull(db.getAuthenticationInfo(null));
   }
 
   @Test
   public void getAutoIncrementQuery() {
-    final SQLServerDatabase db = SQLServerDatabase.sqlServerDatabase("host", 1234, "sid");
+    final SQLServerDatabase db = new SQLServerDatabase(URL);
     assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
-  public void getURL() {
-    final SQLServerDatabase db = SQLServerDatabase.sqlServerDatabase("host", 1234, "sid");
-    assertEquals("jdbc:sqlserver://host:1234;databaseName=sid", db.getURL(null));
-  }
-
-  @Test
   public void constructorNullHost() {
-    assertThrows(NullPointerException.class, () -> SQLServerDatabase.sqlServerDatabase(null, null, null));
+    assertThrows(NullPointerException.class, () -> new SQLServerDatabase(null));
   }
 }

@@ -55,51 +55,9 @@ public final class QueryLoadTestModelTest {
   }
 
   private static Database createTestDatabaseInstance() {
-    final String type = Database.DATABASE_TYPE.get();
-    final String host = Database.DATABASE_HOST.get();
-    final Integer port = Database.DATABASE_PORT.get();
-    final String sid = Database.DATABASE_SID.get();
-    final Boolean embedded = Database.DATABASE_EMBEDDED.get();
-    final Boolean embeddedInMemory = Database.DATABASE_EMBEDDED_IN_MEMORY.get();
-    final String initScript = Database.DATABASE_INIT_SCRIPT.get();
-    try {
-      Database.DATABASE_TYPE.set(type == null ? Database.Type.H2.toString() : type);
-      Database.DATABASE_HOST.set(host == null ? "h2db/h2" : host);
-      Database.DATABASE_PORT.set(port);
-      Database.DATABASE_SID.set(sid);
-      Database.DATABASE_EMBEDDED.set(embedded == null ? true : embedded);
-      Database.DATABASE_EMBEDDED_IN_MEMORY.set(embeddedInMemory == null ? true : embeddedInMemory);
-      Database.DATABASE_INIT_SCRIPT.set(initScript == null ? "demos/src/main/sql/create_h2_db.sql" : initScript);
+    Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
+    Database.DATABASE_INIT_SCRIPT.set("../../demos/empdept/src/main/sql/create_schema.sql");
 
-      return Databases.getInstance();
-    }
-    finally {
-      setSystemProperties(type, host, port, sid, embedded, embeddedInMemory, initScript);
-    }
-  }
-
-  private static void setSystemProperties(final String type, final String host, final Integer port, final String sid,
-                                          final Boolean embedded, final Boolean embeddedInMemory, final String initScript) {
-    if (type != null) {
-      Database.DATABASE_TYPE.set(type);
-    }
-    if (host != null) {
-      Database.DATABASE_HOST.set(host);
-    }
-    if (port != null) {
-      Database.DATABASE_PORT.set(port);
-    }
-    if (sid != null) {
-      Database.DATABASE_SID.set(sid);
-    }
-    if (embedded != null) {
-      Database.DATABASE_EMBEDDED.set(embedded);
-    }
-    if (embeddedInMemory != null) {
-      Database.DATABASE_EMBEDDED_IN_MEMORY.set(embeddedInMemory);
-    }
-    if (initScript != null) {
-      Database.DATABASE_INIT_SCRIPT.set(initScript);
-    }
+    return Databases.getInstance();
   }
 }

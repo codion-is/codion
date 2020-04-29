@@ -57,34 +57,9 @@ public interface Database {
   PropertyValue<String> DATABASE_TYPE = Configuration.stringValue("jminor.db.type", null);
 
   /**
-   * Specifies the machine hosting the database, in the case of embedded databases
-   * this specifies the name of the database
+   * Specifies the jdbc url of the database.
    */
-  PropertyValue<String> DATABASE_HOST = Configuration.stringValue("jminor.db.host", null);
-
-  /**
-   * Specifies the database sid (used for dbname for MySQL, SQLServer and Derby server connections)
-   */
-  PropertyValue<String> DATABASE_SID = Configuration.stringValue("jminor.db.sid", null);
-
-  /**
-   * Specifies the database port
-   */
-  PropertyValue<Integer> DATABASE_PORT = Configuration.integerValue("jminor.db.port", null);
-
-  /**
-   * Specifies whether or not the database should be run in embedded mode, if applicable<br>
-   * Values: "true"/"false"<br>
-   * Default: "false"<br>
-   */
-  PropertyValue<Boolean> DATABASE_EMBEDDED = Configuration.booleanValue("jminor.db.embedded", false);
-
-  /**
-   * Specifies whether or not the database should be run in in-memory mode<br>
-   * Values: "true"/"false"<br>
-   * Default: "false"<br>
-   */
-  PropertyValue<Boolean> DATABASE_EMBEDDED_IN_MEMORY = Configuration.booleanValue("jminor.db.embeddedInMemory", false);
+  PropertyValue<String> DATABASE_URL = Configuration.stringValue("jminor.db.url", null);
 
   /**
    * A comma separated list of paths to scripts to run when initializing the database, implementation specific
@@ -114,40 +89,9 @@ public interface Database {
   Type getType();
 
   /**
-   * Returns the name of the host this database is running on.
-   * @return the database host name
+   * @return a name identifying this database
    */
-  String getHost();
-
-  /**
-   * Returns the port number this database is running on.
-   * @return the database port number
-   */
-  Integer getPort();
-
-  /**
-   * Returns the database service id or database name.
-   * @return the database service id
-   */
-  String getSid();
-
-  /**
-   * Returns true if this database is an embedded one
-   * @return true if this database is an embedded one
-   */
-  boolean isEmbedded();
-
-  /**
-   * Sets the string to append to the connection URL.
-   * @param urlAppend a string to append to the connection URL
-   */
-  void setUrlAppend(String urlAppend);
-
-  /**
-   * Returns the string to append to the connection URL.
-   * @return the string to append to the connection URL
-   */
-  String getUrlAppend();
+  String getName();
 
   /**
    * Returns a query string for retrieving the last automatically generated id from the given id source
@@ -167,12 +111,10 @@ public interface Database {
   String getSequenceQuery(String sequenceName);
 
   /**
-   * Returns the database url for this database, based on system properties
-   * @param connectionProperties the connection properties, used primarily to provide
-   * embedded databases with user info for authentication purposes
-   * @return the database url for this database, based on system properties
+   * Returns the database url for this database.
+   * @return the database url for this database
    */
-  String getURL(Properties connectionProperties);
+  String getURL();
 
   /**
    * In the case of embedded databases the user login info can be appended
@@ -265,12 +207,6 @@ public interface Database {
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
   Connection createConnection(User user) throws DatabaseException;
-
-  /**
-   * Returns the name of the driver class
-   * @return the name of the driver class
-   */
-  String getDriverClassName();
 
   /**
    * Counts this query, based on the first character.

@@ -21,7 +21,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,61 +29,43 @@ public class DatabasesTest {
   @Test
   public void test() {
     final String type = Database.DATABASE_TYPE.get();
-    final String host = Database.DATABASE_HOST.get();
-    final Integer port = Database.DATABASE_PORT.get();
-    final String sid = Database.DATABASE_SID.get();
-    final Boolean embedded = Database.DATABASE_EMBEDDED.get();
-    final Boolean embeddedInMemory = Database.DATABASE_EMBEDDED_IN_MEMORY.get();
+    final String url = Database.DATABASE_URL.get();
     final String initScript = Database.DATABASE_INIT_SCRIPT.get();
+    Database.DATABASE_URL.set("dummy/url");
+    Database.DATABASE_INIT_SCRIPT.set(null);
     try {
       Database.DATABASE_TYPE.set(null);
       assertThrows(IllegalArgumentException.class, Databases::getInstance);
 
       Database.DATABASE_TYPE.set(Database.Type.DERBY.toString());
-      Database.DATABASE_HOST.set("host");
-      Database.DATABASE_EMBEDDED.set(true);
       Database database = Databases.getInstance();
       assertTrue(database instanceof DerbyDatabase);
 
       Database.DATABASE_TYPE.set(Database.Type.H2.toString());
-      Database.DATABASE_HOST.set("host");
-      Database.DATABASE_EMBEDDED.set(true);
       database = Databases.getInstance();
       assertTrue(database instanceof H2Database);
 
       Database.DATABASE_TYPE.set(Database.Type.HSQL.toString());
-      Database.DATABASE_HOST.set("host");
-      Database.DATABASE_EMBEDDED.set(true);
       database = Databases.getInstance();
       assertTrue(database instanceof HSQLDatabase);
 
       Database.DATABASE_TYPE.set(Database.Type.MARIADB.toString());
-      Database.DATABASE_PORT.set(3306);
-      Database.DATABASE_SID.set("sid");
       database = Databases.getInstance();
       assertTrue(database instanceof MariaDbDatabase);
 
       Database.DATABASE_TYPE.set(Database.Type.MYSQL.toString());
-      Database.DATABASE_PORT.set(3306);
-      Database.DATABASE_SID.set("sid");
       database = Databases.getInstance();
       assertTrue(database instanceof MySQLDatabase);
 
       Database.DATABASE_TYPE.set(Database.Type.ORACLE.toString());
-      Database.DATABASE_PORT.set(1521);
-      Database.DATABASE_SID.set("sid");
       database = Databases.getInstance();
       assertTrue(database instanceof OracleDatabase);
 
       Database.DATABASE_TYPE.set(Database.Type.POSTGRESQL.toString());
-      Database.DATABASE_PORT.set(5435);
-      Database.DATABASE_SID.set("sid");
       database = Databases.getInstance();
       assertTrue(database instanceof PostgreSQLDatabase);
 
       Database.DATABASE_TYPE.set(Database.Type.SQLSERVER.toString());
-      Database.DATABASE_PORT.set(7414);
-      Database.DATABASE_SID.set("sid");
       database = Databases.getInstance();
       assertTrue(database instanceof SQLServerDatabase);
 
@@ -99,12 +80,8 @@ public class DatabasesTest {
       assertThrows(IllegalArgumentException.class, Databases::getInstance);
     }
     finally {
+      Database.DATABASE_URL.set(url);
       Database.DATABASE_TYPE.set(type);
-      Database.DATABASE_HOST.set(host);
-      Database.DATABASE_PORT.set(port);
-      Database.DATABASE_SID.set(sid);
-      Database.DATABASE_EMBEDDED.set(embedded);
-      Database.DATABASE_EMBEDDED_IN_MEMORY.set(embeddedInMemory);
       Database.DATABASE_INIT_SCRIPT.set(initScript);
     }
   }
@@ -130,13 +107,13 @@ public class DatabasesTest {
     private final Database database;
 
     public TestDatabase() {
-      super(Type.H2, "org.h2.Driver");
+      super(Type.H2, "jdbc:h2:mem:h2db");
       this.database = Databases.getInstance();
     }
 
     @Override
-    public boolean isEmbedded() {
-      return false;
+    public String getName() {
+      return database.getName();
     }
 
     @Override
@@ -152,11 +129,6 @@ public class DatabasesTest {
     @Override
     public String getAutoIncrementQuery(final String idSource) {
       return database.getAutoIncrementQuery(idSource);
-    }
-
-    @Override
-    public String getURL(final Properties connectionProperties) {
-      return database.getURL(connectionProperties);
     }
   }
 }

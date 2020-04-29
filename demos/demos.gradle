@@ -40,9 +40,7 @@ artifacts {
 test {
     useJUnitPlatform()
     systemProperty "jminor.db.type", "h2"
-    systemProperty "jminor.db.host", "h2db"
-    systemProperty "jminor.db.embedded", "true"
-    systemProperty "jminor.db.embeddedInMemory", "true"
+    systemProperty "jminor.db.url", "jdbc:h2:mem:h2db"
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.test.user", "scott:tiger"
 }
@@ -52,8 +50,7 @@ startScripts {
     defaultJvmOpts = [
             '-Djminor.client.connectionType=local',
             '-Djminor.db.type=h2',
-            '-Djminor.db.host=h2db',
-            '-Djminor.db.embeddedInMemory=true',
+            '-Djminor.db.url=jdbc:h2:mem:h2db',
             '-Djminor.db.initScript=../config/create_schema.sql',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
@@ -135,7 +132,7 @@ task runClientLocal(type: JavaExec) {
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.type'              : 'h2',
-            'jminor.db.embeddedInMemory'  : 'true',
+            'jminor.db.url'               : 'jdbc:h2:mem:h2db',
             'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
             'logback.configurationFile'   : 'src/main/resources/logback.xml',
             'sun.awt.disablegrab'         : 'true'

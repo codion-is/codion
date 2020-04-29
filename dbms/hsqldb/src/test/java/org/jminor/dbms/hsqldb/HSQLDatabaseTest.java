@@ -12,21 +12,23 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HSQLDatabaseTest {
+  
+  private static final String URL = "jdbc:hsqldb:hsql//host:1234/sid";
 
   @Test
   public void getSequenceSQLNullSequence() {
-    assertThrows(NullPointerException.class, () -> HSQLDatabase.hsqlServerDatabase("host", 1234, "sid").getSequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> new HSQLDatabase(URL).getSequenceQuery(null));
   }
 
   @Test
   public void supportsIsValid() {
-    final HSQLDatabase db = HSQLDatabase.hsqlServerDatabase("host", 1234, "sid");
+    final HSQLDatabase db = new HSQLDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   public void getAuthenticationInfo() {
-    final HSQLDatabase db = HSQLDatabase.hsqlServerDatabase("host", 1234, "sid");
+    final HSQLDatabase db = new HSQLDatabase(URL);
     final Properties props = new Properties();
     props.put(Database.USER_PROPERTY, "scott");
     props.put(Database.PASSWORD_PROPERTY, "tiger");
@@ -35,31 +37,19 @@ public class HSQLDatabaseTest {
 
   @Test
   public void getAutoIncrementQuery() {
-    final HSQLDatabase db = HSQLDatabase.hsqlServerDatabase("host", 1234, "sid");
+    final HSQLDatabase db = new HSQLDatabase(URL);
     assertEquals(HSQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
   public void getSequenceQuery() {
-    final HSQLDatabase db = HSQLDatabase.hsqlServerDatabase("host", 1234, "sid");
+    final HSQLDatabase db = new HSQLDatabase(URL);
     final String idSource = "seq";
     assertEquals(HSQLDatabase.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
   }
 
   @Test
-  public void getURL() {
-    HSQLDatabase db = HSQLDatabase.hsqlServerDatabase("host", 1234, "sid");
-    final Properties props = new Properties();
-    props.put(Database.USER_PROPERTY, "scott");
-    assertEquals("jdbc:hsqldb:hsql//host:1234/sid;user=scott", db.getURL(props));
-    props.put(Database.PASSWORD_PROPERTY, "tiger");
-    assertEquals("jdbc:hsqldb:hsql//host:1234/sid;user=scott;password=tiger", db.getURL(props));
-    db = HSQLDatabase.hsqlFileDatabase("dbname");
-    assertEquals("jdbc:hsqldb:file:dbname;user=scott;password=tiger", db.getURL(props));
-  }
-
-  @Test
-  public void constructorNullHost() {
-    assertThrows(NullPointerException.class, () -> HSQLDatabase.hsqlServerDatabase(null, null, null));
+  public void constructorNullUrl() {
+    assertThrows(NullPointerException.class, () -> new HSQLDatabase(null));
   }
 }
