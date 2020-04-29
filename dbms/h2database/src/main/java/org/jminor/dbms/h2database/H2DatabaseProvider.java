@@ -19,8 +19,8 @@ import static java.util.Objects.requireNonNull;
 public final class H2DatabaseProvider implements DatabaseProvider {
 
   @Override
-  public Database.Type getDatabaseType() {
-    return Database.Type.H2;
+  public boolean isCompatibleWith(final String driverClass) {
+    return driverClass.startsWith("org.h2.Driver");
   }
 
   @Override

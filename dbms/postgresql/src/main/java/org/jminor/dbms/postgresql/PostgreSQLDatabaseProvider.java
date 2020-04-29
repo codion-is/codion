@@ -14,8 +14,8 @@ import static java.util.Objects.requireNonNull;
 public final class PostgreSQLDatabaseProvider implements DatabaseProvider {
 
   @Override
-  public Database.Type getDatabaseType() {
-    return Database.Type.POSTGRESQL;
+  public boolean isCompatibleWith(final String driverClass) {
+    return driverClass.equals("org.postgresql.Driver");
   }
 
   @Override

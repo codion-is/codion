@@ -5975,3 +5975,4 @@
   Database, major surgery, replaced host, port and sid with jdbc url, finally
   Database implementations now package private
   H2DatabaseProvider.createDatabase() bug fixed, now handles null initScript
+  DatabaseProvider now discovered using jdbc url

@@ -3,7 +3,9 @@
  */
 package org.jminor.common.db.database;
 
-import java.util.Objects;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ServiceLoader;
 
 /**
@@ -12,9 +14,10 @@ import java.util.ServiceLoader;
 public interface DatabaseProvider {
 
   /**
-   * @return the type of database this provider provides
+   * @param driverClass the driver class
+   * @return true if this database provider fits the driver
    */
-  Database.Type getDatabaseType();
+  boolean isCompatibleWith(String driverClass);
 
   /**
    * @return a new Database implementation based on configuration values
@@ -25,15 +28,19 @@ public interface DatabaseProvider {
    * @return a {@link DatabaseProvider} implementation for the {@link Database#getDatabaseType()} type
    * @throws IllegalArgumentException in case no such implementation is found
    */
-  static DatabaseProvider getInstance() {
-    final Database.Type databaseType = Database.getDatabaseType();
+  static DatabaseProvider getInstance() throws SQLException {
+    final String jdbcUrl = Database.DATABASE_URL.get();
+    if (jdbcUrl == null) {
+      throw new IllegalStateException("jminor.db.url must be specified before instantiating a DatabaseProvider");
+    }
+    final Driver driver = DriverManager.getDriver(jdbcUrl);
     final ServiceLoader<DatabaseProvider> loader = ServiceLoader.load(DatabaseProvider.class);
     for (final DatabaseProvider provider : loader) {
-      if (Objects.equals(provider.getDatabaseType(), databaseType)) {
+      if (provider.isCompatibleWith(driver.getClass().getName())) {
         return provider;
       }
     }
 
-    throw new IllegalArgumentException("No DatabaseProvider implementation available for type: " + databaseType);
+    throw new IllegalArgumentException("No DatabaseProvider implementation available for driver: " + driver.getClass());
   }
 }

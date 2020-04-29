@@ -14,8 +14,8 @@ import static java.util.Objects.requireNonNull;
 public final class SQLServerDatabaseProvider implements DatabaseProvider {
 
   @Override
-  public Database.Type getDatabaseType() {
-    return Database.Type.SQLSERVER;
+  public boolean isCompatibleWith(final String driverClass) {
+    return driverClass.equals("com.microsoft.sqlserver.jdbc.SQLServerDriver");
   }
 
   @Override

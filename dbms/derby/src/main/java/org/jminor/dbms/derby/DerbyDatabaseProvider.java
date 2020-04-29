@@ -14,8 +14,8 @@ import static java.util.Objects.requireNonNull;
 public final class DerbyDatabaseProvider implements DatabaseProvider {
 
   @Override
-  public Database.Type getDatabaseType() {
-    return Database.Type.DERBY;
+  public boolean isCompatibleWith(final String driverClass) {
+    return driverClass.startsWith("org.apache.derby.jdbc");
   }
 
   @Override

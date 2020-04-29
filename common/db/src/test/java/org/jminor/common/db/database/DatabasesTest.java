@@ -13,69 +13,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DatabasesTest {
-
-  @Test
-  public void test() {
-    final String type = Database.DATABASE_TYPE.get();
-    final String url = Database.DATABASE_URL.get();
-    final String initScript = Database.DATABASE_INIT_SCRIPT.get();
-    Database.DATABASE_URL.set("dummy/url");
-    Database.DATABASE_INIT_SCRIPT.set(null);
-    try {
-      Database.DATABASE_TYPE.set(null);
-      assertThrows(IllegalArgumentException.class, Databases::getInstance);
-
-      Database.DATABASE_TYPE.set(Database.Type.DERBY.toString());
-      Database database = Databases.getInstance();
-      assertSame(database.getType(), Database.Type.DERBY);
-
-      Database.DATABASE_TYPE.set(Database.Type.H2.toString());
-      database = Databases.getInstance();
-      assertSame(database.getType(), Database.Type.H2);
-
-      Database.DATABASE_TYPE.set(Database.Type.HSQL.toString());
-      database = Databases.getInstance();
-      assertSame(database.getType(), Database.Type.HSQL);
-
-      Database.DATABASE_TYPE.set(Database.Type.MARIADB.toString());
-      database = Databases.getInstance();
-      assertSame(database.getType(), Database.Type.MARIADB);
-
-      Database.DATABASE_TYPE.set(Database.Type.MYSQL.toString());
-      database = Databases.getInstance();
-      assertSame(database.getType(), Database.Type.MYSQL);
-
-      Database.DATABASE_TYPE.set(Database.Type.ORACLE.toString());
-      database = Databases.getInstance();
-      assertSame(database.getType(), Database.Type.ORACLE);
-
-      Database.DATABASE_TYPE.set(Database.Type.POSTGRESQL.toString());
-      database = Databases.getInstance();
-      assertSame(database.getType(), Database.Type.POSTGRESQL);
-
-      Database.DATABASE_TYPE.set(Database.Type.SQLSERVER.toString());
-      database = Databases.getInstance();
-      assertSame(database.getType(), Database.Type.SQLSERVER);
-
-      Database.DATABASE_TYPE.set(Database.Type.SQLITE.toString());
-      database = Databases.getInstance();
-      assertSame(database.getType(), Database.Type.SQLITE);
-
-      Database.DATABASE_TYPE.set(Database.Type.OTHER.toString());
-      assertThrows(IllegalArgumentException.class, Databases::getInstance);
-
-      Database.DATABASE_TYPE.set("Unknown");
-      assertThrows(IllegalArgumentException.class, Databases::getInstance);
-    }
-    finally {
-      Database.DATABASE_URL.set(url);
-      Database.DATABASE_TYPE.set(type);
-      Database.DATABASE_INIT_SCRIPT.set(initScript);
-    }
-  }
 
   @Test
   public void closeSilently() {
