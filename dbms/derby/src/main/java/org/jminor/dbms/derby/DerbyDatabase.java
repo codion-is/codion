@@ -27,7 +27,7 @@ final class DerbyDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    String name = getURL();
+    String name = getUrl();
     if (name.toLowerCase().startsWith(JDBC_URL_PREFIX_TCP)) {
       name = name.substring(JDBC_URL_PREFIX_TCP.length());
     }

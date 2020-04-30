@@ -35,7 +35,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final String getURL() {
+  public final String getUrl() {
     return jdbcUrl;
   }
 
@@ -49,7 +49,7 @@ public abstract class AbstractDatabase implements Database {
     connectionProperties.put(PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
     DriverManager.setLoginTimeout(getLoginTimeout());
     try {
-      return DriverManager.getConnection(getURL(), addConnectionProperties(connectionProperties));
+      return DriverManager.getConnection(getUrl(), addConnectionProperties(connectionProperties));
     }
     catch (final SQLException e) {
       if (isAuthenticationException(e)) {

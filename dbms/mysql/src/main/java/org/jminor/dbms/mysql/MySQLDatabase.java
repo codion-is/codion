@@ -26,7 +26,7 @@ final class MySQLDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    String name = getURL();
+    String name = getUrl();
     if (name.toLowerCase().startsWith(JDBC_URL_PREFIX)) {
       name = name.substring(JDBC_URL_PREFIX.length());
     }
