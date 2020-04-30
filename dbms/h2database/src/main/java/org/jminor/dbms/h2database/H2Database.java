@@ -5,9 +5,6 @@ package org.jminor.dbms.h2database;
 
 import org.jminor.common.db.database.AbstractDatabase;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.DriverManager;
@@ -48,7 +45,6 @@ final class H2Database extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String SYSADMIN_USERNAME = "sa";
-  static final String RUN_TOOL_CLASS_NAME = "org.h2.tools.RunScript";
   static final String URL_PREFIX_MEM = "jdbc:h2:mem:";
   static final String URL_PREFIX_FILE = "jdbc:h2:file:";
 
@@ -122,43 +118,6 @@ final class H2Database extends AbstractDatabase {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR;
-  }
-
-  /**
-   * Runs the given script using the RunScript tool, with the default sysadmin username (sa) and default charset
-   * @param scriptPath the path to the script
-   * @throws SQLException in case of an exception
-   */
-  public void runScript(final String scriptPath) throws SQLException {
-    runScript(scriptPath, SYSADMIN_USERNAME, "", Charset.defaultCharset());
-  }
-
-  /**
-   * Runs the given script using the RunScript tool
-   * @param scriptPath the path to the script
-   * @param username the username to run the script under
-   * @param password the password
-   * @param scriptCharset the script character set
-   * @throws SQLException in case of an exception
-   */
-  public void runScript(final String scriptPath, final String username, final String password, final Charset scriptCharset) throws SQLException {
-    try {
-      final Class runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
-      final Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, Charset.class, boolean.class);
-      execute.invoke(runScriptToolClass.getDeclaredConstructor().newInstance(), getUrl(), username, password, scriptPath, scriptCharset, false);
-    }
-    catch (final ClassNotFoundException cle) {
-      throw new RuntimeException(RUN_TOOL_CLASS_NAME + " must be on classpath for creating an embedded H2 database", cle);
-    }
-    catch (final InvocationTargetException ite) {
-      if (ite.getCause() instanceof SQLException) {
-        throw (SQLException) ite.getCause();
-      }
-      throw new RuntimeException(ite.getTargetException());
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private void initializeEmbeddedDatabase(final List<String> scriptPaths) {

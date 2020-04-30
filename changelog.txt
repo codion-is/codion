@@ -5983,3 +5983,4 @@
   OracleDatabaseProvider bug fixed, now all database providers use package instead of classname
 0.14.9
   Database.getURL() renamed getUrl() for consistency
+  H2Database.runScript() moved to H2DatabaseProvider and made static
