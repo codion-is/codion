@@ -13,20 +13,20 @@ import static java.util.Objects.requireNonNull;
  */
 public final class MySQLDatabaseProvider implements DatabaseProvider {
 
+  private static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
+
   @Override
-  public boolean isCompatibleWith(final String driverClass) {
-    return requireNonNull(driverClass, "driverClass").equals("com.mysql.jdbc.Driver");
+  public boolean isDriverCompatible(final String driverClassName) {
+    return requireNonNull(driverClassName, "driverClass").equals(DRIVER_NAME);
   }
 
   @Override
-  public Class<? extends Database> getDatabaseClass() {
-    return MySQLDatabase.class;
+  public String getDatabaseClassName() {
+    return MySQLDatabase.class.getName();
   }
 
   @Override
   public Database createDatabase() {
-    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
-
-    return new MySQLDatabase(jdbcUrl);
+    return new MySQLDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
   }
 }

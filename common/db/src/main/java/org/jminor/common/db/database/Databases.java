@@ -31,13 +31,13 @@ public final class Databases {
    */
   public static synchronized Database getInstance() {
     try {
-      final DatabaseProvider databaseProvider = DatabaseProvider.getInstance();
-      if (Databases.instance == null || !Databases.instance.getClass().equals(databaseProvider.getDatabaseClass())) {
+      final DatabaseProvider provider = DatabaseProvider.getInstance();
+      if (instance == null || !instance.getClass().getName().equals(provider.getDatabaseClassName())) {
         //refresh the instance
-        Databases.instance = databaseProvider.createDatabase();
+        instance = provider.createDatabase();
       }
 
-      return Databases.instance;
+      return instance;
     }
     catch (final IllegalArgumentException e) {
       throw e;

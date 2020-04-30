@@ -13,20 +13,20 @@ import static java.util.Objects.requireNonNull;
  */
 public final class HSQLDatabaseProvider implements DatabaseProvider {
 
+  private static final String DRIVER_PACKAGE = "org.hsqldb";
+
   @Override
-  public boolean isCompatibleWith(final String driverClass) {
-    return requireNonNull(driverClass, "driverClass").startsWith("org.hsqldb");
+  public boolean isDriverCompatible(final String driverClassName) {
+    return requireNonNull(driverClassName, "driverClass").startsWith(DRIVER_PACKAGE);
   }
 
   @Override
-  public Class<? extends Database> getDatabaseClass() {
-    return HSQLDatabase.class;
+  public String getDatabaseClassName() {
+    return HSQLDatabase.class.getName();
   }
 
   @Override
   public Database createDatabase() {
-    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
-
-    return new HSQLDatabase(jdbcUrl);
+    return new HSQLDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
   }
 }

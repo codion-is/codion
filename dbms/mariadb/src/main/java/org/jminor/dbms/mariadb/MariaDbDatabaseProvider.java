@@ -13,20 +13,20 @@ import static java.util.Objects.requireNonNull;
  */
 public final class MariaDbDatabaseProvider implements DatabaseProvider {
 
+  private static final String DRIVER_NAME = "org.mariadb.jdbc.Driver";
+
   @Override
-  public boolean isCompatibleWith(final String driverClass) {
-    return requireNonNull(driverClass, "driverClass").equals("org.mariadb.jdbc.Driver");
+  public boolean isDriverCompatible(final String driverClassName) {
+    return requireNonNull(driverClassName, "driverClass").equals(DRIVER_NAME);
   }
 
   @Override
-  public Class<? extends Database> getDatabaseClass() {
-    return MariaDbDatabase.class;
+  public String getDatabaseClassName() {
+    return MariaDbDatabase.class.getName();
   }
 
   @Override
   public Database createDatabase() {
-    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
-
-    return new MariaDbDatabase(jdbcUrl);
+    return new MariaDbDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
   }
 }
