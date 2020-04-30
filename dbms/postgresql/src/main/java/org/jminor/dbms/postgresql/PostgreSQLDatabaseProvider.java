@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class PostgreSQLDatabaseProvider implements DatabaseProvider {
 
-  public static final String DRIVER_PACKAGE = "org.postgresql";
+  private static final String DRIVER_PACKAGE = "org.postgresql";
 
   @Override
   public boolean isDriverCompatible(final String driverClassName) {
