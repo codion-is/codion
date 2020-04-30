@@ -6008,3 +6008,4 @@
   H2Database tests improved
   DatabaseProvider.getDatabaseClass() changed to getDatabaseClassName(), getDatabaseDriver() renamed to getDriverClassName(), isCompatibleWith() renamed to isDriverCompatible()
   OracleDatabaseProvider bug fixed, now all database providers use package instead of classname
+0.14.9
