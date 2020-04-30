@@ -13,11 +13,11 @@ import static java.util.Objects.requireNonNull;
  */
 public final class SQLServerDatabaseProvider implements DatabaseProvider {
 
-  private static final String DRIVER_NAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+  private static final String DRIVER_PACKAGE = "com.microsoft.sqlserver.jdbc";
 
   @Override
   public boolean isDriverCompatible(final String driverClassName) {
-    return requireNonNull(driverClassName, "driverClass").equals(DRIVER_NAME);
+    return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
   }
 
   @Override

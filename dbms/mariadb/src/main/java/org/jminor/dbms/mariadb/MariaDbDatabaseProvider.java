@@ -13,11 +13,11 @@ import static java.util.Objects.requireNonNull;
  */
 public final class MariaDbDatabaseProvider implements DatabaseProvider {
 
-  private static final String DRIVER_NAME = "org.mariadb.jdbc.Driver";
+  private static final String DRIVER_PACKAGE = "org.mariadb.jdbc";
 
   @Override
   public boolean isDriverCompatible(final String driverClassName) {
-    return requireNonNull(driverClassName, "driverClass").equals(DRIVER_NAME);
+    return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
   }
 
   @Override
