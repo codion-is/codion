@@ -15,7 +15,12 @@ public final class SQLServerDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isCompatibleWith(final String driverClass) {
-    return driverClass.equals("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    return requireNonNull(driverClass, "driverClass").equals("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return SQLServerDatabase.class;
   }
 
   @Override

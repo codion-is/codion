@@ -18,13 +18,6 @@ import java.util.Properties;
 public interface Database {
 
   /**
-   * The available database implementations
-   */
-  enum Type {
-    DERBY, H2, HSQL, MARIADB, MYSQL, ORACLE, POSTGRESQL, SQLSERVER, SQLITE, OTHER
-  }
-
-  /**
    * The possible select for update support values.
    */
   enum SelectForUpdateSupport {
@@ -41,20 +34,6 @@ public interface Database {
      */
     FOR_UPDATE_NOWAIT
   }
-
-  /**
-   * Specifies the database type by name, this property is case insensitive
-   * @see Type#DERBY
-   * @see Type#HSQL
-   * @see Type#H2
-   * @see Type#MARIADB
-   * @see Type#MYSQL
-   * @see Type#ORACLE
-   * @see Type#POSTGRESQL
-   * @see Type#SQLSERVER
-   * @see Type#SQLITE
-   */
-  PropertyValue<String> DATABASE_TYPE = Configuration.stringValue("jminor.db.type", null);
 
   /**
    * Specifies the jdbc url of the database.
@@ -81,12 +60,6 @@ public interface Database {
    * @see java.sql.DriverManager#setLoginTimeout(int)
    */
   int DEFAULT_LOGIN_TIMEOUT = 2;
-
-  /**
-   * Returns the database type this {@link Database} represents.
-   * @return the database type
-   */
-  Type getType();
 
   /**
    * @return a name identifying this database
@@ -256,18 +229,5 @@ public interface Database {
      * @return the timestamp of these statistics
      */
     long getTimestamp();
-  }
-
-  /**
-   * @return the database type string as specified by the DATABASE_TYPE system property
-   * @see Database#DATABASE_TYPE
-   */
-  static Database.Type getDatabaseType() {
-    final String dbType = Database.DATABASE_TYPE.get();
-    if (dbType == null) {
-      throw new IllegalArgumentException("Required system property missing: " + Database.DATABASE_TYPE);
-    }
-
-    return Database.Type.valueOf(dbType.trim().toUpperCase());
   }
 }

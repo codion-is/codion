@@ -52,7 +52,7 @@ final class OracleDatabase extends AbstractDatabase {
   }
 
   OracleDatabase(final String jdbcUrl) {
-    super(Type.ORACLE, jdbcUrl);
+    super(jdbcUrl);
   }
 
   @Override

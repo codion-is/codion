@@ -18,7 +18,7 @@ final class MySQLDatabase extends AbstractDatabase {
   private static final int UNIQUE_CONSTRAINT_ERROR2 = 1586;
 
   MySQLDatabase(final String jdbcUrl) {
-    super(Type.MYSQL, jdbcUrl);
+    super(jdbcUrl);
   }
 
   @Override

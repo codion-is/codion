@@ -15,7 +15,12 @@ public final class MariaDbDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isCompatibleWith(final String driverClass) {
-    return driverClass.equals("org.mariadb.jdbc.Driver");
+    return requireNonNull(driverClass, "driverClass").equals("org.mariadb.jdbc.Driver");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return MariaDbDatabase.class;
   }
 
   @Override

@@ -24,22 +24,14 @@ import static org.jminor.common.Util.nullOrEmpty;
 public abstract class AbstractDatabase implements Database {
 
   private final QueryCounter queryCounter = new QueryCounter();
-  private final Type databaseType;
   private final String jdbcUrl;
 
   /**
    * Instantiates a new AbstractDatabase.
-   * @param databaseType the database type
    * @param jdbcUrl the jdbc url
    */
-  public AbstractDatabase(final Type databaseType, final String jdbcUrl) {
-    this.databaseType = requireNonNull(databaseType, "databaseType");
+  public AbstractDatabase(final String jdbcUrl) {
     this.jdbcUrl = requireNonNull(jdbcUrl, "jdbcUrl");
-  }
-
-  @Override
-  public final Type getType() {
-    return databaseType;
   }
 
   @Override
@@ -102,7 +94,7 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public String getSequenceQuery(final String sequenceName) {
-    throw new UnsupportedOperationException("Sequence support is not implemented for database type: " + databaseType);
+    throw new UnsupportedOperationException("Sequence support is not implemented for database: " + getClass().getSimpleName());
   }
 
   /**

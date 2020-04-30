@@ -3,10 +3,11 @@
  */
 package org.jminor.framework.demos.schemabrowser.domain;
 
-import org.jminor.common.db.database.Database;
+import org.jminor.common.db.database.DatabaseProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.StringProvider;
 
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -25,9 +26,17 @@ public final class SchemaBrowser extends Domain {
     defineColumnConstraint();
   }
 
-  private static final ResourceBundle bundle =
-          ResourceBundle.getBundle("org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser",
-                  new Locale(Database.getDatabaseType().toString().toLowerCase()));
+  private static final ResourceBundle bundle;
+
+  static {
+    try {
+      bundle = ResourceBundle.getBundle("org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser",
+              new Locale(DatabaseProvider.getInstance().getDatabaseClass().getName()));
+    }
+    catch (final SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   public static final String T_SCHEMA = "schema";
   public static final String SCHEMA_NAME = bundle.getString("schema_name");

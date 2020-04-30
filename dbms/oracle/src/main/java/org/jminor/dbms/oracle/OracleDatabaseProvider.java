@@ -15,7 +15,12 @@ public final class OracleDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isCompatibleWith(final String driverClass) {
-    return driverClass.equals("oracle.jdbc.driver.OracleDriver");
+    return requireNonNull(driverClass, "driverClass").equals("oracle.jdbc.driver.OracleDriver");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return OracleDatabase.class;
   }
 
   @Override

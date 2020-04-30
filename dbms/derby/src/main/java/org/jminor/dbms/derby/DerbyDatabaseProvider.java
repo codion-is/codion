@@ -15,7 +15,12 @@ public final class DerbyDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isCompatibleWith(final String driverClass) {
-    return driverClass.startsWith("org.apache.derby.jdbc");
+    return requireNonNull(driverClass, "driverClass").startsWith("org.apache.derby.jdbc");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return DerbyDatabase.class;
   }
 
   @Override

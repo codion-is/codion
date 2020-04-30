@@ -39,7 +39,7 @@ public class DatabasesTest {
     private final Database database;
 
     public TestDatabase() {
-      super(Type.H2, "jdbc:h2:mem:h2db");
+      super("jdbc:h2:mem:h2db");
       this.database = Databases.getInstance();
     }
 

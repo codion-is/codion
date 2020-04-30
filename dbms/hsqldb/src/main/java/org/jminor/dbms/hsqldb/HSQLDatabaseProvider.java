@@ -15,7 +15,12 @@ public final class HSQLDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isCompatibleWith(final String driverClass) {
-    return driverClass.startsWith("org.hsqldb");
+    return requireNonNull(driverClass, "driverClass").startsWith("org.hsqldb");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return HSQLDatabase.class;
   }
 
   @Override

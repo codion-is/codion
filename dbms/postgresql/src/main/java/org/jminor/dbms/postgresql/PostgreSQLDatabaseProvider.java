@@ -15,7 +15,12 @@ public final class PostgreSQLDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isCompatibleWith(final String driverClass) {
-    return driverClass.equals("org.postgresql.Driver");
+    return requireNonNull(driverClass, "driverClass").equals("org.postgresql.Driver");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return PostgreSQLDatabase.class;
   }
 
   @Override

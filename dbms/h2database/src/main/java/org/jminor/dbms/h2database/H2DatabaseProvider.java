@@ -20,7 +20,12 @@ public final class H2DatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isCompatibleWith(final String driverClass) {
-    return driverClass.startsWith("org.h2.Driver");
+    return requireNonNull(driverClass, "driverClass").startsWith("org.h2.Driver");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return H2Database.class;
   }
 
   @Override

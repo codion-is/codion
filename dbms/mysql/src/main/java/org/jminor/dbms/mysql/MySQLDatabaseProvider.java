@@ -15,7 +15,12 @@ public final class MySQLDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isCompatibleWith(final String driverClass) {
-    return driverClass.equals("com.mysql.jdbc.Driver");
+    return requireNonNull(driverClass, "driverClass").equals("com.mysql.jdbc.Driver");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return MySQLDatabase.class;
   }
 
   @Override

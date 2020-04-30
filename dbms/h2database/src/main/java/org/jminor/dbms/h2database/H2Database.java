@@ -56,7 +56,7 @@ final class H2Database extends AbstractDatabase {
    * @param scriptPaths paths to the scripts to run to initialize the database
    */
   H2Database(final String jdbcUrl, final List<String> scriptPaths) {
-    super(Type.H2, jdbcUrl);
+    super(jdbcUrl);
     initializeEmbeddedDatabase(scriptPaths);
   }
 

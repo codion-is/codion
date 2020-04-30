@@ -33,7 +33,6 @@ startScripts {
     //overwrite the defaults to leave out initScript
     defaultJvmOpts = [
             '-Djminor.client.connectionType=local',
-            '-Djminor.db.type=h2',
             '-Djminor.db.url=jdbc:h2:mem:h2db',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
@@ -52,7 +51,6 @@ runClientLocal {
     //overwrite the defaults to leave out initScript
     systemProperties = [
             'jminor.client.connectionType': 'local',
-            'jminor.db.type'              : 'h2',
             'jminor.db.url'               : 'jdbc:h2:mem:h2db',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
