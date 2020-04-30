@@ -6,22 +6,3 @@ dependencies {
     testRuntimeOnly project(':jminor-plugin-hikari-pool')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
-
-ext {
-    testAddModules = ['org.jminor.dbms.derby,org.jminor.dbms.h2database,org.jminor.dbms.hsqldb,org.jminor.dbms.mariadb,org.jminor.dbms.mysql,org.jminor.dbms.oracle,org.jminor.dbms.postgresql,org.jminor.dbms.sqlite,org.jminor.dbms.sqlserver']
-    testAddReads = ['org.jminor.common.db': 'org.jminor.dbms.derby,org.jminor.dbms.h2database,org.jminor.dbms.hsqldb,org.jminor.dbms.mariadb,org.jminor.dbms.mysql,org.jminor.dbms.oracle,org.jminor.dbms.postgresql,org.jminor.dbms.sqlite,org.jminor.dbms.sqlserver']
-}
-
-compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
-
-test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
