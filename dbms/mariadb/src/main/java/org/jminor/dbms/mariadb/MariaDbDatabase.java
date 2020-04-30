@@ -31,7 +31,7 @@ final class MariaDbDatabase extends AbstractDatabase {
       name = name.substring(JDBC_URL_PREFIX.length());
     }
     if (name.contains(";")) {
-      name = name.substring(0, name.indexOf(";"));
+      name = name.substring(0, name.indexOf(';'));
     }
 
     return name;

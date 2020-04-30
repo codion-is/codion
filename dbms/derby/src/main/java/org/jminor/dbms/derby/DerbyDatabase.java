@@ -35,7 +35,7 @@ final class DerbyDatabase extends AbstractDatabase {
       name = name.substring(JDBC_URL_PREFIX_FILE.length());
     }
     if (name.contains(";")) {
-      name = name.substring(0, name.indexOf(";"));
+      name = name.substring(0, name.indexOf(';'));
     }
 
     return name;
