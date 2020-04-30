@@ -17,7 +17,7 @@ public final class SQLiteDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isDriverCompatible(final String driverClassName) {
-    return requireNonNull(driverClassName, "driverClass").startsWith(DRIVER_PACKAGE);
+    return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
   }
 
   @Override

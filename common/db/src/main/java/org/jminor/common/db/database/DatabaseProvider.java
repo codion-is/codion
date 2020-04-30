@@ -59,7 +59,7 @@ public interface DatabaseProvider {
       }
     }
 
-    throw new IllegalArgumentException("No DatabaseProvider implementation available for driver: " + driver.getClass());
+    throw new IllegalArgumentException("No DatabaseProvider implementation available for driver: " + driver);
   }
 
   /**

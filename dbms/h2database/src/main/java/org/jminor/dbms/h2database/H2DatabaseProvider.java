@@ -16,11 +16,11 @@ import static java.util.Objects.requireNonNull;
  */
 public final class H2DatabaseProvider implements DatabaseProvider {
 
-  private static final String DRIVER_NAME = "org.h2.Driver";
+  private static final String DRIVER_PACKAGE = "org.h2";
 
   @Override
   public boolean isDriverCompatible(final String driverClassName) {
-    return requireNonNull(driverClassName, "driverClass").startsWith(DRIVER_NAME);
+    return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
   }
 
   @Override
