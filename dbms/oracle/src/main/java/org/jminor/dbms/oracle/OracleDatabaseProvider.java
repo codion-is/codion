@@ -14,8 +14,13 @@ import static java.util.Objects.requireNonNull;
 public final class OracleDatabaseProvider implements DatabaseProvider {
 
   @Override
-  public Database.Type getDatabaseType() {
-    return Database.Type.ORACLE;
+  public boolean isCompatibleWith(final String driverClass) {
+    return requireNonNull(driverClass, "driverClass").equals("oracle.jdbc.driver.OracleDriver");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return OracleDatabase.class;
   }
 
   @Override

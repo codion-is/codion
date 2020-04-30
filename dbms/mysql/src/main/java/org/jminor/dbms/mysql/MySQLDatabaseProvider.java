@@ -14,8 +14,13 @@ import static java.util.Objects.requireNonNull;
 public final class MySQLDatabaseProvider implements DatabaseProvider {
 
   @Override
-  public Database.Type getDatabaseType() {
-    return Database.Type.MYSQL;
+  public boolean isCompatibleWith(final String driverClass) {
+    return requireNonNull(driverClass, "driverClass").equals("com.mysql.jdbc.Driver");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return MySQLDatabase.class;
   }
 
   @Override

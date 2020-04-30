@@ -158,7 +158,6 @@ configure(project.frameworkModules) {
             ]
         }
         useJUnitPlatform()
-        systemProperty "jminor.db.type", "h2"
         systemProperty "jminor.db.url", "jdbc:h2:mem:h2db"
         systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
         systemProperty "jminor.test.user", "scott:tiger"

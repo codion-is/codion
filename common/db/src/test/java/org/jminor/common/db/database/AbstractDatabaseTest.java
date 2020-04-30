@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class AbstractDatabaseTest {
 
-  private final AbstractDatabase database = new AbstractDatabase(Database.Type.H2, "jdbc:h2:mem:h2db") {
+  private final AbstractDatabase database = new AbstractDatabase("jdbc:h2:mem:h2db") {
     @Override
     public String getName() {
       return "name";

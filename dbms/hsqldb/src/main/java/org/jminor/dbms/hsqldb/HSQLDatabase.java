@@ -16,7 +16,7 @@ final class HSQLDatabase extends AbstractDatabase {
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
 
   HSQLDatabase(final String jdbcUrl) {
-    super(Type.HSQL, jdbcUrl);
+    super(jdbcUrl);
   }
 
   @Override

@@ -3,7 +3,6 @@
  */
 package org.jminor.plugin.nextreports.model;
 
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.reports.AbstractReportWrapper;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
@@ -33,7 +32,7 @@ final class DefaultNextReportWrapper extends AbstractReportWrapper<Report, NextR
   private static final long serialVersionUID = 1;
 
   static {
-    DialectFactory.addDialect(Database.Type.H2.toString().toUpperCase(), OracleDialect.class.getName());
+    DialectFactory.addDialect("H2", OracleDialect.class.getName());
   }
 
   private final String format;

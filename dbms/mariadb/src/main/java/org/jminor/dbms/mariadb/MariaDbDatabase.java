@@ -18,7 +18,7 @@ final class MariaDbDatabase extends AbstractDatabase {
   private static final int UNIQUE_CONSTRAINT_ERROR2 = 1586;
 
   MariaDbDatabase(final String jdbUrl) {
-    super(Type.MARIADB, jdbUrl);
+    super(jdbUrl);
   }
 
   @Override

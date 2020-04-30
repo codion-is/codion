@@ -71,9 +71,7 @@ To unit test the the domain model we extend {url-javadoc}/org/jminor/framework/t
 include::{dir-test-source}/org/jminor/framework/demos/empdept/domain/EmpDeptTest.java[tags=domainTest]
 ----
 
-Here are the parameters required for running the EmpDept test on the default H2 embedded database, assuming the database resides in the working directory.
-
--Djminor.db.type=h2
+Here is the parameter required for running the EmpDept test on the default H2 embedded database, assuming the database resides in the working directory.
 
 -Djminor.db.url=jdbc:h2:mem:h2db
 

@@ -20,7 +20,7 @@ final class SQLServerDatabase extends AbstractDatabase {
   private static final int UNIQUE_CONSTRAINT_ERROR2 = 2627;
 
   SQLServerDatabase(final String jdbcUrl) {
-    super(Type.SQLSERVER, jdbcUrl);
+    super(jdbcUrl);
   }
 
   @Override

@@ -14,8 +14,13 @@ import static java.util.Objects.requireNonNull;
 public final class HSQLDatabaseProvider implements DatabaseProvider {
 
   @Override
-  public Database.Type getDatabaseType() {
-    return Database.Type.HSQL;
+  public boolean isCompatibleWith(final String driverClass) {
+    return requireNonNull(driverClass, "driverClass").startsWith("org.hsqldb");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return HSQLDatabase.class;
   }
 
   @Override

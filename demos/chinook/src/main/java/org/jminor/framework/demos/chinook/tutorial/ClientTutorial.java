@@ -127,7 +127,6 @@ public final class ClientTutorial {
   }
 
   public static void main(final String[] args) {
-    Database.DATABASE_TYPE.set(Database.Type.H2.toString());
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Chinook.class.getName());

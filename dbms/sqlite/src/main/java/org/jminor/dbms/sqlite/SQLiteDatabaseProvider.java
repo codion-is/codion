@@ -14,8 +14,13 @@ import static java.util.Objects.requireNonNull;
 public final class SQLiteDatabaseProvider implements DatabaseProvider {
 
   @Override
-  public Database.Type getDatabaseType() {
-    return Database.Type.SQLITE;
+  public boolean isCompatibleWith(final String driverClass) {
+    return requireNonNull(driverClass, "driverClass").startsWith("org.sqlite");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return SQLiteDatabase.class;
   }
 
   @Override

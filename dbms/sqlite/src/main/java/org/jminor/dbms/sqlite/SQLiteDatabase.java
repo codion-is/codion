@@ -16,7 +16,7 @@ final class SQLiteDatabase extends AbstractDatabase {
   private static final int FOREIGN_KEY_ERROR = 787;
 
   SQLiteDatabase(final String jdbcUrl) {
-    super(Type.SQLITE, jdbcUrl);
+    super(jdbcUrl);
   }
 
   @Override

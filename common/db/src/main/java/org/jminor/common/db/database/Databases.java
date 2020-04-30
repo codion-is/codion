@@ -16,7 +16,6 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class for {@link Database} implementations and misc. database related things.
- * @see Database#DATABASE_TYPE
  */
 public final class Databases {
 
@@ -25,17 +24,17 @@ public final class Databases {
   private Databases() {}
 
   /**
-   * @return a Database instance based on the current runtime database type property
-   * @see Database#DATABASE_TYPE
-   * @see Database#getDatabaseType()
+   * @return a Database instance based on the current jdbc url
+   * @see Database#DATABASE_URL
    * @throws IllegalArgumentException in case an unsupported database type is specified
    * @throws RuntimeException in case of an exception occurring while instantiating the database implementation instance
    */
   public static synchronized Database getInstance() {
     try {
-      if (Databases.instance == null || !Databases.instance.getType().equals(Database.getDatabaseType())) {
+      final DatabaseProvider databaseProvider = DatabaseProvider.getInstance();
+      if (Databases.instance == null || !Databases.instance.getClass().equals(databaseProvider.getDatabaseClass())) {
         //refresh the instance
-        Databases.instance = DatabaseProvider.getInstance().createDatabase();
+        Databases.instance = databaseProvider.createDatabase();
       }
 
       return Databases.instance;

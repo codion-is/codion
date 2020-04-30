@@ -14,8 +14,13 @@ import static java.util.Objects.requireNonNull;
 public final class MariaDbDatabaseProvider implements DatabaseProvider {
 
   @Override
-  public Database.Type getDatabaseType() {
-    return Database.Type.MARIADB;
+  public boolean isCompatibleWith(final String driverClass) {
+    return requireNonNull(driverClass, "driverClass").equals("org.mariadb.jdbc.Driver");
+  }
+
+  @Override
+  public Class<? extends Database> getDatabaseClass() {
+    return MariaDbDatabase.class;
   }
 
   @Override

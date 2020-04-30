@@ -21,7 +21,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   static final String CHECK_QUERY = "select 1";
 
   PostgreSQLDatabase(final String jdbcUrl) {
-    super(Type.POSTGRESQL, jdbcUrl);
+    super(jdbcUrl);
   }
 
   @Override
