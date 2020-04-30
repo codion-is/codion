@@ -13,20 +13,20 @@ import static java.util.Objects.requireNonNull;
  */
 public final class PostgreSQLDatabaseProvider implements DatabaseProvider {
 
+  public static final String DRIVER_NAME = "org.postgresql.Driver";
+
   @Override
-  public boolean isCompatibleWith(final String driverClass) {
-    return requireNonNull(driverClass, "driverClass").equals("org.postgresql.Driver");
+  public boolean isDriverCompatible(final String driverClassName) {
+    return requireNonNull(driverClassName, "driverClass").equals(DRIVER_NAME);
   }
 
   @Override
-  public Class<? extends Database> getDatabaseClass() {
-    return PostgreSQLDatabase.class;
+  public String getDatabaseClassName() {
+    return PostgreSQLDatabase.class.getName();
   }
 
   @Override
   public Database createDatabase() {
-    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
-
-    return new PostgreSQLDatabase(jdbcUrl);
+    return new PostgreSQLDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
   }
 }

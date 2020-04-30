@@ -13,20 +13,20 @@ import static java.util.Objects.requireNonNull;
  */
 public final class OracleDatabaseProvider implements DatabaseProvider {
 
+  private static final String DRIVER_NAME = "oracle.jdbc.driver.OracleDriver";
+
   @Override
-  public boolean isCompatibleWith(final String driverClass) {
-    return requireNonNull(driverClass, "driverClass").equals("oracle.jdbc.driver.OracleDriver");
+  public boolean isDriverCompatible(final String driverClassName) {
+    return requireNonNull(driverClassName, "driverClass").equals(DRIVER_NAME);
   }
 
   @Override
-  public Class<? extends Database> getDatabaseClass() {
-    return OracleDatabase.class;
+  public String getDatabaseClassName() {
+    return OracleDatabase.class.getName();
   }
 
   @Override
   public Database createDatabase() {
-    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
-
-    return new OracleDatabase(jdbcUrl);
+    return new OracleDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
   }
 }

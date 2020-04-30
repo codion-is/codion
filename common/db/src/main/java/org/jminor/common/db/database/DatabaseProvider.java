@@ -15,25 +15,25 @@ import static java.util.Objects.requireNonNull;
 public interface DatabaseProvider {
 
   /**
-   * @param driverClass the driver class
-   * @return true if this database provider fits the driver
+   * @param driverClassName the driver class name
+   * @return true if this database provider is compatible with the given driver
    */
-  boolean isCompatibleWith(String driverClass);
+  boolean isDriverCompatible(String driverClassName);
 
   /**
-   * @return the Class of the Database this provider provides
+   * @return the name of the {@link Database} implementation class this provider provides
    */
-  Class<? extends Database> getDatabaseClass();
+  String getDatabaseClassName();
 
   /**
-   * @return a new Database implementation based on configuration values
+   * @return a new {@link Database} implementation based on {@link Database#DATABASE_URL}.
    */
   Database createDatabase();
 
   /**
    * @return a {@link DatabaseProvider} implementation for {@link Database#DATABASE_URL}
    * @throws IllegalArgumentException in case no such implementation is found
-   * @throws SQLException in case loading of database driver failed
+   * @throws SQLException in case loading of the database driver failed
    */
   static DatabaseProvider getInstance() throws SQLException {
     final String jdbcUrl = Database.DATABASE_URL.get();
@@ -51,10 +51,10 @@ public interface DatabaseProvider {
    * @throws SQLException in case loading of database driver failed
    */
   static DatabaseProvider getInstance(final String jdbcUrl) throws SQLException {
-    final String driver = getDatabaseDriverClass(jdbcUrl);
+    final String driver = getDriverClassName(jdbcUrl);
     final ServiceLoader<DatabaseProvider> loader = ServiceLoader.load(DatabaseProvider.class);
     for (final DatabaseProvider provider : loader) {
-      if (provider.isCompatibleWith(driver)) {
+      if (provider.isDriverCompatible(driver)) {
         return provider;
       }
     }
@@ -64,11 +64,10 @@ public interface DatabaseProvider {
 
   /**
    * @param jdbcUrl the jdbc url
-   * @return the database driver class discovered from jdbc url
+   * @return the database driver class name according to jdbc url
    * @throws SQLException in case loading of database driver failed
    */
-  static String getDatabaseDriverClass(final String jdbcUrl) throws SQLException {
-    requireNonNull(jdbcUrl, "jdbcUrl");
-    return DriverManager.getDriver(jdbcUrl).getClass().getName();
+  static String getDriverClassName(final String jdbcUrl) throws SQLException {
+    return DriverManager.getDriver(requireNonNull(jdbcUrl, "jdbcUrl")).getClass().getName();
   }
 }

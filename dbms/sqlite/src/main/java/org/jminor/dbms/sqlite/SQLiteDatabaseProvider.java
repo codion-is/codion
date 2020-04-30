@@ -13,20 +13,20 @@ import static java.util.Objects.requireNonNull;
  */
 public final class SQLiteDatabaseProvider implements DatabaseProvider {
 
+  private static final String DRIVER_PACKAGE = "org.sqlite";
+
   @Override
-  public boolean isCompatibleWith(final String driverClass) {
-    return requireNonNull(driverClass, "driverClass").startsWith("org.sqlite");
+  public boolean isDriverCompatible(final String driverClassName) {
+    return requireNonNull(driverClassName, "driverClass").startsWith(DRIVER_PACKAGE);
   }
 
   @Override
-  public Class<? extends Database> getDatabaseClass() {
-    return SQLiteDatabase.class;
+  public String getDatabaseClassName() {
+    return SQLiteDatabase.class.getName();
   }
 
   @Override
   public Database createDatabase() {
-    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
-
-    return new SQLiteDatabase(jdbcUrl);
+    return new SQLiteDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
   }
 }

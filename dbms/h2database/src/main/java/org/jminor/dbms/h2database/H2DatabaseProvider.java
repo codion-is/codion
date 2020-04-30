@@ -7,8 +7,6 @@ import org.jminor.common.Text;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.database.DatabaseProvider;
 
-import java.util.List;
-
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -18,22 +16,22 @@ import static java.util.Objects.requireNonNull;
  */
 public final class H2DatabaseProvider implements DatabaseProvider {
 
+  private static final String DRIVER_NAME = "org.h2.Driver";
+
   @Override
-  public boolean isCompatibleWith(final String driverClass) {
-    return requireNonNull(driverClass, "driverClass").startsWith("org.h2.Driver");
+  public boolean isDriverCompatible(final String driverClassName) {
+    return requireNonNull(driverClassName, "driverClass").startsWith(DRIVER_NAME);
   }
 
   @Override
-  public Class<? extends Database> getDatabaseClass() {
-    return H2Database.class;
+  public String getDatabaseClassName() {
+    return H2Database.class.getName();
   }
 
   @Override
   public H2Database createDatabase() {
-    final String jdbcUrl = requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty());
-    final List<String> initScripts = Text.parseCommaSeparatedValues(H2Database.DATABASE_INIT_SCRIPT.get());
-
-    return new H2Database(jdbcUrl, initScripts);
+    return new H2Database(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()),
+            Text.parseCommaSeparatedValues(H2Database.DATABASE_INIT_SCRIPT.get()));
   }
 
   public H2Database createDatabase(final String jdbcUrl, final String initScript) {

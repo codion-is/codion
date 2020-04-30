@@ -6006,3 +6006,4 @@
   Database.Type removed
   Database.getName() implementations improved and tested
   H2Database tests improved
+  DatabaseProvider.getDatabaseClass() changed to getDatabaseClassName(), getDatabaseDriver() renamed to getDriverClassName(), isCompatibleWith() renamed to isDriverCompatible()
