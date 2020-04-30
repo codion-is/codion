@@ -19,7 +19,7 @@ final class OracleDatabase extends AbstractDatabase {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(OracleDatabase.class.getName());
 
-  static final String CHECK_QUERY = "select 1 from dual";
+  private static final String JDBC_URL_PREFIX = "jdbc:oracle:thin:@";
 
   private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<>();
 
@@ -35,6 +35,8 @@ final class OracleDatabase extends AbstractDatabase {
   private static final int UNABLE_TO_CONNECT_ERROR = 1045;
   private static final int VALUE_TOO_LARGE_ERROR = 1401;
   private static final int VIEW_HAS_ERRORS_ERROR = 4063;
+
+  static final String CHECK_QUERY = "select 1 from dual";
 
   static {
     ERROR_CODE_MAP.put(UNIQUE_KEY_ERROR, MESSAGES.getString("unique_key_error"));
@@ -57,7 +59,15 @@ final class OracleDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    return getURL();
+    String name = getURL();
+    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX)) {
+      name = name.substring(JDBC_URL_PREFIX.length());
+    }
+    if (name.contains(";")) {
+      name = name.substring(0, name.indexOf(";"));
+    }
+
+    return name;
   }
 
   @Override

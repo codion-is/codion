@@ -12,6 +12,14 @@ public class PostgreSQLDatabaseTest {
   private static final String URL = "jdbc:postgresql://host:1234/sid";
 
   @Test
+  public void getName() {
+    PostgreSQLDatabase database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid");
+    assertEquals("host.db:1234/sid", database.getName());
+    database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid;options");
+    assertEquals("host.db:1234/sid", database.getName());
+  }
+
+  @Test
   public void getSequenceQueryNullSequence() {
     assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(URL).getSequenceQuery(null));
   }

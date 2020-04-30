@@ -12,6 +12,14 @@ public class SQLServerDatabaseTest {
   private static final String URL = "jdbc:sqlserver://host:1234;databaseName=sid";
 
   @Test
+  public void getName() {
+    SQLServerDatabase database = new SQLServerDatabase("jdbc:sqlserver://host.db\\instance:1234");
+    assertEquals("host.db\\instance:1234", database.getName());
+    database = new SQLServerDatabase("jdbc:sqlserver://host.db\\instance:1234;options");
+    assertEquals("host.db\\instance:1234", database.getName());
+  }
+
+  @Test
   public void getSequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new SQLServerDatabase(URL).getSequenceQuery("seq"));
   }

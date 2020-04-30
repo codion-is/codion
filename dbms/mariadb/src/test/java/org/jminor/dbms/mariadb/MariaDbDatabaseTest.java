@@ -12,6 +12,14 @@ public class MariaDbDatabaseTest {
   private static final String URL = "jdbc:mariadb://host:1234/sid";
 
   @Test
+  public void getName() {
+    MariaDbDatabase database = new MariaDbDatabase("jdbc:mariadb://host.com:1234/dbname");
+    assertEquals("host.com:1234/dbname", database.getName());
+    database = new MariaDbDatabase("jdbc:mariadb://host.com:1234/dbname;option=true;option2=false");
+    assertEquals("host.com:1234/dbname", database.getName());
+  }
+
+  @Test
   public void getSequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new MariaDbDatabase(URL).getSequenceQuery("seq"));
   }
