@@ -12,10 +12,13 @@ import java.sql.SQLException;
  */
 final class MySQLDatabase extends AbstractDatabase {
 
-  static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
   private static final int REFERENTIAL_CONSTRAINT_ERROR = 1452;
   private static final int UNIQUE_CONSTRAINT_ERROR1 = 1062;
   private static final int UNIQUE_CONSTRAINT_ERROR2 = 1586;
+
+  private static final String JDBC_URL_PREFIX = "jdbc:mysql://";
+
+  static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
 
   MySQLDatabase(final String jdbcUrl) {
     super(jdbcUrl);
@@ -23,7 +26,15 @@ final class MySQLDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    return getURL();
+    String name = getURL();
+    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX)) {
+      name = name.substring(JDBC_URL_PREFIX.length());
+    }
+    if (name.contains(";")) {
+      name = name.substring(0, name.indexOf(";"));
+    }
+
+    return name;
   }
 
   @Override

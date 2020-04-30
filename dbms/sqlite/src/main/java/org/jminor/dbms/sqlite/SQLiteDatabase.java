@@ -15,13 +15,23 @@ final class SQLiteDatabase extends AbstractDatabase {
   private static final String AUTO_INCREMENT_QUERY = "select last_insert_rowid()";
   private static final int FOREIGN_KEY_ERROR = 787;
 
+  private static final String JDBC_URL_PREFIX = "jdbc:sqlite:";
+
   SQLiteDatabase(final String jdbcUrl) {
     super(jdbcUrl);
   }
 
   @Override
   public String getName() {
-    return null;
+    String name = getURL();
+    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX)) {
+      name = name.substring(JDBC_URL_PREFIX.length());
+    }
+    if (name.contains(";")) {
+      name = name.substring(0, name.indexOf(";"));
+    }
+
+    return name;
   }
 
   @Override

@@ -16,6 +16,16 @@ public class DerbyDatabaseTest {
   private static final String URL = "jdbc:derby://host:1234/sid";
 
   @Test
+  public void getName() {
+    DerbyDatabase database = new DerbyDatabase("jdbc:derby:C:/data/sample;option=true;option2=false");
+    assertEquals("C:/data/sample", database.getName());
+    database = new DerbyDatabase("jdbc:derby://sample.db:1234;option=true;option2=false");
+    assertEquals("sample.db:1234", database.getName());
+    database = new DerbyDatabase("jdbc:derby://sample.db:1234");
+    assertEquals("sample.db:1234", database.getName());
+  }
+
+  @Test
   public void getSequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new DerbyDatabase(URL).getSequenceQuery("seq"));
   }

@@ -16,6 +16,9 @@ final class DerbyDatabase extends AbstractDatabase {
 
   private static final int FOREIGN_KEY_ERROR = 23503;
 
+  private static final String JDBC_URL_PREFIX_TCP = "jdbc:derby://";
+  private static final String JDBC_URL_PREFIX_FILE = "jdbc:derby:";
+
   static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
 
   DerbyDatabase(final String jdbcUrl) {
@@ -24,7 +27,18 @@ final class DerbyDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    return getURL();
+    String name = getURL();
+    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX_TCP)) {
+      name = name.substring(JDBC_URL_PREFIX_TCP.length());
+    }
+    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX_FILE)) {
+      name = name.substring(JDBC_URL_PREFIX_FILE.length());
+    }
+    if (name.contains(";")) {
+      name = name.substring(0, name.indexOf(";"));
+    }
+
+    return name;
   }
 
   @Override

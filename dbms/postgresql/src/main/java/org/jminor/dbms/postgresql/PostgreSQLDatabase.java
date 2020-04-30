@@ -18,6 +18,8 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   private static final String INTEGRITY_CONSTRAINT_VIOLATION = "23000";
   private static final String UNIQUE_CONSTRAINT_ERROR = "23505";
 
+  private static final String JDBC_URL_PREFIX = "jdbc:postgresql://";
+
   static final String CHECK_QUERY = "select 1";
 
   PostgreSQLDatabase(final String jdbcUrl) {
@@ -26,7 +28,15 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    return getURL();
+    String name = getURL();
+    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX)) {
+      name = name.substring(JDBC_URL_PREFIX.length());
+    }
+    if (name.contains(";")) {
+      name = name.substring(0, name.indexOf(";"));
+    }
+
+    return name;
   }
 
   @Override

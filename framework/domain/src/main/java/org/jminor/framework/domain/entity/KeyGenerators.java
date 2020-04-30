@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Factory for standard {@link KeyGenerator} instances.
  */
@@ -50,6 +52,7 @@ public final class KeyGenerators {
    * @return a query based primary key generator
    */
   public static KeyGenerator queried(final String query) {
+    requireNonNull(query, "query");
     return new AbstractQueriedKeyGenerator() {
       @Override
       protected String getQuery(final Database database) {
@@ -93,7 +96,7 @@ public final class KeyGenerators {
     private final String query;
 
     private IncrementKeyGenerator(final String tableName, final String columnName) {
-      this.query = "select max(" + columnName + ") + 1 from " + tableName;
+      this.query = "select max(" + requireNonNull(columnName, "columnName") + ") + 1 from " + requireNonNull(tableName, "tableName");
     }
 
     @Override
@@ -116,7 +119,7 @@ public final class KeyGenerators {
     private final String sequenceName;
 
     private SequenceKeyGenerator(final String sequenceName) {
-      this.sequenceName = sequenceName;
+      this.sequenceName = requireNonNull(sequenceName, "sequenceName");
     }
 
     @Override
@@ -139,7 +142,7 @@ public final class KeyGenerators {
     private final String valueSource;
 
     private AutomaticKeyGenerator(final String valueSource) {
-      this.valueSource = valueSource;
+      this.valueSource = requireNonNull(valueSource, "valueSource");
     }
 
     @Override

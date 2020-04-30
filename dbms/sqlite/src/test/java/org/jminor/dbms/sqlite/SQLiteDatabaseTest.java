@@ -9,6 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SQLiteDatabaseTest {
 
+@Test
+  public void getName() {
+    SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db");
+    assertEquals("/path/to/file.db", database.getName());
+    database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db;options");
+    assertEquals("/path/to/file.db", database.getName());
+  }
+
   @Test
   public void getAutoIncrementQuery() {
     final SQLiteDatabase database = new SQLiteDatabase("test");

@@ -23,6 +23,26 @@ import static org.junit.jupiter.api.Assertions.*;
 public class H2DatabaseTest {
 
   @Test
+  public void getDatabaseName() {
+    H2Database database = new H2Database("jdbc:h2:file:C:/data/sample;option=true;option2=false");
+    assertEquals("C:/data/sample", database.getName());
+    database = new H2Database("jdbc:h2:C:/data/sample;option=true;option2=false");
+    assertEquals("C:/data/sample", database.getName());
+    database = new H2Database("jdbc:h2:mem:sampleDb;option=true;option2=false");
+    assertEquals("sampleDb", database.getName());
+    database = new H2Database("jdbc:h2:mem:");
+    assertEquals("private", database.getName());
+    database = new H2Database("jdbc:h2:tcp://sample.Db:1234");
+    assertEquals("sample.Db:1234", database.getName());
+    database = new H2Database("jdbc:h2:tcp://sample.Db:1234;option=true;option2=false");
+    assertEquals("sample.Db:1234", database.getName());
+    database = new H2Database("jdbc:h2:zip:db.zip!/h2db");
+    assertEquals("db.zip!/h2db", database.getName());
+    database = new H2Database("jdbc:h2:zip:db.zip!/h2db;option");
+    assertEquals("db.zip!/h2db", database.getName());
+  }
+
+  @Test
   public void getSequenceSQLNullSequence() {
     assertThrows(NullPointerException.class, () -> new H2Database("url").getSequenceQuery(null));
   }
@@ -81,5 +101,32 @@ public class H2DatabaseTest {
     connection2.close();
     file1.delete();
     file2.delete();
+  }
+
+  @Test
+  public void fileDatabase() throws DatabaseException, SQLException {
+    final File tempDir = new File(System.getProperty("java.io.tmpdir"));
+    final String url = "jdbc:h2:file:" + tempDir.getAbsolutePath() + "/h2db/database";
+    final File dbFile = new File(tempDir.getAbsolutePath() + "/h2db/database.mv.db");
+    dbFile.deleteOnExit();
+    assertFalse(dbFile.exists());
+
+    final H2Database database = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
+    assertTrue(dbFile.exists());
+
+    final User user = Users.parseUser("scott:tiger");
+
+    Connection connection = database.createConnection(user);
+    connection.prepareStatement("select id from test.test_table").execute();
+    connection.close();
+
+    final H2Database database2 = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
+    connection = database2.createConnection(user);
+    connection.prepareStatement("select id from test.test_table").execute();
+    connection.close();
+
+    final File parentDir = dbFile.getParentFile();
+    dbFile.delete();
+    parentDir.delete();
   }
 }

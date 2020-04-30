@@ -12,6 +12,14 @@ public class MySQLDatabaseTest {
   private static final String URL = "jdbc:mysql://host:1234/sid";
 
   @Test
+  public void getName() {
+    MySQLDatabase database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname");
+    assertEquals("host.com:1234/dbname", database.getName());
+    database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname;option=true;option2=false");
+    assertEquals("host.com:1234/dbname", database.getName());
+  }
+
+  @Test
   public void getSequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new MySQLDatabase(URL).getSequenceQuery("seq"));
   }

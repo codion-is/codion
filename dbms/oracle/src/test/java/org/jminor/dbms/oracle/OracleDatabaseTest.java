@@ -12,6 +12,14 @@ public class OracleDatabaseTest {
   public static final String URL = "jdbc:oracle:thin:@host:1234:sid";
 
   @Test
+  public void getName() {
+    OracleDatabase database = new OracleDatabase("jdbc:oracle:thin:@host.com:1234:sid");
+    assertEquals("host.com:1234:sid", database.getName());
+    database = new OracleDatabase("jdbc:oracle:thin:@host.com:1234:sid;option=true;option2=false");
+    assertEquals("host.com:1234:sid", database.getName());
+  }
+
+  @Test
   public void getSequenceSQLNullSequence() {
     assertThrows(NullPointerException.class, () -> new OracleDatabase(URL).getSequenceQuery(null));
   }

@@ -19,13 +19,23 @@ final class SQLServerDatabase extends AbstractDatabase {
   private static final int UNIQUE_CONSTRAINT_ERROR1 = 2601;
   private static final int UNIQUE_CONSTRAINT_ERROR2 = 2627;
 
+  private static final String JDBC_URL_PREFIX = "jdbc:sqlserver://";
+
   SQLServerDatabase(final String jdbcUrl) {
     super(jdbcUrl);
   }
 
   @Override
   public String getName() {
-    return getURL();
+    String name = getURL();
+    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX)) {
+      name = name.substring(JDBC_URL_PREFIX.length());
+    }
+    if (name.contains(";")) {
+      name = name.substring(0, name.indexOf(";"));
+    }
+
+    return name;
   }
 
   @Override

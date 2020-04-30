@@ -6004,3 +6004,5 @@
   H2DatabaseProvider.createDatabase() bug fixed, now handles null initScript
   DatabaseProvider now discovered using jdbc url
   Database.Type removed
+  Database.getName() implementations improved and tested
+  H2Database tests improved

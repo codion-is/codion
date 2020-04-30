@@ -16,6 +16,18 @@ public class HSQLDatabaseTest {
   private static final String URL = "jdbc:hsqldb:hsql//host:1234/sid";
 
   @Test
+  public void getDatabaseName() {
+    HSQLDatabase database = new HSQLDatabase("jdbc:hsqldb:file:C:/data/sample;option=true;option2=false");
+    assertEquals("C:/data/sample", database.getName());
+    database = new HSQLDatabase("jdbc:hsqldb:mem:sampleDb;option=true;option2=false");
+    assertEquals("sampleDb", database.getName());
+    database = new HSQLDatabase("jdbc:hsqldb:mem:");
+    assertEquals("private", database.getName());
+    database = new HSQLDatabase("jdbc:hsqldb:res:/dir/db");
+    assertEquals("/dir/db", database.getName());
+  }
+
+  @Test
   public void getSequenceSQLNullSequence() {
     assertThrows(NullPointerException.class, () -> new HSQLDatabase(URL).getSequenceQuery(null));
   }
