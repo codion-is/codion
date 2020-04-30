@@ -68,28 +68,8 @@ final class H2Database extends AbstractDatabase {
 
   @Override
   public String getName() {
-    String name = getUrl();
-    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX_TCP)) {
-      name = name.substring(JDBC_URL_PREFIX_TCP.length());
-    }
-    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX_FILE)) {
-      name = name.substring(JDBC_URL_PREFIX_FILE.length());
-    }
-    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX_MEM)) {
-      name = name.substring(JDBC_URL_PREFIX_MEM.length());
-    }
-    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX_SSL)) {
-      name = name.substring(JDBC_URL_PREFIX_SSL.length());
-    }
-    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX_ZIP)) {
-      name = name.substring(JDBC_URL_PREFIX_ZIP.length());
-    }
-    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX)) {
-      name = name.substring(JDBC_URL_PREFIX.length());
-    }
-    if (name.contains(";")) {
-      name = name.substring(0, name.indexOf(';'));
-    }
+    final String name= removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
+            JDBC_URL_PREFIX_MEM, JDBC_URL_PREFIX_SSL, JDBC_URL_PREFIX_ZIP, JDBC_URL_PREFIX);
 
     return name.isEmpty() ? "private" : name;
   }
