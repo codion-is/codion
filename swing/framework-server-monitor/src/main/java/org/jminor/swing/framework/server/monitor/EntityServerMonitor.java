@@ -78,6 +78,18 @@ public final class EntityServerMonitor {
     }
   }
 
+  public void setUpdateInterval(final Integer interval) {
+    for (final HostMonitor hostMonitor : hostMonitors) {
+      hostMonitor.getServerMonitors().forEach(serverMonitor -> {
+        serverMonitor.getUpdateIntervalValue().set(interval);
+        serverMonitor.getDatabaseMonitor().getUpdateIntervalValue().set(interval);
+        serverMonitor.getDatabaseMonitor().getConnectionPoolMonitor().getConnectionPoolInstanceMonitors()
+                .forEach(poolMonitor -> poolMonitor.getUpdateIntervalValue().set(interval));
+        serverMonitor.getClientMonitor().getUpdateIntervalValue().set(interval);
+      });
+    }
+  }
+
   private void addHost(final String hostname, final int registryPort, final User adminUser) throws RemoteException {
     hostMonitors.add(new HostMonitor(hostname, registryPort, adminUser));
     hostAddedEvent.onEvent(hostname);

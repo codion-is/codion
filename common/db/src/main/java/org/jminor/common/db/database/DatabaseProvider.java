@@ -21,14 +21,15 @@ public interface DatabaseProvider {
   boolean isDriverCompatible(String driverClassName);
 
   /**
-   * @return the name of the {@link Database} implementation class this provider provides
+   * @param database the database
+   * @return true if the given database is compatible with this database provider
    */
-  String getDatabaseClassName();
+  boolean isDatabaseCompatible(Database database);
 
   /**
-   * @return a new {@link Database} implementation based on {@link Database#DATABASE_URL}.
+   * @return a new {@link Database} implementation based on the given jdbc url.
    */
-  Database createDatabase();
+  Database createDatabase(String jdbcUrl);
 
   /**
    * @return a {@link DatabaseProvider} implementation for {@link Database#DATABASE_URL}

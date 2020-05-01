@@ -37,16 +37,16 @@ public final class ConnectionPoolMonitor {
   private ConnectionPoolStatistics poolStatistics;
 
   private final XYSeries poolSizeSeries = new XYSeries("Size");
-  private final XYSeries minimumPoolSizeSeries = new XYSeries("Min");
-  private final XYSeries maximumPoolSizeSeries = new XYSeries("Max");
-  private final XYSeries inPoolSeries = new XYSeries("In pool");
+  private final XYSeries minimumPoolSizeSeries = new XYSeries("Min. size");
+  private final XYSeries maximumPoolSizeSeries = new XYSeries("Max. size");
+  private final XYSeries inPoolSeries = new XYSeries("Available");
   private final XYSeries inUseSeries = new XYSeries("In use");
   private final XYSeriesCollection snapshotStatisticsCollection = new XYSeriesCollection();
   private final XYSeriesCollection statisticsCollection = new XYSeriesCollection();
-  private final XYSeries failedRequestsPerSecond = new XYSeries("Failed");
-  private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests");
+  private final XYSeries failedRequestsPerSecond = new XYSeries("Failed requests/sec");
+  private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests/sec");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
-  private final YIntervalSeries averageCheckOutTime = new YIntervalSeries("Average check out time");
+  private final YIntervalSeries averageCheckOutTime = new YIntervalSeries("Average check out time (ms)");
   private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
   private final TaskScheduler updateScheduler = new TaskScheduler(this::updateStatistics,
@@ -202,14 +202,14 @@ public final class ConnectionPoolMonitor {
   /**
    * Resets all collected pool statistics
    */
-  public void resetStatistics() {
+  public void clearStatistics() {
     connectionPool.resetStatistics();
   }
 
   /**
-   * Resets all graph data sets
+   * Clears all graph data sets
    */
-  public void resetInPoolStatistics() {
+  public void clearInPoolStatistics() {
     inPoolSeries.clear();
     inUseSeries.clear();
     connectionRequestsPerSecond.clear();

@@ -297,9 +297,9 @@ public final class ServerMonitor {
   }
 
   /**
-   * Resets all connected statistics
+   * Clears all collected statistics
    */
-  public void resetStatistics() {
+  public void clearStatistics() {
     connectionRequestsPerSecondSeries.clear();
     allocatedMemorySeries.clear();
     usedMemorySeries.clear();

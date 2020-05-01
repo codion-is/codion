@@ -21,12 +21,12 @@ public final class HSQLDatabaseProvider implements DatabaseProvider {
   }
 
   @Override
-  public String getDatabaseClassName() {
-    return HSQLDatabase.class.getName();
+  public boolean isDatabaseCompatible(final Database database) {
+    return database instanceof HSQLDatabase;
   }
 
   @Override
-  public Database createDatabase() {
-    return new HSQLDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
+  public Database createDatabase(final String jdbcUrl) {
+    return new HSQLDatabase(jdbcUrl);
   }
 }

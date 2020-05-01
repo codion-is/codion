@@ -35,7 +35,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final String getURL() {
+  public final String getUrl() {
     return jdbcUrl;
   }
 
@@ -49,7 +49,7 @@ public abstract class AbstractDatabase implements Database {
     connectionProperties.put(PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
     DriverManager.setLoginTimeout(getLoginTimeout());
     try {
-      return DriverManager.getConnection(getURL(), addConnectionProperties(connectionProperties));
+      return DriverManager.getConnection(getUrl(), addConnectionProperties(connectionProperties));
     }
     catch (final SQLException e) {
       if (isAuthenticationException(e)) {
@@ -165,6 +165,21 @@ public abstract class AbstractDatabase implements Database {
    */
   protected int getLoginTimeout() {
     return Database.DEFAULT_LOGIN_TIMEOUT;
+  }
+
+  protected static String removeUrlPrefixAndOptions(final String url, final String... prefixes) {
+    String result = url;
+    for (final String prefix : prefixes) {
+      if (url.toLowerCase().startsWith(prefix.toLowerCase())) {
+        result = url.substring(prefix.length());
+        break;
+      }
+    }
+    if (result.contains(";")) {
+      result = result.substring(0, result.indexOf(';'));
+    }
+
+    return result;
   }
 
   private static final class QueryCounter {

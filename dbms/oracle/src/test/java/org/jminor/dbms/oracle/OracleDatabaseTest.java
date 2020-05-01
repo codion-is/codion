@@ -51,7 +51,7 @@ public class OracleDatabaseTest {
   @Test
   public void getURL() {
     final OracleDatabase db = new OracleDatabase(URL);
-    assertEquals("jdbc:oracle:thin:@host:1234:sid", db.getURL());
+    assertEquals("jdbc:oracle:thin:@host:1234:sid", db.getUrl());
   }
 
   @Test

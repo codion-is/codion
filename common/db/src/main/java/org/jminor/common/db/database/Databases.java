@@ -27,19 +27,19 @@ public final class Databases {
    * @return a Database instance based on the current jdbc url
    * @see Database#DATABASE_URL
    * @throws IllegalArgumentException in case an unsupported database type is specified
-   * @throws RuntimeException in case of an exception occurring while instantiating the database implementation instance
+   * @throws RuntimeException in case of an exception occurring while instantiating the database implementation
    */
   public static synchronized Database getInstance() {
     try {
       final DatabaseProvider provider = DatabaseProvider.getInstance();
-      if (instance == null || !instance.getClass().getName().equals(provider.getDatabaseClassName())) {
+      if (instance == null || !provider.isDatabaseCompatible(instance)) {
         //refresh the instance
-        instance = provider.createDatabase();
+        instance = provider.createDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
       }
 
       return instance;
     }
-    catch (final IllegalArgumentException e) {
+    catch (final RuntimeException e) {
       throw e;
     }
     catch (final Exception e) {
@@ -48,7 +48,7 @@ public final class Databases {
   }
 
   /**
-   * Closes the given ResultSet instance, swallowing any SQLExceptions that occur
+   * Closes the given ResultSet instance, suppressing any SQLExceptions that may occur.
    * @param resultSet the result set to close
    */
   public static void closeSilently(final ResultSet resultSet) {
@@ -61,7 +61,7 @@ public final class Databases {
   }
 
   /**
-   * Closes the given Statement instance, swallowing any SQLExceptions that occur
+   * Closes the given Statement instance, suppressing any SQLExceptions that may occur.
    * @param statement the statement to close
    */
   public static void closeSilently(final Statement statement) {
@@ -74,7 +74,7 @@ public final class Databases {
   }
 
   /**
-   * Closes the given Connection instance, swallowing any SQLExceptions that occur
+   * Closes the given Connection instance, suppressing any SQLExceptions that may occur.
    * @param connection the connection to close
    */
   public static void closeSilently(final Connection connection) {

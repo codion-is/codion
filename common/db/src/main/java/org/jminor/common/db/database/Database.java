@@ -87,7 +87,7 @@ public interface Database {
    * Returns the database url for this database.
    * @return the database url for this database
    */
-  String getURL();
+  String getUrl();
 
   /**
    * In the case of embedded databases the user login info can be appended

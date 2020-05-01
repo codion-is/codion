@@ -59,15 +59,7 @@ final class OracleDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    String name = getURL();
-    if (name.toLowerCase().startsWith(JDBC_URL_PREFIX)) {
-      name = name.substring(JDBC_URL_PREFIX.length());
-    }
-    if (name.contains(";")) {
-      name = name.substring(0, name.indexOf(';'));
-    }
-
-    return name;
+    return removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX);
   }
 
   @Override
