@@ -161,27 +161,38 @@ public final class Components {
   }
 
   /**
-   * Expands or collapses all the paths from a parent in the given tree
+   * Expands all the paths from a parent in the given tree
    * @param tree the tree
-   * @param parent the parent from which to exapand/collapse
-   * @param expand if true then the tree is expanded, collapsed otherwise
+   * @param parent the parent from which to exapand
    */
-  public static void expandAll(final JTree tree, final TreePath parent, final boolean expand) {
+  public static void expandAll(final JTree tree, final TreePath parent) {
     // Traverse children
     final TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
       final Enumeration e = node.children();
       while (e.hasMoreElements()) {
-        expandAll(tree, parent.pathByAddingChild(e.nextElement()), expand);
+        expandAll(tree, parent.pathByAddingChild(e.nextElement()));
       }
     }
     // Expansion or collapse must be done bottom-up
-    if (expand) {
-      tree.expandPath(parent);
+    tree.expandPath(parent);
+  }
+
+  /**
+   * Collapses all the paths from a parent in the given tree
+   * @param tree the tree
+   * @param parent the parent from which to collapse
+   */
+  public static void collapseAll(final JTree tree, final TreePath parent) {
+    final TreeNode node = (TreeNode) parent.getLastPathComponent();
+    if (node.getChildCount() >= 0) {
+      final Enumeration e = node.children();
+      while (e.hasMoreElements()) {
+        collapseAll(tree, parent.pathByAddingChild(e.nextElement()));
+      }
     }
-    else {
-      tree.collapsePath(parent);
-    }
+    // Expansion or collapse must be done bottom-up
+    tree.collapsePath(parent);
   }
 
   /**

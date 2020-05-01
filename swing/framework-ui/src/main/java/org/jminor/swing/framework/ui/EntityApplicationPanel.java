@@ -1464,7 +1464,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     tree.setShowsRootHandles(true);
     tree.setToggleClickCount(1);
     tree.setRootVisible(false);
-    Components.expandAll(tree, new TreePath(tree.getModel().getRoot()), true);
+    Components.expandAll(tree, new TreePath(tree.getModel().getRoot()));
 
     return new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   }
