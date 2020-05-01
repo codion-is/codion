@@ -6002,3 +6002,4 @@
   EntityApplicationPanel, DisplayFrame and MaximizeFrame enums added to replace boolean parameters
   EntityConnections.IncludePrimaryKeys enum added to replace boolean parameter
   EntityEditPanel.createControlPanel() split into createHorizontalControlPanel() and createVerticalControlPanel()
+  EntityEditPanel.ConfirmRequired enum added to replace boolean parameters
