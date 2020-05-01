@@ -48,7 +48,7 @@ public final class Databases {
   }
 
   /**
-   * Closes the given ResultSet instance, swallowing any SQLExceptions that occur
+   * Closes the given ResultSet instance, suppressing any SQLExceptions that may occur.
    * @param resultSet the result set to close
    */
   public static void closeSilently(final ResultSet resultSet) {
@@ -61,7 +61,7 @@ public final class Databases {
   }
 
   /**
-   * Closes the given Statement instance, swallowing any SQLExceptions that occur
+   * Closes the given Statement instance, suppressing any SQLExceptions that may occur.
    * @param statement the statement to close
    */
   public static void closeSilently(final Statement statement) {
@@ -74,7 +74,7 @@ public final class Databases {
   }
 
   /**
-   * Closes the given Connection instance, swallowing any SQLExceptions that occur
+   * Closes the given Connection instance, suppressing any SQLExceptions that may occur.
    * @param connection the connection to close
    */
   public static void closeSilently(final Connection connection) {
