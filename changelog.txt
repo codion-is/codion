@@ -6001,3 +6001,4 @@
   Dialogs.ConfirmOverwrite enum added and used instead of boolean parameter
   EntityApplicationPanel, DisplayFrame and MaximizeFrame enums added to replace boolean parameters
   EntityConnections.IncludePrimaryKeys enum added to replace boolean parameter
+  EntityEditPanel.createControlPanel() split into createHorizontalControlPanel() and createVerticalControlPanel()

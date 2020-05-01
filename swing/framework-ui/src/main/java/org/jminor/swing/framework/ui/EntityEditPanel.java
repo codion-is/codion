@@ -370,26 +370,21 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Initializes the control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
-   * @param horizontal true if the buttons should be laid out horizontally, false otherwise
+   * Initializes a horizontally laid out control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
    * @return the control panel, null if no controls are defined
    * @see #initializeControlPanelControlSet()
    */
-  public final JPanel createControlPanel(final boolean horizontal) {
-    final ControlSet controlPanelControlSet = initializeControlPanelControlSet();
-    if (controlPanelControlSet.size() == 0) {
-      return null;
-    }
-    if (horizontal) {
-      final JPanel panel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-      panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControlSet));
-      return panel;
-    }
-    else {
-      final JPanel panel = new JPanel(Layouts.borderLayout());
-      panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControlSet), BorderLayout.NORTH);
-      return panel;
-    }
+  public final JPanel createHorizontalControlPanel() {
+    return createControlPanel(true);
+  }
+
+  /**
+   * Initializes a vertically laid out control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
+   * @return the control panel, null if no controls are defined
+   * @see #initializeControlPanelControlSet()
+   */
+  public final JPanel createVerticalControlPanel() {
+    return createControlPanel(false);
   }
 
   /**
@@ -793,6 +788,23 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     if (getEditModel().isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
       setControl(ControlCode.DELETE, getDeleteControl());
     }
+  }
+
+  private JPanel createControlPanel(final boolean horizontal) {
+    final ControlSet controlPanelControlSet = initializeControlPanelControlSet();
+    if (controlPanelControlSet.size() == 0) {
+      return null;
+    }
+    if (horizontal) {
+      final JPanel panel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
+      panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControlSet));
+
+      return panel;
+    }
+    final JPanel panel = new JPanel(Layouts.borderLayout());
+    panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControlSet), BorderLayout.NORTH);
+
+    return panel;
   }
 
   private void bindEventsInternal() {
