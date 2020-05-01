@@ -5997,3 +5997,4 @@
   Components.linkToEnabledState(), removed overloaded includeFocusable parameter version
   Components.expandAll() split into expandAll() and collapesAll()
   Components.createEastFocusableButtonPanel() split from createEastButtonPanel()
+  Dialogs.FilesOrDirectories enum added and used instead of boolean parameter
