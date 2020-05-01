@@ -5988,3 +5988,4 @@
   EntityServerMonitorPanel, some UI improvements
   DatabaseProvider.createDatabase(), added jdbcUrl parameter
   DatabaseProvider.getDatabaseClassName() replaced with isDatabaseCompatible()
+  H2Database refactored a bit

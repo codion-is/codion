@@ -125,6 +125,12 @@ public class H2DatabaseTest {
     connection.prepareStatement("select id from test.test_table").execute();
     connection.close();
 
+    //test old url type
+    final H2Database database3 = new H2Database("jdbc:h2:" + tempDir.getAbsolutePath() + "/h2db/database", singletonList("src/test/resources/create_schema.sql"));
+    connection = database3.createConnection(user);
+    connection.prepareStatement("select id from test.test_table").execute();
+    connection.close();
+
     final File parentDir = dbFile.getParentFile();
     dbFile.delete();
     parentDir.delete();
