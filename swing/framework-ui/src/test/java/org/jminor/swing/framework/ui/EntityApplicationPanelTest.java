@@ -11,6 +11,8 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.ui.EntityApplicationPanel.DisplayFrame;
+import org.jminor.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -77,7 +79,7 @@ public class EntityApplicationPanelTest {
     };
     panel.setLoginRequired(false);
     panel.setShowStartupDialog(false);
-    panel.startApplication("Test", null, false, null, null, false, UNIT_TEST_USER);
+    panel.startApplication("Test", null, MaximizeFrame.NO, null, null, DisplayFrame.NO, UNIT_TEST_USER);
     assertNotNull(panel.getEntityPanel(TestDomain.T_EMP));
 
     panel.logout();

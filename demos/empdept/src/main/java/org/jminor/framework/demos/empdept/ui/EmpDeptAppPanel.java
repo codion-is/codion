@@ -89,7 +89,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.empdept.domain.EmpDept");
-    new EmpDeptAppPanel().startApplication("Emp-Dept", null, false,
+    new EmpDeptAppPanel().startApplication("Emp-Dept", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }
   // end::main[]

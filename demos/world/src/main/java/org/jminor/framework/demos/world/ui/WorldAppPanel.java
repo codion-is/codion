@@ -69,7 +69,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.world.domain.World");
-    new WorldAppPanel().startApplication("World", null, false,
+    new WorldAppPanel().startApplication("World", null, MaximizeFrame.NO,
             new Dimension(1024, 720), Users.parseUser("scott:tiger"));
   }
 }

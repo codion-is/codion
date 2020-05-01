@@ -17,6 +17,7 @@ import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
+import org.jminor.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
@@ -232,7 +233,7 @@ public class EmpDeptMinimalApp {
     System.setProperty("java.security.policy", "resources/security/jminor_demos.policy");
 
     //we create an instance of our application panel and start it
-    new EmpDeptApplicationPanel().startApplication("EmpDept Minimal", null, false,
+    new EmpDeptApplicationPanel().startApplication("EmpDept Minimal", null, MaximizeFrame.NO,
             new Dimension(800, 600), Users.parseUser("scott:tiger"));
   }
 }

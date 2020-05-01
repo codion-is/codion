@@ -154,6 +154,34 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("jminor.swing.tabPlacement", JTabbedPane.TOP);
 
+  /**
+   * Specifies whether an application frame should be maximized on startup.
+   */
+  public enum MaximizeFrame {
+    /**
+     * Frame should be maximized on startup.
+     */
+    YES,
+    /**
+     * Frame should not be maximized on startup.
+     */
+    NO
+  }
+
+  /**
+   * Specifies whether an application frame should be displayed on startup.
+   */
+  public enum DisplayFrame {
+    /**
+     * Frame should be displayed on startup.
+     */
+    YES,
+    /**
+     * Frame should not be displayed on startup.
+     */
+    NO
+  }
+
   private static final String DEFAULT_USERNAME_PROPERTY = "org.jminor.swing.framework.ui.defaultUsername";
   private static final String LOOK_AND_FEEL_PROPERTY = "org.jminor.swing.framework.ui.LookAndFeel";
   private static final String FONT_SIZE_PROPERTY = "org.jminor.swing.framework.ui.FontSize";
@@ -400,60 +428,60 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Starts this application.
    * @param frameCaption the caption to display on the frame
    * @param iconName the name of the icon to use
-   * @param maximize if true the application frame is maximized on startup
+   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
    * @param frameSize the frame size when not maximized
    * @return the JFrame instance containing this application panel
    */
-  public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
+  public final JFrame startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
                                        final Dimension frameSize) {
-    return startApplication(frameCaption, iconName, maximize, frameSize, null);
+    return startApplication(frameCaption, iconName, maximizeFrame, frameSize, null);
   }
 
   /**
    * Starts this application.
    * @param frameCaption the caption to display on the frame
    * @param iconName the name of the icon to use
-   * @param maximize if true the application frame is maximized on startup
+   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
    * @param frameSize the frame size when not maximized
    * @param defaultUser the default user to display in the login dialog
    * @return the JFrame instance containing this application panel
    */
-  public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
+  public final JFrame startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
                                        final Dimension frameSize, final User defaultUser) {
-    return startApplication(frameCaption, iconName, maximize, frameSize, defaultUser, true);
+    return startApplication(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, DisplayFrame.YES);
   }
 
   /**
    * Starts this application.
    * @param frameCaption the caption to display on the frame
    * @param iconName the name of the icon to use
-   * @param maximize if true the application frame is maximized on startup
+   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
    * @param frameSize the frame size when not maximized
    * @param defaultUser the default user to display in the login dialog
-   * @param showFrame if true the frame is set visible
+   * @param displayFrame specifies whether the frame should be displayed or left invisible
    * @return the JFrame instance containing this application panel
    */
-  public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                                       final Dimension frameSize, final User defaultUser, final boolean showFrame) {
-    return startApplication(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame, null);
+  public final JFrame startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
+                                       final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame) {
+    return startApplication(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, displayFrame, null);
   }
 
   /**
    * Starts this application.
    * @param frameCaption the caption to display on the frame
    * @param iconName the name of the icon to use
-   * @param maximize if true the application frame is maximized on startup
+   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
    * @param frameSize the frame size when not maximized
    * @param defaultUser the default user to display in the login dialog
-   * @param showFrame if true the frame is set visible
+   * @param displayFrame specifies whether the frame should be displayed or left invisible
    * @param silentLoginUser if specified the application is started silently with that user, displaying no login or progress dialog
    * @return the JFrame instance containing this application panel
    */
-  public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
-                                       final Dimension frameSize, final User defaultUser, final boolean showFrame,
+  public final JFrame startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
+                                       final Dimension frameSize, final User defaultUser, final DisplayFrame showFrame,
                                        final User silentLoginUser) {
     try {
-      return startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame, silentLoginUser);
+      return startApplicationInternal(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, showFrame, silentLoginUser);
     }
     catch (final CancelException e) {
       System.exit(0);
@@ -1172,16 +1200,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Initializes a JFrame according to the given parameters, containing this EntityApplicationPanel
    * @param title the title string for the JFrame
-   * @param maximize if true then the JFrame is maximized, overrides the prefSeizeAsRatioOfScreen parameter
+   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
    * @param showMenuBar true if a menubar should be created
    * @param size if the JFrame is not maximized then its preferredSize is set to this value
    * @param applicationIcon the application icon
-   * @param setVisible if true then the JFrame is set visible
+   * @param displayFrame specifies whether the frame should be displayed or left invisible
    * @return an initialized, but non-visible JFrame
    */
-  protected final JFrame prepareFrame(final String title, final boolean maximize,
+  protected final JFrame prepareFrame(final String title, final MaximizeFrame maximizeFrame,
                                       final boolean showMenuBar, final Dimension size,
-                                      final ImageIcon applicationIcon, final boolean setVisible) {
+                                      final ImageIcon applicationIcon, final DisplayFrame displayFrame) {
     final JFrame frame = frameProvider.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     frame.setIconImage(applicationIcon.getImage());
@@ -1204,14 +1232,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       Windows.setSizeWithinScreenBounds(frame);
     }
     Windows.centerWindow(frame);
-    if (maximize) {
+    if (maximizeFrame == MaximizeFrame.YES) {
       frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
     frame.setTitle(title);
     if (showMenuBar) {
       frame.setJMenuBar(initializeMenuBar());
     }
-    if (setVisible) {
+    if (displayFrame == DisplayFrame.YES) {
       frame.setVisible(true);
     }
 
@@ -1337,8 +1365,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             setParentWindowTitle(active ? frameTitle : frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED)));
   }
 
-  private JFrame startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize,
-                                          final Dimension frameSize, final User defaultUser, final boolean showFrame,
+  private JFrame startApplicationInternal(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
+                                          final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
                                           final User silentLoginUser) throws Exception {
     LOG.debug("{} application starting", frameCaption);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
@@ -1371,7 +1399,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
           saveDefaultUsername(connectionProvider.getUser().getUsername());
         }
         this.frameTitle = getFrameTitle(frameCaption, connectionProvider);
-        final JFrame frame = prepareFrame(this.frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
+        final JFrame frame = prepareFrame(this.frameTitle, maximizeFrame, true, frameSize, applicationIcon, displayFrame);
         this.applicationStartedEvent.onEvent();
         LOG.info(this.frameTitle + ", application started successfully, " + connectionProvider.getUser().getUsername()
                 + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");

@@ -6,6 +6,8 @@ package org.jminor.swing.framework.ui.test;
 import org.jminor.common.user.User;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
+import org.jminor.swing.framework.ui.EntityApplicationPanel.DisplayFrame;
+import org.jminor.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 
 import static java.util.Objects.requireNonNull;
 
@@ -35,7 +37,7 @@ public class EntityApplicationPanelTestUnit {
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     EntityApplicationPanel.SHOW_STARTUP_DIALOG.set(false);
     final EntityApplicationPanel panel = createApplicationPanel();
-    panel.startApplication(null, null, false, null, null, false, user);
+    panel.startApplication(null, null, MaximizeFrame.NO, null, null, DisplayFrame.NO, user);
     panel.getModel().getConnectionProvider().disconnect();
   }
 

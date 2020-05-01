@@ -89,7 +89,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.petclinic.domain.impl.ClinicImpl");
-    new PetclinicAppPanel().startApplication("Petclinic", null, false,
+    new PetclinicAppPanel().startApplication("Petclinic", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }
 }

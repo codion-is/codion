@@ -12,6 +12,7 @@ import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
+import org.jminor.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 
@@ -130,7 +131,7 @@ public final class ClientTutorial {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Chinook.class.getName());
-    new ApplicationPanel().startApplication("Artists and Albums", null, false,
+    new ApplicationPanel().startApplication("Artists and Albums", null, MaximizeFrame.NO,
             getScreenSizeRatio(0.5), Users.parseUser("scott:tiger"));
   }
 }

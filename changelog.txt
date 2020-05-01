@@ -5999,3 +5999,4 @@
   Components.createEastFocusableButtonPanel() split from createEastButtonPanel()
   Dialogs.FilesOrDirectories enum added and used instead of boolean parameter
   Dialogs.ConfirmOverwrite enum added and used instead of boolean parameter
+  EntityApplicationPanel, DisplayFrame and MaximizeFrame enums added to replace boolean parameters
