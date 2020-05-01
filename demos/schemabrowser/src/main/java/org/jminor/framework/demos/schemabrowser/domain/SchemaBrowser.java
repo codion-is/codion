@@ -30,9 +30,9 @@ public final class SchemaBrowser extends Domain {
 
   static {
     try {
-      final String databaseClassName = DatabaseProvider.getInstance().getDatabaseClassName();
+      final String databaseProviderClassName = DatabaseProvider.getInstance().getClass().getName();
       bundle = ResourceBundle.getBundle(SchemaBrowser.class.getName(),
-              new Locale(databaseClassName.substring(databaseClassName.lastIndexOf('.') + 1)));
+              new Locale(databaseProviderClassName.substring(databaseProviderClassName.lastIndexOf('.') + 1)));
     }
     catch (final SQLException e) {
       throw new RuntimeException(e);
