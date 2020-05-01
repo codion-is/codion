@@ -6031,3 +6031,4 @@
   EntityEditPanel.createControlPanel() split into createHorizontalControlPanel() and createVerticalControlPanel()
   EntityEditPanel.ConfirmRequired enum added to replace boolean parameters
   FilteredTable.CenterOnScroll enum added to replace boolean parameters
+0.14.10
