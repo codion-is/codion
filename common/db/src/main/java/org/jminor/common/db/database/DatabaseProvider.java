@@ -28,6 +28,7 @@ public interface DatabaseProvider {
 
   /**
    * @return a new {@link Database} implementation based on the given jdbc url.
+   * @param jdbcUrl the jdbc url
    */
   Database createDatabase(String jdbcUrl);
 
