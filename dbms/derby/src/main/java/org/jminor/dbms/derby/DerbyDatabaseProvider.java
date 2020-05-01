@@ -21,12 +21,12 @@ public final class DerbyDatabaseProvider implements DatabaseProvider {
   }
 
   @Override
-  public String getDatabaseClassName() {
-    return DerbyDatabase.class.getName();
+  public boolean isDatabaseCompatible(final Database database) {
+    return database instanceof DerbyDatabase;
   }
 
   @Override
-  public Database createDatabase() {
-    return new DerbyDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
+  public Database createDatabase(final String jdbcUrl) {
+    return new DerbyDatabase(jdbcUrl);
   }
 }

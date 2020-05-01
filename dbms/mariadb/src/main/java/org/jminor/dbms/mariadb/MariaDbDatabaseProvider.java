@@ -21,12 +21,12 @@ public final class MariaDbDatabaseProvider implements DatabaseProvider {
   }
 
   @Override
-  public String getDatabaseClassName() {
-    return MariaDbDatabase.class.getName();
+  public boolean isDatabaseCompatible(final Database database) {
+    return database instanceof MariaDbDatabase;
   }
 
   @Override
-  public Database createDatabase() {
-    return new MariaDbDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
+  public Database createDatabase(final String jdbcUrl) {
+    return new MariaDbDatabase(jdbcUrl);
   }
 }

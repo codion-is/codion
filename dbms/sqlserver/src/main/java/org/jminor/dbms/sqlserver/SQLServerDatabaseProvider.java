@@ -21,12 +21,12 @@ public final class SQLServerDatabaseProvider implements DatabaseProvider {
   }
 
   @Override
-  public String getDatabaseClassName() {
-    return SQLServerDatabase.class.getName();
+  public boolean isDatabaseCompatible(final Database database) {
+    return database instanceof SQLServerDatabase;
   }
 
   @Override
-  public Database createDatabase() {
-    return new SQLServerDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
+  public Database createDatabase(final String jdbcUrl) {
+    return new SQLServerDatabase(jdbcUrl);
   }
 }

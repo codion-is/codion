@@ -21,12 +21,12 @@ public final class MySQLDatabaseProvider implements DatabaseProvider {
   }
 
   @Override
-  public String getDatabaseClassName() {
-    return MySQLDatabase.class.getName();
+  public boolean isDatabaseCompatible(final Database database) {
+    return database instanceof MySQLDatabase;
   }
 
   @Override
-  public Database createDatabase() {
-    return new MySQLDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
+  public Database createDatabase(final String jdbcUrl) {
+    return new MySQLDatabase(jdbcUrl);
   }
 }

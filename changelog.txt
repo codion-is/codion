@@ -5986,3 +5986,5 @@
   H2Database.runScript() moved to H2DatabaseProvider and made static
   Database.getName() refactored
   EntityServerMonitorPanel, some UI improvements
+  DatabaseProvider.createDatabase(), added jdbcUrl parameter
+  DatabaseProvider.getDatabaseClassName() replaced with isDatabaseCompatible()

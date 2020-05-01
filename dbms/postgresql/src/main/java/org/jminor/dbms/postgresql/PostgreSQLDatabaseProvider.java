@@ -21,12 +21,12 @@ public final class PostgreSQLDatabaseProvider implements DatabaseProvider {
   }
 
   @Override
-  public String getDatabaseClassName() {
-    return PostgreSQLDatabase.class.getName();
+  public boolean isDatabaseCompatible(final Database database) {
+    return database instanceof PostgreSQLDatabase;
   }
 
   @Override
-  public Database createDatabase() {
-    return new PostgreSQLDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
+  public Database createDatabase(final String jdbcUrl) {
+    return new PostgreSQLDatabase(jdbcUrl);
   }
 }

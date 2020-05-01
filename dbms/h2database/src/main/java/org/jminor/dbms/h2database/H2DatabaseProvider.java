@@ -31,17 +31,16 @@ public final class H2DatabaseProvider implements DatabaseProvider {
   }
 
   @Override
-  public String getDatabaseClassName() {
-    return H2Database.class.getName();
+  public boolean isDatabaseCompatible(final Database database) {
+    return database instanceof H2Database;
   }
 
   @Override
-  public H2Database createDatabase() {
-    return new H2Database(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()),
-            Text.parseCommaSeparatedValues(H2Database.DATABASE_INIT_SCRIPT.get()));
+  public Database createDatabase(final String jdbcUrl) {
+    return new H2Database(jdbcUrl, Text.parseCommaSeparatedValues(H2Database.DATABASE_INIT_SCRIPT.get()));
   }
 
-  public H2Database createDatabase(final String jdbcUrl, final String initScript) {
+  public Database createDatabase(final String jdbcUrl, final String initScript) {
     return new H2Database(jdbcUrl, initScript == null ? emptyList() : singletonList(initScript));
   }
 
