@@ -260,7 +260,6 @@ public final class Components {
    * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
    * @param centerComponent the center component
    * @param buttonAction the button action
-   * @param buttonFocusable if true then the button is focusable, otherwise not
    * @return a panel
    * @see #createEastFocusableButtonPanel(JComponent, Action)
    */
@@ -279,13 +278,12 @@ public final class Components {
    * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
    * @param centerComponent the center component
    * @param buttonAction the button action
-   * @param buttonFocusable if true then the button is focusable, otherwise not
    * @return a panel
    */
   public static JPanel createEastFocusableButtonPanel(final JComponent centerComponent, final Action buttonAction) {
     final JPanel panel = createEastButtonPanel(centerComponent, buttonAction);
     for (final Component component : panel.getComponents()) {
-      if (component instanceof JButton) {
+      if (component instanceof JButton && ((JButton) component).getAction() == buttonAction) {
         component.setFocusable(true);
       }
     }

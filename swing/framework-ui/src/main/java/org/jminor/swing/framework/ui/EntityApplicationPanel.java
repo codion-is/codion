@@ -478,10 +478,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the JFrame instance containing this application panel
    */
   public final JFrame startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
-                                       final Dimension frameSize, final User defaultUser, final DisplayFrame showFrame,
+                                       final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
                                        final User silentLoginUser) {
     try {
-      return startApplicationInternal(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, showFrame, silentLoginUser);
+      return startApplicationInternal(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, displayFrame, silentLoginUser);
     }
     catch (final CancelException e) {
       System.exit(0);
