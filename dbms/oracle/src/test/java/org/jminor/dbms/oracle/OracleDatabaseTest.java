@@ -31,12 +31,6 @@ public class OracleDatabaseTest {
   }
 
   @Test
-  public void getAuthenticationInfo() {
-    final OracleDatabase db = new OracleDatabase(URL);
-    assertNull(db.getAuthenticationInfo(null));
-  }
-
-  @Test
   public void getAutoIncrementQuery() {
     final OracleDatabase db = new OracleDatabase(URL);
     assertEquals("select seq.currval from dual", db.getAutoIncrementQuery("seq"));

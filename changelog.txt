@@ -5991,3 +5991,4 @@
   H2Database refactored a bit
   Database.shutdownEmbedded() reintroduced, reimplemented in DerbyDatabase
   AbstractDatabase.addConnectionProperties() removed
+  Database.getAuthenticationInfo() removed

@@ -97,33 +97,6 @@ public abstract class AbstractDatabase implements Database {
     throw new UnsupportedOperationException("Sequence support is not implemented for database: " + getClass().getSimpleName());
   }
 
-  /**
-   * Returns a string containing authentication info to append to the connection URL,
-   * based on the values found in {@code connectionProperties}.
-   * This default implementation returns the following assuming that {@code connectionProperties}
-   * contains values for both "user" and "password" keys:
-   * user=scott;password=tiger
-   * The password clause is not included if no password is provided
-   * @param connectionProperties the connection properties
-   * @return a string containing authentication info to append to the connection URL
-   */
-  @Override
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    String authenticationInfo = null;
-    if (connectionProperties != null) {
-      final String username = (String) connectionProperties.get(USER_PROPERTY);
-      final String password = (String) connectionProperties.get(PASSWORD_PROPERTY);
-      if (!nullOrEmpty(username)) {
-        authenticationInfo = USER_PROPERTY + "=" + username;
-        if (!nullOrEmpty(password)) {
-          authenticationInfo += ";" + PASSWORD_PROPERTY + "=" + password;
-        }
-      }
-    }
-
-    return authenticationInfo;
-  }
-
   @Override
   public String getErrorMessage(final SQLException exception) {
     return exception.getMessage();

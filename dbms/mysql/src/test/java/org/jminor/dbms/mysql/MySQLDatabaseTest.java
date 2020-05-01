@@ -31,12 +31,6 @@ public class MySQLDatabaseTest {
   }
 
   @Test
-  public void getAuthenticationInfo() {
-    final MySQLDatabase db = new MySQLDatabase(URL);
-    assertNull(db.getAuthenticationInfo(null));
-  }
-
-  @Test
   public void getAutoIncrementQuery() {
     final MySQLDatabase db = new MySQLDatabase(URL);
     assertEquals(MySQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));

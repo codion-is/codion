@@ -10,7 +10,6 @@ import org.jminor.common.value.PropertyValue;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  * Defines DBMS specific functionality as well as basic database configuration settings.
@@ -90,18 +89,6 @@ public interface Database {
   String getUrl();
 
   /**
-   * In the case of embedded databases the user login info can be appended
-   * to the connection url, this method should return that string in case
-   * the dbms requires it and {@code connectionProperties} contains
-   * the username and password info, otherwise it should be safe to return null.
-   * This method is usually used in {@code getURL()} and {@code onDisconnect()}.
-   * @param connectionProperties the connection properties
-   * @return an authentication string to append to the connection url,
-   * for example user=scott;password=tiger, null if none is required
-   */
-  String getAuthenticationInfo(Properties connectionProperties);
-
-  /**
    * This should shutdown the database in case it is an embedded one
    * and if that is applicable, such as for Derby.
    */
@@ -162,14 +149,6 @@ public interface Database {
    * @return true if this exception is a unique key exception
    */
   boolean isUniqueConstraintException(SQLException exception);
-
-  /**
-   * Adds any dbms specific connection properties to the given properties map,
-   * called each time a connection is created
-   * @param properties the properties map to add to
-   * @return the properties map
-   */
-  Properties addConnectionProperties(Properties properties);
 
   /**
    * Creates a connection for the given user.

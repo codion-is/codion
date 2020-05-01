@@ -3,11 +3,7 @@
  */
 package org.jminor.dbms.hsqldb;
 
-import org.jminor.common.db.database.Database;
-
 import org.junit.jupiter.api.Test;
-
-import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,15 +32,6 @@ public class HSQLDatabaseTest {
   public void supportsIsValid() {
     final HSQLDatabase db = new HSQLDatabase(URL);
     assertTrue(db.supportsIsValid());
-  }
-
-  @Test
-  public void getAuthenticationInfo() {
-    final HSQLDatabase db = new HSQLDatabase(URL);
-    final Properties props = new Properties();
-    props.put(Database.USER_PROPERTY, "scott");
-    props.put(Database.PASSWORD_PROPERTY, "tiger");
-    assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
   }
 
   @Test

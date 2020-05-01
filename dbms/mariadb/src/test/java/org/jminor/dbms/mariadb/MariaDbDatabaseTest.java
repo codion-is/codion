@@ -31,12 +31,6 @@ public class MariaDbDatabaseTest {
   }
 
   @Test
-  public void getAuthenticationInfo() {
-    final MariaDbDatabase db = new MariaDbDatabase(URL);
-    assertNull(db.getAuthenticationInfo(null));
-  }
-
-  @Test
   public void getAutoIncrementQuery() {
     final MariaDbDatabase db = new MariaDbDatabase(URL);
     assertEquals(MariaDbDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));

@@ -31,12 +31,6 @@ public class SQLServerDatabaseTest {
   }
 
   @Test
-  public void getAuthenticationInfo() {
-    final SQLServerDatabase db = new SQLServerDatabase(URL);
-    assertNull(db.getAuthenticationInfo(null));
-  }
-
-  @Test
   public void getAutoIncrementQuery() {
     final SQLServerDatabase db = new SQLServerDatabase(URL);
     assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));

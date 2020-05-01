@@ -3,7 +3,6 @@
  */
 package org.jminor.dbms.h2database;
 
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,15 +49,6 @@ public class H2DatabaseTest {
   public void supportsIsValid() {
     final H2Database db = new H2Database("url");
     assertTrue(db.supportsIsValid());
-  }
-
-  @Test
-  public void getAuthenticationInfo() {
-    final H2Database db = new H2Database("url");
-    final Properties props = new Properties();
-    props.put(Database.USER_PROPERTY, "scott");
-    props.put(Database.PASSWORD_PROPERTY, "tiger");
-    assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
   }
 
   @Test

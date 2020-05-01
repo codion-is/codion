@@ -7,8 +7,6 @@ import org.jminor.common.db.database.Database;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Properties;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DerbyDatabaseTest {
@@ -40,15 +38,6 @@ public class DerbyDatabaseTest {
   public void supportsNoWait() {
     final DerbyDatabase db = new DerbyDatabase(URL);
     assertEquals(Database.SelectForUpdateSupport.FOR_UPDATE, db.getSelectForUpdateSupport());
-  }
-
-  @Test
-  public void getAuthenticationInfo() {
-    final DerbyDatabase db = new DerbyDatabase(URL);
-    final Properties props = new Properties();
-    props.put(Database.USER_PROPERTY, "scott");
-    props.put(Database.PASSWORD_PROPERTY, "tiger");
-    assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
   }
 
   @Test
