@@ -61,6 +61,7 @@ public final class DatabaseMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     final JSpinner updateIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getUpdateIntervalValue()));
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
 
@@ -69,10 +70,10 @@ public final class DatabaseMonitorPanel extends JPanel {
 
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(updateIntervalSpinner);
+    chartConfig.add(new JButton(Controls.control(model::clearStatistics, "Clear")));
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
-    configBase.add(chartConfig, BorderLayout.CENTER);
-    configBase.add(new JButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
+    configBase.add(chartConfig, BorderLayout.WEST);
 
     final JPanel panel = new JPanel(Layouts.borderLayout());
     queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());

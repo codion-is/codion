@@ -6,13 +6,10 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.common.value.Values;
-import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.ComponentValue;
 import org.jminor.swing.common.ui.value.Nullable;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
@@ -33,7 +30,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -44,7 +40,6 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -125,50 +120,26 @@ public final class ServerMonitorPanel extends JPanel {
     }
   }
 
-  private void setUpdateInterval() {
-    final ComponentValue<Integer, IntegerField> componentValue = NumericalValues.integerValue(5);
-    final IntegerField field = componentValue.getComponent();
-    field.setColumns(6);
-    field.setHorizontalAlignment(SwingConstants.CENTER);
-    field.selectAll();
-    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    panel.add(field);
-    final JDialog dialog = new JDialog(Windows.getParentWindow(this), "Update interval (s)");
-    Dialogs.prepareOkCancelDialog(dialog, this, panel, Controls.control(() -> {
-      setUpdateInterval(componentValue.get());
-      dialog.dispose();
-    }), Controls.control(dialog::dispose));
-    dialog.setVisible(true);
-  }
-
-  private void setUpdateInterval(final Integer interval) {
-    getModel().getUpdateIntervalValue().set(interval);
-    getModel().getDatabaseMonitor().getUpdateIntervalValue().set(interval);
-    getModel().getDatabaseMonitor().getConnectionPoolMonitor().getConnectionPoolInstanceMonitors()
-            .forEach(poolMonitor -> poolMonitor.getUpdateIntervalValue().set(interval));
-    getModel().getClientMonitor().getUpdateIntervalValue().set(interval);
-  }
-
   private void initializeUI() throws RemoteException {
-    final JPanel infoPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    infoPanel.add(new JLabel("Connections", JLabel.RIGHT));
-    infoPanel.add(initializeConnectionCountField());
-    infoPanel.add(new JLabel("limit", JLabel.RIGHT));
+    final JPanel serverPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    serverPanel.add(new JLabel("Connections", JLabel.RIGHT));
+    serverPanel.add(initializeConnectionCountField());
+    serverPanel.add(new JLabel("limit", JLabel.RIGHT));
     final JSpinner connectionLimitSpinner = new JSpinner(integerValueSpinnerModel(model, "connectionLimit",
             model.getConnectionLimitObserver()));
     ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
-    infoPanel.add(connectionLimitSpinner);
-    infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
-    infoPanel.add(initializeMemoryField());
-    infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
-    infoPanel.add(initializeLogLevelField());
-    infoPanel.add(new JButton(Controls.control(this::setUpdateInterval, "Update interval")));
+    serverPanel.add(connectionLimitSpinner);
+    serverPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
+    serverPanel.add(initializeMemoryField());
+    serverPanel.add(new JLabel("Logging", JLabel.RIGHT));
+    serverPanel.add(initializeLogLevelField());
 
     final JPanel northPanel = new JPanel(Layouts.borderLayout());
-    northPanel.add(infoPanel, BorderLayout.CENTER);
+    northPanel.add(serverPanel, BorderLayout.CENTER);
     final JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     shutdownBasePanel.add(new JButton(Controls.control(this::shutdownServer, "Shutdown")), BorderLayout.EAST);
     northPanel.add(shutdownBasePanel, BorderLayout.EAST);
+    northPanel.setBorder(BorderFactory.createTitledBorder("Server"));
 
     setLayout(new BorderLayout());
     add(northPanel, BorderLayout.NORTH);
@@ -183,23 +154,33 @@ public final class ServerMonitorPanel extends JPanel {
 
   private JPanel initializePerformancePanel() {
     final JPanel controlPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
 
     final JSpinner updateIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getUpdateIntervalValue()));
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
-
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
 
-    controlPanel.add(new JLabel("Update interval (s)"));
-    controlPanel.add(updateIntervalSpinner);
+    final JPanel chartsPanel = new JPanel(Layouts.borderLayout());
+
+    final JPanel intervalPanel = new JPanel(Layouts.borderLayout());
+    intervalPanel.add(new JLabel("Update interval (s)"), BorderLayout.WEST);
+    intervalPanel.add(updateIntervalSpinner, BorderLayout.CENTER);
+
+    chartsPanel.add(intervalPanel, BorderLayout.CENTER);
+    chartsPanel.add(new JButton(Controls.control(model::clearStatistics, "Clear")), BorderLayout.EAST);
+
+    controlPanel.add(chartsPanel);
+
+    final JPanel zoomPanel = new JPanel(Layouts.borderLayout());
     final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
     Values.stateValue(synchronizedZoomState).link(BooleanValues.booleanButtonModelValue(synchronizedZoomCheckBox.getModel()));
-    controlPanel.add(synchronizedZoomCheckBox);
-    controlPanel.add(new JButton(Controls.control(this::resetZoom, "Reset zoom")));
+    zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
+    zoomPanel.add(new JButton(Controls.control(this::resetZoom, "Reset zoom")), BorderLayout.EAST);
+    controlPanel.add(zoomPanel);
 
     final JPanel controlPanelBase = new JPanel(Layouts.borderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
-    controlPanelBase.add(new JButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
     final JPanel chartPanelLeft = new JPanel(Layouts.gridLayout(3, 1));
     final JPanel chartPanelRight = new JPanel(Layouts.gridLayout(3, 1));

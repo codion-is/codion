@@ -19,6 +19,9 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.layout.Layouts;
+import org.jminor.swing.common.ui.textfield.IntegerField;
+import org.jminor.swing.common.ui.value.ComponentValue;
+import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.framework.server.monitor.EntityServerMonitor;
 import org.jminor.swing.framework.server.monitor.HostMonitor;
 
@@ -27,10 +30,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -160,6 +165,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     view.add(initializeAlwaysOnTopControl());
     controlSet.add(view);
     final ControlSet tools = new ControlSet("Tools", 'T');
+    tools.add(Controls.control(this::setUpdateInterval, "Chart update interval"));
     tools.add(initializeSetJDKDirControl());
     tools.add(initializeJConsoleControl());
     controlSet.add(tools);
@@ -197,6 +203,22 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   private Control initializeExitControl() {
     return Controls.control(this::exit, "Exit", null, null, 'X');
+  }
+
+  private void setUpdateInterval() {
+    final ComponentValue<Integer, IntegerField> componentValue = NumericalValues.integerValue(5);
+    final IntegerField field = componentValue.getComponent();
+    field.setColumns(6);
+    field.setHorizontalAlignment(SwingConstants.CENTER);
+    field.selectAll();
+    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    panel.add(field);
+    final JDialog dialog = new JDialog(Windows.getParentWindow(this), "Update interval (s)");
+    Dialogs.prepareOkCancelDialog(dialog, this, panel, Controls.control(() -> {
+      getModel().setUpdateInterval(componentValue.get());
+      dialog.dispose();
+    }), Controls.control(dialog::dispose));
+    dialog.setVisible(true);
   }
 
   private static JPanel initializeSouthPanel() {

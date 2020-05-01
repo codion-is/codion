@@ -70,7 +70,7 @@ public final class DatabaseMonitor {
   /**
    * Resets all collected statistics
    */
-  public void resetStatistics() {
+  public void clearStatistics() {
     queriesPerSecond.clear();
     selectsPerSecond.clear();
     insertsPerSecond.clear();
