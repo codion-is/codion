@@ -5990,3 +5990,4 @@
   DatabaseProvider.getDatabaseClassName() replaced with isDatabaseCompatible()
   H2Database refactored a bit
   Database.shutdownEmbedded() reintroduced, reimplemented in DerbyDatabase
+  AbstractDatabase.addConnectionProperties() removed

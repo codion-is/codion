@@ -49,7 +49,7 @@ public abstract class AbstractDatabase implements Database {
     connectionProperties.put(PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
     DriverManager.setLoginTimeout(getLoginTimeout());
     try {
-      return DriverManager.getConnection(getUrl(), addConnectionProperties(connectionProperties));
+      return DriverManager.getConnection(getUrl(), connectionProperties);
     }
     catch (final SQLException e) {
       if (isAuthenticationException(e)) {
@@ -152,11 +152,6 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return false;
-  }
-
-  @Override
-  public Properties addConnectionProperties(final Properties properties) {
-    return properties;
   }
 
   /**
