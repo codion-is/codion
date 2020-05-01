@@ -30,6 +30,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   public static final PropertyValue<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT = Configuration.booleanValue("jminor.db.shutdownEmbeddedOnDisconnect", false);
 
+  private final boolean shutdownDatabaseOnDisconnect = SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get();
+
   /**
    * The underlying domain model
    */
@@ -80,6 +82,9 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   @Override
   protected void disconnect(final EntityConnection connection) {
     connection.disconnect();
+    if (database != null && shutdownDatabaseOnDisconnect) {
+      database.shutdownEmbedded();
+    }
   }
 
   private Database getDatabase() {

@@ -28,7 +28,7 @@ public final class AbstractDatabaseTest {
     assertEquals(Database.SelectForUpdateSupport.FOR_UPDATE_NOWAIT, database.getSelectForUpdateSupport());
     assertTrue(database.supportsIsValid());
     assertEquals("name", database.getName());
-    database.shutdownEmbedded(null);
+    database.shutdownEmbedded();
     database.getErrorMessage(new SQLException());
   }
 }

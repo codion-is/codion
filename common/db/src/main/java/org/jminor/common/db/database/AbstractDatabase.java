@@ -90,7 +90,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public void shutdownEmbedded(final Properties connectionProperties) {}
+  public void shutdownEmbedded() {}
 
   @Override
   public String getSequenceQuery(final String sequenceName) {

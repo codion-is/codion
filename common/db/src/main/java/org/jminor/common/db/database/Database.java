@@ -104,9 +104,8 @@ public interface Database {
   /**
    * This should shutdown the database in case it is an embedded one
    * and if that is applicable, such as for Derby.
-   * @param connectionProperties the connection properties
    */
-  void shutdownEmbedded(Properties connectionProperties);
+  void shutdownEmbedded();
 
   /**
    * Returns the select for update support of the underlying database.
