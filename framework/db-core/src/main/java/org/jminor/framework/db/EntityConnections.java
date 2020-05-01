@@ -12,12 +12,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static org.jminor.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A static helper class for mass data manipulation.
  */
 public final class EntityConnections {
+
+  /**
+   * Specifies whether primary key values should be included when copying entities.
+   */
+  public enum IncludePrimaryKeys {
+    /**
+     * Primary key values should be include during a copy operation.
+     */
+    YES,
+    /**
+     * Primary key values should not be include during a copy operation.
+     */
+    NO
+  }
 
   private EntityConnections() {}
 
@@ -26,16 +41,20 @@ public final class EntityConnections {
    * @param source the source db
    * @param destination the destination db
    * @param batchSize the number of records to copy between commits
-   * @param includePrimaryKeys if true primary key values are included, if false then they are assumed to be auto-generated
+   * @param includePrimaryKeys specifies whether primary key values should be included when copying
    * @param entityIds the IDs of the entity types to copy
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
   public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
-                                  final boolean includePrimaryKeys, final String... entityIds) throws DatabaseException {
+                                  final IncludePrimaryKeys includePrimaryKeys, final String... entityIds) throws DatabaseException {
+    requireNonNull(source, "source");
+    requireNonNull(destination, "destination");
+    requireNonNull(includePrimaryKeys, "includePrimaryKeys");
+    requireNonNull(entityIds);
     for (final String entityId : entityIds) {
       final List<Entity> entities = source.select(selectCondition(entityId).setForeignKeyFetchDepthLimit(0));
-      if (!includePrimaryKeys) {
+      if (includePrimaryKeys == IncludePrimaryKeys.NO) {
         entities.forEach(Entity::clearKeyValues);
       }
       batchInsert(destination, entities, batchSize, null);
@@ -55,6 +74,8 @@ public final class EntityConnections {
   public static List<Entity.Key> batchInsert(final EntityConnection connection, final List<Entity> entities,
                                              final int batchSize, final EventDataListener<Integer> progressReporter)
           throws DatabaseException {
+    requireNonNull(connection, "connection");
+    requireNonNull(entities, "entities");
     if (batchSize <= 0) {
       throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
     }

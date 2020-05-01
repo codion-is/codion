@@ -67,6 +67,38 @@ public final class Dialogs {
   private static JFileChooser fileChooserOpen;
   private static JFileChooser fileChooserSave;
 
+  /**
+   * Specifies how a file selection dialog restricts it's selection.
+   */
+  public enum FilesOrDirectories {
+    /**
+     * Only files.
+     */
+    FILES,
+    /**
+     * Only directories.
+     */
+    DIRECTORIES,
+    /**
+     * Both files and directories.
+     */
+    BOTH
+  }
+
+  /**
+   * Specifies if a overwriting a file should be confirmed.
+   */
+  public enum ConfirmOverwrite {
+    /**
+     * If overwriting should be confirmed.
+     */
+    YES,
+    /**
+     * If overwriting should not be confirmed.
+     */
+    NO
+  }
+
   private Dialogs() {}
 
   /**
@@ -511,7 +543,7 @@ public final class Dialogs {
    * @throws CancelException in case the user cancels
    */
   public static File selectDirectory(final JComponent dialogParent, final String startDir, final String dialogTitle) {
-    return selectFileOrDirectory(dialogParent, startDir, false, dialogTitle);
+    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.DIRECTORIES, dialogTitle);
   }
 
   /**
@@ -534,35 +566,35 @@ public final class Dialogs {
    * @throws CancelException in case the user cancels
    */
   public static File selectFile(final JComponent dialogParent, final String startDir, final String dialogTitle) {
-    return selectFileOrDirectory(dialogParent, startDir, true, dialogTitle);
+    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.FILES, dialogTitle);
   }
 
   /**
    * Displays a file selection dialog for selecting an existing file or directory
    * @param dialogParent the dialog parent
    * @param startDir the start directory, user.home if not specified
-   * @param filesOnly if true then files are displayed, otherwise only directories
+   * @param filesOrDirectories specifies whether selection should be restricted
    * @param dialogTitle the dialog title
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
-  public static File selectFileOrDirectory(final JComponent dialogParent, final String startDir, final boolean filesOnly,
-                                           final String dialogTitle) {
-    return selectFilesOrDirectories(dialogParent, startDir, filesOnly, false, dialogTitle).get(0);
+  public static File selectFileOrDirectory(final JComponent dialogParent, final String startDir,
+                                           final FilesOrDirectories filesOrDirectories, final String dialogTitle) {
+    return selectFilesOrDirectories(dialogParent, startDir, filesOrDirectories, false, dialogTitle).get(0);
   }
 
   /**
    * Displays a file selection dialog for selecting files or directories
    * @param dialogParent the dialog parent
    * @param startDir the start directory, user.home if not specified
-   * @param filesOnly if true then files are displayed, otherwise only directories
+   * @param filesOrDirectories specifies whether selection should be restricted
    * @param multiSelection if true then the dialog will allow selection of multiple items
    * @param dialogTitle the dialog title
    * @return a List containing the selected files, contains at least one file
    * @throws CancelException in case the user cancels or no files are selected
    */
   public static synchronized List<File> selectFilesOrDirectories(final JComponent dialogParent, final String startDir,
-                                                                 final boolean filesOnly, final boolean multiSelection,
+                                                                 final FilesOrDirectories filesOrDirectories, final boolean multiSelection,
                                                                  final String dialogTitle) {
     if (fileChooserOpen == null) {
       try {
@@ -573,11 +605,16 @@ public final class Dialogs {
         Components.hideWaitCursor(dialogParent);
       }
     }
-    if (filesOnly) {
-      fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    }
-    else {
-      fileChooserOpen.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    switch (filesOrDirectories) {
+      case FILES:
+        fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        break;
+      case DIRECTORIES:
+        fileChooserOpen.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        break;
+      case BOTH:
+        fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        break;
     }
     fileChooserOpen.setSelectedFiles(new File[] {new File("")});
     fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
@@ -614,7 +651,7 @@ public final class Dialogs {
    * @throws CancelException in case the user cancels
    */
   public static synchronized File selectFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName) {
-    return selectFileToSave(dialogParent, startDir, defaultFileName, true);
+    return selectFileToSave(dialogParent, startDir, defaultFileName, ConfirmOverwrite.YES);
   }
 
   /**
@@ -622,12 +659,12 @@ public final class Dialogs {
    * @param dialogParent the dialog parent
    * @param startDir the start dir, user.dir if not specified
    * @param defaultFileName the default file name to suggest
-   * @param confirmOverwrite if true then the user is asked to confirm overwrite if the file exists
+   * @param confirmOverwrite specifies whether overwriting a file should be confirmed
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
   public static synchronized File selectFileToSave(final JComponent dialogParent, final String startDir,
-                                                   final String defaultFileName, final boolean confirmOverwrite) {
+                                                   final String defaultFileName, final ConfirmOverwrite confirmOverwrite) {
     if (fileChooserSave == null) {
       try {
         Components.showWaitCursor(dialogParent);
@@ -660,7 +697,7 @@ public final class Dialogs {
       int option = fileChooserSave.showSaveDialog(dialogParent);
       if (option == JFileChooser.APPROVE_OPTION) {
         selectedFile = fileChooserSave.getSelectedFile();
-        if (selectedFile.exists() && confirmOverwrite) {
+        if (selectedFile.exists() && confirmOverwrite == ConfirmOverwrite.YES) {
           option = JOptionPane.showConfirmDialog(dialogParent, MESSAGES.getString("overwrite_file"),
                   MESSAGES.getString("file_exists"), JOptionPane.YES_NO_CANCEL_OPTION);
           if (option == JOptionPane.YES_OPTION) {

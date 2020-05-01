@@ -32,7 +32,6 @@ import org.jminor.swing.common.ui.value.TemporalValues;
 import org.jminor.swing.common.ui.value.TextValues;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -54,9 +53,7 @@ import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -100,21 +97,20 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final boolean toggleAdvancedButton,
                               final Operator... operators) {
-    this(conditionModel, toggleAdvancedButton, new DefaultInputFieldProvider(conditionModel), operators);
+    this(conditionModel, toggleAdvancedButton, new DefaultBoundFieldProvider(conditionModel), operators);
   }
 
   /**
    * Instantiates a new ColumnConditionPanel.
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton if true an advanced toggle button is included
-   * @param inputFieldProvider the input field provider
+   * @param boundFieldProvider the input field provider
    * @param operators the search operators available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final boolean toggleAdvancedButton,
-                              final InputFieldProvider inputFieldProvider, final Operator... operators) {
+                              final BoundFieldProvider boundFieldProvider, final Operator... operators) {
     this(conditionModel, toggleAdvancedButton,
-            inputFieldProvider.initializeInputField(true),
-            inputFieldProvider.initializeInputField(false), operators);
+            boundFieldProvider.initializeUpperBoundField(), boundFieldProvider.initializeLowerBoundField(), operators);
   }
 
   /**
@@ -310,110 +306,91 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   /**
    * Provides a upper/lower bound input fields for a ColumnConditionPanel
    */
-  public interface InputFieldProvider {
+  public interface BoundFieldProvider {
 
     /**
-     * @param isUpperBound if true then the returned field should be bound
-     * with with upper bound value int he condition model, otherwise the lower bound
-     * @return a upper/lower bound input field
+     * @return a upper bound input field
      */
-    JComponent initializeInputField(boolean isUpperBound);
+    JComponent initializeUpperBoundField();
+
+    /**
+     * @return a lower bound input field
+     */
+    JComponent initializeLowerBoundField();
   }
 
-  private static final class DefaultInputFieldProvider implements InputFieldProvider {
+  private static final class DefaultBoundFieldProvider implements BoundFieldProvider {
 
-    private final ColumnConditionModel columnConditionModel;
+    private final ColumnConditionModel<?, ?> columnConditionModel;
 
-    private DefaultInputFieldProvider(final ColumnConditionModel columnConditionModel) {
+    private DefaultBoundFieldProvider(final ColumnConditionModel<?, ?> columnConditionModel) {
       requireNonNull(columnConditionModel, "columnConditionModel");
       this.columnConditionModel = columnConditionModel;
     }
 
-    /**
-     * @param isUpperBound true if the field should represent the upper bound, otherwise it should be the lower bound field
-     * @return an input field for either the upper or lower bound
-     */
     @Override
-    public JComponent initializeInputField(final boolean isUpperBound) {
-      if (columnConditionModel.getTypeClass().equals(Boolean.class) && !isUpperBound) {
-        return null;//no lower bound field required for boolean values
-      }
-      final JComponent field = initializeField();
-      if (columnConditionModel.getTypeClass().equals(Boolean.class)) {
-        createToggleProperty((JCheckBox) field, isUpperBound);
-      }
-      else {
-        createTextProperty(field, isUpperBound);
-      }
-
-      return field;
+    public JComponent initializeUpperBoundField() {
+      return initializeField(true);
     }
 
-    private JComponent initializeField() {
-      final Class typeClass = columnConditionModel.getTypeClass();
+    @Override
+    public JComponent initializeLowerBoundField() {
+      if (columnConditionModel.getTypeClass().equals(Boolean.class)) {
+        return null;//no lower bound field required for boolean values
+      }
+
+      return initializeField(false);
+    }
+
+    private JComponent initializeField(final boolean upperBound) {
+      final Value value = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
+      final Class<?> typeClass = columnConditionModel.getTypeClass();
+      if (typeClass.equals(Boolean.class)) {
+        final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
+        checkBox.setHorizontalAlignment(CENTER);
+        value.link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
+
+        return checkBox;
+      }
       if (typeClass.equals(Integer.class)) {
-        return new IntegerField(DEFAULT_FIELD_COLUMNS);
+        final IntegerField integerField = new IntegerField(DEFAULT_FIELD_COLUMNS);
+        value.link(NumericalValues.integerValue(integerField));
+
+        return integerField;
       }
       else if (typeClass.equals(Double.class)) {
-        return new DecimalField(DEFAULT_FIELD_COLUMNS);
+        final DecimalField decimalField = new DecimalField(DEFAULT_FIELD_COLUMNS);
+        value.link(NumericalValues.doubleValue(decimalField));
+
+        return decimalField;
       }
       else if (typeClass.equals(BigDecimal.class)) {
         final DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance();
         format.setParseBigDecimal(true);
 
-        return new DecimalField(format, DEFAULT_FIELD_COLUMNS);
+        final DecimalField decimalField = new DecimalField(format, DEFAULT_FIELD_COLUMNS);
+        value.link(NumericalValues.bigDecimalValue(decimalField));
+
+        return decimalField;
       }
       else if (typeClass.equals(Long.class)) {
-        return new LongField(DEFAULT_FIELD_COLUMNS);
-      }
-      else if (typeClass.equals(Boolean.class)) {
-        final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
-        checkBox.setHorizontalAlignment(CENTER);
+        final LongField longField = new LongField(DEFAULT_FIELD_COLUMNS);
+        value.link(NumericalValues.longValue(longField));
 
-        return checkBox;
+        return longField;
       }
-      else if (typeClass.equals(LocalTime.class) || typeClass.equals(LocalDateTime.class) || typeClass.equals(LocalDate.class)) {
-        return TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
+      else if (TemporalAccessor.class.isAssignableFrom(typeClass)) {
+        final JFormattedTextField formattedField =
+                TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
+        value.link(TemporalValues.localTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()));
+
+        return formattedField;
       }
 
-      return new JTextField(DEFAULT_FIELD_COLUMNS);
-    }
+      final JTextField textField = new JTextField(DEFAULT_FIELD_COLUMNS);
+      value.link(TextValues.textValue(textField));
 
-    private void createToggleProperty(final JCheckBox checkBox, final boolean upperBound) {
-      final Value<Boolean> value = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
-      value.link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
-    }
-
-    private void createTextProperty(final JComponent component, final boolean upperBound) {
-      final Value value = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
-      final Class typeClass = columnConditionModel.getTypeClass();
-      if (typeClass.equals(Integer.class)) {
-        value.link(NumericalValues.integerValue((IntegerField) component));
-      }
-      else if (typeClass.equals(Double.class)) {
-        value.link(NumericalValues.doubleValue((DecimalField) component));
-      }
-      else if (typeClass.equals(BigDecimal.class)) {
-        value.link(NumericalValues.bigDecimalValue((DecimalField) component));
-      }
-      else if (typeClass.equals(Long.class)) {
-        value.link(NumericalValues.longValue((LongField) component));
-      }
-      else if (typeClass.equals(LocalTime.class)) {
-        value.link(TemporalValues.localTimeValue((JFormattedTextField) component,
-                columnConditionModel.getDateTimeFormatPattern()));
-      }
-      else if (typeClass.equals(LocalDateTime.class)) {
-        value.link(TemporalValues.localDateTimeValue((JFormattedTextField) component,
-                columnConditionModel.getDateTimeFormatPattern()));
-      }
-      else if (typeClass.equals(LocalDate.class)) {
-        value.link(TemporalValues.localDateValue((JFormattedTextField) component,
-                columnConditionModel.getDateTimeFormatPattern()));
-      }
-      else {
-        value.link(TextValues.textValue((JTextField) component));
-      }
+      return textField;
     }
   }
 

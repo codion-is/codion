@@ -26,23 +26,24 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
    * @param model the model to base this panel on
    */
   public ForeignKeyConditionPanel(final ForeignKeyConditionModel model) {
-    super(model, false, new ForeignKeyInputFieldProvider(model), Operator.LIKE, Operator.NOT_LIKE);
+    super(model, false, new ForeignKeyBoundFieldProvider(model), Operator.LIKE, Operator.NOT_LIKE);
   }
 
-  private static final class ForeignKeyInputFieldProvider implements InputFieldProvider {
+  private static final class ForeignKeyBoundFieldProvider implements BoundFieldProvider {
 
     private final ColumnConditionModel<Entity, ForeignKeyProperty> model;
 
-    private ForeignKeyInputFieldProvider(final ColumnConditionModel<Entity, ForeignKeyProperty> model) {
+    private ForeignKeyBoundFieldProvider(final ColumnConditionModel<Entity, ForeignKeyProperty> model) {
       this.model = model;
     }
 
     @Override
-    public JComponent initializeInputField(final boolean isUpperBound) {
-      if (isUpperBound) {
-        return initializeForeignKeyField();
-      }
+    public JComponent initializeUpperBoundField() {
+      return initializeForeignKeyField();
+    }
 
+    @Override
+    public JComponent initializeLowerBoundField() {
       return null;
     }
 

@@ -89,6 +89,20 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
+   * Specifies whether a user confirmation is required.
+   */
+  public enum ConfirmRequired {
+    /**
+     * Specifies that a confirm is required.
+     */
+    YES,
+    /**
+     * Specifies that a confirm is not required.
+     */
+    NO
+  }
+
+  /**
    * The actions meriting user confirmation
    */
   protected enum ConfirmType {
@@ -370,26 +384,21 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Initializes the control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
-   * @param horizontal true if the buttons should be laid out horizontally, false otherwise
+   * Initializes a horizontally laid out control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
    * @return the control panel, null if no controls are defined
    * @see #initializeControlPanelControlSet()
    */
-  public final JPanel createControlPanel(final boolean horizontal) {
-    final ControlSet controlPanelControlSet = initializeControlPanelControlSet();
-    if (controlPanelControlSet.size() == 0) {
-      return null;
-    }
-    if (horizontal) {
-      final JPanel panel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-      panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControlSet));
-      return panel;
-    }
-    else {
-      final JPanel panel = new JPanel(Layouts.borderLayout());
-      panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControlSet), BorderLayout.NORTH);
-      return panel;
-    }
+  public final JPanel createHorizontalControlPanel() {
+    return createControlPanel(true);
+  }
+
+  /**
+   * Initializes a vertically laid out control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
+   * @return the control panel, null if no controls are defined
+   * @see #initializeControlPanelControlSet()
+   */
+  public final JPanel createVerticalControlPanel() {
+    return createControlPanel(false);
   }
 
   /**
@@ -456,10 +465,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
                       FrameworkMessages.get(FrameworkMessages.INSERT_NEW), Messages.get(Messages.CANCEL)},
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
       if (choiceIdx == 0) {//update
-        update(false);
+        update(ConfirmRequired.NO);
       }
       else if (choiceIdx == 1) {//insert
-        insert(false);
+        insert(ConfirmRequired.NO);
       }
     }
   }
@@ -469,17 +478,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @return true in case of successful insert, false otherwise
    */
   public final boolean insert() {
-    return insert(true);
+    return insert(ConfirmRequired.YES);
   }
 
   /**
    * Performs a insert on the active entity
-   * @param confirmRequired if true then confirmInsert() is called
+   * @param confirmRequired specifies whether a user confirmation is required.
    * @return true in case of successful insert, false otherwise
    */
-  public final boolean insert(final boolean confirmRequired) {
+  public final boolean insert(final ConfirmRequired confirmRequired) {
     try {
-      if (!confirmRequired || confirmInsert()) {
+      if (confirmRequired == ConfirmRequired.NO || confirmInsert()) {
         validateData();
         try {
           showWaitCursor(this);
@@ -514,17 +523,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @return true if the delete operation was successful
    */
   public final boolean delete() {
-    return delete(true);
+    return delete(ConfirmRequired.YES);
   }
 
   /**
    * Performs a delete on the active entity
-   * @param confirmRequired if true then confirmDelete() is called
+   * @param confirmRequired specifies whether a user confirmation is required.
    * @return true if the delete operation was successful
    */
-  public final boolean delete(final boolean confirmRequired) {
+  public final boolean delete(final ConfirmRequired confirmRequired) {
     try {
-      if (!confirmRequired || confirmDelete()) {
+      if (confirmRequired == ConfirmRequired.NO || confirmDelete()) {
         try {
           showWaitCursor(this);
           getEditModel().delete();
@@ -553,17 +562,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @return true if the update operation was successful
    */
   public final boolean update() {
-    return update(true);
+    return update(ConfirmRequired.YES);
   }
 
   /**
    * Performs an update on the active entity
-   * @param confirmRequired if true then confirmUpdate() is called
+   * @param confirmRequired specifies whether a user confirmation is required.
    * @return true if the update operation was successful or if no update was required
    */
-  public final boolean update(final boolean confirmRequired) {
+  public final boolean update(final ConfirmRequired confirmRequired) {
     try {
-      if (!confirmRequired || confirmUpdate()) {
+      if (confirmRequired == ConfirmRequired.NO || confirmUpdate()) {
         validateData();
         try {
           showWaitCursor(this);
@@ -793,6 +802,23 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     if (getEditModel().isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
       setControl(ControlCode.DELETE, getDeleteControl());
     }
+  }
+
+  private JPanel createControlPanel(final boolean horizontal) {
+    final ControlSet controlPanelControlSet = initializeControlPanelControlSet();
+    if (controlPanelControlSet.size() == 0) {
+      return null;
+    }
+    if (horizontal) {
+      final JPanel panel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
+      panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControlSet));
+
+      return panel;
+    }
+    final JPanel panel = new JPanel(Layouts.borderLayout());
+    panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControlSet), BorderLayout.NORTH);
+
+    return panel;
   }
 
   private void bindEventsInternal() {

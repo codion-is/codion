@@ -23,7 +23,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, C
    * @param model the model to base this panel on
    */
   public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty> model) {
-    super(model, false, new PropertyInputFieldProvider(model), getOperators(model));
+    super(model, false, new PropertyBoundFieldProvider(model), getOperators(model));
   }
 
   private static Operator[] getOperators(final ColumnConditionModel<Entity, ColumnProperty> model) {
@@ -34,22 +34,31 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, C
     return Operator.values();
   }
 
-  private static final class PropertyInputFieldProvider implements InputFieldProvider {
+  private static final class PropertyBoundFieldProvider implements BoundFieldProvider {
 
     private final ColumnConditionModel<Entity, ColumnProperty> model;
 
-    private PropertyInputFieldProvider(final ColumnConditionModel<Entity, ColumnProperty> model) {
+    private PropertyBoundFieldProvider(final ColumnConditionModel<Entity, ColumnProperty> model) {
       this.model = model;
     }
 
     @Override
-    public JComponent initializeInputField(final boolean isUpperBound) {
-      if (model.getTypeClass().equals(Boolean.class) && !isUpperBound) {
+    public JComponent initializeUpperBoundField() {
+      final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(), model.getUpperBoundValue());
+      if (component instanceof JCheckBox) {
+        ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
+      }
+
+      return component;
+    }
+
+    @Override
+    public JComponent initializeLowerBoundField() {
+      if (model.getTypeClass().equals(Boolean.class)) {
         return null;//no lower bound field required for booleans
       }
 
-      final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(),
-              isUpperBound ? model.getUpperBoundValue() : model.getLowerBoundValue());
+      final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(), model.getLowerBoundValue());
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }

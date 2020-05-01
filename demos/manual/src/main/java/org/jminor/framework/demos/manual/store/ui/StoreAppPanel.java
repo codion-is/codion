@@ -67,7 +67,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.manual.store.domain.Store");
     ReportWrapper.REPORT_PATH.set("http://test.io");
-    new StoreAppPanel().startApplication("Store", null, false,
+    new StoreAppPanel().startApplication("Store", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }
 }

@@ -13,6 +13,7 @@ import org.jminor.dbms.h2database.H2DatabaseProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnections;
+import org.jminor.framework.db.EntityConnections.IncludePrimaryKeys;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 
@@ -61,12 +62,12 @@ public class EntityConnectionsTest {
   @Test
   public void copyEntities() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
-    EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_DEPARTMENT);
+    EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.T_DEPARTMENT);
 
     assertEquals(sourceConnection.selectRowCount(condition(TestDomain.T_DEPARTMENT)),
             DESTINATION_CONNECTION.selectRowCount(condition(TestDomain.T_DEPARTMENT)));
 
-    EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_EMP);
+    EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.T_EMP);
     DESTINATION_CONNECTION.select(selectCondition(TestDomain.T_EMP));
 
     DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));
@@ -91,6 +92,7 @@ public class EntityConnectionsTest {
 
   @Test
   public void batchInsertNegativeBatchSize() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> EntityConnections.batchInsert(null, null, -6, null));
+    assertThrows(IllegalArgumentException.class, () -> EntityConnections.batchInsert(CONNECTION_PROVIDER.getConnection(),
+            emptyList(), -6, null));
   }
 }

@@ -1067,15 +1067,21 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Only called if {@link #includeControlPanel} returns true.
    * By default the control panel provided by the edit panel is returned.
    * @return the control panel for managing records
-   * @see EntityEditPanel#createControlPanel(boolean)
-   * @see EntityEditPanel#createControlToolBar(int)
+   * @see EntityEditPanel#createHorizontalControlPanel()
+   * @see EntityEditPanel#createVerticalControlPanel()
    * @see EntityPanel#TOOLBAR_BUTTONS
    */
   protected JComponent createEditControlPanel() {
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-    return TOOLBAR_BUTTONS.get() ?
-            editPanel.createControlToolBar(JToolBar.VERTICAL) : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
+    if (TOOLBAR_BUTTONS.get()) {
+      return editPanel.createControlToolBar(JToolBar.VERTICAL);
+    }
+    if (alignment == FlowLayout.CENTER) {
+      return editPanel.createHorizontalControlPanel();
+    }
+
+    return editPanel.createVerticalControlPanel();
   }
 
   /**

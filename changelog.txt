@@ -6019,3 +6019,15 @@
   Database.shutdownEmbedded() reintroduced, reimplemented in DerbyDatabase
   AbstractDatabase.addConnectionProperties() removed
   Database.getAuthenticationInfo() removed
+  ColumnConditionPanel.InputFieldProvider renamed BoundFieldProvider and refactored
+  Components.linkToEnabledState() bug fixed, did not use EDT
+  Components.linkToEnabledState(), removed overloaded includeFocusable parameter version
+  Components.expandAll() split into expandAll() and collapesAll()
+  Components.createEastFocusableButtonPanel() split from createEastButtonPanel()
+  Dialogs.FilesOrDirectories enum added and used instead of boolean parameter
+  Dialogs.ConfirmOverwrite enum added and used instead of boolean parameter
+  EntityApplicationPanel, DisplayFrame and MaximizeFrame enums added to replace boolean parameters
+  EntityConnections.IncludePrimaryKeys enum added to replace boolean parameter
+  EntityEditPanel.createControlPanel() split into createHorizontalControlPanel() and createVerticalControlPanel()
+  EntityEditPanel.ConfirmRequired enum added to replace boolean parameters
+  FilteredTable.CenterOnScroll enum added to replace boolean parameters

@@ -30,7 +30,8 @@ public final class EntityEditPanelTest {
   public void test() throws DatabaseException {
     final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     final TestEditPanel editPanel = new TestEditPanel(editModel);
-    editPanel.createControlPanel(true);
+    editPanel.createHorizontalControlPanel();
+    editPanel.createVerticalControlPanel();
     editPanel.createControlToolBar(HORIZONTAL);
     assertFalse(editPanel.isPanelInitialized());
     editPanel.initializePanel();

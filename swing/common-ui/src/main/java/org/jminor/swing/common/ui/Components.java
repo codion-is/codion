@@ -93,30 +93,16 @@ public final class Components {
    * @param components the components
    */
   public static void linkToEnabledState(final StateObserver enabledState, final JComponent... components) {
-    linkToEnabledState(enabledState, true, components);
-  }
-
-  /**
-   * Links the given components to the given StateObserver, so that each component is enabled only when the observed state is active.
-   * @param enabledState the StateObserver with which to link the components
-   * @param includeFocusable if true then the focusable attribute is set as well as the enabled attribute
-   * @param components the components
-   */
-  public static void linkToEnabledState(final StateObserver enabledState, final boolean includeFocusable, final JComponent... components) {
     requireNonNull(components, "components");
     requireNonNull(enabledState, "enabledState");
     for (final JComponent component : components) {
       if (component != null) {
         component.setEnabled(enabledState.get());
-        if (includeFocusable) {
-          component.setFocusable(enabledState.get());
-        }
-        enabledState.addListener(() -> {
+        component.setFocusable(enabledState.get());
+        enabledState.addListener(() -> SwingUtilities.invokeLater(() -> {
           component.setEnabled(enabledState.get());
-          if (includeFocusable) {
-            component.setFocusable(enabledState.get());
-          }
-        });
+          component.setFocusable(enabledState.get());
+        }));
       }
     }
   }
@@ -175,27 +161,38 @@ public final class Components {
   }
 
   /**
-   * Expands or collapses all the paths from a parent in the given tree
+   * Expands all the paths from a parent in the given tree
    * @param tree the tree
-   * @param parent the parent from which to exapand/collapse
-   * @param expand if true then the tree is expanded, collapsed otherwise
+   * @param parent the parent from which to exapand
    */
-  public static void expandAll(final JTree tree, final TreePath parent, final boolean expand) {
+  public static void expandAll(final JTree tree, final TreePath parent) {
     // Traverse children
     final TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
       final Enumeration e = node.children();
       while (e.hasMoreElements()) {
-        expandAll(tree, parent.pathByAddingChild(e.nextElement()), expand);
+        expandAll(tree, parent.pathByAddingChild(e.nextElement()));
       }
     }
     // Expansion or collapse must be done bottom-up
-    if (expand) {
-      tree.expandPath(parent);
+    tree.expandPath(parent);
+  }
+
+  /**
+   * Collapses all the paths from a parent in the given tree
+   * @param tree the tree
+   * @param parent the parent from which to collapse
+   */
+  public static void collapseAll(final JTree tree, final TreePath parent) {
+    final TreeNode node = (TreeNode) parent.getLastPathComponent();
+    if (node.getChildCount() >= 0) {
+      final Enumeration e = node.children();
+      while (e.hasMoreElements()) {
+        collapseAll(tree, parent.pathByAddingChild(e.nextElement()));
+      }
     }
-    else {
-      tree.collapsePath(parent);
-    }
+    // Expansion or collapse must be done bottom-up
+    tree.collapsePath(parent);
   }
 
   /**
@@ -259,22 +256,39 @@ public final class Components {
   }
 
   /**
-   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and a button based on buttonAction
+   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and a non-focusable button based on buttonAction
+   * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
+   * @param centerComponent the center component
+   * @param buttonAction the button action
+   * @param buttonFocusable if true then the button is focusable, otherwise not
+   * @return a panel
+   * @see #createEastFocusableButtonPanel(JComponent, Action)
+   */
+  public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction) {
+    final JPanel panel = new JPanel(new BorderLayout());
+    final JButton button = new JButton(buttonAction);
+    button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
+    panel.add(centerComponent, BorderLayout.CENTER);
+    panel.add(button, BorderLayout.EAST);
+
+    return panel;
+  }
+
+  /**
+   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and a focusable button based on buttonAction
    * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
    * @param centerComponent the center component
    * @param buttonAction the button action
    * @param buttonFocusable if true then the button is focusable, otherwise not
    * @return a panel
    */
-  public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
-                                             final boolean buttonFocusable) {
-    final JPanel panel = new JPanel(new BorderLayout());
-    final JButton button = new JButton(buttonAction);
-    button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
-    button.setFocusable(buttonFocusable);
-
-    panel.add(centerComponent, BorderLayout.CENTER);
-    panel.add(button, BorderLayout.EAST);
+  public static JPanel createEastFocusableButtonPanel(final JComponent centerComponent, final Action buttonAction) {
+    final JPanel panel = createEastButtonPanel(centerComponent, buttonAction);
+    for (final Component component : panel.getComponents()) {
+      if (component instanceof JButton) {
+        component.setFocusable(true);
+      }
+    }
 
     return panel;
   }
@@ -441,11 +455,11 @@ public final class Components {
    * requests have been retracted. Best used in try/finally block combinations.
    * <pre>
    try {
-     Components.showWaitCursor(component);
-     doSomething();
+   Components.showWaitCursor(component);
+   doSomething();
    }
    finally {
-     Components.hideWaitCursor(component);
+   Components.hideWaitCursor(component);
    }
    * </pre>
    * @param component the component
@@ -461,11 +475,11 @@ public final class Components {
    * requests have been retracted. Best used in try/finally block combinations.
    * <pre>
    try {
-     Components.showWaitCursor(component);
-     doSomething();
+   Components.showWaitCursor(component);
+   doSomething();
    }
    finally {
-     Components.hideWaitCursor(component);
+   Components.hideWaitCursor(component);
    }
    * </pre>
    * @param component the component
