@@ -92,6 +92,7 @@ public class EntityConnectionsTest {
 
   @Test
   public void batchInsertNegativeBatchSize() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> EntityConnections.batchInsert(null, null, -6, null));
+    assertThrows(IllegalArgumentException.class, () -> EntityConnections.batchInsert(CONNECTION_PROVIDER.getConnection(),
+            emptyList(), -6, null));
   }
 }
