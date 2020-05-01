@@ -82,6 +82,28 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   public static final char FILTER_INDICATOR = '*';
 
+  /**
+   * Specifies whether to center the scrolled to row and or column.
+   */
+  public enum CenterOnScroll {
+    /**
+     * Centers the selected column, if possible.
+     */
+    COLUMN,
+    /**
+     * Centers the selected column, if possible.
+     */
+    ROW,
+    /**
+     * Centers both the selected column and row, if possible.
+     */
+    BOTH,
+    /**
+     * Centers neither the selected column or row.
+     */
+    NEITHER
+  }
+
   private static final String SELECT_COLUMNS = "select_columns";
   private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
   private static final int SELECT_COLUMNS_GRID_ROWS = 15;
@@ -296,7 +318,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JViewport viewport = Components.getParentOfType(this, JViewport.class);
     if (viewport != null) {
       scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
-              getModel().getColumnModel().getColumnIndex(columnIdentifier), false, false);
+              getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER);
     }
   }
 
@@ -304,23 +326,22 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Scrolls to the given coordinate. Has no effect if this table is not contained in a scrollpanel.
    * @param row the row
    * @param column the column
-   * @param centerXPos if true then the selected column is positioned in the center of the table, if possible
-   * @param centerYPos if true then the selected row is positioned in the center of the table, if possible
+   * @param centerOnScroll specifies whether to center the selected row and or column
    */
-  public void scrollToCoordinate(final int row, final int column, final boolean centerXPos, final boolean centerYPos) {
+  public void scrollToCoordinate(final int row, final int column, final CenterOnScroll centerOnScroll) {
     final JViewport viewport = Components.getParentOfType(this, JViewport.class);
     if (viewport != null) {
       final Rectangle cellRectangle = getCellRect(row, column, true);
       final Rectangle viewRectangle = viewport.getViewRect();
       cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
-      if (centerXPos) {
+      if (centerOnScroll == CenterOnScroll.COLUMN || centerOnScroll == CenterOnScroll.BOTH) {
         int centerX = (viewRectangle.width - cellRectangle.width) / 2;
         if (cellRectangle.x < centerX) {
           centerX = -centerX;
         }
         cellRectangle.translate(centerX, cellRectangle.y);
       }
-      if (centerYPos) {
+      if (centerOnScroll == CenterOnScroll.ROW || centerOnScroll == CenterOnScroll.BOTH) {
         int centerY = (viewRectangle.height - cellRectangle.height) / 2;
         if (cellRectangle.y < centerY) {
           centerY = -centerY;
@@ -422,7 +443,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
           tableModel.getSelectionModel().setSelectedIndex(coordinate.getRow());
           setColumnSelectionInterval(coordinate.getColumn(), coordinate.getColumn());
         }
-        scrollToCoordinate(coordinate.getRow(), coordinate.getColumn(), false, false);
+        scrollToCoordinate(coordinate.getRow(), coordinate.getColumn(), CenterOnScroll.NEITHER);
       }
       else {
         tableModel.getSelectionModel().clearSelection();
@@ -545,7 +566,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     addMouseListener(initializeTableMouseListener());
     tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
       if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
-        scrollToCoordinate(selected, getSelectedColumn(), false, false);
+        scrollToCoordinate(selected, getSelectedColumn(), CenterOnScroll.NEITHER);
       }
     });
     tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
