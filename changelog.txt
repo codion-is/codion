@@ -5992,3 +5992,4 @@
   Database.shutdownEmbedded() reintroduced, reimplemented in DerbyDatabase
   AbstractDatabase.addConnectionProperties() removed
   Database.getAuthenticationInfo() removed
+  ColumnConditionPanel.InputFieldProvider renamed BoundFieldProvider and refactored
