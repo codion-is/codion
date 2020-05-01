@@ -93,30 +93,16 @@ public final class Components {
    * @param components the components
    */
   public static void linkToEnabledState(final StateObserver enabledState, final JComponent... components) {
-    linkToEnabledState(enabledState, true, components);
-  }
-
-  /**
-   * Links the given components to the given StateObserver, so that each component is enabled only when the observed state is active.
-   * @param enabledState the StateObserver with which to link the components
-   * @param includeFocusable if true then the focusable attribute is set as well as the enabled attribute
-   * @param components the components
-   */
-  public static void linkToEnabledState(final StateObserver enabledState, final boolean includeFocusable, final JComponent... components) {
     requireNonNull(components, "components");
     requireNonNull(enabledState, "enabledState");
     for (final JComponent component : components) {
       if (component != null) {
         component.setEnabled(enabledState.get());
-        if (includeFocusable) {
-          component.setFocusable(enabledState.get());
-        }
-        enabledState.addListener(() -> {
+        component.setFocusable(enabledState.get());
+        enabledState.addListener(() -> SwingUtilities.invokeLater(() -> {
           component.setEnabled(enabledState.get());
-          if (includeFocusable) {
-            component.setFocusable(enabledState.get());
-          }
-        });
+          component.setFocusable(enabledState.get());
+        }));
       }
     }
   }

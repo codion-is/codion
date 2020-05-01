@@ -5993,3 +5993,5 @@
   AbstractDatabase.addConnectionProperties() removed
   Database.getAuthenticationInfo() removed
   ColumnConditionPanel.InputFieldProvider renamed BoundFieldProvider and refactored
+  Components.linkToEnabledState() bug fixed, did not use EDT
+  Components.linkToEnabledState(), removed overloaded includeFocusable parameter version
