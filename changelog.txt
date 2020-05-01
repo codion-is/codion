@@ -5996,3 +5996,4 @@
   Components.linkToEnabledState() bug fixed, did not use EDT
   Components.linkToEnabledState(), removed overloaded includeFocusable parameter version
   Components.expandAll() split into expandAll() and collapesAll()
+  Components.createEastFocusableButtonPanel() split from createEastButtonPanel()

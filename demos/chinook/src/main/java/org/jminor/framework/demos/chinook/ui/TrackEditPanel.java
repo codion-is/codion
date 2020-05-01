@@ -35,12 +35,12 @@ public class TrackEditPanel extends EntityEditPanel {
     final Action newMediaTypeAction = EntityEditPanel.createEditPanelAction(mediaTypeBox,
             new EntityPanelBuilder(T_MEDIATYPE)
                     .setEditPanelClass(MediaTypeEditPanel.class));
-    final JPanel mediaTypePanel = Components.createEastButtonPanel(mediaTypeBox, newMediaTypeAction, false);
+    final JPanel mediaTypePanel = Components.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
     final EntityComboBox genreBox = createForeignKeyComboBox(TRACK_GENRE_FK);
     final Action newGenreAction = EntityEditPanel.createEditPanelAction(genreBox,
             new EntityPanelBuilder(T_GENRE)
                     .setEditPanelClass(GenreEditPanel.class));
-    final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction, false);
+    final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction);
     createTextInputPanel(TRACK_COMPOSER).getTextField().setColumns(18);
     final IntegerField millisecondsField = (IntegerField) createTextField(TRACK_MILLISECONDS);
     millisecondsField.setGroupingUsed(true);

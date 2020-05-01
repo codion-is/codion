@@ -25,6 +25,7 @@ import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.AutoCompletion;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
+import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LengthDocumentFilter;
@@ -674,8 +675,12 @@ public final class EntityInputComponents {
    */
   public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final String foreignKeyPropertyId,
                                                        final boolean filterButtonTakesFocus) {
-    return Components.createEastButtonPanel(entityComboBox,
-            entityComboBox.createForeignKeyFilterControl(foreignKeyPropertyId), filterButtonTakesFocus);
+    final Control foreignKeyFilterControl = entityComboBox.createForeignKeyFilterControl(foreignKeyPropertyId);
+    if (filterButtonTakesFocus) {
+      return Components.createEastFocusableButtonPanel(entityComboBox, foreignKeyFilterControl);
+    }
+
+    return Components.createEastButtonPanel(entityComboBox, foreignKeyFilterControl);
   }
 
   private static JTextField createTextField(final Property property, final StateObserver enabledState,

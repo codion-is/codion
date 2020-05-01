@@ -256,22 +256,39 @@ public final class Components {
   }
 
   /**
-   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and a button based on buttonAction
+   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and a non-focusable button based on buttonAction
+   * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
+   * @param centerComponent the center component
+   * @param buttonAction the button action
+   * @param buttonFocusable if true then the button is focusable, otherwise not
+   * @return a panel
+   * @see #createEastFocusableButtonPanel(JComponent, Action)
+   */
+  public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction) {
+    final JPanel panel = new JPanel(new BorderLayout());
+    final JButton button = new JButton(buttonAction);
+    button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
+    panel.add(centerComponent, BorderLayout.CENTER);
+    panel.add(button, BorderLayout.EAST);
+
+    return panel;
+  }
+
+  /**
+   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and a focusable button based on buttonAction
    * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
    * @param centerComponent the center component
    * @param buttonAction the button action
    * @param buttonFocusable if true then the button is focusable, otherwise not
    * @return a panel
    */
-  public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
-                                             final boolean buttonFocusable) {
-    final JPanel panel = new JPanel(new BorderLayout());
-    final JButton button = new JButton(buttonAction);
-    button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
-    button.setFocusable(buttonFocusable);
-
-    panel.add(centerComponent, BorderLayout.CENTER);
-    panel.add(button, BorderLayout.EAST);
+  public static JPanel createEastFocusableButtonPanel(final JComponent centerComponent, final Action buttonAction) {
+    final JPanel panel = createEastButtonPanel(centerComponent, buttonAction);
+    for (final Component component : panel.getComponents()) {
+      if (component instanceof JButton) {
+        component.setFocusable(true);
+      }
+    }
 
     return panel;
   }
@@ -438,11 +455,11 @@ public final class Components {
    * requests have been retracted. Best used in try/finally block combinations.
    * <pre>
    try {
-     Components.showWaitCursor(component);
-     doSomething();
+   Components.showWaitCursor(component);
+   doSomething();
    }
    finally {
-     Components.hideWaitCursor(component);
+   Components.hideWaitCursor(component);
    }
    * </pre>
    * @param component the component
@@ -458,11 +475,11 @@ public final class Components {
    * requests have been retracted. Best used in try/finally block combinations.
    * <pre>
    try {
-     Components.showWaitCursor(component);
-     doSomething();
+   Components.showWaitCursor(component);
+   doSomething();
    }
    finally {
-     Components.hideWaitCursor(component);
+   Components.hideWaitCursor(component);
    }
    * </pre>
    * @param component the component

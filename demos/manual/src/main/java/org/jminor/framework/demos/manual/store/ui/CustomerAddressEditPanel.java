@@ -31,7 +31,7 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
     Action newAddressAction = EntityEditPanel.createEditPanelAction(addressComboBox,
             new EntityPanelBuilder(Store.T_ADDRESS)
                     .setEditPanelClass(AddressEditPanel.class));
-    JPanel addressPanel = Components.createEastButtonPanel(addressComboBox, newAddressAction, false);
+    JPanel addressPanel = Components.createEastButtonPanel(addressComboBox, newAddressAction);
 
     setLayout(new BorderLayout(5, 5));
 

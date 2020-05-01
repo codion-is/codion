@@ -43,7 +43,7 @@ public final class CountryEditPanel extends EntityEditPanel {
             setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), 120);
     //create a panel with a button for adding a new city
     JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
-            createEditPanelAction(capitalComboBox, new CityPanelBuilder()), false);
+            createEditPanelAction(capitalComboBox, new CityPanelBuilder()));
 
     setLayout(gridLayout(4, 5));
 
