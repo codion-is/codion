@@ -5998,3 +5998,4 @@
   Components.expandAll() split into expandAll() and collapesAll()
   Components.createEastFocusableButtonPanel() split from createEastButtonPanel()
   Dialogs.FilesOrDirectories enum added and used instead of boolean parameter
+  Dialogs.ConfirmOverwrite enum added and used instead of boolean parameter

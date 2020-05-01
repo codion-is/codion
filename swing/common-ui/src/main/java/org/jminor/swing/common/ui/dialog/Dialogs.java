@@ -85,6 +85,20 @@ public final class Dialogs {
     BOTH
   }
 
+  /**
+   * Specifies if a overwriting a file should be confirmed.
+   */
+  public enum ConfirmOverwrite {
+    /**
+     * If overwriting should be confirmed.
+     */
+    YES,
+    /**
+     * If overwriting should not be confirmed.
+     */
+    NO
+  }
+
   private Dialogs() {}
 
   /**
@@ -637,7 +651,7 @@ public final class Dialogs {
    * @throws CancelException in case the user cancels
    */
   public static synchronized File selectFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName) {
-    return selectFileToSave(dialogParent, startDir, defaultFileName, true);
+    return selectFileToSave(dialogParent, startDir, defaultFileName, ConfirmOverwrite.YES);
   }
 
   /**
@@ -645,12 +659,12 @@ public final class Dialogs {
    * @param dialogParent the dialog parent
    * @param startDir the start dir, user.dir if not specified
    * @param defaultFileName the default file name to suggest
-   * @param confirmOverwrite if true then the user is asked to confirm overwrite if the file exists
+   * @param confirmOverwrite specifies whether overwriting a file should be confirmed
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
   public static synchronized File selectFileToSave(final JComponent dialogParent, final String startDir,
-                                                   final String defaultFileName, final boolean confirmOverwrite) {
+                                                   final String defaultFileName, final ConfirmOverwrite confirmOverwrite) {
     if (fileChooserSave == null) {
       try {
         Components.showWaitCursor(dialogParent);
@@ -683,7 +697,7 @@ public final class Dialogs {
       int option = fileChooserSave.showSaveDialog(dialogParent);
       if (option == JFileChooser.APPROVE_OPTION) {
         selectedFile = fileChooserSave.getSelectedFile();
-        if (selectedFile.exists() && confirmOverwrite) {
+        if (selectedFile.exists() && confirmOverwrite == ConfirmOverwrite.YES) {
           option = JOptionPane.showConfirmDialog(dialogParent, MESSAGES.getString("overwrite_file"),
                   MESSAGES.getString("file_exists"), JOptionPane.YES_NO_CANCEL_OPTION);
           if (option == JOptionPane.YES_OPTION) {
