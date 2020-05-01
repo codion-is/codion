@@ -49,7 +49,7 @@ public abstract class AbstractDatabase implements Database {
     connectionProperties.put(PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
     DriverManager.setLoginTimeout(getLoginTimeout());
     try {
-      return DriverManager.getConnection(getUrl(), addConnectionProperties(connectionProperties));
+      return DriverManager.getConnection(getUrl(), connectionProperties);
     }
     catch (final SQLException e) {
       if (isAuthenticationException(e)) {
@@ -90,38 +90,11 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public void shutdownEmbedded(final Properties connectionProperties) {}
+  public void shutdownEmbedded() {}
 
   @Override
   public String getSequenceQuery(final String sequenceName) {
     throw new UnsupportedOperationException("Sequence support is not implemented for database: " + getClass().getSimpleName());
-  }
-
-  /**
-   * Returns a string containing authentication info to append to the connection URL,
-   * based on the values found in {@code connectionProperties}.
-   * This default implementation returns the following assuming that {@code connectionProperties}
-   * contains values for both "user" and "password" keys:
-   * user=scott;password=tiger
-   * The password clause is not included if no password is provided
-   * @param connectionProperties the connection properties
-   * @return a string containing authentication info to append to the connection URL
-   */
-  @Override
-  public String getAuthenticationInfo(final Properties connectionProperties) {
-    String authenticationInfo = null;
-    if (connectionProperties != null) {
-      final String username = (String) connectionProperties.get(USER_PROPERTY);
-      final String password = (String) connectionProperties.get(PASSWORD_PROPERTY);
-      if (!nullOrEmpty(username)) {
-        authenticationInfo = USER_PROPERTY + "=" + username;
-        if (!nullOrEmpty(password)) {
-          authenticationInfo += ";" + PASSWORD_PROPERTY + "=" + password;
-        }
-      }
-    }
-
-    return authenticationInfo;
   }
 
   @Override
@@ -152,11 +125,6 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return false;
-  }
-
-  @Override
-  public Properties addConnectionProperties(final Properties properties) {
-    return properties;
   }
 
   /**

@@ -3,7 +3,6 @@
  */
 package org.jminor.dbms.h2database;
 
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,15 +49,6 @@ public class H2DatabaseTest {
   public void supportsIsValid() {
     final H2Database db = new H2Database("url");
     assertTrue(db.supportsIsValid());
-  }
-
-  @Test
-  public void getAuthenticationInfo() {
-    final H2Database db = new H2Database("url");
-    final Properties props = new Properties();
-    props.put(Database.USER_PROPERTY, "scott");
-    props.put(Database.PASSWORD_PROPERTY, "tiger");
-    assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
   }
 
   @Test
@@ -122,6 +111,12 @@ public class H2DatabaseTest {
 
     final H2Database database2 = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
     connection = database2.createConnection(user);
+    connection.prepareStatement("select id from test.test_table").execute();
+    connection.close();
+
+    //test old url type
+    final H2Database database3 = new H2Database("jdbc:h2:" + tempDir.getAbsolutePath() + "/h2db/database", singletonList("src/test/resources/create_schema.sql"));
+    connection = database3.createConnection(user);
     connection.prepareStatement("select id from test.test_table").execute();
     connection.close();
 

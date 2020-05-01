@@ -45,8 +45,6 @@ final class H2Database extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String SYSADMIN_USERNAME = "sa";
-  static final String URL_PREFIX_MEM = "jdbc:h2:mem:";
-  static final String URL_PREFIX_FILE = "jdbc:h2:file:";
 
   /**
    * Instantiates a new embedded H2Database.
@@ -63,7 +61,11 @@ final class H2Database extends AbstractDatabase {
    */
   H2Database(final String jdbcUrl, final List<String> scriptPaths) {
     super(jdbcUrl);
-    initializeEmbeddedDatabase(scriptPaths);
+    synchronized (INITIALIZED_DATABASES) {
+      if (!nullOrEmpty(scriptPaths) && !INITIALIZED_DATABASES.contains(jdbcUrl.toLowerCase())) {
+        initializeEmbeddedDatabase(scriptPaths);
+      }
+    }
   }
 
   @Override
@@ -101,40 +103,28 @@ final class H2Database extends AbstractDatabase {
   }
 
   private void initializeEmbeddedDatabase(final List<String> scriptPaths) {
-    synchronized (INITIALIZED_DATABASES) {
-      final String url = getUrl();
-      if (!nullOrEmpty(scriptPaths) && (isEmbeddedInMemory() || !databaseFileExists()) && !INITIALIZED_DATABASES.contains(url.toLowerCase())) {
-        final Properties properties = new Properties();
-        properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
-        for (final String scriptPath : scriptPaths) {
-          final String initUrl = getUrl() + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
-          try {
-            DriverManager.getConnection(initUrl, properties).close();
-            INITIALIZED_DATABASES.add(getUrl().toLowerCase());
-          }
-          catch (final SQLException e) {
-            throw new RuntimeException(e);
-          }
+    if ((isEmbeddedInMemory() || !databaseFileExists())) {
+      final Properties properties = new Properties();
+      properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
+      for (final String scriptPath : scriptPaths) {
+        final String initUrl = getUrl() + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
+        try {
+          DriverManager.getConnection(initUrl, properties).close();
+        }
+        catch (final SQLException e) {
+          throw new RuntimeException(e);
         }
       }
     }
+    INITIALIZED_DATABASES.add(getUrl().toLowerCase());
   }
 
   private String getDatabasePath() {
-    final String url = getUrl();
-    if (!url.toLowerCase().startsWith(URL_PREFIX_FILE)) {
-      throw new IllegalStateException("Not a file based database (url prefix should be '" + JDBC_URL_PREFIX_FILE + "')");
-    }
-    String path = url.substring(URL_PREFIX_FILE.length());
-    if (path.contains(";")) {
-      path = path.substring(0, path.indexOf(";"));
-    }
-
-    return path;
+    return removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX_FILE, JDBC_URL_PREFIX);
   }
 
   private boolean isEmbeddedInMemory() {
-    return getUrl().startsWith(URL_PREFIX_MEM);
+    return getUrl().startsWith(JDBC_URL_PREFIX_MEM);
   }
 
   private boolean databaseFileExists() {

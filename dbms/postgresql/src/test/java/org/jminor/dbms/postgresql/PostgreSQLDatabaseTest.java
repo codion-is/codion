@@ -31,12 +31,6 @@ public class PostgreSQLDatabaseTest {
   }
 
   @Test
-  public void getAuthenticationInfo() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
-    assertNull(db.getAuthenticationInfo(null));
-  }
-
-  @Test
   public void getAutoIncrementQuery() {
     final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals("select currval('seq')", db.getAutoIncrementQuery("seq"));
