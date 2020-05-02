@@ -203,7 +203,6 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     configuration.setAuxiliaryServerProviderClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_CLASS_NAMES.get()));
     configuration.setSslEnabled(SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
-    configuration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
       configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
     }

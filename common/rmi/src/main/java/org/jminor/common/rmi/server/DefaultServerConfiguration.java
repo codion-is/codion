@@ -22,7 +22,6 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private final int serverPort;
   private final Collection<String> sharedLoginProxyClassNames = new ArrayList<>();
   private final Collection<String> loginProxyClassNames = new HashSet<>();
-  private final Collection<String> connectionValidatorClassNames = new HashSet<>();
   private final Collection<String> auxiliaryServerClassNames = new HashSet<>();
   private boolean sslEnabled = true;
   private String serverName;
@@ -58,11 +57,6 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public Collection<String> getLoginProxyClassNames() {
     return loginProxyClassNames;
-  }
-
-  @Override
-  public Collection<String> getConnectionValidatorClassNames() {
-    return connectionValidatorClassNames;
   }
 
   @Override
@@ -113,11 +107,6 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public void setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
     this.loginProxyClassNames.addAll(requireNonNull(loginProxyClassNames));
-  }
-
-  @Override
-  public void setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
-    this.connectionValidatorClassNames.addAll(requireNonNull(connectionValidatorClassNames));
   }
 
   @Override

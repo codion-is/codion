@@ -161,13 +161,6 @@ public interface ServerConfiguration {
   PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("jminor.server.serializationFilterDryRun", false);
 
   /**
-   * Specifies a comma separated list of ConnectionValidator class names, which should be initialized on server startup,
-   * these classes must be available on the server classpath and contain a parameterless constructor
-   * @see org.jminor.common.rmi.server.ConnectionValidator
-   */
-  PropertyValue<String> SERVER_CONNECTION_VALIDATOR_CLASSES = Configuration.stringValue("jminor.server.connectionValidatorClasses", null);
-
-  /**
    * Specifies a comma separated list of LoginProxy class names, which should be initialized on server startup,
    * these classes must be available on the server classpath and contain a parameterless constructor
    * @see org.jminor.common.rmi.server.LoginProxy
@@ -194,11 +187,6 @@ public interface ServerConfiguration {
    * @return the login proxy classnames
    */
   Collection<String> getLoginProxyClassNames();
-
-  /**
-   * @return the connection validator classnames
-   */
-  Collection<String> getConnectionValidatorClassNames();
 
   /**
    * @return the class names of auxiliary server providers, providing the servers to run alongside this server
@@ -251,11 +239,6 @@ public interface ServerConfiguration {
   void setLoginProxyClassNames(Collection<String> loginProxyClassNames);
 
   /**
-   * @param connectionValidatorClassNames the connection validation classes to initialize on startup
-   */
-  void setConnectionValidatorClassNames(Collection<String> connectionValidatorClassNames);
-
-  /**
    * @param auxiliaryServerProviderClassNames the class names of auxiliary server providers,
    * providing the servers to run alongside this server
    */
@@ -306,7 +289,6 @@ public interface ServerConfiguration {
     configuration.setAuxiliaryServerProviderClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_CLASS_NAMES.get()));
     configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
-    configuration.setConnectionValidatorClassNames(Text.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get()));
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
       configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
     }

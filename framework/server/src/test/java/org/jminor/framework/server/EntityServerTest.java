@@ -338,7 +338,6 @@ public class EntityServerTest {
     configuration.setDomainModelClassNames(singletonList("org.jminor.framework.server.TestDomain"));
     configuration.setClientLoggingEnabled(true);
     configuration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
-    configuration.setConnectionValidatorClassNames(singletonList("org.jminor.framework.server.TestConnectionValidator"));
     configuration.setSslEnabled(true);
     configuration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
 
