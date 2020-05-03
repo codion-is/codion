@@ -16,13 +16,13 @@ import java.sql.Statement;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DatabasesTest {
+public class DatabaseTest {
 
   @Test
   public void closeSilently() {
-    Databases.closeSilently((Statement) null);
-    Databases.closeSilently((ResultSet) null);
-    Databases.closeSilently((Connection) null);
+    Database.closeSilently((Statement) null);
+    Database.closeSilently((ResultSet) null);
+    Database.closeSilently((Connection) null);
   }
 
   @Test

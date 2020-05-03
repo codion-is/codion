@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.common.db.database.Databases.closeSilently;
+import static org.jminor.common.db.database.Database.closeSilently;
 
 /**
  * A default abstract implementation of the Database interface.

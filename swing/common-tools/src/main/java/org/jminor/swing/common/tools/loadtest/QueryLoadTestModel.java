@@ -5,7 +5,6 @@ package org.jminor.swing.common.tools.loadtest;
 
 import org.jminor.common.Util;
 import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
@@ -134,11 +133,9 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
         throw new ScenarioException(e);
       }
       finally {
-        if (connection != null) {
-          Databases.closeSilently(connection);
-        }
-        Databases.closeSilently(resultSet);
-        Databases.closeSilently(statement);
+        Database.closeSilently(connection);
+        Database.closeSilently(resultSet);
+        Database.closeSilently(statement);
       }
     }
 

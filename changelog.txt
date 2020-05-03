@@ -6009,3 +6009,5 @@
   Connection pools moved to Database, where they belong
   ConnectionPool.getConnection() now takes a User parameter, checking the credentials each time
   Database.getValidityCheckTimeout() added
+  Databases.closeSilently() moved to Database
+  Databases.createLogMessage() moved to DefaultLocalEntityConnection

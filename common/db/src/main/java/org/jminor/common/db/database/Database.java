@@ -12,7 +12,9 @@ import org.jminor.common.user.User;
 import org.jminor.common.value.PropertyValue;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 
 /**
@@ -203,6 +205,45 @@ public interface Database extends ConnectionProvider {
    * Closes and removes all available connection pools
    */
   void closeConnectionPools();
+
+  /**
+   * Closes the given ResultSet instance, suppressing any SQLExceptions that may occur.
+   * @param resultSet the result set to close
+   */
+  static void closeSilently(final ResultSet resultSet) {
+    try {
+      if (resultSet != null) {
+        resultSet.close();
+      }
+    }
+    catch (final SQLException ignored) {/*ignored*/}
+  }
+
+  /**
+   * Closes the given Statement instance, suppressing any SQLExceptions that may occur.
+   * @param statement the statement to close
+   */
+  static void closeSilently(final Statement statement) {
+    try {
+      if (statement != null) {
+        statement.close();
+      }
+    }
+    catch (final SQLException ignored) {/*ignored*/}
+  }
+
+  /**
+   * Closes the given Connection instance, suppressing any SQLExceptions that may occur.
+   * @param connection the connection to close
+   */
+  static void closeSilently(final Connection connection) {
+    try {
+      if (connection != null) {
+        connection.close();
+      }
+    }
+    catch (final SQLException ignored) {/*ignored*/}
+  }
 
   /**
    * Encapsulates basic database usage statistics.

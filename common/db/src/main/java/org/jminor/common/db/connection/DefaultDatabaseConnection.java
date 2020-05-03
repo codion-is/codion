@@ -5,7 +5,6 @@ package org.jminor.common.db.connection;
 
 import org.jminor.common.MethodLogger;
 import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.result.ResultPacker;
 import org.jminor.common.user.User;
@@ -102,7 +101,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     catch (final SQLException ex) {
       System.err.println("DefaultDatabaseConnection.disconnect(), connection invalid");
     }
-    Databases.closeSilently(connection);
+    Database.closeSilently(connection);
     connection = null;
   }
 
@@ -270,8 +269,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw e;
     }
     finally {
-      Databases.closeSilently(statement);
-      Databases.closeSilently(resultSet);
+      Database.closeSilently(statement);
+      Database.closeSilently(resultSet);
       logExit("query", exception);
     }
   }
