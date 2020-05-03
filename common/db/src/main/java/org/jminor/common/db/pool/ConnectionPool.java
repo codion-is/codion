@@ -39,13 +39,14 @@ public interface ConnectionPool {
 
   /**
    * Fetches a connection from the pool. Close the connection to return it to the pool.
+   * @param user the user credentials
    * @return a database connection retrieved from the pool
    * @throws DatabaseException in case of an exception while fetching the connection
    * @throws IllegalStateException if the pool is closed
    * @see #setMaximumCheckOutTime(int)
    * @see Connection#close()
    */
-  Connection getConnection() throws DatabaseException;
+  Connection getConnection(User user) throws DatabaseException;
 
   /**
    * @return the user this connection pool is based on.

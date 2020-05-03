@@ -172,14 +172,7 @@ public interface Database extends ConnectionProvider {
 
   /**
    * @param username the username
-   * @return true if a connection pool is available for the given user
-   */
-  boolean containsConnectionPool(String username);
-
-  /**
-   * @param username the username
    * @return the connection pool for the given user, null if none exists
-   * @see #containsConnectionPool(String)
    */
   ConnectionPool getConnectionPool(String username);
 

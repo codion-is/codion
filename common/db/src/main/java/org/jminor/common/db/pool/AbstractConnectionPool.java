@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db.pool;
 
+import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 
@@ -11,6 +12,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static java.util.Objects.requireNonNull;
@@ -55,8 +57,10 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   }
 
   @Override
-  public final Connection getConnection() throws DatabaseException {
+  public final Connection getConnection(final User user) throws DatabaseException {
+    requireNonNull(user, "user");
     final long nanoTime = System.nanoTime();
+    checkConnectionPoolCredentials(user);
     try {
       counter.incrementRequestCounter();
 
@@ -136,6 +140,17 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
 
     return state;
+  }
+
+  /**
+   * Checks the given credentials against the credentials found in the connection pool user
+   * @param user the user credentials to check
+   * @throws AuthenticationException in case the username or password do not match the ones in the connection pool
+   */
+  private void checkConnectionPoolCredentials(final User user) throws AuthenticationException {
+    if (!this.user.getUsername().equalsIgnoreCase(user.getUsername()) || !Arrays.equals(this.user.getPassword(), user.getPassword())) {
+      throw new AuthenticationException("Wrong username or password");
+    }
   }
 
   private final class DataSourceInvocationHandler implements InvocationHandler {

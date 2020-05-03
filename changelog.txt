@@ -6007,3 +6007,4 @@
 0.14.10
   ConnectionValidator removed, not used
   Connection pools moved to Database, where they belong
+  ConnectionPool.getConnection() now takes a User parameter, checking the credentials each time

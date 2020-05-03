@@ -142,29 +142,25 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public void initializeConnectionPool(final ConnectionPoolProvider connectionPoolProvider,
-                                        final User poolUser) throws DatabaseException {
+                                       final User poolUser) throws DatabaseException {
     requireNonNull(connectionPoolProvider, "connectionPoolProvider");
     requireNonNull(poolUser, "poolUser");
     if (connectionPools.containsKey(poolUser.getUsername())) {
       throw new IllegalStateException("Connection pool for user " + poolUser.getUsername() + " has already been initialized");
     }
-    connectionPools.put(poolUser.getUsername(), connectionPoolProvider.createConnectionPool(this, poolUser));
-  }
-
-  @Override
-  public boolean containsConnectionPool(final String username) {
-    return connectionPools.containsKey(requireNonNull(username, "username"));
+    connectionPools.put(poolUser.getUsername().toLowerCase(), connectionPoolProvider.createConnectionPool(this, poolUser));
   }
 
   @Override
   public ConnectionPool getConnectionPool(final String username) {
-    return connectionPools.get(requireNonNull(username, "username"));
+    return connectionPools.get(requireNonNull(username, "username").toLowerCase());
   }
 
   @Override
   public void closeConnectionPool(final String username) {
-    if (containsConnectionPool(username)) {
-      connectionPools.remove(username).close();
+    final ConnectionPool connectionPool = connectionPools.remove(requireNonNull(username, "username").toLowerCase());
+    if (connectionPool != null) {
+      connectionPool.close();
     }
   }
 

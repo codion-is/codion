@@ -108,7 +108,7 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   private EntityConnection getConnectionFromPool() {
     try {
-      return createConnection(domain, database, connectionPool.getConnection());
+      return createConnection(domain, database, connectionPool.getConnection(databaseUser));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

@@ -16,7 +16,6 @@ import org.jminor.common.rmi.server.RemoteClient;
 import org.jminor.common.user.User;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnection;
-import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -46,6 +45,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static org.jminor.framework.db.local.LocalEntityConnections.createConnection;
 
 /**
  * A base class for remote connections served by a {@link EntityServer}.
@@ -253,11 +254,11 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();
       try {
         if (connectionPool == null) {
-          localEntityConnection = LocalEntityConnections.createConnection(domain, this.database, this.remoteClient.getDatabaseUser());
+          localEntityConnection = createConnection(domain, database, remoteClient.getDatabaseUser());
           localEntityConnection.setMethodLogger(methodLogger);
         }
         else {
-          poolEntityConnection = LocalEntityConnections.createConnection(domain, this.database, connectionPool.getConnection());
+          poolEntityConnection = createConnection(domain, database, connectionPool.getConnection(remoteClient.getDatabaseUser()));
           returnConnectionToPool();
         }
       }
@@ -332,7 +333,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       if (poolEntityConnection.isTransactionOpen()) {
         return poolEntityConnection;
       }
-      poolEntityConnection.getDatabaseConnection().setConnection(connectionPool.getConnection());
+      poolEntityConnection.getDatabaseConnection().setConnection(connectionPool.getConnection(remoteClient.getDatabaseUser()));
       poolEntityConnection.setMethodLogger(methodLogger);
 
       return poolEntityConnection;
@@ -341,7 +342,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     private EntityConnection getLocalEntityConnection() throws DatabaseException {
       if (!localEntityConnection.isConnected()) {
         localEntityConnection.disconnect();//just in case
-        localEntityConnection = LocalEntityConnections.createConnection(domain, database, remoteClient.getDatabaseUser());
+        localEntityConnection = createConnection(domain, database, remoteClient.getDatabaseUser());
         localEntityConnection.setMethodLogger(methodLogger);
       }
 

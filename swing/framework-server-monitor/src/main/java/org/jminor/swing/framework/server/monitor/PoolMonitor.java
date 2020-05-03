@@ -216,7 +216,7 @@ public final class PoolMonitor {
     }
 
     @Override
-    public Connection getConnection() {
+    public Connection getConnection(final User user) {
       return null;
     }
 

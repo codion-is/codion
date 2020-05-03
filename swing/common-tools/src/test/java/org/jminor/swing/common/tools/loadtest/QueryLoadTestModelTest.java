@@ -23,14 +23,14 @@ public final class QueryLoadTestModelTest {
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
   private static final QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
-          new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp where ename not like ?") {
+          new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectEmployees", "select * from scott.emp where ename not like ?") {
             @Override
             protected List<Object> getParameters() {
               return singletonList("ADAMS");
             }
           };
   private static final QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
-          new QueryLoadTestModel.QueryScenario("selectDepartments", "select * from scott.dept", true);
+          new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectDepartments", "select * from scott.dept", true);
   @Test
   public void test() throws DatabaseException {
     final QueryLoadTestModel loadTest = new QueryLoadTestModel(createTestDatabaseInstance(), UNIT_TEST_USER,
