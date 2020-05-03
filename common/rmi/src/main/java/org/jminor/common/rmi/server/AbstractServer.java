@@ -55,8 +55,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
   private final Map<UUID, RemoteClientConnection<T>> connections = new ConcurrentHashMap<>();
   private final Map<String, LoginProxy> loginProxies = new HashMap<>();
   private final List<LoginProxy> sharedLoginProxies = new ArrayList<>();
-  private final Map<String, ConnectionValidator> connectionValidators = new HashMap<>();
-  private final ConnectionValidator defaultConnectionValidator = new DefaultConnectionValidator();
   private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
 
   private final ServerInformation serverInformation;
@@ -79,7 +77,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     try {
       sharedLoginProxies.addAll(loadSharedLoginProxies(configuration.getSharedLoginProxyClassNames()));
       loginProxies.putAll(loadLoginProxies(configuration.getLoginProxyClassNames()));
-      connectionValidators.putAll(loadConnectionValidators(configuration.getConnectionValidatorClassNames()));
     }
     catch (final ClassNotFoundException e) {
       throw new RuntimeException(e);
@@ -154,8 +151,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     requireNonNull(connectionRequest.getUser(), "user");
     requireNonNull(connectionRequest.getClientId(), "clientId");
     requireNonNull(connectionRequest.getClientTypeId(), "clientTypeId");
-
-    getConnectionValidator(connectionRequest.getClientTypeId()).validate(connectionRequest);
     synchronized (connections) {
       RemoteClientConnection<T> remoteClientConnection = connections.get(connectionRequest.getClientId());
       if (remoteClientConnection != null) {
@@ -281,15 +276,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
   }
 
-  private ConnectionValidator getConnectionValidator(final String clientTypeId) {
-    final ConnectionValidator connectionValidator = connectionValidators.get(clientTypeId);
-    if (connectionValidator == null) {
-      return defaultConnectionValidator;
-    }
-
-    return connectionValidator;
-  }
-
   private void startAuxiliaryServers(final Collection<String> auxiliaryServerProviderClassNames) {
     try {
       for (final String auxiliaryServerProviderClassName : auxiliaryServerProviderClassNames) {
@@ -394,25 +380,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     return loginProxyMap;
   }
 
-  private static Map<String, ConnectionValidator> loadConnectionValidators(final Collection<String> connectionValidatorClassNames)
-          throws ClassNotFoundException {
-    final Map<String, ConnectionValidator> connectionValidatorMap = new HashMap<>();
-    for (final String connectionValidatorClassName : connectionValidatorClassNames) {
-      LOG.info("Server loading connection validation class '" + connectionValidatorClassName + FROM_CLASSPATH);
-      final Class<ConnectionValidator> connectionValidatorClass = (Class<ConnectionValidator>) Class.forName(connectionValidatorClassName);
-      try {
-        final ConnectionValidator validator = connectionValidatorClass.getConstructor().newInstance();
-        connectionValidatorMap.put(validator.getClientTypeId(), validator);
-      }
-      catch (final Exception ex) {
-        LOG.error("Exception while instantiating ConnectionValidator: " + connectionValidatorClassName, ex);
-        throw new RuntimeException(ex);
-      }
-    }
-
-    return connectionValidatorMap;
-  }
-
   private static final class RemoteClientConnection<T> {
 
     private final RemoteClient client;
@@ -430,16 +397,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     private T getConnection() {
       return connection;
     }
-  }
-
-  private static final class DefaultConnectionValidator implements ConnectionValidator {
-    @Override
-    public String getClientTypeId() {
-      return "defaultClient";
-    }
-
-    @Override
-    public void validate(final ConnectionRequest connectionRequest) throws ConnectionValidationException {/*No validation*/}
   }
 
   private static final class DaemonThreadFactory implements ThreadFactory {

@@ -5,7 +5,6 @@ package org.jminor.common.rmi.server;
 
 import org.jminor.common.rmi.client.ConnectionRequest;
 import org.jminor.common.rmi.server.exception.ConnectionNotAvailableException;
-import org.jminor.common.rmi.server.exception.ConnectionValidationException;
 import org.jminor.common.rmi.server.exception.ServerAuthenticationException;
 import org.jminor.common.rmi.server.exception.ServerException;
 import org.jminor.common.user.User;
@@ -121,23 +120,6 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void testConnectionValidator() throws RemoteException, ServerException {
-    final String clientTypeId = "clientTypeId";
-    final ServerConfiguration configuration = getConfiguration();
-    configuration.setConnectionValidatorClassNames(Collections.singletonList(TestConnectionValidator.class.getName()));
-    final TestServer server = new TestServer(configuration);
-    final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
-    final ServerTest connection = server.connect(connectionRequest);
-    assertNotNull(connection);
-    assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
-
-    server.disconnect(connectionRequest.getClientId());
-
-    server.disconnect(connectionRequest.getClientId());
-    assertThrows(ConnectionValidationException.class, () -> server.connect(connectionRequest));
-  }
-
-  @Test
   public void connectionTheftWrongPassword() throws RemoteException, ServerException {
     final TestServer server = new TestServer();
     final String clientTypeId = "clientTypeId";
@@ -245,20 +227,6 @@ public class AbstractServerTest {
     @Override
     public void close() {
       CLOSE_COUNTER.incrementAndGet();
-    }
-  }
-
-  public static final class TestConnectionValidator implements ConnectionValidator {
-    static final AtomicInteger COUNTER = new AtomicInteger();
-    @Override
-    public String getClientTypeId() {
-      return "clientTypeId";
-    }
-    @Override
-    public void validate(final ConnectionRequest connectionRequest) throws ConnectionValidationException {
-      if (COUNTER.getAndIncrement() > 0) {
-        throw new ConnectionValidationException("Testing");
-      }
     }
   }
 }

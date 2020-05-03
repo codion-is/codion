@@ -24,9 +24,9 @@ public class TomcatConnectionPoolProviderTest {
             System.getProperty("jminor.db.initScript")), UNIT_TEST_USER);
     pool.setCollectSnapshotStatistics(true);
     assertTrue(pool.isCollectSnapshotStatistics());
-    pool.getConnection().close();
-    pool.getConnection().close();
-    pool.getConnection().close();
+    pool.getConnection(UNIT_TEST_USER).close();
+    pool.getConnection(UNIT_TEST_USER).close();
+    pool.getConnection(UNIT_TEST_USER).close();
     pool.close();
   }
 }

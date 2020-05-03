@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 
@@ -24,7 +23,7 @@ public interface ConnectionPoolProvider {
    * @return a connection pool based on the given user
    * @throws DatabaseException in case of an exception
    */
-  ConnectionPool createConnectionPool(Database database, User user) throws DatabaseException;
+  ConnectionPool createConnectionPool(ConnectionProvider database, User user) throws DatabaseException;
 
   /**
    * Returns the {@link ConnectionPoolProvider} implementation found by the {@link ServiceLoader}

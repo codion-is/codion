@@ -77,26 +77,30 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    */
   public static class QueryScenario extends AbstractUsageScenario<QueryApplication> {
 
+    private final User user;
     private final String query;
     private final boolean transactional;
 
     /**
      * Instantiates a new non-transactional QueryScenario.
+     * @param user
      * @param name a unique name for the scenario
      * @param query the query
      */
-    public QueryScenario(final String name, final String query) {
-      this(name, query, false);
+    public QueryScenario(final User user, final String name, final String query) {
+      this(user, name, query, false);
     }
 
     /**
      * Instantiates a new QueryScenario.
+     * @param user
      * @param name a unique name for the scenario
      * @param query the query
      * @param transactional if true, commit and rollback is performed on success and error respectively
      */
-    public QueryScenario(final String name, final String query, final boolean transactional) {
+    public QueryScenario(final User user, final String name, final String query, final boolean transactional) {
       super(name);
+      this.user = user;
       this.query = query;
       this.transactional = transactional;
     }
@@ -111,7 +115,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
       PreparedStatement statement = null;
       ResultSet resultSet = null;
       try {
-        connection = application.pool.getConnection();
+        connection = application.pool.getConnection(user);
         statement = connection.prepareCall(query);
         setStatementParameters(statement);
         resultSet = statement.executeQuery();

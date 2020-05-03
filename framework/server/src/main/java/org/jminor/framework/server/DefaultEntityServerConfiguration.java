@@ -74,11 +74,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public Collection<String> getConnectionValidatorClassNames() {
-    return serverConfiguration.getConnectionValidatorClassNames();
-  }
-
-  @Override
   public Collection<String> getAuxiliaryServerProviderClassNames() {
     return serverConfiguration.getAuxiliaryServerProviderClassNames();
   }
@@ -181,11 +176,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   @Override
   public void setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
     serverConfiguration.setLoginProxyClassNames(loginProxyClassNames);
-  }
-
-  @Override
-  public void setConnectionValidatorClassNames(final Collection<String> connectionValidatorClassNames) {
-    serverConfiguration.setConnectionValidatorClassNames(connectionValidatorClassNames);
   }
 
   @Override

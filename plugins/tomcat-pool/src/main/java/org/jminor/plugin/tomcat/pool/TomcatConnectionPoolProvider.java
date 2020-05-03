@@ -3,12 +3,10 @@
  */
 package org.jminor.plugin.tomcat.pool;
 
-import org.jminor.common.db.connection.DatabaseConnection;
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.pool.AbstractConnectionPool;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
+import org.jminor.common.db.pool.ConnectionProvider;
 import org.jminor.common.user.User;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -25,23 +23,23 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
   /**
    * Creates a Tomcat based connection pool
-   * @param database the underlying database
+   * @param connectionProvider the connection provider
    * @param user the user
    * @return a connection pool
    */
   @Override
-  public ConnectionPool createConnectionPool(final Database database, final User user) {
-    return new DataSourceWrapper(database, user, createDataSource(user, database));
+  public ConnectionPool createConnectionPool(final ConnectionProvider connectionProvider, final User user) {
+    return new DataSourceWrapper(connectionProvider, user, createDataSource(user, connectionProvider));
   }
 
-  private static DataSource createDataSource(final User user, final Database database) {
+  private static DataSource createDataSource(final User user, final ConnectionProvider connectionProvider) {
     final PoolProperties pp = new PoolProperties();
-    pp.setUrl(database.getUrl());
+    pp.setUrl(connectionProvider.getUrl());
     pp.setDefaultAutoCommit(false);
     pp.setName(user.getUsername());
     //JMinor does not validate connections coming from a connection pool
     pp.setTestOnBorrow(true);
-    pp.setValidator(new ConnectionValidator(database));
+    pp.setValidator(new ConnectionValidator(connectionProvider));
     pp.setMaxActive(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
     pp.setInitialSize(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
     pp.setMaxIdle(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
@@ -53,8 +51,8 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
   private static final class DataSourceWrapper extends AbstractConnectionPool<DataSource> {
 
-    private DataSourceWrapper(final Database database, final User user, final DataSource dataSource) {
-      super(database, user, dataSource);
+    private DataSourceWrapper(final ConnectionProvider connectionProvider, final User user, final DataSource dataSource) {
+      super(connectionProvider, user, dataSource);
       dataSource.setDataSource(getPoolDataSource());
       setPool(dataSource);
     }
@@ -138,15 +136,15 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
   private static final class ConnectionValidator implements Validator {
 
-    private final Database database;
+    private final ConnectionProvider connectionProvider;
 
-    private ConnectionValidator(final Database database) {
-      this.database = database;
+    private ConnectionValidator(final ConnectionProvider connectionProvider) {
+      this.connectionProvider = connectionProvider;
     }
 
     @Override
     public boolean validate(final Connection connection, final int i) {
-      return Databases.isValid(connection, database, DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
+      return connectionProvider.validateConnection(connection);
     }
   }
 }

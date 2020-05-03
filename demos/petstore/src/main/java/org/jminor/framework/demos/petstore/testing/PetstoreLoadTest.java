@@ -15,7 +15,6 @@ import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import static java.util.Collections.singletonList;
 
@@ -61,7 +60,6 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
     @Override
     public void run() {
       try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         new LoadTestPanel(new PetstoreLoadTest()).showFrame();
       }
       catch (final Exception e) {

@@ -5,7 +5,6 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.rmi.server.RemoteClient;
@@ -57,25 +56,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
                                 final int port, final RMIClientSocketFactory clientSocketFactory,
                                 final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(domain, null, database, remoteClient, port, clientSocketFactory, serverSocketFactory);
-  }
-
-  /**
-   * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
-   * @param connectionPool the connection pool to use, if none is provided a local connection is established
-   * @param remoteClient the client requesting the connection
-   * @param port the port to use when exporting this remote connection
-   * @param clientSocketFactory the client socket factory to use, null for default
-   * @param serverSocketFactory the server socket factory to use, null for default
-   * @throws RemoteException in case of an exception
-   * @throws DatabaseException in case a database connection can not be established, for example
-   * if a wrong username or password is provided
-   */
-  DefaultRemoteEntityConnection(final Domain domain, final ConnectionPool connectionPool, final RemoteClient remoteClient,
-                                final int port, final RMIClientSocketFactory clientSocketFactory,
-                                final RMIServerSocketFactory serverSocketFactory)
-          throws DatabaseException, RemoteException {
-    super(domain, connectionPool, connectionPool.getDatabase(), remoteClient, port, clientSocketFactory, serverSocketFactory);
+    super(domain, database, remoteClient, port, clientSocketFactory, serverSocketFactory);
   }
 
   @Override

@@ -5,7 +5,6 @@ package org.jminor.framework.demos.empdept.server;
 
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.rmi.server.RemoteClient;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.empdept.domain.Employee;
@@ -31,7 +30,7 @@ public final class EmployeeServer extends EntityServer {
   }
 
   @Override
-  protected AbstractRemoteEntityConnection createRemoteConnection(final ConnectionPool connectionPool, final Database database,
+  protected AbstractRemoteEntityConnection createRemoteConnection(final Database database,
                                                                   final RemoteClient remoteClient, final int port,
                                                                   final RMIClientSocketFactory clientSocketFactory,
                                                                   final RMIServerSocketFactory serverSocketFactory)
@@ -43,7 +42,7 @@ public final class EmployeeServer extends EntityServer {
 
     private DefaultEmployeeService(final Domain domain, final Database database, final RemoteClient remoteClient, final int port)
             throws DatabaseException, RemoteException {
-      super(domain, null, database, remoteClient, port, null, null);
+      super(domain, database, remoteClient, port, null, null);
     }
 
     @Override

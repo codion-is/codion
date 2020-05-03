@@ -8,9 +8,7 @@ import org.jminor.common.Util;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
-import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.event.EventListener;
 import org.jminor.common.rmi.client.Clients;
 import org.jminor.common.rmi.client.ConnectionRequest;
@@ -39,7 +37,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -133,12 +130,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
           throws RemoteException, LoginException, ConnectionNotAvailableException {
     requireNonNull(remoteClient, "remoteClient");
     try {
-      final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(remoteClient.getDatabaseUser().getUsername());
-      if (connectionPool != null) {
-        checkConnectionPoolCredentials(connectionPool.getUser(), remoteClient.getDatabaseUser());
-      }
-
-      final AbstractRemoteEntityConnection connection = createRemoteConnection(connectionPool, getDatabase(), remoteClient,
+      final AbstractRemoteEntityConnection connection = createRemoteConnection(getDatabase(), remoteClient,
               configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
       connection.setLoggingEnabled(clientLoggingEnabled);
 
@@ -150,7 +142,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     catch (final AuthenticationException e) {
       throw new ServerAuthenticationException(e.getMessage());
     }
-    catch (final RemoteException | ServerAuthenticationException e) {
+    catch (final RemoteException e) {
       throw e;
     }
     catch (final Exception e) {
@@ -166,7 +158,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
   /**
    * Creates the remote connection provided by this server
-   * @param connectionPool the connection pool to use, if none is provided a direct connection to the database is established
    * @param database the underlying database
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
@@ -177,18 +168,12 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * if a wrong username or password is provided
    * @return a remote connection
    */
-  protected AbstractRemoteEntityConnection createRemoteConnection(final ConnectionPool connectionPool, final Database database,
+  protected AbstractRemoteEntityConnection createRemoteConnection(final Database database,
                                                                   final RemoteClient remoteClient, final int port,
                                                                   final RMIClientSocketFactory clientSocketFactory,
                                                                   final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
-    final Domain domainModel = getClientDomainModel(remoteClient);
-    if (connectionPool != null) {
-      return new DefaultRemoteEntityConnection(domainModel, connectionPool, remoteClient, port,
-              clientSocketFactory, serverSocketFactory);
-    }
-
-    return new DefaultRemoteEntityConnection(domainModel, database, remoteClient, port,
+    return new DefaultRemoteEntityConnection(getClientDomainModel(remoteClient), database, remoteClient, port,
             clientSocketFactory, serverSocketFactory);
   }
 
@@ -408,19 +393,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     System.out.println(connectInfo);
   }
 
-  /**
-   * Checks the credentials provided by {@code remoteClient} against the credentials
-   * found in the connection pool user, assuming the user names match
-   * @param connectionPoolUser the connection pool user credentials
-   * @param user the user credentials to check
-   * @throws ServerAuthenticationException in case the password does not match the one in the connection pool user
-   */
-  private static void checkConnectionPoolCredentials(final User connectionPoolUser, final User user) throws ServerAuthenticationException {
-    if (!Arrays.equals(connectionPoolUser.getPassword(), user.getPassword())) {
-      throw new ServerAuthenticationException("Wrong username or password");
-    }
-  }
-
   private boolean hasConnectionTimedOut(final String clientTypeId, final AbstractRemoteEntityConnection connection) {
     Integer timeout = clientTypeConnectionTimeouts.get(clientTypeId);
     if (timeout == null) {
@@ -467,7 +439,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       else {
         poolProvider = ConnectionPoolProvider.getConnectionPoolProvider(connectionPoolProviderClassName);
       }
-      ConnectionPools.initializeConnectionPools(poolProvider, database, startupPoolUsers);
+      for (final User user : startupPoolUsers) {
+        database.initializeConnectionPool(poolProvider, user);
+      }
     }
   }
 
@@ -595,7 +569,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       }
       catch (final NoSuchObjectException ignored) {/*ignored*/}
       connectionMaintenanceScheduler.stop();
-      ConnectionPools.closeConnectionPools();
+      database.closeConnectionPools();
       database.shutdownEmbedded();
     }
   }
