@@ -6015,3 +6015,4 @@
   EntityResultPacker bug fixed, did not prepare value, problematic with BigDecimal equality checking
   Property.bigDecimalRoundingMode added
   RemoteEntityConnectionHandler.invoke(), InvocationTargetException no longer logged, assume it's already been logged
+  RemoteEntityConnectionHandler moved up to package level and renamed EntityConnectionHandler
