@@ -1175,6 +1175,28 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     connection.getDatabase().countQuery(query);
   }
 
+  private void checkIfReadOnly(final List<Entity> entities) throws DatabaseException {
+    for (int i = 0; i < entities.size(); i++) {
+      checkIfReadOnly(entities.get(i).getEntityId());
+    }
+  }
+
+  private void checkIfReadOnly(final Collection<String> entityIds) throws DatabaseException {
+    for (final String entityId : entityIds) {
+      checkIfReadOnly(entityId);
+    }
+  }
+
+  private void checkIfReadOnly(final String entityId) throws DatabaseException {
+    if (getEntityDefinition(entityId).isReadOnly()) {
+      throw new DatabaseException("Entities of type: " + entityId + " are read only");
+    }
+  }
+
+  private EntityDefinition getEntityDefinition(final String entityId) {
+    return domain.getDefinition(entityId);
+  }
+
   private static List createValueList(final Object... values) {
     if (values == null || values.length == 0) {
       return null;
@@ -1250,28 +1272,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     return builder.toString();
-  }
-
-  private void checkIfReadOnly(final List<Entity> entities) throws DatabaseException {
-    for (int i = 0; i < entities.size(); i++) {
-      checkIfReadOnly(entities.get(i).getEntityId());
-    }
-  }
-
-  private void checkIfReadOnly(final Collection<String> entityIds) throws DatabaseException {
-    for (final String entityId : entityIds) {
-      checkIfReadOnly(entityId);
-    }
-  }
-
-  private void checkIfReadOnly(final String entityId) throws DatabaseException {
-    if (getEntityDefinition(entityId).isReadOnly()) {
-      throw new DatabaseException("Entities of type: " + entityId + " are read only");
-    }
-  }
-
-  private EntityDefinition getEntityDefinition(final String entityId) {
-    return domain.getDefinition(entityId);
   }
 
   private static final class BlobPacker implements ResultPacker<Blob> {
