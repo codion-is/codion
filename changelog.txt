@@ -6022,7 +6022,7 @@
   ColumnConditionPanel.InputFieldProvider renamed BoundFieldProvider and refactored
   Components.linkToEnabledState() bug fixed, did not use EDT
   Components.linkToEnabledState(), removed overloaded includeFocusable parameter version
-  Components.expandAll() split into expandAll() and collapesAll()
+  Components.expandAll() split into expandAll() and collapseAll()
   Components.createEastFocusableButtonPanel() split from createEastButtonPanel()
   Dialogs.FilesOrDirectories enum added and used instead of boolean parameter
   Dialogs.ConfirmOverwrite enum added and used instead of boolean parameter
@@ -6042,3 +6042,4 @@
   EntityResultPacker bug fixed, did not prepare value, problematic with BigDecimal equality checking
   Property.bigDecimalRoundingMode added
   RemoteEntityConnectionHandler.invoke(), InvocationTargetException no longer logged, assume it's already been logged
+  RemoteEntityConnectionHandler moved up to package level and renamed EntityConnectionHandler
