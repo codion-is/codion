@@ -5,16 +5,20 @@ package org.jminor.common.db.database;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.pool.ConnectionPool;
+import org.jminor.common.db.pool.ConnectionPoolProvider;
+import org.jminor.common.db.pool.ConnectionProvider;
 import org.jminor.common.user.User;
 import org.jminor.common.value.PropertyValue;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
 
 /**
  * Defines DBMS specific functionality as well as basic database configuration settings.
  */
-public interface Database {
+public interface Database extends ConnectionProvider {
 
   /**
    * The possible select for update support values.
@@ -83,12 +87,6 @@ public interface Database {
   String getSequenceQuery(String sequenceName);
 
   /**
-   * Returns the database url for this database.
-   * @return the database url for this database
-   */
-  String getUrl();
-
-  /**
    * This should shutdown the database in case it is an embedded one
    * and if that is applicable, such as for Derby.
    */
@@ -151,15 +149,6 @@ public interface Database {
   boolean isUniqueConstraintException(SQLException exception);
 
   /**
-   * Creates a connection for the given user.
-   * @param user the user for which to create a connection
-   * @return a Connection
-   * @throws DatabaseException in case of a connection error
-   * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
-   */
-  Connection createConnection(User user) throws DatabaseException;
-
-  /**
    * Counts this query, based on the first character.
    * @param query the query to count
    * @see #getStatistics()
@@ -172,6 +161,43 @@ public interface Database {
    * @return collected statistics.
    */
   Statistics getStatistics();
+
+  /**
+   * Initializes a connection pool for the given user in this database.
+   * @param connectionPoolProvider the ConnectionPoolProvider implementation to use
+   * @param poolUser the user to initialize connection pool for
+   * @throws DatabaseException in case of a database exception
+   */
+  void initializeConnectionPool(ConnectionPoolProvider connectionPoolProvider, User poolUser) throws DatabaseException;
+
+  /**
+   * @param username the username
+   * @return true if a connection pool is available for the given user
+   */
+  boolean containsConnectionPool(String username);
+
+  /**
+   * @param username the username
+   * @return the connection pool for the given user, null if none exists
+   * @see #containsConnectionPool(String)
+   */
+  ConnectionPool getConnectionPool(String username);
+
+  /**
+   * @return the usernames of all available connection pools
+   */
+  Collection<String> getConnectionPoolUsernames();
+
+  /**
+   * Closes and removes the pool associated with the given user
+   * @param username the username of the pool that should be removed
+   */
+  void closeConnectionPool(String username);
+
+  /**
+   * Closes and removes all available connection pools
+   */
+  void closeConnectionPools();
 
   /**
    * Encapsulates basic database usage statistics.

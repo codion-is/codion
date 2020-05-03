@@ -3,10 +3,10 @@
  */
 package org.jminor.plugin.hikari.pool;
 
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.pool.AbstractConnectionPool;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
+import org.jminor.common.db.pool.ConnectionProvider;
 import org.jminor.common.user.User;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -24,29 +24,29 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
 
   /**
    * Creates a HikariCP based connection pool
-   * @param database the underlying database
+   * @param connectionProvider the connection provider
    * @param user the user
    * @return a connection pool
    */
   @Override
-  public ConnectionPool createConnectionPool(final Database database, final User user) {
-    return new HikariConnectionPool(database, user);
+  public ConnectionPool createConnectionPool(final ConnectionProvider connectionProvider, final User user) {
+    return new HikariConnectionPool(connectionProvider, user);
   }
 
   private static final class HikariConnectionPool extends AbstractConnectionPool<HikariPool> {
 
     private final HikariConfig config = new HikariConfig();
 
-    public HikariConnectionPool(final Database database, final User user) {
-      super(database, user, new DriverDataSource(database.getUrl(), null,
+    public HikariConnectionPool(final ConnectionProvider connectionProvider, final User user) {
+      super(connectionProvider, user, new DriverDataSource(connectionProvider.getUrl(), null,
               new Properties(), user.getUsername(), String.valueOf(user.getPassword())));
-      config.setJdbcUrl(database.getUrl());
+      config.setJdbcUrl(connectionProvider.getUrl());
       config.setAutoCommit(false);
       config.setUsername(user.getUsername());
       config.setMaximumPoolSize(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
       config.setMinimumIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());
       config.setIdleTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get());
-      config.setJdbcUrl(database.getUrl());
+      config.setJdbcUrl(connectionProvider.getUrl());
       config.setDataSource(getPoolDataSource());
       setPool(new HikariPool(config));
     }

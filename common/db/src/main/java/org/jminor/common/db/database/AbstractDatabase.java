@@ -3,14 +3,21 @@
  */
 package org.jminor.common.db.database;
 
+import org.jminor.common.db.connection.DatabaseConnection;
 import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.pool.ConnectionPool;
+import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.user.User;
 
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -23,6 +30,7 @@ import static org.jminor.common.Util.nullOrEmpty;
  */
 public abstract class AbstractDatabase implements Database {
 
+  private final Map<String, ConnectionPool> connectionPools = new HashMap<>();
   private final QueryCounter queryCounter = new QueryCounter();
   private final String jdbcUrl;
 
@@ -57,6 +65,11 @@ public abstract class AbstractDatabase implements Database {
       }
       throw new DatabaseException(e, getErrorMessage(e));
     }
+  }
+
+  @Override
+  public boolean validateConnection(final Connection connection) {
+    return Databases.isValid(connection, this, DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
   }
 
   @Override
@@ -125,6 +138,46 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return false;
+  }
+
+  @Override
+  public void initializeConnectionPool(final ConnectionPoolProvider connectionPoolProvider,
+                                        final User poolUser) throws DatabaseException {
+    requireNonNull(connectionPoolProvider, "connectionPoolProvider");
+    requireNonNull(poolUser, "poolUser");
+    if (connectionPools.containsKey(poolUser.getUsername())) {
+      throw new IllegalStateException("Connection pool for user " + poolUser.getUsername() + " has already been initialized");
+    }
+    connectionPools.put(poolUser.getUsername(), connectionPoolProvider.createConnectionPool(this, poolUser));
+  }
+
+  @Override
+  public boolean containsConnectionPool(final String username) {
+    return connectionPools.containsKey(requireNonNull(username, "username"));
+  }
+
+  @Override
+  public ConnectionPool getConnectionPool(final String username) {
+    return connectionPools.get(requireNonNull(username, "username"));
+  }
+
+  @Override
+  public void closeConnectionPool(final String username) {
+    if (containsConnectionPool(username)) {
+      connectionPools.remove(username).close();
+    }
+  }
+
+  @Override
+  public void closeConnectionPools() {
+    for (final ConnectionPool pool : connectionPools.values()) {
+      closeConnectionPool(pool.getUser().getUsername());
+    }
+  }
+
+  @Override
+  public Collection<String> getConnectionPoolUsernames() {
+    return new ArrayList<>(connectionPools.keySet());
   }
 
   /**

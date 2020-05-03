@@ -307,7 +307,7 @@ public class EntityServerTest {
     assertEquals(30, admin.getConnectionTimeout());
     admin.getDatabaseStatistics();
     admin.getDatabaseURL();
-    admin.getConnectionPools();
+    admin.getConnectionPoolUsernames();
     admin.setMaintenanceInterval(500);
     admin.getEntityDefinitions();
     assertEquals(500, admin.getMaintenanceInterval());

@@ -8,7 +8,6 @@ import org.jminor.common.Memory;
 import org.jminor.common.Util;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.rmi.client.ConnectionRequest;
 import org.jminor.common.rmi.server.ClientLog;
 import org.jminor.common.rmi.server.RemoteClient;
@@ -38,9 +37,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static org.jminor.common.db.pool.ConnectionPools.getConnectionPool;
 
 /**
  * Implements the EntityServerAdmin interface, providing admin access to a EntityServer instance.
@@ -193,18 +190,18 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
   @Override
   public void resetConnectionPoolStatistics(final String username) {
     LOG.info("resetConnectionPoolStatistics({})", username);
-    getConnectionPool(username).resetStatistics();
+    server.getDatabase().getConnectionPool(username).resetStatistics();
   }
 
   @Override
   public boolean isCollectPoolSnapshotStatistics(final String username) {
-    return getConnectionPool(username).isCollectSnapshotStatistics();
+    return server.getDatabase().getConnectionPool(username).isCollectSnapshotStatistics();
   }
 
   @Override
   public void setCollectPoolSnapshotStatistics(final String username, final boolean value) {
     LOG.info("setCollectSnapshotPoolStatistics({}, {})", username, value);
-    getConnectionPool(username).setCollectSnapshotStatistics(value);
+    server.getDatabase().getConnectionPool(username).setCollectSnapshotStatistics(value);
   }
 
   @Override
@@ -214,7 +211,7 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
 
   @Override
   public ConnectionPoolStatistics getConnectionPoolStatistics(final String username, final long since) {
-    return getConnectionPool(username).getStatistics(since);
+    return server.getDatabase().getConnectionPool(username).getStatistics(since);
   }
 
   @Override
@@ -223,63 +220,63 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
   }
 
   @Override
-  public List<String> getConnectionPools() {
-    return ConnectionPools.getConnectionPools().stream().map(pool -> pool.getUser().getUsername()).collect(toList());
+  public Collection<String> getConnectionPoolUsernames() {
+    return server.getDatabase().getConnectionPoolUsernames();
   }
 
   @Override
   public int getConnectionPoolCleanupInterval(final String username) {
-    return getConnectionPool(username).getCleanupInterval();
+    return server.getDatabase().getConnectionPool(username).getCleanupInterval();
   }
 
   @Override
   public void setConnectionPoolCleanupInterval(final String username, final int poolCleanupInterval) {
     LOG.info("setConnectionPoolCleanupInterval({}, {})", username, poolCleanupInterval);
-    getConnectionPool(username).setCleanupInterval(poolCleanupInterval);
+    server.getDatabase().getConnectionPool(username).setCleanupInterval(poolCleanupInterval);
   }
 
   @Override
   public int getMaximumConnectionPoolSize(final String username) {
-    return getConnectionPool(username).getMaximumPoolSize();
+    return server.getDatabase().getConnectionPool(username).getMaximumPoolSize();
   }
 
   @Override
   public void setMaximumConnectionPoolSize(final String username, final int value) {
     LOG.info("setMaximumConnectionPoolSize({}, {})", username, value);
-    getConnectionPool(username).setMaximumPoolSize(value);
+    server.getDatabase().getConnectionPool(username).setMaximumPoolSize(value);
   }
 
   @Override
   public int getMinimumConnectionPoolSize(final String username) {
-    return getConnectionPool(username).getMinimumPoolSize();
+    return server.getDatabase().getConnectionPool(username).getMinimumPoolSize();
   }
 
   @Override
   public void setMinimumConnectionPoolSize(final String username, final int value) {
     LOG.info("setMinimumConnectionPoolSize({}, {})", username, value);
-    getConnectionPool(username).setMinimumPoolSize(value);
+    server.getDatabase().getConnectionPool(username).setMinimumPoolSize(value);
   }
 
   @Override
   public int getPooledConnectionTimeout(final String username) {
-    return getConnectionPool(username).getConnectionTimeout();
+    return server.getDatabase().getConnectionPool(username).getConnectionTimeout();
   }
 
   @Override
   public void setPooledConnectionTimeout(final String username, final int timeout) {
     LOG.info("setPooledConnectionTimeout({}, {})", username, timeout);
-    getConnectionPool(username).setConnectionTimeout(timeout);
+    server.getDatabase().getConnectionPool(username).setConnectionTimeout(timeout);
   }
 
   @Override
   public int getMaximumPoolCheckOutTime(final String username) {
-    return getConnectionPool(username).getMaximumCheckOutTime();
+    return server.getDatabase().getConnectionPool(username).getMaximumCheckOutTime();
   }
 
   @Override
   public void setMaximumPoolCheckOutTime(final String username, final int value) {
     LOG.info("setMaximumPoolCheckOutTime({}, {})", username, value);
-    getConnectionPool(username).setMaximumCheckOutTime(value);
+    server.getDatabase().getConnectionPool(username).setMaximumCheckOutTime(value);
   }
 
   @Override

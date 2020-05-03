@@ -75,7 +75,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   /**
    * Instantiates a new AbstractRemoteEntityConnection and exports it on the given port number
    * @param domain the domain model entities
-   * @param connectionPool the connection pool to use, if none is provided a local connection is established
    * @param database defines the underlying database
    * @param remoteClient information about the client requesting the connection
    * @param port the port to use when exporting this remote connection
@@ -85,13 +84,13 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  protected AbstractRemoteEntityConnection(final Domain domain, final ConnectionPool connectionPool, final Database database,
+  protected AbstractRemoteEntityConnection(final Domain domain, final Database database,
                                            final RemoteClient remoteClient, final int port,
                                            final RMIClientSocketFactory clientSocketFactory,
                                            final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
     super(port, clientSocketFactory, serverSocketFactory);
-    this.connectionHandler = new RemoteEntityConnectionHandler(domain, remoteClient, connectionPool, database);
+    this.connectionHandler = new RemoteEntityConnectionHandler(domain, remoteClient, database);
     this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
             new Class[] {EntityConnection.class}, connectionHandler);
   }
@@ -244,12 +243,11 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
      */
     private boolean disconnected = false;
 
-    private RemoteEntityConnectionHandler(final Domain domain, final RemoteClient remoteClient,
-                                          final ConnectionPool connectionPool, final Database database)
+    private RemoteEntityConnectionHandler(final Domain domain, final RemoteClient remoteClient, final Database database)
             throws DatabaseException {
       this.domain = domain;
       this.remoteClient = remoteClient;
-      this.connectionPool = connectionPool;
+      this.connectionPool = database.getConnectionPool(remoteClient.getDatabaseUser().getUsername());
       this.database = database;
       this.methodLogger = new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(), new EntityArgumentToString(domain));
       this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();

@@ -195,10 +195,10 @@ public interface EntityServerAdmin extends Remote {
   Collection<String> getClientTypes() throws RemoteException;
 
   /**
-   * @return a list containing usernames backed by a connection pool
+   * @return a collection containing usernames backed by a connection pool
    * @throws RemoteException in case of an exception
    */
-  List<String> getConnectionPools() throws RemoteException;
+  Collection<String> getConnectionPoolUsernames() throws RemoteException;
 
   /**
    * @param username the username

@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.user.User;
@@ -40,7 +39,7 @@ public final class PoolMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refresh() throws RemoteException {
-    for (final String username : server.getConnectionPools()) {
+    for (final String username : server.getConnectionPoolUsernames()) {
       connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPool(username, server)));
     }
   }
@@ -214,11 +213,6 @@ public final class PoolMonitor {
       catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
-    }
-
-    @Override
-    public Database getDatabase() {
-      return null;
     }
 
     @Override

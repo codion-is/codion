@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
 
@@ -14,6 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default base implementation of the ConnectionPool wrapper, handling the collection of statistics
@@ -25,28 +25,23 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
    * The actual connection pool object
    */
   private T pool;
-  private final Database database;
+  private final ConnectionProvider connectionProvider;
   private final User user;
   private final DataSource poolDataSource;
   private final DefaultConnectionPoolCounter counter;
 
   /**
    * Instantiates a new AbstractConnectionPool instance.
-   * @param database the underlying database
+   * @param connectionProvider the connection provider
    * @param user the connection pool user
    * @param poolDataSource the DataSource
    */
-  public AbstractConnectionPool(final Database database, final User user, final DataSource poolDataSource) {
-    this.database = database;
-    this.user = user;
+  public AbstractConnectionPool(final ConnectionProvider connectionProvider, final User user, final DataSource poolDataSource) {
+    this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+    this.user = requireNonNull(user, "user");
     this.poolDataSource = (DataSource) newProxyInstance(DataSource.class.getClassLoader(),
-            new Class[] {DataSource.class}, new DataSourceInvocationHandler(poolDataSource));
+            new Class[] {DataSource.class}, new DataSourceInvocationHandler(requireNonNull(poolDataSource, "poolDataSource")));
     this.counter = new DefaultConnectionPoolCounter(this);
-  }
-
-  @Override
-  public Database getDatabase() {
-    return database;
   }
 
   @Override
@@ -107,7 +102,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
    * @param pool the underlying connection pool
    */
   protected void setPool(final T pool) {
-    this.pool = pool;
+    this.pool = requireNonNull(pool, "pool");
   }
 
   /**
@@ -154,7 +149,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       if ("getConnection".equals(method.getName())) {
-        final Connection connection = database.createConnection(user);
+        final Connection connection = connectionProvider.createConnection(user);
         counter.incrementConnectionsCreatedCounter();
 
         return newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class},
