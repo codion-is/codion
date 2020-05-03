@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.db.connection.DatabaseConnection;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.user.User;
@@ -29,8 +28,7 @@ public final class LocalEntityConnections {
    */
   public static LocalEntityConnection createConnection(final Domain domain, final Database database,
                                                        final User user) throws DatabaseException {
-    return new DefaultLocalEntityConnection(domain, database, user,
-            DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get())
+    return new DefaultLocalEntityConnection(domain, database, user)
             .setOptimisticLockingEnabled(LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get())
             .setLimitForeignKeyFetchDepth(LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
   }
@@ -47,8 +45,7 @@ public final class LocalEntityConnections {
    */
   public static LocalEntityConnection createConnection(final Domain domain, final Database database,
                                                        final Connection connection) throws DatabaseException {
-    return new DefaultLocalEntityConnection(domain, database, connection,
-            DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get())
+    return new DefaultLocalEntityConnection(domain, database, connection)
             .setOptimisticLockingEnabled(LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get())
             .setLimitForeignKeyFetchDepth(LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
   }

@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.jminor.common.db.database.Databases.closeSilently;
+import static org.jminor.common.db.database.Database.closeSilently;
 
 final class EntityResultIterator implements ResultIterator<Entity> {
 

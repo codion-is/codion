@@ -5,7 +5,6 @@ package org.jminor.swing.common.tools.loadtest;
 
 import org.jminor.common.Util;
 import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
@@ -83,7 +82,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     /**
      * Instantiates a new non-transactional QueryScenario.
-     * @param user
+     * @param user the user
      * @param name a unique name for the scenario
      * @param query the query
      */
@@ -93,7 +92,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     /**
      * Instantiates a new QueryScenario.
-     * @param user
+     * @param user the user
      * @param name a unique name for the scenario
      * @param query the query
      * @param transactional if true, commit and rollback is performed on success and error respectively
@@ -134,11 +133,9 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
         throw new ScenarioException(e);
       }
       finally {
-        if (connection != null) {
-          Databases.closeSilently(connection);
-        }
-        Databases.closeSilently(resultSet);
-        Databases.closeSilently(statement);
+        Database.closeSilently(connection);
+        Database.closeSilently(resultSet);
+        Database.closeSilently(statement);
       }
     }
 

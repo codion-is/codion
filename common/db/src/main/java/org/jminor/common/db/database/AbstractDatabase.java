@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.database;
 
-import org.jminor.common.db.connection.DatabaseConnection;
 import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
@@ -13,7 +12,9 @@ import org.jminor.common.user.User;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
+import static org.jminor.common.db.database.Database.closeSilently;
 
 /**
  * A default abstract implementation of the Database interface.
@@ -31,6 +33,7 @@ import static org.jminor.common.Util.nullOrEmpty;
 public abstract class AbstractDatabase implements Database {
 
   private final Map<String, ConnectionPool> connectionPools = new HashMap<>();
+  private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
   private final QueryCounter queryCounter = new QueryCounter();
   private final String jdbcUrl;
 
@@ -68,8 +71,18 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public boolean validateConnection(final Connection connection) {
-    return Databases.isValid(connection, this, DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
+  public boolean isConnectionValid(final Connection connection) {
+    requireNonNull(connection, "connection");
+    try {
+      if (supportsIsValid()) {
+        return connection.isValid(validityCheckTimeout);
+      }
+
+      return validateWithQuery(connection);
+    }
+    catch (final SQLException e) {
+      return false;
+    }
   }
 
   @Override
@@ -100,6 +113,11 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public String getCheckConnectionQuery() {
     throw new IllegalStateException("No check connection query specified");
+  }
+
+  @Override
+  public int getValidityCheckTimeout() {
+    return validityCheckTimeout;
   }
 
   @Override
@@ -197,6 +215,24 @@ public abstract class AbstractDatabase implements Database {
     }
 
     return result;
+  }
+
+  private boolean validateWithQuery(final Connection connection) throws SQLException {
+    ResultSet rs = null;
+    try (final Statement statement = connection.createStatement()) {
+      if (validityCheckTimeout > 0) {
+        try {
+          statement.setQueryTimeout(validityCheckTimeout);
+        }
+        catch (final SQLException ignored) {/*Not all databases have implemented this feature*/}
+      }
+      rs = statement.executeQuery(getCheckConnectionQuery());
+
+      return true;
+    }
+    finally {
+      closeSilently(rs);
+    }
   }
 
   private static final class QueryCounter {

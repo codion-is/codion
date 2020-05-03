@@ -3,11 +3,9 @@
  */
 package org.jminor.common.db.connection;
 
-import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.db.database.Database;
 import org.jminor.common.user.User;
-import org.jminor.common.value.PropertyValue;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,13 +14,6 @@ import java.sql.SQLException;
  * Manages a {@link Connection}, providing basic transaction control.
  */
 public interface DatabaseConnection extends AutoCloseable {
-
-  /**
-   * Specifies the timeout (in seconds) to use when checking if database connections are valid.
-   * Value type: Integer<br>
-   * Default value: 0
-   */
-  PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("jminor.db.validityCheckTimeout", 0);
 
   /**
    * @return true if the connection has been established and is valid

@@ -56,8 +56,7 @@ import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.common.db.Operator.LIKE;
 import static org.jminor.common.db.Operator.NOT_LIKE;
 import static org.jminor.common.db.connection.DatabaseConnections.createConnection;
-import static org.jminor.common.db.database.Databases.closeSilently;
-import static org.jminor.common.db.database.Databases.createLogMessage;
+import static org.jminor.common.db.database.Database.closeSilently;
 import static org.jminor.framework.db.condition.Conditions.*;
 import static org.jminor.framework.db.local.Queries.*;
 import static org.jminor.framework.domain.entity.Entities.*;
@@ -96,14 +95,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param domain the domain model
    * @param database the Database instance
    * @param user the user used for connecting to the database
-   * @param validityCheckTimeout specifies the timeout in seconds when validating this connection
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
-  DefaultLocalEntityConnection(final Domain domain, final Database database, final User user,
-                               final int validityCheckTimeout) throws DatabaseException {
+  DefaultLocalEntityConnection(final Domain domain, final Database database, final User user) throws DatabaseException {
     this.domain = new Domain(requireNonNull(domain, "domain"));
-    this.connection = createConnection(database, user, validityCheckTimeout);
+    this.connection = createConnection(database, user);
   }
 
   /**
@@ -111,15 +108,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param domain the domain model
    * @param database the Database instance
    * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
-   * @param validityCheckTimeout specifies the timeout in seconds when validating this connection
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see Database#supportsIsValid()
    */
-  DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection,
-                               final int validityCheckTimeout) throws DatabaseException {
+  DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection) throws DatabaseException {
     this.domain = new Domain(requireNonNull(domain, "domain"));
-    this.connection = createConnection(database, connection, validityCheckTimeout);
+    this.connection = createConnection(database, connection);
   }
 
   @Override
@@ -240,7 +235,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), insertQuery, statementValues, e, null), e);
+        LOG.error(createLogMessage(insertQuery, statementValues, e), e);
         throw translateInsertUpdateSQLException(e);
       }
       finally {
@@ -313,7 +308,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateQuery, statementValues, e, null), e);
+        LOG.error(createLogMessage(updateQuery, statementValues, e), e);
         throw translateInsertUpdateSQLException(e);
       }
       catch (final RecordModifiedException e) {
@@ -323,7 +318,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final UpdateException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateQuery, statementValues, e, null), e);
+        LOG.error(createLogMessage(updateQuery, statementValues, e), e);
         throw e;
       }
       finally {
@@ -367,7 +362,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateQuery, statementValues, e, null), e);
+        LOG.error(createLogMessage(updateQuery, statementValues, e), e);
         throw translateInsertUpdateSQLException(e);
       }
       finally {
@@ -397,7 +392,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), deleteQuery, whereCondition.getValues(), e, null), e);
+        LOG.error(createLogMessage(deleteQuery, whereCondition.getValues(), e), e);
         throw translateDeleteSQLException(e);
       }
       finally {
@@ -441,8 +436,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), deleteQuery,
-                whereCondition == null ? emptyList() : whereCondition.getValues(), e, null), e);
+        LOG.error(createLogMessage(deleteQuery, whereCondition == null ? emptyList() : whereCondition.getValues(), e), e);
         throw translateDeleteSQLException(e);
       }
       finally {
@@ -549,7 +543,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), selectQuery, asList(propertyId, combinedCondition), e, null), e);
+        LOG.error(createLogMessage(selectQuery, asList(propertyId, combinedCondition), e), e);
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -586,7 +580,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), selectQuery, whereCondition.getValues(), e, null), e);
+        LOG.error(createLogMessage(selectQuery, whereCondition.getValues(), e), e);
         throw new DatabaseException(e, database.getErrorMessage(e));
       }
       finally {
@@ -631,14 +625,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(getUser(), functionId, arguments == null ? null : asList(arguments), e, null), e);
+      LOG.error(createLogMessage(functionId, arguments == null ? null : asList(arguments), e), e);
       throw e;
     }
     finally {
-      final MethodLogger.Entry entry = logExit("executeFunction: " + functionId, exception, null);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), "", arguments == null ? null : asList(arguments), exception, entry));
-      }
+      logExit("executeFunction: " + functionId, exception, null);
     }
   }
 
@@ -653,14 +644,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(getUser(), procedureId, arguments == null ? null : asList(arguments), e, null), e);
+      LOG.error(createLogMessage(procedureId, arguments == null ? null : asList(arguments), e), e);
       throw e;
     }
     finally {
-      final MethodLogger.Entry entry = logExit("executeProcedure: " + procedureId, exception, null);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), "", arguments == null ? null : asList(arguments), exception, entry));
-      }
+      logExit("executeProcedure: " + procedureId, exception, null);
     }
   }
 
@@ -682,20 +670,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), null, singletonList(reportWrapper), e, null), e);
+        LOG.error(createLogMessage(null, singletonList(reportWrapper), e), e);
         throw new ReportException(e);
       }
       catch (final ReportException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), null, singletonList(reportWrapper), e, null), e);
+        LOG.error(createLogMessage(null, singletonList(reportWrapper), e), e);
         throw e;
       }
       finally {
-        final MethodLogger.Entry logEntry = logExit("fillReport", exception, null);
-        if (LOG.isDebugEnabled()) {
-          LOG.debug(createLogMessage(getUser(), null, singletonList(reportWrapper), exception, logEntry));
-        }
+        logExit("fillReport", exception, null);
       }
     }
   }
@@ -735,15 +720,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), updateQuery, statementValues, exception, null), e);
+        LOG.error(createLogMessage(updateQuery, statementValues, exception), e);
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
         closeSilently(statement);
-        final MethodLogger.Entry logEntry = logExit("writeBlob", exception, null);
-        if (LOG.isDebugEnabled()) {
-          LOG.debug(createLogMessage(getUser(), updateQuery, statementValues, exception, logEntry));
-        }
+        logExit("writeBlob", exception, null);
         countQuery(updateQuery);
       }
     }
@@ -783,16 +765,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(getUser(), selectQuery, whereCondition.getValues(), exception, null), e);
+        LOG.error(createLogMessage(selectQuery, whereCondition.getValues(), exception), e);
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
         closeSilently(statement);
         closeSilently(resultSet);
-        final MethodLogger.Entry logEntry = logExit("readBlob", exception, null);
-        if (LOG.isDebugEnabled()) {
-          LOG.debug(createLogMessage(getUser(), selectQuery, whereCondition.getValues(), exception, logEntry));
-        }
+        logExit("readBlob", exception, null);
         countQuery(selectQuery);
       }
     }
@@ -978,7 +957,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     catch (final SQLException e) {
       closeSilently(resultSet);
       closeSilently(statement);
-      LOG.error(createLogMessage(getUser(), selectQuery, whereCondition.getValues(), e, null), e);
+      LOG.error(createLogMessage(selectQuery, whereCondition.getValues(), e), e);
       throw e;
     }
   }
@@ -998,10 +977,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      final MethodLogger.Entry entry = logExit("executeStatement", exception, null);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), query, statementValues, exception, entry));
-      }
+      logExit("executeStatement", exception, null);
       countQuery(query);
     }
   }
@@ -1022,10 +998,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      final MethodLogger.Entry entry = logExit("executeStatement", exception, null);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), query, statementValues, exception, entry));
-      }
+      logExit("executeStatement", exception, null);
       countQuery(query);
     }
   }
@@ -1174,13 +1147,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+  private void logExit(final String method, final Throwable exception, final String exitMessage) {
     final MethodLogger methodLogger = connection.getMethodLogger();
     if (methodLogger != null && methodLogger.isEnabled()) {
-      return methodLogger.logExit(method, exception, exitMessage);
+      methodLogger.logExit(method, exception, exitMessage);
     }
-
-    return null;
   }
 
   private void logAccess(final String method, final Object[] arguments) {
@@ -1190,8 +1161,40 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
+  private String createLogMessage(final String sqlStatement, final List values, final Exception exception) {
+    final StringBuilder logMessage = new StringBuilder(getUser().toString()).append("\n");
+    logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(values);
+    if (exception != null) {
+      logMessage.append("\n").append(" [Exception: ").append(exception.getMessage()).append("]");
+    }
+
+    return logMessage.toString();
+  }
+
   private void countQuery(final String query) {
     connection.getDatabase().countQuery(query);
+  }
+
+  private void checkIfReadOnly(final List<Entity> entities) throws DatabaseException {
+    for (int i = 0; i < entities.size(); i++) {
+      checkIfReadOnly(entities.get(i).getEntityId());
+    }
+  }
+
+  private void checkIfReadOnly(final Collection<String> entityIds) throws DatabaseException {
+    for (final String entityId : entityIds) {
+      checkIfReadOnly(entityId);
+    }
+  }
+
+  private void checkIfReadOnly(final String entityId) throws DatabaseException {
+    if (getEntityDefinition(entityId).isReadOnly()) {
+      throw new DatabaseException("Entities of type: " + entityId + " are read only");
+    }
+  }
+
+  private EntityDefinition getEntityDefinition(final String entityId) {
+    return domain.getDefinition(entityId);
   }
 
   private static List createValueList(final Object... values) {
@@ -1269,28 +1272,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     return builder.toString();
-  }
-
-  private void checkIfReadOnly(final List<Entity> entities) throws DatabaseException {
-    for (int i = 0; i < entities.size(); i++) {
-      checkIfReadOnly(entities.get(i).getEntityId());
-    }
-  }
-
-  private void checkIfReadOnly(final Collection<String> entityIds) throws DatabaseException {
-    for (final String entityId : entityIds) {
-      checkIfReadOnly(entityId);
-    }
-  }
-
-  private void checkIfReadOnly(final String entityId) throws DatabaseException {
-    if (getEntityDefinition(entityId).isReadOnly()) {
-      throw new DatabaseException("Entities of type: " + entityId + " are read only");
-    }
-  }
-
-  private EntityDefinition getEntityDefinition(final String entityId) {
-    return domain.getDefinition(entityId);
   }
 
   private static final class BlobPacker implements ResultPacker<Blob> {

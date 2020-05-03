@@ -12,7 +12,9 @@ import org.jminor.common.user.User;
 import org.jminor.common.value.PropertyValue;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 
 /**
@@ -47,6 +49,13 @@ public interface Database extends ConnectionProvider {
    * A comma separated list of paths to scripts to run when initializing the database, implementation specific
    */
   PropertyValue<String> DATABASE_INIT_SCRIPT = Configuration.stringValue("jminor.db.initScript", null);
+
+  /**
+   * Specifies the timeout (in seconds) to use when checking if database connections are valid.
+   * Value type: Integer<br>
+   * Default value: 2
+   */
+  PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("jminor.db.validityCheckTimeout", 2);
 
   /**
    * The constant used to denote the username value in the connection properties
@@ -120,6 +129,11 @@ public interface Database extends ConnectionProvider {
   String getCheckConnectionQuery();
 
   /**
+   * @return the timeout in seconds to use when checking connection validity
+   */
+  int getValidityCheckTimeout();
+
+  /**
    * Returns a user friendly error message for the given exception,
    * otherwise simply return the message from {@code exception}
    * @param exception the underlying SQLException
@@ -191,6 +205,45 @@ public interface Database extends ConnectionProvider {
    * Closes and removes all available connection pools
    */
   void closeConnectionPools();
+
+  /**
+   * Closes the given ResultSet instance, suppressing any SQLExceptions that may occur.
+   * @param resultSet the result set to close
+   */
+  static void closeSilently(final ResultSet resultSet) {
+    try {
+      if (resultSet != null) {
+        resultSet.close();
+      }
+    }
+    catch (final SQLException ignored) {/*ignored*/}
+  }
+
+  /**
+   * Closes the given Statement instance, suppressing any SQLExceptions that may occur.
+   * @param statement the statement to close
+   */
+  static void closeSilently(final Statement statement) {
+    try {
+      if (statement != null) {
+        statement.close();
+      }
+    }
+    catch (final SQLException ignored) {/*ignored*/}
+  }
+
+  /**
+   * Closes the given Connection instance, suppressing any SQLExceptions that may occur.
+   * @param connection the connection to close
+   */
+  static void closeSilently(final Connection connection) {
+    try {
+      if (connection != null) {
+        connection.close();
+      }
+    }
+    catch (final SQLException ignored) {/*ignored*/}
+  }
 
   /**
    * Encapsulates basic database usage statistics.

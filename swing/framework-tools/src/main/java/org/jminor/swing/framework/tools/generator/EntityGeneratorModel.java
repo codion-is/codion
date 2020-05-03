@@ -142,7 +142,7 @@ public final class EntityGeneratorModel {
    * Closes the connection to the database
    */
   public void exit() {
-    Databases.closeSilently(connection);
+    Database.closeSilently(connection);
   }
 
   private TableModel initializeTableModel() {
