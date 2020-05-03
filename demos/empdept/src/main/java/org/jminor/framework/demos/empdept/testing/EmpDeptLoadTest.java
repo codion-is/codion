@@ -18,7 +18,6 @@ import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -172,7 +171,6 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     @Override
     public void run() {
       try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         new LoadTestPanel(new EmpDeptLoadTest()).showFrame();
       }
       catch (final Exception e) {

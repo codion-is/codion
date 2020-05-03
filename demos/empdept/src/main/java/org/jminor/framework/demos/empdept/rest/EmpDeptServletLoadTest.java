@@ -15,7 +15,6 @@ import org.jminor.swing.common.tools.loadtest.AbstractUsageScenario;
 import org.jminor.swing.common.tools.loadtest.LoadTestModel;
 import org.jminor.swing.common.tools.ui.loadtest.LoadTestPanel;
 
-import javax.swing.UIManager;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -55,7 +54,6 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   }
 
   public static void main(final String[] args) throws Exception {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     new LoadTestPanel(new EmpDeptServletLoadTest(UNIT_TEST_USER)).showFrame();
   }
 

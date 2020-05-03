@@ -22,7 +22,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 
@@ -84,8 +83,6 @@ public class EntityGeneratorPanel extends JPanel {
     @Override
     public void run() {
       try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
         final String schemaName = JOptionPane.showInputDialog("Schema name");
         if (nullOrEmpty(schemaName)) {
           return;

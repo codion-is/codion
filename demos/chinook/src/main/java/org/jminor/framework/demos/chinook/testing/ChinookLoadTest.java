@@ -21,7 +21,6 @@ import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
@@ -277,8 +276,6 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
     @Override
     public void run() {
       try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
         new LoadTestPanel(new ChinookLoadTest()).showFrame();
       }
       catch (final Exception e) {
