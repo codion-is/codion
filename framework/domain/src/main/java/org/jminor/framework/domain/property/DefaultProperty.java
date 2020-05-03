@@ -123,6 +123,11 @@ abstract class DefaultProperty implements Property {
   private String dateTimeFormatPattern;
 
   /**
+   * The rounding mode to use when working with BigDecimal
+   */
+  private int bigDecimalRoundingMode = BIG_DECIMAL_ROUNDING_MODE.get();
+
+  /**
    * The DateTimeFormatter to use, based on dateTimeFormatPattern
    */
   private transient DateTimeFormatter dateTimeFormatter;
@@ -334,6 +339,11 @@ abstract class DefaultProperty implements Property {
   }
 
   @Override
+  public final int getBigDecimalRoundingMode() {
+    return bigDecimalRoundingMode;
+  }
+
+  @Override
   public final String getCaption() {
     return caption == null ? propertyId : caption;
   }
@@ -377,8 +387,7 @@ abstract class DefaultProperty implements Property {
       return Util.roundDouble((Double) value, getMaximumFractionDigits());
     }
     if (value instanceof BigDecimal) {
-      return ((BigDecimal) value).setScale(getMaximumFractionDigits(),
-              Property.BIG_DECIMAL_ROUNDING_MODE.get()).stripTrailingZeros();
+      return ((BigDecimal) value).setScale(getMaximumFractionDigits(), bigDecimalRoundingMode).stripTrailingZeros();
     }
 
     return value;
@@ -638,6 +647,12 @@ abstract class DefaultProperty implements Property {
         throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties");
       }
       ((NumberFormat) property.format).setMaximumFractionDigits(maximumFractionDigits);
+      return this;
+    }
+
+    @Override
+    public final Property.Builder bigDecimalRoundingMode(final int bigDecimalRoundingMode) {
+      property.bigDecimalRoundingMode = bigDecimalRoundingMode;
       return this;
     }
   }

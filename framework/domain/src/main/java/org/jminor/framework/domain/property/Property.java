@@ -29,10 +29,11 @@ public interface Property extends Serializable {
   PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("jminor.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
 
   /**
-   * Specifies the rounding mode used for BigDecimal property values<br>
+   * Specifies the default rounding mode used for BigDecimal property values<br>
    * Value type: Integer<br>
    * Default value: BigDecimal.ROUND_HALF_EVEN<br>
    * @see #MAXIMUM_FRACTION_DIGITS
+   * @see Property.Builder#bigDecimalRoundingMode(int)
    */
   PropertyValue<Integer> BIG_DECIMAL_ROUNDING_MODE = Configuration.integerValue("jminor.domain.bigDecimalRoundingMode", BigDecimal.ROUND_HALF_EVEN);
 
@@ -256,6 +257,12 @@ public interface Property extends Serializable {
   int getMaximumFractionDigits();
 
   /**
+   * @return the rounding mode to use when working with BigDecimal
+   * @see #BIG_DECIMAL_ROUNDING_MODE
+   */
+  int getBigDecimalRoundingMode();
+
+  /**
    * @return the preferred column width of this property in pixels when presented in a table, 0 if none has been specified
    */
   int getPreferredColumnWidth();
@@ -357,6 +364,13 @@ public interface Property extends Serializable {
      * @return this instance
      */
     Property.Builder maximumFractionDigits(int maximumFractionDigits);
+
+    /**
+     * Sets the rounding mode to use when working with BigDecimal
+     * @param bigDecimalRoundingMode the rounding mode
+     * @return this instance
+     */
+    Property.Builder bigDecimalRoundingMode(int bigDecimalRoundingMode);
 
     /**
      * Specifies whether to use number grouping when presenting the value associated with this property.

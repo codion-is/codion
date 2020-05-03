@@ -6013,3 +6013,4 @@
   Databases.createLogMessage() moved to DefaultLocalEntityConnection
   DefaultLocalEntityConnection, removed redundant logging
   EntityResultPacker bug fixed, did not prepare value, problematic with BigDecimal equality checking
+  Property.bigDecimalRoundingMode added
