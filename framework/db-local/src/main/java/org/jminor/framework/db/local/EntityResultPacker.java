@@ -49,7 +49,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     for (int i = 0; i < columnProperties.size(); i++) {
       final ColumnProperty property = columnProperties.get(i);
       try {
-        values.put(property, property.fetchValue(resultSet, i + 1));
+        values.put(property, property.prepareValue(property.fetchValue(resultSet, i + 1)));
       }
       catch (final Exception e) {
         throw new SQLException("Exception fetching: " + property + ", entity: " +
