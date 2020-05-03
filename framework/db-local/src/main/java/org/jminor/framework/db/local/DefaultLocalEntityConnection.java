@@ -96,14 +96,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param domain the domain model
    * @param database the Database instance
    * @param user the user used for connecting to the database
-   * @param validityCheckTimeout specifies the timeout in seconds when validating this connection
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
-  DefaultLocalEntityConnection(final Domain domain, final Database database, final User user,
-                               final int validityCheckTimeout) throws DatabaseException {
+  DefaultLocalEntityConnection(final Domain domain, final Database database, final User user) throws DatabaseException {
     this.domain = new Domain(requireNonNull(domain, "domain"));
-    this.connection = createConnection(database, user, validityCheckTimeout);
+    this.connection = createConnection(database, user);
   }
 
   /**
@@ -111,15 +109,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param domain the domain model
    * @param database the Database instance
    * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
-   * @param validityCheckTimeout specifies the timeout in seconds when validating this connection
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see Database#supportsIsValid()
    */
-  DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection,
-                               final int validityCheckTimeout) throws DatabaseException {
+  DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection) throws DatabaseException {
     this.domain = new Domain(requireNonNull(domain, "domain"));
-    this.connection = createConnection(database, connection, validityCheckTimeout);
+    this.connection = createConnection(database, connection);
   }
 
   @Override

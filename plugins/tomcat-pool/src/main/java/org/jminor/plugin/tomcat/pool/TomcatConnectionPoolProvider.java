@@ -144,7 +144,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
     @Override
     public boolean validate(final Connection connection, final int i) {
-      return connectionProvider.validateConnection(connection);
+      return connectionProvider.isConnectionValid(connection);
     }
   }
 }

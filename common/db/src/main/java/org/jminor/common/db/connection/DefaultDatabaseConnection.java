@@ -30,16 +30,10 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
   private static final ResultPacker<Long> LONG_RESULT_PACKER = resultSet -> resultSet.getLong(1);
 
-  /**
-   * The default timeout in seconds when checking if this connection is valid
-   */
-  private static final int DEFAULT_VALIDITY_CHECK_TIMEOUT = 2;
-
   private static final Map<String, User> META_DATA_USER_CACHE = new ConcurrentHashMap<>();
 
   private final User user;
   private final Database database;
-  private final int validityCheckTimeout;
 
   private Connection connection;
   private boolean transactionOpen = false;
@@ -47,28 +41,14 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   private MethodLogger methodLogger;
 
   /**
-   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for use,
-   * using {@link DefaultDatabaseConnection#DEFAULT_VALIDITY_CHECK_TIMEOUT} as the validity check timeout.
+   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for use.
    * @param database the database
    * @param user the user to base this database connection on
-   * @throws DatabaseException in case there is a problem connecting to the database
-   */
-  DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
-    this(database, user, DEFAULT_VALIDITY_CHECK_TIMEOUT);
-  }
-
-  /**
-   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for use
-   * @param database the database
-   * @param user the user to base this database connection on
-   * @param validityCheckTimeout the timeout in seconds when checking if this connection is valid
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
-  DefaultDatabaseConnection(final Database database, final User user,
-                            final int validityCheckTimeout) throws DatabaseException {
+  DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
     this.database = requireNonNull(database, "database");
-    this.validityCheckTimeout = validityCheckTimeout;
     this.connection = disableAutoCommit(database.createConnection(user));
     this.user = requireNonNull(user, "user");
   }
@@ -82,22 +62,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
    */
   DefaultDatabaseConnection(final Database database, final Connection connection) throws DatabaseException {
-    this(database, connection, 0);
-  }
-
-  /**
-   * Constructs a new DefaultDatabaseConnection instance, based on the given Connection object.
-   * NB. auto commit is disabled on the Connection that is provided.
-   * @param database the database
-   * @param connection the Connection object to base this DefaultDatabaseConnection on, it is assumed to be in a valid state
-   * @param validityCheckTimeout the number of seconds specified when checking if this connection is valid
-   * @throws IllegalArgumentException in case the given connection is invalid
-   * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
-   */
-  DefaultDatabaseConnection(final Database database, final Connection connection,
-                            final int validityCheckTimeout) throws DatabaseException {
     this.database = requireNonNull(database, "database");
-    this.validityCheckTimeout = validityCheckTimeout;
     this.connection = disableAutoCommit(connection);
     this.user = getUser(connection);
   }
@@ -143,7 +108,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public boolean isConnected() {
-    return connection != null && Databases.isValid(connection, database, validityCheckTimeout);
+    return connection != null && database.isConnectionValid(connection);
   }
 
   @Override

@@ -49,6 +49,13 @@ public interface Database extends ConnectionProvider {
   PropertyValue<String> DATABASE_INIT_SCRIPT = Configuration.stringValue("jminor.db.initScript", null);
 
   /**
+   * Specifies the timeout (in seconds) to use when checking if database connections are valid.
+   * Value type: Integer<br>
+   * Default value: 2
+   */
+  PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("jminor.db.validityCheckTimeout", 2);
+
+  /**
    * The constant used to denote the username value in the connection properties
    */
   String USER_PROPERTY = "user";
@@ -118,6 +125,11 @@ public interface Database extends ConnectionProvider {
    * @see #supportsIsValid()
    */
   String getCheckConnectionQuery();
+
+  /**
+   * @return the timeout in seconds to use when checking connection validity
+   */
+  int getValidityCheckTimeout();
 
   /**
    * Returns a user friendly error message for the given exception,

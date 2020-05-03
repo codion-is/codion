@@ -87,29 +87,6 @@ public final class Databases {
   }
 
   /**
-   * Returns true if the given connection is valid, if the underlying driver supports {@code isValid()}
-   * it is used, otherwise a simple query is run
-   * @param connection the connection to validate
-   * @param database the underlying database implementation
-   * @param timeoutInSeconds the timeout
-   * @return true if the connection is valid
-   */
-  public static boolean isValid(final Connection connection, final Database database, final int timeoutInSeconds) {
-    requireNonNull(connection, "connection");
-    requireNonNull(database, "database");
-    try {
-      if (database.supportsIsValid()) {
-        return connection.isValid(timeoutInSeconds);
-      }
-
-      return validateWithQuery(connection, database, timeoutInSeconds);
-    }
-    catch (final SQLException e) {
-      return false;
-    }
-  }
-
-  /**
    * Creates a log message from the given information
    * @param user the user
    * @param sqlStatement the sql statement
@@ -132,24 +109,5 @@ public final class Databases {
     }
 
     return logMessage.toString();
-  }
-
-  private static boolean validateWithQuery(final Connection connection, final Database database,
-                                           final int timeoutInSeconds) throws SQLException {
-    ResultSet rs = null;
-    try (final Statement statement = connection.createStatement()) {
-      if (timeoutInSeconds > 0) {
-        try {
-          statement.setQueryTimeout(timeoutInSeconds);
-        }
-        catch (final SQLException ignored) {/*Not all databases have implemented this feature*/}
-      }
-      rs = statement.executeQuery(database.getCheckConnectionQuery());
-
-      return true;
-    }
-    finally {
-      closeSilently(rs);
-    }
   }
 }

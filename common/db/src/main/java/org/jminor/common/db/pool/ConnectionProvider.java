@@ -33,5 +33,5 @@ public interface ConnectionProvider {
    * @param connection the connection to validate
    * @return true if the connection is valid
    */
-  boolean validateConnection(Connection connection);
+  boolean isConnectionValid(Connection connection);
 }
