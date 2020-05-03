@@ -629,7 +629,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("executeFunction: " + functionId, exception, null);
+      logExit("executeFunction: " + functionId, exception);
     }
   }
 
@@ -648,7 +648,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("executeProcedure: " + procedureId, exception, null);
+      logExit("executeProcedure: " + procedureId, exception);
     }
   }
 
@@ -680,7 +680,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw e;
       }
       finally {
-        logExit("fillReport", exception, null);
+        logExit("fillReport", exception);
       }
     }
   }
@@ -725,7 +725,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       finally {
         closeSilently(statement);
-        logExit("writeBlob", exception, null);
+        logExit("writeBlob", exception);
         countQuery(updateQuery);
       }
     }
@@ -771,7 +771,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       finally {
         closeSilently(statement);
         closeSilently(resultSet);
-        logExit("readBlob", exception, null);
+        logExit("readBlob", exception);
         countQuery(selectQuery);
       }
     }
@@ -914,7 +914,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           }
         }
         finally {
-          logExit("setForeignKeys", null, null);
+          logExit("setForeignKeys");
         }
       }
     }
@@ -977,7 +977,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("executeStatement", exception, null);
+      logExit("executeStatement", exception);
       countQuery(query);
     }
   }
@@ -998,7 +998,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("executeStatement", exception, null);
+      logExit("executeStatement", exception);
       countQuery(query);
     }
   }
@@ -1017,7 +1017,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       return connection.getConnection().prepareStatement(sqlStatement, returnColumns);
     }
     finally {
-      logExit("prepareStatement", null, null);
+      logExit("prepareStatement");
     }
   }
 
@@ -1145,6 +1145,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (!isTransactionOpen()) {
       rollbackQuietly();
     }
+  }
+
+  private void logExit(final String method) {
+    logExit(method, null);
+  }
+
+  private void logExit(final String method, final Throwable exception) {
+    logExit(method, exception, null);
   }
 
   private void logExit(final String method, final Throwable exception, final String exitMessage) {
