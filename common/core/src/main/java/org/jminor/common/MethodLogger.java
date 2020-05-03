@@ -317,7 +317,7 @@ public final class MethodLogger {
                 .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(getDuration()))).append(" μs")
                 .append(exitMessage == null ? "" : " (" + exitMessage + ")");
         if (stackTrace != null) {
-          stringBuilder.append("\n").append(stackTrace);
+          stringBuilder.append("\n\n").append(indentString).append(stackTrace);
         }
       }
       else {
