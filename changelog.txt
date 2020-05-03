@@ -5995,7 +5995,7 @@
   ColumnConditionPanel.InputFieldProvider renamed BoundFieldProvider and refactored
   Components.linkToEnabledState() bug fixed, did not use EDT
   Components.linkToEnabledState(), removed overloaded includeFocusable parameter version
-  Components.expandAll() split into expandAll() and collapesAll()
+  Components.expandAll() split into expandAll() and collapseAll()
   Components.createEastFocusableButtonPanel() split from createEastButtonPanel()
   Dialogs.FilesOrDirectories enum added and used instead of boolean parameter
   Dialogs.ConfirmOverwrite enum added and used instead of boolean parameter
