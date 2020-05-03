@@ -82,7 +82,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     /**
      * Instantiates a new non-transactional QueryScenario.
-     * @param user
+     * @param user the user
      * @param name a unique name for the scenario
      * @param query the query
      */
@@ -92,7 +92,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     /**
      * Instantiates a new QueryScenario.
-     * @param user
+     * @param user the user
      * @param name a unique name for the scenario
      * @param query the query
      * @param transactional if true, commit and rollback is performed on success and error respectively
