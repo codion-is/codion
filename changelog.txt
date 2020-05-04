@@ -6016,3 +6016,4 @@
   Property.bigDecimalRoundingMode added
   RemoteEntityConnectionHandler.invoke(), InvocationTargetException no longer logged, assume it's already been logged
   RemoteEntityConnectionHandler moved up to package level and renamed EntityConnectionHandler
+  Dialogs.SingleSelection enum added and used instead of boolean parameter

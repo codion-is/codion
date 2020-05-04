@@ -99,6 +99,20 @@ public final class Dialogs {
     NO
   }
 
+  /**
+   * Specifies whether single item selection is enabled when selecting files and or directories.
+   */
+  public enum SingleSelection {
+    /**
+     * Single selection is enabled.
+     */
+    YES,
+    /**
+     * Single selection is not enabled.
+     */
+    NO
+  }
+
   private Dialogs() {}
 
   /**
@@ -580,7 +594,7 @@ public final class Dialogs {
    */
   public static File selectFileOrDirectory(final JComponent dialogParent, final String startDir,
                                            final FilesOrDirectories filesOrDirectories, final String dialogTitle) {
-    return selectFilesOrDirectories(dialogParent, startDir, filesOrDirectories, false, dialogTitle).get(0);
+    return selectFilesOrDirectories(dialogParent, startDir, filesOrDirectories, SingleSelection.NO, dialogTitle).get(0);
   }
 
   /**
@@ -588,13 +602,14 @@ public final class Dialogs {
    * @param dialogParent the dialog parent
    * @param startDir the start directory, user.home if not specified
    * @param filesOrDirectories specifies whether selection should be restricted
-   * @param multiSelection if true then the dialog will allow selection of multiple items
+   * @param singleSelection if true then the dialog will be restricted to single item selection
    * @param dialogTitle the dialog title
    * @return a List containing the selected files, contains at least one file
    * @throws CancelException in case the user cancels or no files are selected
    */
   public static synchronized List<File> selectFilesOrDirectories(final JComponent dialogParent, final String startDir,
-                                                                 final FilesOrDirectories filesOrDirectories, final boolean multiSelection,
+                                                                 final FilesOrDirectories filesOrDirectories,
+                                                                 final SingleSelection singleSelection,
                                                                  final String dialogTitle) {
     if (fileChooserOpen == null) {
       try {
@@ -618,7 +633,7 @@ public final class Dialogs {
     }
     fileChooserOpen.setSelectedFiles(new File[] {new File("")});
     fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
-    fileChooserOpen.setMultiSelectionEnabled(multiSelection);
+    fileChooserOpen.setMultiSelectionEnabled(singleSelection == SingleSelection.NO);
     if (!nullOrEmpty(startDir) && new File(startDir).exists()) {
       fileChooserOpen.setCurrentDirectory(new File(startDir));
     }
@@ -628,7 +643,7 @@ public final class Dialogs {
     final int option = fileChooserOpen.showOpenDialog(dialogParent);
     if (option == JFileChooser.APPROVE_OPTION) {
       final List<File> selectedFiles;
-      if (multiSelection) {
+      if (singleSelection == SingleSelection.NO) {
         selectedFiles = asList(fileChooserOpen.getSelectedFiles());
       }
       else {
