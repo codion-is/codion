@@ -71,7 +71,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public boolean isConnectionValid(final Connection connection) {
+  public final boolean isConnectionValid(final Connection connection) {
     requireNonNull(connection, "connection");
     try {
       if (supportsIsValid()) {
@@ -86,13 +86,49 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public void countQuery(final String query) {
+  public final void countQuery(final String query) {
     queryCounter.count(query);
   }
 
   @Override
-  public Statistics getStatistics() {
+  public final Statistics getStatistics() {
     return queryCounter.getStatisticsAndResetCounter();
+  }
+
+  @Override
+  public final void initializeConnectionPool(final ConnectionPoolProvider connectionPoolProvider,
+                                       final User poolUser) throws DatabaseException {
+    requireNonNull(connectionPoolProvider, "connectionPoolProvider");
+    requireNonNull(poolUser, "poolUser");
+    if (connectionPools.containsKey(poolUser.getUsername())) {
+      throw new IllegalStateException("Connection pool for user " + poolUser.getUsername() + " has already been initialized");
+    }
+    connectionPools.put(poolUser.getUsername().toLowerCase(), connectionPoolProvider.createConnectionPool(this, poolUser));
+  }
+
+  @Override
+  public final ConnectionPool getConnectionPool(final String username) {
+    return connectionPools.get(requireNonNull(username, "username").toLowerCase());
+  }
+
+  @Override
+  public final void closeConnectionPool(final String username) {
+    final ConnectionPool connectionPool = connectionPools.remove(requireNonNull(username, "username").toLowerCase());
+    if (connectionPool != null) {
+      connectionPool.close();
+    }
+  }
+
+  @Override
+  public final void closeConnectionPools() {
+    for (final ConnectionPool pool : connectionPools.values()) {
+      closeConnectionPool(pool.getUser().getUsername());
+    }
+  }
+
+  @Override
+  public final Collection<String> getConnectionPoolUsernames() {
+    return new ArrayList<>(connectionPools.keySet());
   }
 
   @Override
@@ -156,42 +192,6 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return false;
-  }
-
-  @Override
-  public void initializeConnectionPool(final ConnectionPoolProvider connectionPoolProvider,
-                                       final User poolUser) throws DatabaseException {
-    requireNonNull(connectionPoolProvider, "connectionPoolProvider");
-    requireNonNull(poolUser, "poolUser");
-    if (connectionPools.containsKey(poolUser.getUsername())) {
-      throw new IllegalStateException("Connection pool for user " + poolUser.getUsername() + " has already been initialized");
-    }
-    connectionPools.put(poolUser.getUsername().toLowerCase(), connectionPoolProvider.createConnectionPool(this, poolUser));
-  }
-
-  @Override
-  public ConnectionPool getConnectionPool(final String username) {
-    return connectionPools.get(requireNonNull(username, "username").toLowerCase());
-  }
-
-  @Override
-  public void closeConnectionPool(final String username) {
-    final ConnectionPool connectionPool = connectionPools.remove(requireNonNull(username, "username").toLowerCase());
-    if (connectionPool != null) {
-      connectionPool.close();
-    }
-  }
-
-  @Override
-  public void closeConnectionPools() {
-    for (final ConnectionPool pool : connectionPools.values()) {
-      closeConnectionPool(pool.getUser().getUsername());
-    }
-  }
-
-  @Override
-  public Collection<String> getConnectionPoolUsernames() {
-    return new ArrayList<>(connectionPools.keySet());
   }
 
   /**
