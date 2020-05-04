@@ -189,21 +189,7 @@ public final class Properties {
    */
   public static ColumnProperty.Builder subqueryProperty(final String propertyId, final int type, final String caption,
                                                         final String subquery) {
-    return subqueryProperty(propertyId, type, caption, subquery, type);
-  }
-
-  /**
-   * Creates a new {@link ColumnProperty.Builder} instance, based on a sub-query.
-   * @param propertyId the property ID
-   * @param type the property sql data type
-   * @param caption the property caption
-   * @param subquery the sql query
-   * @param columnType the actual column sql type in case it differs from the property sql data type
-   * @return a new {@link ColumnProperty.Builder}
-   */
-  public static ColumnProperty.Builder subqueryProperty(final String propertyId, final int type, final String caption,
-                                                        final String subquery, final int columnType) {
-    return new DefaultSubqueryProperty(propertyId, type, caption, subquery, columnType).builder();
+    return new DefaultSubqueryProperty(propertyId, type, caption, subquery).builder();
   }
 
   /**
@@ -265,7 +251,8 @@ public final class Properties {
    */
   public static ColumnProperty.Builder booleanProperty(final String propertyId, final int columnType, final String caption,
                                                        final Object trueValue, final Object falseValue) {
-    return new DefaultColumnProperty(propertyId, Types.BOOLEAN, caption, columnType).builder()
+    return new DefaultColumnProperty(propertyId, Types.BOOLEAN, caption).builder()
+            .columnType(columnType)
             .valueConverter(booleanValueConverter(trueValue, falseValue));
   }
 

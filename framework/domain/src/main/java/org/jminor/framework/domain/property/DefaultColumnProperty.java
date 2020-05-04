@@ -29,15 +29,15 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   private static final ValueConverter<LocalDateTime, java.sql.Timestamp> TIMESTAMP_VALUE_CONVERTER = new TimestampValueConverter();
   private static final ValueConverter<LocalTime, java.sql.Time> TIME_VALUE_CONVERTER = new TimeValueConverter();
 
-  private final int columnType;
+  private int columnType;
   private int primaryKeyIndex = -1;
   private boolean columnHasDefaultValue = false;
   private boolean insertable = true;
   private boolean updatable = true;
   private boolean foreignKeyProperty = false;
 
-  private final transient ValueFetcher valueFetcher;
-  private final transient ResultPacker resultPacker;
+  private final transient ResultPacker<?> resultPacker;
+  private transient ValueFetcher<?> valueFetcher;
   private transient String columnName;
   private transient ValueConverter<Object, Object> valueConverter;
   private transient boolean groupingColumn = false;
@@ -45,15 +45,11 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   private transient boolean selectable = true;
 
   DefaultColumnProperty(final String propertyId, final int type, final String caption) {
-    this(propertyId, type, caption, type);
-  }
-
-  DefaultColumnProperty(final String propertyId, final int type, final String caption, final int columnType) {
     super(propertyId, type, caption, getTypeClass(type));
+    this.columnType = type;
     this.columnName = propertyId;
-    this.columnType = columnType;
-    this.valueConverter = initializeValueConverter(this);
-    this.valueFetcher = initializeValueFetcher(this);
+    this.valueConverter = initializeValueConverter();
+    this.valueFetcher = initializeValueFetcher();
     this.resultPacker = new PropertyResultPacker();
   }
 
@@ -157,71 +153,59 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     return new DefaultColumnPropertyBuilder(this);
   }
 
-  private static ValueConverter initializeValueConverter(final ColumnProperty property) {
-    if (property.isDate()) {
+  private ValueConverter initializeValueConverter() {
+    if (isDate()) {
       return DATE_VALUE_CONVERTER;
     }
-    else if (property.isTimestamp()) {
+    else if (isTimestamp()) {
       return TIMESTAMP_VALUE_CONVERTER;
     }
-    else if (property.isTime()) {
+    else if (isTime()) {
       return TIME_VALUE_CONVERTER;
     }
 
     return DEFAULT_VALUE_CONVERTER;
   }
 
-  private static ValueFetcher initializeValueFetcher(final ColumnProperty property) {
-    if (property instanceof MirrorProperty) {
+  private ValueFetcher initializeValueFetcher() {
+    if (this instanceof MirrorProperty) {
       return null;
     }
-    switch (property.getColumnType()) {
+    switch (columnType) {
       case Types.INTEGER:
-        return (resultSet, index) -> property.fromColumnValue(getInteger(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getInteger(resultSet, columnIndex));
       case Types.BIGINT:
-        return (resultSet, index) -> property.fromColumnValue(getLong(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getLong(resultSet, columnIndex));
       case Types.DOUBLE:
-        return (resultSet, index) -> property.fromColumnValue(getDouble(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getDouble(resultSet, columnIndex));
       case Types.DECIMAL:
-        return (resultSet, index) -> property.fromColumnValue(getBigDecimal(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getBigDecimal(resultSet, columnIndex));
       case Types.DATE:
-        return (resultSet, index) -> property.fromColumnValue(getDate(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getDate(resultSet, columnIndex));
       case Types.TIMESTAMP:
-        return (resultSet, index) -> property.fromColumnValue(getTimestamp(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getTimestamp(resultSet, columnIndex));
       case Types.TIME:
-        return (resultSet, index) -> property.fromColumnValue(getTime(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getTime(resultSet, columnIndex));
       case Types.VARCHAR:
-        return (resultSet, index) -> property.fromColumnValue(getString(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getString(resultSet, columnIndex));
       case Types.BOOLEAN:
-        return (resultSet, index) -> property.fromColumnValue(getBoolean(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getBoolean(resultSet, columnIndex));
       case Types.CHAR:
-        return (resultSet, index) -> property.fromColumnValue(getCharacter(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getCharacter(resultSet, columnIndex));
       case Types.BLOB:
-        return (resultSet, index) -> property.fromColumnValue(getBlob(resultSet, index));
+        return (resultSet, columnIndex) -> fromColumnValue(getBlob(resultSet, columnIndex));
       case Types.JAVA_OBJECT:
         return ResultSet::getObject;
       default:
-        throw new IllegalArgumentException("Unsupported SQL value type: " + property.getColumnType());
+        throw new IllegalArgumentException("Unsupported SQL value type: " + getColumnType());
     }
   }
 
-  private final class PropertyResultPacker implements ResultPacker<Object> {
-
-    private static final int COLUMN_INDEX = 1;
+  private class PropertyResultPacker implements ResultPacker<Object> {
 
     @Override
     public Object fetch(final ResultSet resultSet) throws SQLException {
-      if (isInteger()) {
-        return getInteger(resultSet, COLUMN_INDEX);
-      }
-      else if (isLong()) {
-        return getLong(resultSet, COLUMN_INDEX);
-      }
-      else if (isDouble()) {
-        return getDouble(resultSet, COLUMN_INDEX);
-      }
-
-      return resultSet.getObject(COLUMN_INDEX);
+      return valueFetcher.fetchValue(resultSet, 1);
     }
   }
 
@@ -407,6 +391,13 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     @Override
     public ColumnProperty get() {
       return columnProperty;
+    }
+
+    @Override
+    public final ColumnProperty.Builder columnType(final int columnType) {
+      columnProperty.columnType = columnType;
+      columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
+      return this;
     }
 
     @Override

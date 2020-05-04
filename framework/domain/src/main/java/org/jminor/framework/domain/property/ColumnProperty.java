@@ -131,10 +131,10 @@ public interface ColumnProperty extends Property {
   }
 
   /**
-   * Converts to and from SQL values, such as integers being used
-   * to represent booleans in a database.
+   * Converts to and from SQL values, such as integers being used to represent booleans in a database.
    * @param <T> the type of the value
    * @param <C> the type of the underlying column
+   * @see Builder#columnType(int)
    */
   interface ValueConverter<T, C> {
 
@@ -164,6 +164,14 @@ public interface ColumnProperty extends Property {
      * @return the property
      */
     ColumnProperty get();
+
+    /**
+     * Sets the actual column type, use in conjunction with a {@link ValueConverter} if necessary.
+     * @param columnType the underlying column type
+     * @return this instance
+     * @see #valueConverter(ValueConverter)
+     */
+    ColumnProperty.Builder columnType(int columnType);
 
     /**
      * Sets the actual string used as column when querying

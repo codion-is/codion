@@ -15,11 +15,9 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
    * @param type the data type of this property
    * @param caption the caption of this property
    * @param subquery the sql query
-   * @param columnType the actual column type
    */
-  DefaultSubqueryProperty(final String propertyId, final int type, final String caption, final String subquery,
-                          final int columnType) {
-    super(propertyId, type, caption, columnType);
+  DefaultSubqueryProperty(final String propertyId, final int type, final String caption, final String subquery) {
+    super(propertyId, type, caption);
     super.setInsertable(false);
     super.setUpdatable(false);
     this.subquery = subquery;
