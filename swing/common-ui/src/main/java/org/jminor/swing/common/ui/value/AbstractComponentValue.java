@@ -4,6 +4,7 @@
 package org.jminor.swing.common.ui.value;
 
 import org.jminor.common.value.AbstractValue;
+import org.jminor.common.value.Nullable;
 
 import javax.swing.SwingUtilities;
 

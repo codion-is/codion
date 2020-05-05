@@ -4,6 +4,7 @@
 package org.jminor.swing.common.ui.value;
 
 import org.jminor.common.Formats;
+import org.jminor.common.value.Nullable;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.JTextComponent;

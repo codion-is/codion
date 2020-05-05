@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.value;
+package org.jminor.common.value;
 
 /**
- * Specifies whether a component value can be nullable or not.
+ * Specifies whether a value is nullable or not.
  */
 public enum Nullable {
   /**

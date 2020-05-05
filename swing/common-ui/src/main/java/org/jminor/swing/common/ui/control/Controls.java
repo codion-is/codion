@@ -8,6 +8,7 @@ import org.jminor.common.event.EventObserver;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
+import org.jminor.common.value.Nullable;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 
@@ -179,7 +180,7 @@ public final class Controls {
    */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
                                             final EventObserver<Boolean> changeEvent, final StateObserver enabledState) {
-    return toggleControl(owner, beanPropertyName, caption, changeEvent, enabledState, false);
+    return toggleControl(owner, beanPropertyName, caption, changeEvent, enabledState, Nullable.NO);
   }
 
   /**
@@ -189,15 +190,14 @@ public final class Controls {
    * @param caption the control caption
    * @param changeEvent an event triggered each time the property value changes in the underlying object
    * @param enabledState the state which controls the enabled state of the control
-   * @param nullable if true then a nullable (false, true, null) button model is used
+   * @param nullable if yes then a nullable (false, true, null) button model is used
    * @return a toggle control
    */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
                                             final EventObserver<Boolean> changeEvent, final StateObserver enabledState,
-                                            final boolean nullable) {
-
+                                            final Nullable nullable) {
     return new ToggleControl(caption,
-            propertyValue(owner, beanPropertyName, nullable ? Boolean.class : boolean.class, changeEvent), enabledState);
+            propertyValue(owner, beanPropertyName, nullable == Nullable.YES ? Boolean.class : boolean.class, changeEvent), enabledState);
   }
 
   /**

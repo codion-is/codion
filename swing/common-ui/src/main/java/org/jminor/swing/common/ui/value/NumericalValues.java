@@ -5,6 +5,7 @@ package org.jminor.swing.common.ui.value;
 
 import org.jminor.common.Formats;
 import org.jminor.common.event.EventObserver;
+import org.jminor.common.value.Nullable;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.textfield.DecimalField;

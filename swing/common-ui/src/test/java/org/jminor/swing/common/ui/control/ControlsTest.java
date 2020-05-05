@@ -7,6 +7,7 @@ import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
+import org.jminor.common.value.Nullable;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
@@ -106,7 +107,7 @@ public final class ControlsTest {
 
   @Test
   public void nullableToggleControl() {
-    final ToggleControl toggleControl = Controls.toggleControl(this, "nullableValue", "nullable", valueChangeEvent, null, true);
+    final ToggleControl toggleControl = Controls.toggleControl(this, "nullableValue", "nullable", valueChangeEvent, null, Nullable.YES);
     final NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) ControlProvider.createButtonModel(toggleControl);
     buttonModel.setState(null);
     assertNull(value);

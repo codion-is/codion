@@ -6020,3 +6020,4 @@
   AbstractDatabase, finalized a few methods
   ColumnProperty.columnType now set via builder, ColumnProperty.valueFetcher reset when columnType is set, minor refactoring of ColumnProperty
   ColumnConditionPanel.ToggleAdvancedButton enum added and used instead of boolean parameter
+  Nullable moved to org.jminor.common.value package, used to get rid of a boolean parameter in Controls.toggleControl()
