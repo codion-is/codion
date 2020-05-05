@@ -71,6 +71,21 @@ public class ColumnConditionPanel<R, C> extends JPanel {
 
   public static final int DEFAULT_FIELD_COLUMNS = 4;
 
+  /**
+   * Specifies whether a condition panel should include
+   * a button for toggling advanced mode.
+   */
+  public enum ToggleAdvancedButton {
+    /**
+     * Include a button for toggling advancded mode.
+     */
+    YES,
+    /**
+     * Don't include a button for toggling advancded mode.
+     */
+    NO
+  }
+
   private static final int ENABLED_BUTTON_SIZE = 20;
 
   private final ColumnConditionModel<R, C> conditionModel;
@@ -92,10 +107,10 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   /**
    * Instantiates a new ColumnConditionPanel, with a default input field provider.
    * @param conditionModel the condition model to base this panel on
-   * @param toggleAdvancedButton if true an advanced toggle button is included
+   * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param operators the operators available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final boolean toggleAdvancedButton,
+  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
                               final Operator... operators) {
     this(conditionModel, toggleAdvancedButton, new DefaultBoundFieldProvider(conditionModel), operators);
   }
@@ -103,11 +118,11 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   /**
    * Instantiates a new ColumnConditionPanel.
    * @param conditionModel the condition model to base this panel on
-   * @param toggleAdvancedButton if true an advanced toggle button is included
+   * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param boundFieldProvider the input field provider
    * @param operators the search operators available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final boolean toggleAdvancedButton,
+  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
                               final BoundFieldProvider boundFieldProvider, final Operator... operators) {
     this(conditionModel, toggleAdvancedButton,
             boundFieldProvider.initializeUpperBoundField(), boundFieldProvider.initializeLowerBoundField(), operators);
@@ -116,13 +131,13 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   /**
    * Instantiates a new ColumnConditionPanel, with a default input field provider.
    * @param conditionModel the condition model to base this panel on
-   * @param toggleAdvancedButton if true an advanced toggle button is included
+   * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param upperBoundField the upper bound input field
    * @param lowerBoundField the lower bound input field
    * @param operators the search operators available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel,
-                              final boolean toggleAdvancedButton, final JComponent upperBoundField,
+                              final ToggleAdvancedButton toggleAdvancedButton, final JComponent upperBoundField,
                               final JComponent lowerBoundField, final Operator... operators) {
     requireNonNull(conditionModel, "conditionModel");
     this.conditionModel = conditionModel;
@@ -133,7 +148,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
     this.toggleEnabledButton = ControlProvider.createToggleButton(
             Controls.toggleControl(conditionModel, "enabled", null, conditionModel.getEnabledObserver()));
     this.toggleEnabledButton.setIcon(icons().filter());
-    if (toggleAdvancedButton) {
+    if (toggleAdvancedButton == ToggleAdvancedButton.YES) {
       this.toggleAdvancedButton = ControlProvider.createToggleButton(Controls.toggleControl(advancedConditionState));
       this.toggleAdvancedButton.setIcon(icons().configure());
     }

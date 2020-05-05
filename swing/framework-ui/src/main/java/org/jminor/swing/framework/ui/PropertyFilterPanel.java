@@ -19,7 +19,7 @@ public final class PropertyFilterPanel extends ColumnConditionPanel<Entity, Prop
    * @param model the model to base this panel on
    */
   public PropertyFilterPanel(final ColumnConditionModel<Entity, Property> model) {
-    super(model, true, getOperators(model));
+    super(model, ToggleAdvancedButton.YES, getOperators(model));
   }
 
   private static Operator[] getOperators(final ColumnConditionModel<Entity, Property> model) {

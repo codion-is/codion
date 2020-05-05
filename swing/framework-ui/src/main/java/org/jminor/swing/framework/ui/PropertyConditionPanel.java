@@ -23,7 +23,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, C
    * @param model the model to base this panel on
    */
   public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty> model) {
-    super(model, false, new PropertyBoundFieldProvider(model), getOperators(model));
+    super(model, ToggleAdvancedButton.NO, new PropertyBoundFieldProvider(model), getOperators(model));
   }
 
   private static Operator[] getOperators(final ColumnConditionModel<Entity, ColumnProperty> model) {
