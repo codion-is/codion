@@ -46,6 +46,20 @@ public final class TextFields {
   public static final Dimension DIMENSION_TEXT_FIELD_SQUARE = new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
 
   /**
+   * Specifies whether a formatted text field value should contain the literal characters.
+   */
+  public enum ValueContainsLiterals {
+    /**
+     * Value should contain literal characters.
+     */
+    YES,
+    /**
+     * Value should not contain literal characters.
+     */
+    NO
+  }
+
+  /**
    * A text field used by getPreferredTextFieldSize and getPreferredTextFieldHeight
    */
   private static JTextField textField;
@@ -74,33 +88,19 @@ public final class TextFields {
    * @return a JFormattedTextField
    */
   public static JFormattedTextField createFormattedField(final String mask) {
-    return createFormattedField(mask, true);
+    return createFormattedField(mask, ValueContainsLiterals.YES);
   }
 
   /**
    * Creates a JFormattedTextField with the given mask, using '_' as a placeholder character, disallowing invalid values,
    * with JFormattedTextField.COMMIT as focus lost behaviour.
    * @param mask the format mask
-   * @param valueContainsLiteralCharacter if true, the value will also contain the literal characters in mask
+   * @param valueContainsLiterals if yes, the value will also contain the literal characters in mask
    * @return a JFormattedTextField
    */
-  public static JFormattedTextField createFormattedField(final String mask, final boolean valueContainsLiteralCharacter) {
-    return createFormattedField(mask, valueContainsLiteralCharacter, false);
-  }
-
-  /**
-   * Creates a JFormattedTextField with the given mask, using '_' as a placeholder character, disallowing invalid values,
-   * with JFormattedTextField.COMMIT as focus lost behaviour.
-   * @param mask the format mask
-   * @param valueContainsLiteralCharacter if true, the value will also contain the literal characters in mask
-   * @param charsAsUpper if true then the field will automatically convert characters to upper case
-   * @return a JFormattedTextField
-   */
-  public static JFormattedTextField createFormattedField(final String mask, final boolean valueContainsLiteralCharacter,
-                                                         final boolean charsAsUpper) {
+  public static JFormattedTextField createFormattedField(final String mask, final ValueContainsLiterals valueContainsLiterals) {
     try {
-      final JFormattedTextField formattedTextField =
-              new JFormattedTextField(new FieldFormatter(mask, charsAsUpper, valueContainsLiteralCharacter));
+      final JFormattedTextField formattedTextField = new JFormattedTextField(new FieldFormatter(mask, valueContainsLiterals));
       formattedTextField.setFocusLostBehavior(JFormattedTextField.COMMIT);
 
       return formattedTextField;
@@ -283,24 +283,11 @@ public final class TextFields {
    */
   private static final class FieldFormatter extends MaskFormatter {
 
-    private final boolean toUpperCase;
-
-    private FieldFormatter(final String mask, final boolean toUpperCase, final boolean valueContainsLiteralCharacter) throws ParseException {
+    private FieldFormatter(final String mask, final ValueContainsLiterals valueContainsLiterals) throws ParseException {
       super(mask);
-      this.toUpperCase = toUpperCase;
       setPlaceholderCharacter('_');
       setAllowsInvalid(false);
-      setValueContainsLiteralCharacters(valueContainsLiteralCharacter);
-    }
-
-    @Override
-    public Object stringToValue(final String string) throws ParseException {
-      String value = string;
-      if (toUpperCase) {
-        value = value.toUpperCase(Locale.getDefault());
-      }
-
-      return super.stringToValue(value);
+      setValueContainsLiteralCharacters(valueContainsLiterals == ValueContainsLiterals.YES);
     }
 
     @Override

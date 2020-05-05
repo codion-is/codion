@@ -5,12 +5,12 @@ package org.jminor.swing.framework.server.monitor.ui;
 
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
+import org.jminor.common.value.Nullable;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.Nullable;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.TextValues;

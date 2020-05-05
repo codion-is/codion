@@ -20,13 +20,16 @@ import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.layout.Layouts;
+import org.jminor.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
+import org.jminor.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
 import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.common.ui.value.UpdateOn;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
@@ -405,7 +408,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final String propertyId) {
-    return createTextInputPanel(propertyId, UpdateOn.KEYSTROKE, true);
+    return createTextInputPanel(propertyId, UpdateOn.KEYSTROKE, ButtonFocusable.YES);
   }
 
   /**
@@ -416,7 +419,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final String propertyId, final UpdateOn updateOn,
-                                                      final boolean buttonFocusable) {
+                                                      final ButtonFocusable buttonFocusable) {
     return createTextInputPanel(getEditModel().getEntityDefinition().getProperty(propertyId),
             updateOn, buttonFocusable);
   }
@@ -428,7 +431,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final Property property, final UpdateOn updateOn) {
-    return createTextInputPanel(property, updateOn, true);
+    return createTextInputPanel(property, updateOn, ButtonFocusable.YES);
   }
 
   /**
@@ -439,7 +442,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final Property property, final UpdateOn updateOn,
-                                                      final boolean buttonFocusable) {
+                                                      final ButtonFocusable buttonFocusable) {
     final TextInputPanel inputPanel = EntityInputComponents.createTextInputPanel(property,
             getEditModel().value(property.getPropertyId()), updateOn, buttonFocusable);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
@@ -606,7 +609,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final JTextField createTextField(final String propertyId, final UpdateOn updateOn,
                                              final String maskString, final StateObserver enabledState) {
-    return createTextField(propertyId, updateOn, maskString, enabledState, false);
+    return createTextField(propertyId, updateOn, maskString, enabledState, ValueContainsLiterals.NO);
   }
 
   /**
@@ -615,14 +618,15 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
-   * @param valueIncludesLiteralCharacters only applicable if {@code maskString} is specified
+   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
+   * associated with a the format mask, only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final String propertyId, final UpdateOn updateOn,
                                              final String maskString, final StateObserver enabledState,
-                                             final boolean valueIncludesLiteralCharacters) {
+                                             final ValueContainsLiterals valueContainsLiterals) {
     return createTextField(getEditModel().getEntityDefinition().getProperty(propertyId),
-            updateOn, maskString, enabledState, valueIncludesLiteralCharacters);
+            updateOn, maskString, enabledState, valueContainsLiterals);
   }
 
   /**
@@ -666,7 +670,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final JTextField createTextField(final Property property, final String maskString,
                                              final UpdateOn updateOn, final StateObserver enabledState) {
-    return createTextField(property, updateOn, maskString, enabledState, false);
+    return createTextField(property, updateOn, maskString, enabledState, ValueContainsLiterals.NO);
   }
 
   /**
@@ -675,15 +679,16 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
-   * @param valueIncludesLiteralCharacters only applicable if {@code maskString} is specified
+   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
+   * associated with a the format mask, only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final Property property, final UpdateOn updateOn,
                                              final String maskString, final StateObserver enabledState,
-                                             final boolean valueIncludesLiteralCharacters) {
+                                             final ValueContainsLiterals valueContainsLiterals) {
     final JTextField textField = EntityInputComponents.createTextField(property,
             getEditModel().value(property.getPropertyId()), maskString, updateOn,
-            enabledState, valueIncludesLiteralCharacters);
+            enabledState, valueContainsLiterals);
     if (property.isString() && maskString != null) {
       EntityComponentValidators.addFormattedValidator(property, textField, getEditModel());
     }
@@ -714,7 +719,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the property
    */
   protected final JCheckBox createCheckBox(final String propertyId, final StateObserver enabledState) {
-    return createCheckBox(propertyId, enabledState, true);
+    return createCheckBox(propertyId, enabledState, IncludeCaption.YES);
   }
 
   /**
@@ -725,7 +730,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the property
    */
   protected final JCheckBox createCheckBox(final String propertyId, final StateObserver enabledState,
-                                           final boolean includeCaption) {
+                                           final IncludeCaption includeCaption) {
     return createCheckBox(getEditModel().getEntityDefinition().getProperty(propertyId), enabledState, includeCaption);
   }
 
@@ -745,7 +750,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the property
    */
   protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState) {
-    return createCheckBox(property, enabledState, true);
+    return createCheckBox(property, enabledState, IncludeCaption.YES);
   }
 
   /**
@@ -756,7 +761,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the property
    */
   protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState,
-                                           final boolean includeCaption) {
+                                           final IncludeCaption includeCaption) {
     final JCheckBox box = EntityInputComponents.createCheckBox(property,
             getEditModel().value(property.getPropertyId()), enabledState, includeCaption);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
@@ -783,7 +788,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a NullableCheckBox bound to the property
    */
   protected final NullableCheckBox createNullableCheckBox(final String propertyId, final StateObserver enabledState) {
-    return createNullableCheckBox(propertyId, enabledState, true);
+    return createNullableCheckBox(propertyId, enabledState, IncludeCaption.YES);
   }
 
   /**
@@ -794,7 +799,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a NullableCheckBox bound to the property
    */
   protected final NullableCheckBox createNullableCheckBox(final String propertyId, final StateObserver enabledState,
-                                                          final boolean includeCaption) {
+                                                          final IncludeCaption includeCaption) {
     return createNullableCheckBox(getEditModel().getEntityDefinition().getProperty(propertyId), enabledState, includeCaption);
   }
 
@@ -814,7 +819,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a NullableCheckBox bound to the property
    */
   protected final NullableCheckBox createNullableCheckBox(final Property property, final StateObserver enabledState) {
-    return createNullableCheckBox(property, enabledState, true);
+    return createNullableCheckBox(property, enabledState, IncludeCaption.YES);
   }
 
   /**
@@ -825,7 +830,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a NullableCheckBox bound to the property
    */
   protected final NullableCheckBox createNullableCheckBox(final Property property, final StateObserver enabledState,
-                                                          final boolean includeCaption) {
+                                                          final IncludeCaption includeCaption) {
     final NullableCheckBox box = EntityInputComponents.createNullableCheckBox(property,
             getEditModel().value(property.getPropertyId()), enabledState, includeCaption);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {

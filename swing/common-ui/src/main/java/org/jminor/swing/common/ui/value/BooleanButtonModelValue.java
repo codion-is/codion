@@ -3,6 +3,8 @@
  */
 package org.jminor.swing.common.ui.value;
 
+import org.jminor.common.value.Nullable;
+
 import javax.swing.ButtonModel;
 
 final class BooleanButtonModelValue extends AbstractComponentValue<Boolean, ButtonModel> {

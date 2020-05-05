@@ -10,6 +10,7 @@ import org.jminor.swing.common.ui.textfield.TextInputPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
@@ -39,7 +40,7 @@ public class ItemEditPanel extends EntityEditPanel {
     addressBox.setPreferredSize(TextFields.getPreferredTextFieldSize());
     createTextField(ITEM_IMAGE_URL).setColumns(14);
     createTextField(ITEM_IMAGE_THUMB_URL).setColumns(14);
-    createNullableCheckBox(ITEM_DISABLED, null, false);
+    createNullableCheckBox(ITEM_DISABLED, null, IncludeCaption.NO);
 
     setLayout(new FlexibleGridLayout(3, 3, 5, 5));
     addPropertyPanel(ITEM_PRODUCT_FK);

@@ -169,7 +169,6 @@ public interface ColumnProperty extends Property {
      * Sets the actual column type, use in conjunction with a {@link ValueConverter} if necessary.
      * @param columnType the underlying column type
      * @return this instance
-     * @see #valueConverter(ValueConverter)
      */
     ColumnProperty.Builder columnType(int columnType);
 

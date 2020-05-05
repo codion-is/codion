@@ -8,6 +8,7 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.item.Items;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.AbstractValue;
+import org.jminor.common.value.Nullable;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.common.value.Value;
 import org.jminor.framework.domain.entity.Entity;
@@ -32,13 +33,14 @@ import org.jminor.swing.common.ui.textfield.LengthDocumentFilter;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFields;
+import org.jminor.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
+import org.jminor.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.LocalTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
 import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.Nullable;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
 import org.jminor.swing.common.ui.value.TemporalValues;
@@ -94,6 +96,21 @@ public final class EntityInputComponents {
    * Default value: JLabel.LEFT
    */
   public static final PropertyValue<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue("jminor.swing.labelTextAlignment", JLabel.LEFT);
+
+  /**
+   * Specifies whether a component should include a caption.
+   * Applies to components that have captions, such as JCheckBox.
+   */
+  public enum IncludeCaption {
+    /**
+     * Include caption.
+     */
+    YES,
+    /**
+     * Don't include caption.
+     */
+    NO
+  }
   private static final String PROPERTY_PARAM_NAME = "property";
   private static final String VALUE_PARAM_NAME = "value";
   private static final String FOREIGN_KEY_PROPERTY_PARAM_NAME = "foreignKeyProperty";
@@ -127,8 +144,8 @@ public final class EntityInputComponents {
     switch (property.getType()) {
       case Types.BOOLEAN:
         return property.isNullable() ?
-                createNullableCheckBox(property, value, enabledState, false) :
-                createCheckBox(property, value, enabledState, false);
+                createNullableCheckBox(property, value, enabledState, IncludeCaption.NO) :
+                createCheckBox(property, value, enabledState, IncludeCaption.NO);
       case Types.DATE:
       case Types.TIMESTAMP:
       case Types.TIME:
@@ -193,7 +210,7 @@ public final class EntityInputComponents {
    */
   public static JCheckBox createCheckBox(final Property property, final Value value,
                                          final StateObserver enabledState) {
-    return createCheckBox(property, value, enabledState, true);
+    return createCheckBox(property, value, enabledState, IncludeCaption.YES);
   }
 
   /**
@@ -201,12 +218,12 @@ public final class EntityInputComponents {
    * @param property the property on which value to base the checkbox
    * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the checkbox
-   * @param includeCaption if true then the property caption is included as the checkbox text
+   * @param includeCaption if yes then the property caption is included as the checkbox text
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final Value value,
-                                         final StateObserver enabledState, final boolean includeCaption) {
+  public static JCheckBox createCheckBox(final Property property, final Value value, final StateObserver enabledState,
+                                         final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     if (!property.isBoolean()) {
@@ -214,7 +231,7 @@ public final class EntityInputComponents {
     }
 
     return initializeCheckBox(property, value, enabledState,
-            includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox());
+            includeCaption == IncludeCaption.YES ? new JCheckBox(property.getCaption()) : new JCheckBox());
   }
 
   /**
@@ -222,12 +239,12 @@ public final class EntityInputComponents {
    * @param property the property on which value to base the checkbox
    * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the checkbox
-   * @param includeCaption if true then the property caption is included as the checkbox text
+   * @param includeCaption if yes then the property caption is included as the checkbox text
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a nullable boolean property
    */
-  public static NullableCheckBox createNullableCheckBox(final Property property, final Value value,
-                                                        final StateObserver enabledState, final boolean includeCaption) {
+  public static NullableCheckBox createNullableCheckBox(final Property property, final Value value, final StateObserver enabledState,
+                                                        final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     if (!property.isBoolean() || !property.isNullable()) {
@@ -235,7 +252,7 @@ public final class EntityInputComponents {
     }
 
     return (NullableCheckBox) initializeCheckBox(property, value, enabledState,
-            new NullableCheckBox(new NullableToggleButtonModel(), includeCaption ? property.getCaption() : null));
+            new NullableCheckBox(new NullableToggleButtonModel(), includeCaption == IncludeCaption.YES ? property.getCaption() : null));
   }
 
   /**
@@ -475,11 +492,11 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param updateOn specifies when the underlying value should be updated
-   * @param buttonFocusable if true then the dialog button is focusable
+   * @param buttonFocusable if yes then the dialog button is focusable
    * @return a text input panel
    */
   public static TextInputPanel createTextInputPanel(final Property property, final Value value,
-                                                    final UpdateOn updateOn, final boolean buttonFocusable) {
+                                                    final UpdateOn updateOn, final ButtonFocusable buttonFocusable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField field = createTextField(property, value, null, updateOn);
@@ -582,7 +599,7 @@ public final class EntityInputComponents {
   public static JTextField createTextField(final Property property, final Value value,
                                            final String formatMaskString, final UpdateOn updateOn,
                                            final StateObserver enabledState) {
-    return createTextField(property, value, formatMaskString, updateOn, enabledState, false);
+    return createTextField(property, value, formatMaskString, updateOn, enabledState, ValueContainsLiterals.NO);
   }
 
   /**
@@ -592,16 +609,16 @@ public final class EntityInputComponents {
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param updateOn specifies when the underlying value should be updated
    * @param enabledState the state controlling the enabled state of the panel
-   * @param valueContainsLiteralCharacters whether or not the value should contain any literal characters
+   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
    * associated with a the format mask
    * @return a text field for the given property
    */
   public static JTextField createTextField(final Property property, final Value value, final String formatMaskString,
                                            final UpdateOn updateOn, final StateObserver enabledState,
-                                           final boolean valueContainsLiteralCharacters) {
+                                           final ValueContainsLiterals valueContainsLiterals) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiteralCharacters);
+    final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiterals);
     if (property.isString()) {
       value.link(TextValues.textValue(textField, property.getFormat(), updateOn));
     }
@@ -684,8 +701,8 @@ public final class EntityInputComponents {
   }
 
   private static JTextField createTextField(final Property property, final StateObserver enabledState,
-                                            final String formatMaskString, final boolean valueContainsLiteralCharacters) {
-    final JTextField field = createTextField(property, formatMaskString, valueContainsLiteralCharacters);
+                                            final String formatMaskString, final ValueContainsLiterals valueContainsLiterals) {
+    final JTextField field = createTextField(property, formatMaskString, valueContainsLiterals);
     linkToEnabledState(enabledState, field);
     field.setToolTipText(property.getDescription());
     if (property.getMaximumLength() > 0 && field.getDocument() instanceof SizedDocument) {
@@ -696,7 +713,7 @@ public final class EntityInputComponents {
   }
 
   private static JTextField createTextField(final Property property, final String formatMaskString,
-                                            final boolean valueContainsLiteralCharacters) {
+                                            final ValueContainsLiterals valueContainsLiterals) {
     if (property.isInteger()) {
       return initializeIntField(property);
     }
@@ -710,18 +727,18 @@ public final class EntityInputComponents {
       return TextFields.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
     }
     else if (property.isString()) {
-      return initializeStringField(formatMaskString, valueContainsLiteralCharacters);
+      return initializeStringField(formatMaskString, valueContainsLiterals);
     }
 
     throw new IllegalArgumentException("Creating text fields for property type: " + property.getType() + " is not implemented");
   }
 
-  private static JTextField initializeStringField(final String formatMaskString, final boolean valueContainsLiteralCharacters) {
+  private static JTextField initializeStringField(final String formatMaskString, final ValueContainsLiterals valueContainsLiterals) {
     if (formatMaskString == null) {
       return new JTextField(new SizedDocument(), "", 0);
     }
 
-    return TextFields.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
+    return TextFields.createFormattedField(formatMaskString, valueContainsLiterals);
   }
 
   private static JTextField initializeDecimalField(final Property property) {

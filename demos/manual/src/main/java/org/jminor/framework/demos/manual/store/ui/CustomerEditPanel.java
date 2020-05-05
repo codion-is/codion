@@ -6,6 +6,7 @@ package org.jminor.framework.demos.manual.store.ui;
 import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
 import java.awt.GridLayout;
 
@@ -24,7 +25,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     createTextField(Store.CUSTOMER_FIRST_NAME).setColumns(15);
     createTextField(Store.CUSTOMER_LAST_NAME).setColumns(15);
     createTextField(Store.CUSTOMER_EMAIL).setColumns(15);
-    createCheckBox(Store.CUSTOMER_IS_ACTIVE, null, false);
+    createCheckBox(Store.CUSTOMER_IS_ACTIVE, null, IncludeCaption.NO);
 
     setLayout(new GridLayout(4,1));
     //the createControlPanel method creates a panel containing the

@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.common.ui.value;
 
+import org.jminor.common.value.Nullable;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 
 import java.math.BigDecimal;

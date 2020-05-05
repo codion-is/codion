@@ -6,6 +6,7 @@ package org.jminor.swing.common.tools.ui.loadtest;
 import org.jminor.common.Util;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
+import org.jminor.common.value.Nullable;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.tools.loadtest.LoadTest;
 import org.jminor.swing.common.tools.loadtest.LoadTestModel;
@@ -21,7 +22,6 @@ import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.TextFields;
-import org.jminor.swing.common.ui.value.Nullable;
 import org.jminor.swing.common.ui.value.NumericalValues;
 
 import org.jfree.chart.ChartFactory;

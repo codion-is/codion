@@ -39,6 +39,20 @@ import static org.jminor.common.Util.nullOrEmpty;
  */
 public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
 
+  /**
+   * Specifies whether a progress bar should be indeterminate.
+   */
+  public enum Indeterminate {
+    /**
+     * Progress bar should be indeterminate.
+     */
+    YES,
+    /**
+     * Progress bar should not be indeterminate.
+     */
+    NO
+  }
+
   private static final String STATE_PROPERTY = "state";
   private static final String PROGRESS_PROPERTY = "progress";
   private static final int NO_PROGRESS = -1;
@@ -53,18 +67,18 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * @param progressMessage the message to display while work is in progress
    */
   public ProgressWorker(final Window dialogOwner, final String progressMessage) {
-    this(dialogOwner, progressMessage, true);
+    this(dialogOwner, progressMessage, Indeterminate.YES);
   }
 
   /**
    * Instantiates a {@link ProgressWorker}.
    * @param dialogOwner the dialog owner
    * @param progressMessage the message to display while work is in progress
-   * @param indeterminate if true the progress bar is of type 'indeterminate', otherwise the
+   * @param indeterminate if yes the progress bar is of type 'indeterminate', otherwise the
    * progress bar goes from 0 - 100.
    */
   public ProgressWorker(final Window dialogOwner, final String progressMessage,
-                        final boolean indeterminate) {
+                        final Indeterminate indeterminate) {
     this(dialogOwner, progressMessage, indeterminate, null, null);
   }
 
@@ -72,7 +86,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * Instantiates a {@link ProgressWorker}.
    * @param dialogOwner the dialog owner
    * @param progressMessage the message to display while work is in progress
-   * @param indeterminate if true the progress bar is of type 'indeterminate', otherwise the
+   * @param indeterminate if yes the progress bar is of type 'indeterminate', otherwise the
    * progress bar goes from 0 - 100.
    * @param dialogNorthPanel if specified this panel will be added at the {@link java.awt.BorderLayout#NORTH}
    * location of the progress dialog
@@ -80,9 +94,9 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * at the {@link java.awt.BorderLayout#SOUTH} location of the progress dialog
    */
   public ProgressWorker(final Window dialogOwner, final String progressMessage,
-                        final boolean indeterminate, final JPanel dialogNorthPanel, final ControlSet buttonControls) {
+                        final Indeterminate indeterminate, final JPanel dialogNorthPanel, final ControlSet buttonControls) {
     this.progressDialog = new ProgressDialog(dialogOwner, progressMessage,
-            indeterminate ? NO_PROGRESS : MAX_PROGRESS, dialogNorthPanel, buttonControls);
+            indeterminate == Indeterminate.YES ? NO_PROGRESS : MAX_PROGRESS, dialogNorthPanel, buttonControls);
     addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
@@ -224,7 +238,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
                                         final Consumer<Throwable> onException, final JPanel northPanel,
                                         final ControlSet buttonControls) {
     final Window dialogOwner = Windows.getParentWindow(dialogParent);
-    final ProgressWorker worker = new ProgressWorker(dialogOwner, progressBarTitle, true, northPanel, buttonControls) {
+    final ProgressWorker worker = new ProgressWorker(dialogOwner, progressBarTitle, Indeterminate.YES, northPanel, buttonControls) {
       @Override
       protected Object doInBackground() throws Exception {
         task.perform();

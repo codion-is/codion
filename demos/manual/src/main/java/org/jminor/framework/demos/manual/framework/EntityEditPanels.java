@@ -14,6 +14,7 @@ import org.jminor.swing.common.ui.value.UpdateOn;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
 import org.jminor.swing.framework.ui.EntityLookupField;
 
 import javax.swing.JCheckBox;
@@ -51,7 +52,7 @@ public final class EntityEditPanels {
 
     private void booleanValue() {
       // tag::booleanValue[]
-      JCheckBox checkBox = createCheckBox(Domain.BOOLEAN_PROPERTY, null, false);
+      JCheckBox checkBox = createCheckBox(Domain.BOOLEAN_PROPERTY, null, IncludeCaption.NO);
 
       NullableCheckBox nullableCheckBox = createNullableCheckBox(Domain.BOOLEAN_PROPERTY);
 

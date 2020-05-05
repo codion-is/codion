@@ -6,6 +6,7 @@ package org.jminor.framework.demos.manual.store.ui;
 import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
 import java.awt.GridLayout;
 
@@ -22,7 +23,7 @@ public class AddressEditPanel extends EntityEditPanel {
 
     createTextField(Store.ADDRESS_STREET).setColumns(25);
     createTextField(Store.ADDRESS_CITY).setColumns(25);
-    createCheckBox(Store.ADDRESS_VALID, null, false);
+    createCheckBox(Store.ADDRESS_VALID, null, IncludeCaption.NO);
 
     setLayout(new GridLayout(3, 1, 5, 5));
     addPropertyPanel(Store.ADDRESS_STREET);
