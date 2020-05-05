@@ -35,6 +35,7 @@ import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
+import org.jminor.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.LocalTimeInputPanel;
@@ -491,11 +492,11 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param updateOn specifies when the underlying value should be updated
-   * @param buttonFocusable if true then the dialog button is focusable
+   * @param buttonFocusable if yes then the dialog button is focusable
    * @return a text input panel
    */
   public static TextInputPanel createTextInputPanel(final Property property, final Value value,
-                                                    final UpdateOn updateOn, final boolean buttonFocusable) {
+                                                    final UpdateOn updateOn, final ButtonFocusable buttonFocusable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField field = createTextField(property, value, null, updateOn);

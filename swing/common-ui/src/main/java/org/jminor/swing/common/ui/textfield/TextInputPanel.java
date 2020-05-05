@@ -30,6 +30,20 @@ public final class TextInputPanel extends JPanel {
 
   private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
+  /**
+   * Specifies whether the edit button should be focusable.
+   */
+  public enum ButtonFocusable {
+    /**
+     * Button should be focusable.
+     */
+    YES,
+    /**
+     * Button should not be focusable.
+     */
+    NO
+  }
+
   private final JTextField textField;
   private final JButton button;
   private final String dialogTitle;
@@ -37,7 +51,7 @@ public final class TextInputPanel extends JPanel {
   private int maxLength = -1;
 
   /**
-   * Instantiates a new TextInputPanel.
+   * Instantiates a new TextInputPanel, with a focusable button.
    * @param textField the text field
    * @param dialogTitle the input dialog title
    * @throws NullPointerException in case textComponent is null
@@ -47,7 +61,7 @@ public final class TextInputPanel extends JPanel {
   }
 
   /**
-   * Instantiates a new TextInputPanel.
+   * Instantiates a new TextInputPanel, with a focusable button.
    * @param textField the text field
    * @param dialogTitle the input dialog title
    * @param textAreaSize the input text area size
@@ -55,7 +69,7 @@ public final class TextInputPanel extends JPanel {
    */
   public TextInputPanel(final JTextField textField, final String dialogTitle,
                         final Dimension textAreaSize) {
-    this(textField, dialogTitle, textAreaSize, true);
+    this(textField, dialogTitle, textAreaSize, ButtonFocusable.YES);
   }
 
   /**
@@ -63,11 +77,11 @@ public final class TextInputPanel extends JPanel {
    * @param textField the text field
    * @param dialogTitle the input dialog title
    * @param textAreaSize the input text area size
-   * @param buttonFocusable if true then the input button is focusable
+   * @param buttonFocusable if yes then the input button is focusable
    * @throws NullPointerException in case textComponent is null
    */
   public TextInputPanel(final JTextField textField, final String dialogTitle,
-                        final Dimension textAreaSize, final boolean buttonFocusable) {
+                        final Dimension textAreaSize, final ButtonFocusable buttonFocusable) {
     requireNonNull(textField, "textComponent");
     this.dialogTitle = dialogTitle;
     this.textField = textField;
@@ -136,14 +150,14 @@ public final class TextInputPanel extends JPanel {
     });
   }
 
-  private JButton createButton(final boolean buttonFocusable, final Dimension buttonSize) {
+  private JButton createButton(final ButtonFocusable buttonFocusable, final Dimension buttonSize) {
     final JButton jButton = new JButton(new AbstractAction("...") {
       @Override
       public void actionPerformed(final ActionEvent e) {
         getInputFromUser();
       }
     });
-    jButton.setFocusable(buttonFocusable);
+    jButton.setFocusable(buttonFocusable == ButtonFocusable.YES);
     if (buttonSize != null) {
       jButton.setPreferredSize(buttonSize);
     }

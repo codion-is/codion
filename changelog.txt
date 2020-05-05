@@ -6024,3 +6024,4 @@
   EntityInputComponents.IncludeCaption enum added and used instead of boolean parameter
   ProgressWorker.Indeterminate enum added and used instead of boolean parameter
   TextFields.ValueContainsLiterals enum added and used instead of boolean parameter
+  TextInputPanel.ButtonFocusable enum added and used instead of boolean parameter

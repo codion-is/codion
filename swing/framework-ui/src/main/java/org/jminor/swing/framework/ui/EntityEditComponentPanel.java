@@ -22,6 +22,7 @@ import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
+import org.jminor.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
@@ -407,7 +408,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final String propertyId) {
-    return createTextInputPanel(propertyId, UpdateOn.KEYSTROKE, true);
+    return createTextInputPanel(propertyId, UpdateOn.KEYSTROKE, ButtonFocusable.YES);
   }
 
   /**
@@ -418,7 +419,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final String propertyId, final UpdateOn updateOn,
-                                                      final boolean buttonFocusable) {
+                                                      final ButtonFocusable buttonFocusable) {
     return createTextInputPanel(getEditModel().getEntityDefinition().getProperty(propertyId),
             updateOn, buttonFocusable);
   }
@@ -430,7 +431,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final Property property, final UpdateOn updateOn) {
-    return createTextInputPanel(property, updateOn, true);
+    return createTextInputPanel(property, updateOn, ButtonFocusable.YES);
   }
 
   /**
@@ -441,7 +442,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final Property property, final UpdateOn updateOn,
-                                                      final boolean buttonFocusable) {
+                                                      final ButtonFocusable buttonFocusable) {
     final TextInputPanel inputPanel = EntityInputComponents.createTextInputPanel(property,
             getEditModel().value(property.getPropertyId()), updateOn, buttonFocusable);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
