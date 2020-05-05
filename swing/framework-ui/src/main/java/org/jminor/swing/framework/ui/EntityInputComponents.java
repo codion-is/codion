@@ -33,6 +33,7 @@ import org.jminor.swing.common.ui.textfield.LengthDocumentFilter;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFields;
+import org.jminor.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 import org.jminor.swing.common.ui.textfield.TextInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
@@ -597,7 +598,7 @@ public final class EntityInputComponents {
   public static JTextField createTextField(final Property property, final Value value,
                                            final String formatMaskString, final UpdateOn updateOn,
                                            final StateObserver enabledState) {
-    return createTextField(property, value, formatMaskString, updateOn, enabledState, false);
+    return createTextField(property, value, formatMaskString, updateOn, enabledState, ValueContainsLiterals.NO);
   }
 
   /**
@@ -607,16 +608,16 @@ public final class EntityInputComponents {
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param updateOn specifies when the underlying value should be updated
    * @param enabledState the state controlling the enabled state of the panel
-   * @param valueContainsLiteralCharacters whether or not the value should contain any literal characters
+   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
    * associated with a the format mask
    * @return a text field for the given property
    */
   public static JTextField createTextField(final Property property, final Value value, final String formatMaskString,
                                            final UpdateOn updateOn, final StateObserver enabledState,
-                                           final boolean valueContainsLiteralCharacters) {
+                                           final ValueContainsLiterals valueContainsLiterals) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiteralCharacters);
+    final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiterals);
     if (property.isString()) {
       value.link(TextValues.textValue(textField, property.getFormat(), updateOn));
     }
@@ -699,8 +700,8 @@ public final class EntityInputComponents {
   }
 
   private static JTextField createTextField(final Property property, final StateObserver enabledState,
-                                            final String formatMaskString, final boolean valueContainsLiteralCharacters) {
-    final JTextField field = createTextField(property, formatMaskString, valueContainsLiteralCharacters);
+                                            final String formatMaskString, final ValueContainsLiterals valueContainsLiterals) {
+    final JTextField field = createTextField(property, formatMaskString, valueContainsLiterals);
     linkToEnabledState(enabledState, field);
     field.setToolTipText(property.getDescription());
     if (property.getMaximumLength() > 0 && field.getDocument() instanceof SizedDocument) {
@@ -711,7 +712,7 @@ public final class EntityInputComponents {
   }
 
   private static JTextField createTextField(final Property property, final String formatMaskString,
-                                            final boolean valueContainsLiteralCharacters) {
+                                            final ValueContainsLiterals valueContainsLiterals) {
     if (property.isInteger()) {
       return initializeIntField(property);
     }
@@ -725,18 +726,18 @@ public final class EntityInputComponents {
       return TextFields.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
     }
     else if (property.isString()) {
-      return initializeStringField(formatMaskString, valueContainsLiteralCharacters);
+      return initializeStringField(formatMaskString, valueContainsLiterals);
     }
 
     throw new IllegalArgumentException("Creating text fields for property type: " + property.getType() + " is not implemented");
   }
 
-  private static JTextField initializeStringField(final String formatMaskString, final boolean valueContainsLiteralCharacters) {
+  private static JTextField initializeStringField(final String formatMaskString, final ValueContainsLiterals valueContainsLiterals) {
     if (formatMaskString == null) {
       return new JTextField(new SizedDocument(), "", 0);
     }
 
-    return TextFields.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
+    return TextFields.createFormattedField(formatMaskString, valueContainsLiterals);
   }
 
   private static JTextField initializeDecimalField(final Property property) {
