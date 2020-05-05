@@ -90,10 +90,10 @@ public interface EntityServerAdmin extends Remote {
   /**
    * Sets the logging status for the given connection
    * @param clientId the ID of the client
-   * @param status the new logging status
+   * @param loggingEnabled the new logging status
    * @throws RemoteException in case of a communication error
    */
-  void setLoggingEnabled(UUID clientId, boolean status) throws RemoteException;
+  void setLoggingEnabled(UUID clientId, boolean loggingEnabled) throws RemoteException;
 
   /**
    * @return the total amount of memory allocated by the server process
@@ -250,10 +250,10 @@ public interface EntityServerAdmin extends Remote {
 
   /**
    * @param username the username
-   * @param value true if statistics should be collected for a snapshot of the given connection pool
+   * @param snapshotStatistics true if statistics should be collected for a snapshot of the given connection pool
    * @throws RemoteException in case of an exception
    */
-  void setCollectPoolSnapshotStatistics(String username, boolean value) throws RemoteException;
+  void setCollectPoolSnapshotStatistics(String username, boolean snapshotStatistics) throws RemoteException;
 
   /**
    * @return the server system properties

@@ -199,9 +199,9 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
   }
 
   @Override
-  public void setCollectPoolSnapshotStatistics(final String username, final boolean value) {
-    LOG.info("setCollectSnapshotPoolStatistics({}, {})", username, value);
-    server.getDatabase().getConnectionPool(username).setCollectSnapshotStatistics(value);
+  public void setCollectPoolSnapshotStatistics(final String username, final boolean snapshotStatistics) {
+    LOG.info("setCollectSnapshotPoolStatistics({}, {})", username, snapshotStatistics);
+    server.getDatabase().getConnectionPool(username).setCollectSnapshotStatistics(snapshotStatistics);
   }
 
   @Override
