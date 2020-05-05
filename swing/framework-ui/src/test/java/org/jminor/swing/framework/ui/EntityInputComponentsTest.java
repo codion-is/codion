@@ -16,6 +16,7 @@ import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
 import org.junit.jupiter.api.Test;
 
@@ -47,14 +48,14 @@ public class EntityInputComponentsTest {
   public void createNullableCheckBoxNonNullableBooleanProperty() {
     assertThrows(IllegalArgumentException.class, () ->
             EntityInputComponents.createNullableCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_BOOLEAN),
-                    editModel.value(TestDomain.DETAIL_BOOLEAN), null, true));
+                    editModel.value(TestDomain.DETAIL_BOOLEAN), null, IncludeCaption.YES));
   }
 
   @Test
   public void createNullableCheckBoxNonBooleanProperty() {
     assertThrows(IllegalArgumentException.class, () ->
             EntityInputComponents.createNullableCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_TIMESTAMP),
-                    editModel.value(TestDomain.DETAIL_TIMESTAMP), null, true));
+                    editModel.value(TestDomain.DETAIL_TIMESTAMP), null, IncludeCaption.YES));
   }
 
   @Test
@@ -87,7 +88,7 @@ public class EntityInputComponentsTest {
     //set default values
     editModel.setEntity(null);
     final NullableCheckBox box = EntityInputComponents.createNullableCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(
-            TestDomain.DETAIL_BOOLEAN_NULLABLE), editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE), null, false);
+            TestDomain.DETAIL_BOOLEAN_NULLABLE), editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE), null, IncludeCaption.NO);
     assertTrue(box.isSelected());//default value is true
     assertTrue((Boolean) editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 

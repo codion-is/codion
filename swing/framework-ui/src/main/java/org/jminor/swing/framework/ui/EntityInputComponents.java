@@ -94,6 +94,21 @@ public final class EntityInputComponents {
    * Default value: JLabel.LEFT
    */
   public static final PropertyValue<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue("jminor.swing.labelTextAlignment", JLabel.LEFT);
+
+  /**
+   * Specifies whether a component should include a caption.
+   * Applies to components that have captions, such as JCheckBox.
+   */
+  public enum IncludeCaption {
+    /**
+     * Include caption.
+     */
+    YES,
+    /**
+     * Don't include caption.
+     */
+    NO
+  }
   private static final String PROPERTY_PARAM_NAME = "property";
   private static final String VALUE_PARAM_NAME = "value";
   private static final String FOREIGN_KEY_PROPERTY_PARAM_NAME = "foreignKeyProperty";
@@ -127,8 +142,8 @@ public final class EntityInputComponents {
     switch (property.getType()) {
       case Types.BOOLEAN:
         return property.isNullable() ?
-                createNullableCheckBox(property, value, enabledState, false) :
-                createCheckBox(property, value, enabledState, false);
+                createNullableCheckBox(property, value, enabledState, IncludeCaption.NO) :
+                createCheckBox(property, value, enabledState, IncludeCaption.NO);
       case Types.DATE:
       case Types.TIMESTAMP:
       case Types.TIME:
@@ -193,7 +208,7 @@ public final class EntityInputComponents {
    */
   public static JCheckBox createCheckBox(final Property property, final Value value,
                                          final StateObserver enabledState) {
-    return createCheckBox(property, value, enabledState, true);
+    return createCheckBox(property, value, enabledState, IncludeCaption.YES);
   }
 
   /**
@@ -201,12 +216,12 @@ public final class EntityInputComponents {
    * @param property the property on which value to base the checkbox
    * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the checkbox
-   * @param includeCaption if true then the property caption is included as the checkbox text
+   * @param includeCaption if yes then the property caption is included as the checkbox text
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final Value value,
-                                         final StateObserver enabledState, final boolean includeCaption) {
+  public static JCheckBox createCheckBox(final Property property, final Value value, final StateObserver enabledState,
+                                         final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     if (!property.isBoolean()) {
@@ -214,7 +229,7 @@ public final class EntityInputComponents {
     }
 
     return initializeCheckBox(property, value, enabledState,
-            includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox());
+            includeCaption == IncludeCaption.YES ? new JCheckBox(property.getCaption()) : new JCheckBox());
   }
 
   /**
@@ -222,12 +237,12 @@ public final class EntityInputComponents {
    * @param property the property on which value to base the checkbox
    * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the checkbox
-   * @param includeCaption if true then the property caption is included as the checkbox text
+   * @param includeCaption if yes then the property caption is included as the checkbox text
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a nullable boolean property
    */
-  public static NullableCheckBox createNullableCheckBox(final Property property, final Value value,
-                                                        final StateObserver enabledState, final boolean includeCaption) {
+  public static NullableCheckBox createNullableCheckBox(final Property property, final Value value, final StateObserver enabledState,
+                                                        final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     if (!property.isBoolean() || !property.isNullable()) {
@@ -235,7 +250,7 @@ public final class EntityInputComponents {
     }
 
     return (NullableCheckBox) initializeCheckBox(property, value, enabledState,
-            new NullableCheckBox(new NullableToggleButtonModel(), includeCaption ? property.getCaption() : null));
+            new NullableCheckBox(new NullableToggleButtonModel(), includeCaption == IncludeCaption.YES ? property.getCaption() : null));
   }
 
   /**

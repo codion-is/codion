@@ -27,6 +27,7 @@ import org.jminor.swing.common.ui.time.TemporalInputPanel;
 import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.common.ui.value.UpdateOn;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
@@ -714,7 +715,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the property
    */
   protected final JCheckBox createCheckBox(final String propertyId, final StateObserver enabledState) {
-    return createCheckBox(propertyId, enabledState, true);
+    return createCheckBox(propertyId, enabledState, IncludeCaption.YES);
   }
 
   /**
@@ -725,7 +726,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the property
    */
   protected final JCheckBox createCheckBox(final String propertyId, final StateObserver enabledState,
-                                           final boolean includeCaption) {
+                                           final IncludeCaption includeCaption) {
     return createCheckBox(getEditModel().getEntityDefinition().getProperty(propertyId), enabledState, includeCaption);
   }
 
@@ -745,7 +746,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the property
    */
   protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState) {
-    return createCheckBox(property, enabledState, true);
+    return createCheckBox(property, enabledState, IncludeCaption.YES);
   }
 
   /**
@@ -756,7 +757,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the property
    */
   protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState,
-                                           final boolean includeCaption) {
+                                           final IncludeCaption includeCaption) {
     final JCheckBox box = EntityInputComponents.createCheckBox(property,
             getEditModel().value(property.getPropertyId()), enabledState, includeCaption);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
@@ -783,7 +784,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a NullableCheckBox bound to the property
    */
   protected final NullableCheckBox createNullableCheckBox(final String propertyId, final StateObserver enabledState) {
-    return createNullableCheckBox(propertyId, enabledState, true);
+    return createNullableCheckBox(propertyId, enabledState, IncludeCaption.YES);
   }
 
   /**
@@ -794,7 +795,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a NullableCheckBox bound to the property
    */
   protected final NullableCheckBox createNullableCheckBox(final String propertyId, final StateObserver enabledState,
-                                                          final boolean includeCaption) {
+                                                          final IncludeCaption includeCaption) {
     return createNullableCheckBox(getEditModel().getEntityDefinition().getProperty(propertyId), enabledState, includeCaption);
   }
 
@@ -814,7 +815,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a NullableCheckBox bound to the property
    */
   protected final NullableCheckBox createNullableCheckBox(final Property property, final StateObserver enabledState) {
-    return createNullableCheckBox(property, enabledState, true);
+    return createNullableCheckBox(property, enabledState, IncludeCaption.YES);
   }
 
   /**
@@ -825,7 +826,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a NullableCheckBox bound to the property
    */
   protected final NullableCheckBox createNullableCheckBox(final Property property, final StateObserver enabledState,
-                                                          final boolean includeCaption) {
+                                                          final IncludeCaption includeCaption) {
     final NullableCheckBox box = EntityInputComponents.createNullableCheckBox(property,
             getEditModel().value(property.getPropertyId()), enabledState, includeCaption);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {

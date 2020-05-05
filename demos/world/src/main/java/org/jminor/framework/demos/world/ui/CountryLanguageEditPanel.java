@@ -3,6 +3,7 @@ package org.jminor.framework.demos.world.ui;
 import org.jminor.framework.demos.world.domain.World;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
 import static org.jminor.swing.common.ui.Components.setPreferredWidth;
 import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
@@ -19,7 +20,7 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
 
     setPreferredWidth(createForeignKeyComboBox(World.COUNTRYLANGUAGE_COUNTRY_FK), 120);
     createTextField(World.COUNTRYLANGUAGE_LANGUAGE).setColumns(12);
-    createCheckBox(World.COUNTRYLANGUAGE_ISOFFICIAL, null, false);
+    createCheckBox(World.COUNTRYLANGUAGE_ISOFFICIAL, null, IncludeCaption.NO);
     createTextField(World.COUNTRYLANGUAGE_PERCENTAGE);
 
     setLayout(gridLayout(2, 4));
