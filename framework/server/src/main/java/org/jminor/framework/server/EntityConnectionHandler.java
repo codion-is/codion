@@ -317,13 +317,13 @@ final class EntityConnectionHandler implements InvocationHandler {
     private final AtomicInteger requestsPerSecond = new AtomicInteger();
     private final AtomicInteger requestsPerSecondCounter = new AtomicInteger();
 
-    int getRequestsPerSecond() {
-      return requestsPerSecond.get();
-    }
-
     private RequestCounter() {
       executorService.scheduleWithFixedDelay(this::updateRequestsPerSecond, DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL,
               DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS);
+    }
+
+    int getRequestsPerSecond() {
+      return requestsPerSecond.get();
     }
 
     private void updateRequestsPerSecond() {
