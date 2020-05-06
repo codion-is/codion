@@ -41,7 +41,7 @@ public interface UsageScenario<T> {
   /**
    * @return any exceptions that have occurred during a run
    */
-  List<LoadTest.ScenarioException> getExceptions();
+  List<ScenarioException> getExceptions();
 
   /**
    * Resets the run counters

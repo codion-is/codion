@@ -28,28 +28,30 @@ public final class DatabaseMonitor {
   private final XYSeries updatesPerSecond = new XYSeries("Updates per second");
   private final XYSeries deletesPerSecond = new XYSeries("Deletes per second");
   private final XYSeriesCollection queriesPerSecondCollection = new XYSeriesCollection();
-  private final TaskScheduler updateScheduler = new TaskScheduler(() -> {
-    try {
-      updateStatistics();
-    }
-    catch (final RemoteException ignored) {/*ignored*/}
-  }, EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
-  private final Value<Integer> updateIntervalValue = new IntervalValue(updateScheduler);
+  private final TaskScheduler updateScheduler;
+  private final Value<Integer> updateIntervalValue;
 
   /**
    * Instantiates a new {@link DatabaseMonitor} for the given server
    * @param server the server
+   * @param updateRate the initial statistics update rate in seconds
    * @throws RemoteException in case of an exception
    */
-  public DatabaseMonitor(final EntityServerAdmin server) throws RemoteException {
+  public DatabaseMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {
     this.server = server;
-    this.poolMonitor = new PoolMonitor(server);
+    this.poolMonitor = new PoolMonitor(server, updateRate);
     this.queriesPerSecondCollection.addSeries(queriesPerSecond);
     this.queriesPerSecondCollection.addSeries(selectsPerSecond);
     this.queriesPerSecondCollection.addSeries(insertsPerSecond);
     this.queriesPerSecondCollection.addSeries(updatesPerSecond);
     this.queriesPerSecondCollection.addSeries(deletesPerSecond);
-    updateStatistics();
+    this.updateScheduler = new TaskScheduler(() -> {
+      try {
+        updateStatistics();
+      }
+      catch (final RemoteException ignored) {/*ignored*/}
+    }, updateRate, 0, TimeUnit.SECONDS).start();
+    this.updateIntervalValue = new IntervalValue(updateScheduler);
   }
 
   /**

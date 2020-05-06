@@ -22,16 +22,16 @@ public class LoadTestModelTest {
   private static final UsageScenario SCENARIO = new AbstractUsageScenario("test") {
     int counter = 0;
     @Override
-    protected void performScenario(final Object application) throws LoadTest.ScenarioException {
+    protected void performScenario(final Object application) throws ScenarioException {
       if (counter++ % 2 == 0) {
-        throw new LoadTest.ScenarioException();
+        throw new ScenarioException();
       }
     }
   };
 
   private static final UsageScenario SCENARIO_II = new AbstractUsageScenario("testII") {
     @Override
-    protected void performScenario(final Object application) throws LoadTest.ScenarioException {}
+    protected void performScenario(final Object application) throws ScenarioException {}
   };
 
   @Test

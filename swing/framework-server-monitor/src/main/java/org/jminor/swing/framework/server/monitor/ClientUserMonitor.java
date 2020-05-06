@@ -61,23 +61,26 @@ public final class ClientUserMonitor {
   private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
   private final UserHistoryTableModel userHistoryTableModel = new UserHistoryTableModel();
 
-  private final TaskScheduler updateScheduler = new TaskScheduler(() -> {
-    try {
-      userHistoryTableModel.refresh();
-    }
-    catch (final Exception e) {
-      LOG.error("Error while refreshing user history table model", e);
-    }
-  }, EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
-  private final Value<Integer> updateIntervalValue = new IntervalValue(updateScheduler);
+  private final TaskScheduler updateScheduler;
+  private final Value<Integer> updateIntervalValue;
 
   /**
    * Instantiates a new {@link ClientUserMonitor}
    * @param server the server
+   * @param updateRate the initial statistics update rate in seconds
    * @throws RemoteException in case of a communication error
    */
-  public ClientUserMonitor(final EntityServerAdmin server) throws RemoteException {
+  public ClientUserMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {
     this.server = server;
+    this.updateScheduler = new TaskScheduler(() -> {
+      try {
+        userHistoryTableModel.refresh();
+      }
+      catch (final Exception e) {
+        LOG.error("Error while refreshing user history table model", e);
+      }
+    }, updateRate, 0, TimeUnit.SECONDS).start();
+    this.updateIntervalValue = new IntervalValue(updateScheduler);
     refresh();
   }
 

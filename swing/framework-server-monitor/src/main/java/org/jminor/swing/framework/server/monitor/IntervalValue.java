@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.TaskScheduler;

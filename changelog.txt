@@ -6053,3 +6053,8 @@
   TextFields.ValueContainsLiterals enum added and used instead of boolean parameter
   TextInputPanel.ButtonFocusable enum added and used instead of boolean parameter
 0.14.11
+  Server monitor, removed cyclical dependencies due to configuration value
+  ScenarioException moved up to package level, removing a cyclical dependency
+  ReferentialIntegrityErrorHandling moved up to package level
+  EntityEditPanel.createEditPanelAction() moved to EntityPanelBuilder, eliminating a cyclic dependency
+  KeyGenerator.beforeInsert() and afterInsert(), replaced EntityDefinition parameter with primary key properties, eliminating a cyclic dependency

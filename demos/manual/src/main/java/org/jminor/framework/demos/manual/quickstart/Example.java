@@ -13,10 +13,10 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.KeyGenerator;
 import org.jminor.framework.domain.entity.StringProvider;
 import org.jminor.framework.domain.entity.test.EntityTestUnit;
+import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -59,7 +59,7 @@ public final class Example {
                       .nullable(false).maximumLength(40))
               .keyGenerator(new KeyGenerator() {
                 @Override
-                public void beforeInsert(Entity entity, EntityDefinition definition,
+                public void beforeInsert(Entity entity, List<ColumnProperty> primaryKeyProperties,
                                          DatabaseConnection connection) throws SQLException {
                   entity.put(CUSTOMER_ID, randomUUID().toString());
                 }

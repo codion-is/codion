@@ -13,6 +13,7 @@ import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
+import org.jminor.swing.common.tools.loadtest.ScenarioException;
 import org.jminor.swing.common.tools.loadtest.UsageScenario;
 import org.jminor.swing.common.tools.ui.loadtest.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;

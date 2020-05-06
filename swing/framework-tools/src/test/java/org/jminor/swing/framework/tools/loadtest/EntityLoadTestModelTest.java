@@ -14,6 +14,7 @@ import org.jminor.framework.model.DefaultEntityApplicationModel;
 import org.jminor.framework.server.EntityServer;
 import org.jminor.framework.server.EntityServerAdmin;
 import org.jminor.framework.server.EntityServerConfiguration;
+import org.jminor.swing.common.tools.loadtest.ScenarioException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

@@ -91,7 +91,7 @@ public final class EntityServerMonitor {
   }
 
   private void addHost(final String hostname, final int registryPort, final User adminUser) throws RemoteException {
-    hostMonitors.add(new HostMonitor(hostname, registryPort, adminUser));
+    hostMonitors.add(new HostMonitor(hostname, registryPort, adminUser, SERVER_MONITOR_UPDATE_RATE.get()));
     hostAddedEvent.onEvent(hostname);
   }
 }

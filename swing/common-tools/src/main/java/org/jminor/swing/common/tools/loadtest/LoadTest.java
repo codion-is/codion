@@ -235,25 +235,4 @@ public interface LoadTest<T> {
    * @return the randomizer used to select scenarios
    */
   ItemRandomizer<UsageScenario<T>> getScenarioChooser();
-
-  /**
-   * An exception originating from a scenario run
-   */
-  final class ScenarioException extends Exception {
-
-    /**
-     * Instantiates a new ScenarioException.
-     */
-    public ScenarioException() {
-      this(null);
-    }
-
-    /**
-     * Instantiates a new ScenarioException.
-     * @param cause the root cause
-     */
-    public ScenarioException(final Throwable cause) {
-      super(cause);
-    }
-  }
 }

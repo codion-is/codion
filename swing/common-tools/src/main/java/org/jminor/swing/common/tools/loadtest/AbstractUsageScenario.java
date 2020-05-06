@@ -19,7 +19,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   private final int maximumTime;
   private final AtomicInteger successfulRunCount = new AtomicInteger();
   private final AtomicInteger unsuccessfulRunCount = new AtomicInteger();
-  private final List<LoadTest.ScenarioException> exceptions = new ArrayList<>();
+  private final List<ScenarioException> exceptions = new ArrayList<>();
 
   /**
    * Instantiates a new UsageScenario using the simple class name as scenario name
@@ -76,7 +76,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   }
 
   @Override
-  public final List<LoadTest.ScenarioException> getExceptions() {
+  public final List<ScenarioException> getExceptions() {
     synchronized (exceptions) {
       return new ArrayList<>(exceptions);
     }
@@ -110,7 +110,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
       performScenario(application);
       successfulRunCount.incrementAndGet();
     }
-    catch (final LoadTest.ScenarioException e) {
+    catch (final ScenarioException e) {
       unsuccessfulRunCount.incrementAndGet();
       synchronized (exceptions) {
         exceptions.add(e);
@@ -139,9 +139,9 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   /**
    * Runs a set of actions on the given application.
    * @param application the application
-   * @throws LoadTest.ScenarioException in case of an exception
+   * @throws ScenarioException in case of an exception
    */
-  protected abstract void performScenario(T application) throws LoadTest.ScenarioException;
+  protected abstract void performScenario(T application) throws ScenarioException;
 
   /**
    * Called before this scenario is run, override to prepare the application for each run

@@ -60,9 +60,8 @@ public final class ServerMonitor {
   private final EntityServerAdmin server;
   private final User serverAdminUser;
 
-  private final TaskScheduler updateScheduler = new TaskScheduler(this::updateStatistics,
-          EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
-  private final Value<Integer> updateIntervalValue = new IntervalValue(updateScheduler);
+  private final TaskScheduler updateScheduler;
+  private final Value<Integer> updateIntervalValue;
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
@@ -106,31 +105,33 @@ public final class ServerMonitor {
    * @param serverInformation the server information
    * @param registryPort the registry port
    * @param serverAdminUser the admin user
+   * @param updateRate the initial statistics update rate in seconds
    * @throws RemoteException in case of an exception
    * @throws ServerAuthenticationException in case the admin user credentials are incorrect
    */
   public ServerMonitor(final String hostName, final ServerInformation serverInformation, final int registryPort,
-                       final User serverAdminUser)
+                       final User serverAdminUser, final int updateRate)
           throws RemoteException, ServerAuthenticationException {
     this.hostName = hostName;
     this.serverInformation = serverInformation;
     this.registryPort = registryPort;
     this.serverAdminUser = serverAdminUser;
     this.server = connectServer(serverInformation.getServerName());
-    connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
-    memoryUsageCollection.addSeries(maxMemorySeries);
-    memoryUsageCollection.addSeries(allocatedMemorySeries);
-    memoryUsageCollection.addSeries(usedMemorySeries);
-    connectionCountCollection.addSeries(connectionCountSeries);
-    connectionCountCollection.addSeries(connectionLimitSeries);
-    threadCountCollection.addSeries(threadCountSeries);
-    threadCountCollection.addSeries(daemonThreadCountSeries);
-    systemLoadCollection.addSeries(systemLoadSeries);
-    systemLoadCollection.addSeries(processLoadSeries);
-    databaseMonitor = new DatabaseMonitor(server);
-    clientMonitor = new ClientUserMonitor(server);
+    this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
+    this.memoryUsageCollection.addSeries(maxMemorySeries);
+    this.memoryUsageCollection.addSeries(allocatedMemorySeries);
+    this.memoryUsageCollection.addSeries(usedMemorySeries);
+    this.connectionCountCollection.addSeries(connectionCountSeries);
+    this.connectionCountCollection.addSeries(connectionLimitSeries);
+    this.threadCountCollection.addSeries(threadCountSeries);
+    this.threadCountCollection.addSeries(daemonThreadCountSeries);
+    this.systemLoadCollection.addSeries(systemLoadSeries);
+    this.systemLoadCollection.addSeries(processLoadSeries);
+    this.databaseMonitor = new DatabaseMonitor(server, updateRate);
+    this.clientMonitor = new ClientUserMonitor(server, updateRate);
+    this.updateScheduler = new TaskScheduler(this::updateStatistics, updateRate, 0, TimeUnit.SECONDS).start();
+    this.updateIntervalValue = new IntervalValue(updateScheduler);
     refreshDomainList();
-    updateStatistics();
   }
 
   /**

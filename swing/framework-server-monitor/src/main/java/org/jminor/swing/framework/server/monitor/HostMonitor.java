@@ -39,6 +39,7 @@ public final class HostMonitor {
   private final String hostName;
   private final int registryPort;
   private final User adminUser;
+  private final int updateRate;
   private final Collection<ServerMonitor> serverMonitors = new ArrayList<>();
 
   /**
@@ -46,12 +47,14 @@ public final class HostMonitor {
    * @param hostName the name of the host to monitor
    * @param registryPort the registry port
    * @param adminUser the admin user
+   * @param updateRate the initial statistics update rate in seconds
    * @throws RemoteException in case of an exception
    */
-  public HostMonitor(final String hostName, final int registryPort, final User adminUser) throws RemoteException {
+  public HostMonitor(final String hostName, final int registryPort, final User adminUser, final int updateRate) throws RemoteException {
     this.hostName = hostName;
     this.registryPort = registryPort;
     this.adminUser = adminUser;
+    this.updateRate = updateRate;
     refresh();
   }
 
@@ -78,7 +81,7 @@ public final class HostMonitor {
     try {
       for (final ServerInformation serverInformation : getEntityServers(hostName, registryPort)) {
         if (!containsServerMonitor(serverInformation.getServerId())) {
-          final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInformation, registryPort, adminUser);
+          final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInformation, registryPort, adminUser, updateRate);
           serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
           addServer(serverMonitor);
         }

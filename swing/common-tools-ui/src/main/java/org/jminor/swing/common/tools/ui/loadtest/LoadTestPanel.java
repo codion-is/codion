@@ -10,6 +10,7 @@ import org.jminor.common.value.Nullable;
 import org.jminor.common.value.Values;
 import org.jminor.swing.common.tools.loadtest.LoadTest;
 import org.jminor.swing.common.tools.loadtest.LoadTestModel;
+import org.jminor.swing.common.tools.loadtest.ScenarioException;
 import org.jminor.swing.common.tools.loadtest.UsageScenario;
 import org.jminor.swing.common.tools.randomizer.ItemRandomizer;
 import org.jminor.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
@@ -453,8 +454,8 @@ public final class LoadTestPanel extends JPanel {
     @Override
     public void actionPerformed(final ActionEvent e) {
       getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
-      final List<LoadTest.ScenarioException> exceptions = getScenario().getExceptions();
-      for (final LoadTest.ScenarioException exception : exceptions) {
+      final List<ScenarioException> exceptions = getScenario().getExceptions();
+      for (final ScenarioException exception : exceptions) {
         getExceptionsTextArea().append(exception.getMessage());
         getExceptionsTextArea().append(Util.LINE_SEPARATOR);
         getExceptionsTextArea().append(Util.LINE_SEPARATOR);

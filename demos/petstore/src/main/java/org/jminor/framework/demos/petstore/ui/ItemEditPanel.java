@@ -48,11 +48,11 @@ public class ItemEditPanel extends EntityEditPanel {
     add(createPropertyPanel(ITEM_DESCRIPTION));
     addPropertyPanel(ITEM_PRICE);
     add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
-            createEditPanelAction(contactInfoBox, new EntityPanelBuilder(T_SELLER_CONTACT_INFO)
-                    .setEditPanelClass(ContactInfoEditPanel.class)))));
+            new EntityPanelBuilder(T_SELLER_CONTACT_INFO).setEditPanelClass(ContactInfoEditPanel.class)
+                    .createEditPanelAction(contactInfoBox))));
     add(createPropertyPanel(ITEM_ADDRESS_FK, Components.createEastButtonPanel(addressBox,
-            createEditPanelAction(addressBox, new EntityPanelBuilder(T_ADDRESS)
-                    .setEditPanelClass(AddressEditPanel.class)))));
+            new EntityPanelBuilder(T_ADDRESS).setEditPanelClass(AddressEditPanel.class)
+                    .createEditPanelAction(addressBox))));
     addPropertyPanel(ITEM_IMAGE_URL);
     addPropertyPanel(ITEM_IMAGE_THUMB_URL);
     addPropertyPanel(ITEM_DISABLED);
