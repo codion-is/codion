@@ -12,9 +12,9 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.KeyGenerator;
 import org.jminor.framework.domain.entity.StringProvider;
+import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -155,7 +155,7 @@ public final class TestDomain extends Domain {
   private void uuidTestDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
       @Override
-      public void afterInsert(final Entity entity, final EntityDefinition definition,
+      public void afterInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
                               final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
         final ResultSet generatedKeys = insertStatement.getGeneratedKeys();
         if (generatedKeys.next()) {
@@ -180,7 +180,7 @@ public final class TestDomain extends Domain {
   private void uuidTestNoDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
       @Override
-      public void beforeInsert(final Entity entity, final EntityDefinition definition,
+      public void beforeInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
                                final DatabaseConnection connection) throws SQLException {
         entity.put(UUID_TEST_NO_DEFAULT_ID, UUID.randomUUID());
       }

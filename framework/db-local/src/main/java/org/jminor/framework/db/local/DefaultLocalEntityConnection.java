@@ -208,8 +208,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         for (int i = 0; i < entities.size(); i++) {
           final Entity entity = entities.get(i);
           final EntityDefinition entityDefinition = getEntityDefinition(entity.getEntityId());
+          final List<ColumnProperty> primaryKeyProperties = entityDefinition.getPrimaryKeyProperties();
           final KeyGenerator keyGenerator = entityDefinition.getKeyGenerator();
-          keyGenerator.beforeInsert(entity, entityDefinition, connection);
+          keyGenerator.beforeInsert(entity, primaryKeyProperties, connection);
 
           populatePropertiesAndValues(entity, getInsertableProperties(entityDefinition, keyGenerator.isInserted()),
                   statementProperties, statementValues, entity::containsKey);
@@ -221,7 +222,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           insertQuery = insertQuery(entityDefinition.getTableName(), statementProperties);
           statement = prepareStatement(insertQuery, returnColumns);
           executeStatement(statement, insertQuery, statementProperties, statementValues);
-          keyGenerator.afterInsert(entity, entityDefinition, connection, statement);
+          keyGenerator.afterInsert(entity, primaryKeyProperties, connection, statement);
 
           insertedKeys.add(entity.getKey());
 

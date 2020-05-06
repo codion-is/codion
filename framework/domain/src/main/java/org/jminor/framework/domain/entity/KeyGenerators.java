@@ -10,6 +10,7 @@ import org.jminor.framework.domain.property.ColumnProperty;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -100,9 +101,9 @@ public final class KeyGenerators {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final EntityDefinition definition,
+    public void beforeInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
                              final DatabaseConnection connection) throws SQLException {
-      final ColumnProperty primaryKeyProperty = definition.getPrimaryKeyProperties().get(0);
+      final ColumnProperty primaryKeyProperty = primaryKeyProperties.get(0);
       if (entity.isNull(primaryKeyProperty)) {
         queryAndPut(entity, primaryKeyProperty, connection);
       }
@@ -123,9 +124,9 @@ public final class KeyGenerators {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final EntityDefinition definition,
+    public void beforeInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
                              final DatabaseConnection connection) throws SQLException {
-      final ColumnProperty primaryKeyProperty = definition.getPrimaryKeyProperties().get(0);
+      final ColumnProperty primaryKeyProperty = primaryKeyProperties.get(0);
       if (entity.isNull(primaryKeyProperty)) {
         queryAndPut(entity, primaryKeyProperty, connection);
       }
@@ -151,9 +152,9 @@ public final class KeyGenerators {
     }
 
     @Override
-    public void afterInsert(final Entity entity, final EntityDefinition definition, final DatabaseConnection connection,
-                            final Statement insertStatement) throws SQLException {
-      queryAndPut(entity, definition.getPrimaryKeyProperties().get(0), connection);
+    public void afterInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
+                            final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
+      queryAndPut(entity, primaryKeyProperties.get(0), connection);
     }
 
     @Override

@@ -6030,3 +6030,4 @@
   ScenarioException moved up to package level, removing a cyclical dependency
   ReferentialIntegrityErrorHandling moved up to package level
   EntityEditPanel.createEditPanelAction() moved to EntityPanelBuilder, eliminating a cyclic dependency
+  KeyGenerator.beforeInsert() and afterInsert(), replaced EntityDefinition parameter with primary key properties, eliminating a cyclic dependency

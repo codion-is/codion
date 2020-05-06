@@ -4,9 +4,11 @@
 package org.jminor.framework.domain.entity;
 
 import org.jminor.common.db.connection.DatabaseConnection;
+import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 /**
  * Generates primary key values for entities on insert.
@@ -15,7 +17,7 @@ import java.sql.Statement;
  * key value on insert, i.e. with a table trigger or identity columns.
  * Implementations should override either {@code beforeInsert()} or {@code afterInsert()}.
  * If {@link #isInserted()} returns true the primary key value should be included in the
- * insert statement, meaning that {@link #beforeInsert(Entity, EntityDefinition, DatabaseConnection)} should be used
+ * insert statement, meaning that {@link #beforeInsert(Entity, List, DatabaseConnection)} should be used
  * to populate the entity's primary key values.
  * If {@link #isInserted()} returns false then it is assumed that the database generates the primary key
  * values automatically, meaning that {@code afterInsert()} should be used to fetch the generated primary
@@ -41,7 +43,7 @@ public interface KeyGenerator {
    * @param connection the connection to use
    * @throws SQLException in case of an exception
    */
-  default void beforeInsert(final Entity entity, final EntityDefinition definition,
+  default void beforeInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
                             final DatabaseConnection connection) throws SQLException {/*for overriding*/}
 
   /**
@@ -54,8 +56,8 @@ public interface KeyGenerator {
    * @param insertStatement the insert statement
    * @throws SQLException in case of an exception
    */
-  default void afterInsert(final Entity entity, final EntityDefinition definition, final DatabaseConnection connection,
-                           final Statement insertStatement) throws SQLException {/*for overriding*/}
+  default void afterInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
+                           final DatabaseConnection connection, final Statement insertStatement) throws SQLException {/*for overriding*/}
 
   /**
    * Specifies whether the insert statement should return the primary key column values via the resulting

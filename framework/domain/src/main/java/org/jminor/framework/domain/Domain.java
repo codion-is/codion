@@ -593,7 +593,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
     }
     if (!beanEntities.containsKey(beanClass)) {
       final Optional<EntityDefinition> optionalDefinition = getDefinitions().stream()
-              .filter(def -> Objects.equals(beanClass, def.getBeanClass())).findFirst();
+              .filter(entityDefinition -> Objects.equals(beanClass, entityDefinition.getBeanClass())).findFirst();
       if (!optionalDefinition.isPresent()) {
         throw new IllegalArgumentException("No entity associated with bean class: " + beanClass);
       }
