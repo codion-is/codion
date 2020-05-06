@@ -6027,3 +6027,4 @@
   TextInputPanel.ButtonFocusable enum added and used instead of boolean parameter
 0.14.11
   Server monitor, removed cyclical dependencies due to configuration value
+  ScenarioException moved up to package level, removing a cyclical dependency

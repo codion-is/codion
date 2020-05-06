@@ -13,6 +13,7 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.swing.common.tools.loadtest.AbstractUsageScenario;
 import org.jminor.swing.common.tools.loadtest.LoadTestModel;
+import org.jminor.swing.common.tools.loadtest.ScenarioException;
 import org.jminor.swing.common.tools.ui.loadtest.LoadTestPanel;
 
 import java.math.BigDecimal;
