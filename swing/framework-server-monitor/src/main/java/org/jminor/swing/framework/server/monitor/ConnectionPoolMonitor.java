@@ -49,17 +49,17 @@ public final class ConnectionPoolMonitor {
   private final YIntervalSeries averageCheckOutTime = new YIntervalSeries("Average check out time (ms)");
   private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
-  private final TaskScheduler updateScheduler = new TaskScheduler(this::updateStatistics,
-          EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
-  private final Value<Integer> updateIntervalValue = new IntervalValue(updateScheduler);
+  private final TaskScheduler updateScheduler;
+  private final Value<Integer> updateIntervalValue;
 
   private long lastStatisticsUpdateTime = 0;
 
   /**
    * Instantiates a new {@link ConnectionPoolMonitor}
    * @param connectionPool the connection pool to monitor
+   * @param updateRate the initial statistics update rate in seconds
    */
-  public ConnectionPoolMonitor(final ConnectionPool connectionPool) {
+  public ConnectionPoolMonitor(final ConnectionPool connectionPool, final int updateRate) {
     this.username = connectionPool.getUser().getUsername();
     this.connectionPool = connectionPool;
     this.statisticsCollection.addSeries(inPoolSeries);
@@ -70,7 +70,8 @@ public final class ConnectionPoolMonitor {
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(failedRequestsPerSecond);
     this.checkOutTimeCollection.addSeries(averageCheckOutTime);
-    updateStatistics();
+    this.updateScheduler = new TaskScheduler(this::updateStatistics, updateRate, 0, TimeUnit.SECONDS).start();
+    this.updateIntervalValue = new IntervalValue(updateScheduler);
   }
 
   /**

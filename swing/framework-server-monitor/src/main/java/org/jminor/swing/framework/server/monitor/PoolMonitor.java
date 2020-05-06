@@ -27,20 +27,13 @@ public final class PoolMonitor {
   /**
    * Instantiates a new {@link PoolMonitor}
    * @param server the server
+   *
    * @throws RemoteException in case of an exception
    */
-  public PoolMonitor(final EntityServerAdmin server) throws RemoteException {
+  public PoolMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {
     this.server = server;
-    refresh();
-  }
-
-  /**
-   * Refreshes the the connection pools
-   * @throws RemoteException in case of an exception
-   */
-  public void refresh() throws RemoteException {
-    for (final String username : server.getConnectionPoolUsernames()) {
-      connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPool(username, server)));
+    for (final String username : this.server.getConnectionPoolUsernames()) {
+      connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPool(username, this.server), updateRate));
     }
   }
 
