@@ -30,9 +30,8 @@ public final class PetEditPanel extends EntityEditPanel {
     createTextField(PET_BIRTH_DATE);
     final EntityComboBox petTypeBox = createForeignKeyComboBox(PET_PET_TYPE_FK);
 
-    final Action newPetTypeAction = EntityEditPanel.createEditPanelAction(petTypeBox,
-            new EntityPanelBuilder(T_PET_TYPE)
-                    .setEditPanelClass(PetTypeEditPanel.class));
+    final Action newPetTypeAction = new EntityPanelBuilder(T_PET_TYPE).setEditPanelClass(PetTypeEditPanel.class)
+            .createEditPanelAction(petTypeBox);
     final JPanel petTypePanel = Components.createEastButtonPanel(petTypeBox, newPetTypeAction);
 
     setLayout(new GridLayout(2, 2, 5, 5));

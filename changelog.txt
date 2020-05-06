@@ -6029,3 +6029,4 @@
   Server monitor, removed cyclical dependencies due to configuration value
   ScenarioException moved up to package level, removing a cyclical dependency
   ReferentialIntegrityErrorHandling moved up to package level
+  EntityEditPanel.createEditPanelAction() moved to EntityPanelBuilder, eliminating a cyclic dependency

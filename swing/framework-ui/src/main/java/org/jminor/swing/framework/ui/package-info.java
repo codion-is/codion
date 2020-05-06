@@ -19,7 +19,7 @@
  * {@link org.jminor.swing.framework.ui.EntityTablePanel#ALLOW_COLUMN_REORDERING}<br>
  * {@link org.jminor.swing.framework.ui.EntityTablePanel#TABLE_CONDITION_PANEL_VISIBLE}<br>
  * {@link org.jminor.swing.framework.ui.EntityTablePanel#TABLE_AUTO_RESIZE_MODE}<br>
- * {@link org.jminor.swing.framework.ui.EntityTablePanel#REFERENTIAL_INTEGRITY_ERROR_HANDLING}<br>
+ * {@link org.jminor.swing.framework.ui.ReferentialIntegrityErrorHandling#REFERENTIAL_INTEGRITY_ERROR_HANDLING}<br>
  * {@link org.jminor.swing.framework.ui.EntityInputComponents#LABEL_TEXT_ALIGNMENT}<br>
  * {@link org.jminor.swing.framework.ui.EntityInputComponents#COMBO_BOX_COMPLETION_MODE}
  */

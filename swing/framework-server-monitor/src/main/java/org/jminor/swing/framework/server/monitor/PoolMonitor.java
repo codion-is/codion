@@ -27,7 +27,7 @@ public final class PoolMonitor {
   /**
    * Instantiates a new {@link PoolMonitor}
    * @param server the server
-   *
+   * @param updateRate the initial statistics update rate in seconds
    * @throws RemoteException in case of an exception
    */
   public PoolMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {

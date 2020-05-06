@@ -3,18 +3,33 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.event.EventDataListener;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.swing.common.ui.Components;
+import org.jminor.swing.common.ui.KeyEvents;
+import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityModelBuilder;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
+import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A class providing EntityPanel instances.
@@ -316,6 +331,39 @@ public class EntityPanelBuilder {
   }
 
   /**
+   * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed
+   * selects the new entity in the {@code lookupField}.
+   * @param comboBox the combo box in which to select the new entity, if created
+   * @return the Action
+   */
+  public Action createEditPanelAction(final EntityComboBox comboBox) {
+    return new InsertEntityAction(comboBox);
+  }
+
+  /**
+   * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed
+   * selects the new entity in the {@code lookupField}.
+   * @param lookupField the lookup field in which to select the new entity, if created
+   * @return the Action
+   */
+  public Action createEditPanelAction(final EntityLookupField lookupField) {
+    return new InsertEntityAction(lookupField);
+  }
+
+  /**
+   * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed
+   * {@code insertListener} is notified.
+   * @param component this component used as dialog parent, receives the focus after insert
+   * @param connectionProvider the connection provider
+   * @param insertListener the listener notified when insert has been performed
+   * @return the Action
+   */
+  public Action createEditPanelAction(final JComponent component, final EntityConnectionProvider connectionProvider,
+                                      final EventDataListener<List<Entity>> insertListener) {
+    return new InsertEntityAction(component, connectionProvider, insertListener);
+  }
+
+  /**
    * Called after the EntityPanel has been constructed, but before it is initialized, override to configure
    * @param entityPanel the EntityPanel just constructed
    */
@@ -431,5 +479,70 @@ public class EntityPanelBuilder {
     }
 
     throw new NoSuchMethodException("Constructor with a single parameter of type SwingEntityTableModel (or subclass) not found in class: " + tablePanelClass);
+  }
+
+  private final class InsertEntityAction extends AbstractAction {
+
+    private final JComponent component;
+    private final EntityConnectionProvider connectionProvider;
+    private final EventDataListener<List<Entity>> insertListener;
+    private final List<Entity> insertedEntities = new ArrayList<>();
+
+    private InsertEntityAction(final EntityComboBox comboBox) {
+      this(comboBox, comboBox.getModel().getConnectionProvider(), inserted -> {
+        final EntityComboBoxModel comboBoxModel = comboBox.getModel();
+        final Entity item = inserted.get(0);
+        comboBoxModel.addItem(item);
+        comboBoxModel.setSelectedItem(item);
+      });
+    }
+
+    private InsertEntityAction(final EntityLookupField lookupField) {
+      this(lookupField, lookupField.getModel().getConnectionProvider(), inserted ->
+              lookupField.getModel().setSelectedEntities(inserted));
+    }
+
+    private InsertEntityAction(final JComponent component, final EntityConnectionProvider connectionProvider,
+                               final EventDataListener<List<Entity>> insertListener) {
+      super("", frameworkIcons().add());
+      this.component = component;
+      this.connectionProvider = connectionProvider;
+      this.insertListener = insertListener;
+      this.component.addPropertyChangeListener("enabled", changeEvent -> setEnabled((Boolean) changeEvent.getNewValue()));
+      setEnabled(component.isEnabled());
+      addLookupKey();
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      final EntityEditPanel editPanel = createEditPanel(connectionProvider);
+      editPanel.initializePanel();
+      editPanel.getEditModel().addAfterInsertListener(inserted -> {
+        this.insertedEntities.clear();
+        this.insertedEntities.addAll(inserted);
+      });
+      final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+      final JDialog dialog = pane.createDialog(component, getCaption() == null ?
+              connectionProvider.getDomain().getDefinition(getEntityId()).getCaption() : getCaption());
+      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      Components.addInitialFocusHack(editPanel, Controls.control(editPanel::requestInitialFocus));
+      dialog.setVisible(true);
+      if (pane.getValue() != null && pane.getValue().equals(0)) {
+        final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
+        if (insertPerformed && !insertedEntities.isEmpty()) {
+          insertListener.onEvent(insertedEntities);
+        }
+      }
+      component.requestFocusInWindow();
+    }
+
+    private void addLookupKey() {
+      JComponent keyComponent = component;
+      if (component instanceof JComboBox && ((JComboBox) component).isEditable()) {
+        keyComponent = (JComponent) ((JComboBox) component).getEditor().getEditorComponent();
+      }
+      KeyEvents.addKeyEvent(keyComponent, KeyEvent.VK_ADD, KeyEvent.CTRL_DOWN_MASK, this);
+      KeyEvents.addKeyEvent(keyComponent, KeyEvent.VK_PLUS, KeyEvent.CTRL_DOWN_MASK, this);
+    }
   }
 }
