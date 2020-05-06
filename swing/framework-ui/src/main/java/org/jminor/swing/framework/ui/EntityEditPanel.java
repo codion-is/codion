@@ -145,8 +145,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /**
    * The action to take when a referential integrity error occurs on delete
    */
-  private EntityTablePanel.ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
-          EntityTablePanel.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
+  private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
+          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 
   /**
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
@@ -250,7 +250,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /**
    * @param referentialIntegrityErrorHandling the action to take on a referential integrity error on delete
    */
-  public final void setReferentialIntegrityErrorHandling(final EntityTablePanel.ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
+  public final void setReferentialIntegrityErrorHandling(final ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
     this.referentialIntegrityErrorHandling = referentialIntegrityErrorHandling;
   }
 
@@ -343,15 +343,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Handles the given exception. If the referential error handling is {@link EntityTablePanel.ReferentialIntegrityErrorHandling#DEPENDENCIES}, the dependencies of the given entity are displayed
+   * Handles the given exception. If the referential error handling is {@link ReferentialIntegrityErrorHandling#DEPENDENCIES}, the dependencies of the given entity are displayed
    * to the user, otherwise {@link #onException(Exception)} is called.
    * @param exception the exception
    * @param entity the entity causing the exception
-   * @see #setReferentialIntegrityErrorHandling(EntityTablePanel.ReferentialIntegrityErrorHandling)
+   * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
-  public void onReferentialIntegrityException(final ReferentialIntegrityException exception,
-                                              final Entity entity) {
-    if (referentialIntegrityErrorHandling == EntityTablePanel.ReferentialIntegrityErrorHandling.DEPENDENCIES) {
+  public void onReferentialIntegrityException(final ReferentialIntegrityException exception, final Entity entity) {
+    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
       EntityTablePanel.showDependenciesDialog(singletonList(entity), getEditModel().getConnectionProvider(), this);
     }
     else {

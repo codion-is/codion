@@ -20,6 +20,7 @@ import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
 import org.jminor.swing.framework.ui.EntityTablePanel;
+import org.jminor.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import org.jminor.swing.framework.ui.icons.FrameworkIcons;
 import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
@@ -155,7 +156,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
-    EntityTablePanel.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(EntityTablePanel.ReferentialIntegrityErrorHandling.DEPENDENCIES);
+    ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.impl.ChinookImpl");

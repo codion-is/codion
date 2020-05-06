@@ -6028,3 +6028,4 @@
 0.14.11
   Server monitor, removed cyclical dependencies due to configuration value
   ScenarioException moved up to package level, removing a cyclical dependency
+  ReferentialIntegrityErrorHandling moved up to package level

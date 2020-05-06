@@ -149,25 +149,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static final PropertyValue<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue(
           "org.jminor.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
 
-  /**
-   * Specifies whether to display the error message or the dependent entities in case of a referential integrity error on delete<br>
-   * Value type: {@link ReferentialIntegrityErrorHandling}<br>
-   * Default value: {@link ReferentialIntegrityErrorHandling#ERROR}
-   */
-  public static final PropertyValue<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING = Configuration.value(
-          "org.jminor.swing.framework.ui.EntityTablePanel.referentialIntegrityErrorHandling", ReferentialIntegrityErrorHandling.ERROR,
-          ReferentialIntegrityErrorHandling::valueOf);
-
-  /**
-   * The possible actions to take on a referential integrity error
-   */
-  public enum ReferentialIntegrityErrorHandling {
-    /** Display the error */
-    ERROR,
-    /** Display the dependencies causing the error */
-    DEPENDENCIES
-  }
-
   public static final String PRINT_TABLE = "printTable";
   public static final String DELETE_SELECTED = "deleteSelected";
   public static final String VIEW_DEPENDENCIES = "viewDependencies";
@@ -254,7 +235,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * The action to take when a referential integrity error occurs on delete
    */
-  private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling = REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
+  private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
+          ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 
   /**
    * Initializes a new EntityTablePanel instance
@@ -671,11 +653,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Handles the given exception. If the referential error handling is {@link EntityTablePanel.ReferentialIntegrityErrorHandling#DEPENDENCIES},
+   * Handles the given exception. If the referential error handling is {@link ReferentialIntegrityErrorHandling#DEPENDENCIES},
    * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Exception)} is called.
    * @param exception the exception
    * @param entities the entities causing the exception
-   * @see #setReferentialIntegrityErrorHandling(EntityTablePanel.ReferentialIntegrityErrorHandling)
+   * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
   public void onReferentialIntegrityException(final ReferentialIntegrityException exception,
                                               final List<Entity> entities) {
