@@ -330,11 +330,11 @@ public interface Property extends Serializable {
     Property.Builder defaultValue(Object defaultValue);
 
     /**
-     * Sets the default value provider, use in case of dynamic default values.
-     * @param provider the default value provider
+     * Sets the default value supplier, use in case of dynamic default values.
+     * @param supplier the default value supplier
      * @return this instance
      */
-    Property.Builder defaultValueProvider(Supplier<Object> provider);
+    Property.Builder defaultValueSupplier(Supplier<Object> supplier);
 
     /**
      * @param hidden specifies whether this property should hidden in table views

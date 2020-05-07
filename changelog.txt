@@ -6043,3 +6043,4 @@
 0.14.12
   Property.Builder.useNumberFormatGrouping() renamed to numberFormatGrouping()
   FilteredTable.findAndSelectNext() and findAndSelectPrevious() split from findNext() and findPrevious()
+  DefaultProperty.defaultValueProvider renamed defaultValueSupplier, to fit the type

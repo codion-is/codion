@@ -30,7 +30,7 @@ abstract class DefaultProperty implements Property {
 
   private static final long serialVersionUID = 1;
 
-  private static final Supplier<Object> DEFAULT_VALUE_PROVIDER = new NullDefaultValueProvider();
+  private static final Supplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
   /**
    * The ID of the entity this property is associated with
@@ -65,9 +65,9 @@ abstract class DefaultProperty implements Property {
   private String beanProperty;
 
   /**
-   * The default value provider for this property
+   * The default value supplier for this property
    */
-  private Supplier<Object> defaultValueProvider = DEFAULT_VALUE_PROVIDER;
+  private Supplier<Object> defaultValueSupplier = DEFAULT_VALUE_SUPPLIER;
 
   /**
    * True if the value of this property is allowed to be null
@@ -267,12 +267,12 @@ abstract class DefaultProperty implements Property {
 
   @Override
   public final boolean hasDefaultValue() {
-    return !(this.defaultValueProvider instanceof NullDefaultValueProvider);
+    return !(this.defaultValueSupplier instanceof NullDefaultValueSupplier);
   }
 
   @Override
   public final Object getDefaultValue() {
-    return this.defaultValueProvider.get();
+    return this.defaultValueSupplier.get();
   }
 
   @Override
@@ -475,13 +475,13 @@ abstract class DefaultProperty implements Property {
     }
   }
 
-  private static class DefaultValueProvider implements Supplier<Object>, Serializable {
+  private static class DefaultValueSupplier implements Supplier<Object>, Serializable {
 
     private static final long serialVersionUID = 1;
 
     private final Object defaultValue;
 
-    public DefaultValueProvider(final Object defaultValue) {
+    private DefaultValueSupplier(final Object defaultValue) {
       this.defaultValue = defaultValue;
     }
 
@@ -491,11 +491,11 @@ abstract class DefaultProperty implements Property {
     }
   }
 
-  private static class NullDefaultValueProvider extends DefaultValueProvider {
+  private static class NullDefaultValueSupplier extends DefaultValueSupplier {
 
     private static final long serialVersionUID = 1;
 
-    public NullDefaultValueProvider() {
+    private NullDefaultValueSupplier() {
       super(null);
     }
   }
@@ -537,15 +537,15 @@ abstract class DefaultProperty implements Property {
 
     @Override
     public final Property.Builder defaultValue(final Object defaultValue) {
-      return defaultValueProvider(new DefaultValueProvider(defaultValue));
+      return defaultValueSupplier(new DefaultValueSupplier(defaultValue));
     }
 
     @Override
-    public Property.Builder defaultValueProvider(final Supplier<Object> provider) {
-      if (provider != null) {
-        property.validateType(provider.get());
+    public Property.Builder defaultValueSupplier(final Supplier<Object> supplier) {
+      if (supplier != null) {
+        property.validateType(supplier.get());
       }
-      property.defaultValueProvider = provider == null ? DEFAULT_VALUE_PROVIDER : provider;
+      property.defaultValueSupplier = supplier == null ? DEFAULT_VALUE_SUPPLIER : supplier;
       return this;
     }
 
@@ -625,7 +625,7 @@ abstract class DefaultProperty implements Property {
         throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.propertyId);
       }
       if (property.isTemporal()) {
-        throw new IllegalArgumentException("Use setDateTimeFormatPattern() for temporal properties: " + property.propertyId);
+        throw new IllegalArgumentException("Use dateTimeFormatPattern() for temporal properties: " + property.propertyId);
       }
       property.format = format;
       return this;
