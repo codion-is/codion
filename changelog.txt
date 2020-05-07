@@ -6035,3 +6035,4 @@
   EntityApplicationPanel.MainMenu enum added and used instead of boolean parameter
   EntityInputComponents.Sorted enum added and used instead of boolean parameter
   TemporalInputPanel.CalendarButton enum added and used instead of boolean parameter
+  EntityInputComponents.Editable enum added and used instead of boolean parameter

@@ -30,6 +30,7 @@ import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.common.ui.value.UpdateOn;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.ui.EntityInputComponents.Editable;
 import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
 import org.jminor.swing.framework.ui.EntityInputComponents.Sorted;
 
@@ -1095,7 +1096,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final SteppedComboBox createEditableComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                          final StateObserver enabledState) {
     final SteppedComboBox comboBox = EntityInputComponents.createComboBox(property, getEditModel().value(property.getPropertyId()),
-            comboBoxModel, enabledState, true);
+            comboBoxModel, enabledState, Editable.YES);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
       transferFocusOnEnter(comboBox);
@@ -1123,7 +1124,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyId, final StateObserver enabledState) {
-    return createPropertyComboBox(propertyId, enabledState, false);
+    return createPropertyComboBox(propertyId, enabledState, Editable.NO);
   }
 
   /**
@@ -1131,11 +1132,11 @@ public class EntityEditComponentPanel extends JPanel {
    * contains the underlying values of the property
    * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
+   * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyId, final StateObserver enabledState,
-                                                         final boolean editable) {
+                                                         final Editable editable) {
     return createPropertyComboBox(getEditModel().getEntityDefinition().getColumnProperty(propertyId),
             enabledState, editable);
   }
@@ -1158,7 +1159,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final ColumnProperty property, final StateObserver enabledState) {
-    return createPropertyComboBox(property, enabledState, false);
+    return createPropertyComboBox(property, enabledState, Editable.NO);
   }
 
   /**
@@ -1166,11 +1167,11 @@ public class EntityEditComponentPanel extends JPanel {
    * contains the underlying values of the property
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
+   * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final ColumnProperty property, final StateObserver enabledState,
-                                                         final boolean editable) {
+                                                         final Editable editable) {
     final SteppedComboBox comboBox = EntityInputComponents.createPropertyComboBox(property, getEditModel().value(property.getPropertyId()),
             (ComboBoxModel) getEditModel().getComboBoxModel(property.getPropertyId()), enabledState, editable);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {

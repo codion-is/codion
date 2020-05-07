@@ -127,6 +127,20 @@ public final class EntityInputComponents {
     NO
   }
 
+  /**
+   * Specifies whether a combo box should be editable.
+   */
+  public enum Editable {
+    /**
+     * Combo box should be editable.
+     */
+    YES,
+    /**
+     * Combo box should not be editable.
+     */
+    NO
+  }
+
   private static final String PROPERTY_PARAM_NAME = "property";
   private static final String VALUE_PARAM_NAME = "value";
   private static final String FOREIGN_KEY_PROPERTY_PARAM_NAME = "foreignKeyProperty";
@@ -428,7 +442,7 @@ public final class EntityInputComponents {
    */
   public static SteppedComboBox createComboBox(final Property property, final Value value,
                                                final ComboBoxModel model, final StateObserver enabledState) {
-    return createComboBox(property, value, model, enabledState, false);
+    return createComboBox(property, value, model, enabledState, Editable.NO);
   }
 
   /**
@@ -437,19 +451,19 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param model the combo box model
    * @param enabledState the state controlling the enabled state of the combo box
-   * @param editable if true then the combo box is made editable
+   * @param editable if yes then the combo box is made editable
    * @return a combo box based on the given model
    */
   public static SteppedComboBox createComboBox(final Property property, final Value value,
                                                final ComboBoxModel model, final StateObserver enabledState,
-                                               final boolean editable) {
+                                               final Editable editable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
-    if (editable && !property.isString()) {
+    if (editable == Editable.YES && !property.isString()) {
       throw new IllegalArgumentException("Editable property ComboBox is only implemented for String properties");
     }
-    comboBox.setEditable(editable);
+    comboBox.setEditable(editable == Editable.YES);
     value.link(SelectedValues.selectedValue(comboBox));
     linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
@@ -676,7 +690,7 @@ public final class EntityInputComponents {
    */
   public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final Value value,
                                                        final ComboBoxModel comboBoxModel, final StateObserver enabledState) {
-    return createPropertyComboBox(property, value, comboBoxModel, enabledState, false);
+    return createPropertyComboBox(property, value, comboBoxModel, enabledState, Editable.NO);
   }
 
   /**
@@ -685,14 +699,14 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param comboBoxModel the combo box model
    * @param enabledState the state controlling the enabled state of the panel
-   * @param editable if true then the combo box will be editable
+   * @param editable if yes then the combo box will be editable
    * @return a combo box based on the property values
    */
   public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final Value value,
                                                        final ComboBoxModel comboBoxModel, final StateObserver enabledState,
-                                                       final boolean editable) {
+                                                       final Editable editable) {
     final SteppedComboBox comboBox = createComboBox(property, value, comboBoxModel, enabledState, editable);
-    if (!editable) {
+    if (editable == Editable.NO) {
       addComboBoxCompletion(comboBox);
     }
 
