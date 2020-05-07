@@ -389,8 +389,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public List<Property> getUpdatableProperties() {
-    final List<ColumnProperty> writableColumnProperties = getWritableColumnProperties(
-            !isKeyGenerated(), false);
+    final List<ColumnProperty> writableColumnProperties = getWritableColumnProperties(!isKeyGenerated(), false);
     writableColumnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
     final List<Property> updatable = new ArrayList<>(writableColumnProperties);
     for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {

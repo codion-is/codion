@@ -6068,3 +6068,5 @@
   KeyEvents.OnKeyRelease enum added and used instead of boolean parameter
   FlexibleGridLayout.FixRowHeights and FixColumnWidths enums added and used instead of boolean parameter
 0.14.12
+  Property.Builder.useNumberFormatGrouping() renamed to numberFormatGrouping()
+  FilteredTable.findAndSelectNext() and findAndSelectPrevious() split from findNext() and findPrevious()

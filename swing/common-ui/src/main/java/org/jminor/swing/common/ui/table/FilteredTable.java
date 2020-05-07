@@ -369,20 +369,36 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   /**
    * Performs a text search in the underlying table model, forward relative to the last search result coordinate.
-   * @param addToSelection if true then the items found are added to the selection
    * @param searchText the text to search for
    */
-  public void findNext(final boolean addToSelection, final String searchText) {
-    performSearch(addToSelection, lastSearchResultCoordinate.getRow() + 1, true, searchText);
+  public void findNext(final String searchText) {
+    performSearch(false, lastSearchResultCoordinate.getRow() + 1, true, searchText);
   }
 
   /**
    * Performs a text search in the underlying table model, backwards relative to the last search result coordinate.
-   * @param addToSelection if true then the items found are added to the selection
    * @param searchText the text to search for
    */
-  public void findPrevious(final boolean addToSelection, final String searchText) {
-    performSearch(addToSelection, lastSearchResultCoordinate.getRow() - 1, false, searchText);
+  public void findPrevious(final String searchText) {
+    performSearch(false, lastSearchResultCoordinate.getRow() - 1, false, searchText);
+  }
+
+  /**
+   * Performs a text search in the underlying table model, forward relative to the last search result coordinate,
+   * adding the result to the current row selection.
+   * @param searchText the text to search for
+   */
+  public void findAndSelectNext(final String searchText) {
+    performSearch(true, lastSearchResultCoordinate.getRow() + 1, true, searchText);
+  }
+
+  /**
+   * Performs a text search in the underlying table model, backwards relative to the last search result coordinate,
+   * adding the result to the current row selection.
+   * @param searchText the text to search for
+   */
+  public void findAndSelectPrevious(final String searchText) {
+    performSearch(true, lastSearchResultCoordinate.getRow() - 1, false, searchText);
   }
 
   /**
@@ -431,7 +447,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
-    if (searchText.length() != 0) {
+    if (!searchText.isEmpty()) {
       final RowColumn coordinate = forward ? tableModel.findNext(fromIndex, searchText) :
               tableModel.findPrevious(fromIndex, searchText);
       if (coordinate != null) {
@@ -619,10 +635,20 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
         return;
       }
       if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
-        findNext(e.isShiftDown(), field.getText());
+        if (e.isShiftDown()) {
+          findAndSelectNext(field.getText());
+        }
+        else {
+          findNext(field.getText());
+        }
       }
       else if (e.getKeyCode() == KeyEvent.VK_UP) {
-        findPrevious(e.isShiftDown(), field.getText());
+        if (e.isShiftDown()) {
+          findAndSelectPrevious(field.getText());
+        }
+        else {
+          findPrevious(field.getText());
+        }
       }
       else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
         requestFocusInWindow();

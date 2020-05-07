@@ -22,7 +22,7 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
 
   /**
    * @param property the property
-   * @param defaultValue the defaul value to present to the user
+   * @param defaultValue the default value to present to the user
    * @param connectionProvider the connection provider
    */
   public PropertyInputDialog(final Property property, final Object defaultValue,
@@ -54,6 +54,7 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
    * The result from a InputDialog
    */
   public static final class InputResult {
+
     private final boolean inputAccepted;
     private final Object value;
 

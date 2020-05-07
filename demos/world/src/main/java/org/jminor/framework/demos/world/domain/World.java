@@ -130,7 +130,7 @@ public final class World extends Domain {
                     .maximumLength(20),
             columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
                     .nullable(false)
-                    .useNumberFormatGrouping(true))
+                    .numberFormatGrouping(true))
             // tag::sequence[]
             .keyGenerator(sequence("world.city_seq"))
             // end::sequence[]
@@ -162,22 +162,22 @@ public final class World extends Domain {
                     .maximumLength(26),
             columnProperty(COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
                     .nullable(false)
-                    .useNumberFormatGrouping(true)
+                    .numberFormatGrouping(true)
                     .maximumFractionDigits(2),
             columnProperty(COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year")
                     .minimumValue(-2000).maximumValue(2500),
             columnProperty(COUNTRY_POPULATION, Types.INTEGER, "Population")
                     .nullable(false)
-                    .useNumberFormatGrouping(true),
+                    .numberFormatGrouping(true),
             columnProperty(COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy")
                     .maximumFractionDigits(1)
                     .minimumValue(0).maximumValue(99),
             // end::columnProperty[]
             columnProperty(COUNTRY_GNP, Types.DOUBLE, "GNP")
-                    .useNumberFormatGrouping(true)
+                    .numberFormatGrouping(true)
                     .maximumFractionDigits(2),
             columnProperty(COUNTRY_GNPOLD, Types.DOUBLE, "GNP old")
-                    .useNumberFormatGrouping(true)
+                    .numberFormatGrouping(true)
                     .maximumFractionDigits(2),
             columnProperty(COUNTRY_LOCALNAME, Types.VARCHAR, "Local name")
                     .nullable(false)
@@ -193,7 +193,7 @@ public final class World extends Domain {
             // tag::denormalizedViewProperty[]
             denormalizedViewProperty(COUNTRY_CAPITAL_POPULATION, COUNTRY_CAPITAL_FK,
                     getDefinition(T_CITY).getProperty(CITY_POPULATION), "Capital pop.")
-                    .useNumberFormatGrouping(true),
+                    .numberFormatGrouping(true),
             // end::denormalizedViewProperty[]
             // tag::subqueryProperty[]
             subqueryProperty(COUNTRY_NO_OF_CITIES, Types.INTEGER, "No. of cities",
@@ -238,7 +238,7 @@ public final class World extends Domain {
             // tag::derivedProperty[]
             derivedProperty(COUNTRYLANGUAGE_NO_OF_SPEAKERS, Types.INTEGER, "No. of speakers",
                     new NoOfSpeakersProvider(), COUNTRYLANGUAGE_COUNTRY_FK, COUNTRYLANGUAGE_PERCENTAGE)
-                    .useNumberFormatGrouping(true)
+                    .numberFormatGrouping(true)
             // end::derivedProperty[]
     ).orderBy(orderBy().ascending(COUNTRYLANGUAGE_LANGUAGE).descending(COUNTRYLANGUAGE_PERCENTAGE))
             .caption("Language");
@@ -251,15 +251,15 @@ public final class World extends Domain {
             columnProperty(LOOKUP_COUNTRY_CONTINENT, Types.VARCHAR, "Continent"),
             columnProperty(LOOKUP_COUNTRY_REGION, Types.VARCHAR, "Region"),
             columnProperty(LOOKUP_COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
-                    .useNumberFormatGrouping(true),
+                    .numberFormatGrouping(true),
             columnProperty(LOOKUP_COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year"),
             columnProperty(LOOKUP_COUNTRY_POPULATION, Types.INTEGER, "Country population")
-                    .useNumberFormatGrouping(true),
+                    .numberFormatGrouping(true),
             columnProperty(LOOKUP_COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy"),
             columnProperty(LOOKUP_COUNTRY_GNP, Types.DOUBLE, "GNP")
-                    .useNumberFormatGrouping(true),
+                    .numberFormatGrouping(true),
             columnProperty(LOOKUP_COUNTRY_GNPOLD, Types.DOUBLE, "GNP old")
-                    .useNumberFormatGrouping(true),
+                    .numberFormatGrouping(true),
             columnProperty(LOOKUP_COUNTRY_LOCALNAME, Types.VARCHAR, "Local name"),
             columnProperty(LOOKUP_COUNTRY_GOVERNMENTFORM, Types.VARCHAR, "Government form"),
             columnProperty(LOOKUP_COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state"),
@@ -269,7 +269,7 @@ public final class World extends Domain {
             columnProperty(LOOKUP_CITY_NAME, Types.VARCHAR, "City"),
             columnProperty(LOOKUP_CITY_DISTRICT, Types.VARCHAR, "District"),
             columnProperty(LOOKUP_CITY_POPULATION, Types.INTEGER, "City population")
-                    .useNumberFormatGrouping(true))
+                    .numberFormatGrouping(true))
             .orderBy(orderBy().ascending(LOOKUP_COUNTRY_NAME).descending(LOOKUP_CITY_POPULATION))
             .readOnly(true)
             .caption("Lookup");
@@ -281,10 +281,10 @@ public final class World extends Domain {
                     .groupingColumn(true),
             columnProperty(CONTINENT_SURFACE_AREA, Types.INTEGER, "Surface area")
                     .aggregateColumn(true)
-                    .useNumberFormatGrouping(true),
+                    .numberFormatGrouping(true),
             columnProperty(CONTINENT_POPULATION, Types.BIGINT, "Population")
                     .aggregateColumn(true)
-                    .useNumberFormatGrouping(true),
+                    .numberFormatGrouping(true),
             columnProperty(CONTINENT_MIN_LIFE_EXPECTANCY, Types.DOUBLE, "Min. life expectancy")
                     .aggregateColumn(true),
             columnProperty(CONTINENT_MAX_LIFE_EXPECTANCY, Types.DOUBLE, "Max. life expectancy")
@@ -295,7 +295,7 @@ public final class World extends Domain {
                     .aggregateColumn(true),
             columnProperty(CONTINENT_GNP, Types.DOUBLE, "GNP")
                     .aggregateColumn(true)
-                    .useNumberFormatGrouping(true))
+                    .numberFormatGrouping(true))
             .readOnly(true)
             .caption("Continent");
   }
