@@ -182,6 +182,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     NO
   }
 
+  /**
+   * Specifies whether a application frame should include a main menu.
+   * @see #getMainMenuControlSet()
+   * @see #initializeMenuBar()
+   */
+  public enum MainMenu {
+    /**
+     * Main menu should be included.
+     */
+    YES,
+    /**
+     * Main menu should not be included.
+     */
+    NO
+  }
+
   private static final String DEFAULT_USERNAME_PROPERTY = "org.jminor.swing.framework.ui.defaultUsername";
   private static final String LOOK_AND_FEEL_PROPERTY = "org.jminor.swing.framework.ui.LookAndFeel";
   private static final String FONT_SIZE_PROPERTY = "org.jminor.swing.framework.ui.FontSize";
@@ -1201,14 +1217,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Initializes a JFrame according to the given parameters, containing this EntityApplicationPanel
    * @param title the title string for the JFrame
    * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
-   * @param showMenuBar true if a menubar should be created
+   * @param mainMenu yes if the main menu should be included
    * @param size if the JFrame is not maximized then its preferredSize is set to this value
    * @param applicationIcon the application icon
    * @param displayFrame specifies whether the frame should be displayed or left invisible
    * @return an initialized, but non-visible JFrame
    */
   protected final JFrame prepareFrame(final String title, final MaximizeFrame maximizeFrame,
-                                      final boolean showMenuBar, final Dimension size,
+                                      final MainMenu mainMenu, final Dimension size,
                                       final ImageIcon applicationIcon, final DisplayFrame displayFrame) {
     final JFrame frame = frameProvider.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1236,7 +1252,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
     frame.setTitle(title);
-    if (showMenuBar) {
+    if (mainMenu == MainMenu.YES) {
       frame.setJMenuBar(initializeMenuBar());
     }
     if (displayFrame == DisplayFrame.YES) {
@@ -1399,7 +1415,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
           saveDefaultUsername(connectionProvider.getUser().getUsername());
         }
         this.frameTitle = getFrameTitle(frameCaption, connectionProvider);
-        final JFrame frame = prepareFrame(this.frameTitle, maximizeFrame, true, frameSize, applicationIcon, displayFrame);
+        final JFrame frame = prepareFrame(this.frameTitle, maximizeFrame, MainMenu.YES, frameSize, applicationIcon, displayFrame);
         this.applicationStartedEvent.onEvent();
         LOG.info(this.frameTitle + ", application started successfully, " + connectionProvider.getUser().getUsername()
                 + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
