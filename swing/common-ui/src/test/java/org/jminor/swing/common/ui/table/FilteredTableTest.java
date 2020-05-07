@@ -78,19 +78,19 @@ public class FilteredTableTest {
 
     searchField.setText("");
 
-    filteredTable.findNext(false, "da");
+    filteredTable.findNext("da");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
-    filteredTable.findNext(false, "da");
+    filteredTable.findNext("da");
     assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
-    filteredTable.findNext(false, "da");
+    filteredTable.findNext("da");
     assertEquals(2, tableModel.getSelectionModel().getSelectedIndex());
-    filteredTable.findPrevious(true, "da");
+    filteredTable.findAndSelectPrevious("da");
     assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
     assertEquals(2, tableModel.getSelectionModel().getSelectionCount());
-    filteredTable.findPrevious(true, "da");
+    filteredTable.findAndSelectPrevious("da");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
     assertEquals(3, tableModel.getSelectionModel().getSelectionCount());
-    filteredTable.findNext(false, "dat");
+    filteredTable.findNext("dat");
   }
 
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {

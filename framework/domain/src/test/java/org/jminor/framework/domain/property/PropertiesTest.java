@@ -70,8 +70,8 @@ public final class PropertiesTest {
   }
 
   @Test
-  public void setUserNumberFormatGroupingNotNumerical() {
-    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.DATE).useNumberFormatGrouping(false));
+  public void setNumberFormatGroupingNotNumerical() {
+    assertThrows(IllegalStateException.class, () -> columnProperty("propertyId", Types.DATE).numberFormatGrouping(false));
   }
 
   @Test

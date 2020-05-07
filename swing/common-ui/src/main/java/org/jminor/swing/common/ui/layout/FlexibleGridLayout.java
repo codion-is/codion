@@ -46,8 +46,9 @@ public final class FlexibleGridLayout extends GridLayout {
     NO
   }
 
-  private boolean fixedRowHeights;
-  private boolean fixedColumnWidths;
+  private final boolean fixedRowHeights;
+  private final boolean fixedColumnWidths;
+
   private int fixedColumnWidth;
   private int fixedRowHeight;
 

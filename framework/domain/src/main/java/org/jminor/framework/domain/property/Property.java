@@ -377,11 +377,11 @@ public interface Property extends Serializable {
      * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
      * By default grouping is not used.
      * Only applicable to numerical properties.
-     * This setting is overridden during subsequent calls to {@code setFormat}
-     * @param useGrouping if true then number grouping is used
+     * This setting is overridden during subsequent calls to {@link #format(Format)}
+     * @param numberFormatGrouping if true then number grouping is used
      * @return this instance
      */
-    Property.Builder useNumberFormatGrouping(boolean useGrouping);
+    Property.Builder numberFormatGrouping(boolean numberFormatGrouping);
 
     /**
      * @param preferredColumnWidth the preferred column width of this property in pixels when displayed in a table

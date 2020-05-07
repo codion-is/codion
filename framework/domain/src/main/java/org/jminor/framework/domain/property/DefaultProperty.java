@@ -592,11 +592,11 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public final Property.Builder useNumberFormatGrouping(final boolean useGrouping) {
+    public final Property.Builder numberFormatGrouping(final boolean numberFormatGrouping) {
       if (!property.isNumerical()) {
-        throw new IllegalStateException("useNumberFormatGrouping is only applicable to numerical properties");
+        throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties");
       }
-      ((NumberFormat) property.format).setGroupingUsed(useGrouping);
+      ((NumberFormat) property.format).setGroupingUsed(numberFormatGrouping);
       return this;
     }
 
