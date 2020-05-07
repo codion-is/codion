@@ -6039,3 +6039,4 @@
   FXUiUtil.SingleSelection enum added and used instead of boolean parameter
   HttpServerConfiguration.Secure enum added and used instead of boolean parameter
   KeyEvents.OnKeyRelease enum added and used instead of boolean parameter
+  FlexibleGridLayout.FixRowHeights and FixColumnWidths enums added and used instead of boolean parameter

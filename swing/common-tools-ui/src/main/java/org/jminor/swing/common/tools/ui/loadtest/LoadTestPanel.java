@@ -20,6 +20,8 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.TextFields;
@@ -138,7 +140,7 @@ public final class LoadTestPanel extends JPanel {
     final JPanel userBase = initializeUserPanel();
     final JPanel chartControlPanel = initializeChartControlPanel();
 
-    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(5, 1, false, true));
+    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(5, 1, FixRowHeights.NO, FixColumnWidths.YES));
     controlPanel.add(applicationPanel);
     controlPanel.add(activityPanel);
     controlPanel.add(scenarioPanel);
@@ -187,7 +189,7 @@ public final class LoadTestPanel extends JPanel {
     final ActionListener userInfoListener = e -> loadTestModel.setUser(Users.user(usernameField.getText(), passwordField.getPassword()));
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
-    final FlexibleGridLayout layout = Layouts.flexibleGridLayout(2, 2, true, false);
+    final FlexibleGridLayout layout = Layouts.flexibleGridLayout(2, 2, FixRowHeights.YES, FixColumnWidths.NO);
     layout.setFixedRowHeight(TextFields.getPreferredTextFieldHeight());
     final JPanel userBase = new JPanel(layout);
     userBase.setBorder(BorderFactory.createTitledBorder("User"));
@@ -249,7 +251,7 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeChartControlPanel() {
-    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2, true, false));
+    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2, FixRowHeights.YES, FixColumnWidths.NO));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
     controlPanel.add(ControlProvider.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
             "Collect chart data", loadTestModel.collectChartDataObserver())));
@@ -346,7 +348,7 @@ public final class LoadTestPanel extends JPanel {
     final ToggleControl pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
     pauseControl.setMnemonic('P');
 
-    final FlexibleGridLayout layout = Layouts.flexibleGridLayout(4, 2, true, false);
+    final FlexibleGridLayout layout = Layouts.flexibleGridLayout(4, 2, FixRowHeights.YES, FixColumnWidths.NO);
     layout.setFixedRowHeight(TextFields.getPreferredTextFieldHeight());
     final JPanel thinkTimePanel = new JPanel(layout);
     thinkTimePanel.add(new JLabel("Max. think time", JLabel.CENTER));

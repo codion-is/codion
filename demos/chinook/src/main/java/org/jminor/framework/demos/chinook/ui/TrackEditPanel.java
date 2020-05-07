@@ -5,6 +5,8 @@ package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
@@ -51,7 +53,7 @@ public class TrackEditPanel extends EntityEditPanel {
     durationPanel.add(createPropertyPanel(TRACK_MILLISECONDS, millisecondsField));
     durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), durationField));
 
-    setLayout(new FlexibleGridLayout(4, 2, 5, 5, true, false));
+    setLayout(new FlexibleGridLayout(4, 2, 5, 5, FixRowHeights.YES, FixColumnWidths.NO));
     addPropertyPanel(TRACK_ALBUM_FK);
     addPropertyPanel(TRACK_NAME);
     add(createPropertyPanel(TRACK_GENRE_FK, genrePanel));

@@ -17,7 +17,8 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.common.ui.layout.Layouts;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -41,6 +42,8 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+
+import static org.jminor.swing.common.ui.layout.Layouts.*;
 
 /**
  * A JDialog for displaying information on exceptions.
@@ -85,14 +88,14 @@ final class ExceptionDialog extends JDialog {
   }
 
   private void initializeUI() {
-    final JPanel basePanel = new JPanel(Layouts.borderLayout());
+    final JPanel basePanel = new JPanel(borderLayout());
     basePanel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
     basePanel.add(createNorthPanel(), BorderLayout.NORTH);
     centerPanel = createCenterPanel();
     basePanel.add(centerPanel, BorderLayout.CENTER);
     basePanel.add(createButtonPanel(), BorderLayout.SOUTH);
 
-    getContentPane().setLayout(Layouts.borderLayout());
+    getContentPane().setLayout(borderLayout());
     getContentPane().add(basePanel, BorderLayout.CENTER);
   }
 
@@ -118,7 +121,8 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createNorthPanel() {
-    final FlexibleGridLayout layout = Layouts.flexibleGridLayout(NORTH_PANEL_DIMENSIONS, NORTH_PANEL_DIMENSIONS, true, false);
+    final FlexibleGridLayout layout =
+            flexibleGridLayout(NORTH_PANEL_DIMENSIONS, NORTH_PANEL_DIMENSIONS, FixRowHeights.YES, FixColumnWidths.NO);
     layout.setFixedRowHeight(new JTextField().getPreferredSize().height);
     detailPanel = new JPanel(layout);
     descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"), SwingConstants.CENTER);
@@ -144,8 +148,8 @@ final class ExceptionDialog extends JDialog {
     detailPanel.add(messageLabel);
     detailPanel.add(messageScroller);
 
-    final JPanel northPanel = new JPanel(Layouts.borderLayout());
-    final JPanel northNorthPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    final JPanel northPanel = new JPanel(borderLayout());
+    final JPanel northNorthPanel = new JPanel(flowLayout(FlowLayout.LEFT));
     northNorthPanel.add(descriptionLabel);
     northPanel.add(northNorthPanel, BorderLayout.NORTH);
     northPanel.add(detailPanel, BorderLayout.CENTER);

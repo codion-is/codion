@@ -5,6 +5,8 @@ package org.jminor.swing.common.ui.layout;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.value.Value;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -68,20 +70,21 @@ public final class Layouts {
    * @see #HORIZONTAL_VERTICAL_GAP
    */
   public static FlexibleGridLayout flexibleGridLayout(final int rows, final int columns) {
-    return flexibleGridLayout(rows, columns, false, false);
+    return flexibleGridLayout(rows, columns, FixRowHeights.NO, FixColumnWidths.NO);
   }
 
   /**
    * Creates a FlexibleGridLayout using the default vertical and horizontal gap value
    * @param rows the number of rows
    * @param columns the number of columns
-   * @param fixRowHeights if true then the height of the rows is fixed as the largest value
-   * @param fixColumnWidths if true then the width of the columns is fixed as the largest value
+   * @param fixRowHeights if yes then the height of the rows is fixed as the largest value
+   * @param fixColumnWidths if yes then the width of the columns is fixed as the largest value
    * @return a FlexibleGridLayout
    * @see #HORIZONTAL_VERTICAL_GAP
    */
   public static FlexibleGridLayout flexibleGridLayout(final int rows, final int columns,
-                                                      final boolean fixRowHeights, final boolean fixColumnWidths) {
+                                                      final FixRowHeights fixRowHeights,
+                                                      final FixColumnWidths fixColumnWidths) {
     return new FlexibleGridLayout(rows, columns, HORIZONTAL_VERTICAL_GAP.get(),
             HORIZONTAL_VERTICAL_GAP.get(), fixRowHeights, fixColumnWidths);
   }
