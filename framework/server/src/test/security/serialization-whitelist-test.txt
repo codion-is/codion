@@ -85,8 +85,8 @@ org.jminor.framework.domain.property.DefaultColumnProperty
 org.jminor.framework.domain.property.DefaultDerivedProperty
 org.jminor.framework.domain.property.DefaultForeignKeyProperty
 org.jminor.framework.domain.property.DefaultProperty
-org.jminor.framework.domain.property.DefaultProperty$DefaultValueProvider
-org.jminor.framework.domain.property.DefaultProperty$NullDefaultValueProvider
+org.jminor.framework.domain.property.DefaultProperty$DefaultValueSupplier
+org.jminor.framework.domain.property.DefaultProperty$NullDefaultValueSupplier
 org.jminor.framework.domain.property.DefaultTransientProperty
 org.jminor.framework.domain.property.DefaultValueListProperty
 org.jminor.framework.domain.property.Properties
