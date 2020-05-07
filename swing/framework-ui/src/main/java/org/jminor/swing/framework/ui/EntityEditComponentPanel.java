@@ -30,6 +30,7 @@ import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.common.ui.value.UpdateOn;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
+import org.jminor.swing.framework.ui.EntityInputComponents.Sorted;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
@@ -961,19 +962,19 @@ public class EntityEditComponentPanel extends JPanel {
    * @throws IllegalArgumentException in case the property is not a value list property
    */
   protected final SteppedComboBox createValueListComboBox(final String propertyId) {
-    return createValueListComboBox(propertyId, true);
+    return createValueListComboBox(propertyId, Sorted.YES);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined by the given value list property,
    * bound to the given property.
    * @param propertyId the propertyId
-   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyId, final boolean sortItems) {
-    return createValueListComboBox(propertyId, sortItems, null);
+  protected final SteppedComboBox createValueListComboBox(final String propertyId, final Sorted sorted) {
+    return createValueListComboBox(propertyId, sorted, null);
   }
 
   /**
@@ -985,25 +986,26 @@ public class EntityEditComponentPanel extends JPanel {
    * @throws IllegalArgumentException in case the property is not a value list property
    */
   protected final SteppedComboBox createValueListComboBox(final String propertyId, final StateObserver enabledState) {
-    return createValueListComboBox(propertyId, true, enabledState);
+    return createValueListComboBox(propertyId, Sorted.YES, enabledState);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined by the given value list property,
    * bound to the given property.
    * @param propertyId the propertyId
-   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyId, final boolean sortItems, final StateObserver enabledState) {
+  protected final SteppedComboBox createValueListComboBox(final String propertyId, final Sorted sorted,
+                                                          final StateObserver enabledState) {
     final Property property = getEditModel().getEntityDefinition().getProperty(propertyId);
     if (!(property instanceof ValueListProperty)) {
       throw new IllegalArgumentException("Property identified by '" + propertyId + "' is not a ValueListProperty");
     }
 
-    return createValueListComboBox((ValueListProperty) property, sortItems, enabledState);
+    return createValueListComboBox((ValueListProperty) property, sorted, enabledState);
   }
 
   /**
@@ -1013,18 +1015,18 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createValueListComboBox(final ValueListProperty property) {
-    return createValueListComboBox(property, true);
+    return createValueListComboBox(property, Sorted.YES);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined in the given value list property,
    * bound to the given property.
    * @param property the property
-   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final boolean sortItems) {
-    return createValueListComboBox(property, sortItems, null);
+  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final Sorted sorted) {
+    return createValueListComboBox(property, sorted, null);
   }
 
   /**
@@ -1035,21 +1037,21 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final StateObserver enabledState) {
-    return createValueListComboBox(property, true, enabledState);
+    return createValueListComboBox(property, Sorted.YES, enabledState);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined in the given value list property,
    * bound to the given property.
    * @param property the property
-   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final boolean sortItems,
+  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final Sorted sorted,
                                                           final StateObserver enabledState) {
-    final SteppedComboBox box = EntityInputComponents.createValueListComboBox(property, getEditModel().value(property.getPropertyId()),
-            sortItems, enabledState);
+    final SteppedComboBox box = EntityInputComponents.createValueListComboBox(property,
+            getEditModel().value(property.getPropertyId()), sorted, enabledState);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) box.getEditor().getEditorComponent());
       transferFocusOnEnter(box);

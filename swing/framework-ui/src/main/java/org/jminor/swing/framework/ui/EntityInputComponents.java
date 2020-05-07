@@ -111,6 +111,21 @@ public final class EntityInputComponents {
      */
     NO
   }
+
+  /**
+   * Specifies whether the contents of a combo box should be sorted.
+   */
+  public enum Sorted {
+    /**
+     * Sort contents.
+     */
+    YES,
+    /**
+     * Don't sort contents.
+     */
+    NO
+  }
+
   private static final String PROPERTY_PARAM_NAME = "property";
   private static final String VALUE_PARAM_NAME = "value";
   private static final String FOREIGN_KEY_PROPERTY_PARAM_NAME = "foreignKeyProperty";
@@ -356,7 +371,7 @@ public final class EntityInputComponents {
    * @return a combo box based on the given values
    */
   public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value) {
-    return createValueListComboBox(property, value, true, null);
+    return createValueListComboBox(property, value, Sorted.YES, null);
   }
 
   /**
@@ -368,19 +383,19 @@ public final class EntityInputComponents {
    */
   public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
                                                         final StateObserver enabledState) {
-    return createValueListComboBox(property, value, true, enabledState);
+    return createValueListComboBox(property, value, Sorted.YES, enabledState);
   }
 
   /**
    * Creates a combo box based on the values in the given value list property
    * @param property the property
    * @param value the value to bind to the field
-   * @param sortItems if true then the items are sorted
+   * @param sorted if yes then the items are sorted
    * @return a combo box based on the given values
    */
   public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
-                                                        final boolean sortItems) {
-    return createValueListComboBox(property, value, sortItems, null);
+                                                        final Sorted sorted) {
+    return createValueListComboBox(property, value, sorted, null);
   }
 
   /**
@@ -389,14 +404,14 @@ public final class EntityInputComponents {
    * one is added to the combo box model.
    * @param property the property
    * @param value the value to bind to the field
-   * @param sortItems if true then the items are sorted
+   * @param sorted if yes then the items are sorted
    * @param enabledState the state controlling the enabled state of the combo box
    * @return a combo box based on the given values
    */
   public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
-                                                        final boolean sortItems, final StateObserver enabledState) {
+                                                        final Sorted sorted, final StateObserver enabledState) {
     final SteppedComboBox comboBox = createComboBox(property, value,
-            createValueListComboBoxModel(property, sortItems), enabledState);
+            createValueListComboBoxModel(property, sorted), enabledState);
     addComboBoxCompletion(comboBox);
 
     return comboBox;
@@ -777,8 +792,8 @@ public final class EntityInputComponents {
     return checkBox;
   }
 
-  private static ItemComboBoxModel createValueListComboBoxModel(final ValueListProperty property, final boolean sortItems) {
-    final ItemComboBoxModel model = sortItems ?
+  private static ItemComboBoxModel createValueListComboBoxModel(final ValueListProperty property, final Sorted sorted) {
+    final ItemComboBoxModel model = sorted == Sorted.YES ?
             new ItemComboBoxModel(property.getValues()) : new ItemComboBoxModel(null, property.getValues());
     if (property.isNullable() && !model.containsItem(Items.item(null))) {
       model.addItem(Items.item(null, EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
