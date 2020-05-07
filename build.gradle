@@ -90,7 +90,7 @@ configure(project.frameworkModules) {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                groupId 'org.jminor.' + project.jdk
+                groupId 'org.jminor.' + project.targetJdk
                 from components.java
             }
         }
@@ -169,7 +169,7 @@ task tagRelease {
         if (project.version.contains("SNAPSHOT")) {
             throw new GradleException("Thou shalt not tag a snapshot release")
         }
-        def tagName = 'v' + project.version + '-' + project.jdk
+        def tagName = 'v' + project.version + '-' + project.targetJdk
         exec { commandLine 'git', 'push' }
         exec { commandLine 'git', 'tag', '-a', tagName, '-m', '"' + tagName + ' release"' }
         exec { commandLine 'git', 'push', 'origin', tagName }

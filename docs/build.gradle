@@ -6,7 +6,7 @@ apply plugin: 'maven-publish'
 
 def documentationVersion = project.version.replace('-SNAPSHOT', '')
 
-def documentationDir = "doc/${documentationVersion}/${project.jdk}"
+def documentationDir = "doc/${documentationVersion}/${project.targetJdk}"
 
 asciidoctor {
     doFirst {
@@ -23,7 +23,7 @@ asciidoctor {
     sources {
         include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc'
     }
-    attributes 'jminor-version': documentationVersion, 'jminor-jdk': project.jdk,
+    attributes 'jminor-version': documentationVersion, 'jminor-jdk': project.targetJdk,
             revnumber: documentationVersion, toc: 'left', sectnums: 4, sectanchors: true, prewrap: false,
             experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1'
     asciidoctorj {
@@ -83,7 +83,7 @@ artifacts {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId 'org.jminor.' + project.jdk
+            groupId 'org.jminor.' + project.targetJdk
             artifact documentationZip
         }
     }
