@@ -18,6 +18,20 @@ import static java.util.Objects.requireNonNull;
  */
 public final class KeyEvents {
 
+  /**
+   * Specifies whether a keystroke should represent a key release or key pressed.
+   */
+  public enum OnKeyRelease {
+    /**
+     * Key release.
+     */
+    YES,
+    /**
+     * Key pressed.
+     */
+    NO
+  }
+
   private KeyEvents() {}
 
   /**
@@ -61,7 +75,7 @@ public final class KeyEvents {
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
                                  final Action action) {
-    addKeyEvent(component, keyEvent, modifiers, condition, true, action);
+    addKeyEvent(component, keyEvent, modifiers, condition, OnKeyRelease.YES, action);
   }
 
   /**
@@ -71,12 +85,12 @@ public final class KeyEvents {
    * @param keyEvent the key event
    * @param modifiers the modifiers
    * @param condition the condition
-   * @param onKeyRelease the onKeyRelease condition
+   * @param onKeyRelease if yes then key on key release otherwise on pressed
    * @param action the action, if null then the action binding is removed
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
-                                 final boolean onKeyRelease, final Action action) {
+                                 final OnKeyRelease onKeyRelease, final Action action) {
     requireNonNull(component, "component");
     Object actionName = null;
     if (action != null) {
@@ -86,7 +100,7 @@ public final class KeyEvents {
       }
       component.getActionMap().put(actionName, action);
     }
-    component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), actionName);
+    component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease == OnKeyRelease.YES), actionName);
   }
 
   /**
@@ -98,10 +112,10 @@ public final class KeyEvents {
    * @return the component
    */
   public static <T extends JComponent> T transferFocusOnEnter(final T component) {
-    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false,
-            new TransferFocusAction(component));
-    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false,
-            new TransferFocusAction(component, true));
+    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
+            OnKeyRelease.NO, new TransferFocusAction(component));
+    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED,
+            OnKeyRelease.NO, new TransferFocusAction(component, true));
 
     return component;
   }
@@ -113,8 +127,8 @@ public final class KeyEvents {
    * @return the component
    */
   public static <T extends JTextComponent> T removeTransferFocusOnEnter(final T component) {
-    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, null);
-    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, null);
+    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, OnKeyRelease.NO, null);
+    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, OnKeyRelease.NO, null);
 
     return component;
   }

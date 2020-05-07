@@ -10,6 +10,7 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
+import org.jminor.swing.common.ui.KeyEvents.OnKeyRelease;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -177,8 +178,8 @@ final class ExceptionDialog extends JDialog {
     final Control closeControl = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
     closeControl.setDescription(MESSAGES.getString("close_dialog"));
     closeControl.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
-    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, false, closeControl);
-    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, false, closeControl);
+    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, OnKeyRelease.NO, closeControl);
+    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, OnKeyRelease.NO, closeControl);
     final Control saveControl = Controls.control(() ->
                     Files.write(Dialogs.selectFileToSave(detailsArea, null, "error.txt").toPath(),
                             Arrays.asList(detailsArea.getText().split("\\r?\\n"))),

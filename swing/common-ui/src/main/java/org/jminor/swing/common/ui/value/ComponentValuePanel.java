@@ -9,6 +9,7 @@ import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.swing.common.ui.KeyEvents;
+import org.jminor.swing.common.ui.KeyEvents.OnKeyRelease;
 import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
@@ -138,7 +139,7 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
     final JButton cancelButton = new JButton(cancelAction);
     final JPanel panel = new JPanel(new GridLayout(1, COLUMNS));
     panel.add(okButton);
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true,
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, OnKeyRelease.YES,
             new AbstractAction("cancelInput") {
               @Override
               public void actionPerformed(final ActionEvent e) {

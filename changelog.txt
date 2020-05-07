@@ -6038,3 +6038,4 @@
   EntityInputComponents.Editable enum added and used instead of boolean parameter
   FXUiUtil.SingleSelection enum added and used instead of boolean parameter
   HttpServerConfiguration.Secure enum added and used instead of boolean parameter
+  KeyEvents.OnKeyRelease enum added and used instead of boolean parameter

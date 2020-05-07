@@ -21,6 +21,7 @@ import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
+import org.jminor.swing.common.ui.KeyEvents.OnKeyRelease;
 import org.jminor.swing.common.ui.SwingMessages;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
@@ -173,8 +174,10 @@ public final class EntityLookupField extends JTextField {
    * Activates the transferal of focus on ENTER
    */
   public void setTransferFocusOnEnter() {
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, transferFocusAction);
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, transferFocusBackwardAction);
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
+            OnKeyRelease.NO, transferFocusAction);
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED,
+            OnKeyRelease.NO, transferFocusBackwardAction);
   }
 
   /**
@@ -322,10 +325,10 @@ public final class EntityLookupField extends JTextField {
   private void showEmptyResultMessage() {
     final Event closeEvent = Events.event();
     final JButton okButton = new JButton(Controls.control(closeEvent::onEvent, Messages.get(Messages.OK)));
-    KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true,
-            Controls.control(okButton::doClick));
-    KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_FOCUSED, true,
-            Controls.control(closeEvent::onEvent));
+    KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
+            OnKeyRelease.YES, Controls.control(okButton::doClick));
+    KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_FOCUSED,
+            OnKeyRelease.YES, Controls.control(closeEvent::onEvent));
     final JPanel buttonPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     buttonPanel.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
