@@ -21,6 +21,8 @@ public class DerbyDatabaseTest {
     assertEquals("sample.db:1234", database.getName());
     database = new DerbyDatabase("jdbc:derby://sample.db:1234");
     assertEquals("sample.db:1234", database.getName());
+    database = new DerbyDatabase("jdbc:derby://sample.db:1234/dbname");
+    assertEquals("dbname", database.getName());
   }
 
   @Test

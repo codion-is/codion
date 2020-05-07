@@ -14,9 +14,9 @@ public class MariaDbDatabaseTest {
   @Test
   public void getName() {
     MariaDbDatabase database = new MariaDbDatabase("jdbc:mariadb://host.com:1234/dbname");
-    assertEquals("host.com:1234/dbname", database.getName());
+    assertEquals("dbname", database.getName());
     database = new MariaDbDatabase("jdbc:mariadb://host.com:1234/dbname;option=true;option2=false");
-    assertEquals("host.com:1234/dbname", database.getName());
+    assertEquals("dbname", database.getName());
   }
 
   @Test

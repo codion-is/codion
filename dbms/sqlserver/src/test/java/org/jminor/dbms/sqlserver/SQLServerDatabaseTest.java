@@ -14,9 +14,9 @@ public class SQLServerDatabaseTest {
   @Test
   public void getName() {
     SQLServerDatabase database = new SQLServerDatabase("jdbc:sqlserver://host.db\\instance:1234");
-    assertEquals("host.db\\instance:1234", database.getName());
+    assertEquals("instance", database.getName());
     database = new SQLServerDatabase("jdbc:sqlserver://host.db\\instance:1234;options");
-    assertEquals("host.db\\instance:1234", database.getName());
+    assertEquals("instance", database.getName());
   }
 
   @Test

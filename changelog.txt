@@ -6031,3 +6031,4 @@
   ReferentialIntegrityErrorHandling moved up to package level
   EntityEditPanel.createEditPanelAction() moved to EntityPanelBuilder, eliminating a cyclic dependency
   KeyGenerator.beforeInsert() and afterInsert(), replaced EntityDefinition parameter with primary key properties, eliminating a cyclic dependency
+  Database.getName() implementations improved, now return the schema or db name instead of the full connection string

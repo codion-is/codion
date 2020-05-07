@@ -65,7 +65,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   @Override
   public String getDescription() {
-    return database.getName();
+    return database.getName().toUpperCase();
   }
 
   @Override
