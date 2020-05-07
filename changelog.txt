@@ -6034,3 +6034,4 @@
   Database.getName() implementations improved, now returns the schema or db name instead of the full connection string
   EntityApplicationPanel.MainMenu enum added and used instead of boolean parameter
   EntityInputComponents.Sorted enum added and used instead of boolean parameter
+  TemporalInputPanel.CalendarButton enum added and used instead of boolean parameter

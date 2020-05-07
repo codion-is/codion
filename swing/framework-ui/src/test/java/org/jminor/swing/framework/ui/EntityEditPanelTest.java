@@ -11,6 +11,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.jupiter.api.Test;
@@ -77,7 +78,7 @@ public final class EntityEditPanelTest {
       createForeignKeyComboBox(TestDomain.EMP_DEPARTMENT_FK);
       createTextField(TestDomain.EMP_SALARY);
       createTextField(TestDomain.EMP_COMMISSION);
-      createTemporalInputPanel(TestDomain.EMP_HIREDATE, true);
+      createTemporalInputPanel(TestDomain.EMP_HIREDATE, CalendarButton.YES);
 
       setInitialFocusProperty(TestDomain.EMP_NAME);
 

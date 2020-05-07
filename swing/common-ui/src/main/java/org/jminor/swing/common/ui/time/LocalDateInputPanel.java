@@ -50,20 +50,20 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
    * @param dateFormat the date format
    */
   public LocalDateInputPanel(final LocalDate initialValue, final String dateFormat) {
-    this(TextFields.createFormattedTemporalField(dateFormat, initialValue), dateFormat, true, null);
+    this(TextFields.createFormattedTemporalField(dateFormat, initialValue), dateFormat, CalendarButton.YES, null);
   }
 
   /**
    * Instantiates a new LocalTimeInputPanel.
    * @param inputField the input field
-   * @param includeCalendarButton if true and JCalendar is available, a button for displaying a calendar is included
+   * @param calendarButton if yes and JCalendar is available, a button for displaying a calendar is included
    * @param dateFormat the date format
    * @param enabledState a StateObserver controlling the enabled state of the input field
    */
   public LocalDateInputPanel(final JFormattedTextField inputField, final String dateFormat,
-                             final boolean includeCalendarButton, final StateObserver enabledState) {
+                             final CalendarButton calendarButton, final StateObserver enabledState) {
     super(inputField, dateFormat, LocalDate::parse, enabledState);
-    if (includeCalendarButton && TemporalInputPanel.isJCalendarAvailable()) {
+    if (calendarButton == CalendarButton.YES && TemporalInputPanel.isJCalendarAvailable()) {
       this.button = new JButton(Controls.control(this::displayCalendar, "..."));
       this.button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null) {

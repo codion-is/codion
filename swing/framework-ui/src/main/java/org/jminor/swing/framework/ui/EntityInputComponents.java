@@ -40,6 +40,7 @@ import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.LocalTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
+import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import org.jminor.swing.common.ui.value.BooleanValues;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
@@ -461,12 +462,12 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param updateOn specifies when the underlying value should be updated
-   * @param includeButton if true then a button for opening a date input dialog is included (only available for LocalDate)
+   * @param calendarButton if yes then a button for opening a date input dialog is included (only available for LocalDate)
    * @return a date input panel
    */
   public static TemporalInputPanel createTemporalInputPanel(final Property property, final Value value,
-                                                            final UpdateOn updateOn, final boolean includeButton) {
-    return createTemporalInputPanel(property, value, updateOn, includeButton, null);
+                                                            final UpdateOn updateOn, final CalendarButton calendarButton) {
+    return createTemporalInputPanel(property, value, updateOn, calendarButton, null);
   }
 
   /**
@@ -474,12 +475,12 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param updateOn specifies when the underlying value should be updated
-   * @param includeCalendarButton if true then a button for opening a calendar dialog is included
+   * @param calendarButton if yes then a button for opening a calendar dialog is included
    * @param enabledState the state controlling the enabled state of the panel
    * @return a date input panel
    */
   public static TemporalInputPanel createTemporalInputPanel(final Property property, final Value value,
-                                                            final UpdateOn updateOn, final boolean includeCalendarButton,
+                                                            final UpdateOn updateOn, final CalendarButton calendarButton,
                                                             final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     if (!property.isTemporal()) {
@@ -490,10 +491,10 @@ public final class EntityInputComponents {
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, value,
             DateFormats.getDateMask(formatString), updateOn, enabledState);
     if (property.isDate()) {
-      return new LocalDateInputPanel(field, formatString, includeCalendarButton, enabledState);
+      return new LocalDateInputPanel(field, formatString, calendarButton, enabledState);
     }
     else if (property.isTimestamp()) {
-      return new LocalDateTimeInputPanel(field, formatString, includeCalendarButton, enabledState);
+      return new LocalDateTimeInputPanel(field, formatString, calendarButton, enabledState);
     }
     else if (property.isTime()) {
       return new LocalTimeInputPanel(field, formatString, enabledState);

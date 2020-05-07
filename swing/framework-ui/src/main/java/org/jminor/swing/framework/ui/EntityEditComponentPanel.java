@@ -26,6 +26,7 @@ import org.jminor.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
+import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.common.ui.value.UpdateOn;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
@@ -465,45 +466,45 @@ public class EntityEditComponentPanel extends JPanel {
    * @see Property#DATE_FORMAT
    */
   protected final TemporalInputPanel createTemporalInputPanel(final String propertyId) {
-    return createTemporalInputPanel(propertyId, true);
+    return createTemporalInputPanel(propertyId, CalendarButton.YES);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton) {
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final CalendarButton calendarButton) {
     final Property property = getEditModel().getEntityDefinition().getProperty(propertyId);
-    return createTemporalInputPanel(property, includeButton, null);
+    return createTemporalInputPanel(property, calendarButton, null);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton,
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final CalendarButton calendarButton,
                                                               final StateObserver enabledState) {
-    return createTemporalInputPanel(propertyId, includeButton, enabledState, UpdateOn.KEYSTROKE);
+    return createTemporalInputPanel(propertyId, calendarButton, enabledState, UpdateOn.KEYSTROKE);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOn specifies when the underlying value should be updated
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton,
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final CalendarButton calendarButton,
                                                               final StateObserver enabledState, final UpdateOn updateOn) {
     return createTemporalInputPanel(getEditModel().getEntityDefinition().getProperty(propertyId),
-            includeButton, enabledState, updateOn);
+            calendarButton, enabledState, updateOn);
   }
 
   /**
@@ -512,43 +513,43 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TemporalInputPanel bound to the property
    */
   protected final TemporalInputPanel createTemporalInputPanel(final Property property) {
-    return createTemporalInputPanel(property, true);
+    return createTemporalInputPanel(property, CalendarButton.YES);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton) {
-    return createTemporalInputPanel(property, includeButton, null);
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final CalendarButton calendarButton) {
+    return createTemporalInputPanel(property, calendarButton, null);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton,
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final CalendarButton calendarButton,
                                                               final StateObserver enabledState) {
-    return createTemporalInputPanel(property, includeButton, enabledState, UpdateOn.KEYSTROKE);
+    return createTemporalInputPanel(property, calendarButton, enabledState, UpdateOn.KEYSTROKE);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOn specifies when the underlying value should be updated
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton,
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final CalendarButton calendarButton,
                                                               final StateObserver enabledState, final UpdateOn updateOn) {
     final TemporalInputPanel panel = EntityInputComponents.createTemporalInputPanel(property,
-            getEditModel().value(property.getPropertyId()), updateOn, includeButton, enabledState);
+            getEditModel().value(property.getPropertyId()), updateOn, calendarButton, enabledState);
     if (panel instanceof LocalDateInputPanel) {
       final LocalDateInputPanel localDateInputPanel = (LocalDateInputPanel) panel;
       if (localDateInputPanel.getCalendarButton() != null && TRANSFER_FOCUS_ON_ENTER.get()) {
