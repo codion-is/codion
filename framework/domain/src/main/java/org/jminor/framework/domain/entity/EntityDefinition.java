@@ -90,14 +90,14 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * @return the object responsible for generating primary key values for entities of this type
+   * @see Builder#keyGenerator(KeyGenerator)
    */
   KeyGenerator getKeyGenerator();
 
   /**
-   * Returns true if the value for the primary key of this entity is generated, either by the framework,
-   * such as values queried from sequences or set by triggers. If not the primary key value must be set manually
-   * before the entity is inserted.
+   * Returns true if the value for the primary key of this entity is generated with a {@link KeyGenerator}.
    * @return true if the value for the primary key is generated
+   * @see Builder#keyGenerator(KeyGenerator)
    */
   boolean isKeyGenerated();
 
@@ -430,7 +430,7 @@ public interface EntityDefinition extends Serializable {
      * Returns the {@link EntityDefinition} for the given entityId
      * @param entityId the entityId
      * @return the entity definition
-     * @throws IllegalArgumentException in case a definition is not found
+     * @throws IllegalArgumentException in case the definition is not found
      */
     EntityDefinition getDefinition(String entityId);
 
@@ -442,7 +442,7 @@ public interface EntityDefinition extends Serializable {
   }
 
   /**
-   * Builds a Entity.Definition
+   * Builds a EntityDefinition
    */
   interface Builder {
 
@@ -524,6 +524,7 @@ public interface EntityDefinition extends Serializable {
      * Sets the primary key generator
      * @param keyGenerator the primary key generator
      * @return this {@link Builder} instance
+     * @see #isKeyGenerated()
      */
     Builder keyGenerator(KeyGenerator keyGenerator);
 
