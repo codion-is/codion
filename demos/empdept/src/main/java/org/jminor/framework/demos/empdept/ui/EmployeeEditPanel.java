@@ -5,7 +5,10 @@ package org.jminor.framework.demos.empdept.ui;
 
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import org.jminor.swing.common.ui.textfield.TextFields;
+import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
@@ -34,9 +37,9 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createForeignKeyComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
     createTextField(EmpDept.EMPLOYEE_SALARY);
     createTextField(EmpDept.EMPLOYEE_COMMISSION);
-    createTemporalInputPanel(EmpDept.EMPLOYEE_HIREDATE, true);
+    createTemporalInputPanel(EmpDept.EMPLOYEE_HIREDATE, CalendarButton.YES);
 
-    setLayout(new FlexibleGridLayout(3, 3, 5, 5, true, false));
+    setLayout(new FlexibleGridLayout(3, 3, 5, 5, FixRowHeights.YES, FixColumnWidths.NO));
 
     addPropertyPanel(EmpDept.EMPLOYEE_NAME);
     addPropertyPanel(EmpDept.EMPLOYEE_JOB);

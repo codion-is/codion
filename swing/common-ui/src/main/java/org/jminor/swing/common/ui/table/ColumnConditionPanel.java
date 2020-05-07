@@ -21,6 +21,8 @@ import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
@@ -462,7 +464,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   }
 
   private void initializeUI() {
-    final FlexibleGridLayout layout = new FlexibleGridLayout(2, 1, 0, 0, true, false);
+    final FlexibleGridLayout layout = new FlexibleGridLayout(2, 1, 0, 0, FixRowHeights.YES, FixColumnWidths.NO);
     setLayout(layout);
     if (toggleEnabledButton != null) {
       this.toggleEnabledButton.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));

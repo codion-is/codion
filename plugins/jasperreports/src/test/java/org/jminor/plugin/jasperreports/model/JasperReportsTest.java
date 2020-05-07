@@ -8,6 +8,7 @@ import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.http.server.HttpServer;
 import org.jminor.common.http.server.HttpServerConfiguration;
+import org.jminor.common.http.server.HttpServerConfiguration.Secure;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.dbms.h2database.H2DatabaseProvider;
@@ -94,7 +95,7 @@ public class JasperReportsTest {
   public void urlReport() throws Exception {
     ReportWrapper.CACHE_REPORTS.set(false);
     ReportWrapper.REPORT_PATH.set("http://localhost:1234");
-    final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(1234, false);
+    final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(1234, Secure.NO);
     configuration.setDocumentRoot(REPORT_PATH);
     final HttpServer server = new HttpServer(configuration);
     try {

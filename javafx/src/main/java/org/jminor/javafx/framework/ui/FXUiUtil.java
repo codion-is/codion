@@ -88,6 +88,20 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FXUiUtil {
 
+  /**
+   * Specifies whether single item selection is enabled when selecting files and or directories.
+   */
+  public enum SingleSelection {
+    /**
+     * Single selection is enabled.
+     */
+    YES,
+    /**
+     * Single selection is not enabled.
+     */
+    NO
+  }
+
   private FXUiUtil() {}
 
   /**
@@ -98,7 +112,7 @@ public final class FXUiUtil {
    * @throws CancelException in case the user cancels the operation
    */
   public static <T> T selectValue(final List<T> values) {
-    return selectValues(values, true).get(0);
+    return selectValues(values, SingleSelection.YES).get(0);
   }
 
   /**
@@ -109,20 +123,20 @@ public final class FXUiUtil {
    * @throws CancelException in case the user cancels the operation
    */
   public static <T> List<T> selectValues(final List<T> values) {
-    return selectValues(values, false);
+    return selectValues(values, SingleSelection.NO);
   }
 
   /**
    * Displays a dialog for selecting one or more of the given values
    * @param values the values from which to choose
    * @param <T> the type of values
-   * @param singleSelection if true then only a single value can be selected
+   * @param singleSelection if yes then only a single value can be selected
    * @return the selected values
    * @throws CancelException in case the user cancels the operation
    */
-  public static <T> List<T> selectValues(final List<T> values, final boolean singleSelection) {
+  public static <T> List<T> selectValues(final List<T> values, final SingleSelection singleSelection) {
     final ListView<T> listView = new ListView<>(FXCollections.observableArrayList(values));
-    listView.getSelectionModel().setSelectionMode(singleSelection ? SelectionMode.SINGLE : SelectionMode.MULTIPLE);
+    listView.getSelectionModel().setSelectionMode(singleSelection == SingleSelection.YES ? SelectionMode.SINGLE : SelectionMode.MULTIPLE);
     final Dialog<List<T>> dialog = new Dialog<>();
     dialog.getDialogPane().setContent(listView);
     dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);

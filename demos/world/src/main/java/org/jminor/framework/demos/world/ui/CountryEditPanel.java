@@ -5,6 +5,7 @@ import org.jminor.framework.demos.world.model.CountryEditModel;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityInputComponents.Editable;
 import org.jminor.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.JComponent;
@@ -37,7 +38,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     createTextField(World.COUNTRY_GNP);
     createTextField(World.COUNTRY_GNPOLD);
     createTextField(World.COUNTRY_LOCALNAME).setColumns(12);
-    setPreferredWidth(createPropertyComboBox(World.COUNTRY_GOVERNMENTFORM, null, true), 120);
+    setPreferredWidth(createPropertyComboBox(World.COUNTRY_GOVERNMENTFORM, null, Editable.YES), 120);
     createTextField(World.COUNTRY_HEADOFSTATE).setColumns(12);
     EntityComboBox capitalComboBox =
             setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), 120);

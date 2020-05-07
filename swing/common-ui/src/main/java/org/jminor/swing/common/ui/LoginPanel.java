@@ -8,6 +8,8 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.textfield.TextFields;
 
@@ -121,7 +123,7 @@ public final class LoginPanel extends JPanel {
     KeyEvents.addKeyEvent(passwordField, KeyEvent.VK_BACK_SPACE, InputEvent.CTRL_DOWN_MASK,
             Controls.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())));
 
-    final JPanel basePanel = new JPanel(Layouts.flexibleGridLayout(GRID_SIZE, GRID_SIZE, true, false));
+    final JPanel basePanel = new JPanel(Layouts.flexibleGridLayout(GRID_SIZE, GRID_SIZE, FixRowHeights.YES, FixColumnWidths.NO));
     basePanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));
     basePanel.add(usernameField);
     basePanel.add(new JLabel(Messages.get(Messages.PASSWORD), JLabel.RIGHT));

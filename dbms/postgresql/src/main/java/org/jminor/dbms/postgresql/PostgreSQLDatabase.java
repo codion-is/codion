@@ -28,7 +28,12 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    return removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX);
+    String name = removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX);
+    if (name.contains("/")) {
+      name = name.substring(name.lastIndexOf('/') + 1);
+    }
+
+    return name;
   }
 
   @Override

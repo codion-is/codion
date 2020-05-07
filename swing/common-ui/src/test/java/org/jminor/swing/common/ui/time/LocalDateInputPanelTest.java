@@ -5,6 +5,7 @@ package org.jminor.swing.common.ui.time;
 
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
+import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 
 import org.junit.jupiter.api.Test;
 
@@ -56,19 +57,19 @@ public class LocalDateInputPanelTest {
 
   @Test
   public void constructorNullInputField() {
-    assertThrows(NullPointerException.class, () -> new LocalDateInputPanel(null, "dd.MM.yyyy", true, null));
+    assertThrows(NullPointerException.class, () -> new LocalDateInputPanel(null, "dd.MM.yyyy", CalendarButton.YES, null));
   }
 
   @Test
   public void constructorNullDateFormat() {
-    assertThrows(NullPointerException.class, () -> new LocalDateInputPanel(new JFormattedTextField(), null, true, null));
+    assertThrows(NullPointerException.class, () -> new LocalDateInputPanel(new JFormattedTextField(), null, CalendarButton.YES, null));
   }
 
   @Test
   public void enabledState() {
     final State enabledState = States.state();
     final JFormattedTextField textField = new JFormattedTextField();
-    final LocalDateInputPanel inputPanel = new LocalDateInputPanel(textField, "dd.MM.yyyy", true, enabledState.getObserver());
+    final LocalDateInputPanel inputPanel = new LocalDateInputPanel(textField, "dd.MM.yyyy", CalendarButton.YES, enabledState.getObserver());
     assertFalse(textField.isEnabled());
     assertFalse(inputPanel.getCalendarButton().isEnabled());
     SwingUtilities.invokeLater(() -> {

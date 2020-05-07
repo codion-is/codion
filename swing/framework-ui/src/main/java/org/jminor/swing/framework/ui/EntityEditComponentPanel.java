@@ -26,10 +26,13 @@ import org.jminor.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
 import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
+import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import org.jminor.swing.common.ui.value.TextValues;
 import org.jminor.swing.common.ui.value.UpdateOn;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.ui.EntityInputComponents.Editable;
 import org.jminor.swing.framework.ui.EntityInputComponents.IncludeCaption;
+import org.jminor.swing.framework.ui.EntityInputComponents.Sorted;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
@@ -464,45 +467,45 @@ public class EntityEditComponentPanel extends JPanel {
    * @see Property#DATE_FORMAT
    */
   protected final TemporalInputPanel createTemporalInputPanel(final String propertyId) {
-    return createTemporalInputPanel(propertyId, true);
+    return createTemporalInputPanel(propertyId, CalendarButton.YES);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton) {
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final CalendarButton calendarButton) {
     final Property property = getEditModel().getEntityDefinition().getProperty(propertyId);
-    return createTemporalInputPanel(property, includeButton, null);
+    return createTemporalInputPanel(property, calendarButton, null);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton,
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final CalendarButton calendarButton,
                                                               final StateObserver enabledState) {
-    return createTemporalInputPanel(propertyId, includeButton, enabledState, UpdateOn.KEYSTROKE);
+    return createTemporalInputPanel(propertyId, calendarButton, enabledState, UpdateOn.KEYSTROKE);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOn specifies when the underlying value should be updated
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final boolean includeButton,
+  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final CalendarButton calendarButton,
                                                               final StateObserver enabledState, final UpdateOn updateOn) {
     return createTemporalInputPanel(getEditModel().getEntityDefinition().getProperty(propertyId),
-            includeButton, enabledState, updateOn);
+            calendarButton, enabledState, updateOn);
   }
 
   /**
@@ -511,43 +514,43 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TemporalInputPanel bound to the property
    */
   protected final TemporalInputPanel createTemporalInputPanel(final Property property) {
-    return createTemporalInputPanel(property, true);
+    return createTemporalInputPanel(property, CalendarButton.YES);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton) {
-    return createTemporalInputPanel(property, includeButton, null);
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final CalendarButton calendarButton) {
+    return createTemporalInputPanel(property, calendarButton, null);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton,
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final CalendarButton calendarButton,
                                                               final StateObserver enabledState) {
-    return createTemporalInputPanel(property, includeButton, enabledState, UpdateOn.KEYSTROKE);
+    return createTemporalInputPanel(property, calendarButton, enabledState, UpdateOn.KEYSTROKE);
   }
 
   /**
    * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
-   * @param includeButton if true a button for visually editing the date is included
+   * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOn specifies when the underlying value should be updated
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final boolean includeButton,
+  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final CalendarButton calendarButton,
                                                               final StateObserver enabledState, final UpdateOn updateOn) {
     final TemporalInputPanel panel = EntityInputComponents.createTemporalInputPanel(property,
-            getEditModel().value(property.getPropertyId()), updateOn, includeButton, enabledState);
+            getEditModel().value(property.getPropertyId()), updateOn, calendarButton, enabledState);
     if (panel instanceof LocalDateInputPanel) {
       final LocalDateInputPanel localDateInputPanel = (LocalDateInputPanel) panel;
       if (localDateInputPanel.getCalendarButton() != null && TRANSFER_FOCUS_ON_ENTER.get()) {
@@ -961,19 +964,19 @@ public class EntityEditComponentPanel extends JPanel {
    * @throws IllegalArgumentException in case the property is not a value list property
    */
   protected final SteppedComboBox createValueListComboBox(final String propertyId) {
-    return createValueListComboBox(propertyId, true);
+    return createValueListComboBox(propertyId, Sorted.YES);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined by the given value list property,
    * bound to the given property.
    * @param propertyId the propertyId
-   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyId, final boolean sortItems) {
-    return createValueListComboBox(propertyId, sortItems, null);
+  protected final SteppedComboBox createValueListComboBox(final String propertyId, final Sorted sorted) {
+    return createValueListComboBox(propertyId, sorted, null);
   }
 
   /**
@@ -985,25 +988,26 @@ public class EntityEditComponentPanel extends JPanel {
    * @throws IllegalArgumentException in case the property is not a value list property
    */
   protected final SteppedComboBox createValueListComboBox(final String propertyId, final StateObserver enabledState) {
-    return createValueListComboBox(propertyId, true, enabledState);
+    return createValueListComboBox(propertyId, Sorted.YES, enabledState);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined by the given value list property,
    * bound to the given property.
    * @param propertyId the propertyId
-   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyId, final boolean sortItems, final StateObserver enabledState) {
+  protected final SteppedComboBox createValueListComboBox(final String propertyId, final Sorted sorted,
+                                                          final StateObserver enabledState) {
     final Property property = getEditModel().getEntityDefinition().getProperty(propertyId);
     if (!(property instanceof ValueListProperty)) {
       throw new IllegalArgumentException("Property identified by '" + propertyId + "' is not a ValueListProperty");
     }
 
-    return createValueListComboBox((ValueListProperty) property, sortItems, enabledState);
+    return createValueListComboBox((ValueListProperty) property, sorted, enabledState);
   }
 
   /**
@@ -1013,18 +1017,18 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createValueListComboBox(final ValueListProperty property) {
-    return createValueListComboBox(property, true);
+    return createValueListComboBox(property, Sorted.YES);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined in the given value list property,
    * bound to the given property.
    * @param property the property
-   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final boolean sortItems) {
-    return createValueListComboBox(property, sortItems, null);
+  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final Sorted sorted) {
+    return createValueListComboBox(property, sorted, null);
   }
 
   /**
@@ -1035,21 +1039,21 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final StateObserver enabledState) {
-    return createValueListComboBox(property, true, enabledState);
+    return createValueListComboBox(property, Sorted.YES, enabledState);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined in the given value list property,
    * bound to the given property.
    * @param property the property
-   * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
+   * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final boolean sortItems,
+  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final Sorted sorted,
                                                           final StateObserver enabledState) {
-    final SteppedComboBox box = EntityInputComponents.createValueListComboBox(property, getEditModel().value(property.getPropertyId()),
-            sortItems, enabledState);
+    final SteppedComboBox box = EntityInputComponents.createValueListComboBox(property,
+            getEditModel().value(property.getPropertyId()), sorted, enabledState);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) box.getEditor().getEditorComponent());
       transferFocusOnEnter(box);
@@ -1092,7 +1096,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final SteppedComboBox createEditableComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                          final StateObserver enabledState) {
     final SteppedComboBox comboBox = EntityInputComponents.createComboBox(property, getEditModel().value(property.getPropertyId()),
-            comboBoxModel, enabledState, true);
+            comboBoxModel, enabledState, Editable.YES);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
       transferFocusOnEnter(comboBox);
@@ -1120,7 +1124,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyId, final StateObserver enabledState) {
-    return createPropertyComboBox(propertyId, enabledState, false);
+    return createPropertyComboBox(propertyId, enabledState, Editable.NO);
   }
 
   /**
@@ -1128,11 +1132,11 @@ public class EntityEditComponentPanel extends JPanel {
    * contains the underlying values of the property
    * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
+   * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyId, final StateObserver enabledState,
-                                                         final boolean editable) {
+                                                         final Editable editable) {
     return createPropertyComboBox(getEditModel().getEntityDefinition().getColumnProperty(propertyId),
             enabledState, editable);
   }
@@ -1155,7 +1159,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final ColumnProperty property, final StateObserver enabledState) {
-    return createPropertyComboBox(property, enabledState, false);
+    return createPropertyComboBox(property, enabledState, Editable.NO);
   }
 
   /**
@@ -1163,11 +1167,11 @@ public class EntityEditComponentPanel extends JPanel {
    * contains the underlying values of the property
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
+   * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final ColumnProperty property, final StateObserver enabledState,
-                                                         final boolean editable) {
+                                                         final Editable editable) {
     final SteppedComboBox comboBox = EntityInputComponents.createPropertyComboBox(property, getEditModel().value(property.getPropertyId()),
             (ComboBoxModel) getEditModel().getComboBoxModel(property.getPropertyId()), enabledState, editable);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {

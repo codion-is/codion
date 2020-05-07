@@ -18,6 +18,34 @@ public final class FlexibleGridLayout extends GridLayout {
 
   private static final double ONE_POINT_O = 1.0;
 
+  /**
+   * Specifies whether row heights should be fixed.
+   */
+  public enum FixRowHeights {
+    /**
+     * Row heights should be fixed.
+     */
+    YES,
+    /**
+     * Row heights should not be fixed.
+     */
+    NO
+  }
+
+  /**
+   * Specifies whether column widths should be fixed.
+   */
+  public enum FixColumnWidths {
+    /**
+     * Column widths should be fixed.
+     */
+    YES,
+    /**
+     * Column widths should not be fixed.
+     */
+    NO
+  }
+
   private boolean fixedRowHeights;
   private boolean fixedColumnWidths;
   private int fixedColumnWidth;
@@ -29,7 +57,7 @@ public final class FlexibleGridLayout extends GridLayout {
    * @param cols the number of columns
    */
   public FlexibleGridLayout(final int rows, final int cols) {
-    this(rows, cols, 0, 0, false, false);
+    this(rows, cols, 0, 0, FixRowHeights.NO, FixColumnWidths.NO);
   }
 
   /**
@@ -40,7 +68,7 @@ public final class FlexibleGridLayout extends GridLayout {
    * @param vgap the vertical gap
    */
   public FlexibleGridLayout(final int rows, final int cols, final int hgap, final int vgap) {
-    this(rows, cols, hgap, vgap, false, false);
+    this(rows, cols, hgap, vgap, FixRowHeights.NO, FixColumnWidths.NO);
   }
 
   /**
@@ -49,14 +77,14 @@ public final class FlexibleGridLayout extends GridLayout {
    * @param cols the number of columns
    * @param hgap the horizontal gap
    * @param vgap the vertical gap
-   * @param fixRowHeights if true then the row heights are fixed according to the largest row
-   * @param fixColumnWidths if true then the column widths are fixed according to the largest column
+   * @param fixRowHeights if yes then the row heights are fixed according to the largest row
+   * @param fixColumnWidths if yes then the column widths are fixed according to the largest column
    */
   public FlexibleGridLayout(final int rows, final int cols, final int hgap, final int vgap,
-                            final boolean fixRowHeights, final boolean fixColumnWidths) {
+                            final FixRowHeights fixRowHeights, final FixColumnWidths fixColumnWidths) {
     super(rows, cols, hgap, vgap);
-    this.fixedRowHeights = fixRowHeights;
-    this.fixedColumnWidths = fixColumnWidths;
+    this.fixedRowHeights = fixRowHeights == FixRowHeights.YES;
+    this.fixedColumnWidths = fixColumnWidths == FixColumnWidths.YES;
   }
 
   /**

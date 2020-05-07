@@ -14,9 +14,9 @@ public class PostgreSQLDatabaseTest {
   @Test
   public void getName() {
     PostgreSQLDatabase database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid");
-    assertEquals("host.db:1234/sid", database.getName());
+    assertEquals("sid", database.getName());
     database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid;options");
-    assertEquals("host.db:1234/sid", database.getName());
+    assertEquals("sid", database.getName());
   }
 
   @Test

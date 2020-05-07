@@ -27,6 +27,21 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
 
   protected static final String JCALENDAR_CLASS_NAME = "com.toedter.calendar.JCalendar";
 
+  /**
+   * Specifies whether a {@link TemporalInputPanel} should contain a button for opening a Calendar for input entry.
+   * Only applies to temporal values containing a date part, as in, not those that contain time only.
+   */
+  public enum CalendarButton {
+    /**
+     * Include a calendar button.
+     */
+    YES,
+    /**
+     * Don't include a calendar button.
+     */
+    NO
+  }
+
   private final JFormattedTextField inputField;
   private final String dateFormat;
   private final DateTimeFormatter formatter;

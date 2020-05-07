@@ -49,7 +49,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
         throw new IllegalStateException("Database must be set before initializing server name");
       }
 
-      return ServerConfiguration.SERVER_NAME_PREFIX.get() + " " + Versions.getVersionString() + "@" + database.getName();
+      return ServerConfiguration.SERVER_NAME_PREFIX.get() + " " +
+              Versions.getVersionString() + "@" + database.getName().toUpperCase();
     });
   }
 

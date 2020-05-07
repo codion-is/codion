@@ -14,9 +14,9 @@ public class MySQLDatabaseTest {
   @Test
   public void getName() {
     MySQLDatabase database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname");
-    assertEquals("host.com:1234/dbname", database.getName());
+    assertEquals("dbname", database.getName());
     database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname;option=true;option2=false");
-    assertEquals("host.com:1234/dbname", database.getName());
+    assertEquals("dbname", database.getName());
   }
 
   @Test

@@ -40,6 +40,7 @@ import org.jminor.swing.common.ui.time.LocalDateInputPanel;
 import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.time.LocalTimeInputPanel;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
+import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import org.jminor.swing.common.ui.value.BooleanValues;
 import org.jminor.swing.common.ui.value.NumericalValues;
 import org.jminor.swing.common.ui.value.SelectedValues;
@@ -111,6 +112,35 @@ public final class EntityInputComponents {
      */
     NO
   }
+
+  /**
+   * Specifies whether the contents of a combo box should be sorted.
+   */
+  public enum Sorted {
+    /**
+     * Sort contents.
+     */
+    YES,
+    /**
+     * Don't sort contents.
+     */
+    NO
+  }
+
+  /**
+   * Specifies whether a combo box should be editable.
+   */
+  public enum Editable {
+    /**
+     * Combo box should be editable.
+     */
+    YES,
+    /**
+     * Combo box should not be editable.
+     */
+    NO
+  }
+
   private static final String PROPERTY_PARAM_NAME = "property";
   private static final String VALUE_PARAM_NAME = "value";
   private static final String FOREIGN_KEY_PROPERTY_PARAM_NAME = "foreignKeyProperty";
@@ -356,7 +386,7 @@ public final class EntityInputComponents {
    * @return a combo box based on the given values
    */
   public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value) {
-    return createValueListComboBox(property, value, true, null);
+    return createValueListComboBox(property, value, Sorted.YES, null);
   }
 
   /**
@@ -368,19 +398,19 @@ public final class EntityInputComponents {
    */
   public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
                                                         final StateObserver enabledState) {
-    return createValueListComboBox(property, value, true, enabledState);
+    return createValueListComboBox(property, value, Sorted.YES, enabledState);
   }
 
   /**
    * Creates a combo box based on the values in the given value list property
    * @param property the property
    * @param value the value to bind to the field
-   * @param sortItems if true then the items are sorted
+   * @param sorted if yes then the items are sorted
    * @return a combo box based on the given values
    */
   public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
-                                                        final boolean sortItems) {
-    return createValueListComboBox(property, value, sortItems, null);
+                                                        final Sorted sorted) {
+    return createValueListComboBox(property, value, sorted, null);
   }
 
   /**
@@ -389,14 +419,14 @@ public final class EntityInputComponents {
    * one is added to the combo box model.
    * @param property the property
    * @param value the value to bind to the field
-   * @param sortItems if true then the items are sorted
+   * @param sorted if yes then the items are sorted
    * @param enabledState the state controlling the enabled state of the combo box
    * @return a combo box based on the given values
    */
   public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
-                                                        final boolean sortItems, final StateObserver enabledState) {
+                                                        final Sorted sorted, final StateObserver enabledState) {
     final SteppedComboBox comboBox = createComboBox(property, value,
-            createValueListComboBoxModel(property, sortItems), enabledState);
+            createValueListComboBoxModel(property, sorted), enabledState);
     addComboBoxCompletion(comboBox);
 
     return comboBox;
@@ -412,7 +442,7 @@ public final class EntityInputComponents {
    */
   public static SteppedComboBox createComboBox(final Property property, final Value value,
                                                final ComboBoxModel model, final StateObserver enabledState) {
-    return createComboBox(property, value, model, enabledState, false);
+    return createComboBox(property, value, model, enabledState, Editable.NO);
   }
 
   /**
@@ -421,19 +451,19 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param model the combo box model
    * @param enabledState the state controlling the enabled state of the combo box
-   * @param editable if true then the combo box is made editable
+   * @param editable if yes then the combo box is made editable
    * @return a combo box based on the given model
    */
   public static SteppedComboBox createComboBox(final Property property, final Value value,
                                                final ComboBoxModel model, final StateObserver enabledState,
-                                               final boolean editable) {
+                                               final Editable editable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
-    if (editable && !property.isString()) {
+    if (editable == Editable.YES && !property.isString()) {
       throw new IllegalArgumentException("Editable property ComboBox is only implemented for String properties");
     }
-    comboBox.setEditable(editable);
+    comboBox.setEditable(editable == Editable.YES);
     value.link(SelectedValues.selectedValue(comboBox));
     linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
@@ -446,12 +476,12 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param updateOn specifies when the underlying value should be updated
-   * @param includeButton if true then a button for opening a date input dialog is included (only available for LocalDate)
+   * @param calendarButton if yes then a button for opening a date input dialog is included (only available for LocalDate)
    * @return a date input panel
    */
   public static TemporalInputPanel createTemporalInputPanel(final Property property, final Value value,
-                                                            final UpdateOn updateOn, final boolean includeButton) {
-    return createTemporalInputPanel(property, value, updateOn, includeButton, null);
+                                                            final UpdateOn updateOn, final CalendarButton calendarButton) {
+    return createTemporalInputPanel(property, value, updateOn, calendarButton, null);
   }
 
   /**
@@ -459,12 +489,12 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param updateOn specifies when the underlying value should be updated
-   * @param includeCalendarButton if true then a button for opening a calendar dialog is included
+   * @param calendarButton if yes then a button for opening a calendar dialog is included
    * @param enabledState the state controlling the enabled state of the panel
    * @return a date input panel
    */
   public static TemporalInputPanel createTemporalInputPanel(final Property property, final Value value,
-                                                            final UpdateOn updateOn, final boolean includeCalendarButton,
+                                                            final UpdateOn updateOn, final CalendarButton calendarButton,
                                                             final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     if (!property.isTemporal()) {
@@ -475,10 +505,10 @@ public final class EntityInputComponents {
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, value,
             DateFormats.getDateMask(formatString), updateOn, enabledState);
     if (property.isDate()) {
-      return new LocalDateInputPanel(field, formatString, includeCalendarButton, enabledState);
+      return new LocalDateInputPanel(field, formatString, calendarButton, enabledState);
     }
     else if (property.isTimestamp()) {
-      return new LocalDateTimeInputPanel(field, formatString, includeCalendarButton, enabledState);
+      return new LocalDateTimeInputPanel(field, formatString, calendarButton, enabledState);
     }
     else if (property.isTime()) {
       return new LocalTimeInputPanel(field, formatString, enabledState);
@@ -660,7 +690,7 @@ public final class EntityInputComponents {
    */
   public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final Value value,
                                                        final ComboBoxModel comboBoxModel, final StateObserver enabledState) {
-    return createPropertyComboBox(property, value, comboBoxModel, enabledState, false);
+    return createPropertyComboBox(property, value, comboBoxModel, enabledState, Editable.NO);
   }
 
   /**
@@ -669,14 +699,14 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param comboBoxModel the combo box model
    * @param enabledState the state controlling the enabled state of the panel
-   * @param editable if true then the combo box will be editable
+   * @param editable if yes then the combo box will be editable
    * @return a combo box based on the property values
    */
   public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final Value value,
                                                        final ComboBoxModel comboBoxModel, final StateObserver enabledState,
-                                                       final boolean editable) {
+                                                       final Editable editable) {
     final SteppedComboBox comboBox = createComboBox(property, value, comboBoxModel, enabledState, editable);
-    if (!editable) {
+    if (editable == Editable.NO) {
       addComboBoxCompletion(comboBox);
     }
 
@@ -777,8 +807,8 @@ public final class EntityInputComponents {
     return checkBox;
   }
 
-  private static ItemComboBoxModel createValueListComboBoxModel(final ValueListProperty property, final boolean sortItems) {
-    final ItemComboBoxModel model = sortItems ?
+  private static ItemComboBoxModel createValueListComboBoxModel(final ValueListProperty property, final Sorted sorted) {
+    final ItemComboBoxModel model = sorted == Sorted.YES ?
             new ItemComboBoxModel(property.getValues()) : new ItemComboBoxModel(null, property.getValues());
     if (property.isNullable() && !model.containsItem(Items.item(null))) {
       model.addItem(Items.item(null, EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));

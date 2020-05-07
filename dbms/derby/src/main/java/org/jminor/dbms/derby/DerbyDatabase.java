@@ -29,7 +29,14 @@ final class DerbyDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    return removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE);
+    String name = getUrl();
+    final boolean tcp = name.startsWith(JDBC_URL_PREFIX_TCP);
+    name = removeUrlPrefixAndOptions(name, JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE);
+    if (tcp && name.contains("/")) {
+      name = name.substring(name.indexOf('/') + 1);
+    }
+
+    return name;
   }
 
   @Override

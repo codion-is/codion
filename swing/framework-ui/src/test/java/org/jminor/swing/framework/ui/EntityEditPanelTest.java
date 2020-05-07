@@ -11,6 +11,9 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
+import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.jupiter.api.Test;
@@ -77,11 +80,11 @@ public final class EntityEditPanelTest {
       createForeignKeyComboBox(TestDomain.EMP_DEPARTMENT_FK);
       createTextField(TestDomain.EMP_SALARY);
       createTextField(TestDomain.EMP_COMMISSION);
-      createTemporalInputPanel(TestDomain.EMP_HIREDATE, true);
+      createTemporalInputPanel(TestDomain.EMP_HIREDATE, CalendarButton.YES);
 
       setInitialFocusProperty(TestDomain.EMP_NAME);
 
-      setLayout(new FlexibleGridLayout(3, 3, 5, 5, true, false));
+      setLayout(new FlexibleGridLayout(3, 3, 5, 5, FixRowHeights.YES, FixColumnWidths.NO));
 
       addPropertyPanel(TestDomain.EMP_NAME);
       addPropertyPanel(TestDomain.EMP_JOB);
