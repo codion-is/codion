@@ -24,7 +24,7 @@ public final class Layouts {
    * @see #borderLayout()
    * @see #flowLayout(int)
    * @see #gridLayout(int, int)
-   * @see #flexibleGridLayout(int, int, boolean, boolean)
+   * @see #flexibleGridLayout(int, int)
    */
   public static final Value<Integer> HORIZONTAL_VERTICAL_GAP =
           Configuration.integerValue("jminor.swing.ui.horizontalVerticalGap", DEFAULT_HOR_VERT_GAP);
