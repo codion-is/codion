@@ -105,7 +105,15 @@ public final class EntityLookupField extends TextField {
   }
 
   private void selectEntities(final List<Entity> queryResult) {
-    Platform.runLater(() -> model.setSelectedEntities(FXUiUtil.selectValues(queryResult, !model.getMultipleSelectionEnabledValue().get())));
+    final FXUiUtil.SingleSelection singleSelection;
+    if (model.getMultipleSelectionEnabledValue().get()) {
+      singleSelection = FXUiUtil.SingleSelection.NO;
+    }
+    else {
+      singleSelection = FXUiUtil.SingleSelection.YES;
+    }
+
+    Platform.runLater(() -> model.setSelectedEntities(FXUiUtil.selectValues(queryResult, singleSelection)));
   }
 
   private void showEmptyResultMessage() {
