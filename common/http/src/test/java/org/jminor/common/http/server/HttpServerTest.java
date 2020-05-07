@@ -3,6 +3,8 @@
  */
 package org.jminor.common.http.server;
 
+import org.jminor.common.http.server.HttpServerConfiguration.Secure;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,7 @@ public class HttpServerTest {
 
   private static final int FILE_SERVER_PORT_NUMBER = 8089;
 
-  private final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(FILE_SERVER_PORT_NUMBER, false);
+  private final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(FILE_SERVER_PORT_NUMBER, Secure.NO);
   private final HttpServer httpServer;
 
   public HttpServerTest() {

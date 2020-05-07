@@ -47,12 +47,26 @@ public interface HttpServerConfiguration {
   PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("jminor.server.http.documentRoot", null);
 
   /**
+   * Specifies whether a http server should use https.
+   */
+  enum Secure {
+    /**
+     * Https should be enabled.
+     */
+    YES,
+    /**
+     * Https should not be enabled.
+     */
+    NO
+  }
+
+  /**
    * Instantiates a new HttpServerConfiguration.
    * @param port the port on which to serve
-   * @param secure true if https should be used
+   * @param secure yes if https should be used
    * @return a default configuration
    */
-  static HttpServerConfiguration configuration(final int port, final boolean secure) {
+  static HttpServerConfiguration configuration(final int port, final Secure secure) {
     return new DefaultHttpServerConfiguration(port, secure);
   }
 
@@ -62,7 +76,8 @@ public interface HttpServerConfiguration {
    */
   static HttpServerConfiguration fromSystemProperties() {
     final DefaultHttpServerConfiguration configuration = new DefaultHttpServerConfiguration(
-            HttpServerConfiguration.HTTP_SERVER_PORT.get(), HttpServerConfiguration.HTTP_SERVER_SECURE.get());
+            HttpServerConfiguration.HTTP_SERVER_PORT.get(),
+            HttpServerConfiguration.HTTP_SERVER_SECURE.get() ? Secure.YES : Secure.NO);
     configuration.setDocumentRoot(HttpServerConfiguration.DOCUMENT_ROOT.get());
     configuration.setKeystore(HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.get(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.get());
 

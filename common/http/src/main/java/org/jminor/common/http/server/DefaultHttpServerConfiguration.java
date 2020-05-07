@@ -12,9 +12,9 @@ final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
   private String keystorePath;
   private String keystorePassword;
 
-  DefaultHttpServerConfiguration(final int serverPort, final boolean secure) {
+  DefaultHttpServerConfiguration(final int serverPort, final Secure secure) {
     this.serverPort = serverPort;
-    this.secure = secure;
+    this.secure = secure == Secure.YES;
   }
 
   @Override
