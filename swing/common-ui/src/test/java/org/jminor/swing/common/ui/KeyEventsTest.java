@@ -15,7 +15,7 @@ public class KeyEventsTest {
   @Test
   public void addKeyEventWithoutName() {
     final JTextField textField = new JTextField();
-    final String actionName = textField.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "true";
+    final String actionName = textField.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "keyReleased";
     assertNull(textField.getActionMap().get(actionName));
     KeyEvents.addKeyEvent(textField, KeyEvent.VK_ENTER, Controls.control(() -> {}));
     assertNotNull(textField.getActionMap().get(actionName));

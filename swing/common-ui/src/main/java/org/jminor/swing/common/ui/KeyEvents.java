@@ -96,7 +96,8 @@ public final class KeyEvents {
     if (action != null) {
       actionName = action.getValue(Action.NAME);
       if (actionName == null) {
-        actionName = component.getClass().getSimpleName() + keyEvent + modifiers + onKeyRelease;
+        actionName = component.getClass().getSimpleName() + keyEvent + modifiers +
+                (onKeyRelease == OnKeyRelease.YES ? "keyReleased" : "keyPressed");
       }
       component.getActionMap().put(actionName, action);
     }
