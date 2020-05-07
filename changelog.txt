@@ -6067,3 +6067,4 @@
   HttpServerConfiguration.Secure enum added and used instead of boolean parameter
   KeyEvents.OnKeyRelease enum added and used instead of boolean parameter
   FlexibleGridLayout.FixRowHeights and FixColumnWidths enums added and used instead of boolean parameter
+0.14.12
